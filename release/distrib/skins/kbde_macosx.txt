@@ -1,0 +1,5 @@
+German.MacOSX
+ 2 3   5 6 7   9 0         0xa0
+q w e r t z u i o    p 0xa2    +
+ s d   g h j   l 0xa4
+y x c v b n m , .    -

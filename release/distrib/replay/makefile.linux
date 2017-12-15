@@ -1,0 +1,27 @@
+CC = g++
+AS = as
+AR = ar
+STRIP = strip
+LIBS = -lptkreplay -lpthread
+FLAGS = -O2 -fno-strict-aliasing -ffast-math -D __LINUX__ -D __GCC__ -D __STAND_ALONE__ -D __NO_MIDI__
+EXEOBJS = test.o module.o
+
+all: ptkreplay replaytest
+clean: remobj
+
+remobj:
+	-rm -f $(EXEOBJS)
+
+replaytest: $(EXEOBJS)
+	$(CC) -o $(@) -L./ $(FLAGS) $(EXEOBJS) $(LIBS)
+	$(STRIP) -s -x $(@)
+	-rm -f $(EXEOBJS)
+
+test.o: test/test_linux.cpp
+	$(CC) -c -o $(@) $(FLAGS) test/test_linux.cpp
+
+module.o: test/module.s
+	$(AS) -o $(@) test/module.s
+
+# the library itself #
+include lib/makefile.linux

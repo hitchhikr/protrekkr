@@ -1,0 +1,83 @@
+;_atrac3.inf: Installation file for the ATRAC3 Audio codec.
+;
+
+[Version]
+Signature="$CHICAGO$"
+Class=MEDIA
+
+[SourceDisksNames]
+1="Sony ATRAC3 Audio Codec Install Disk",,0001
+
+[SourceDisksFiles]
+atrac3.acm=1
+atrac3.inf=1
+
+[DefaultInstall]
+CopyFiles=ATRAC3.Copy,ATRAC3.Copy.Inf
+UpdateInis=ATRAC3.UpdateInis.9x
+AddReg=ATRAC3.AddReg.9x
+MediaType=Software
+
+[DefaultInstall.NT]
+CopyFiles=ATRAC3.Copy,ATRAC3.Copy.Inf
+AddReg=ATRAC3.AddReg.NT
+MediaType=Software
+
+[DefaultUninstall]
+DelReg=ATRAC3.DelReg.9x
+DelFiles=ATRAC3.Copy,ATRAC3.Copy.Inf
+UpdateInis=ATRAC3.DelIni.9x
+
+[DefaultUninstall.NT]
+DelReg=ATRAC3.DelReg.NT
+DelFiles=ATRAC3.Copy,ATRAC3.Copy.Inf
+
+[ATRAC3.Copy]
+atrac3.acm
+
+[ATRAC3.Copy.Inf]
+atrac3.inf
+
+[ATRAC3.UpdateInis.9x]
+system.ini,drivers32,,"msacm.at3=atrac3.acm"
+
+[ATRAC3.AddReg.9x]
+HKLM,"SYSTEM\CurrentControlSet\Control\MediaResources\acm\msacm.at3","Driver",,"atrac3.acm"
+HKLM,"SYSTEM\CurrentControlSet\Control\MediaResources\acm\msacm.at3","FriendlyName",,"%ATRAC3Desc%"
+HKLM,"SYSTEM\CurrentControlSet\Control\MediaResources\acm\msacm.at3","Description",,"%ATRAC3Desc%"
+
+HKLM,"%UninstallPath%","DisplayName",,"%UninstallDispName%"
+HKLM,"%UninstallPath%","UninstallString",,"rundll.exe setupx.dll,InstallHinfSection DefaultUninstall 132 %17%\atrac3.inf"
+
+[ATRAC3.AddReg.NT]
+HKLM,"SOFTWARE\Microsoft\Windows NT\CurrentVersion\drivers32","msacm.at3",,"atrac3.acm"
+HKLM,"SOFTWARE\Microsoft\Windows NT\CurrentVersion\drivers.desc","atrac3.acm",,"%ATRAC3Desc%"
+
+HKLM,"%UninstallPath%","DisplayName",,"%UninstallDispName%"
+HKLM,"%UninstallPath%","UninstallString",,"rundll32.exe setupapi.dll,InstallHinfSection DefaultUninstall.NT 132 %17%\atrac3.inf"
+
+[ATRAC3.DelReg.9x]
+HKLM,"SYSTEM\CurrentControlSet\Control\MediaResources\acm\msacm.at3"
+
+HKLM,"%UninstallPath%"
+
+[ATRAC3.DelReg.NT]
+HKLM,"SOFTWARE\Microsoft\Windows NT\CurrentVersion\drivers32","msacm.at3",,""
+HKLM,"SOFTWARE\Microsoft\Windows NT\CurrentVersion\drivers.desc","atrac3.acm",,""
+
+HKLM,"%UninstallPath%"
+
+[ATRAC3.DelIni.9x]
+system.ini,drivers32,"msacm.at3=atrac3.acm"
+
+[DestinationDirs]
+DefaultDestDir=11	; LDID_SYS
+ATRAC3.Copy=11
+ATRAC3.Copy.Inf=17
+
+[Strings]
+ATRAC3Desc="Sony ATRAC3 Audio Codec"
+UninstallDispName="Sony ATRAC3 Audio Codec (remove only)"
+UninstallPath="Software\Microsoft\Windows\CurrentVersion\Uninstall\ATRAC3"
+
+; EOF

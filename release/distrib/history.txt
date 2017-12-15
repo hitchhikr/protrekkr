@@ -1,0 +1,1062 @@
+===============================================================================
+ProTrekkr releases history
+===============================================================================
+
+v2.5.5:
+
+- Added effect 28: turn track LFO on/off.
+
+v2.5.4:
+
+- Fixed 2 issues with interpolate command: it wouldn't work on all effects
+  and the whole commmand column is now properly filled with the first value.
+- Input was partially disabled when caps lock was turned on.
+- Using right mouse button on "pattern lines" arrows
+  will now increase/decrease value by 8.
+- F5 to F9 keys now jumps to 0, 1/4, 2/4, 3/4, 4/4 of the patterns lines.
+- Changed the way the number of patterns is calculated when saving a song,
+  the tracker now looks for any used (scratch) patterns
+  and save them within the .ptk module.
+- Fixed an issue in digibooster import function which was due
+  to a MSVC compiler quirk.
+
+v2.5.3:
+
+- 303 units speeds can now be scaled.
+- Added effects 26 & 27 (set reverb cutoff & resonance).
+- Some notes were missed in multi-notes channels sometimes.
+- Fixed a bug occuring with automatic note offs on the synth.
+- Ptk can now import DigiBooster v1.x modules (.digi).
+- Tracker could hang sometimes when calculating a song length.
+
+v2.5.2:
+
+- Slightly improved the smoothing of the reverb
+  (making it sound a bit less metallic).
+- Added an option to tune the 2 303 units together.
+- Tracker crashed when using insert command on track 0.
+
+v2.5.1:
+
+- Tracks are only shadowed during playing.
+- Added cutomizable resonance for reverb filter.
+- Tracker could crash when loading an instrument over another one
+  which was still playing.
+- Autosave function was broken.
+- Added auto backup function, the tracker will create a backup
+  of any existing old module version before overwriting the new one.
+- Reverb threshold delays table was lacking some values.
+
+v2.5.0:
+
+- Improved midi in/out support (notably by adding velocity).
+- Default instruments volumes are always turned on now
+  as they're used for midi output.
+- Added 3 new themes.
+- Tracker sometimes crashed at exit when using midi.
+- Mouse wheel activated for horizontal patterns slider.
+- Fixed a small issue with vu meters values.
+- Number of effects columns is now selectable (from 1 to 4).
+- Added synth oscillators combiner.
+- Each track now have separate volume.
+- Added lo/med/hi bands equalizers for each track.
+- Delay send had precedence over command 10
+  when updating track tab during play.
+- Fixed up reverb code (should sound cleaner too)
+  and added stereo separation parameter.
+- Flanger speeded up.
+- Right mouse button in lists arrows is now active
+  (jump to previous/next letter group for files lists).
+- Added 13 new (converted) modules for testing purposes
+  also improved (?) older modules to take advantage of new features.
+- A file name can now be passed as argument to the tracker, it will
+  be loaded at startup (can load any file recognized by the tracker).
+  (this can be used to associate .ptk files to the tracker).
+- Default repeat loop row is now 0 (was disabled before).
+- Improved .mod/.ft import.
+- Glide effect (5) should now work with synth instruments.
+- Tracks data weren't displayed properly sometimes.
+- Fixed a bug in tracks filters.
+- Implemented insert or delete track functions.
+- Tracks can now be rendered to .wav in their own separate file.
+- Tracks panning changing are now smoothed.
+- Live recording strategy improved.
+- Implemented a midi automation system to control elements of the track
+  from a midi device (like a master keyboard).
+- Added effect 25: Set shuffle value.
+- Metronome implemented (used during recording).
+- Fullscreen mode is now used with current screen resolution.
+- Handled latency at recording startup (so visuals should be synched to audio).
+- Fixed midi handling for big endian machines.
+- Fixed a bug in the reverb that only occured on big endian machines.
+
+v2.1.4:
+
+- Added duplicate function to samples editor: increase sample
+  by selection length and copy it's content into the newly created space.
+- Added Insert function to samples editor: increase sample by selection length
+  and insert zeroes into the newly created space.
+- Looks like the signal reduction hack is no longer necessary on Linux.
+- Linux 32 bit executable now available.
+
+v2.1.3:
+
+- Window can now be resized.
+- Zero command added to sample editor
+  (used to clear selections without removing them from samples).
+- Fixed a small issue with patterns blocks selection.
+- Loading some modules or instruments would crash the tracker
+  due to unrecognized packing schemes.
+- Fixed a bug that could freeze the tracker under AROS (& possibly Amiga OS4).
+
+v2.1.2:
+
+- Fixed flanger filter (now using individual buffers / track).
+- Fixed 06xx command (was always jumping jumping 1 line too far).
+- Added loading support for 1, 2 & 3 channels FastTracker I modules.
+- Added flight.ptk & warlock.ptk.
+
+v2.1.1:
+
+- Patterns slider wasn't always resized properly when switching
+  from large to small patterns view.
+- Some buttons weren't disabled properly in Disk IO tab.
+- Added buttons to reduce or expand the number of notes in each track header.
+- Max number of notes in a track is now 16.
+
+v2.1.0:
+
+- Fixed 2 bugs in the replay (which can now be slightly smaller).
+- Lengths of individual packed waveforms are now displayed.
+- Songs can now be rendered to wav files (like before)
+  or directly used to create instruments waveforms.
+- Added primitive.ptk by Mice of Brainstorm.
+- Fixed a bug in the sample editor which prevented it to work properly
+  with waveforms of more than 2 megabytes.
+- In continuous scroll mode, the patterns scrollbar (& the arrows) 
+  now reflect the global length and can be used to browse through entire song
+  (and not just the current pattern like before).
+- Implemented an internal compression scheme (based on wavpack) so
+  samples packing is available on every platforms.
+  The compression is rather good but the depacker is bigger than when using
+  codecs (a few kb kkrunched).
+- Properties.h files weren't always saved at the right place.
+
+v2.0.2:
+
+- Moog Lo & Moog band filters buffers weren't resetted properly
+  resulting in some "scratchy" sound sometimes.
+- Added tracks compressors (can eat some CPU time).
+- Tracks polyphony was kinda broken.
+- Fixed a small issue with the flanger.
+
+v2.0.1:
+
+- Big tracker & replay speed up.
+- Volume of instruments were left at 0 when loading waveforms.
+- Added the possibility to only delete the current instrument split.
+- Fixed an issue within .ptp saving function.
+
+v2.0:
+
+- Tempo can now go down to 20 BPM.
+- 303 units entirely modified, now they should behave
+  and sound a bit more like the one found in Propellerhead's Rebirth.
+- Files & dirs entries are now sorted alphabetically.
+- Input zones are now displayed with altered colors.
+- 6 default color themes are now available.
+- Range selection in sample editor speeded up.
+- .mod import function is now much more accurate
+  (note: it can also import FastTracker 1 .ft modules).
+- Fixed a bug in samples looping (1 byte was always missing from the loop).
+- Improved shadow patterns rendering.
+- Patterns shading is also displayed for track which are turned off
+  in the sequencer (shading can be turned on/off globally).
+- Improved sample editor:
+  - Speeded up (especially while selecting) and overall cleaner processing.
+  - Middle mouse button can now be used to zoom in/out.
+  - Added cut/copy/paste with 4 copy buffers.
+  - Crop function (remove everything from a waveform but the selection).
+  - Zap (delete a selected part of a waveform without copying it).
+  - Select view / Select all.
+  - Reverse (invert the selected part of a waveform).
+  - Selection shifting.
+- Added position jump effect (1F) (Can be combined with pattern break (0D)).
+- Added fine volume slide up and down effects (20 & 21).
+- Added fine pitch up and down effects (22 & 23).
+- Speed can now go up to 32 ticks/beat.
+- BPM weren't refreshed properly on screen when being changed inside patterns.
+- Multi-notes channels weren't re-initialized properly when loading new modules
+  which could lead to a crash.
+- Instruments used without notes won't retrig the note but only change
+  the waveform (like in the original protracker).
+- Filelists won't be redrawn after a loading process
+  and they won't jump back to the top after a saving one either.
+- Fixed a bug in Pattern loop command (6).
+- Splitted the play button into 2, 1st one to play song,
+  2nd one to play pattern, right mouse button on those to play song
+  or pattern from current row (using left mouse button starts from top row).
+  Shortcuts:
+    RCTRL: Play song from start of pattern.
+    LSHIFT + RCTRL: Play song from current position.
+    RALT: Play pattern from start of pattern.
+    LSHIFT + RALT: Play pattern from current position.
+- Added transposing capability to the instruments remapping function.
+- Changed LCTRL+H & LCTRL+LSHIFT+H to LCTRL+K & LCTRL+LSHIFT+K.
+- Default patterns zoom is now selectable.
+- Effect 10 (Delay send) was inneffective when Track tab was selected.
+- Overall better accuracy in replaying and volume ramping.
+- Global volume of instruments weren't saved in .pti files.
+- Using non existant instruments in patterns should now be handled properly.
+- Converted some tunes from FastTracker 1 for test purposes.
+- Instruments amplifications are now modulating synths only when necessary
+  (meaning: only when the instruments are going through the synths).
+- Volumes columns and effect 3 are now calculated differently
+  and are cummulative:
+
+    c-3  0 .. .. ........
+  
+  will play instrument 0 at it's former volume.
+
+    c-3  0 20 .. ........
+  
+  will play instrument 0 at roughly 50% of it's volume.
+
+    c-3  0 .. .. 0380....
+  
+  will play instrument 0 at roughly 25% of it's volume.
+
+    c-3  0 20 .. 0380....
+  
+  will play instrument 0 at roughly 25% of it's volume.
+- Fixed a bug in note retrig effect if no note was specified
+  (now it takes the last played note as it should).
+- Rewrote the latency handling routines in a more robust & precise way.
+- Fixed the right mouse button caret horizontal scrolling.
+- Added effect 24: turn flanger on/off.
+- Salvaged 3 NoiseTrekker beta version modules, they really
+  don't sound like in the original one as i had to rework them, though.
+- Real numbers of used patterns are now counted when saving a .ptk.
+- Fixed a small issue with keyboard handling in message boxes.
+- Added Moog Lo & Moog band filters for synth instruments.
+- Fixed a bug in .ptp saving & replay: some instruments infos were scrambled.
+
+v1.99e:
+
+- Test release for Linux 64 bit.
+- Linear interpolation can now be selected (beside none or cubic) it's faster
+  than cubic and still gives better results than none.
+- Fixed a clipping bug in samples loading (for both .wav and .aif/aifc).
+
+v1.99d:
+
+- Added support for Audio IFF files loading.
+- Auto zooming of multi-notes tracks fixed
+  (tracks are now properly being reduced to fit entirely on the screen).
+- Added support for German keyboard layout.
+- Fixed a signal overflow which occurred with 2nd 303 unit when 1st wasn't active.
+
+v1.99c:
+
+- Slicer effect (4) now uses the current volume
+  (from instrument's, column's or volume fx (3)).
+- Better general handling of the volume column.
+- Changed the behaviour of auto fading effects (17 & 18): playing a new note
+  on a track which is currently auto fading won't stop the fading process
+  which now have to be switched off by using either 1700 or 1800.
+- Auto fading was kinda broken with multi notes tracks.
+
+v1.99b:
+
+- Long time running bug making text to disappear when using the 303 units
+  should be (hopefully) gone now.
+- Each track now have 2 columns of effects.
+
+v1.99:
+
+- Added maximum latency checking on OSX.
+- Updated SDL library to latest for OSX and Windows.
+- LCTRL+L/LCTRL+H: transpose a selected block to 1 octave lower/higher.
+- LCTRL+LSHIFT+L/H: Transpose the note of a selected block
+                    to 1 octave lower/higher but only for the currently
+                    selected instrument.
+- Added buttons for block commands.
+- Commands with right mouse button functions are now shown
+  with slightly different colors.
+- Improved 303 editing by keeping current steps for each patterns/banks/units.
+
+v1.98o:
+
+- A value can now be specified with Reset Filter LFO FX (16).
+- Randomize block command range is now 00 to ff on effects data columns.
+- Fixed a bug occuring while using volumn columns and/or Set volume FX (03)
+  with synth instruments.
+- Editing was kinda broken when Step add was 0.
+- Enabled latency control on Mac OSX.
+- Re-enabled use of SDL threads for AROS.
+
+v1.98n:
+
+- Fixed a small issue with END key not jumping to proper pattern's end
+  in some cases.
+- Using F00 effect now stops a song.
+- Fixed a crash in the replay of .ptp modules.
+
+v1.98m:
+
+- Modified the way envs to volumes work with null values.
+
+v1.98l:
+
+- Fixed a nasty bug in packing & depacking functions.
+- Integrated the Amiga OS4 and AROS modifications into the repository.
+
+v1.98k:
+
+- Added a samples directory.
+- Moved all sliders to the right side.
+- Added list of available drives on Windows.
+- Directories or filenames that are too long are cut on display.
+
+v1.98j:
+
+- Fixed another bug which would make the tracker to crash when loading a .wav
+  files while another one was still playing in the same slot.
+- Improved the range of the insert/backspace keys so they can operate
+  on selected blocks as well as tracks or patterns lines.
+- Added a function to play a .wav file without loading it by clicking
+  on it's filename with the right mouse button.
+
+v1.98i:
+
+- Improved the .mod import.
+- Fixed a bug that could confuse the interface when using speed or tempo
+  commands intensively.
+- Modified the pattern loop command (6) so it behave more like in the original
+  protracker.
+- Added the possibility to select accidental (sharps or bemols) 
+  for patterns view.
+
+v1.98h:
+
+- Fixed a nasty bug with polyphony handling.
+
+v1.98g:
+
+- Fixed a bug in multi-notes handling (some notes could disappear sometimes).
+- Inverted LCTRL+home/end and home/end commands.
+- Fixed a bug that made the tracker to crash when an instrument was being
+  loaded while a song being played (& playing that particular instrument).
+- Fixed the random commands of the 303 units.
+- 303 notes up & down commands were inverted.
+
+v1.98f:
+
+- Removed the .ptp loading function from the tracker, it's useless now as
+  packed samples can be tested inside the tracker and it allowed me to slightly
+  reduce the size of the replay routine.
+- Instrument weren't played when the option i added in the previous version
+  wasn't turned on (shame).
+- Application directory was one level too low on Mac OS X.
+
+v1.98e:
+
+- Added a screen update scheduler so only modified parts of the screen
+  are now refreshed, this should speed up things quite a bit
+  as it looks like some implementations of SDL are borked.
+- Added an option to play instrument while editing.
+
+v1.98d:
+
+- Forward looping wasn't working correctly for instruments.
+- New effect: Select playing way (1E)
+              1E00: Play forward.
+              1E01: Play backward.
+- Added a requester before deleting an instrument to let the user select
+  what part of the instrument to discard (All, Instrument or Synth).
+- Fixed the tracks disto.
+
+v1.98c:
+
+- Better tracks panning calculation.
+- Added 3 other alternate copy blocks for patterns (Shortcuts: LCTRL+1 to 4).
+- Added an option to paste blocks across patterns boundaries
+  (if the blocks is too big it'll be pasted over the next pattern 
+   but only if it's a different one to avoid wrapping around).
+- Created a new directory (patterns) and added an option to save current pattern
+  selections into it (.ppb files) (Shortcut: LCTRL+W)
+  (303 patterns are also saved into that directory).
+- Files are now saved into their respective directories.
+- Added some visual indicators to show if copy buffers are empty or not.
+
+v1.98b:
+
+- Fixed a bug in the synth: ENV1 and ENV2 now really modulate the volume 
+  of OSC1 or OSC2.
+
+  **Due to this older modules don't sound exactly the same**
+
+- There was an issue when using combined stereo instrument + synth.
+- Added keys shortcut for requesters
+  (Usually the first letter of the button's text)
+
+v1.98:
+
+- Fixed the vu meters levels.
+- Reverb internal variables are now customizable
+  (older presets are now provided as files).
+- Added requesters before exiting or overwriting files.
+- Added 8 bit (interpolated) comrpession scheme.
+- Reverb wasn't initialized correctly at startup.
+- Fixed a bug in .wav rendering.
+- Added a better zap command.
+
+v1.97c:
+
+- Even more constants (Especially for modules not using instruments).
+- Constants weren't generated correctly when using command 15.
+- Implemented vibrato effect (1Dxy) x = speed y = depth
+  (can't be used if arpeggio (1B) is turned on).
+
+v1.97b:
+
+- Modified the behaviour of the ring mod stereo filter.
+- Added a few more constants for the replay.
+- Song name wasn't displayed in the plugin infos.
+- Fixed a bug in the flanger (early cut).
+- Right mouse button on the "Lock / All" button to locked/unlock
+  all instruments at once.
+
+v1.97:
+
+- More granularity in constants generation (potentially smaller replay).
+- Mp3 samples packing bitrate is now selectable between:
+  64, 88, 96, 128, 160 & 192 kbps.
+- LSHIFT+I: Show instruments list / LSHIFT+S: Show synths list.
+- Forgot to include LameACM.inf in the windows distribution
+  (without that file the codec couldn't be installed
+   and samples using mp3 packing scheme weren't packed at all, shame).
+- Added At3 samples packing scheme (Windows users need to install
+  the atrac3 codec located in the install directory in order to pack samples).
+  Rates are: 66, 105 & 132 kbps (depacker not yet implemented on PSP, tho).
+- Added the ability to select a range of positions for songs rendering to .wav.
+- The nasty click occuring when loading a module while another one
+  was still playing should be gone.
+- Added mouse wheel navigation support in samples editor.
+- Cubic interpolation can now be disabled
+  (should increase speed a bit but at the expense of lower quality).
+- Added ADPCM packing scheme.
+- Added an option to pack & lock instruments and use them directly
+  in the tracker. (unpacked versions of the instruments are kept safe
+  and are saved in .ptk files as usual).
+  These instruments can't be modified in the samples editor.
+  This should come in handy to finetune a module prior to a .ptp export.
+- Fixed a bug with TrueSpeech packed samples.
+
+v1.95:
+
+- Introduced small tracks
+  (right click on the 3rd icon of a track or globally via the sequencer).
+- Added 3 commands in the sequencer to zoom all tracks at once.
+- Filesizes are now displayed beside names.
+- Added an instruments remapper in the sequencer tab.
+
+v1.94b:
+
+- Added some colors for the notes
+  (also changed the font so patterns should be a bit easier to read now).
+- Added volume ramping for the 303 units.
+- The 2nd 303 unit wasn't triggered correctly.
+
+v1.94:
+
+- Fixed a nasty memory leak in the PSP replay
+  (also only necessary data are now allocated).
+- Space char wasn't available during names input.
+- Added effects 41 and 42 to control the volumes of the 2 303 units.
+- Added effect 1C: set global volume.
+- Start & stop song cleaned up (clicks should be gone or at least reduced).
+- Fixed a small issue regarding latency in the Mac OS X version.
+
+v1.93:
+
+- Resampler improved, should produce much less aliasing.
+- Fixed a small issue involving the cache memory in the PSP replay.
+
+v1.92b:
+
+- Added an option to show or hide the bottom panel in order to display
+  more patterns rows (Shortcut: LSHIFT+ESCAPE to toggle the view)
+- Left shift wasn't active while editing data columns
+  of patterns to enter digits.
+
+v1.92:
+
+- Added global lists for instruments and synths,
+  that should improve the ergonomy a bit.
+- Samples weren't re-initiliazed correctly after a "New Module" command
+  was issued.
+- Fixed a bug in the 2nd oscillator of the synth core
+  when using custom waveforms.
+
+v1.91b:
+
+- Fixed the rand commands in the synth tab.
+
+v1.91:
+
+- Midi controller modification command (90) wasn't accessible anymore
+  in panning row, fixed.
+- Fixed an issue that could occur with rand() function under linux.
+- Introduced zoomed tracks; Each track can be zoomed independantly
+  and will be displayed with a bigger font.
+- Track volume wasn't correctly re-initialized when only instrument column
+  was filled without any note.
+
+v1.90e:
+
+- Midi notes off command was broken.
+- Effect 0Axx (Set Random Cutoff) slightly modified, the xx value is now
+  the amplitude of the calculated random value from 0 to ff.
+
+v1.90d:
+
+- Implemented midi in/out for Linux and Mac OS X.
+
+v1.90c:
+
+- Fixed a bug in the recording mode.
+- Recording now starts at the current pattern line instead of restarting
+  from it's beginning.
+
+v1.90b:
+
+- An extra note was pasted after names input when editing mode was turned on.
+
+v1.90:
+
+- Added a scrollbar beside patterns.
+- The tracker can now load all these .wav file formats (mono or stereo) :
+  - 8-bit integer.
+  - 12-bit integer.
+  - 16-bit integer.
+  - 24-bit integer.
+  - 32-bit integer.
+  - 32-bit float.
+  - 64-bit float.
+- Added an option to render a module as 32 bit (float) .wav file.
+- Inverted the right and left mouse buttons functions in patterns.
+- Fixed an issue with the loop editor.
+- Patterns now automatically scroll when using the right mouse button
+  (also work when selecting a block).
+- Added multi notes channels, they can be used to trigger several notes / track
+  at the same time in order to make chords or to play several instruments
+  in the same track and route them to the same row effect / dsp effect
+  (thus allowing to considerably reduce the dsp usage and also introduce some
+   modularity which could be useful, especially for the PSP replay).
+  Note that these channels are shared with the polyphony ones.
+- Improved volume ramping.
+- Keys repeat was disabled when editing note columns.
+- Added LCTRL+TAB and LCTRL+LSHIFT+TAB to cycle through the notes of a track.
+- Added LALT+A and LALT+LSHIFT+A
+  to select one or all notes/instruments columns of a track.
+- Modified the record function (for a better one, i hope).
+- Some edition commands weren't working on last track.
+- Midi channels polyphony implemented.
+- Improved Mac OS X keyboard handling a bit.
+- Compressor wasn't set right when loading .ptp files.
+
+v1.86b:
+
+- Fixed a bug with the 303 data loading in the replay routine.
+- Fx 0A (Set random cutoff) was disabled due to a typo in the fx constants.
+- Added the first version of a replay routine for the PSP,
+  
+  It uses the 2nd processor so the main CPU time occupation is really minimal.
+  
+  Keep in mind that this is an experiment and that this console isn't a PC
+  so you'd better go very easy on the dsp effects and channels polyphony,
+  especially the flanger is a really heavy toll because the media engine
+  doesn't have any integrated hardware sin/cos or pow instructions.
+
+  Samples depacking with the PSP codecs isn't implemented yet
+  (so samples packing should be set to "none" in that case).
+
+v1.86:
+
+- Fixed a bug with channels that could be heard faintly even when being muted
+  (was also present in wav rendering).
+- Channels polyphony (up to 16) implemented.
+  Value for a module can be changed in FX Setup tab.
+- Switching to FX Setup tab produced a small sound glitch
+  due to a re-generation of the reverb buffers.
+- Added C-masters.ptk by Rhino.
+- Keyboard polyphony improved (notes don't "spread" on other tracks).
+- Removed some clicks due to channels filters.
+- Fixed a bug in .ptk depacking process which could lead to a crash.
+
+v1.85c:
+
+- Removed the Audio unit code from the Mac OS X port and went to device level,
+  the result should be is faster.
+- Fixed a couple of bugs in the Mac OS X port.
+
+v1.85b:
+
+- Compressor wasn't triggered in the stand alone replay.
+
+v1.85:
+
+- First PARTIAL and EXPERIMENTAL test port for Mac OSX (ppc & x86)
+  (no midi and no samples compression).
+- Fixed a bug in the replay which would sometimes lead to a crash
+  if an instrument number was used without a note.
+- Renamed .psy file to .psm.
+- The tracker is now using a custom mouse pointer.
+- Forgot to mention it but the manual is now only available at this url:
+  http://code.google.com/p/protrekkr/wiki/introduction
+
+v1.84b:
+
+- Added dream weaver.ptk from Rhino.
+- Fixed a bug which occured when loading presets files,
+  portamento glide was turned to 50% if it was off.
+- Divided the output level of the stock waveforms by 2.
+- Synchro markers are always visible now
+  (on the right of the columns rows numbers).
+
+v1.84:
+
+- Source code cleaned up, also the tracker is now using the same code as
+  the stand alone replay.
+- Added devenirunpoulet.ptk by tomchi.
+- Improved the source code distribution and the portability of the code.
+- Instruments midi programs are always available.
+- First PARTIAL and EXPERIMENTAL test port for Linux x86
+  (no midi and no samples compression).
+- Manual revised.
+- Added support for keyboard localization (relevant for Linux only)
+  (fr & en keyboards definitions are provided in skins directory,
+   see manual.txt to know about the procedure to add new definitions).
+- Winamp/XmPlay plugin source code included within the source code package.
+
+v1.83g:
+
+- Fixed a bug in the reverb initialization.
+- Tracker and replay crashed when trying to free packed stereo samples.
+
+v1.83f:
+
+- Song length calculation function didn't handle pattern break commands
+  very well.
+
+v1.83e:
+
+- .ptk modules are now much smaller.
+- Some visuals bugs involving SDL that occured on some gfx cards
+  *may* have been solved.
+
+v1.83c:
+
+- Added Arpeggio effect (1B):
+  It's behaviour is a bit different than from other trackers, example:
+  
+  C-7 00 .. .. 1B37 <- Turn it on
+  --- .. .. .. 0000
+  --- .. .. .. 0000
+  --- .. .. .. 0000
+  --- .. .. .. 1B38 <- Change datas
+  --- .. .. .. 0000
+  --- .. .. .. 0000
+  --- .. .. .. 0000
+  --- .. .. .. 1B00 <- Turn it off
+  
+  (Note that effects 01, 02 & 05 are ineffective when 1B is turned on).
+
+v1.83b:
+
+- A small forgotten byte made the replay to crash with newer modules.
+- Added workspace and projects for VC++ .net.
+- Fixed a bug occuring when using the replay routine with MINGW.
+- Fixed a bug with synchro markers being shown with some effects other than 07.
+
+v1.83:
+
+- Peak indicators on vumeter.
+- Master compressor/limiter.
+- Source distribution package now contains SDL_draw.lib, it's source code
+  as well as tinyxml.lib & zlib.lib.
+- Added Ordinary-zero.ptk module by Nula/Clrsrc.
+- New fx: 07 (FX Synchro):
+  a .psy file containing synchro informations is now created
+  whenever a .ptp module is saved (if the effect 7 isn't used in a module
+  such file won't be created at all).
+  Check manual.txt for .psy files structure.
+
+v1.82c:
+
+- Fixed another issue with multiple note offs / track.
+
+v1.82b:
+
+- Fixed an issue with channels off midi messages overload.
+
+v1.82:
+
+- Samples were trashed during replay when a segment of a waveform
+  was selected in the samples editor.
+- Added a scrollbar to the samples editor.
+- All effects should now work on stock waveforms too
+  (like pitch bend, volume etc).
+- ADSRs values extended.
+- Better multi channels allocations.
+- Fixed a bug in note retrigger effect (0E).
+- Fixed all the presets and instruments.
+- The tracker now uses 3 separates directories
+  for the Modules/Instruments & Presets.
+- Fixed a small issue with the numeric keypad slash key.
+- Now send a note off when a channel has been turned off.
+- Fixed the glider effect (05).
+- MingW replay is now included in distribution.
+- Source code released.
+
+v1.81:
+
+- Blocks commands can now work without a block being actually selected
+  (the complete datas of the current track will be processed in that case).
+- Right mouse button in sampler now selects complete sample
+  if nothing is already selected (and unselect all if something is).
+- LSHIFT + M: Toggle mute state of the current channel.
+- LCTRL + LSHIFT + M: Solo the current track / Unmute all.
+- LSHIFT + F1 - F10: Select the different tabs.
+- Fixed several bugs occuring when position in patterns
+  was greater than patterns rows.
+
+v1.8:
+
+- Synth has now been debugged and is (almost) complete,
+  due to this the tracker sounds different again (for the best, i hope).
+- Phase distortion is now a pulse phase.
+- I didn't mention it before but LCTRL + S shortcut
+  can be used to save modules.
+- The C of the synth waveforms was a F & everything was shifted of 5 semitones
+  and that bug was present since ntk1/2/3 !
+  (Thanks to kaneel for notifying me about that one)
+- LCTRL + LSHIFT + D/U: Transpose the note of a selected block
+                        to 1 seminote lower/higher but only for the currently
+                        selected instrument.
+- Fixed a bug in the replay routine which would lead to a crash sometimes.
+- Added cut/copy/paste capabilities to the sequencer.
+- Added support for pink noise.
+- Step add 0 now possible (lateral step will be used).
+- Removed the panning change command (it was phony anyway).
+
+v1.71:
+
+- Added commands to insert or delete positions in the sequencer
+  (right mouse button to insert/delete 10 positions).
+- Fixed some bugs in the sequencer.
+- Removed some clicks.
+- Moved the save instrument command to the instrument tab.
+
+v1.7:
+
+- Synths can now use any arbitrary instrument,
+  to allow the samples to be used as a bank with different configurations.
+- Various improvements in the interface.
+- Escape key will now stop song.
+- Fixed a bug in instruments and synths loading & saving process.
+- Logo changed.
+
+v1.62:
+
+- Shortened the replay routine by several kilo bytes.
+
+v1.61:
+
+- Backspace key now acts like in MilkyTracker.
+- Currently selected track is now favored when receiving midi messages.
+- Pingpong loops for samples implemented.
+- Improved waveforms/synth interface.
+
+v1.6:
+
+- The 303s should be slightly faster.
+- Added ADSRs for LFOs.
+- LFOs carriers are now reseted at each note so the tracker
+  sounds slightly different again.
+- Midi-In capture is now always active.
+
+v1.5f:
+
+- User can now select the tracks to render as .wav files.
+- Fixed the 303 live recording parameters.
+- 303 knobs can be centered by clicking right mouse button over them.
+- Mouse wheel can now be used over 303s knobs and volume.
+
+v1.5e:
+
+- More constants to customize and reduce the size of the replay routine.
+- Flanger extra signal is now lopass filtered to avoid crackling
+  (thanks to Manwe/SandS for pointing this one out).
+
+v1.5d:
+
+- Fixed a bug in the zoom out command of the sample editor.
+- Replay routine should be compatible with mingw (thanks to pontscho).
+- Reverb filter slider won't trash the reverb anymore.
+- F1/F2: Select lower/higher octave.
+- User can now select between channels scopes and left/right ones.
+
+v1.5c:
+
+- Improved samples compression ratio.
+
+v1.5b:
+
+- Fixed a bug that prevented some blocks commands to work properly.
+- Palette isn't trashed anymore when using alt+tab and co.
+- .ptp are now generated together with a Ptk_Properties.h file
+  to be used when recompiling the replay routine.
+- Replay routine source code is now included.
+
+v1.5:
+
+- Added channels scopes.
+- Fixed a bug in the sampler with reversed selections and loops.
+- More accurate handling of .wav files.
+- Ptk can now load 32 bits samples (they're converted into 16 bits).
+- Now save samples loop informations.
+- Sample marking in the samples ed. can now be cancelled
+  by pressing the right mouse button.
+- Only the selected part of a sample will be played in the sample ed.
+  (if there's a selection).
+- Minimal .mod files imports (up to 16 channels) don't expect miracles.
+
+v1.4d (First public release):
+
+- Ptk_SetPosition() available in the replay routine.
+- Fixed a small issue with window focus at startup.
+- BPM and ticks/beat are now displayed in decimal.
+- Implemented MP3 packing scheme for samples.
+- Fixed a bug with compressed modules.
+
+v1.4b:
+
+- Added a song length calculation command.
+- Removed the "Font Hi" from the palette, it's now automatically calculated.
+- Revised the manual a bit again (added some infos about the sequencer).
+
+v1.4:
+
+- Fixed a bug in packed modules save command.
+- 303 knobs are now refresh correctly during playback
+  (except when 303 recording mode is turned on).
+- Added 3Bxx & 3Cxx commands to control 303s accent levels
+  (3Dxx & 3Exx are now dedicated to tunes control).
+- Moved the synth on/off command to the Synth tab.
+- Updated the minimal manual a bit.
+
+v1.3f:
+
+- To avoid confusion the "Save module" and "Save packed" commands are disabled
+  when a .ptk file is loaded.
+- Added some arrows buttons to scroll through the sequences.
+- Fixed a small bug in the sample editor.
+
+v1.3e:
+
+- Improved modules compression.
+- Some cosmetic changes.
+
+v1.3d:
+
+- Fixed a nasty bug that occured in some tracks filters.
+- Added the ability to disable the lossy compression for any given instruments
+  in packed modules.
+
+v1.3c:
+
+- Interface beveling can now be turned on/off.
+- Fixed a bug with command D (pattern break) and patterns
+  with more than 64 rows.
+- Added a continuous pattern scroll option.
+
+v1.3b:
+
+- Included the replay routine and a small example.
+
+v1.3:
+
+- Revamped the interface (especially the synth one).
+- Caret was out of patterns lines range sometimes.
+- Added an option to show previous and next used patterns.
+- Fixed a bug that occured during windows/fullscreen switching.
+- More bugs removed here and there.
+
+v1.2b:
+
+- Improved keyboard multi-notes handling.
+- Fixed the Midi out notes release phase.
+
+v1.2:
+
+- Pressing right mouse button on tracks list in sequencer
+  alternatively solo the selected track or unmute them all
+  (just like clicking on top of patterns).
+- Added the possibility to select the packing scheme for instruments between gsm
+  and truespeech (only relevant for packed modules).
+  Note: use truespeech with care as this 1 bit compression scheme
+        really harms samples (this is mostly used to pack human voices).
+- Converted the interface into paletted mode
+  and added the ability to modify the colors.
+- The interface should take less cpu time now.
+- Palette is now customizable.
+- Fixed various glitches with buttons here and there.
+- Introduced xml scripting for the interface layout
+  (not fully operational yet).
+
+v1.1c:
+
+- Added a wave distortion parameter.
+- Fixed some bugs in the synth regarding stereo samples
+  and various other issues as well,
+  due to this it sounds slightly different again.
+- Portamento glide now available for waveforms too.
+
+v1.1b:
+
+- All 128 patterns and 255 positions weren't fully available
+  (sequencer re-arranged accordingly).
+
+v1.1:
+
+- New record mode
+  (available via shift+space or right mousebutton on "Edit/Rec.").
+  It works with pc keyboard or external midi devices
+  (For the midi the record mode uses midi time stamps
+   and the edit mode uses an internal counter).
+- Right mouse button available for prev/next position buttons and beats/min.
+- The tracker is now capable or recording midi events
+  in both edit and record modes.
+- Added some instruments and presets.
+- "Show info" was reporting a bogus sample bank size.
+- 303 patterns names weren't loaded correctly.
+- The tracker now have it's own configuration file (ntk.cfg).
+- Number of positions will grow automatically when recording if necessary
+  (and new patterns will be created also automatically).
+- Patterns rows can now be displayed in decimal.
+- Renamed to Protrekkr (we'll see how long i like that one).
+- Synth instruments inside modules weren't loaded properly sometimes.
+- Instruments are now correctly deleted.
+- Fixed a bug regarding very small samples in packed modules.
+- Removed some clicks.
+- ADSRs volumes are now calculated a bit differently
+  (and setting Lfox->Oscx Volume to 0 will now disable the volume oscillation).
+- Added a visual command to switch fullscreen mode on/off.
+- Added a centering button command ("C") for synth parameters.
+
+v1.0f:
+
+- Insert and backspace keys now work from all columns.
+- Added 06xx command: pattern loop (works like in protracker).
+- Shift+Insert/Backspace: Insert or Delete an empty line in current pattern.
+
+v1.0e:
+
+- Added the ability to load & save 303 patterns.
+- Renamed to NoiseTrekker 64 (i'm still indecisive about the name :]).
+- Fixed a bug in the 303 patterns handling.
+
+v1.0d:
+
+- ADSR for looping samples are calculated a bit differently
+  (proportional to the length of the loop but independant of the note)
+  that should help creating short custom synthetic like samples.
+
+v1.0c:
+
+- Fixed a bug in ADSR release for waveforms.
+
+v1.0b:
+
+- Fixed a small bug with channels on/off status in the replay.
+- Fixed a bug when using the mouse wheel on the sequencer.
+
+v1.0:
+
+- Fixed blocks randomize command.
+- Single columns can now be selected instead of whole tracks.
+- LCTRL+D/LCTRL+U: transpose a selected block to 1 semitone lower/higher.
+- LCTRL+A: Select entire current track.
+- LCTRL+LSHIFT+A: Select entire current pattern.
+- Home: jump to start of row.
+- LCTRL+Home: jump to top left of pattern.
+- End: jump to end of row.
+- LCTRL+End: jump to bottom right of pattern.
+- Right Alt: play current pattern.
+- Pattern highlighting can now be turned off.
+- Added a startup logo.
+- Shift+Arrows/Page up/down: select block.
+
+Beta b:
+
+- Fixed a bug with the lengths of the waveforms ADSR handling.
+- Setting a loop of length 0 in the sample ed. will just disable
+  the looping mode for that instrument
+  (and avoid the tracker to crash when trying to replay it).
+
+Beta a:
+
+- Mousewheel can be operated during patterns blocks selections.
+- Tracks properties are now refreshed during playback.
+- Instruments finetune slider doesn't wrap around anymore.
+- Renamed from SoundTrekker to SynthTrekker.
+- Added the ability to use waveforms instruments in the synth.
+- Fixed a small bug in keyboard handling.
+- Better handling of the instruments played with the keyboard (no repeat).
+
+Release z:
+
+- Added patterns highlight lines customization.
+- C & V keys notes were inverted.
+- Removed lfo periods multipliers.
+
+Release y:
+
+- User can now use the mouse wheel to scroll when the pointer
+  is over patterns sequence.
+- Fixed a 303s outrageous signal clipping issue.
+
+Release x:
+
+- Fixed a bug with sliders handling.
+- Increased the size of 303's buttons clickable arrays.
+
+Release w:
+
+- Improved patterns blocks selection (reversed selections are now handled).
+- Added mouse support for blocks selection (using right mouse button).
+- Fixed a bug with LCTRL+letters key strokes.
+- LCTRL+R & LCTRL+I now work on all selected tracks.
+
+Release v:
+
+- Added cut/paste options and notes up/down in 303s interface.
+- Fixed some bugs in sequences handling interface.
+- Added mouse wheel steps multiplier option.
+
+Release u:
+
+- Added a horizontal scrollbar for patterns.
+- Easier button to switch the 303s waveforms.
+- Added shift + left/right arrows for next/prev. position.
+- Keyboard handling should be fixed.
+- User can now select sound latency.
+
+Release p:
+
+- Can now set caret position in patterns with the mouse.
+- Can use Mouse wheel to scroll files list and patterns.
+- More flexible delay ticks synchro.
+- Fixed a bug in synth parameters handling.

@@ -1,0 +1,96 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: zlib - Win32 LIB ASM Release--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\DOCUME~1\franck\LOCALS~1\Temp\RSP16D.bat" with contents
+[
+@echo off
+ml.exe /nologo /c /coff /Cx /Fo".\Win32_LIB_ASM_Release\inffas32.obj" "..\..\contrib\masmx86\inffas32.asm"
+]
+Creating command line "C:\DOCUME~1\franck\LOCALS~1\Temp\RSP16D.bat"
+Creating temporary file "C:\DOCUME~1\franck\LOCALS~1\Temp\RSP16E.bat" with contents
+[
+@echo off
+ml.exe /nologo /c /coff /Cx /Fo".\Win32_LIB_ASM_Release\gvmat32.obj" "..\..\contrib\masmx86\gvmat32.asm"
+]
+Creating command line "C:\DOCUME~1\franck\LOCALS~1\Temp\RSP16E.bat"
+Creating command line "rc.exe /l 0x409 /fo"Win32_LIB_ASM_Release/zlib1.res" /i "\Src\Pc\ptk\src\extralibs\zlib-1.2.3\win32" /d "NDEBUG" "C:\Src\Pc\ptk\src\extralibs\zlib-1.2.3\win32\zlib1.rc"" 
+Assembling...
+ Assembling: ..\..\contrib\masmx86\inffas32.asm
+Assembling...
+ Assembling: ..\..\contrib\masmx86\gvmat32.asm
+Creating temporary file "C:\DOCUME~1\franck\LOCALS~1\Temp\RSP16F.tmp" with contents
+[
+/nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /D "ASMV" /D "ASMINF" /Fo"Win32_LIB_ASM_Release/" /Fd"Win32_LIB_ASM_Release/" /FD /c 
+"C:\Src\Pc\ptk\src\extralibs\zlib-1.2.3\adler32.c"
+"C:\Src\Pc\ptk\src\extralibs\zlib-1.2.3\compress.c"
+"C:\Src\Pc\ptk\src\extralibs\zlib-1.2.3\crc32.c"
+"C:\Src\Pc\ptk\src\extralibs\zlib-1.2.3\deflate.c"
+"C:\Src\Pc\ptk\src\extralibs\zlib-1.2.3\gzio.c"
+"C:\Src\Pc\ptk\src\extralibs\zlib-1.2.3\infback.c"
+"C:\Src\Pc\ptk\src\extralibs\zlib-1.2.3\inffast.c"
+"C:\Src\Pc\ptk\src\extralibs\zlib-1.2.3\inflate.c"
+"C:\Src\Pc\ptk\src\extralibs\zlib-1.2.3\inftrees.c"
+"C:\Src\Pc\ptk\src\extralibs\zlib-1.2.3\trees.c"
+"C:\Src\Pc\ptk\src\extralibs\zlib-1.2.3\uncompr.c"
+"C:\Src\Pc\ptk\src\extralibs\zlib-1.2.3\zutil.c"
+]
+Creating command line "cl.exe @C:\DOCUME~1\franck\LOCALS~1\Temp\RSP16F.tmp" 
+Creating temporary file "C:\DOCUME~1\franck\LOCALS~1\Temp\RSP170.tmp" with contents
+[
+/nologo /MD /W3 /O2 /I "..\.." /D "WIN32" /D "NDEBUG" /D "ASMV" /D "ASMINF" /Fo"Win32_LIB_ASM_Release/" /Fd"Win32_LIB_ASM_Release/" /FD /c 
+"C:\Src\Pc\ptk\src\extralibs\zlib-1.2.3\contrib\masmx86\gvmat32c.c"
+]
+Creating command line "cl.exe @C:\DOCUME~1\franck\LOCALS~1\Temp\RSP170.tmp" 
+Creating temporary file "C:\DOCUME~1\franck\LOCALS~1\Temp\RSP171.tmp" with contents
+[
+/nologo /out:"..\..\..\..\..\zlib.lib" 
+".\Win32_LIB_ASM_Release\adler32.obj"
+".\Win32_LIB_ASM_Release\compress.obj"
+".\Win32_LIB_ASM_Release\crc32.obj"
+".\Win32_LIB_ASM_Release\deflate.obj"
+".\Win32_LIB_ASM_Release\gzio.obj"
+".\Win32_LIB_ASM_Release\infback.obj"
+".\Win32_LIB_ASM_Release\inffast.obj"
+".\Win32_LIB_ASM_Release\inflate.obj"
+".\Win32_LIB_ASM_Release\inftrees.obj"
+".\Win32_LIB_ASM_Release\trees.obj"
+".\Win32_LIB_ASM_Release\uncompr.obj"
+".\Win32_LIB_ASM_Release\zutil.obj"
+".\Win32_LIB_ASM_Release\gvmat32c.obj"
+".\Win32_LIB_ASM_Release\zlib1.res"
+".\Win32_LIB_ASM_Release\gvmat32.obj"
+".\Win32_LIB_ASM_Release\inffas32.obj"
+]
+Creating command line "link.exe -lib @C:\DOCUME~1\franck\LOCALS~1\Temp\RSP171.tmp"
+<h3>Output Window</h3>
+Compiling resources...
+Compiling...
+adler32.c
+compress.c
+crc32.c
+deflate.c
+gzio.c
+infback.c
+inffast.c
+inflate.c
+inftrees.c
+trees.c
+uncompr.c
+zutil.c
+Generating Code...
+Compiling...
+gvmat32c.c
+Creating library...
+
+
+
+<h3>Results</h3>
+zlib.lib - 0 error(s), 0 warning(s)
+</pre>
+</body>
+</html>

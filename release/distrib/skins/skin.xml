@@ -1,0 +1,10 @@
+<files>
+    <file name="font" value="font.bmp"/>
+    <file name="font_datas" value="font_datas.txt"/>
+    <file name="pattern_font" value="pattern_font.bmp"/>
+    <file name="pointer" value="pointer.bmp"/>
+    <file name="logo" value="neural.bmp"/>
+    <file name="logo_bkcol" value="151f20"/>
+    <file name="303" value="303.bmp"/>
+    <file name="keyboards" value="kben.txt kbfr.txt kbde.txt kbfr_macosx.txt kben_macosx.txt kbde_macosx.txt"/>
+</files>
