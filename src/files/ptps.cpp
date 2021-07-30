@@ -307,7 +307,7 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
 
     if(!Simulate)
     {
-        sprintf(Constant_Filename, "%s"SLASH"ptk_properties.h", Dir_Mods);
+        sprintf(Constant_Filename, "%s" SLASH "ptk_properties.h", Dir_Mods);
         Out_constants = fopen(Constant_Filename, "w");
         fprintf(Out_constants, "// Constants for %s.ptp module\n", FileName);
         fprintf(Out_constants, "// Generated for %s replay routine\n", VERSION);
