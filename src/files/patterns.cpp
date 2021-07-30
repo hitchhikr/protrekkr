@@ -150,7 +150,7 @@ void Load_Pattern(char *FileName)
         }
         else
         {
-            Status_Box("That file is not a "TITLE" Pattern file...");
+            Status_Box("That file is not a " TITLE " Pattern file...");
         }
         fclose(in);
     }
@@ -175,7 +175,7 @@ void Save_Pattern(void)
 #endif
     sprintf(Temph, "Saving '%s.ppb' data in patterns directory...", Selection_Name);
     Status_Box(Temph);
-    sprintf(Temph, "%s"SLASH"%s.ppb", Dir_Patterns, Selection_Name);
+    sprintf(Temph, "%s" SLASH "%s.ppb", Dir_Patterns, Selection_Name);
 
     in = fopen(Temph, "wb");
     if(in != NULL)

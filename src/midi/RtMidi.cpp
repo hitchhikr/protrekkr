@@ -2320,7 +2320,7 @@ extern "C"
     int __lc_codepage = 0;
     int __lc_handle = 0;
     int __mb_cur_max = 0;
-    int errno = 0;
+    int errno;
     unsigned short *_pctype = 0;
 }
 #endif

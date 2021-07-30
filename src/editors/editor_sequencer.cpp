@@ -652,7 +652,7 @@ void Mouse_Left_Sequencer_Ed(void)
         // Save the data
         if(zcheckMouse(745, (Cur_Height - 128), 34, 16))
         {
-            if(File_Exist_Req("%s"SLASH"%s.ppb", Dir_Patterns, Selection_Name))
+            if(File_Exist_Req("%s" SLASH "%s.ppb", Dir_Patterns, Selection_Name))
             {
                 Display_Requester(&Overwrite_Requester, GUI_CMD_SAVE_PATTERN);
             }

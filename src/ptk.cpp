@@ -4488,9 +4488,9 @@ void Keyboard_Handler(void)
                 if(Keys[SDLK_s - UNICODE_OFFSET2])
                 {
 #ifndef __LITE__
-                    if(File_Exist_Req("%s"SLASH"%s.ptk", Dir_Mods, name))
+                    if(File_Exist_Req("%s" SLASH "%s.ptk", Dir_Mods, name))
 #else
-                    if(File_Exist_Req("%s"SLASH"%s.ptl", Dir_Mods, name))
+                    if(File_Exist_Req("%s" SLASH "%s.ptl", Dir_Mods, name))
 #endif
                     {
                         Display_Requester(&Overwrite_Requester, GUI_CMD_SAVE_MODULE);
@@ -4532,7 +4532,7 @@ void Keyboard_Handler(void)
                 // Randomize the values of a selected block
                 if(Keys[SDLK_w - UNICODE_OFFSET2])
                 {
-                    if(File_Exist_Req("%s"SLASH"%s.ppb", Dir_Patterns, Selection_Name))
+                    if(File_Exist_Req("%s" SLASH "%s.ppb", Dir_Patterns, Selection_Name))
                     {
                         Display_Requester(&Overwrite_Requester, GUI_CMD_SAVE_PATTERN);
                     }

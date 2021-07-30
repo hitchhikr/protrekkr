@@ -91,7 +91,7 @@ void Load_Midi_Cfg(char *FileName)
         }
         else
         {
-            Status_Box("That file is not a "TITLE" midi config file...");
+            Status_Box("That file is not a " TITLE " midi config file...");
         }
         fclose(in);
     }
@@ -112,7 +112,7 @@ void Save_Midi_Cfg(void)
     sprintf(extension, "PROTMID1");
     sprintf(Temph, "Saving '%s.pmi' data in midi configs directory...", Midi_Name);
     Status_Box(Temph);
-    sprintf(Temph, "%s"SLASH"%s.pmi", Dir_MidiCfg, Midi_Name);
+    sprintf(Temph, "%s" SLASH "%s.pmi", Dir_MidiCfg, Midi_Name);
 
     in = fopen(Temph, "wb");
     if(in != NULL)

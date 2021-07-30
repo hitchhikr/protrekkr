@@ -4,9 +4,9 @@ LIBS = src/extralibs/tinyxml/tinyxml.o \
        src/extralibs/tinyxml/tinyxmlparser.o \
        src/extralibs/tinyxml/tinystr.o \
        src/extralibs/tinyxml/tinyxmlerror.o \
-       -lasound -lSDL -lsdldraw -lz
+       -lasound -lSDL -lsdldraw -lz -lpthread
 
-FLAGS = -g -O3 -fno-strict-aliasing -ffast-math -fno-rtti -fexceptions -Wno-write-strings -Wno-multichar -Lsrc/extralibs/sdl_draw -Lsrc/extralibs/zlib-1.2.3 \
+FLAGS = -g -O3 -fpermissive -fno-strict-aliasing -ffast-math -fno-rtti -fexceptions -Wno-write-strings -Wno-multichar -Lsrc/extralibs/sdl_draw -Lsrc/extralibs/zlib-1.2.3 \
         -D __LINUX__ -D __GCC__ -D __LINUX_ALSASEQ__ -D __MOT_SWAP__
 
 EXEOBJS = ptk.o \

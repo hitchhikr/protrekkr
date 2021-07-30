@@ -717,7 +717,7 @@ void Mouse_Left_Instrument_Ed(void)
         {
             if(zcheckMouse(268, (Cur_Height - 108), 88, 16))
             {
-                if(File_Exist_Req("%s"SLASH"%s.pti", Dir_Instrs, nameins[Current_Instrument]))
+                if(File_Exist_Req("%s" SLASH "%s.pti", Dir_Instrs, nameins[Current_Instrument]))
                 {
                     Display_Requester(&Overwrite_Requester, GUI_CMD_SAVE_INSTRUMENT);
                 }
@@ -740,7 +740,7 @@ void Mouse_Left_Instrument_Ed(void)
             {
                 sprintf(Name, "Untitled.wav");
             }
-            if(File_Exist_Req("%s"SLASH"%s", Dir_Samples, Name))
+            if(File_Exist_Req("%s" SLASH "%s", Dir_Samples, Name))
             {
                 Display_Requester(&Overwrite_Requester, GUI_CMD_EXPORT_WAV);
             }

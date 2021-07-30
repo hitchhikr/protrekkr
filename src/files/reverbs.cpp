@@ -121,7 +121,7 @@ void Load_Reverb(char *FileName)
         }
         else
         {
-            Status_Box("That file is not a "TITLE" Reverb file...");
+            Status_Box("That file is not a " TITLE " Reverb file...");
         }
         fclose(in);
     }
@@ -142,7 +142,7 @@ void Save_Reverb(void)
     sprintf(extension, "TWNNREV1");
     sprintf(Temph, "Saving '%s.prv' data in reverbs directory...", Reverb_Name);
     Status_Box(Temph);
-    sprintf(Temph, "%s"SLASH"%s.prv", Dir_Reverbs, Reverb_Name);
+    sprintf(Temph, "%s" SLASH "%s.prv", Dir_Reverbs, Reverb_Name);
 
     in = fopen(Temph, "wb");
     if(in != NULL)

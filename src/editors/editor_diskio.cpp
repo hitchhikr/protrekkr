@@ -352,9 +352,9 @@ void Mouse_Left_DiskIO_Ed(void)
         if(zcheckMouse(8, (Cur_Height - 112), 80, 16))
         {
 #ifndef __LITE__
-            if(File_Exist_Req("%s"SLASH"%s.ptk", Dir_Mods, name))
+            if(File_Exist_Req("%s" SLASH "%s.ptk", Dir_Mods, name))
 #else
-            if(File_Exist_Req("%s"SLASH"%s.ptl", Dir_Mods, name))
+            if(File_Exist_Req("%s" SLASH "%s.ptl", Dir_Mods, name))
 #endif
             {
                 Display_Requester(&Overwrite_Requester, GUI_CMD_SAVE_MODULE);
@@ -367,7 +367,7 @@ void Mouse_Left_DiskIO_Ed(void)
         // Save final
         if(zcheckMouse(254, (Cur_Height - 130), 80, 16))
         {
-            if(File_Exist_Req("%s"SLASH"%s.ptp", Dir_Mods, name))
+            if(File_Exist_Req("%s" SLASH "%s.ptp", Dir_Mods, name))
             {
                 Display_Requester(&Overwrite_Requester, GUI_CMD_SAVE_FINAL);
             }
@@ -438,7 +438,7 @@ void Mouse_Left_DiskIO_Ed(void)
                     int any_file = FALSE;
                     for(i = 0; i < Songtracks; i++)
                     {
-                        sprintf(WavFileName, "%%s"SLASH"%%s_%x.wav", i);
+                        sprintf(WavFileName, "%%s" SLASH "%%s_%x.wav", i);
                         if(File_Exist(WavFileName, Dir_Mods, name))
                         {
                             any_file = TRUE;
@@ -457,7 +457,7 @@ void Mouse_Left_DiskIO_Ed(void)
                 }
                 else
                 {
-                    if(File_Exist_Req("%s"SLASH"%s.wav", Dir_Mods, name))
+                    if(File_Exist_Req("%s" SLASH "%s.wav", Dir_Mods, name))
                     {
                         Display_Requester(&Overwrite_Requester, GUI_CMD_RENDER_WAV);
                     }

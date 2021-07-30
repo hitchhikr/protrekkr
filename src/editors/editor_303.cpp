@@ -1028,7 +1028,7 @@ void Mouse_Left_303_Ed(void)
         // Save the data
         if(zcheckMouse(658, (Cur_Height - 138), 34, 16))
         {
-            if(File_Exist_Req("%s"SLASH"%s.303", Dir_Patterns, tb303[sl3].pattern_name[tb303[sl3].selectedpattern]))
+            if(File_Exist_Req("%s" SLASH "%s.303", Dir_Patterns, tb303[sl3].pattern_name[tb303[sl3].selectedpattern]))
             {
                 Display_Requester(&Overwrite_Requester, GUI_CMD_SAVE_303_PATTERN);
             }

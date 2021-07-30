@@ -69,7 +69,7 @@ test: all
 
 libz.a: $(OBJS) $(OBJA)
 	$(AR) $@ $(OBJS) $(OBJA)
-#	-@ ($(RANLIB) $@ || true) >/dev/null 2>&1
+	-@ ($(RANLIB) $@ || true) >/dev/null 2>&1
 
 match.o: match.S
 	$(CPP) match.S > _match.s

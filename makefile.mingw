@@ -6,7 +6,7 @@ LIBS = src/extralibs/tinyxml/tinyxml.o \
        src/extralibs/tinyxml/tinyxmlerror.o \
        -lmingw32 -lsdlmain -lSDL -ldsound -lmsacm32 -lwinmm -lsdldraw -lz
 
-FLAGS = -mwindows -fno-strict-aliasing -O3 -fno-rtti -fpermissive -fexceptions -Lsrc/extralibs/sdl_draw -Lsrc/extralibs/zlib-1.2.3 \
+FLAGS = -mwindows -fpermissive -fno-strict-aliasing -O3 -fno-rtti -fpermissive -fexceptions -Lsrc/extralibs/sdl_draw -Lsrc/extralibs/zlib-1.2.3 \
         -D G_OS_WIN32 -D __WIN32__ -D __GCC__ -D __WINDOWS_MM__ -D __MOT_SWAP__ \
         -D __MP3_CODEC__ -D __AT3_CODEC__ -D __GSM_CODEC__ -D __ADPCM_CODEC__ -D __TRUESPEECH_CODEC__
 
@@ -32,12 +32,12 @@ RemObj:
 	-rm -f $(EXEOBJS)
 
 ProTrekkr: $(EXEOBJS)
-#	(cd src/extralibs/sdl_draw; make.exe -f makefile.mingw)
-#	(cd src/extralibs/tinyxml; make.exe)
-#	(cd src/extralibs/zlib-1.2.3; make.exe)
+	(cd src/extralibs/sdl_draw; make.exe -f makefile.mingw)
+	(cd src/extralibs/tinyxml; make.exe)
+	(cd src/extralibs/zlib-1.2.3; make.exe)
 	$(CXX) -o ./release/distrib/ptk_win.exe -L./ $(FLAGS) $(EXEOBJS) $(LIBS)
 	strip -s -x ./release/distrib/ptk_win.exe
-#	-rm -f $(EXEOBJS)
+	-rm -f $(EXEOBJS)
 	
 ptk.o: src/ptk.cpp
 	$(CXX) -c -o $(@) $(FLAGS) $<

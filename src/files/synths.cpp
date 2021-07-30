@@ -467,7 +467,7 @@ void Save_Synth(void)
     sprintf (Temph, "Saving '%s.pts' synthesizer program in presets directory...", PARASynth[Current_Instrument].presetname);
     Status_Box(Temph);
 
-    sprintf(Temph, "%s"SLASH"%s.pts", Dir_Presets, PARASynth[Current_Instrument].presetname);
+    sprintf(Temph, "%s" SLASH "%s.pts", Dir_Presets, PARASynth[Current_Instrument].presetname);
 
     in = fopen(Temph, "wb");
     if(in != NULL)

@@ -225,7 +225,7 @@ void Save_Inst(void)
     if(!strlen(nameins[Current_Instrument])) sprintf(nameins[Current_Instrument], "Untitled");
     sprintf (Temph, "Saving '%s.pti' instrument in instruments directory...", nameins[Current_Instrument]);
     Status_Box(Temph);
-    sprintf(Temph, "%s"SLASH"%s.pti", Dir_Instrs, nameins[Current_Instrument]);
+    sprintf(Temph, "%s" SLASH "%s.pti", Dir_Instrs, nameins[Current_Instrument]);
 
     in = fopen(Temph, "wb");
     if(in != NULL)

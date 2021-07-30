@@ -93,7 +93,7 @@ void Load_303(char *FileName)
         }
         else
         {
-            Status_Box("That file is not a "TITLE" 303 pattern file...");
+            Status_Box("That file is not a " TITLE " 303 pattern file...");
         }
         fclose(in);
     }
@@ -115,7 +115,7 @@ void Save_303(void)
     sprintf(Temph, "Saving '%s.303' pattern in patterns directory...",
             tb303[sl3].pattern_name[tb303[sl3].selectedpattern]);
     Status_Box(Temph);
-    sprintf(Temph, "%s"SLASH"%s.303", Dir_Patterns,
+    sprintf(Temph, "%s" SLASH "%s.303", Dir_Patterns,
             tb303[sl3].pattern_name[tb303[sl3].selectedpattern]);
     in = fopen(Temph, "wb");
 

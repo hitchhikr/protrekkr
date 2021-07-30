@@ -1268,18 +1268,18 @@ int Save_Ptk(char *FileName, int NewFormat, int Simulate, Uint8 *Memory)
         {
             sprintf(Temph, "Saving '%s.ptp' song in modules directory...", FileName);
             Status_Box(Temph);
-            sprintf(Temph, "%s"SLASH"%s.ptp", Dir_Mods, FileName);
+            sprintf(Temph, "%s" SLASH "%s.ptp", Dir_Mods, FileName);
         }
         else
         {
 #ifndef __LITE__
             sprintf(Temph, "Saving '%s.ptk' song in modules directory...", FileName);
             Status_Box(Temph);
-            sprintf(Temph, "%s"SLASH"%s.ptk", Dir_Mods, FileName);
+            sprintf(Temph, "%s" SLASH "%s.ptk", Dir_Mods, FileName);
 #else
             sprintf(Temph, "Saving '%s.ptl' song in modules directory...", FileName);
             Status_Box(Temph);
-            sprintf(Temph, "%s"SLASH"%s.ptl", Dir_Mods, FileName);
+            sprintf(Temph, "%s" SLASH "%s.ptl", Dir_Mods, FileName);
 #endif
         }
         in = fopen(Temph, "wb");
@@ -1745,9 +1745,9 @@ void Backup_Module(char *FileName)
     char backup_savename[MAX_PATH];
 
 #ifndef __LITE__
-    sprintf(backup_savename, "%s"SLASH"%s.ptk", Dir_Mods, FileName);
+    sprintf(backup_savename, "%s" SLASH "%s.ptk", Dir_Mods, FileName);
 #else
-    sprintf(backup_savename, "%s"SLASH"%s.ptl", Dir_Mods, FileName);
+    sprintf(backup_savename, "%s" SLASH "%s.ptl", Dir_Mods, FileName);
 #endif
 
     In = fopen(backup_savename, "rb");
@@ -1766,7 +1766,7 @@ void Backup_Module(char *FileName)
 
 #ifndef __LITE__
             sprintf(backup_savename,
-                    "%s"SLASH"%s_%.2d%.2d%.2d.ptk",
+                    "%s" SLASH "%s_%.2d%.2d%.2d.ptk",
                     Dir_Mods,
                     name,
                     timeinfo->tm_hour,
@@ -1774,7 +1774,7 @@ void Backup_Module(char *FileName)
                     timeinfo->tm_sec);
 #else
             sprintf(backup_savename,
-                    "%s"SLASH"%s_%.2d%.2d%.2d.ptl",
+                    "%s" SLASH "%s_%.2d%.2d%.2d.ptl",
                     Dir_Mods,
                     name,
                     timeinfo->tm_hour,
@@ -1819,9 +1819,9 @@ int Pack_Module(char *FileName)
 
     // Save the new one
 #ifndef __LITE__
-    sprintf(Temph, "%s"SLASH"%s.ptk", Dir_Mods, FileName);
+    sprintf(Temph, "%s" SLASH "%s.ptk", Dir_Mods, FileName);
 #else
-    sprintf(Temph, "%s"SLASH"%s.ptl", Dir_Mods, FileName);
+    sprintf(Temph, "%s" SLASH "%s.ptl", Dir_Mods, FileName);
 #endif
 
     int Len = Save_Ptk("", FALSE, SAVE_CALCLEN, NULL);
