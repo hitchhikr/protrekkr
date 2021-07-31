@@ -24,4 +24,4 @@ module.o: test/module.s
 	$(AS) -o $(@) test/module.s
 
 # the library itself #
-include lib/makefile.linux
+include lib/makefile.freebsd

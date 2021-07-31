@@ -21,7 +21,7 @@ EXEOBJS = ptk.o \
           misc_draw.o draw_primitives.o requesters.o xml.o gadgets.o \
           samples_ops.o aiff.o riff.o \
           spline.o tb_303.o wavpack.o samples_unpack.o replay.o synth.o endianness.o \
-          sounddriver_linux.o
+          sounddriver_freebsd.o
 
 all: protrekkr
 
@@ -180,7 +180,7 @@ synth.o: release/distrib/replay/lib/synth.cpp
 endianness.o: release/distrib/replay/lib/endianness.cpp
 	$(CXX) -c -o $(@) $(FLAGS) $<
 
-sounddriver_linux.o: release/distrib/replay/lib/sounddriver/sounddriver_linux.cpp
+sounddriver_freebsd.o: release/distrib/replay/lib/sounddriver/sounddriver_freebsd.cpp
 	$(CXX) -c -o $(@) $(FLAGS) $<
 
 bits.o: src/samples/wavpack/bits.cpp

@@ -38,11 +38,7 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <unistd.h>
-#if defined(__FREEBSD__)
-#include <sys/soundcard.h>
-#else
 #include <linux/soundcard.h>
-#endif
 #include <sys/ioctl.h>
 #include <pthread.h>
 #include <float.h>

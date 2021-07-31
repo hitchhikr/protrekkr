@@ -1,0 +1,35 @@
+LIBFLAGS = -c
+LIBOBJS = replay.o synth.o tb_303.o spline.o wavpack.o samples_unpack.o sounddriver_freebsd.o
+
+all: ptkreplay
+clean: remlibobj
+
+remlibobj:
+	-rm -f $(LIBOBJS)
+	-rm -f libptkreplay.a
+
+ptkreplay: $(LIBOBJS)
+	$(AR) -d libptkreplay.a
+	$(AR) -r libptkreplay.a $(LIBOBJS)
+	-rm -f $(LIBOBJS)
+
+sounddriver_linux.o: lib/sounddriver/sounddriver_freebsd.cpp
+	$(CC) -o $(@) $(LIBFLAGS) $(FLAGS) lib/sounddriver/sounddriver_freebsd.cpp
+
+samples_unpack.o: lib/samples_unpack.cpp
+	$(CC) -o $(@) $(LIBFLAGS) $(FLAGS) lib/samples_unpack.cpp
+
+tb_303.o: lib/tb_303.cpp
+	$(CC) -o $(@) $(LIBFLAGS) $(FLAGS) lib/tb_303.cpp
+
+synth.o: lib/synth.cpp
+	$(CC) -o $(@) $(LIBFLAGS) $(FLAGS) lib/synth.cpp
+
+replay.o: lib/replay.cpp
+	$(CC) -o $(@) $(LIBFLAGS) $(FLAGS) lib/replay.cpp
+
+spline.o: lib/spline.cpp
+	$(CC) -o $(@) $(LIBFLAGS) $(FLAGS) lib/spline.cpp
+
+wavpack.o: lib/wavpack.cpp
+	$(CC) -o $(@) $(LIBFLAGS) $(FLAGS) lib/wavpack.cpp

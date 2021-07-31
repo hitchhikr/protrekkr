@@ -29,8 +29,8 @@
 // SUCH DAMAGE.
 // ------------------------------------------------------
 
-#ifndef _SOUNDDRIVER_LINUX_H_
-#define _SOUNDDRIVER_LINUX_H_
+#ifndef _SOUNDDRIVER_FREEBSD_H_
+#define _SOUNDDRIVER_FREEBSD_H_
 
 // ------------------------------------------------------
 // Includes
@@ -38,7 +38,7 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include <linux/soundcard.h>
+#include <sys/soundcard.h>
 #include <sys/ioctl.h>
 #include <pthread.h>
 #include <float.h>
