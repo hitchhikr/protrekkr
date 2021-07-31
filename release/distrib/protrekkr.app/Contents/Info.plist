@@ -7,7 +7,7 @@
 	<key>CFBundleExecutable</key>
 	<string>protrekkr</string>
 	<key>CFBundleIdentifier</key>
-	<string>http://protrekkr.googlecode.com/</string>
+	<string>https://github.com/hitchhikr/protrekkr</string>
 	<key>CFBundleIconFile</key>
 	<string>protrekkr.icns</string>
 	<key>CFBundleInfoDictionaryVersion</key>
