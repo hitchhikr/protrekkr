@@ -38,7 +38,7 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include <linux/soundcard.h>
+#include <alsa/asoundlib.h>
 #include <sys/ioctl.h>
 #include <pthread.h>
 #include <float.h>

@@ -43,10 +43,12 @@ float AUDIO_Timer;
 int volatile AUDIO_Acknowledge;
 int AUDIO_Device;
 short *AUDIO_SoundBuffer;
-audio_buf_info AUDIO_Info_Buffer;
 pthread_t hThread;
 int volatile Thread_Running;
 int AUDIO_SoundBuffer_Size;
+
+snd_pcm_t *playback_handle;
+snd_pcm_sframes_t latency;
 
 int AUDIO_Latency;
 int AUDIO_Milliseconds = 20;
@@ -64,6 +66,9 @@ void AUDIO_Synth_Play(void);
 // Desc: Audio rendering
 void *AUDIO_Thread(void *arg)
 {
+    int32_t volatile insize;
+    int32_t volatile frames_to_deliver;
+
     while(Thread_Running)
     {
         if(AUDIO_SoundBuffer)
@@ -83,10 +88,17 @@ void *AUDIO_Thread(void *arg)
                 }
                 AUDIO_Acknowledge = TRUE;
             }
-            write(AUDIO_Device, AUDIO_SoundBuffer, AUDIO_SoundBuffer_Size);
 
-            AUDIO_Samples += AUDIO_SoundBuffer_Size;
-            AUDIO_Timer = ((((float) AUDIO_Samples) * (1.0f / (float) AUDIO_Latency)) * 1000.0f);
+            insize = snd_pcm_bytes_to_frames(playback_handle, AUDIO_SoundBuffer_Size);
+            snd_pcm_writei(playback_handle, AUDIO_SoundBuffer, insize);
+            snd_pcm_delay(playback_handle, &latency);
+            AUDIO_Latency = latency;
+            if(AUDIO_Latency <= 0)
+            {
+                AUDIO_Latency = 1;
+            }
+            AUDIO_Samples += insize;
+            AUDIO_Timer = ((float) AUDIO_Latency);
         }
         usleep(10);
     }
@@ -100,13 +112,17 @@ void *AUDIO_Thread(void *arg)
 // Desc: Init the audio driver
 int AUDIO_Init_Driver(void (*Mixer)(Uint8 *, Uint32))
 {
+    const char *device;
+
     AUDIO_Mixer = Mixer;
 
-    char *Mixer_Name;
-    int8 Mixer_Volume[4];
+    device = getenv("ALSA_DEVICE");
+    if(!device)
+    {
+        device = "default";
+    }
 
-    AUDIO_Device = open("/dev/dsp", O_WRONLY, 0);
-    if(AUDIO_Device >= 0)
+    if(snd_pcm_open(&playback_handle, device, SND_PCM_STREAM_PLAYBACK, 0) >= 0)
     {
         return(AUDIO_Create_Sound_Buffer(AUDIO_Milliseconds));
     }
@@ -114,7 +130,7 @@ int AUDIO_Init_Driver(void (*Mixer)(Uint8 *, Uint32))
 #if !defined(__STAND_ALONE__) && !defined(__WINAMP__)
     else
     {
-        Message_Error("Error while calling open(\"/dev/dsp\")");
+        Message_Error("Error while calling open \"snd_pcm_open()\"");
     }
 #endif
 
@@ -126,38 +142,24 @@ int AUDIO_Init_Driver(void (*Mixer)(Uint8 *, Uint32))
 // Desc: Create an audio buffer of given milliseconds
 int AUDIO_Create_Sound_Buffer(int milliseconds)
 {
-    int num_fragments;
-    int frag_size;
+    unsigned int frag_size;
+    struct sched_param p;
+    unsigned int bitrate = AUDIO_PCM_FREQ;
 
     if(milliseconds < 10) milliseconds = 10;
     if(milliseconds > 250) milliseconds = 250;
+    // US = MS * 1000
+    frag_size = (int) (AUDIO_PCM_FREQ * (230 / 1000.0f));
+    snd_pcm_set_params(playback_handle,
+                       SND_PCM_FORMAT_S16_LE,
+                       SND_PCM_ACCESS_RW_INTERLEAVED,
+		       AUDIO_DBUF_CHANNELS,
+                       AUDIO_PCM_FREQ,
+                       1,
+                       230000);
 
-    num_fragments = 6;
-    frag_size = (int) (AUDIO_PCM_FREQ * (milliseconds / 1000.0f));
-
-    int Dsp_Val;
-    struct sched_param p;
-
-	frag_size = 10 + (int) (logf((float) (frag_size >> 9)) / logf(2.0f));
-
-    Dsp_Val = (num_fragments << 16) | frag_size;
-    ioctl(AUDIO_Device, SNDCTL_DSP_SETFRAGMENT, &Dsp_Val);
-
-    Dsp_Val = AUDIO_DBUF_CHANNELS;
-    ioctl(AUDIO_Device, SNDCTL_DSP_CHANNELS, &Dsp_Val);
-    Dsp_Val = AFMT_S16_NE;
-    ioctl(AUDIO_Device, SNDCTL_DSP_SETFMT, &Dsp_Val);
-    Dsp_Val = AUDIO_PCM_FREQ;
-    ioctl(AUDIO_Device, SNDCTL_DSP_SPEED, &Dsp_Val);
-
-    if((ioctl(AUDIO_Device, SNDCTL_DSP_GETOSPACE, &AUDIO_Info_Buffer) < 0))
-    {
-        ioctl(AUDIO_Device, SNDCTL_DSP_GETBLKSIZE, &AUDIO_Info_Buffer.fragsize);
-    }
-
-    AUDIO_SoundBuffer_Size = AUDIO_Info_Buffer.fragsize;
+    AUDIO_SoundBuffer_Size = frag_size;
     AUDIO_Latency = AUDIO_SoundBuffer_Size;
-
     AUDIO_SoundBuffer = (short *) malloc(AUDIO_SoundBuffer_Size << 1);
 
     p.sched_priority = 1;
@@ -270,8 +272,6 @@ void AUDIO_Stop_Sound_Buffer(void)
         {
             usleep(10);
         }
-        if(AUDIO_SoundBuffer) free(AUDIO_SoundBuffer);
-        AUDIO_SoundBuffer = NULL;
     }
 }
 
@@ -281,6 +281,10 @@ void AUDIO_Stop_Sound_Buffer(void)
 void AUDIO_Stop_Driver(void)
 {
     AUDIO_Stop_Sound_Buffer();
-    if(AUDIO_Device) close(AUDIO_Device);
-    AUDIO_Device = 0;
+    if(playback_handle)
+    {
+        snd_pcm_close(playback_handle);
+    }
+    playback_handle = NULL;
 }
+

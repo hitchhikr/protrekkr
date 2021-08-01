@@ -264,7 +264,7 @@ float AUDIO_GetTime(void)
 
 // ------------------------------------------------------
 // Name: AUDIO_GetSamples()
-// Desc: Return the played time in milliseconds
+// Desc: Return the played time in samples
 int AUDIO_GetSamples(void)
 {
     return(AUDIO_Samples);
