@@ -43,8 +43,7 @@
 #endif
 #if defined(__GCC__)
 #if !defined(__LINUX__)
-typedef unsigned long long uint64_t;
-typedef long long int64_t;
+#include <stdint.h>
 #if defined(__MACOSX__)
 typedef unsigned int uint32_t;
 #endif

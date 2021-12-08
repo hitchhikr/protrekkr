@@ -1,5 +1,0 @@
-English.MacOSX
- 2 3   5 6 7   9 0   =
-q w e r t y u i o p [ ]
- s d   g h j   l ;
-z x c v b n m , . /

@@ -39,7 +39,7 @@
 #include <string.h>
 #endif
 
-#if defined(__AROS__)
+#if defined(__AROS__) || defined(__HAIKU__)
 #define int32 int32_t
 #endif
 

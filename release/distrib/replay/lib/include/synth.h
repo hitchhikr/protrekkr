@@ -61,7 +61,7 @@ typedef __int64 int64;
 typedef unsigned __int64 Uint64;
 #else
 typedef long long int64;
-#if defined(__LINUX__) && !defined(__FREEBSD__)
+#if defined(__HAIKU__) || defined(__LINUX__) && !defined(__FREEBSD__)
 #include <stdint.h>
 typedef uint64_t Uint64;
 #else

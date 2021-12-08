@@ -59,6 +59,10 @@
 #include <mach-o/dyld.h>
 #endif
 
+#if defined(__HAIKU__)
+#include <libgen.h>
+#endif
+
 #if defined(__AMIGAOS4__) || defined(__AROS__)
 const char *AMIGA_VERSION = "\0$VER: " TITLE " " VER_VER "." VER_REV "." VER_REVSMALL "\0";
 #endif
@@ -444,11 +448,15 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
     }
     CHDIR(ExePath);
 
+#elif defined(__HAIKU__)
+	chdir(dirname(argv[0]));
+	GETCWD(ExePath, MAX_PATH);
+
 #elif defined(__AMIGAOS4__) || defined(__AROS__)
     CHDIR("/PROGDIR/");
     GETCWD(ExePath, MAX_PATH);
-#else
 
+#else
     #if defined(__MACOSX__)
         Path_Length = ExePath_Size;
         _NSGetExecutablePath(ExePath, &Path_Length);

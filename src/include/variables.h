@@ -323,6 +323,11 @@ typedef struct
     int cStatus;
 } MARKER, *LPMARKER;
 
+#if defined(__HAIKU__)
+#include <stdint.h>
+typedef int32_t int32;
+#endif
+
 // ------------------------------------------------------
 // Variables
 extern int SamplesPerTick;
