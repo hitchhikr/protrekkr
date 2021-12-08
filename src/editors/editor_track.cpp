@@ -84,15 +84,9 @@ void Actualize_Track_Ed(char gode)
             }
             value_box(508, (Cur_Height - 114), Track_Under_Caret, BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
 
-#ifndef __LITE__
             Gui_Draw_Button_Box(456, (Cur_Height - 116), 40, 16, "Flat2C", BUTTON_TEXT_CENTERED | BUTTON_NORMAL | (Disclap[Track_Under_Caret] ? 0 : BUTTON_DISABLED));
             Gui_Draw_Button_Box(456, (Cur_Height - 98), 40, 16, "Flat2T", BUTTON_TEXT_CENTERED | BUTTON_NORMAL | (Disclap[Track_Under_Caret] ? 0 : BUTTON_DISABLED));
-#else
-            Gui_Draw_Button_Box(456, (Cur_Height - 116), 40, 16, "Flat2C", BUTTON_TEXT_CENTERED | BUTTON_NORMAL | BUTTON_DISABLED);
-            Gui_Draw_Button_Box(456, (Cur_Height - 98), 40, 16, "Flat2T", BUTTON_TEXT_CENTERED | BUTTON_NORMAL | BUTTON_DISABLED);
-#endif
         }
-#ifndef __LITE__
         if(gode == 0 || gode == 1 || gode == 15)
         {
             if(TCut[Track_Under_Caret] < 0)
@@ -106,9 +100,7 @@ void Actualize_Track_Ed(char gode)
             Realslider(77, (Cur_Height - 116), (int) TCut[Track_Under_Caret], FType[Track_Under_Caret] != 4);
         }
 //            Realslider(77, (Cur_Height - 116), (int) TCut[Track_Under_Caret], FALSE);
-#endif
 
-#ifndef __LITE__
         if(gode == 0 || gode == 2 || gode == 15)
         {
             if(FRez[Track_Under_Caret] < 0)
@@ -121,11 +113,7 @@ void Actualize_Track_Ed(char gode)
             }
             Realslider(77, (Cur_Height - 98), FRez[Track_Under_Caret], FType[Track_Under_Caret] != 4);
         }
-#else
-        Realslider(77, (Cur_Height - 98), 0, FALSE);
-#endif
 
-#ifndef __LITE__
         if(gode == 0 || gode == 3 || gode == 15)
         {
             if(ICut[Track_Under_Caret] > 0.0078125f)
@@ -138,13 +126,9 @@ void Actualize_Track_Ed(char gode)
             }
             Realslider(77, (Cur_Height - 62), (int) (ICut[Track_Under_Caret] * 16384.0f), FType[Track_Under_Caret] != 4);
         }
-#else
-        Realslider(77, (Cur_Height - 62), 0, FALSE);
-#endif
 
         if(gode == 0 || gode == 4 || gode == 15)
         {
-#ifndef __LITE__
             if(FType[Track_Under_Caret] < 0)
             {
                 FType[Track_Under_Caret] = 0;
@@ -180,17 +164,11 @@ void Actualize_Track_Ed(char gode)
                 case 22: Gui_Draw_Button_Box(141, (Cur_Height - 80), 82, 16, "W-HP12 [Stereo]", BUTTON_NORMAL | BUTTON_DISABLED); break;
                 case 23: Gui_Draw_Button_Box(141, (Cur_Height - 80), 82, 16, "W-HP24 [Mono]", BUTTON_NORMAL | BUTTON_DISABLED); break;
             }
-#endif
-#ifndef __LITE__
             value_box(79, (Cur_Height - 80), FType[Track_Under_Caret], BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
-#else
-            value_box(79, (Cur_Height - 80), 0, BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE | BUTTON_DISABLED);
-#endif
         }
 
         if(gode == 0 || gode == 5 || gode == 15)
         {
-#ifndef __LITE__
             if(DSend[Track_Under_Caret] < 0)
             {
                 DSend[Track_Under_Caret] = 0;
@@ -200,14 +178,10 @@ void Actualize_Track_Ed(char gode)
                 DSend[Track_Under_Caret] = 1.0f;
             }
             Realslider(308, (Cur_Height - 80), int(DSend[Track_Under_Caret] * 128.0f), compressor != 0);
-#else
-            Realslider(308, (Cur_Height - 80), int(0 * 128.0f), FALSE);
-#endif
         }
 
         if(gode == 0 || gode == 6)
         {
-#ifndef __LITE__
             if(CSend[Track_Under_Caret] < 0)
             {
                 CSend[Track_Under_Caret] = 0;
@@ -221,12 +195,8 @@ void Actualize_Track_Ed(char gode)
             {
                 CCoef[Track_Under_Caret] = float((float) CSend[Track_Under_Caret] / 127.0f);
             }
-#else
-            value_box(570, (Cur_Height - 114), 0, BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_DISABLED | BUTTON_RIGHT_MOUSE);
-#endif
         }
 
-#ifndef __LITE__
         if(gode == 0 || gode == 7 || gode == 15)
         {
             if(DThreshold[Track_Under_Caret] < 0)
@@ -239,11 +209,7 @@ void Actualize_Track_Ed(char gode)
             }
             Realslider(308, (Cur_Height - 116), (int) DThreshold[Track_Under_Caret] / 256, Disclap[Track_Under_Caret]);
         }
-#else
-            Realslider(308, (Cur_Height - 116), 0, FALSE);
-#endif
 
-#ifndef __LITE__
         if(gode == 0 || gode == 8 || gode == 15)
         {
             if(DClamp[Track_Under_Caret] < 0)
@@ -257,9 +223,6 @@ void Actualize_Track_Ed(char gode)
 
             Realslider(308, (Cur_Height - 98), (int) DClamp[Track_Under_Caret] / 256, Disclap[Track_Under_Caret]);
         }
-#else
-        Realslider(308, (Cur_Height - 98), 0, FALSE);
-#endif
 
         if(gode == 0 || gode == 9 || gode == 15)
         {
@@ -302,7 +265,6 @@ void Actualize_Track_Ed(char gode)
 
         if(gode == 0 || gode == 12 || gode == 15)
         {
-#ifndef __LITE__
             if(Disclap[Track_Under_Caret])
             {
                 Gui_Draw_Button_Box(570, (Cur_Height - 52), 60, 16, "Distort On", BUTTON_PUSHED | BUTTON_TEXT_CENTERED);
@@ -311,16 +273,6 @@ void Actualize_Track_Ed(char gode)
             {
                 Gui_Draw_Button_Box(570, (Cur_Height - 52), 60, 16, "Distort Off", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
             }
-#else
-            //if(Disclap[Track_Under_Caret])
-            //{
-                //Gui_Draw_Button_Box(570, (Cur_Height - 52), 60, 16, "Distort On", BUTTON_PUSHED | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
-            //}
-            //else
-            //{
-                Gui_Draw_Button_Box(570, (Cur_Height - 52), 60, 16, "Distort Off", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
-            //}
-#endif
         }
 
         if(gode == 0 || gode == 13 || gode == 14 || gode == 15)
@@ -333,11 +285,7 @@ void Actualize_Track_Ed(char gode)
             {
                 Channels_Polyphony[Track_Under_Caret] = MAX_POLYPHONY;
             }
-#ifndef __LITE__
             Gui_Draw_Arrows_Number_Box2(647, (Cur_Height - 110), Channels_Polyphony[Track_Under_Caret], BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
-#else
-            Gui_Draw_Arrows_Number_Box2(647, (Cur_Height - 110), Channels_Polyphony[Track_Under_Caret], BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
-#endif
         }
         if(gode == 0 || gode == 14 || gode == 13 || gode == 15)
         {
@@ -353,11 +301,7 @@ void Actualize_Track_Ed(char gode)
             {
                 Channels_MultiNotes[Track_Under_Caret] = MAX_POLYPHONY;
             }
-#ifndef __LITE__
             Gui_Draw_Arrows_Number_Box2(647, (Cur_Height - 85), Channels_MultiNotes[Track_Under_Caret], BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
-#else
-            Gui_Draw_Arrows_Number_Box2(647, (Cur_Height - 85), Channels_MultiNotes[Track_Under_Caret], BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_DISABLED | BUTTON_RIGHT_MOUSE);
-#endif
             if(gode)
             {
                 Actupated(0);
@@ -393,7 +337,6 @@ void Mouse_Left_Track_Ed(void)
 {
     if(userscreen == USER_SCREEN_TRACK_EDIT)
     {
-#ifndef __LITE__
         // Filter type
         if(zcheckMouse(79, (Cur_Height - 80), 16, 16) && FType[Track_Under_Caret] > 0)
         {
@@ -409,7 +352,6 @@ void Mouse_Left_Track_Ed(void)
             teac = 0;
             gui_action = GUI_CMD_UPDATE_TRACK_ED;
         }
-#endif
 
         // Previous track
         if(zcheckMouse(508, (Cur_Height - 114), 16, 16))
@@ -429,7 +371,6 @@ void Mouse_Left_Track_Ed(void)
             trkchan = TRUE;
         }
 
-#ifndef __LITE__
         // Delay send
         if(zcheckMouse(570, (Cur_Height - 114), 16, 16))
         {
@@ -458,7 +399,6 @@ void Mouse_Left_Track_Ed(void)
             teac = 8;
             gui_action = GUI_CMD_UPDATE_TRACK_ED;
         }
-#endif
 
         // Channel panning (centering)
         if(zcheckMouse(456, (Cur_Height - 62), 40, 16))
@@ -482,7 +422,6 @@ void Mouse_Left_Track_Ed(void)
             teac = 11;
         }
 
-#ifndef __LITE__
         // Distortion
         if(zcheckMouse(570, (Cur_Height - 52), 60, 16))
         {
@@ -490,7 +429,6 @@ void Mouse_Left_Track_Ed(void)
             gui_action = GUI_CMD_UPDATE_TRACK_ED;
             teac = 0;
         }
-#endif
 
         // Mute track
         if(zcheckMouse(508, (Cur_Height - 88), 64, 16))
@@ -533,7 +471,6 @@ void Mouse_Left_Track_Ed(void)
             teac = 10;
         }
 
-#ifndef __LITE__
         // Channels polyphony
         if(zcheckMouse(647, (Cur_Height - 110), 16, 16) == 1)
         {
@@ -573,7 +510,6 @@ void Mouse_Left_Track_Ed(void)
             gui_action = GUI_CMD_UPDATE_TRACK_ED;
             teac = 14;
         }
-#endif
 
         // Amount of effects columns
         if(zcheckMouse(647, (Cur_Height - 60), 16, 16) == 1)
@@ -594,7 +530,6 @@ void Mouse_Left_Track_Ed(void)
 
 void Mouse_Right_Track_Ed(void)
 {
-#ifndef __LITE__
     if(userscreen == USER_SCREEN_TRACK_EDIT)
     {
         if(zcheckMouse(570, (Cur_Height - 114), 16, 16) == 1)
@@ -657,21 +592,18 @@ void Mouse_Right_Track_Ed(void)
             teac = 14;
         }
     }
-#endif
 }
 
 void Mouse_Sliders_Track_Ed(void)
 {
     if(userscreen == USER_SCREEN_TRACK_EDIT)
     {
-#ifndef __LITE__
         if(zcheckMouse(77, (Cur_Height - 116), 148, 16) && FType[Track_Under_Caret] != 4) gui_action = GUI_CMD_SET_TRACK_CUTOFF_FREQ;
         if(zcheckMouse(77, (Cur_Height - 98), 148, 16) && FType[Track_Under_Caret] != 4) gui_action = GUI_CMD_SET_TRACK_RESONANCE;
         if(zcheckMouse(77, (Cur_Height - 62), 148, 16) && FType[Track_Under_Caret] != 4) gui_action = GUI_CMD_SET_TRACK_INERTIA;
         if(zcheckMouse(308, (Cur_Height - 116), 148, 16) && Disclap[Track_Under_Caret]) gui_action = GUI_CMD_SET_TRACK_THRESHOLD;
         if(zcheckMouse(308, (Cur_Height - 98), 148, 16) && Disclap[Track_Under_Caret]) gui_action = GUI_CMD_SET_TRACK_CLAMP;
         if(compressor != 0) if(zcheckMouse(308, (Cur_Height - 80), 148, 16)) gui_action = GUI_CMD_SET_TRACK_REVERB_SEND;
-#endif
         if(zcheckMouse(308, (Cur_Height - 62), 148, 16)) gui_action = GUI_CMD_SET_TRACK_PANNING;
     }
 }

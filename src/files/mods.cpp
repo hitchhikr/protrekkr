@@ -1161,22 +1161,16 @@ void Load_Amiga_Mod(char *Name, const char *FileName, int channels, int digiboos
                 FixStereo(i);
             }
 
-#ifndef __LITE__
             Use_Cubic = NONE_INT;
-#endif
             Beats_Per_Min = 125;
             Ticks_Per_Beat = 4;
             mas_vol = 0.75f;
-#ifndef __LITE__
             compressor = FALSE;
-#endif
 
             free(Mod_Dat);
             Mod_Dat = NULL;
 
-#ifndef __LITE__
             Load_Old_Reverb_Presets(0);
-#endif
             Init_Tracker_Context_After_ModLoad();
 
         }

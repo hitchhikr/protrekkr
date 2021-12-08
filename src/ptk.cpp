@@ -308,11 +308,7 @@ REQUESTER_BUTTON Requester_Btn_Synths =
 
 REQUESTER_BUTTON Requester_Btn_Instruments =
 {
-#ifndef __LITE__    
     &Requester_Btn_Synths,
-#else
-    &Requester_Btn_Cancel,
-#endif
     "Instruments",
     0,
     SDLK_i
@@ -512,18 +508,14 @@ int Init_Context(void)
     R_MaxLevel = 0;
 
     sprintf(Selection_Name, "Untitled");
-#ifndef __LITE__
     sprintf(Reverb_Name, "Untitled");
-#endif
     sprintf(Midi_Name, "Untitled");
     sprintf(name, "Untitled");
     sprintf(artist, "Somebody");
     sprintf(style, "Anything goes");
 
     namesize = 8;
-#ifndef __LITE__
     IniCsParNames();
-#endif
 
     Clear_Files_List();
 
@@ -569,22 +561,18 @@ int Init_Context(void)
     Pre_Song_Init();
     Post_Song_Init();
 
-#ifndef __LITE__
     // Old preset by default
     Load_Old_Reverb_Presets(0);
 
     Initreverb();
-#endif
 
     LOGOPIC = Load_Skin_Picture("logo");
     if(!LOGOPIC) return(FALSE);
 
     POINTER = Load_Skin_Picture("pointer");
     if(!POINTER) return(FALSE);
-#ifndef __LITE__
     SKIN303 = Load_Skin_Picture("303");
     if(!SKIN303) return(FALSE);
-#endif
     PFONT = Load_Skin_Picture("pattern_font");
     if(!PFONT) return(FALSE);
     FONT = Load_Skin_Picture("font");
@@ -838,9 +826,7 @@ int Screen_Update(void)
             Actualize_Patterned();
             RefreshSample();
             Renew_Sample_Ed();
-#ifndef __LITE__
             Actualize_Synth_Ed(UPDATE_SYNTH_ED_ALL);
-#endif
         }
 
         // --- Sequence ---------------------------------------
@@ -964,9 +950,7 @@ int Screen_Update(void)
             Actualize_Patterned();
             RefreshSample();
             Renew_Sample_Ed();
-#ifndef __LITE__
             Actualize_Synth_Ed(UPDATE_SYNTH_ED_ALL);
-#endif
         }
 
         if(gui_action == GUI_CMD_PREV_INSTR)
@@ -976,9 +960,7 @@ int Screen_Update(void)
             Actualize_Patterned();
             RefreshSample();
             Renew_Sample_Ed();
-#ifndef __LITE__
             Actualize_Synth_Ed(UPDATE_SYNTH_ED_ALL);
-#endif
         }
 
         if(gui_action == GUI_CMD_NEXT_INSTR)
@@ -988,9 +970,7 @@ int Screen_Update(void)
             Actualize_Patterned();
             RefreshSample();
             Renew_Sample_Ed();
-#ifndef __LITE__
             Actualize_Synth_Ed(UPDATE_SYNTH_ED_ALL);
-#endif
         }
 
         if(gui_action == GUI_CMD_SWITCH_TRACK_MUTE_STATE)
@@ -1059,12 +1039,11 @@ int Screen_Update(void)
             Song_Stop();
         }
 
-#ifndef __LITE__
         if(gui_action == GUI_CMD_RECORD_303)
         {
             Start_Rec();
         }
-#endif
+
         if(gui_action == GUI_CMD_EDIT_MODE)
         {
             is_recording = 0;
@@ -1107,7 +1086,6 @@ int Screen_Update(void)
             Actualize_Track_Fx_Ed(0);
         }
 
-#ifndef __LITE__
         if(gui_action == GUI_CMD_SET_TRACK_CUTOFF_FREQ)
         {
             TCut[Track_Under_Caret] = float(Mouse.x - 88);
@@ -1129,13 +1107,12 @@ int Screen_Update(void)
             ICut[Track_Under_Caret] = (Mouse.x - 88.0f) * 0.00006103515625f;
             Actualize_Track_Ed(3);
         }
-#endif
+
         if(gui_action == GUI_CMD_UPDATE_TRACK_ED)
         {
             Actualize_Track_Ed(teac);
         }
 
-#ifndef __LITE__
         if(gui_action == GUI_CMD_SET_TRACK_THRESHOLD)
         {
             DThreshold[Track_Under_Caret] = float((Mouse.x - 318) * 256);
@@ -1151,9 +1128,7 @@ int Screen_Update(void)
             liveparam = LIVE_PARAM_TRACK_CLAMP;
             livevalue = (Mouse.x - 318) * 2;
         }
-#endif
 
-#ifndef __LITE__
         if(gui_action == GUI_CMD_SET_TRACK_REVERB_SEND)
         {
             DSend[Track_Under_Caret] = float(((float) Mouse.x - 318) / 128.0f);
@@ -1161,7 +1136,6 @@ int Screen_Update(void)
             liveparam = LIVE_PARAM_TRACK_REVERB_SEND;
             livevalue = (Mouse.x - 318) * 2;
         }
-#endif
 
         if(gui_action == GUI_CMD_SET_TRACK_PANNING)
         {
@@ -1204,7 +1178,6 @@ int Screen_Update(void)
             Actualize_DiskIO_Ed(0);
         }
 
-#ifndef __LITE__
         if(gui_action == GUI_CMD_SELECT_REVERB_EDIT)
         {
             retletter[71] = TRUE;
@@ -1214,7 +1187,6 @@ int Screen_Update(void)
             Draw_Reverb_Ed();
             Actualize_Reverb_Ed(0);
         }
-#endif
 
         if(gui_action == GUI_CMD_SELECT_TRACK_EDIT)
         {
@@ -1236,7 +1208,6 @@ int Screen_Update(void)
             Actualize_Instrument_Ed(2, 0);
         }
 
-#ifndef __LITE__
         if(gui_action == GUI_CMD_SELECT_FX_EDIT)
         {
             retletter[71] = TRUE;
@@ -1246,7 +1217,7 @@ int Screen_Update(void)
             Draw_Fx_Ed();
             Actualize_Fx_Ed(teac);
         }
-#endif
+
         if(gui_action == GUI_CMD_SELECT_SEQUENCER)
         {
             retletter[71] = TRUE;
@@ -1277,7 +1248,6 @@ int Screen_Update(void)
             Actualize_Midi_Ed(0);
         }
 
-#ifndef __LITE__
         if(gui_action == GUI_CMD_SELECT_SYNTH_EDIT)
         {
             retletter[71] = TRUE;
@@ -1287,7 +1257,6 @@ int Screen_Update(void)
             Draw_Synth_Ed();
             Actualize_Synth_Ed(UPDATE_SYNTH_ED_ALL);
         }
-#endif
 
         if(gui_action == GUI_CMD_SELECT_TRACK_FX_EDIT)
         {
@@ -1309,7 +1278,6 @@ int Screen_Update(void)
             Actualize_Sample_Ed(0);
         }
 
-#ifndef __LITE__
         if(gui_action == GUI_CMD_SELECT_TB303_EDIT)
         {
             retletter[71] = TRUE;
@@ -1318,7 +1286,7 @@ int Screen_Update(void)
             userscreen = USER_SCREEN_TB303_EDIT;
             Draw_303_Ed();
         }
-#endif
+
         if(gui_action == GUI_CMD_EXPORT_WAV)
         {
             char buffer[64];
@@ -1403,7 +1371,6 @@ int Screen_Update(void)
             ShowInfo();
         }
 
-#ifndef __LITE__
         if(gui_action == GUI_CMD_REFRESH_TB303_PARAMS)
         {
             Actualize_303_Ed(teac);
@@ -1422,7 +1389,7 @@ int Screen_Update(void)
         {
             if(snamesel == INPUT_NONE) Save_Reverb();
         }
-#endif
+
         if(gui_action == GUI_CMD_SAVE_MIDI_CFG)
         {
             if(snamesel == INPUT_NONE) Save_Midi_Cfg();
@@ -1499,12 +1466,11 @@ int Screen_Update(void)
             Actualize_DiskIO_Ed(teac);
         }
 
-#ifndef __LITE__
         if(gui_action == GUI_CMD_UPDATE_REVERB_ED)
         {
             Actualize_Reverb_Ed(teac);
         }
-#endif
+
         if(gui_action == GUI_CMD_UPDATE_MIDI_ED)
         {
             Actualize_Midi_Ed(teac);
@@ -1520,23 +1486,21 @@ int Screen_Update(void)
             Actualize_Seq_Ed(0);
         }
 
-#ifndef __LITE__
         if(gui_action == GUI_CMD_UPDATE_FX_ED)
         {
             Actualize_Fx_Ed(teac);
         }
-#endif
+
         if(gui_action == GUI_CMD_UPDATE_SETUP_ED)
         {
             Actualize_Master_Ed(teac);
         }
 
-#ifndef __LITE__
         if(gui_action == GUI_CMD_UPDATE_SYNTH_ED)
         {
             Actualize_Synth_Ed(teac);
         }
-#endif
+
         if(gui_action == GUI_CMD_MIDI_NOTE_OFF_1_TRACK)
         {
             Status_Box("Notes Off command sent to this track...");
@@ -1552,12 +1516,10 @@ int Screen_Update(void)
             Actualize_Track_Fx_Ed(teac);
         }
 
-#ifndef __LITE__
         if(gui_action == GUI_CMD_UPDATE_MIDI_303_ED)
         {
             Actualize_303_Ed(teac);
         }
-#endif
 
         if(gui_action == GUI_CMD_PREVIOUS_16_INSTR)
         {
@@ -1565,9 +1527,7 @@ int Screen_Update(void)
             Actualize_Patterned();
             RefreshSample();
             Renew_Sample_Ed();
-#ifndef __LITE__
             Actualize_Synth_Ed(UPDATE_SYNTH_ED_ALL);
-#endif
         }
 
         if(gui_action == GUI_CMD_NEXT_16_INSTR)
@@ -1576,9 +1536,7 @@ int Screen_Update(void)
             Actualize_Patterned();
             RefreshSample();
             Renew_Sample_Ed();
-#ifndef __LITE__
             Actualize_Synth_Ed(UPDATE_SYNTH_ED_ALL);
-#endif
         }
 
         if(gui_action == GUI_CMD_UPDATE_PATTERN_ED)
@@ -1639,12 +1597,11 @@ int Screen_Update(void)
             DeleteInstrument();
         }
 
-#ifndef __LITE__
         if(gui_action == GUI_CMD_SAVE_SYNTH)
         {
             if(snamesel == INPUT_NONE) Save_Synth();
         }
-#endif
+
         if(gui_action == GUI_CMD_PATTERNS_POOL_EXHAUSTED)
         {
             Status_Box("Maximum number of patterns reached.");
@@ -1977,7 +1934,6 @@ void LoadFile(int Freeindex, const char *str)
         //fseek(in, 8, SEEK_SET);
         //fread(rebext, sizeof(char), 4, in);
 
-#ifndef __LITE__
         if(strcmp(extension, "TWNNINS0") == 0 ||
            strcmp(extension, "TWNNINS1") == 0 ||
            strcmp(extension, "TWNNINS2") == 0 ||
@@ -1989,16 +1945,11 @@ void LoadFile(int Freeindex, const char *str)
            strcmp(extension, "TWNNINS8") == 0 ||
            strcmp(extension, "TWNNINS9") == 0)
         {
-#else
-        if(strcmp(extension, "PTKINST1") == 0)
-        {
-#endif
             sprintf(instrname, "%s", FileName);
             Stop_Current_Instrument();
             Load_Inst(instrname);
             Renew_Sample_Ed();
         }
-#ifndef __LITE__
         else if(strcmp(extension, "TWNNSNG1") == 0 ||   // For salvage purpose
                 strcmp(extension, "TWNNSNG2") == 0 ||
                 strcmp(extension, "TWNNSNG3") == 0 ||
@@ -2024,10 +1975,6 @@ void LoadFile(int Freeindex, const char *str)
                 strcmp(extension, "PROTREKN") == 0 ||
                 strcmp(extension, "PROTREKO") == 0)
         {
-#else
-        else if(strcmp(extension, "PTKLITE1") == 0)
-        {
-#endif
             sprintf(name, "%s", FileName);
             Song_Stop();
             AUDIO_Stop();
@@ -2035,7 +1982,6 @@ void LoadFile(int Freeindex, const char *str)
             Renew_Sample_Ed();
             AUDIO_Play();
         }
-#ifndef __LITE__
         else if(strcmp(extension, "TWNNSYN0") == 0 ||
                 strcmp(extension, "TWNNSYN1") == 0 ||
                 strcmp(extension, "TWNNSYN2") == 0 ||
@@ -2057,13 +2003,11 @@ void LoadFile(int Freeindex, const char *str)
             sprintf(namerev, "%s", FileName);
             Load_Reverb(namerev);
         }
-#endif
         else if(strcmp(extension, "PROTMID1") == 0)
         {
             sprintf(namemidicfg, "%s", FileName);
             Load_Midi_Cfg(namemidicfg);
         }
-#ifndef __LITE__
         else if((strcmp(extension, "TWNNBLK1") == 0) ||
                 (strcmp(extension, "PROTBLK2") == 0)
                )
@@ -2071,14 +2015,6 @@ void LoadFile(int Freeindex, const char *str)
             sprintf(namerev, "%s", FileName);
             Load_Pattern(namerev);
         }
-#else
-        else if((strcmp(extension, "PTKLBLK3") == 0)
-               )
-        {
-            sprintf(namerev, "%s", FileName);
-            Load_Pattern(namerev);
-        }
-#endif
         else
         {
             if((extension_AIFF[0] == FormID &&
@@ -2290,11 +2226,7 @@ void LoadFile(int Freeindex, const char *str)
                 }
                 else
                 {
-#ifndef __LITE__
                     Status_Box("Invalid file format. I only accept '.wav' '.aiff' '.aifc' '.ptk' '.pti' '.303' '.pts' '.ppb' '.prv' '.mod' '.dbm' or '.ft' files.");
-#else
-                    Status_Box("Invalid file format. I only accept '.wav' '.aiff' '.aifc' '.ptl' '.pti' '.303' '.pts' '.ppb' '.prv' '.mod' '.dbm' or '.ft' files.");
-#endif
                 }
             }
         }
@@ -2433,9 +2365,7 @@ void Song_Stop(void)
 void Newmod(void)
 {
     int i;
-#ifndef __LITE__
     int Old_Prg;
-#endif
 
     Clear_Input();
     Song_Stop();
@@ -2454,27 +2384,20 @@ void Newmod(void)
         Actualize_Master(0);
         for(i = 0; i < MAX_INSTRS; i++)
         {
-#ifndef __LITE__
             Old_Prg = Synthprg[i];
-#endif
             KillInst(i, TRUE);
-#ifndef __LITE__
             Synthprg[i] = Old_Prg;
-#endif
             sprintf(nameins[i], "Untitled");
-#ifndef __LITE__
             if((Synthprg[i] - 2) == i)
             {
                 Synthprg[i] = 1;
             }
-#endif
         }
         Renew_Sample_Ed();
     }
 
     if(ZzaappOMatic == ZZAAPP_ALL || ZzaappOMatic == ZZAAPP_SYNTHS)
     {
-#ifndef __LITE__
         for(int ini = 0; ini < MAX_TRACKS; ini++)
         {
             for(i = 0; i < MAX_POLYPHONY; i++)
@@ -2487,7 +2410,6 @@ void Newmod(void)
             ResetSynthParameters(&PARASynth[i]);
             Synthprg[i] = 0;
         }
-#endif
         Final_Mod_Length = 0;
         Actualize_Master(0);
         Current_Instrument = 0;
@@ -2533,7 +2455,6 @@ void Newmod(void)
         Reset_Tracks_To_Render();
     }
 
-#ifndef __LITE__
     if(ZzaappOMatic == ZZAAPP_ALL || ZzaappOMatic == ZZAAPP_303)
     {
         Reset_303_Parameters(&tb303[0]);
@@ -2543,15 +2464,12 @@ void Newmod(void)
         track3031 = 255;
         track3032 = 255;
     }
-#endif
 
     if(ZzaappOMatic == ZZAAPP_ALL)
     {
         Use_Cubic = CUBIC_INT;
         sprintf(Selection_Name, "Untitled");
-#ifndef __LITE__
         sprintf(Reverb_Name, "Untitled");
-#endif
         sprintf(Midi_Name, "Untitled");
         sprintf(name, "Untitled");
         sprintf(artist, "Somebody");
@@ -2561,7 +2479,6 @@ void Newmod(void)
         Ticks_Per_Beat = 4;
         DelayType = 1;
         mas_vol = 1.0f;
-#ifndef __LITE__
         Reverb_Filter_Cutoff = 0.08f;
         Reverb_Filter_Resonance = 0.5f;
         Reverb_Stereo_Amount = 50;
@@ -2580,11 +2497,9 @@ void Newmod(void)
         lchorus_counter2 = MIX_RATE - lchorus_delay;
         rchorus_counter2 = MIX_RATE - rchorus_delay;
         compressor = FALSE;
-#endif
         c_threshold = 32;
         delay_time = 0;
 
-#ifndef __LITE__
         // Old preset by default
         Load_Old_Reverb_Presets(DelayType);
         Initreverb();
@@ -2592,7 +2507,6 @@ void Newmod(void)
         {
             CCoef[spl] = float((float) CSend[spl] / 127.0f);
         }
-#endif
         Pre_Song_Init();
     }
 
@@ -2600,9 +2514,7 @@ void Newmod(void)
 
     SubCounter = 0;
     PosInTick = 0;
-#ifndef __LITE__
     PosInTick_Delay = 0;
-#endif
 
     allow_save = TRUE;
 
@@ -2917,6 +2829,7 @@ void WavRenderizer()
 
                 case RENDER_TO_STEREO:
                     Stereo = 1;
+
                 case RENDER_TO_MONO:
                     Mem_Buffer_Size = AUDIO_Latency * 64;
                     Sample_Buffer[0] = (short *) malloc(Mem_Buffer_Size * 2);
@@ -3064,16 +2977,13 @@ Stop_WavRender:
 // Delete an instrument
 void DeleteInstrument(void)
 {
-#ifndef __LITE__
     int i;
     int Old_Prg;
-#endif
 
     Stop_Current_Instrument();
 
     if(ZzaappOMatic == ZZAAPP_ALL || ZzaappOMatic == ZZAAPP_SYNTHS)
     {
-#ifndef __LITE__
         for(int ini = 0; ini < MAX_TRACKS; ini++)
         {
             for(i = 0; i < MAX_POLYPHONY; i++)
@@ -3081,17 +2991,12 @@ void DeleteInstrument(void)
                 Synthesizer[ini][i].Reset();
             }
         }
-#endif
-#ifndef __LITE__
         ResetSynthParameters(&PARASynth[Current_Instrument]);
         Synthprg[Current_Instrument] = 0;
-#endif
         Actualize_Master(0);
         Final_Mod_Length = 0;
-#ifndef __LITE__
         Actualize_Synth_Ed(UPDATE_SYNTH_ED_ALL);
         Status_Box("Synth deleted.");
-#endif
     }
 
     if(ZzaappOMatic == ZZAAPP_SPLIT)
@@ -3099,20 +3004,14 @@ void DeleteInstrument(void)
         seditor = 0;
         Final_Mod_Length = 0;
         Actualize_Master(0);
-#ifndef __LITE__
         Old_Prg = Synthprg[Current_Instrument];
-#endif
         KillInst(Current_Instrument, FALSE);
-#ifndef __LITE__
         Synthprg[Current_Instrument] = Old_Prg;
-#endif
         sprintf(nameins[Current_Instrument], "Untitled");
-#ifndef __LITE__
         if((Synthprg[Current_Instrument] - 2) == Current_Instrument)
         {
             Synthprg[Current_Instrument] = 1;
         }
-#endif
         Renew_Sample_Ed();
         Status_Box("Instrument deleted.");
         RefreshSample();
@@ -3124,20 +3023,14 @@ void DeleteInstrument(void)
         seditor = 0;
         Final_Mod_Length = 0;
         Actualize_Master(0);
-#ifndef __LITE__
         Old_Prg = Synthprg[Current_Instrument];
-#endif
         KillInst(Current_Instrument, TRUE);
-#ifndef __LITE__
         Synthprg[Current_Instrument] = Old_Prg;
-#endif
         sprintf(nameins[Current_Instrument], "Untitled");
-#ifndef __LITE__
         if((Synthprg[Current_Instrument] - 2) == Current_Instrument)
         {
             Synthprg[Current_Instrument] = 1;
         }
-#endif
         Renew_Sample_Ed();
         Status_Box("Instrument deleted.");
         RefreshSample();
@@ -3203,11 +3096,8 @@ void ShowInfo(void)
     int sampsize = 0;
     int nbr_samp = 0;
     int nbr_synth = 0;
-#ifndef __LITE__
     int i;
-#endif
 
-#ifndef __LITE__
     for(i = 0; i < MAX_INSTRS; i++)
     {
         if(Synthprg[i])
@@ -3215,7 +3105,7 @@ void ShowInfo(void)
             nbr_synth++;
         }
     }
-#endif
+
     for(int pp = 0; pp < MAX_INSTRS; pp++)
     {
         for(int z = 0; z < MAX_INSTRS_SPLITS; z++)
@@ -3278,14 +3168,12 @@ void Actualize_Input(void)
             gui_action = GUI_CMD_UPDATE_PATTERN_ED;
             break;
 
-#ifndef __LITE__
         // Synth name
         case INPUT_SYNTH_NAME:
             Actualize_Name(retletter, PARASynth[Current_Instrument].presetname);
             teac = UPDATE_SYNTH_CHANGE_NAME;
             gui_action = GUI_CMD_UPDATE_SYNTH_ED;
             break;
-#endif
 
         // Module artist
         case INPUT_MODULE_ARTIST:
@@ -3299,23 +3187,20 @@ void Actualize_Input(void)
             gui_action = GUI_CMD_UPDATE_DISKIO_ED;
             break;
 
-#ifndef __LITE__
         // 303 pattern
         case INPUT_303_PATTERN:
             Actualize_Name(retletter, tb303[sl3].pattern_name[tb303[sl3].selectedpattern]);
             teac = 18;
             gui_action = GUI_CMD_UPDATE_MIDI_303_ED;
             break;
-#endif
 
         // Reverb
-#ifndef __LITE__
         case INPUT_REVERB_NAME:
             Actualize_Name(retletter, Reverb_Name);
             teac = UPDATE_REVERB_ED_CHANGE_NAME;
             gui_action = GUI_CMD_UPDATE_REVERB_ED;
             break;
-#endif
+
         // Selection
         case INPUT_SELECTION_NAME:
             Actualize_Name(retletter, Selection_Name);
@@ -3446,22 +3331,18 @@ void Keyboard_Handler(void)
         {
             gui_action = GUI_CMD_SELECT_INSTRUMENT_EDIT;
         }
-#ifndef __LITE__
         if(Keys[SDLK_F3])
         {
             gui_action = GUI_CMD_SELECT_SYNTH_EDIT;
         }
-#endif
         if(Keys[SDLK_F4])
         {
             gui_action = GUI_CMD_SELECT_SAMPLE_EDIT;
         }
-#ifndef __LITE__
         if(Keys[SDLK_F5])
         {
             gui_action = GUI_CMD_SELECT_TB303_EDIT;
         }
-#endif
         if(Keys[SDLK_F6])
         {
             gui_action = GUI_CMD_SELECT_TRACK_EDIT;
@@ -3470,7 +3351,6 @@ void Keyboard_Handler(void)
         {
             gui_action = GUI_CMD_SELECT_TRACK_FX_EDIT;
         }
-#ifndef __LITE__
         if(Keys[SDLK_F8])
         {
             gui_action = GUI_CMD_SELECT_FX_EDIT;
@@ -3479,7 +3359,6 @@ void Keyboard_Handler(void)
         {
             gui_action = GUI_CMD_SELECT_REVERB_EDIT;
         }
-#endif
         if(Keys[SDLK_F10])
         {
             gui_action = GUI_CMD_SELECT_DISKIO_EDIT;
@@ -4414,14 +4293,12 @@ void Keyboard_Handler(void)
                     Draw_Scope_Files_Button();
                 }
 
-#ifndef __LITE__
                 // Display synths list
                 if(Keys[SDLK_s - UNICODE_OFFSET1])
                 {
                     Scopish = SCOPE_ZONE_SYNTH_LIST;
                     Draw_Scope_Files_Button();
                 }
-#endif
             }
         }
 
@@ -4487,11 +4364,7 @@ void Keyboard_Handler(void)
                 // Save
                 if(Keys[SDLK_s - UNICODE_OFFSET2])
                 {
-#ifndef __LITE__
                     if(File_Exist_Req("%s" SLASH "%s.ptk", Dir_Mods, name))
-#else
-                    if(File_Exist_Req("%s" SLASH "%s.ptl", Dir_Mods, name))
-#endif
                     {
                         Display_Requester(&Overwrite_Requester, GUI_CMD_SAVE_MODULE);
                     }
@@ -5297,10 +5170,7 @@ void Mouse_Handler(void)
         }
 
         // Scroll the knobs
-#ifndef __LITE__
         Mouse_Wheel_303_Ed(MouseWheel_Multiplier);
-#endif
-
         Mouse_Wheel_Sample_Ed(MouseWheel_Multiplier);
     }
 
@@ -5352,9 +5222,7 @@ void Mouse_Handler(void)
         }
 
         // Scroll the knobs
-#ifndef __LITE__
         Mouse_Wheel_303_Ed(-MouseWheel_Multiplier);
-#endif
         Mouse_Wheel_Sample_Ed(-MouseWheel_Multiplier);
     }
 
@@ -5379,25 +5247,17 @@ void Mouse_Handler(void)
         }
 
         Mouse_Left_Repeat_Instrument_Ed();
-#ifndef __LITE__
         Mouse_Sliders_303_Ed();
-#endif
         Mouse_Sliders_Sample_Ed();
         Mouse_Sliders_Instrument_Ed();
         Mouse_Sliders_Master_Ed();
-#ifndef __LITE__
         Mouse_Sliders_Synth_Ed();
-#endif
         Mouse_Sliders_Track_Fx_Ed();
-#ifndef __LITE__
         Mouse_Sliders_Fx_Ed();
-#endif
         Mouse_Sliders_Track_Ed();
         Mouse_Sliders_Master_Shuffle();
         Mouse_Sliders_Pattern_Ed();
-#ifndef __LITE__
         Mouse_Sliders_Reverb_Ed();
-#endif
     }
     else
     {
@@ -5407,9 +5267,7 @@ void Mouse_Handler(void)
 
     // Check Zones for GUI clicks -----------------------------------
     
-#ifndef __LITE__
     Mouse_Reverb_Ed();
-#endif
 
     if(Mouse.button_oneshot & MOUSE_LEFT_BUTTON)
     {
@@ -5434,23 +5292,20 @@ void Mouse_Handler(void)
             Draw_Scope_Files_Button();
         }
 
-#ifndef __LITE__
         // Presets dir.
         if(zcheckMouse(Cur_Width - 72, 24, 18, 16))
         {
             Scopish = SCOPE_ZONE_PRESET_DIR;
             Draw_Scope_Files_Button();
         }
-#endif
 
         // Reverbs dir.
-#ifndef __LITE__
         if(zcheckMouse(Cur_Width - 54, 24, 18, 16))
         {
             Scopish = SCOPE_ZONE_REVERB_DIR;
             Draw_Scope_Files_Button();
         }
-#endif
+
         // Patterns dir.
         if(zcheckMouse(Cur_Width - 36, 24, 18, 16))
         {
@@ -5490,17 +5345,13 @@ void Mouse_Handler(void)
         }
 
         // Synths list
-#ifndef __LITE__
         if(zcheckMouse(MAX_PATT_SCREEN_X + 1, 6, 18, 16))
         {
             Scopish = SCOPE_ZONE_SYNTH_LIST;
             Draw_Scope_Files_Button();
         }
-#endif
 
-#ifndef __LITE__
         Mouse_Left_303_Ed();
-#endif
         Mouse_Left_Sample_Ed();
 
         // Change current instrument name
@@ -5842,41 +5693,30 @@ void Mouse_Handler(void)
             gui_action = GUI_CMD_SELECT_INSTRUMENT_EDIT;
             seditor = 0;
         }
-#ifndef __LITE__
         if(zcheckMouse(20 + (TAB_LARG * 2), (Cur_Height - 171) + Add_Offset, TAB_LARG - 2, 16) && (userscreen != USER_SCREEN_SYNTH_EDIT || Patterns_Lines_Offset)) gui_action = GUI_CMD_SELECT_SYNTH_EDIT;
-#endif        
         if(zcheckMouse(20 + (TAB_LARG * 3), (Cur_Height - 171) + Add_Offset, TAB_LARG - 2, 16) && (userscreen != USER_SCREEN_SAMPLE_EDIT || Patterns_Lines_Offset)) gui_action = GUI_CMD_SELECT_SAMPLE_EDIT;
-
-#ifndef __LITE__
         if(zcheckMouse(20 + (TAB_LARG * 4), (Cur_Height - 171) + Add_Offset, TAB_LARG - 2, 16) && (userscreen != USER_SCREEN_TB303_EDIT || Patterns_Lines_Offset)) gui_action = GUI_CMD_SELECT_TB303_EDIT;
-#endif
         if(zcheckMouse(20 + (TAB_LARG * 5), (Cur_Height - 171) + Add_Offset, TAB_LARG - 2, 16) && (userscreen != USER_SCREEN_TRACK_EDIT || Patterns_Lines_Offset)) gui_action = GUI_CMD_SELECT_TRACK_EDIT;
         if(zcheckMouse(20 + (TAB_LARG * 6), (Cur_Height - 171) + Add_Offset, TAB_LARG - 2, 16) && (userscreen != USER_SCREEN_TRACK_FX_EDIT || Patterns_Lines_Offset)) gui_action = GUI_CMD_SELECT_TRACK_FX_EDIT;
-#ifndef __LITE__
         if(zcheckMouse(20 + (TAB_LARG * 7), (Cur_Height - 171) + Add_Offset, TAB_LARG - 2, 16) && (userscreen != USER_SCREEN_FX_SETUP_EDIT || Patterns_Lines_Offset))
         {
             gui_action = GUI_CMD_SELECT_FX_EDIT;
             teac = 0;
         }
         if(zcheckMouse(20 + (TAB_LARG * 8), (Cur_Height - 171) + Add_Offset, TAB_LARG - 2, 16) && (userscreen != USER_SCREEN_REVERB_EDIT || Patterns_Lines_Offset)) gui_action = GUI_CMD_SELECT_REVERB_EDIT;
-#endif
         if(zcheckMouse(20 + (TAB_LARG * 9), (Cur_Height - 171) + Add_Offset, TAB_LARG - 2, 16) && (userscreen != USER_SCREEN_DISKIO_EDIT || Patterns_Lines_Offset)) gui_action = GUI_CMD_SELECT_DISKIO_EDIT;
         if(zcheckMouse(20 + (TAB_LARG * 10), (Cur_Height - 171) + Add_Offset, TAB_LARG - 2, 16) && (userscreen != USER_SCREEN_SETUP_EDIT || Patterns_Lines_Offset)) gui_action = GUI_CMD_SELECT_SCREEN_SETUP_EDIT;
         if(zcheckMouse(20 + (TAB_LARG * 11), (Cur_Height - 171) + Add_Offset, TAB_LARG - 2, 16) && (userscreen != USER_SCREEN_SETUP_MIDI || Patterns_Lines_Offset)) gui_action = GUI_CMD_SELECT_MIDI_SETUP;
 
         Mouse_Left_Track_Fx_Ed();
         Mouse_Left_Sequencer_Ed();
-#ifndef __LITE__
         Mouse_Left_Reverb_Ed();
-#endif
         Mouse_Left_Midi_Ed();
         Mouse_Left_DiskIO_Ed();
         Mouse_Left_Track_Ed();
         Mouse_Left_Instrument_Ed();
-#ifndef __LITE__
         Mouse_Left_Fx_Ed();
         Mouse_Left_Synth_Ed();
-#endif
         Mouse_Left_Master_Ed();
         Mouse_Left_Pattern_Ed();
     }
@@ -6098,20 +5938,16 @@ void Mouse_Handler(void)
             }
         }
 
-#ifndef __LITE__
         Mouse_Right_Fx_Ed();
         Mouse_Right_303_Ed();
         Mouse_Right_Reverb_Ed();
-#endif
         Mouse_Right_Midi_Ed();
         Mouse_Right_DiskIO_Ed();
         Mouse_Right_Sample_Ed();
         Mouse_Right_Track_Ed();
         Mouse_Right_Instrument_Ed();
         Mouse_Right_Sequencer_Ed();
-#ifndef __LITE__
         Mouse_Right_Synth_Ed();
-#endif
         Mouse_Right_Master_Ed();
 
         // Play a .wav
@@ -6144,11 +5980,8 @@ void Mouse_Handler(void)
     {
         Mouse_Sliders_Right_Pattern_Ed();
         Mouse_Sliders_Right_Instrument_Ed();
-#ifndef __LITE__
         Mouse_Sliders_Right_Reverb_Ed();
-#endif
     }
-
 }
 
 // ------------------------------------------------------
@@ -6265,7 +6098,6 @@ void Display_Master_Comp(void)
     char string[64];
 
     Gui_Draw_Button_Box(159, 6, 54, 16, "Threshold", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
-#ifndef __LITE__
     Realslider_Size(159 + 54, 6, 50, (int) (mas_comp_threshold_Master * 0.5f), TRUE);
     if(mas_comp_ratio_Master <= 0.01f)
     {
@@ -6275,18 +6107,9 @@ void Display_Master_Comp(void)
     {
         sprintf(string, "%d%%", (int) mas_comp_threshold_Master);
     }
-#else
-    Realslider_Size(159 + 54, 6, 50, (int) (0 * 0.5f), FALSE);
-    sprintf(string, "Off");
-#endif
-#ifndef __LITE__
     Print_String(string, 159 + 54, 8, 67, BUTTON_TEXT_CENTERED);
-#else
-    Print_String(string, 159 + 54, 8, 67, BUTTON_TEXT_CENTERED | BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_DISABLED);
-#endif
 
     Gui_Draw_Button_Box(283, 6, 41, 16, "Ratio", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
-#ifndef __LITE__
     Realslider_Size(283 + 41, 6, 50, (int) (mas_comp_ratio_Master * 0.5f), TRUE);
     if(mas_comp_ratio_Master <= 0.01f)
     {
@@ -6296,15 +6119,7 @@ void Display_Master_Comp(void)
     {
         sprintf(string, "%d%%", (int) mas_comp_ratio_Master);
     }
-#else
-    Realslider_Size(283 + 41, 6, 50, (int) (0 * 0.5f), FALSE);
-    sprintf(string, "Off");
-#endif
-#ifndef __LITE__
     Print_String(string, 283 + 41, 8, 67, BUTTON_TEXT_CENTERED);
-#else
-    Print_String(string, 283 + 41, 8, 67, BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
-#endif
 }
 
 // ------------------------------------------------------
@@ -6342,7 +6157,6 @@ void Display_Shuffle(void)
 void Mouse_Sliders_Master_Shuffle(void)
 {
     // Compressor threshold
- #ifndef __LITE__
     if(zcheckMouse(213, 6, 67, 18))
     {
         Mas_Compressor_Set_Variables_Master((Mouse.x - 223.0f) * 2.0f, mas_comp_ratio_Master);
@@ -6355,7 +6169,6 @@ void Mouse_Sliders_Master_Shuffle(void)
         Mas_Compressor_Set_Variables_Master(mas_comp_threshold_Master, (Mouse.x - 334.0f) * 2.0f);
         Display_Master_Comp();
     }
- #endif
 
     // Master volume
     if(zcheckMouse(438, 6, 148, 18))
@@ -6386,7 +6199,6 @@ void Actualize_Master(char gode)
 
     if(gode == 0 || gode == 2)
     {
-#ifndef __LITE__
         if(Ticks_Per_Beat < 1) Ticks_Per_Beat = 1;
         if(Ticks_Per_Beat > 32) Ticks_Per_Beat = 32;
         if((Ticks_Per_Beat + 1) < Ticks_Synchro_Left)
@@ -6402,7 +6214,6 @@ void Actualize_Master(char gode)
             Actualize_Fx_Ed(10);
             Actualize_Fx_Ed(11);
         }
-#endif
         Switch_Cmd_Playing(!Song_Playing);
 //        Gui_Draw_Arrows_Number_Box2(324, 64, Ticks_Per_Beat, (Song_Playing ? BUTTON_NORMAL | BUTTON_DISABLED : BUTTON_NORMAL) |
   //                                                         BUTTON_TEXT_CENTERED | (Song_Playing ? 0 : BUTTON_RIGHT_MOUSE));
@@ -6833,22 +6644,13 @@ void Display_Dirs_Icons(int Idx)
     Gui_Draw_Button_Box(Cur_Width - 126, 24, 16, 16, "M", Tab_Highlight[0 + Idx] | BUTTON_TEXT_CENTERED);
     Gui_Draw_Button_Box(Cur_Width - 108, 24, 16, 16, "I", Tab_Highlight[1 + Idx] | BUTTON_TEXT_CENTERED);
     Gui_Draw_Button_Box(Cur_Width - 90, 24, 16, 16, "S", Tab_Highlight[2 + Idx] | BUTTON_TEXT_CENTERED);
-#ifndef __LITE__
     Gui_Draw_Button_Box(Cur_Width - 72, 24, 16, 16, "P", Tab_Highlight[3 + Idx] | BUTTON_TEXT_CENTERED);
     Gui_Draw_Button_Box(Cur_Width - 54, 24, 16, 16, "R", Tab_Highlight[4 + Idx] | BUTTON_TEXT_CENTERED);
-#else
-    Gui_Draw_Button_Box(Cur_Width - 72, 24, 16, 16, "P", Tab_Highlight[3 + Idx] | BUTTON_TEXT_CENTERED | BUTTON_DISABLED);
-    Gui_Draw_Button_Box(Cur_Width - 54, 24, 16, 16, "R", Tab_Highlight[4 + Idx] | BUTTON_TEXT_CENTERED | BUTTON_DISABLED);
-#endif
     Gui_Draw_Button_Box(Cur_Width - 36, 24, 16, 16, "B", Tab_Highlight[5 + Idx] | BUTTON_TEXT_CENTERED);
     Gui_Draw_Button_Box(Cur_Width - 18, 24, 16, 16, "A", Tab_Highlight[6 + Idx] | BUTTON_TEXT_CENTERED);
     
     Gui_Draw_Button_Box(Cur_Width - 36, 6, 16, 16, "In", Tab_Highlight[7 + Idx] | BUTTON_TEXT_CENTERED);
-#ifndef __LITE__
     Gui_Draw_Button_Box(Cur_Width - 18, 6, 16, 16, "Sy", Tab_Highlight[8 + Idx] | BUTTON_TEXT_CENTERED);
-#else
-    Gui_Draw_Button_Box(Cur_Width - 18, 6, 16, 16, "Sy", Tab_Highlight[8 + Idx] | BUTTON_TEXT_CENTERED | BUTTON_DISABLED);
-#endif
 }
 
 void Draw_Scope_Files_Button(void)
@@ -6998,17 +6800,13 @@ void Note_Jazz_Off(int note)
     {
         if(Jazz_Edit || is_recording_2 || !is_editing)
         {
-#ifndef __LITE__
             Synthesizer[Channel->Channel][Channel->Sub_Channel].NoteOff();
-#endif
             if(sp_Stage[Channel->Channel][Channel->Sub_Channel] == PLAYING_SAMPLE)
             {
                 sp_Stage[Channel->Channel][Channel->Sub_Channel] = PLAYING_SAMPLE_NOTEOFF;
             }
-#ifndef __LITE__
             // That's a possibility
             noteoff303(Channel->Channel);
-#endif
         }
         Channel->Note = 0;
         Channel->Channel = 0;

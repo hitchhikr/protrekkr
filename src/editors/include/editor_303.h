@@ -47,14 +47,12 @@
 extern int snamesel;
 extern SDL_Surface *Main_Screen;
 
-#ifndef __LITE__
 extern SDL_Surface *SKIN303;
 
 extern gear303 tb303engine[2];
 extern para303 tb303[2];
 extern unsigned char sl3;
 extern int Refresh_Unit;
-#endif
 
 // ------------------------------------------------------
 // Functions

@@ -127,13 +127,11 @@ void UISetPalette(SDL_Color *Palette, int Amount)
         SDL_SetPalette(PFONT, SDL_PHYSPAL, Palette, 0, Amount);
         SDL_SetPalette(PFONT, SDL_LOGPAL, Palette, 0, Amount);
     }
-#ifndef __LITE__
     if(SKIN303)
     {
         SDL_SetPalette(SKIN303, SDL_PHYSPAL, Palette, 0, Amount);
         SDL_SetPalette(SKIN303, SDL_LOGPAL, Palette, 0, Amount);
     }
-#endif
     if(LOGOPIC)
     {
         SDL_SetPalette(LOGOPIC, SDL_PHYSPAL, Palette, 0, Amount);

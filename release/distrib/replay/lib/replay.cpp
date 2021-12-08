@@ -4568,6 +4568,9 @@ void Do_Effects_Tick_0(void)
 #if !defined(__STAND_ALONE__) && !defined(__WINAMP__)
                         gui_action = GUI_CMD_STOP_SONG;
 #endif
+#if !defined(__STAND_ALONE__) || defined(__WINAMP__)
+                        done = TRUE;
+#endif
                         break;
                     }
                     Ticks_Per_Beat = (int) pltr_dat_row[j];

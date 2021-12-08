@@ -33,7 +33,6 @@
 // Includes
 #include "include/reverbs.h"
 
-#ifndef __LITE__
 // ------------------------------------------------------
 // Load the data from a reverb file (or a module)
 void Load_Reverb_Data(int (*Read_Function)(void *, int ,int, FILE *),
@@ -339,4 +338,3 @@ void Load_Old_Reverb_Presets(int Type)
         decays[i] = decays[i] * 0.015625f;
     }
 }
-#endif // __LITE__

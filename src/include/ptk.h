@@ -71,13 +71,8 @@
 
 #include "../midi/include/midi.h"
 
-#ifndef __LITE__
 #include "../../release/distrib/replay/lib/include/endianness.h"
 #include "../../release/distrib/replay/lib/include/replay.h"
-#else
-#include "../../release/distrib_lite/replay/lib/include/endianness.h"
-#include "../../release/distrib_lite/replay/lib/include/replay.h"
-#endif
 
 #include <string>
 #include <list>
@@ -111,6 +106,7 @@ extern SDL_Surface *Main_Screen;
 extern MOUSE Mouse;
 
 #if defined(__WIN32__)
+#include <mmsystem.h>
 extern HWND Main_Window;
 #endif
 

@@ -67,7 +67,6 @@ void Draw_303_Ed(void)
     Gui_Draw_Button_Box(0, (Cur_Height - 153), fsize, 130, "", BUTTON_NORMAL | BUTTON_DISABLED);
     Gui_Draw_Flat_Box("303 Units");
 
-#ifndef __LITE__
     Gui_Draw_Button_Box(8, (Cur_Height - 134), 64, 16, "Reset Patt.", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
     Gui_Draw_Button_Box(8, (Cur_Height - 116), 64, 16, "Clear Patt.", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
     Gui_Draw_Button_Box(8, (Cur_Height - 98), 64, 16, "Rnd.NoteOn", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
@@ -85,25 +84,6 @@ void Draw_303_Ed(void)
     Skincopy(80, (Cur_Height - 140), 0, 0, 510, 114);
 
     Gui_Draw_Button_Box(668, (Cur_Height - 60), 64, 16, "Scale", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_NO_BORDER | BUTTON_TEXT_CENTERED);
-#else
-    Gui_Draw_Button_Box(8, (Cur_Height - 134), 64, 16, "Reset Patt.", BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_DISABLED);
-    Gui_Draw_Button_Box(8, (Cur_Height - 116), 64, 16, "Clear Patt.", BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_DISABLED);
-    Gui_Draw_Button_Box(8, (Cur_Height - 98), 64, 16, "Rnd.NoteOn", BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_DISABLED);
-    Gui_Draw_Button_Box(8, (Cur_Height - 80), 64, 16, "Rand.Tones", BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_DISABLED);
-    Gui_Draw_Button_Box(8, (Cur_Height - 62), 64, 16, "Rand.Flags", BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_DISABLED);
-
-    Gui_Draw_Button_Box(600, (Cur_Height - 98), 64, 16, "All Notes Up", BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_DISABLED);
-    Gui_Draw_Button_Box(668, (Cur_Height - 98), 64, 16, "All Notes Dn", BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_DISABLED);
-    Gui_Draw_Button_Box(600, (Cur_Height - 78), 64, 16, "Copy Patt.", BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_DISABLED);
-    Gui_Draw_Button_Box(600, (Cur_Height - 60), 64, 16, "Paste Patt.", BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_DISABLED);
-
-    Gui_Draw_Button_Box(600, (Cur_Height - 138), 56, 16, "Patt. Name", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_DISABLED);
-    Gui_Draw_Button_Box(658, (Cur_Height - 138), 34, 16, "Save", BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_DISABLED);
-
-    Skincopy(80, (Cur_Height - 140), 0, 0, 510, 114);
-
-    Gui_Draw_Button_Box(668, (Cur_Height - 60), 64, 16, "Scale", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_NO_BORDER | BUTTON_TEXT_CENTERED);
-#endif
 
     Actualize_303_Ed(0);
 }
@@ -141,21 +121,13 @@ void Refresh_303_Unit(int Unit, int gode)
             {
                 Skincopy(577, (Cur_Height - 58), 138, 119, 3, 3);
                 Skincopy(558, (Cur_Height - 58), 143, 119, 3, 3);
-#ifndef __LITE__
                 Gui_Draw_Button_Box(668, (Cur_Height - 78), 64, 16, "Tune to 1", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
-#else
-                Gui_Draw_Button_Box(668, (Cur_Height - 78), 64, 16, "Tune to 1", BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_DISABLED);
-#endif
             }
             else
             {
                 Skincopy(558, (Cur_Height - 58), 138, 119, 3, 3);
                 Skincopy(577, (Cur_Height - 58), 143, 119, 3, 3);
-#ifndef __LITE__
                 Gui_Draw_Button_Box(668, (Cur_Height - 78), 64, 16, "Tune to 2", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
-#else
-                Gui_Draw_Button_Box(668, (Cur_Height - 78), 64, 16, "Tune to 2", BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_DISABLED);
-#endif
             }
 
             // Make sure we display the right boundaries
@@ -313,29 +285,17 @@ void Refresh_303_Unit(int Unit, int gode)
 
             if(snamesel == INPUT_303_PATTERN)
             {
-#ifndef __LITE__
                 Gui_Draw_Button_Box(600, (Cur_Height - 120), 164, 16, tcp, BUTTON_PUSHED | BUTTON_INPUT);
-#else
-                Gui_Draw_Button_Box(600, (Cur_Height - 120), 164, 16, tcp, BUTTON_PUSHED | BUTTON_INPUT | BUTTON_DISABLED);
-#endif
             }
             else
             {
-#ifndef __LITE__
                 Gui_Draw_Button_Box(600, (Cur_Height - 120), 164, 16, tb303[Unit].pattern_name[tb303[Unit].selectedpattern], BUTTON_NORMAL | BUTTON_INPUT);
-#else
-                Gui_Draw_Button_Box(600, (Cur_Height - 120), 164, 16, tb303[Unit].pattern_name[tb303[Unit].selectedpattern], BUTTON_NORMAL | BUTTON_INPUT | BUTTON_DISABLED);
-#endif
             }
         }
 
         if(gode == 0 || gode == 19)
         {
-#ifndef __LITE__
             Gui_Draw_Arrows_Number_Box2(670, (Cur_Height - 42), tb303[Unit].scale, BUTTON_NORMAL | BUTTON_RIGHT_MOUSE | BUTTON_TEXT_CENTERED);
-#else
-            Gui_Draw_Arrows_Number_Box2(670, (Cur_Height - 42), tb303[Unit].scale, BUTTON_NORMAL | BUTTON_RIGHT_MOUSE | BUTTON_TEXT_CENTERED | BUTTON_DISABLED);
-#endif
         }
 
     }
@@ -373,7 +333,6 @@ void knob(int x, int y, unsigned char number)
 
 void Mouse_Right_303_Ed(void )
 {
-#ifndef __LITE__
     if(userscreen == USER_SCREEN_TB303_EDIT)
     {
         // Volume Slider
@@ -474,12 +433,10 @@ void Mouse_Right_303_Ed(void )
             teac = 19;
         }
     }
-#endif
 }
 
 void Mouse_Wheel_303_Ed(int roll_amount)
 {
-#ifndef __LITE__
     if(userscreen == USER_SCREEN_TB303_EDIT)
     {
         // Volume Knob
@@ -574,12 +531,10 @@ void Mouse_Wheel_303_Ed(int roll_amount)
             livevalue = tempz << 1;
         }
     }
-#endif
 }
 
 void Mouse_Left_303_Ed(void)
 {
-#ifndef __LITE__
     if(userscreen == USER_SCREEN_TB303_EDIT)
     {
         // Step Forward
@@ -1074,12 +1029,10 @@ void Mouse_Left_303_Ed(void)
         }
 
     }
-#endif
 }
 
 void Mouse_Sliders_303_Ed(void)
 {
-#ifndef __LITE__
     if(userscreen == USER_SCREEN_TB303_EDIT)
     {
         // Volume Knob
@@ -1186,7 +1139,6 @@ void Mouse_Sliders_303_Ed(void)
             livevalue = tempz << 1;
         }
     }
-#endif
 }
 
 void Skincopy(int xd, int yd, int xs, int ys, int w, int h)
@@ -1196,7 +1148,6 @@ void Skincopy(int xd, int yd, int xs, int ys, int w, int h)
 
 void tb303_copy_pattern(void)
 {
-#ifndef __LITE__
     tb303_pattern_buffer_full[Current_copy_buffer] = TRUE;
     for(char alter = 0; alter < 16; alter++)
     {
@@ -1209,12 +1160,10 @@ void tb303_copy_pattern(void)
     }
     Copied_Buffer[Current_copy_buffer] = TRUE;
     Display_Cur_copy_Buffer();
-#endif
 }
 
 void tb303_paste_pattern(void)
 {
-#ifndef __LITE__
     if(Copied_Buffer[Current_copy_buffer])
     {
         for(char alter = 0; alter < 16; alter++)
@@ -1227,12 +1176,10 @@ void tb303_paste_pattern(void)
             tb303[sl3].flag[tb303[sl3].selectedpattern][alter].accent_flag = tb303_pattern_buffer[Current_copy_buffer][alter].accent_flag;
         }
     }
-#endif
 }
 
 void tb303_notes_up(void)
 {
-#ifndef __LITE__
     for(char alter = 0; alter < 16; alter++)
     {
         if(tb303[sl3].tone[tb303[sl3].selectedpattern][alter] != 12)
@@ -1240,12 +1187,10 @@ void tb303_notes_up(void)
             tb303[sl3].tone[tb303[sl3].selectedpattern][alter]++;
         }
     }
-#endif
 }
 
 void tb303_notes_down(void)
 {
-#ifndef __LITE__
     for(char alter = 0; alter < 16; alter++)
     {
         if(tb303[sl3].tone[tb303[sl3].selectedpattern][alter])
@@ -1253,12 +1198,10 @@ void tb303_notes_down(void)
             tb303[sl3].tone[tb303[sl3].selectedpattern][alter]--;
         }
     }
-#endif
 }
 
 void Display_Cur_copy_Buffer(void)
 {
-#ifndef __LITE__
     int highlight[4] =
     {
         BUTTON_NORMAL,
@@ -1271,18 +1214,4 @@ void Display_Cur_copy_Buffer(void)
     Gui_Draw_Button_Box(616, (Cur_Height - 42), 15, 16, "2", highlight[1] | BUTTON_TEXT_CENTERED | (tb303_pattern_buffer_full[1] ? 0 : BUTTON_LOW_FONT));
     Gui_Draw_Button_Box(633, (Cur_Height - 42), 15, 16, "3", highlight[2] | BUTTON_TEXT_CENTERED | (tb303_pattern_buffer_full[2] ? 0 : BUTTON_LOW_FONT));
     Gui_Draw_Button_Box(649, (Cur_Height - 42), 15, 16, "4", highlight[3] | BUTTON_TEXT_CENTERED | (tb303_pattern_buffer_full[3] ? 0 : BUTTON_LOW_FONT));
-#else
-    int highlight[4] =
-    {
-        BUTTON_NORMAL | BUTTON_DISABLED,
-        BUTTON_NORMAL | BUTTON_DISABLED,
-        BUTTON_NORMAL | BUTTON_DISABLED,
-        BUTTON_NORMAL | BUTTON_DISABLED
-    };
-    highlight[Current_copy_buffer] = BUTTON_PUSHED;
-    Gui_Draw_Button_Box(600, (Cur_Height - 42), 15, 16, "1", highlight[0] | BUTTON_TEXT_CENTERED | (tb303_pattern_buffer_full[0] ? 0 : BUTTON_LOW_FONT));
-    Gui_Draw_Button_Box(616, (Cur_Height - 42), 15, 16, "2", highlight[1] | BUTTON_TEXT_CENTERED | (tb303_pattern_buffer_full[1] ? 0 : BUTTON_LOW_FONT));
-    Gui_Draw_Button_Box(633, (Cur_Height - 42), 15, 16, "3", highlight[2] | BUTTON_TEXT_CENTERED | (tb303_pattern_buffer_full[2] ? 0 : BUTTON_LOW_FONT));
-    Gui_Draw_Button_Box(649, (Cur_Height - 42), 15, 16, "4", highlight[3] | BUTTON_TEXT_CENTERED | (tb303_pattern_buffer_full[3] ? 0 : BUTTON_LOW_FONT));
-#endif
 }

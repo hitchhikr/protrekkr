@@ -250,7 +250,6 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
     int Store_FX_RevCuto = FALSE;
     int Store_FX_RevReso = FALSE;
 
-#ifndef __LITE__
     int Store_Synth = FALSE;
 
     int Store_TrackFilters = FALSE;
@@ -286,7 +285,6 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
     int Store_Synth_Pulse = FALSE;
     int Store_Synth_WhiteNoise = FALSE;
     int Store_Synth_PinkNoise = FALSE;
-#endif // __LITE__
 
     int Number_Fx = 0;
     int Empty_Var = 0;
@@ -373,9 +371,7 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
     Write_Mod_Data(&char_value, sizeof(char), 1, in);
 
     Write_Mod_Data(&Song_Length, sizeof(char), 1, in);
-#ifndef __LITE__
     Write_Mod_Data(&Use_Cubic, sizeof(char), 1, in);
-#endif
 
     // Patterns sequence
     Write_Mod_Data(New_pSequence, sizeof(char), Song_Length, in);
@@ -387,9 +383,7 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
     }
 
     char_value = (char) Real_SongTracks;
-#ifndef __LITE__
     Write_Mod_Data(Channels_MultiNotes, sizeof(char), char_value, in);
-#endif
 
     Write_Mod_Data(Channels_Effects, sizeof(char), char_value, in);
     for(i = 0; i < char_value; i++)
@@ -401,7 +395,6 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
         Write_Mod_Data(&Track_Volume[i], sizeof(float), 1, in);
     }
 
-#ifndef __LITE__
     for(i = 0; i < char_value; i++)
     {
         if(EqDat[i].lg != 1.0f ||
@@ -415,7 +408,6 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
         Write_Mod_Data(&EqDat[i].mg, sizeof(float), 1, in);
         Write_Mod_Data(&EqDat[i].hg, sizeof(float), 1, in);
     }
-#endif
 
     // Check the instruments
     Nbr_Used_Instr = 0;
@@ -443,7 +435,6 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                         switch(i)
                         {
                             case  PATTERN_INSTR1:
-#ifndef __LITE__
                             case  PATTERN_INSTR2:
                             case  PATTERN_INSTR3:
                             case  PATTERN_INSTR4:
@@ -459,7 +450,6 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                             case  PATTERN_INSTR14:
                             case  PATTERN_INSTR15:
                             case  PATTERN_INSTR16:
-#endif
                                 if(TmpPatterns_Notes[i] < MAX_INSTRS)
                                 {
                                     if(Used_Instr[TmpPatterns_Notes[i]].new_order == -1)
@@ -488,7 +478,6 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
         }
     }
 
-#ifndef __LITE__
     // Add the prgsynth instruments
     int synth_instr_remap;
     for(i = 0; i < MAX_INSTRS; i++)
@@ -517,7 +506,6 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
             }
         }
     }
-#endif
 
     if(!Simulate)
     {
@@ -687,17 +675,16 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                                     Store_FX_PatternLoop = TRUE;
                                     break;
 
-#ifndef __LITE__
                                 // $08 SetCutOff
                                 case 0x8:
                                     Store_FX_SetCutOff = TRUE;
                                     break;
-#endif
+
                                 // $09 SetSampleOffset
                                 case 0x9:
                                     Store_FX_SetSampleOffset = TRUE;
                                     break;
-#ifndef __LITE__
+
                                 // $0a SetRandomCutOff
                                 case 0xa:
                                     Store_FX_SetRandomCutOff = TRUE;
@@ -712,7 +699,6 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                                 case 0xc:
                                     Store_FX_SlideDownCutOff = TRUE;
                                     break;
-#endif
 
                                 // $0d PatternBreak
                                 case 0xd:
@@ -734,7 +720,6 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                                     Store_FX_SetSpeed = TRUE;
                                     break;
 
-#ifndef __LITE__
                                 // $10 Send to delay Command
                                 case 0x10:
                                     Store_FX_SendToDelayCommand = TRUE;
@@ -837,7 +822,6 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                                 case 0x16:
                                     Store_FX_ResetFilterLfo = TRUE;
                                     break;
-#endif // __LITE__
 
                                 // $17 Auto fade in xx ticks
                                 case 0x17:
@@ -904,19 +888,16 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                                     Store_FX_FinePitchDown = TRUE;
                                     break;
 
-#ifndef __LITE__
                                 // $24 Switch flanger
                                 case 0x24:
                                     Store_FX_SwitchFlanger = TRUE;
                                     break;
-#endif
 
                                 // $25 Set shuffle
                                 case 0x25:
                                     Store_FX_Shuffle = TRUE;
                                     break;
 
-#ifndef __LITE__
                                 // $26 Set reverb cutoff
                                 case 0x26:
                                     Store_FX_RevCuto = TRUE;
@@ -941,7 +922,6 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                                 case 0x32:
                                     Store_303_2 = TRUE;
                                     break;
-#endif
                             }
                         }
 
@@ -1016,7 +996,6 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
         }
     }
 
-#ifndef __LITE__
     switch(Use_Cubic)
     {
         case CUBIC_INT:
@@ -1032,11 +1011,8 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
             Save_Constant("PTK_USE_SPLINE", FALSE);
             break;
     }
-#endif
 
-#ifndef __LITE__
     Save_Constant("PTK_303", Store_303_1 | Store_303_2);
-#endif
 
     Save_Constant("PTK_FX_0", Store_FX_PitchUp | Store_FX_PitchDown |
                               Store_FX_TranceSlicer |
@@ -1114,7 +1090,6 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                                   Store_FX_PatternLoop | Store_FX_Reverse |
                                   Store_FX_RevCuto | Store_FX_RevReso);
 
-#ifndef __LITE__
     // Remap the used instruments
     for(i = 0; i < MAX_INSTRS; i++)
     {
@@ -1129,7 +1104,6 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                 break;
         }
     }
-#endif
 
     Write_Mod_Data(&Nbr_Used_Instr, sizeof(int), 1, in);
 
@@ -1140,15 +1114,12 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
         swrite = Used_Instr2[i].old_order;
         if(swrite != -1)
         {
-#ifndef __LITE__
             Write_Mod_Data(&Synthprg[swrite], sizeof(char), 1, in);
-#endif
 
             Write_Mod_Data(&Beat_Sync[swrite], sizeof(char), 1, in);
             Write_Mod_Data(&Beat_Lines[swrite], sizeof(short), 1, in);
             Write_Mod_Data(&Sample_Vol[swrite], sizeof(float), 1, in);
 
-#ifndef __LITE__
             if(Synthprg[swrite])
             {
                 // Forward as least for synths
@@ -1422,10 +1393,7 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
 
                 Write_Mod_Data(&PARASynth[swrite].osc_combine, sizeof(char), 1, in);
             }
-#endif // __LITE__
 
-
-#ifndef __LITE__
             // Compression type
             Write_Mod_Data(&SampleCompression[swrite], sizeof(char), 1, in);
             switch(SampleCompression[swrite])
@@ -1438,9 +1406,6 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                     Write_Mod_Data(&At3_BitRate[swrite], sizeof(char), 1, in);
                     break;
             }
-#else
-            Write_Mod_Data(&SampleCompression[swrite], sizeof(char), 1, in);
-#endif
 
             // 16 splits / instrument
             for(int slwrite = 0; slwrite < MAX_INSTRS_SPLITS; slwrite++)
@@ -1451,7 +1416,6 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                     Store_Instruments = TRUE;
                     int Apply_Interpolation = FALSE;
 
-#ifndef __LITE__
                     // Check if any of the packing scheme has been used
                     switch(SampleCompression[swrite])
                     {
@@ -1495,17 +1459,14 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                             Apply_Interpolation = TRUE;
                             break;
                     }
-#endif // __LITE__
                     Uint32 Real_Len = Sample_Length[swrite][slwrite];
                     Uint32 Calc_Len = Sample_Length[swrite][slwrite];
                     Uint32 Loop_Start = LoopStart[swrite][slwrite];
                     Uint32 Loop_End = LoopEnd[swrite][slwrite];
-#ifndef __LITE__
                     Uint32 iSmp;
-#endif
+
                     short *Smp_Dats = NULL;
 
-#ifndef __LITE__
                     if(Apply_Interpolation)
                     {
                         Loop_Start /= 2;
@@ -1517,7 +1478,6 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                         Calc_Len /= 2;
                         Calc_Len *= 2;
                     }
-#endif
 
                     // Don't write past the looping point
                     if(LoopType[swrite][slwrite])
@@ -1545,7 +1505,6 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                     Write_Mod_Data(&Sample_Amplify[swrite][slwrite], sizeof(float), 1, in);
                     Write_Mod_Data(&FDecay[swrite][slwrite], sizeof(float), 1, in);
 
-#ifndef __LITE__
                     if(Apply_Interpolation)
                     {
                         Calc_Len /= 2;
@@ -1568,8 +1527,6 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                     }
                     else
                     {
-#endif
-
                         Pack_Sample(in,
                                     Get_WaveForm(swrite, 0, slwrite),
                                     Calc_Len,
@@ -1578,15 +1535,12 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                                             Type_Mp3_BitRate[Mp3_BitRate[swrite]] :
                                             Type_At3_BitRate[At3_BitRate[swrite]]
                                    );
-#ifndef __LITE__
                     }
-#endif
                     
                     // Stereo mode ?
                     Write_Mod_Data(&Sample_Channels[swrite][slwrite], sizeof(char), 1, in);
                     if(Sample_Channels[swrite][slwrite] == 2)
                     {
-#ifndef __LITE__
                         if(Apply_Interpolation)
                         {
                             // Halve the sample
@@ -1606,7 +1560,6 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                         }
                         else
                         {
-#endif
                             Pack_Sample(in,
                                         Get_WaveForm(swrite, 1, slwrite),
                                         Calc_Len,
@@ -1615,9 +1568,7 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                                                 Type_Mp3_BitRate[Mp3_BitRate[swrite]] :
                                                 Type_At3_BitRate[At3_BitRate[swrite]]
                                        );
-#ifndef __LITE__
                         }
-#endif
                     }
                     free(Smp_Dats);
                 }   // Exist Sample
@@ -1629,7 +1580,6 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
     Save_Constant("PTK_LOOP_FORWARD", Store_Loop_Forward);
     Save_Constant("PTK_LOOP_PINGPONG", Store_Loop_PingPong);
 
-#ifndef __LITE__
     Save_Constant("PTK_SYNTH", Store_Synth);
 
     Save_Constant("PTK_SYNTH_PHASE1", Store_Synth_Phase_Osc1);
@@ -1679,20 +1629,16 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
     Save_Constant("PTK_INTERNAL", Store_Internal);
 
     Write_Mod_Data(&compressor, sizeof(char), 1, in);
-#endif // __LITE__
 
     for(twrite = 0; twrite < Songtracks; twrite++)
     {
         if(!Track_Is_Muted(twrite))
         {
-#ifndef __LITE__
             if(ICut[twrite] > 0.0078125f) ICut[twrite] = 0.0078125f;
             if(ICut[twrite] < 0.00006103515625f) ICut[twrite] = 0.00006103515625f;
             Write_Mod_Data(&TCut[twrite], sizeof(float), 1, in);
             Write_Mod_Data(&ICut[twrite], sizeof(float), 1, in);
-#endif
             Write_Mod_Data(&TPan[twrite], sizeof(float), 1, in);
-#ifndef __LITE__
             Write_Mod_Data(&FType[twrite], sizeof(int), 1, in);
             // One of them must be != 4
             if(FType[twrite] != 4) Store_TrackFilters = TRUE;
@@ -1774,14 +1720,11 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
             }
             Write_Mod_Data(&CSend[twrite], sizeof(int), 1, in);
             Write_Mod_Data(&Channels_Polyphony[twrite], sizeof(char), 1, in);
-#endif // __LITE__
         }
     }
 
     // Writing mod properties
-#ifndef __LITE__
     Write_Mod_Data(&c_threshold, sizeof(int), 1, in);
-#endif
 
     Write_Mod_Data(&Beats_Per_Min, sizeof(int), 1, in);
     Write_Mod_Data(&Ticks_Per_Beat, sizeof(int), 1, in);
@@ -1789,7 +1732,6 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
     if(mas_vol > 1.0f) mas_vol = 1.0f;
     Write_Mod_Data(&mas_vol, sizeof(float), 1, in);
 
-#ifndef __LITE__
     float threshold = mas_comp_threshold_Master;
     float ratio = mas_comp_ratio_Master;
     char Comp_Flag = FALSE;
@@ -1814,9 +1756,7 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
         Write_Mod_Data(&Comp_Flag, sizeof(char), 1, in);
         Save_Constant("PTK_LIMITER_MASTER", FALSE);
     }
-#endif
 
-#ifndef __LITE__
     Comp_Flag = FALSE;
     for(i = 0; i < Songtracks; i++)
     {
@@ -1857,9 +1797,7 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
         }
         Write_Mod_Data(&Compress_Track, sizeof(char), Songtracks, in);
    }
-#endif // __LITE__
 
-#ifndef __LITE__
     Write_Mod_Data(&Feedback, sizeof(float), 1, in);
     
     if(compressor)
@@ -1871,11 +1809,9 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
     Write_Mod_Data(&rchorus_delay, sizeof(int), 1, in);
     Write_Mod_Data(&lchorus_feedback, sizeof(float), 1, in);
     Write_Mod_Data(&rchorus_feedback, sizeof(float), 1, in);
-#endif
 
     Write_Mod_Data(&shuffle, sizeof(int), 1, in);
 
-#ifndef __LITE__
     Save_Constant("PTK_TRACKFILTERS", Store_TrackFilters);
 
     Save_Constant("PTK_FILTER_LOHIBAND", Store_Filter_LoHiBand);
@@ -1912,13 +1848,10 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
     Save_Constant("PTK_PROC_FILTERINT2P", Store_Filter_DistL | Store_Filter_DistM | Store_Filter_DistH | Store_Filter_Dist);
     Save_Constant("PTK_PROC_FILTERHP", Store_Filter_Hp12M | Store_Filter_Hp12S | Store_Filter_Hp24M);
     Save_Constant("PTK_PROC_FILTERHP2", Store_Filter_Hp12S | Store_Filter_Hp24M);
-#endif // __LITE__
 
     Save_Constant("PTK_SHUFFLE", shuffle != 0 ? TRUE : FALSE || Store_FX_Shuffle);
     
-#ifndef __LITE__
     Save_Constant("PTK_COMPRESSOR", compressor);
-#endif
 
     for(int tps_pos = 0; tps_pos < Song_Length; tps_pos++)
     {
@@ -1931,7 +1864,6 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
         }
     }
 
-#ifndef __LITE__
     for(twrite = 0; twrite < Songtracks; twrite++)
     {
         if(!Track_Is_Muted(twrite))
@@ -1977,15 +1909,11 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
         }
     }
     Save_Constant("PTK_DISCLAP", Store_Disclap);
-#endif // __LITE__
 
     Save_Constant("PTK_TRACK_VOLUME", Store_Track_Volume);
 
-#ifndef __LITE__
     Save_Constant("PTK_TRACK_EQ", Store_Track_Eq);
-#endif
 
-#ifndef __LITE__
     for(tps_trk = 0; tps_trk < Songtracks; tps_trk++)
     {
         if(!Track_Is_Muted(tps_trk))
@@ -1997,9 +1925,7 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
     Write_Mod_Data(&Reverb_Filter_Cutoff, sizeof(float), 1, in);
     Write_Mod_Data(&Reverb_Filter_Resonance, sizeof(float), 1, in);
     Write_Mod_Data(&Reverb_Stereo_Amount, sizeof(char), 1, in);
-#endif
 
-#ifndef __LITE__
     Write_Mod_Data(&Store_303_1, sizeof(char), 1, in);
     if(Store_303_1)
     {
@@ -2036,7 +1962,6 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
     
     if(Store_303_1) Write_Mod_Data(&tb303engine[0].tbVolume, sizeof(float), 1, in);
     if(Store_303_2) Write_Mod_Data(&tb303engine[1].tbVolume, sizeof(float), 1, in);
-#endif // __LITE__
 
     free(New_RawPatterns);
 

@@ -69,7 +69,6 @@ void Midi_Song_Set_BPM(int Data)
     gui_bpm_action = TRUE;
 }
 
-#ifndef __LITE__
 // ------------------------------------------------------
 // 303: set tune (LIVE)
 void Midi_303_Set_Tune(int Unit, int Data)
@@ -232,7 +231,6 @@ void Midi_303_Switch(int Data)
     teac = 0;
     gui_action = GUI_CMD_REFRESH_TB303_PARAMS;
 }
-#endif // __LITE__
 
 // ------------------------------------------------------
 // Track panning (LIVE)
@@ -271,7 +269,6 @@ void Midi_Track_Set_LFO_Carrier(int Data)
 
 // ------------------------------------------------------
 // Track cutoff (LIVE)
-#ifndef __LITE__
 void Midi_Track_Set_Cutoff(int Data)
 {
     TCut[Track_Under_Caret] = ((float) Data);
@@ -334,7 +331,6 @@ void Midi_Track_Set_Disto_Clamp(int Data)
     }
     Actualize_Track_Ed(8);
 }
-#endif // __LITE__
 
 // ------------------------------------------------------
 // Start playing (EDIT)
@@ -515,16 +511,13 @@ MIDI_PTK_CMD Str_Midi_Commands[NBR_MIDI_AUTOMATION] =
     { T_ R_ A_ C_ K_ DDT_ SPC_ O_ N_ SLA_ O_ F_ F_, &Midi_Edit_Track_On_Off },
     { T_ R_ A_ C_ K_ DDT_ SPC_ P_ A_ N_ N_ I_ N_ G_, &Midi_Track_Set_Panning },
     { T_ R_ A_ C_ K_ DDT_ SPC_ V_ O_ L_ U_ M_ E_, &Midi_Track_Set_Volume },
-#ifndef __LITE__
     { T_ R_ A_ C_ K_ DDT_ SPC_ L_ F_ O_ SPC_ C_ A_ R_ R_ I_ E_ R_, &Midi_Track_Set_LFO_Carrier },
     { T_ R_ A_ C_ K_ DDT_ SPC_ C_ U_ T_ O_ F_ F_, &Midi_Track_Set_Cutoff },
     { T_ R_ A_ C_ K_ DDT_ SPC_ R_ E_ S_ O_ N_ A_ N_ C_ E_, &Midi_Track_Set_Resonance },
     { T_ R_ A_ C_ K_ DDT_ SPC_ R_ E_ V_ E_ R_ B_, &Midi_Track_Set_Reverb },
     { T_ R_ A_ C_ K_ DDT_ SPC_ D_ I_ S_ T_ O_ SPC_ T_ H_ R_ E_ S_ H_ O_ L_ D_, &Midi_Track_Set_Disto_Threshold },
     { T_ R_ A_ C_ K_ DDT_ SPC_ D_ I_ S_ T_ O_ SPC_ C_ L_ A_ M_ P_, &Midi_Track_Set_Disto_Clamp },
-#endif
 
-#ifndef __LITE__
     { _3 _0 _3 DOT_ _1 DDT_ SPC_ T_ U_ N_ E_, &Midi_303_Set_1_Tune },
     { _3 _0 _3 DOT_ _2 DDT_ SPC_ T_ U_ N_ E_, &Midi_303_Set_2_Tune },
     { _3 _0 _3 SPC_ OPA_ C_ U_ R_ R_ DOT_ CPA_ DDT_ SPC_ T_ U_ N_ E_, &Midi_303_Set_Cur_Tune },
@@ -547,7 +540,6 @@ MIDI_PTK_CMD Str_Midi_Commands[NBR_MIDI_AUTOMATION] =
     { _3 _0 _3 DOT_ _2 DDT_ SPC_ V_ O_ L_ U_ M_ E_, &Midi_303_Set_2_Volume },
     { _3 _0 _3 SPC_ OPA_ C_ U_ R_ R_ DOT_ CPA_ DDT_ SPC_ V_ O_ L_ U_ M_ E_, &Midi_303_Set_Cur_Volume },
     { _3 _0 _3 DDT_ SPC_ S_ W_ I_ T_ C_ H_, &Midi_303_Switch }
-#endif
 };
 
 // ------------------------------------------------------

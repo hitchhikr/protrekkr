@@ -2113,23 +2113,18 @@ void Reset_Track(int Position, int Track)
 
     TPan[Track] = Default_Pan[Track];
 
-#ifndef __LITE__
     TCut[Track] = 126.0f;
     ICut[Track] = 0.0039062f;
     FType[Track] = 4;
-#endif
 
-#ifndef __LITE__
     Compress_Track[Track] = FALSE;
     mas_comp_threshold_Track[Track] = 100.0f;
     mas_comp_ratio_Track[Track] = 0;
-#endif
     oldspawn[Track] = 0;
     roldspawn[Track] = 0;
 
     Chan_Midi_Prg[Track] = Track;
 
-#ifndef __LITE__
     LFO_ON[Track] = 0;
     LFO_RATE[Track] = 0.0001f;
     LFO_AMPL[Track] = 0;
@@ -2143,11 +2138,9 @@ void Reset_Track(int Position, int Track)
 
     DSend[Track] = 0;
     CSend[Track] = 0;
-#endif
 
     Track_Volume[Track] = 1.0f;
 
-#ifndef __LITE__
     FLANGER_ON[Track] = 0;
     FLANGER_AMOUNT[Track] = -0.8f;
     FLANGER_DEPHASE[Track] = 0.0174532f;
@@ -2162,7 +2155,6 @@ void Reset_Track(int Position, int Track)
     FLANGER_OFFSET1[Track] = float(FLANGER_OFFSET[Track] - FLANGER_DELAY[Track]);
 
     init_eq(&EqDat[Track]);
-#endif
 
     Chan_Mute_State[Track] = FALSE;
     for(i = 0; i < Song_Length; i++)
@@ -2213,25 +2205,20 @@ void Copy_Track(int Position, int Track_Src, int Track_Dst)
     Channels_Effects[Track_Dst] = Channels_Effects[Track_Src];
     Chan_Mute_State[Track_Dst] = Chan_Mute_State[Track_Src];
 
-#ifndef __LITE__
     Compress_Track[Track_Dst] = Compress_Track[Track_Src];
     mas_comp_threshold_Track[Track_Dst] = mas_comp_threshold_Track[Track_Src];
     mas_comp_ratio_Track[Track_Dst] = mas_comp_ratio_Track[Track_Src];
-#endif
 
     TPan[Track_Dst] = TPan[Track_Src];
-#ifndef __LITE__
     TCut[Track_Dst] = TCut[Track_Src];
     ICut[Track_Dst] = ICut[Track_Src];
     FType[Track_Dst] = FType[Track_Src];
-#endif
 
     oldspawn[Track_Dst] = oldspawn[Track_Src];
     roldspawn[Track_Dst] = roldspawn[Track_Src];
 
     Chan_Midi_Prg[Track_Dst] = Chan_Midi_Prg[Track_Src];
 
-#ifndef __LITE__
     FRez[Track_Dst] = FRez[Track_Src];
     
     DThreshold[Track_Dst] = DThreshold[Track_Src];
@@ -2240,11 +2227,9 @@ void Copy_Track(int Position, int Track_Src, int Track_Dst)
     
     DSend[Track_Dst] = DSend[Track_Src];
     CSend[Track_Dst] = CSend[Track_Src];
-#endif
     
     Track_Volume[Track_Dst] = Track_Volume[Track_Src];
 
-#ifndef __LITE__
     LFO_ON[Track_Dst] = LFO_ON[Track_Src];
     LFO_RATE[Track_Dst] = LFO_RATE[Track_Src];
     LFO_AMPL[Track_Dst] = LFO_AMPL[Track_Src];
@@ -2263,7 +2248,6 @@ void Copy_Track(int Position, int Track_Src, int Track_Dst)
     FLANGER_OFFSET1[Track_Dst] = FLANGER_OFFSET1[Track_Src];
 
     memcpy(&EqDat[Track_Dst], &EqDat[Track_Src], sizeof(EQSTATE));
-#endif
 
     for(i = 0; i < Song_Length; i++)
     {

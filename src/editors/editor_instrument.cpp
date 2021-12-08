@@ -36,15 +36,9 @@
 #include "../samples/include/samples_pack.h"
 #include "../files/include/files_list.h"
 
-#ifndef __LITE__
 #include "../../release/distrib/replay/lib/include/samples_unpack.h"
 #include "../../release/distrib/replay/lib/include/wavpack.h"
 #include "../../release/distrib/replay/lib/include/endianness.h"
-#else
-#include "../../release/distrib_lite/replay/lib/include/samples_unpack.h"
-//#include "../../release/distrib_lite/replay/lib/include/wavpack.h"
-#include "../../release/distrib_lite/replay/lib/include/endianness.h"
-#endif
 
 #include "../files/include/files.h"
 #include "../ui/include/requesters.h"
@@ -339,7 +333,6 @@ void Actualize_Instrument_Ed(int typex, char gode)
 
                 if(gode == 0 || gode == 16)
                 {
-#ifndef __LITE__
                     switch(SampleCompression[Current_Instrument])
                     {
                         case SMP_PACK_GSM:
@@ -423,16 +416,6 @@ void Actualize_Instrument_Ed(int typex, char gode)
                             Gui_Draw_Button_Box(681, (Cur_Height - 116) + (18 * 4), 39, 16, "None", Allow_Global_Pushed | BUTTON_TEXT_CENTERED);
                             break;
                     }
-#else
-                            Gui_Draw_Button_Box(681, (Cur_Height - 134), 39, 16, "Internal", BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_DISABLED);
-                            Gui_Draw_Button_Box(640, (Cur_Height - 116), 39, 16, "Gsm", BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_DISABLED);
-                            Gui_Draw_Button_Box(681, (Cur_Height - 116), 39, 16, "Mp3", BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_DISABLED);
-                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 1), 80, 16, "ADPCM", BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_DISABLED | BUTTON_DISABLED);
-                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 2), 80, 16, "True Speech", BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_DISABLED);
-                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 3), 80, 16, "At3 (PSP only)", BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_DISABLED);
-                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 4), 39, 16, "8 Bit", BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_DISABLED);
-                            Gui_Draw_Button_Box(681, (Cur_Height - 116) + (18 * 4), 39, 16, "None", BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_DISABLED);
-#endif
                     if(gode == 16) gode = 19;
                 }
 
@@ -440,11 +423,7 @@ void Actualize_Instrument_Ed(int typex, char gode)
                 {
                     if(Mp3_BitRate[Current_Instrument] < 0) Mp3_BitRate[Current_Instrument] = 0;
                     if(Mp3_BitRate[Current_Instrument] > 5) Mp3_BitRate[Current_Instrument] = 5;
-#ifndef __LITE__
                     Gui_Draw_Arrows_Number_Box(729, (Cur_Height - 116), Type_Mp3_BitRate[Mp3_BitRate[Current_Instrument]], Allow_MP3 | Allow_Global | BUTTON_TEXT_CENTERED);
-#else
-                    Gui_Draw_Arrows_Number_Box(729, (Cur_Height - 116), Type_Mp3_BitRate[Mp3_BitRate[Current_Instrument]], BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_DISABLED);
-#endif
                     if(gode == 17) gode = 19;
                 }
 
@@ -452,11 +431,7 @@ void Actualize_Instrument_Ed(int typex, char gode)
                 {
                     if(At3_BitRate[Current_Instrument] < 0) At3_BitRate[Current_Instrument] = 0;
                     if(At3_BitRate[Current_Instrument] > 2) At3_BitRate[Current_Instrument] = 2;
-#ifndef __LITE__
                     Gui_Draw_Arrows_Number_Box(729, (Cur_Height - 80), Type_At3_BitRate[At3_BitRate[Current_Instrument]], Allow_AT3 | Allow_Global | BUTTON_TEXT_CENTERED);
-#else
-                    Gui_Draw_Arrows_Number_Box(729, (Cur_Height - 80), Type_At3_BitRate[At3_BitRate[Current_Instrument]], BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_DISABLED);
-#endif
                     if(gode == 18) gode = 19;
                 }
 
@@ -464,32 +439,22 @@ void Actualize_Instrument_Ed(int typex, char gode)
                 {
                     if(SamplesSwap[Current_Instrument])
                     {
-#ifndef __LITE__
                         Gui_Draw_Button_Box(729, (Cur_Height - 116) + (18 * 4), 60, 16, "Lock / All", Allow_Global_Pushed | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
-#else
-                        Gui_Draw_Button_Box(729, (Cur_Height - 116) + (18 * 4), 60, 16, "Lock / All", BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE | BUTTON_DISABLED);
-#endif
                     }
                     else
                     {
-#ifndef __LITE__
                         Gui_Draw_Button_Box(729, (Cur_Height - 116) + (18 * 4), 60, 16, "Lock / All", Allow_Global | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
-#else
-                        Gui_Draw_Button_Box(729, (Cur_Height - 116) + (18 * 4), 60, 16, "Lock / All", BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE | BUTTON_DISABLED);
-#endif
                     }
                     if(gode == 19)
                     {
                         int i;
                         if(SamplesSwap[Current_Instrument])
                         {
-#ifndef __LITE__
                             // Perform the samples lock on all splits
                             for(i = 0; i < 16; i++)
                             {
                                 Lock_Sample(Current_Instrument, i);
                             }
-#endif 
                         }
                         else
                         {
@@ -768,7 +733,6 @@ void Mouse_Left_Instrument_Ed(void)
             gui_action = GUI_CMD_UPDATE_INSTRUMENT_ED;
         }
 
-#ifndef __LITE__
         if(Allow_Global_Sliders)
         {
             // Select Internal
@@ -904,9 +868,7 @@ void Mouse_Left_Instrument_Ed(void)
                 teac = 17;
             }
 #endif
-#endif
 
-#ifndef __LITE__
 #if defined(__AT3_CODEC__)
             // At3 BitRate
             if(zcheckMouse(729, (Cur_Height - 80), 16, 16))
@@ -934,9 +896,7 @@ void Mouse_Left_Instrument_Ed(void)
                 teac = 18;
             }
 #endif
-#endif
 
-#ifndef __LITE__
             // Lock sample
             if(zcheckMouse(729, (Cur_Height - 116) + (18 * 4), 60, 16))
             {
@@ -945,7 +905,6 @@ void Mouse_Left_Instrument_Ed(void)
                 teac = 19;
             }
         }
-#endif
 
         if(SampleType[Current_Instrument][Current_Instrument_Split])
         {
@@ -1015,7 +974,6 @@ void Mouse_Right_Instrument_Ed(void)
         }
 #endif
 
-#ifndef __LITE__
         if(Allow_Global_Sliders)
         {
             // Lock all samples
@@ -1079,7 +1037,6 @@ void Mouse_Right_Instrument_Ed(void)
                 Actualize_Instruments_Synths_List(1);
             }
         }
-#endif
 
         if(SampleType[Current_Instrument][Current_Instrument_Split])
         {
@@ -1319,7 +1276,6 @@ void Dump_Instruments_Synths_List(int xr, int yr)
 
                             if(Nbr_Splits)
                             {
-#ifndef __LITE__
                                 switch(SampleCompression[rel_val])
                                 {
 #if defined(__GSM_CODEC__)
@@ -1365,11 +1321,6 @@ void Dump_Instruments_Synths_List(int xr, int yr)
                                         PrintString(xr + (Cur_Width - 560), yr + (counter * 12), Font, Line);
                                         break;
                                 }
-#else
-                                sprintf(Line, "Pck: None");
-                                PrintString(xr + (Cur_Width - 560), yr + (counter * 12), Font, Line);
-                                break;
-#endif
                             }
                             else
                             {
@@ -1388,7 +1339,6 @@ void Dump_Instruments_Synths_List(int xr, int yr)
                             }
                             break;
 
-#ifndef __LITE__
                         // View synths
                         case SCOPE_ZONE_SYNTH_LIST:
 
@@ -1454,7 +1404,6 @@ void Dump_Instruments_Synths_List(int xr, int yr)
                                 PrintString(xr + (Cur_Width - 540), yr + (counter * 12), USE_FONT, Line);
                             }
                             break;
-#endif
                     }
                 }
             }
@@ -1535,7 +1484,6 @@ void Actualize_Instruments_Synths_List(int modeac)
                     PrintString(398, 26, USE_FONT, Line);
                     break;
 
-#ifndef __LITE__
                 case SCOPE_ZONE_SYNTH_LIST:
                     Nbr_Entries = 0;
                     for(i = 0; i < MAX_INSTRS; i++)
@@ -1548,7 +1496,6 @@ void Actualize_Instruments_Synths_List(int modeac)
                     sprintf(Line, "Synths List (%d)", Nbr_Entries);
                     PrintString(398, 26, USE_FONT, Line);
                     break;
-#endif
             }
 
             break;
@@ -1557,7 +1504,6 @@ void Actualize_Instruments_Synths_List(int modeac)
 
 // ------------------------------------------------------
 // Lock a sample in order to test it
-#ifndef __LITE__
 void Lock_Sample(int instr_nbr, int split)
 {
     int PackedLen = 0;
@@ -1779,7 +1725,6 @@ void Lock_Sample(int instr_nbr, int split)
         if(Smp_Dats) free(Smp_Dats);
     }
 }
-#endif // __LITE__
 
 // ------------------------------------------------------
 // Copy a sample into the back buffer

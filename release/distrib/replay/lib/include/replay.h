@@ -63,11 +63,7 @@
 #define USE_FASTPOW
 
 #define MAX_TRACKS 16
-#ifndef __LITE__
 #define MAX_POLYPHONY 16
-#else
-#define MAX_POLYPHONY 1
-#endif
 #define DEFAULT_POLYPHONY 1
 #define MAX_FILTER 23
 #define MAX_COMB_FILTERS 10
@@ -106,7 +102,6 @@
 
 #define MAX_FX 4
 
-#ifndef __LITE__
 #define PATTERN_NOTE1 0
 #define PATTERN_INSTR1 1
 #define PATTERN_NOTE2 2
@@ -153,25 +148,6 @@
 
 #define PATTERN_FX4 40
 #define PATTERN_FXDATA4 41
-#else
-#define PATTERN_NOTE1 0
-#define PATTERN_INSTR1 1
-
-#define PATTERN_VOLUME 2
-#define PATTERN_PANNING 3
-#define PATTERN_FX 4
-#define PATTERN_FXDATA 5
-
-#define PATTERN_FX2 6
-#define PATTERN_FXDATA2 7
-
-#define PATTERN_FX3 8
-#define PATTERN_FXDATA3 9
-
-#define PATTERN_FX4 10
-#define PATTERN_FXDATA4 11
-
-#endif
 
 //#define PATTERN_NIBBLES 11
 #define PATTERN_BYTES (PATTERN_FXDATA4 + 1)

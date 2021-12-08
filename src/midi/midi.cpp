@@ -175,9 +175,7 @@ void Midi_CallBackIn(double deltatime,
                 Actualize_Patterned();
                 RefreshSample();
                 Renew_Sample_Ed();
-#ifndef __LITE__
                 Actualize_Synth_Ed(UPDATE_SYNTH_ED_ALL);
-#endif
             }
             break;
 

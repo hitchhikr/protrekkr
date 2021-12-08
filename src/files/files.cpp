@@ -57,11 +57,8 @@
 #include "../editors/include/editor_track.h"
 #include "../editors/include/editor_pattern.h"
 
-#ifndef __LITE__
 #include "../../release/distrib/replay/lib/include/endianness.h"
-#else
-#include "../../release/distrib_lite/replay/lib/include/endianness.h"
-#endif
+
 // ------------------------------------------------------
 // Variables
 #if !defined(__WINAMP__)
@@ -69,9 +66,7 @@ extern REQUESTER Overwrite_Requester;
 extern char OverWrite_Name[1024];
 #endif
 
-#ifndef __LITE__
 extern SynthParameters PARASynth[128];
-#endif
 
 extern int Beveled;
 char AutoBackup;
@@ -114,7 +109,6 @@ void Init_Tracker_Context_After_ModLoad(void)
     gui_track = 0;
 #endif
 
-#ifndef __LITE__
     lchorus_counter = MIX_RATE;
     rchorus_counter = MIX_RATE;
     lchorus_counter2 = MIX_RATE - lchorus_delay;
@@ -135,7 +129,6 @@ void Init_Tracker_Context_After_ModLoad(void)
                                            mas_comp_ratio_Track[i]);
     }
 #endif
-#endif // __LITE__
 
     Reset_Song_Length();
 
@@ -171,12 +164,10 @@ int Load_Ptk(char *FileName)
     int Fx2 = FALSE;
     int XtraFx = FALSE;
     int Combine = FALSE;
-#ifndef __LITE__
     int Stereo_Reverb = FALSE;
     int Reverb_Resonance = FALSE;
     int Tb303_Scaling = FALSE;
     char Comp_Flag;
-#endif
     int i;
     int j;
     int k;
@@ -194,9 +185,7 @@ int Load_Ptk(char *FileName)
     int tps_pos;
     int tps_trk;
     int twrite;
-#ifndef __LITE__
     int fake_value;
-#endif
     int Packed_Size;
     int UnPacked_Size;
     int Flanger_Bug = FALSE;
@@ -224,7 +213,6 @@ int Load_Ptk(char *FileName)
         char extension[10];
         Read_Data(extension, sizeof(char), 9, in);
 
-#ifndef __LITE__
         switch(extension[7])
         {
             case 'O':
@@ -283,37 +271,12 @@ int Load_Ptk(char *FileName)
         }
 
 Read_Mod_File:
-#else
-        //Tb303_Scaling = TRUE;
-        //Reverb_Resonance = TRUE;
-        //Stereo_Reverb = TRUE;
-        XtraFx = TRUE;
-        Combine = TRUE;
-        Compress_Tracks = TRUE;
-        Flanger_Bug = TRUE;
-        Fx2 = TRUE;
-        New_Env = TRUE;
-        Env_Modulation = TRUE;
-        New_Reverb = TRUE;
-        Sel_Interpolation = TRUE;
-        Mp3_Scheme = TRUE;
-        Multi = TRUE;
-        Poly = TRUE;
-        Portable = TRUE;
-        Mod_Simulate = LOAD_READMEM;
-        New_Comp = TRUE;
-        New_adsr = TRUE;
-        Pack_Scheme = TRUE;
-        new_disto = TRUE;
-        Old_Bug = FALSE;
-#endif // __LITE__
 
 #if !defined(__WINAMP__)
         Status_Box("Loading song -> Header...");
 #endif
         Free_Samples();
 
-#ifndef __LITE__
         mas_comp_threshold_Master = 100.0f;
         mas_comp_ratio_Master = 0.0f;
 
@@ -322,7 +285,6 @@ Read_Mod_File:
             mas_comp_threshold_Track[i] = 100.0f;
             mas_comp_ratio_Track[i] = 0.0f;
         }
-#endif
 
 #if !defined(__WINAMP__)
         allow_save = TRUE;
@@ -365,14 +327,12 @@ Read_Mod_File:
         Songtracks = MAX_TRACKS;
         Read_Mod_Data(&Song_Length, sizeof(char), 1, in);
 
-#ifndef __LITE__
         Use_Cubic = CUBIC_INT;
 
         if(Sel_Interpolation)
         {
             Read_Mod_Data(&Use_Cubic, sizeof(char), 1, in);
         }
-#endif
 
         Read_Mod_Data(pSequence, sizeof(char), MAX_SEQUENCES, in);
 
@@ -387,13 +347,11 @@ Read_Mod_File:
             }
         }
 
-#ifndef __LITE__
         // Multi notes
         if(Multi)
         {
             Read_Mod_Data(Channels_MultiNotes, sizeof(char), MAX_TRACKS, in);
         }
-#endif
 
         // Up to 4 fx
         if(XtraFx)
@@ -403,7 +361,6 @@ Read_Mod_File:
             {
                 Read_Mod_Data_Swap(&Track_Volume[i], sizeof(float), 1, in);
             }
-#ifndef __LITE__
             for(i = 0; i < MAX_TRACKS; i++)
             {
                 init_eq(&EqDat[i]);
@@ -411,7 +368,6 @@ Read_Mod_File:
                 Read_Mod_Data_Swap(&EqDat[i].mg, sizeof(float), 1, in);
                 Read_Mod_Data_Swap(&EqDat[i].hg, sizeof(float), 1, in);
             }
-#endif
         }
 
         // Load the patterns data
@@ -437,7 +393,6 @@ Read_Mod_File:
                     TmpPatterns_Tracks = TmpPatterns_Rows + (k * PATTERN_BYTES);
                     // Rows
                     TmpPatterns_Notes = TmpPatterns_Tracks + (j * PATTERN_ROW_LEN);
-#ifndef __LITE__
                     if(Multi)
                     {
                         for(i = 0; i < MAX_POLYPHONY; i++)
@@ -448,12 +403,9 @@ Read_Mod_File:
                     }
                     else
                     {
-#endif
                         Read_Mod_Data(TmpPatterns_Notes + PATTERN_NOTE1, sizeof(char), 1, in);
                         Read_Mod_Data(TmpPatterns_Notes + PATTERN_INSTR1, sizeof(char), 1, in);
-#ifndef __LITE__
                     }
-#endif
                     Read_Mod_Data(TmpPatterns_Notes + PATTERN_VOLUME, sizeof(char), 1, in);
                     Read_Mod_Data(TmpPatterns_Notes + PATTERN_PANNING, sizeof(char), 1, in);
                     Read_Mod_Data(TmpPatterns_Notes + PATTERN_FX, sizeof(char), 1, in);
@@ -494,7 +446,6 @@ Read_Mod_File:
             Read_Mod_Data(&nameins[swrite], sizeof(char), 20, in);
             Read_Mod_Data(&Midiprg[swrite], sizeof(char), 1, in);
             
-#ifndef __LITE__
             Read_Mod_Data(&Synthprg[swrite], sizeof(char), 1, in);
 
             PARASynth[swrite].disto = 0;
@@ -521,9 +472,8 @@ Read_Mod_File:
                 if(PARASynth[swrite].ptc_glide < 1) PARASynth[swrite].ptc_glide = 64;
                 if(PARASynth[swrite].glb_volume < 1) PARASynth[swrite].glb_volume = 64;
             }
-#endif
+
             // Compression type
-#ifndef __LITE__
             SampleCompression[swrite] = SMP_PACK_INTERNAL;
             if(Pack_Scheme)
             {
@@ -543,7 +493,7 @@ Read_Mod_File:
                 }
                 SampleCompression[swrite] = Fix_Codec(SampleCompression[swrite]);
             }
-#endif
+
             for(int slwrite = 0; slwrite < MAX_INSTRS_SPLITS; slwrite++)
             {
                 Read_Mod_Data(&SampleType[swrite][slwrite], sizeof(char), 1, in);
@@ -590,16 +540,13 @@ Read_Mod_File:
         // Reading Track Properties
         for(twrite = 0; twrite < Songtracks; twrite++)
         {
-#ifndef __LITE__
             Read_Mod_Data_Swap(&TCut[twrite], sizeof(float), 1, in);
             Read_Mod_Data_Swap(&ICut[twrite], sizeof(float), 1, in);
             if(ICut[twrite] > 0.0078125f) ICut[twrite] = 0.0078125f;
             if(ICut[twrite] < 0.00006103515625f) ICut[twrite] = 0.00006103515625f;
-#endif
             Read_Mod_Data_Swap(&TPan[twrite], sizeof(float), 1, in);
             ComputeStereo(twrite);
             FixStereo(twrite);
-#ifndef __LITE__
             Read_Mod_Data_Swap(&FType[twrite], sizeof(int), 1, in);
             Read_Mod_Data_Swap(&FRez[twrite], sizeof(int), 1, in);
             Read_Mod_Data_Swap(&DThreshold[twrite], sizeof(float), 1, in);
@@ -607,23 +554,19 @@ Read_Mod_File:
             Read_Mod_Data_Swap(&DSend[twrite], sizeof(float), 1, in);
             Read_Mod_Data_Swap(&CSend[twrite], sizeof(int), 1, in);
             if(Poly) Read_Mod_Data(&Channels_Polyphony[twrite], sizeof(char), 1, in);
-#endif
         }
 
         // Reading mod properties
-#ifndef __LITE__
         int cvalue;
         Read_Mod_Data_Swap(&cvalue, sizeof(int), 1, in);
         compressor = cvalue;
         Read_Mod_Data_Swap(&c_threshold, sizeof(int), 1, in);
-#endif
         Read_Mod_Data_Swap(&Beats_Per_Min, sizeof(int), 1, in);
         Read_Mod_Data_Swap(&Ticks_Per_Beat, sizeof(int), 1, in);
         Read_Mod_Data_Swap(&mas_vol, sizeof(float), 1, in);
         if(mas_vol < 0.01f) mas_vol = 0.01f;
         if(mas_vol > 1.0f) mas_vol = 1.0f;
 
-#ifndef __LITE__
         if(New_Comp)
         {
             Comp_Flag = 0;
@@ -659,17 +602,14 @@ Read_Mod_File:
         Read_Mod_Data_Swap(&rchorus_delay, sizeof(int), 1, in);
         Read_Mod_Data_Swap(&lchorus_feedback, sizeof(float), 1, in);
         Read_Mod_Data_Swap(&rchorus_feedback, sizeof(float), 1, in);
-#endif // __LITE__
 
         Read_Mod_Data_Swap(&shuffle, sizeof(int), 1, in);
 
         // Load the new reverb data
-#ifndef __LITE__
         if(New_Reverb)
         {
             Load_Reverb_Data(Read_Mod_Data, Read_Mod_Data_Swap, in, !Reverb_Resonance);
         }
-#endif
 
         // Reading track part sequence
         for(tps_pos = 0; tps_pos < 256; tps_pos++)
@@ -681,18 +621,15 @@ Read_Mod_File:
             }
         }
 
-#ifndef __LITE__
         for(int spl = 0; spl < Songtracks; spl++)
         {
             CCoef[spl] = float((float) CSend[spl] / 127.0f);
         }
-#endif
         for(twrite = 0; twrite < Songtracks; twrite++)
         {
             Read_Mod_Data_Swap(&Chan_Midi_Prg[twrite], sizeof(int), 1, in);
         }
 
-#ifndef __LITE__
         for(twrite = 0; twrite < Songtracks; twrite++)
         {
             Read_Mod_Data(&LFO_ON[twrite], sizeof(char), 1, in);
@@ -717,7 +654,6 @@ Read_Mod_File:
         {
             Read_Mod_Data_Swap(&FLANGER_DEPHASE, sizeof(float), 1, in);
         }
-#endif // __LITE__
 
         for(tps_trk = 0; tps_trk < Songtracks; tps_trk++)
         {
@@ -726,13 +662,12 @@ Read_Mod_File:
 
         Read_Mod_Data(&Songtracks, sizeof(char), 1, in);
 
-#ifndef __LITE__
         for(tps_trk = 0; tps_trk < MAX_TRACKS; tps_trk++)
         {
             Read_Mod_Data(&Disclap[tps_trk], sizeof(char), 1, in);
             if(!Portable) Read_Mod_Data(&fake_value, sizeof(char), 1, in);
         }
-#endif
+
         if(!Ntk_Beta)       // Nothing like that in ntk beta
         {
             Read_Mod_Data(artist, sizeof(char), 20, in);
@@ -747,7 +682,6 @@ Read_Mod_File:
                 Read_Mod_Data_Swap(&Beat_Lines[i], sizeof(short), 1, in);
             }
 
-#ifndef __LITE__
             Read_Mod_Data_Swap(&Reverb_Filter_Cutoff, sizeof(float), 1, in);
 
             if(Reverb_Resonance)
@@ -758,7 +692,7 @@ Read_Mod_File:
             {
                 Read_Mod_Data(&Reverb_Stereo_Amount, sizeof(char), 1, in);
             }
-#endif
+
             for(i = 0; i < MAX_INSTRS; i++)
             {
                 Read_Mod_Data_Swap(&Sample_Vol[i], sizeof(float), 1, in);
@@ -766,7 +700,6 @@ Read_Mod_File:
 
             if(!Portable) Read_Mod_Data(&Ye_Old_Phony_Value, sizeof(char), 1, in);
 
-#ifndef __LITE__
             // Read the 303 datas
             for(j = 0; j < 2; j++)
             {
@@ -812,18 +745,15 @@ Read_Mod_File:
             }
             Read_Mod_Data_Swap(&tb303engine[0].tbVolume, sizeof(float), 1, in);
             Read_Mod_Data_Swap(&tb303engine[1].tbVolume, sizeof(float), 1, in);
-#endif
         }
 
         fclose(in);
 
-#ifndef __LITE__
         if(!New_Reverb)
         {
             // Set the reverb to one of the old presets
             Load_Old_Reverb_Presets(DelayType);
         }
-#endif
 
         // Init the tracker context
         Init_Tracker_Context_After_ModLoad();
@@ -857,23 +787,18 @@ short *Unpack_Sample(FILE *FileHandle, int Dest_Length, char Pack_Type, int BitR
 {
     int Packed_Length;
 
-#ifndef __LITE__
     short *Dest_Buffer;
-#endif
 
     Uint8 *Packed_Read_Buffer;
 
     Read_Mod_Data(&Packed_Length, sizeof(int), 1, FileHandle);
-#ifndef __LITE__
     if(Packed_Length == -1)
     {
-#endif
         // Sample wasn't packed
         Packed_Read_Buffer = (Uint8 *) malloc(Dest_Length * 2 + 8);
         memset(Packed_Read_Buffer, 0, Dest_Length * 2 + 8);
         Read_Mod_Data(Packed_Read_Buffer, sizeof(char), Dest_Length * 2, FileHandle);
         return((short *) Packed_Read_Buffer);
-#ifndef __LITE__
     }
     else
     {
@@ -923,7 +848,6 @@ short *Unpack_Sample(FILE *FileHandle, int Dest_Length, char Pack_Type, int BitR
         return(Dest_Buffer);
 
     }
-#endif // __LITE__
 }
 
 // ------------------------------------------------------
@@ -933,8 +857,6 @@ void Pack_Sample(FILE *FileHandle, short *Sample, int Size, char Pack_Type, int 
 {
     int PackedLen = 0;
     short *PackedSample = NULL;
-
-#ifndef __LITE__
 
 #if defined(__ADPCM_CODEC__) || defined(__TRUESPEECH_CODEC__)
     short *AlignedSample;
@@ -1015,9 +937,7 @@ void Pack_Sample(FILE *FileHandle, short *Sample, int Size, char Pack_Type, int 
             break;
 
         case SMP_PACK_NONE:
-#endif // __LITE__
             PackedLen = 0;
-#ifndef __LITE__
             break;
     }
     if(PackedLen)
@@ -1029,16 +949,12 @@ void Pack_Sample(FILE *FileHandle, short *Sample, int Size, char Pack_Type, int 
     }
     else
     {
-#endif // __LITE__
-
         // Couldn't pack (too small or user do not want that to happen)
         PackedLen = -1;
         Write_Mod_Data(&PackedLen, sizeof(char), 4, FileHandle);
         Write_Mod_Data(Sample, sizeof(char), Size * 2, FileHandle);
-#ifndef __LITE__
     }
     if(PackedSample) free(PackedSample);
-#endif
 }
 
 // ------------------------------------------------------
@@ -1272,15 +1188,9 @@ int Save_Ptk(char *FileName, int NewFormat, int Simulate, Uint8 *Memory)
         }
         else
         {
-#ifndef __LITE__
             sprintf(Temph, "Saving '%s.ptk' song in modules directory...", FileName);
             Status_Box(Temph);
             sprintf(Temph, "%s" SLASH "%s.ptk", Dir_Mods, FileName);
-#else
-            sprintf(Temph, "Saving '%s.ptl' song in modules directory...", FileName);
-            Status_Box(Temph);
-            sprintf(Temph, "%s" SLASH "%s.ptl", Dir_Mods, FileName);
-#endif
         }
         in = fopen(Temph, "wb");
     }
@@ -1364,31 +1274,25 @@ int Save_Ptk(char *FileName, int NewFormat, int Simulate, Uint8 *Memory)
 */
             Write_Mod_Data(&nPatterns, sizeof(char), 1, in);
             Write_Mod_Data(&Song_Length, sizeof(char), 1, in);
-#ifndef __LITE__
             Write_Mod_Data(&Use_Cubic, sizeof(char), 1, in);
-#endif
             Write_Mod_Data(pSequence, sizeof(char), MAX_SEQUENCES, in);
 
             Swap_Short_Buffer(patternLines, MAX_ROWS);
             Write_Mod_Data(patternLines, sizeof(short), MAX_ROWS, in);
             Swap_Short_Buffer(patternLines, MAX_ROWS);
 
-#ifndef __LITE__
             Write_Mod_Data(Channels_MultiNotes, sizeof(char), MAX_TRACKS, in);
-#endif
             Write_Mod_Data(Channels_Effects, sizeof(char), MAX_TRACKS, in);
             for(i = 0; i < MAX_TRACKS; i++)
             {
                 Write_Mod_Data_Swap(&Track_Volume[i], sizeof(float), 1, in);
             }
-#ifndef __LITE__
             for(i = 0; i < MAX_TRACKS; i++)
             {
                 Write_Mod_Data_Swap(&EqDat[i].lg, sizeof(float), 1, in);
                 Write_Mod_Data_Swap(&EqDat[i].mg, sizeof(float), 1, in);
                 Write_Mod_Data_Swap(&EqDat[i].hg, sizeof(float), 1, in);
             }
-#endif
             // Clean the unused patterns garbage (doesn't seem to do much)
             for(i = Songtracks; i < MAX_TRACKS; i++)
             {
@@ -1434,7 +1338,6 @@ int Save_Ptk(char *FileName, int NewFormat, int Simulate, Uint8 *Memory)
                 Write_Mod_Data(nameins[swrite], sizeof(char), 20, in);
                 Write_Mod_Data(&Midiprg[swrite], sizeof(char), 1, in);
 
-#ifndef __LITE__
                 Write_Mod_Data(&Synthprg[swrite], sizeof(char), 1, in);
 
                 Write_Synth_Params(Write_Mod_Data, Write_Mod_Data_Swap, in, swrite);
@@ -1450,7 +1353,6 @@ int Save_Ptk(char *FileName, int NewFormat, int Simulate, Uint8 *Memory)
                         Write_Mod_Data(&At3_BitRate[swrite], sizeof(char), 1, in);
                         break;
                 }
-#endif
                 // 16 splits / instrument
                 for(int slwrite = 0; slwrite < MAX_INSTRS_SPLITS; slwrite++)
                 {
@@ -1479,13 +1381,9 @@ int Save_Ptk(char *FileName, int NewFormat, int Simulate, Uint8 *Memory)
             // Writing Track Properties
             for(twrite = 0; twrite < MAX_TRACKS; twrite++)
             {
-#ifndef __LITE__
                 Write_Mod_Data_Swap(&TCut[twrite], sizeof(float), 1, in);
                 Write_Mod_Data_Swap(&ICut[twrite], sizeof(float), 1, in);
-#endif
                 Write_Mod_Data_Swap(&TPan[twrite], sizeof(float), 1, in);
-
-#ifndef __LITE__
                 Write_Mod_Data_Swap(&FType[twrite], sizeof(int), 1, in);
                 Write_Mod_Data_Swap(&FRez[twrite], sizeof(int), 1, in);
                 Write_Mod_Data_Swap(&DThreshold[twrite], sizeof(float), 1, in);
@@ -1493,21 +1391,17 @@ int Save_Ptk(char *FileName, int NewFormat, int Simulate, Uint8 *Memory)
                 Write_Mod_Data_Swap(&DSend[twrite], sizeof(float), 1, in);
                 Write_Mod_Data_Swap(&CSend[twrite], sizeof(int), 1, in);
                 Write_Mod_Data(&Channels_Polyphony[twrite], sizeof(char), 1, in);
-#endif
             }
 
             // Writing mod properties
-#ifndef __LITE__
             int cvalue;   
             cvalue = compressor;
             Write_Mod_Data_Swap(&cvalue, sizeof(int), 1, in);
             Write_Mod_Data_Swap(&c_threshold, sizeof(int), 1, in);
-#endif
             Write_Mod_Data_Swap(&Beats_Per_Min, sizeof(int), 1, in);
             Write_Mod_Data_Swap(&Ticks_Per_Beat, sizeof(int), 1, in);
             Write_Mod_Data_Swap(&mas_vol, sizeof(float), 1, in);
-            
-#ifndef __LITE__
+           
             Write_Mod_Data(&Comp_Flag, sizeof(char), 1, in);
             Write_Mod_Data_Swap(&mas_comp_threshold_Master, sizeof(float), 1, in);
             Write_Mod_Data_Swap(&mas_comp_ratio_Master, sizeof(float), 1, in);
@@ -1524,9 +1418,7 @@ int Save_Ptk(char *FileName, int NewFormat, int Simulate, Uint8 *Memory)
                 if(mas_comp_ratio_Track[i] > 100.0f) mas_comp_ratio_Track[i] = 100.0f;
                 Write_Mod_Data_Swap(&mas_comp_ratio_Track[i], sizeof(float), 1, in);
             }
-#endif
 
-#ifndef __LITE__
             Write_Mod_Data(&Compress_Track, sizeof(char), MAX_TRACKS, in);
 
             Write_Mod_Data_Swap(&Feedback, sizeof(float), 1, in);
@@ -1534,13 +1426,10 @@ int Save_Ptk(char *FileName, int NewFormat, int Simulate, Uint8 *Memory)
             Write_Mod_Data_Swap(&rchorus_delay, sizeof(int), 1, in);
             Write_Mod_Data_Swap(&lchorus_feedback, sizeof(float), 1, in);
             Write_Mod_Data_Swap(&rchorus_feedback, sizeof(float), 1, in);
-#endif            
             Write_Mod_Data_Swap(&shuffle, sizeof(int), 1, in);
 
-#ifndef __LITE__
             // Save the reverb data
             Save_Reverb_Data(Write_Mod_Data, Write_Mod_Data_Swap, in);
-#endif
             // Writing part sequence data
             for(int tps_pos = 0; tps_pos < MAX_SEQUENCES; tps_pos++)
             {
@@ -1555,7 +1444,6 @@ int Save_Ptk(char *FileName, int NewFormat, int Simulate, Uint8 *Memory)
                 Write_Mod_Data_Swap(&Chan_Midi_Prg[twrite], sizeof(int), 1, in);
             }
 
-#ifndef __LITE__
             for(twrite = 0; twrite < MAX_TRACKS; twrite++)
             {
                 Write_Mod_Data(&LFO_ON[twrite], sizeof(char), 1, in);
@@ -1573,7 +1461,6 @@ int Save_Ptk(char *FileName, int NewFormat, int Simulate, Uint8 *Memory)
                 Write_Mod_Data_Swap(&FLANGER_FEEDBACK[twrite], sizeof(float), 1, in);
                 Write_Mod_Data_Swap(&FLANGER_DELAY[twrite], sizeof(int), 1, in);
             }
-#endif
             // Was a bug
             //Write_Mod_Data_Swap(&FLANGER_DEPHASE, sizeof(float), 1, in);
 
@@ -1583,12 +1470,10 @@ int Save_Ptk(char *FileName, int NewFormat, int Simulate, Uint8 *Memory)
             }
             Write_Mod_Data(&Songtracks, sizeof(char), 1, in);
 
-#ifndef __LITE__
             for(tps_trk = 0; tps_trk < MAX_TRACKS; tps_trk++)
             {
                 Write_Mod_Data(&Disclap[tps_trk], sizeof(char), 1, in);
             }
-#endif
             rtrim_string(artist, 20);
             Write_Mod_Data(artist, sizeof(char), 20, in);
             rtrim_string(style, 20);
@@ -1600,18 +1485,15 @@ int Save_Ptk(char *FileName, int NewFormat, int Simulate, Uint8 *Memory)
             {
                 Write_Mod_Data_Swap(&Beat_Lines[i], sizeof(short), 1, in);
             }
-#ifndef __LITE__
             Write_Mod_Data_Swap(&Reverb_Filter_Cutoff, sizeof(float), 1, in);
             Write_Mod_Data_Swap(&Reverb_Filter_Resonance, sizeof(float), 1, in);
             Write_Mod_Data(&Reverb_Stereo_Amount, sizeof(char), 1, in);
-#endif
             for(i = 0; i < MAX_INSTRS; i++)
             {
                 Write_Mod_Data_Swap(&Sample_Vol[i], sizeof(float), 1, in);
             }
 
             // Include the patterns names
-#ifndef __LITE__
             for(i = 0; i < 32; i++)
             {
                 rtrim_string(tb303[0].pattern_name[i], 20);
@@ -1639,7 +1521,6 @@ int Save_Ptk(char *FileName, int NewFormat, int Simulate, Uint8 *Memory)
 
             Write_Mod_Data_Swap(&tb303engine[0].tbVolume, sizeof(float), 1, in);
             Write_Mod_Data_Swap(&tb303engine[1].tbVolume, sizeof(float), 1, in);
-#endif
         }
 
         if(!Simulate)
@@ -1658,11 +1539,7 @@ int Save_Ptk(char *FileName, int NewFormat, int Simulate, Uint8 *Memory)
                 }
                 else
                 {
-#ifndef __LITE__
                     sprintf(name, "Module '%s.ptk' saved succesfully.", FileName);
-#else
-                    sprintf(name, "Module '%s.ptl' saved succesfully.", FileName);
-#endif
                 }
                 Status_Box(name);
             }
@@ -1744,11 +1621,7 @@ void Backup_Module(char *FileName)
     struct tm *timeinfo;
     char backup_savename[MAX_PATH];
 
-#ifndef __LITE__
     sprintf(backup_savename, "%s" SLASH "%s.ptk", Dir_Mods, FileName);
-#else
-    sprintf(backup_savename, "%s" SLASH "%s.ptl", Dir_Mods, FileName);
-#endif
 
     In = fopen(backup_savename, "rb");
     if(In)
@@ -1764,7 +1637,6 @@ void Backup_Module(char *FileName)
            
             fread(backup_mem, 1, backup_size, In);
 
-#ifndef __LITE__
             sprintf(backup_savename,
                     "%s" SLASH "%s_%.2d%.2d%.2d.ptk",
                     Dir_Mods,
@@ -1772,15 +1644,7 @@ void Backup_Module(char *FileName)
                     timeinfo->tm_hour,
                     timeinfo->tm_min,
                     timeinfo->tm_sec);
-#else
-            sprintf(backup_savename,
-                    "%s" SLASH "%s_%.2d%.2d%.2d.ptl",
-                    Dir_Mods,
-                    name,
-                    timeinfo->tm_hour,
-                    timeinfo->tm_min,
-                    timeinfo->tm_sec);
-#endif
+
             Out = fopen(backup_savename, "wb");
             if(Out)
             {
@@ -1818,11 +1682,7 @@ int Pack_Module(char *FileName)
     if(AutoBackup) Backup_Module(FileName);
 
     // Save the new one
-#ifndef __LITE__
     sprintf(Temph, "%s" SLASH "%s.ptk", Dir_Mods, FileName);
-#else
-    sprintf(Temph, "%s" SLASH "%s.ptl", Dir_Mods, FileName);
-#endif
 
     int Len = Save_Ptk("", FALSE, SAVE_CALCLEN, NULL);
 
@@ -1836,20 +1696,12 @@ int Pack_Module(char *FileName)
     output = fopen(Temph, "wb");
     if(output)
     {
-#ifndef __LITE__
         sprintf(extension, "PROTREKO");
-#else
-        sprintf(extension, "PTKLITE1");
-#endif
         Write_Data(extension, sizeof(char), 9, output);
         Write_Data_Swap(&Depack_Size, sizeof(int), 1, output);
         Write_Data(Final_Mem_Out, sizeof(char), Len, output);
         fclose(output);
-#ifndef __LITE__
         sprintf(name, "Module '%s.ptk' saved succesfully.", FileName);
-#else
-        sprintf(name, "Module '%s.ptl' saved succesfully.", FileName);
-#endif
     }
     else
     {
@@ -2265,9 +2117,7 @@ void Clear_Instrument_Dat(int n_index, int split, int lenfir)
     {
         Sample_Vol[n_index] = 0.0f;
         Midiprg[n_index] = -1;
-#ifndef __LITE__
         Synthprg[n_index] = SYNTH_WAVE_OFF;
-#endif
         Beat_Sync[n_index] = FALSE;
 
         // Internal is default compression
@@ -2277,10 +2127,8 @@ void Clear_Instrument_Dat(int n_index, int split, int lenfir)
 #else
         SampleCompression[n_index] = SMP_PACK_NONE;
 #endif
-#ifndef __LITE__
         Mp3_BitRate[n_index] = 0;
         At3_BitRate[n_index] = 0;
-#endif
     }
 }
 
@@ -2347,21 +2195,17 @@ void Allocate_Wave(int n_index, int split, long lenfir,
 #if !defined(__WINAMP__)
 void Clear_Input(void)
 {
-#ifndef __LITE__
     if(snamesel == INPUT_303_PATTERN)
     {
         snamesel = INPUT_NONE;
         Actualize_303_Ed(0);
     }
-#endif
 
-#ifndef __LITE__
     if(snamesel == INPUT_SYNTH_NAME)
     {
         snamesel = INPUT_NONE;
         Actualize_Synth_Ed(0);
     }
-#endif
 
     if(snamesel == INPUT_MODULE_NAME ||
        snamesel == INPUT_MODULE_ARTIST ||
@@ -2377,13 +2221,11 @@ void Clear_Input(void)
         Actualize_Patterned();
     }
 
-#ifndef __LITE__
     if(snamesel == INPUT_REVERB_NAME)
     {
         snamesel = INPUT_NONE;
         Actualize_Reverb_Ed(0);
     }
-#endif
 
     if(snamesel == INPUT_MIDI_NAME)
     {

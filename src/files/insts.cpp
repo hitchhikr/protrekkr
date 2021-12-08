@@ -57,15 +57,12 @@ void Load_Inst(char *FileName)
         char extension[10];
         Read_Data(extension, sizeof(char), 9, in);
 
-#ifndef __LITE__
         switch(extension[7])
         {
             case '9':
                 Combine = TRUE;
             case '8':
-#endif
                 Glob_Vol = TRUE;
-#ifndef __LITE__
             case '7':
                 New_Env = TRUE;
             case '6':
@@ -84,7 +81,6 @@ void Load_Inst(char *FileName)
                 old_bug = TRUE;
                 break;
         }
-#endif
         KillInst(Current_Instrument, TRUE);
         Status_Box("Loading Instrument -> Header..."); 
         Read_Data(&nameins[Current_Instrument], sizeof(char), 20, in);
@@ -96,7 +92,6 @@ void Load_Inst(char *FileName)
 
         Read_Data(&Midiprg[swrite], sizeof(char), 1, in);
 
-#ifndef __LITE__
         Read_Data(&Synthprg[swrite], sizeof(char), 1, in);
 
         PARASynth[swrite].disto = 0;
@@ -116,8 +111,6 @@ void Load_Inst(char *FileName)
         Read_Synth_Params(Read_Data, Read_Data_Swap, in, swrite,
                           !old_bug, new_adsr, tight,
                           Env_Modulation, New_Env, FALSE, Combine);
-#endif
-#ifndef __LITE__
         // Gsm by default
         if(Pack_Scheme)
         {
@@ -142,7 +135,6 @@ void Load_Inst(char *FileName)
             }
         }
         SampleCompression[swrite] = Fix_Codec(SampleCompression[swrite]);
-#endif
 
         Sample_Vol[swrite] = 1.0f;
         if(Glob_Vol)
@@ -192,9 +184,7 @@ void Load_Inst(char *FileName)
         fclose(in);
         Actualize_Patterned();
         Actualize_Instrument_Ed(2, 0);
-#ifndef __LITE__
         Actualize_Synth_Ed(UPDATE_SYNTH_ED_ALL);
-#endif
         Status_Box("Instrument loaded ok.");
     }
     else
@@ -212,16 +202,11 @@ void Save_Inst(void)
     FILE *in;
     char Temph[MAX_PATH];
     char extension[10];
-#ifndef __LITE__
     char synth_prg;
-#endif
     int synth_save;
 
-#ifndef __LITE__
     sprintf(extension, "TWNNINS9");
-#else
-    sprintf(extension, "PTKINST1");
-#endif
+
     if(!strlen(nameins[Current_Instrument])) sprintf(nameins[Current_Instrument], "Untitled");
     sprintf (Temph, "Saving '%s.pti' instrument in instruments directory...", nameins[Current_Instrument]);
     Status_Box(Temph);
@@ -240,15 +225,12 @@ void Save_Inst(void)
 
         Write_Data(&Midiprg[swrite], sizeof(char), 1, in);
 
-#ifndef __LITE__
         switch(Synthprg[swrite])
         {
             case SYNTH_WAVE_OFF:
             case SYNTH_WAVE_CURRENT:
                 synth_prg = Synthprg[swrite];
-#endif
                 synth_save = swrite;
-#ifndef __LITE__
                 break;
             default:
                 synth_prg = SYNTH_WAVE_CURRENT;
@@ -271,7 +253,6 @@ void Save_Inst(void)
                 Write_Data(&At3_BitRate[swrite], sizeof(char), 1, in);
                 break;
         }
-#endif
 
         Write_Data_Swap(&Sample_Vol[swrite], sizeof(float), 1, in);
 

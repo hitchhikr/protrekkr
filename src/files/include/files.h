@@ -73,10 +73,8 @@ extern char Dir_Samples[MAX_PATH];
 extern char Use_Cubic;
 extern char Paste_Across;
 extern int wait_AutoSave;
-#ifndef __LITE__
 extern gear303 tb303engine[2];
 extern para303 tb303[2];
-#endif
 
 // ------------------------------------------------------
 // Functions

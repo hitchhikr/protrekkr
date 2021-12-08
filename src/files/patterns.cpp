@@ -131,12 +131,8 @@ void Load_Pattern(char *FileName)
         char extension[10];
         fread(extension, sizeof(char), 9, in);
 
-#ifndef __LITE__
         if(strcmp(extension, "TWNNBLK1") == 0) version = 1;
         if(strcmp(extension, "PROTBLK2") == 0) version = 2;
-#else
-        if(strcmp(extension, "PTKLBLK3") == 0) version = 2;
-#endif
         if(version)
         {
             // Ok, extension matched!
@@ -168,11 +164,7 @@ void Save_Pattern(void)
     char Temph[96];
     char extension[10];
 
-#ifndef __LITE__
     sprintf(extension, "PROTBLK2");
-#else
-    sprintf(extension, "PTKLBLK3");
-#endif
     sprintf(Temph, "Saving '%s.ppb' data in patterns directory...", Selection_Name);
     Status_Box(Temph);
     sprintf(Temph, "%s" SLASH "%s.ppb", Dir_Patterns, Selection_Name);

@@ -1605,26 +1605,13 @@ void Draw_Editors_Bar(int Highlight)
     }
     Gui_Draw_Button_Box(20, (Cur_Height - 171) + Patterns_Lines_Offset, TAB_LARG - 2, 16, "Sequencer", Highlight_Tab[4]);
     Gui_Draw_Button_Box(20 + TAB_LARG, (Cur_Height - 171) + Patterns_Lines_Offset, TAB_LARG - 2, 16, "Instrument", Highlight_Tab[2] | BUTTON_TEXT_CENTERED);
-#ifndef __LITE__
     Gui_Draw_Button_Box(20 + (TAB_LARG * 2), (Cur_Height - 171) + Patterns_Lines_Offset, TAB_LARG - 2, 16, "Synth", Highlight_Tab[6] | BUTTON_TEXT_CENTERED);
-#else
-    Gui_Draw_Button_Box(20 + (TAB_LARG * 2), (Cur_Height - 171) + Patterns_Lines_Offset, TAB_LARG - 2, 16, "Synth", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
-#endif
     Gui_Draw_Button_Box(20 + (TAB_LARG * 3), (Cur_Height - 171) + Patterns_Lines_Offset, TAB_LARG - 2, 16, "Sample Ed.", Highlight_Tab[8] | BUTTON_TEXT_CENTERED);
-#ifndef __LITE__
     Gui_Draw_Button_Box(20 + (TAB_LARG * 4), (Cur_Height - 171) + Patterns_Lines_Offset, TAB_LARG - 2, 16, "303 Units", Highlight_Tab[9] | BUTTON_TEXT_CENTERED);
-#else
-    Gui_Draw_Button_Box(20 + (TAB_LARG * 4), (Cur_Height - 171) + Patterns_Lines_Offset, TAB_LARG - 2, 16, "303 Units", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
-#endif
     Gui_Draw_Button_Box(20 + (TAB_LARG * 5), (Cur_Height - 171) + Patterns_Lines_Offset, TAB_LARG - 2, 16, "Track (I)", Highlight_Tab[1] | BUTTON_TEXT_CENTERED);
     Gui_Draw_Button_Box(20 + (TAB_LARG * 6), (Cur_Height - 171) + Patterns_Lines_Offset, TAB_LARG - 2, 16, "Track (II)", Highlight_Tab[7] | BUTTON_TEXT_CENTERED);
-#ifndef __LITE__
     Gui_Draw_Button_Box(20 + (TAB_LARG * 7), (Cur_Height - 171) + Patterns_Lines_Offset, TAB_LARG - 2, 16, "FX Setup", Highlight_Tab[3] | BUTTON_TEXT_CENTERED);
     Gui_Draw_Button_Box(20 + (TAB_LARG * 8), (Cur_Height - 171) + Patterns_Lines_Offset, TAB_LARG - 2, 16, "Reverb", Highlight_Tab[10] | BUTTON_TEXT_CENTERED);
-#else
-    Gui_Draw_Button_Box(20 + (TAB_LARG * 7), (Cur_Height - 171) + Patterns_Lines_Offset, TAB_LARG - 2, 16, "FX Setup", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
-    Gui_Draw_Button_Box(20 + (TAB_LARG * 8), (Cur_Height - 171) + Patterns_Lines_Offset, TAB_LARG - 2, 16, "Reverb", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
-#endif
     Gui_Draw_Button_Box(20 + (TAB_LARG * 9), (Cur_Height - 171) + Patterns_Lines_Offset, TAB_LARG - 2, 16, "Disk IO", Highlight_Tab[0] | BUTTON_TEXT_CENTERED);
     Gui_Draw_Button_Box(20 + (TAB_LARG * 10), (Cur_Height - 171) + Patterns_Lines_Offset, TAB_LARG - 2, 16, "UI Setup", Highlight_Tab[5] | BUTTON_TEXT_CENTERED);
     Gui_Draw_Button_Box(20 + (TAB_LARG * 11), (Cur_Height - 171) + Patterns_Lines_Offset, TAB_LARG - 2, 16, "Midi Setup", Highlight_Tab[12] | BUTTON_TEXT_CENTERED);
@@ -1641,19 +1628,15 @@ void Refresh_UI_Context(void)
 {
     switch(userscreen)
     {
-#ifndef __LITE__
         case USER_SCREEN_REVERB_EDIT:
             Draw_Reverb_Ed();
             break;
-#endif
         case USER_SCREEN_DISKIO_EDIT:
             Draw_DiskIO_Ed();
             break;
-#ifndef __LITE__
         case USER_SCREEN_TB303_EDIT:
             Draw_303_Ed();
             break;
-#endif
         case USER_SCREEN_INSTRUMENT_EDIT:
             Draw_Instrument_Ed();
             break;
@@ -1669,19 +1652,15 @@ void Refresh_UI_Context(void)
         case USER_SCREEN_SETUP_MIDI:
             Draw_Midi_Ed();
             break;
-#ifndef __LITE__
         case USER_SCREEN_SYNTH_EDIT:
             Draw_Synth_Ed();
             break;
-#endif
         case USER_SCREEN_SAMPLE_EDIT:
             Draw_Sample_Ed();
             break;
-#ifndef __LITE__
         case USER_SCREEN_FX_SETUP_EDIT:
             Draw_Fx_Ed();
             break;
-#endif
         case USER_SCREEN_TRACK_FX_EDIT:
             Draw_Track_Fx_Ed();
             break;
@@ -1692,13 +1671,9 @@ void Refresh_UI_Context(void)
     seditor = 0;
     
     Actualize_Midi_Ed(0);
-#ifndef __LITE__
     Actualize_Reverb_Ed(0);
-#endif
     Actualize_DiskIO_Ed(0);
-#ifndef __LITE__
     Actualize_303_Ed(0);
-#endif
     Actualize_Instrument_Ed(0, 0);
     Actualize_Sequencer();
     Display_Master_Comp();
@@ -1710,13 +1685,9 @@ void Refresh_UI_Context(void)
     Actualize_Seq_Ed(0);
     Actualize_Track_Ed(0);
     Actualize_Master_Ed(0);
-#ifndef __LITE__
     Actualize_Synth_Ed(UPDATE_SYNTH_ED_ALL);
-#endif
     Actualize_Sample_Ed(0);
-#ifndef __LITE__
     Actualize_Fx_Ed(0);
-#endif
     Actualize_Track_Fx_Ed(0);
     Actualize_Patterned();
     Actualize_Instruments_Synths_List(0);
@@ -2939,7 +2910,6 @@ int Set_Pictures_Colors(void)
    
     bare_color_idx = min_idx;
 
-#ifndef __LITE__
     Pix = (unsigned char *) SKIN303->pixels;
     max_colors_303 = 0;
     for(i = 0; i < SKIN303->w * SKIN303->h; i++)
@@ -2948,7 +2918,6 @@ int Set_Pictures_Colors(void)
         Pix[i] += min_idx;
     }
     max_colors_303++;
-#endif
 
     Pix = (unsigned char *) LOGOPIC->pixels;
     max_colors_logo = 0;
@@ -2959,7 +2928,6 @@ int Set_Pictures_Colors(void)
     }
     max_colors_logo++;
 
-#ifndef __LITE__
     Pic_Palette = SKIN303->format->palette;
     for(i = 0; i < max_colors_303; i++)
     {
@@ -2968,14 +2936,9 @@ int Set_Pictures_Colors(void)
         Palette_303[i].b = Pic_Palette->colors[i].b;
         Palette_303[i].unused = Pic_Palette->colors[i].unused;
     }
-#endif
 
     Pic_Palette = POINTER->format->palette;
-#ifndef __LITE__
     for(i = 0; i < max_colors_303; i++)
-#else
-    for(i = 0; i < max_colors_logo; i++)
-#endif
     {
         Palette_Pointer[i].r = Pic_Palette->colors[i].r;
         Palette_Pointer[i].g = Pic_Palette->colors[i].g;
@@ -3047,10 +3010,8 @@ void Set_Main_Palette(void)
 {
     int i;
 
-#ifndef __LITE__
 Wait_Palette:
     if(SKIN303 == NULL) goto Wait_Palette;
-#endif
 
     for(i = 0; i < max_colors_303; i++)
     {

@@ -139,11 +139,7 @@ void Draw_Reverb_Ed(void)
     Gui_Draw_Button_Box(585, (Cur_Height - 61), 60, 16, "Decay 9", BUTTON_NORMAL | BUTTON_DISABLED);
     Gui_Draw_Button_Box(585, (Cur_Height - 43), 60, 16, "Decay 10", BUTTON_NORMAL | BUTTON_DISABLED);
 
-#ifndef __LITE__
     Gui_Draw_Button_Box(749, (Cur_Height - 142), 34, 16, "Save", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
-#else
-    Gui_Draw_Button_Box(749, (Cur_Height - 142), 34, 16, "Save", BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_DISABLED);
-#endif
 }
 
 // ------------------------------------------------------
@@ -169,11 +165,7 @@ void Actualize_Reverb_Ed(int gode)
         // Echoes
         if(gode == UPDATE_REVERB_ED_ALL || gode == UPDATE_REVERB_ED_ECHOES)
         {
-#ifndef __LITE__
             Gui_Draw_Arrows_Number_Box2(72, (Cur_Height - 135), num_echoes, BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
-#else
-            Gui_Draw_Arrows_Number_Box2(72, (Cur_Height - 135), num_echoes, BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE | BUTTON_DISABLED);
-#endif
         }
 
         if(gode == UPDATE_REVERB_ED_ALL || gode == UPDATE_REVERB_ED_DECAY1)
@@ -281,7 +273,6 @@ void Actualize_Reverb_Ed(int gode)
             char tcp[30];
             sprintf(tcp, "%s_", Reverb_Name);
 
-#ifndef __LITE__
             if(snamesel == INPUT_REVERB_NAME)
             {
                 Gui_Draw_Button_Box(583, (Cur_Height - 142), 164, 16, tcp, BUTTON_PUSHED | BUTTON_INPUT);
@@ -290,16 +281,6 @@ void Actualize_Reverb_Ed(int gode)
             {
                 Gui_Draw_Button_Box(583, (Cur_Height - 142), 164, 16, Reverb_Name, BUTTON_NORMAL | BUTTON_INPUT);
             }
-#else
-            if(snamesel == INPUT_REVERB_NAME)
-            {
-                Gui_Draw_Button_Box(583, (Cur_Height - 142), 164, 16, tcp, BUTTON_PUSHED | BUTTON_INPUT | BUTTON_DISABLED);
-            }
-            else
-            {
-                Gui_Draw_Button_Box(583, (Cur_Height - 142), 164, 16, Reverb_Name, BUTTON_NORMAL | BUTTON_INPUT | BUTTON_DISABLED);
-            }
-#endif
         }
     }
 }
@@ -308,7 +289,6 @@ void Actualize_Reverb_Ed(int gode)
 // Handle right mouse buttons events
 void Mouse_Right_Reverb_Ed(void)
 {
-#ifndef __LITE__
     if(userscreen == USER_SCREEN_REVERB_EDIT)
     {
         if(zcheckMouse(72, (Cur_Height - 135), 16, 16))
@@ -358,14 +338,12 @@ void Mouse_Right_Reverb_Ed(void)
         }
 
     }
-#endif
 }
 
 // ------------------------------------------------------
 // Handle left mouse buttons events
 void Mouse_Left_Reverb_Ed(void)
 {
-#ifndef __LITE__
     if(userscreen == USER_SCREEN_REVERB_EDIT)
     {
 
@@ -453,14 +431,12 @@ void Mouse_Left_Reverb_Ed(void)
             }
         }
     }
-#endif
 }
 
 // ------------------------------------------------------
 // Handle sliders events
 void Mouse_Sliders_Reverb_Ed(void)
 {
-#ifndef __LITE__
     if(userscreen == USER_SCREEN_REVERB_EDIT)
     {
         int i;
@@ -511,14 +487,12 @@ void Mouse_Sliders_Reverb_Ed(void)
             }
         }
     }
-#endif
 }
 
 // ------------------------------------------------------
 // Handle right mouse button sliders events
 void Mouse_Sliders_Right_Reverb_Ed(void)
 {
-#ifndef __LITE__
     if(userscreen == USER_SCREEN_REVERB_EDIT)
     {
         int i;
@@ -548,7 +522,6 @@ void Mouse_Sliders_Right_Reverb_Ed(void)
             }
         }
     }
-#endif
 }
 
 // ------------------------------------------------------
@@ -577,17 +550,10 @@ void Display_Delays_Arrows(void)
 
     for(i = 0; i < 10; i++)
     {
-#ifndef __LITE__
         Gui_Draw_Button_Box(Table_Arrows[i].x, (Cur_Height - 115) + Table_Arrows[i].y, 16, 16, "\05", BUTTON_NORMAL | Enabled[i] | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
         Gui_Draw_Button_Box(Table_Arrows[i].x + 18, (Cur_Height - 115) + Table_Arrows[i].y, 16, 16, "\03", BUTTON_NORMAL | Enabled[i] | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
         Gui_Draw_Button_Box(Table_Arrows[i].x + 82, (Cur_Height - 115) + Table_Arrows[i].y, 16, 16, "\04", BUTTON_NORMAL | Enabled[i] | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
         Gui_Draw_Button_Box(Table_Arrows[i].x + 82 + 18, (Cur_Height - 115) + Table_Arrows[i].y, 16, 16, "\06", BUTTON_NORMAL | Enabled[i] | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
-#else
-        Gui_Draw_Button_Box(Table_Arrows[i].x, (Cur_Height - 115) + Table_Arrows[i].y, 16, 16, "\05", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
-        Gui_Draw_Button_Box(Table_Arrows[i].x + 18, (Cur_Height - 115) + Table_Arrows[i].y, 16, 16, "\03", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
-        Gui_Draw_Button_Box(Table_Arrows[i].x + 82, (Cur_Height - 115) + Table_Arrows[i].y, 16, 16, "\04", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
-        Gui_Draw_Button_Box(Table_Arrows[i].x + 82 + 18, (Cur_Height - 115) + Table_Arrows[i].y, 16, 16, "\06", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
-#endif
     }
 }
 
@@ -595,16 +561,7 @@ void Display_Delays_Arrows(void)
 // Display a decay slider
 void Display_Decay_Slider(int Index)
 {
-#ifndef __LITE__
     Realslider_Horiz(Table_Sliders[Index].x, (Cur_Height - 115) + Table_Sliders[Index].y,
                      (int) ((decays[Index] * 64.0f) + 64.0f), 16, 128 + 16, 119, num_echoes > Index);
-#else
-    Realslider_Horiz(Table_Sliders[Index].x, (Cur_Height - 115) + Table_Sliders[Index].y,
-                     (int) ((decays[Index] * 64.0f) + 64.0f), 16, 128 + 16, 119, FALSE);
-#endif
-#ifndef __LITE__
     Gui_Draw_Button_Box(Table_Sliders[Index].x + 120, (Cur_Height - 115) + Table_Sliders[Index].y, 16, 16, "C", BUTTON_NORMAL | (num_echoes > Index ? 0 : BUTTON_DISABLED) | BUTTON_TEXT_CENTERED);
-#else
-    Gui_Draw_Button_Box(Table_Sliders[Index].x + 120, (Cur_Height - 115) + Table_Sliders[Index].y, 16, 16, "C", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
-#endif
 }
