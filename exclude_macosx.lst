@@ -29,7 +29,6 @@
 *.snd*
 *.aif*
 *module.s*
-*.ptk*
 *stderr*
 *stdout*
 *windows*

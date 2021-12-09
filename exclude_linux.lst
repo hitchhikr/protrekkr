@@ -23,7 +23,6 @@
 *.map*
 *.ncb*
 *.lib*
-*.ptk*
 *.ppb*
 *.303*
 *.wav*

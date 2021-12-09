@@ -3,12 +3,12 @@
 *.cfg*
 *.linux*
 *.macosx*
+*.freebsd*
 *.o*
 *.obj*
 *.a
 *.exp*
 *.ptp*
-*.ptk*
 *.psm*
 *.ppb*
 *.303*
