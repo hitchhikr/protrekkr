@@ -5,6 +5,7 @@ ProTrekkr releases history
 v2.5.5:
 
 - Added effect 28: turn track LFO on/off.
+- Fixed F00 endless loop when wav rendering.
 
 v2.5.4:
 
