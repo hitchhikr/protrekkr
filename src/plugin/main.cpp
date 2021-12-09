@@ -33,7 +33,7 @@ BOOL WINAPI _DllMainCRTStartup(HANDLE hInst, ULONG ul_reason_for_call, LPVOID lp
 #define PBLEN 1572864
 extern unsigned char *RawPatterns;
 void STDCALL Mixer(Uint8 *Buffer, Uint32 Len);
-int LoadPtk(char *FileName);
+int Load_Ptk(char *FileName);
 int Calc_Length(void);
 int Alloc_Patterns_Pool(void);
 extern float mas_vol;
@@ -45,8 +45,8 @@ char SampleName[128][16][64];
 char Midiprg[128];
 char nameins[128][20];
 
-int CHAN_MIDI_PRG[MAX_TRACKS];
-char CHAN_HISTORY_STATE[256][16];
+int Chan_Midi_Prg[MAX_TRACKS];
+char Chan_History_State[256][MAX_TRACKS];
 
 int check_file_type(char *extension);
 // ----------------------------------------------------------------
@@ -81,8 +81,8 @@ void config(HWND hwndParent)
 }
 void about(HWND hwndParent)
 {
-	MessageBox(hwndParent,"Protrekkr Modules Player v"VER_VER"."VER_REV"\n\n"
-	                      "(C) Copyright 2009 Franck \"hitchhikr\" Charlet",
+	MessageBox(hwndParent,"Protrekkr Modules Player v" VER_VER "." VER_REV "." VER_REVSMALL "\n\n"
+	                      "(C) Copyright 2008-2021 Franck \"hitchhikr\" Charlet",
 		                  "About",
 		                  MB_OK | MB_ICONINFORMATION);
 }
@@ -130,7 +130,7 @@ int play(const char *fn)
 
     strcpy(modname, fn);
 
-    if(!LoadPtk(modname))
+    if(!Load_Ptk(modname))
     {
 		// we return error. 1 means to keep going in the playlist, -1
 		// means to stop the playlist.
@@ -253,8 +253,9 @@ void setvolume(int volume)
     mod.outMod->SetVolume(volume);
 }
 
-void setpan(int pan) {
-  mod.outMod->SetPan(pan);
+void setpan(int pan)
+{
+    mod.outMod->SetPan(pan);
 }
 
 // this gets called when the use hits Alt+3 to get the file info.
@@ -422,11 +423,11 @@ DWORD WINAPI DecodeThread(LPVOID b)
 
 				// if we have a DSP plug-in, then call it on our samples
 				if(mod.dsp_isactive()) 
-					l = mod.dsp_dosamples(
-						(short *) sample_buffer, l / NCH / (BPS / 8), BPS, NCH, SAMPLERATE
-					  ) // dsp_dosamples
-					  * (NCH * (BPS / 8));
-
+                {
+					l = mod.dsp_dosamples((short *) sample_buffer, l / NCH / (BPS / 8), BPS, NCH, SAMPLERATE
+					                      ) // dsp_dosamples
+					                        * (NCH * (BPS / 8));
+                }
 				// write the pcm data to the output system
 				mod.outMod->Write(sample_buffer, l);
 			}
@@ -444,7 +445,7 @@ DWORD WINAPI DecodeThread(LPVOID b)
 In_Module mod = 
 {
 	IN_VER,	// defined in IN2.H
-	"Protrekkr Modules Player "VER_VER"."VER_REV" "
+	"Protrekkr Modules Player " VER_VER "." VER_REV "." VER_REVSMALL " "
 	// winamp runs on both alpha systems and x86 ones. :)
 #ifdef __alpha
 	"(AXP)"
@@ -454,7 +455,7 @@ In_Module mod =
 	,
 	0,	// hMainWindow (filled in by winamp)
 	0,  // hDllInstance (filled in by winamp)
-	"PTK\0Protrekkr Module File (*.PTK)\0PTP\0Protrekkr Packed Module File (*.PTP)\0"
+	"PTK\0Protrekkr Module File (*.PTK)\0"
 	// this is a double-null limited list. "EXT\0Description\0EXT\0Description\0" etc.
 	,
 	1,	// is_seekable

@@ -6,7 +6,7 @@
 // All rights reserved.
 //
 // This file is :
-// Copyright (c) 1998--2007 Conifer Software.
+// Copyright (c) 1998-2007 Conifer Software.
 // All right reserved.
 //
 // Redistribution and use in source and binary forms, with or without
