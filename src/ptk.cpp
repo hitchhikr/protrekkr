@@ -1014,14 +1014,14 @@ int Screen_Update(void)
         {
             Track_Sub_Effects(Get_Track_Over_Mouse(Mouse.x, NULL, FALSE), 1);
             Actupated(0);
-            Actualize_Track_Ed(14);
+            Actualize_Track_Ed(16);
         }
 
         if(gui_action == GUI_CMD_EXPAND_TRACK_EFFECTS)
         {
             Track_Add_Effects(Get_Track_Over_Mouse(Mouse.x, NULL, FALSE), 1);
             Actupated(0);
-            Actualize_Track_Ed(14);
+            Actualize_Track_Ed(16);
         }
 
         if(gui_action == GUI_CMD_PLAY_SONG)
@@ -1973,7 +1973,8 @@ void LoadFile(int Freeindex, const char *str)
                 strcmp(extension, "PROTREKL") == 0 ||
                 strcmp(extension, "PROTREKM") == 0 ||
                 strcmp(extension, "PROTREKN") == 0 ||
-                strcmp(extension, "PROTREKO") == 0)
+                strcmp(extension, "PROTREKO") == 0 ||
+                strcmp(extension, "PROTREKP") == 0)
         {
             sprintf(name, "%s", FileName);
             Song_Stop();

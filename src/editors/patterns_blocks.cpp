@@ -2140,6 +2140,7 @@ void Reset_Track(int Position, int Track)
     CSend[Track] = 0;
 
     Track_Volume[Track] = 1.0f;
+    Track_Surround[Track] = FALSE;
 
     FLANGER_ON[Track] = 0;
     FLANGER_AMOUNT[Track] = -0.8f;
@@ -2229,6 +2230,8 @@ void Copy_Track(int Position, int Track_Src, int Track_Dst)
     CSend[Track_Dst] = CSend[Track_Src];
     
     Track_Volume[Track_Dst] = Track_Volume[Track_Src];
+
+    Track_Surround[Track_Dst] = Track_Surround[Track_Src];
 
     LFO_ON[Track_Dst] = LFO_ON[Track_Src];
     LFO_RATE[Track_Dst] = LFO_RATE[Track_Src];

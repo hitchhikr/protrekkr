@@ -386,6 +386,7 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
     Write_Mod_Data(Channels_MultiNotes, sizeof(char), char_value, in);
 
     Write_Mod_Data(Channels_Effects, sizeof(char), char_value, in);
+
     for(i = 0; i < char_value; i++)
     {
         if(Track_Volume[i] <= 0.99f)
@@ -393,6 +394,11 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
             Store_Track_Volume = TRUE;
         }
         Write_Mod_Data(&Track_Volume[i], sizeof(float), 1, in);
+    }
+
+    for(i = 0; i < char_value; i++)
+    {
+        Write_Mod_Data(&Track_Surround[i], sizeof(char), 1, in);
     }
 
     for(i = 0; i < char_value; i++)

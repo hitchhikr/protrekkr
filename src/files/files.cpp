@@ -167,6 +167,7 @@ int Load_Ptk(char *FileName)
     int Stereo_Reverb = FALSE;
     int Reverb_Resonance = FALSE;
     int Tb303_Scaling = FALSE;
+    int Track_Srnd = FALSE;
     char Comp_Flag;
     int i;
     int j;
@@ -215,6 +216,8 @@ int Load_Ptk(char *FileName)
 
         switch(extension[7])
         {
+            case 'P':
+                Track_Srnd = TRUE;
             case 'O':
                 Tb303_Scaling = TRUE;
             case 'N':
@@ -360,6 +363,13 @@ Read_Mod_File:
             for(i = 0; i < MAX_TRACKS; i++)
             {
                 Read_Mod_Data_Swap(&Track_Volume[i], sizeof(float), 1, in);
+            }
+            if(Track_Srnd)
+            {
+                for(i = 0; i < MAX_TRACKS; i++)
+                {
+                    Read_Mod_Data(&Track_Surround[i], sizeof(char), 1, in);
+                }
             }
             for(i = 0; i < MAX_TRACKS; i++)
             {
@@ -1289,6 +1299,10 @@ int Save_Ptk(char *FileName, int NewFormat, int Simulate, Uint8 *Memory)
             }
             for(i = 0; i < MAX_TRACKS; i++)
             {
+                Write_Mod_Data(&Track_Surround[i], sizeof(char), 1, in);
+            }
+            for(i = 0; i < MAX_TRACKS; i++)
+            {
                 Write_Mod_Data_Swap(&EqDat[i].lg, sizeof(float), 1, in);
                 Write_Mod_Data_Swap(&EqDat[i].mg, sizeof(float), 1, in);
                 Write_Mod_Data_Swap(&EqDat[i].hg, sizeof(float), 1, in);
@@ -1696,7 +1710,7 @@ int Pack_Module(char *FileName)
     output = fopen(Temph, "wb");
     if(output)
     {
-        sprintf(extension, "PROTREKO");
+        sprintf(extension, "PROTREKP");
         Write_Data(extension, sizeof(char), 9, output);
         Write_Data_Swap(&Depack_Size, sizeof(int), 1, output);
         Write_Data(Final_Mem_Out, sizeof(char), Len, output);

@@ -21,11 +21,9 @@
 *.ppb*
 *.303*
 *.lib*
-*.wav*
 *.plg*
 *.map*
 *.ncb*
-*.wav*
 *.snd*
 *.aif*
 *module.s*

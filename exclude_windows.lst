@@ -12,12 +12,10 @@
 *.psm*
 *.ppb*
 *.303*
-*.wav*
 *.plg*
 *.map*
 *.ncb*
 *.lib*
-*.wav*
 *.snd*
 *.aif*
 *stderr*

@@ -689,6 +689,7 @@ unsigned int Player_NS[MAX_TRACKS][MAX_POLYPHONY];
 #endif
 
     float Track_Volume[MAX_TRACKS];
+    char Track_Surround[MAX_TRACKS];
 
 #if defined(PTK_LIMITER_MASTER)
     float mas_comp_bufferL_Master[MAS_COMPRESSOR_SIZE];
@@ -1386,6 +1387,9 @@ int PTKEXPORT Ptk_InitModule(Uint8 *Module, int start_position)
 
         // Individual volumes
         Mod_Dat_Read(Track_Volume, sizeof(float) * Songtracks);
+
+        // Surround effect
+        Mod_Dat_Read(Track_Surround, sizeof(char) * Songtracks);
 
         // Eq parameters
         for(i = 0; i < Songtracks; i++)
@@ -2106,6 +2110,8 @@ void Pre_Song_Init(void)
 #if defined(PTK_TRACK_VOLUME)
         Track_Volume[ini] = 1.0f;
 #endif
+
+        Track_Surround[ini] = FALSE;
 
 #if defined(PTK_TRACK_EQ)
         init_eq(&EqDat[ini]);
@@ -3795,6 +3801,11 @@ ByPass_Wav:
         All_Signal_L *= Track_Volume[c];
         All_Signal_R *= Track_Volume[c];
 #endif
+
+        if(Track_Surround[c])
+        {
+            All_Signal_R = -All_Signal_R;
+        }
 
         // Store to global signals
         left_float += All_Signal_L;

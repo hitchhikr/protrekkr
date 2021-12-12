@@ -25,7 +25,6 @@
 *.lib*
 *.ppb*
 *.303*
-*.wav*
 *.snd*
 *.aif*
 *stderr*
