@@ -972,9 +972,9 @@ void Load_Amiga_Mod(char *Name, const char *FileName, int channels, int digiboos
                                     }
                                     else
                                     {
+                                        Cmd = 0x1a; // Vol Slide Down
                                         if(digibooster)
                                         {
-                                            Cmd = 0x1a; // Vol Slide Down
                                             if(Cmd_Dat == 0) Cmd_Dat = last_vol_fade[pw2];
                                             else last_vol_fade[pw2] = Cmd_Dat;
                                         }
