@@ -1846,26 +1846,27 @@ void Status_Box(char const *str)
       
 // ------------------------------------------------------
 // Display a horizontal slider
-void Realslider(int x, int y, int val, int Enabled)
-{
-    y--;
+void Realslider_Size(int x, int y, int size, int val, int Enabled)
+{   y--;
     if(Enabled)
     {
-        SetColor(COL_SLIDER_LO);
-        bjbox(x + 2, y + 1, 128 + 17, 17);
-        SetColor(COL_SLIDER_HI);
-        bjbox(x + 3, y + 2, 128 + 16, 16);
+        SetColor(COL_STATIC_LO);
+        bjbox(x + 2, y + 1, size + 17, 17);
+        SetColor(COL_STATIC_HI);
+        bjbox(x + 3, y + 2, size + 16, 16);
+        SetColor(COL_INPUT_MED);
+        bjbox(x + 3, y + 2, val + 15, 15);
         SetColor(COL_SLIDER_MED);
-        bjbox(x + 3, y + 2, 128 + 15, 15);
+        bjbox(x + 4 + val, y + 2, size - val + 14, 15);
     }
     else
     {
         SetColor(COL_STATIC_LO);
-        bjbox(x + 2, y + 1, 128 + 17, 17);
+        bjbox(x + 2, y + 1, size + 17, 17);
         SetColor(COL_STATIC_HI);
-        bjbox(x + 3, y + 2, 128 + 16, 16);
+        bjbox(x + 3, y + 2, size + 16, 16);
         SetColor(COL_STATIC_MED);
-        bjbox(x + 3, y + 2, 128 + 15, 15);
+        bjbox(x + 3, y + 2, size + 15, 15);
     }
     if(Enabled)
     {
@@ -1877,68 +1878,14 @@ void Realslider(int x, int y, int val, int Enabled)
     }
 }
 
-void Realslider_Size(int x, int y, int size, int val, int Enabled)
+void Realslider(int x, int y, int val, int Enabled)
 {
-    y--;
-    if(Enabled)
-    {
-        SetColor(COL_SLIDER_LO);
-        bjbox(x + 2, y + 1, size + 17, 17);
-        SetColor(COL_SLIDER_HI);
-        bjbox(x + 3, y + 2, size + 16, 16);
-        SetColor(COL_SLIDER_MED);
-        bjbox(x + 3, y + 2, size + 15, 15);
-    }
-    else
-    {
-        SetColor(COL_STATIC_LO);
-        bjbox(x + 2, y + 1, size + 17, 17);
-        SetColor(COL_STATIC_HI);
-        bjbox(x + 3, y + 2, size + 16, 16);
-        SetColor(COL_STATIC_MED);
-        bjbox(x + 3, y + 2, size + 15, 15);
-    }
-
-    if(Enabled)
-    {
-        Gui_Draw_Button_Box(x + 4 + val, y + 2, 13, 14, "", BUTTON_NORMAL);
-    }
-    else
-    {
-        Gui_Draw_Button_Box(x + 4 + val, y + 2, 13, 14, "", BUTTON_NORMAL | BUTTON_DISABLED);
-    }
+    Realslider_Size(x, y, 128, val, Enabled);
 }
 
 void Realslider2(int x, int y, int val, int Enabled)
 {
-    y--;
-    if(Enabled)
-    {
-        SetColor(COL_SLIDER_LO);
-        bjbox(x + 2, y + 1, 64 + 17, 17);
-        SetColor(COL_SLIDER_HI);
-        bjbox(x + 3, y + 2, 64 + 16, 16);
-        SetColor(COL_SLIDER_MED);
-        bjbox(x + 3, y + 2, 64 + 15, 15);
-    }
-    else
-    {
-        SetColor(COL_STATIC_LO);
-        bjbox(x + 2, y + 1, 64 + 17, 17);
-        SetColor(COL_STATIC_HI);
-        bjbox(x + 3, y + 2, 64 + 16, 16);
-        SetColor(COL_STATIC_MED);
-        bjbox(x + 3, y + 2, 64 + 15, 15);
-    }
-
-    if(Enabled)
-    {
-        Gui_Draw_Button_Box(x + 4 + val, y + 2, 13, 14, "", BUTTON_NORMAL);
-    }
-    else
-    {
-        Gui_Draw_Button_Box(x + 4 + val, y + 2, 13, 14, "", BUTTON_NORMAL | BUTTON_DISABLED);
-    }
+    Realslider_Size(x, y, 64, val, Enabled);
 }
 
 // ------------------------------------------------------
@@ -2015,10 +1962,12 @@ void Realslider_Vert(int x,
                      int displayed,
                      int maximum,
                      int size,
-                     int enable)
+                     int enable,
+                     int ext_color)
 {
     float caret_size;
     float Pos_slider;
+    float slide_max_on;
 
     Pos_slider = Slider_Calc_Pos(displayed, maximum, size, value);
 
@@ -2028,15 +1977,27 @@ void Realslider_Vert(int x,
 
     if((caret_size + Pos_slider) > size) caret_size -= (caret_size + Pos_slider) - size;
 
-    if(enable) SetColor(COL_SLIDER_LO);
-    else SetColor(COL_STATIC_LO);
-    bjbox(x, y, 16 + 1, size + 2);
-    if(enable) SetColor(COL_SLIDER_HI);
-    else SetColor(COL_STATIC_HI);
-    bjbox(x + 1, y + 1, 16, size + 1);
-    if(enable) SetColor(COL_SLIDER_MED);
-    else SetColor(COL_STATIC_MED);
-    bjbox(x + 1, y + 1, 16 - 1, size);
+    if(enable)
+    {
+        SetColor(COL_STATIC_LO);
+        bjbox(x, y, 16 + 1, size + 2);
+        SetColor(COL_STATIC_HI);
+        bjbox(x + 1, y + 1, 16, size + 1);
+        SetColor(COL_SLIDER_MED);
+        bjbox(x + 1, y + 1, 16 - 1, size);
+        SetColor(COL_INPUT_MED);
+        slide_max_on = ceil((float) size - Pos_slider );
+        bjbox(x + 1, y + 1 + Pos_slider, 16 - 1, slide_max_on);
+    }
+    else
+    {
+        SetColor(COL_STATIC_LO);
+        bjbox(x, y, 16 + 1, size + 2);
+        SetColor(COL_STATIC_HI);
+        bjbox(x + 1, y + 1, 16, size + 1);
+        SetColor(COL_STATIC_MED);
+        bjbox(x + 1, y + 1, 16 - 1, size);
+    }    
     Gui_Draw_Button_Box(x + 1, y + 1 + (int) Pos_slider, 16 - 2, (int) caret_size, "", BUTTON_NORMAL | (enable ? 0 : BUTTON_DISABLED));
 }
 
@@ -2617,7 +2578,6 @@ int Get_Font_Height(void)
 {
     return(Font_Height);
 }
-
 
 // ------------------------------------------------------
 // Load a .bmp picture into a SDL surface

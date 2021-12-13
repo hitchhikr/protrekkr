@@ -219,6 +219,7 @@ void Actualize_Track_Fx_Ed(char gode)
                             16,
                             100 + 16,
                             64,
+                            TRUE,
                             TRUE);
 
             Realslider_Vert(710 + (22 * 1), (Cur_Height - 120),
@@ -226,6 +227,7 @@ void Actualize_Track_Fx_Ed(char gode)
                             16,
                             100 + 16,
                             64,
+                            TRUE,
                             TRUE);
 
             Realslider_Vert(710 + (22 * 2), (Cur_Height - 120),
@@ -233,6 +235,7 @@ void Actualize_Track_Fx_Ed(char gode)
                             16,
                             100 + 16,
                             64,
+                            TRUE,
                             TRUE);
         }
     }//User gui screen match

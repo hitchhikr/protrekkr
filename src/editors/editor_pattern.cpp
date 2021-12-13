@@ -1719,7 +1719,8 @@ void Actupated(int modac)
                         DISPLAYED_LINES,
                         DISPLAYED_LINES + Max_Lines_Song,
                         (Cur_Height - 452) + Patterns_Lines_Offset,
-                        TRUE);
+                        TRUE,
+                        FALSE);
     }
     else
     {
@@ -1727,7 +1728,9 @@ void Actupated(int modac)
         Realslider_Vert(MAX_PATT_SCREEN_X + 1, 200, Cur_Line,
                         DISPLAYED_LINES,
                         patternLines[pSequence[Cur_Position]] + DISPLAYED_LINES,
-                        (Cur_Height - 452) + Patterns_Lines_Offset, TRUE);
+                        (Cur_Height - 452) + Patterns_Lines_Offset,
+                        TRUE,
+                        FALSE);
     }
 }
 
