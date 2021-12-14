@@ -453,7 +453,7 @@ SDL_Color Default_Palette2[] =
     { 0x00, 0x00, 0x00, 0x00 },      // 58 Phony always black (fixed)
 };
 
-int Default_Beveled3 = 0;
+int Default_Beveled3 = 1;
 SDL_Color Default_Palette3[] =
 {
     { 0x00, 0x00, 0x00, 0x00 },      // 0 lists/samples/vumeters background/sequencer (calculated)
@@ -1932,24 +1932,49 @@ void Realslider_Horiz(int x, int y, int value, int displayed, int maximum, int s
 {
     float caret_size;
     float Pos_slider;
+    float slide_max_on;
 
     size -= 2;
+    if(size <= 0)
+    {
+        size = 1;
+    }
 
     Pos_slider = Slider_Calc_Pos(displayed, maximum, size, value);
 
     caret_size = Slider_Calc_Size(displayed, maximum, size);
 
+    if(Pos_slider > size)
+    {
+        Pos_slider = size - 2;
+    }
+
     if((caret_size + Pos_slider) > (size - 1)) caret_size -= (caret_size + Pos_slider) - (size - 1);
+    if(caret_size < 1.0f) caret_size = 1.0f;
    
-    if(enable) SetColor(COL_SLIDER_LO);
-    else SetColor(COL_STATIC_LO);
-    bjbox(x, y, size + 2, 16 + 1);
-    if(enable) SetColor(COL_SLIDER_HI);
-    else SetColor(COL_STATIC_HI);
-    bjbox(x + 1, y + 1, size + 1, 16);
-    if(enable) SetColor(COL_SLIDER_MED);
-    else SetColor(COL_STATIC_MED);
-    bjbox(x + 1, y + 1, size, 16 - 1);
+    if(enable)
+    {
+        SetColor(COL_STATIC_LO);
+        bjbox(x, y, size + 2, 16 + 1);
+        SetColor(COL_STATIC_HI);
+        bjbox(x + 1, y + 1, size + 1, 16);
+        SetColor(COL_INPUT_MED);
+        bjbox(x + 1, y + 1, size, 16 - 1);
+        slide_max_on = ceil((float) size - Pos_slider);
+        if(slide_max_on > size) slide_max_on = size;
+        if(slide_max_on <= 0.0f) slide_max_on = 1.0f;
+        SetColor(COL_SLIDER_MED);
+        bjbox(x + 1 + Pos_slider, y + 1, slide_max_on, 16 - 1);
+    }
+    else
+    {
+        SetColor(COL_STATIC_LO);
+        bjbox(x, y, size + 2, 16 + 1);
+        SetColor(COL_STATIC_HI);
+        bjbox(x + 1, y + 1, size + 1, 16);
+        SetColor(COL_STATIC_MED);
+        bjbox(x + 1, y + 1, size, 16 - 1);
+    }
 
     Gui_Draw_Button_Box(x + 1 + (int) Pos_slider, y + 1, (int) caret_size, 16 - 2, "", BUTTON_NORMAL | (enable ? 0 : BUTTON_DISABLED));
 }

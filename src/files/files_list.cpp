@@ -742,13 +742,18 @@ void Draw_Lists_Slider(int idx)
 {
     SetColor(COL_BLACK);
     bjbox(Cur_Width - 18, 42, 18, 136);
-    SetColor(COL_SLIDER_LO);
+
+    SetColor(COL_STATIC_LO);
     bjbox(Cur_Width - 18, 59 - 1, 15 + 2, 103 + 2);
-    SetColor(COL_SLIDER_HI);
+    SetColor(COL_STATIC_HI);
     bjbox(Cur_Width - 17, 59, 15 + 1, 103 + 1);
-    SetColor(COL_SLIDER_MED);
+    SetColor(COL_INPUT_MED);
     bjbox(Cur_Width - 17, 59, 15, 103);
+    SetColor(COL_SLIDER_MED);
+    bjbox(Cur_Width - 17, 59 + idx, 15, 103 - idx);
+
     Gui_Draw_Button_Box(MAX_PATT_SCREEN_X + 2, 58 + idx + 1, 16 - 2, 32, "", BUTTON_NORMAL);
+
     Gui_Draw_Button_Box(MAX_PATT_SCREEN_X + 1, 42, 16, 14, "\01", BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
     Gui_Draw_Button_Box(MAX_PATT_SCREEN_X + 1, 164, 16, 14, "\02", BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
 }

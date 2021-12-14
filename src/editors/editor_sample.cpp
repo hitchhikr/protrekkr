@@ -124,6 +124,7 @@ void Draw_Wave_Data(void)
     int set_start_rect;
     int end_rect;
     int64 pos_in_wav;
+    int Allow;
 
     if(userscreen == USER_SCREEN_SAMPLE_EDIT)
     {
@@ -140,9 +141,11 @@ void Draw_Wave_Data(void)
         if(draw_sampled_wave)
         {
             // Redraw the bottom slider
+            Allow = FALSE;
+            if(SampleType[Current_Instrument][Current_Instrument_Split]) Allow = TRUE;
             Realslider_Horiz(WAVE_LEFT + 18, (Cur_Height - 41), sed_display_start, sed_display_length,
                              Sample_Length[Current_Instrument][Current_Instrument_Split],
-                             LARGE_SMP_VIEW + 2 - (18 * 2), TRUE);
+                             LARGE_SMP_VIEW + 2 - (18 * 2), Allow);
 
             // Layout around the waveform
             SetColor(COL_BACKGROUND);
