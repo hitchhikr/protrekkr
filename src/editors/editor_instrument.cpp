@@ -135,8 +135,6 @@ void Actualize_Instrument_Ed(int typex, char gode)
     int FineTune_Value;
     int Allow_GSM = BUTTON_DISABLED;
     int Allow_MP3 = BUTTON_DISABLED;
-    int Allow_ADPCM = BUTTON_DISABLED;
-    int Allow_TRUESPEECH = BUTTON_DISABLED;
     int Allow_AT3 = BUTTON_DISABLED;
 
     Check_Loops();
@@ -149,12 +147,6 @@ void Actualize_Instrument_Ed(int typex, char gode)
 #endif
 #if defined(__MP3_CODEC__)
         Allow_MP3 = 0;
-#endif
-#if defined(__ADPCM_CODEC__)
-        Allow_ADPCM = 0;
-#endif
-#if defined(__TRUESPEECH_CODEC__)
-        Allow_TRUESPEECH = 0;
 #endif
 #if defined(__AT3_CODEC__)
         Allow_AT3 = 0;
@@ -336,84 +328,74 @@ void Actualize_Instrument_Ed(int typex, char gode)
                     switch(SampleCompression[Current_Instrument])
                     {
                         case SMP_PACK_GSM:
-                            Gui_Draw_Button_Box(681, (Cur_Height - 134), 39, 16, "Internal", Allow_Global | BUTTON_TEXT_CENTERED);
+                            Gui_Draw_Button_Box(681, (Cur_Height - 134), 39, 16, "WavPac", Allow_Global | BUTTON_TEXT_CENTERED);
                             Gui_Draw_Button_Box(640, (Cur_Height - 116), 39, 16, "Gsm", Allow_GSM | Allow_Global_Pushed | BUTTON_TEXT_CENTERED);
                             Gui_Draw_Button_Box(681, (Cur_Height - 116), 39, 16, "Mp3", Allow_MP3 | Allow_Global | BUTTON_TEXT_CENTERED);
-                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 1), 80, 16, "ADPCM", Allow_ADPCM | Allow_Global | BUTTON_TEXT_CENTERED);
-                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 2), 80, 16, "True Speech", Allow_TRUESPEECH | Allow_Global | BUTTON_TEXT_CENTERED);
-                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 3), 80, 16, "At3 (PSP only)", Allow_AT3 | Allow_Global | BUTTON_TEXT_CENTERED);
-                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 4), 39, 16, "8 Bit", Allow_Global | BUTTON_TEXT_CENTERED);
-                            Gui_Draw_Button_Box(681, (Cur_Height - 116) + (18 * 4), 39, 16, "None", Allow_Global | BUTTON_TEXT_CENTERED);
+                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 1), 80, 16, "ADPCM", Allow_Global | BUTTON_TEXT_CENTERED);
+//                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 2), 80, 16, "True Speech", Allow_TRUESPEECH | Allow_Global | BUTTON_TEXT_CENTERED);
+                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 2), 80, 16, "At3 (For PSP)", Allow_AT3 | Allow_Global | BUTTON_TEXT_CENTERED);
+                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 3), 39, 16, "8 Bit", Allow_Global | BUTTON_TEXT_CENTERED);
+                            Gui_Draw_Button_Box(681, (Cur_Height - 116) + (18 * 3), 39, 16, "None", Allow_Global | BUTTON_TEXT_CENTERED);
                             break;
                         case SMP_PACK_MP3:
-                            Gui_Draw_Button_Box(681, (Cur_Height - 134), 39, 16, "Internal", Allow_Global | BUTTON_TEXT_CENTERED);
+                            Gui_Draw_Button_Box(681, (Cur_Height - 134), 39, 16, "WavPac", Allow_Global | BUTTON_TEXT_CENTERED);
                             Gui_Draw_Button_Box(640, (Cur_Height - 116), 39, 16, "Gsm", Allow_GSM | Allow_Global | BUTTON_TEXT_CENTERED);
                             Gui_Draw_Button_Box(681, (Cur_Height - 116), 39, 16, "Mp3", Allow_MP3 | Allow_Global_Pushed | BUTTON_TEXT_CENTERED);
-                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 1), 80, 16, "ADPCM", Allow_ADPCM | Allow_Global | BUTTON_TEXT_CENTERED);
-                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 2), 80, 16, "True Speech", Allow_TRUESPEECH | Allow_Global | BUTTON_TEXT_CENTERED);
-                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 3), 80, 16, "At3 (PSP only)", Allow_AT3 | Allow_Global | BUTTON_TEXT_CENTERED);
-                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 4), 39, 16, "8 Bit", Allow_Global | BUTTON_TEXT_CENTERED);
-                            Gui_Draw_Button_Box(681, (Cur_Height - 116) + (18 * 4), 39, 16, "None", Allow_Global | BUTTON_TEXT_CENTERED);
+                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 1), 80, 16, "ADPCM", Allow_Global | BUTTON_TEXT_CENTERED);
+//                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 2), 80, 16, "True Speech", Allow_TRUESPEECH | Allow_Global | BUTTON_TEXT_CENTERED);
+                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 2), 80, 16, "At3 (For PSP)", Allow_AT3 | Allow_Global | BUTTON_TEXT_CENTERED);
+                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 3), 39, 16, "8 Bit", Allow_Global | BUTTON_TEXT_CENTERED);
+                            Gui_Draw_Button_Box(681, (Cur_Height - 116) + (18 * 3), 39, 16, "None", Allow_Global | BUTTON_TEXT_CENTERED);
                             break;
                         case SMP_PACK_ADPCM:
-                            Gui_Draw_Button_Box(681, (Cur_Height - 134), 39, 16, "Internal", Allow_Global | BUTTON_TEXT_CENTERED);
+                            Gui_Draw_Button_Box(681, (Cur_Height - 134), 39, 16, "WavPac", Allow_Global | BUTTON_TEXT_CENTERED);
                             Gui_Draw_Button_Box(640, (Cur_Height - 116), 39, 16, "Gsm", Allow_GSM | Allow_Global | BUTTON_TEXT_CENTERED);
                             Gui_Draw_Button_Box(681, (Cur_Height - 116), 39, 16, "Mp3", Allow_MP3 | Allow_Global | BUTTON_TEXT_CENTERED);
-                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 1), 80, 16, "ADPCM", Allow_ADPCM | Allow_Global_Pushed | BUTTON_TEXT_CENTERED);
-                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 2), 80, 16, "True Speech", Allow_TRUESPEECH | Allow_Global | BUTTON_TEXT_CENTERED);
-                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 3), 80, 16, "At3 (PSP only)", Allow_AT3 | Allow_Global | BUTTON_TEXT_CENTERED);
-                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 4), 39, 16, "8 Bit", Allow_Global | BUTTON_TEXT_CENTERED);
-                            Gui_Draw_Button_Box(681, (Cur_Height - 116) + (18 * 4), 39, 16, "None", Allow_Global | BUTTON_TEXT_CENTERED);
-                            break;
-                        case SMP_PACK_TRUESPEECH:
-                            Gui_Draw_Button_Box(681, (Cur_Height - 134), 39, 16, "Internal", Allow_Global | BUTTON_TEXT_CENTERED);
-                            Gui_Draw_Button_Box(640, (Cur_Height - 116), 39, 16, "Gsm", Allow_GSM | Allow_Global | BUTTON_TEXT_CENTERED);
-                            Gui_Draw_Button_Box(681, (Cur_Height - 116), 39, 16, "Mp3", Allow_MP3 | Allow_Global | BUTTON_TEXT_CENTERED);
-                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 1), 80, 16, "ADPCM", Allow_ADPCM | Allow_Global | BUTTON_TEXT_CENTERED);
-                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 2), 80, 16, "True Speech", Allow_TRUESPEECH | Allow_Global_Pushed | BUTTON_TEXT_CENTERED);
-                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 3), 80, 16, "At3 (PSP only)", Allow_AT3 | Allow_Global | BUTTON_TEXT_CENTERED);
-                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 4), 39, 16, "8 Bit", Allow_Global | BUTTON_TEXT_CENTERED);
-                            Gui_Draw_Button_Box(681, (Cur_Height - 116) + (18 * 4), 39, 16, "None", Allow_Global | BUTTON_TEXT_CENTERED);
+                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 1), 80, 16, "ADPCM", Allow_Global_Pushed | BUTTON_TEXT_CENTERED);
+//                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 2), 80, 16, "True Speech", Allow_TRUESPEECH | Allow_Global | BUTTON_TEXT_CENTERED);
+                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 2), 80, 16, "At3 (For PSP)", Allow_AT3 | Allow_Global | BUTTON_TEXT_CENTERED);
+                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 3), 39, 16, "8 Bit", Allow_Global | BUTTON_TEXT_CENTERED);
+                            Gui_Draw_Button_Box(681, (Cur_Height - 116) + (18 * 3), 39, 16, "None", Allow_Global | BUTTON_TEXT_CENTERED);
                             break;
                         case SMP_PACK_AT3:
-                            Gui_Draw_Button_Box(681, (Cur_Height - 134), 39, 16, "Internal", Allow_Global | BUTTON_TEXT_CENTERED);
+                            Gui_Draw_Button_Box(681, (Cur_Height - 134), 39, 16, "WavPac", Allow_Global | BUTTON_TEXT_CENTERED);
                             Gui_Draw_Button_Box(640, (Cur_Height - 116), 39, 16, "Gsm", Allow_GSM | Allow_Global | BUTTON_TEXT_CENTERED);
                             Gui_Draw_Button_Box(681, (Cur_Height - 116), 39, 16, "Mp3", Allow_MP3 | Allow_Global | BUTTON_TEXT_CENTERED);
-                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 1), 80, 16, "ADPCM", Allow_ADPCM | Allow_Global | BUTTON_TEXT_CENTERED);
-                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 2), 80, 16, "True Speech", Allow_TRUESPEECH | Allow_Global | BUTTON_TEXT_CENTERED);
-                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 3), 80, 16, "At3 (PSP only)", Allow_AT3 | Allow_Global_Pushed | BUTTON_TEXT_CENTERED);
-                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 4), 39, 16, "8 Bit", Allow_Global | BUTTON_TEXT_CENTERED);
-                            Gui_Draw_Button_Box(681, (Cur_Height - 116) + (18 * 4), 39, 16, "None", Allow_Global | BUTTON_TEXT_CENTERED);
+                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 1), 80, 16, "ADPCM", Allow_Global | BUTTON_TEXT_CENTERED);
+//                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 2), 80, 16, "True Speech", Allow_TRUESPEECH | Allow_Global | BUTTON_TEXT_CENTERED);
+                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 2), 80, 16, "At3 (For PSP)", Allow_AT3 | Allow_Global_Pushed | BUTTON_TEXT_CENTERED);
+                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 3), 39, 16, "8 Bit", Allow_Global | BUTTON_TEXT_CENTERED);
+                            Gui_Draw_Button_Box(681, (Cur_Height - 116) + (18 * 3), 39, 16, "None", Allow_Global | BUTTON_TEXT_CENTERED);
                             break;
                         case SMP_PACK_8BIT:
-                            Gui_Draw_Button_Box(681, (Cur_Height - 134), 39, 16, "Internal", Allow_Global | BUTTON_TEXT_CENTERED);
+                            Gui_Draw_Button_Box(681, (Cur_Height - 134), 39, 16, "WavPac", Allow_Global | BUTTON_TEXT_CENTERED);
                             Gui_Draw_Button_Box(640, (Cur_Height - 116), 39, 16, "Gsm", Allow_GSM | Allow_Global | BUTTON_TEXT_CENTERED);
                             Gui_Draw_Button_Box(681, (Cur_Height - 116), 39, 16, "Mp3", Allow_MP3 | Allow_Global | BUTTON_TEXT_CENTERED);
-                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 1), 80, 16, "ADPCM", Allow_ADPCM | Allow_Global | BUTTON_TEXT_CENTERED);
-                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 2), 80, 16, "True Speech", Allow_TRUESPEECH | Allow_Global | BUTTON_TEXT_CENTERED);
-                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 3), 80, 16, "At3 (PSP only)", Allow_AT3 | Allow_Global | BUTTON_TEXT_CENTERED);
-                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 4), 39, 16, "8 Bit", Allow_Global_Pushed | BUTTON_TEXT_CENTERED);
-                            Gui_Draw_Button_Box(681, (Cur_Height - 116) + (18 * 4), 39, 16, "None", Allow_Global | BUTTON_TEXT_CENTERED);
+                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 1), 80, 16, "ADPCM", Allow_Global | BUTTON_TEXT_CENTERED);
+//                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 2), 80, 16, "True Speech", Allow_TRUESPEECH | Allow_Global | BUTTON_TEXT_CENTERED);
+                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 2), 80, 16, "At3 (For PSP)", Allow_AT3 | Allow_Global | BUTTON_TEXT_CENTERED);
+                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 3), 39, 16, "8 Bit", Allow_Global_Pushed | BUTTON_TEXT_CENTERED);
+                            Gui_Draw_Button_Box(681, (Cur_Height - 116) + (18 * 3), 39, 16, "None", Allow_Global | BUTTON_TEXT_CENTERED);
                             break;
-                        case SMP_PACK_INTERNAL:
-                            Gui_Draw_Button_Box(681, (Cur_Height - 134), 39, 16, "Internal", Allow_Global_Pushed | BUTTON_TEXT_CENTERED);
+                        case SMP_PACK_WAVPACK:
+                            Gui_Draw_Button_Box(681, (Cur_Height - 134), 39, 16, "WavPac", Allow_Global_Pushed | BUTTON_TEXT_CENTERED);
                             Gui_Draw_Button_Box(640, (Cur_Height - 116), 39, 16, "Gsm", Allow_GSM | Allow_Global | BUTTON_TEXT_CENTERED);
                             Gui_Draw_Button_Box(681, (Cur_Height - 116), 39, 16, "Mp3", Allow_MP3 | Allow_Global | BUTTON_TEXT_CENTERED);
-                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 1), 80, 16, "ADPCM", Allow_ADPCM | Allow_Global | BUTTON_TEXT_CENTERED);
-                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 2), 80, 16, "True Speech", Allow_TRUESPEECH | Allow_Global | BUTTON_TEXT_CENTERED);
-                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 3), 80, 16, "At3 (PSP only)", Allow_AT3 | Allow_Global | BUTTON_TEXT_CENTERED);
-                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 4), 39, 16, "8 Bit", Allow_Global | BUTTON_TEXT_CENTERED);
-                            Gui_Draw_Button_Box(681, (Cur_Height - 116) + (18 * 4), 39, 16, "None", Allow_Global | BUTTON_TEXT_CENTERED);
+                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 1), 80, 16, "ADPCM", Allow_Global | BUTTON_TEXT_CENTERED);
+//                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 2), 80, 16, "True Speech", Allow_TRUESPEECH | Allow_Global | BUTTON_TEXT_CENTERED);
+                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 2), 80, 16, "At3 (For PSP)", Allow_AT3 | Allow_Global | BUTTON_TEXT_CENTERED);
+                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 3), 39, 16, "8 Bit", Allow_Global | BUTTON_TEXT_CENTERED);
+                            Gui_Draw_Button_Box(681, (Cur_Height - 116) + (18 * 3), 39, 16, "None", Allow_Global | BUTTON_TEXT_CENTERED);
                             break;
                         case SMP_PACK_NONE:
-                            Gui_Draw_Button_Box(681, (Cur_Height - 134), 39, 16, "Internal", Allow_Global | BUTTON_TEXT_CENTERED);
+                            Gui_Draw_Button_Box(681, (Cur_Height - 134), 39, 16, "WavPac", Allow_Global | BUTTON_TEXT_CENTERED);
                             Gui_Draw_Button_Box(640, (Cur_Height - 116), 39, 16, "Gsm", Allow_GSM | Allow_Global | BUTTON_TEXT_CENTERED);
                             Gui_Draw_Button_Box(681, (Cur_Height - 116), 39, 16, "Mp3", Allow_MP3 | Allow_Global | BUTTON_TEXT_CENTERED);
-                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 1), 80, 16, "ADPCM", Allow_ADPCM | Allow_Global | BUTTON_TEXT_CENTERED);
-                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 2), 80, 16, "True Speech", Allow_TRUESPEECH | Allow_Global | BUTTON_TEXT_CENTERED);
-                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 3), 80, 16, "At3 (PSP only)", Allow_AT3 | Allow_Global | BUTTON_TEXT_CENTERED);
-                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 4), 39, 16, "8 Bit", Allow_Global | BUTTON_TEXT_CENTERED);
-                            Gui_Draw_Button_Box(681, (Cur_Height - 116) + (18 * 4), 39, 16, "None", Allow_Global_Pushed | BUTTON_TEXT_CENTERED);
+                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 1), 80, 16, "ADPCM", Allow_Global | BUTTON_TEXT_CENTERED);
+//                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 2), 80, 16, "True Speech", Allow_TRUESPEECH | Allow_Global | BUTTON_TEXT_CENTERED);
+                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 2), 80, 16, "At3 (For PSP)", Allow_AT3 | Allow_Global | BUTTON_TEXT_CENTERED);
+                            Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 3), 39, 16, "8 Bit", Allow_Global | BUTTON_TEXT_CENTERED);
+                            Gui_Draw_Button_Box(681, (Cur_Height - 116) + (18 * 3), 39, 16, "None", Allow_Global_Pushed | BUTTON_TEXT_CENTERED);
                             break;
                     }
                     if(gode == 16) gode = 19;
@@ -735,14 +717,14 @@ void Mouse_Left_Instrument_Ed(void)
 
         if(Allow_Global_Sliders)
         {
-            // Select Internal
+            // Select WavPack
             if(zcheckMouse(681, (Cur_Height - 134), 39, 16))
             {
-                if(SampleCompression[Current_Instrument] != SMP_PACK_INTERNAL)
+                if(SampleCompression[Current_Instrument] != SMP_PACK_WAVPACK)
                 {
                     SamplesSwap[Current_Instrument] = FALSE;
                 }
-                SampleCompression[Current_Instrument] = SMP_PACK_INTERNAL;
+                SampleCompression[Current_Instrument] = SMP_PACK_WAVPACK;
                 teac = 16;
                 gui_action = GUI_CMD_UPDATE_INSTRUMENT_ED;
             }
@@ -775,7 +757,6 @@ void Mouse_Left_Instrument_Ed(void)
             }
 #endif
 
-#if defined(__ADPCM_CODEC__)
             // Select ADPCM
             if(zcheckMouse(640, (Cur_Height - 116) + (18 * 1), 80, 16))
             {
@@ -787,25 +768,10 @@ void Mouse_Left_Instrument_Ed(void)
                 teac = 16;
                 gui_action = GUI_CMD_UPDATE_INSTRUMENT_ED;
             }
-#endif
-
-#if defined(__TRUESPEECH_CODEC__)
-            // Select TRUESPEECH
-            if(zcheckMouse(640, (Cur_Height - 116) + (18 * 2), 80, 16))
-            {
-                if(SampleCompression[Current_Instrument] != SMP_PACK_TRUESPEECH)
-                {
-                    SamplesSwap[Current_Instrument] = FALSE;
-                }
-                SampleCompression[Current_Instrument] = SMP_PACK_TRUESPEECH;
-                teac = 16;
-                gui_action = GUI_CMD_UPDATE_INSTRUMENT_ED;
-            }
-#endif
 
 #if defined(__AT3_CODEC__)
             // Select AT3
-            if(zcheckMouse(640, (Cur_Height - 116) + (18 * 3), 80, 16))
+            if(zcheckMouse(640, (Cur_Height - 116) + (18 * 2), 80, 16))
             {
                 if(SampleCompression[Current_Instrument] != SMP_PACK_AT3)
                 {
@@ -818,7 +784,7 @@ void Mouse_Left_Instrument_Ed(void)
 #endif
 
             // Select 8BIT
-            if(zcheckMouse(640, (Cur_Height - 116) + (18 * 4), 39, 16))
+            if(zcheckMouse(640, (Cur_Height - 116) + (18 * 3), 39, 16))
             {
                 if(SampleCompression[Current_Instrument] != SMP_PACK_8BIT)
                 {
@@ -830,7 +796,7 @@ void Mouse_Left_Instrument_Ed(void)
             }
 
             // Select NONE
-            if(zcheckMouse(681, (Cur_Height - 116) + (18 * 4), 39, 16))
+            if(zcheckMouse(681, (Cur_Height - 116) + (18 * 3), 39, 16))
             {
                 if(SampleCompression[Current_Instrument] != SMP_PACK_NONE)
                 {
@@ -1290,18 +1256,10 @@ void Dump_Instruments_Synths_List(int xr, int yr)
                                         PrintString(xr + (Cur_Width - 560), yr + (counter * 12), Font, Line);
                                         break;
 #endif
-#if defined(__TRUESPEECH_CODEC__)
-                                    case SMP_PACK_TRUESPEECH:
-                                        sprintf(Line, "Pck: TrueSp.");
-                                        PrintString(xr + (Cur_Width - 560), yr + (counter * 12), Font, Line);
-                                        break;
-#endif
-#if defined(__ADPCM_CODEC__)
                                     case SMP_PACK_ADPCM:
                                         sprintf(Line, "Pck: ADPCM");
                                         PrintString(xr + (Cur_Width - 560), yr + (counter * 12), Font, Line);
                                         break;
-#endif
 #if defined(__AT3_CODEC__)
                                     case SMP_PACK_AT3:
                                         sprintf(Line, "Pck: At3 (%d)", Type_At3_BitRate[At3_BitRate[rel_val]]);
@@ -1316,8 +1274,8 @@ void Dump_Instruments_Synths_List(int xr, int yr)
                                         sprintf(Line, "Pck: None");
                                         PrintString(xr + (Cur_Width - 560), yr + (counter * 12), Font, Line);
                                         break;
-                                    case SMP_PACK_INTERNAL:
-                                        sprintf(Line, "Pck: Internal");
+                                    case SMP_PACK_WAVPACK:
+                                        sprintf(Line, "Pck: WavPac");
                                         PrintString(xr + (Cur_Width - 560), yr + (counter * 12), Font, Line);
                                         break;
                                 }
@@ -1514,11 +1472,6 @@ void Lock_Sample(int instr_nbr, int split)
     short Sample1;
     short Sample2;
 
-#if defined(__TRUESPEECH_CODEC__) || defined(__ADPCM_CODEC__)
-    short *AlignedSample;
-    int Aligned_Size;
-#endif
-
     short *Sample;
     short *Smp_Dats;
     int Size;
@@ -1590,44 +1543,11 @@ void Lock_Sample(int instr_nbr, int split)
                 PackedLen = ToMP3(Sample, PackedSample, Size * 2, BitRate);
                 break;
 #endif
-#if defined(__TRUESPEECH_CODEC__)
-            case SMP_PACK_TRUESPEECH:
-                Aligned_Size = (Size * 2) + 0x400;
-                AlignedSample = (short *) malloc(Aligned_Size + 8);
-                if(AlignedSample)
-                {
-                    memset(AlignedSample, 0, Aligned_Size + 8);
-                    memcpy(AlignedSample, Sample, Size * 2);
-                    // Size must be aligned
-                    PackedSample = (short *) malloc(Aligned_Size + 8);
-                    if(PackedSample)
-                    {
-                        memset(PackedSample, 0, Aligned_Size + 8);
-                        PackedLen = ToTrueSpeech(AlignedSample, PackedSample, Aligned_Size);
-                    }
-                    free(AlignedSample);
-                }
-                break;
-#endif
-#if defined(__ADPCM_CODEC__)
             case SMP_PACK_ADPCM:
-                Aligned_Size = (Size * 2) + 0x1000;
-                AlignedSample = (short *) malloc(Aligned_Size + 8);
-                if(AlignedSample)
-                {
-                    memset(AlignedSample, 0, Aligned_Size + 8);
-                    memcpy(AlignedSample, Sample, Size * 2);
-                    // Size must be aligned
-                    PackedSample = (short *) malloc(Aligned_Size + 8);
-                    if(PackedSample)
-                    {
-                        memset(PackedSample, 0, Aligned_Size + 8);
-                        PackedLen = ToADPCM(AlignedSample, PackedSample, Aligned_Size);
-                    }
-                    free(AlignedSample);
-                }
+                PackedSample = (short *) malloc(Size * 2 + 8);
+                memset(PackedSample, 0, Size * 2 + 8);
                 break;
-#endif
+
             case SMP_PACK_8BIT:
                 PackedSample = (short *) malloc(Size * 2 + 8);
                 memset(PackedSample, 0, Size * 2 + 8);
@@ -1636,10 +1556,10 @@ void Lock_Sample(int instr_nbr, int split)
                 PackedLen = To8Bit(Sample, PackedSample, Size);
                 break;
 
-            case SMP_PACK_INTERNAL:
+            case SMP_PACK_WAVPACK:
                 PackedSample = (short *) malloc(Size * 2 + 8);
                 memset(PackedSample, 0, Size * 2 + 8);
-                PackedLen = ToInternal(Sample, PackedSample, Size);
+                PackedLen = ToWavPack(Sample, PackedSample, Size);
                 break;
 
             case SMP_PACK_NONE:
@@ -1668,22 +1588,16 @@ void Lock_Sample(int instr_nbr, int split)
                     UnpackMP3((Uint8 *) PackedSample, Dest_Buffer, PackedLen, Size, BitRate);
                     break;
 #endif
-#if defined(__TRUESPEECH_CODEC__)
-                case SMP_PACK_TRUESPEECH:
-                    UnpackTrueSpeech((Uint8 *) PackedSample, Dest_Buffer, PackedLen, Size);
-                    break;
-#endif
-#if defined(__ADPCM_CODEC__)
                 case SMP_PACK_ADPCM:
                     UnpackADPCM((Uint8 *) PackedSample, Dest_Buffer, PackedLen, Size);
                     break;
-#endif
+
                 case SMP_PACK_8BIT:
                     Unpack8Bit((Uint8 *) PackedSample, Dest_Buffer, PackedLen, Size);
                     break;
 
-                case SMP_PACK_INTERNAL:
-                    UnpackInternal((Uint8 *) PackedSample, Dest_Buffer, PackedLen, Size);
+                case SMP_PACK_WAVPACK:
+                    UnpackWavPack((Uint8 *) PackedSample, Dest_Buffer, PackedLen, Size);
                     break;
             }
         }

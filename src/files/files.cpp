@@ -484,7 +484,7 @@ Read_Mod_File:
             }
 
             // Compression type
-            SampleCompression[swrite] = SMP_PACK_INTERNAL;
+            SampleCompression[swrite] = SMP_PACK_WAVPACK;
             if(Pack_Scheme)
             {
                 Read_Mod_Data(&SampleCompression[swrite], sizeof(char), 1, in);
@@ -836,22 +836,16 @@ short *Unpack_Sample(FILE *FileHandle, int Dest_Length, char Pack_Type, int BitR
                 UnpackMP3(Packed_Read_Buffer, Dest_Buffer, Packed_Length, Dest_Length, BitRate);
                 break;
 #endif
-#if defined(__TRUESPEECH_CODEC__)
-            case SMP_PACK_TRUESPEECH:
-                UnpackTrueSpeech(Packed_Read_Buffer, Dest_Buffer, Packed_Length, Dest_Length);
-                break;
-#endif
-#if defined(__ADPCM_CODEC__)
             case SMP_PACK_ADPCM:
                 UnpackADPCM(Packed_Read_Buffer, Dest_Buffer, Packed_Length, Dest_Length);
                 break;
-#endif
+
             case SMP_PACK_8BIT:
                 Unpack8Bit(Packed_Read_Buffer, Dest_Buffer, Packed_Length, Dest_Length);
                 break;
 
-            case SMP_PACK_INTERNAL:
-                UnpackInternal(Packed_Read_Buffer, Dest_Buffer, Packed_Length, Dest_Length);
+            case SMP_PACK_WAVPACK:
+                UnpackWavPack(Packed_Read_Buffer, Dest_Buffer, Packed_Length, Dest_Length);
                 break;
         }
         free(Packed_Read_Buffer);
@@ -867,11 +861,6 @@ void Pack_Sample(FILE *FileHandle, short *Sample, int Size, char Pack_Type, int 
 {
     int PackedLen = 0;
     short *PackedSample = NULL;
-
-#if defined(__ADPCM_CODEC__) || defined(__TRUESPEECH_CODEC__)
-    short *AlignedSample;
-    int Aligned_Size;
-#endif
 
     switch(Pack_Type)
     {
@@ -896,54 +885,22 @@ void Pack_Sample(FILE *FileHandle, short *Sample, int Size, char Pack_Type, int 
             PackedLen = ToMP3(Sample, PackedSample, Size * 2, BitRate);
             break;
 #endif
-#if defined(__TRUESPEECH_CODEC__)
-        case SMP_PACK_TRUESPEECH:
-            Aligned_Size = (Size * 2) + 0x400;
-            AlignedSample = (short *) malloc(Aligned_Size + 8);
-            if(AlignedSample)
-            {
-                memset(AlignedSample, 0, Aligned_Size + 8);
-                memcpy(AlignedSample, Sample, Size * 2);
-                // Size must be aligned
-                PackedSample = (short *) malloc(Aligned_Size + 8);
-                if(PackedSample)
-                {
-                    memset(PackedSample, 0, Aligned_Size + 8);
-                    PackedLen = ToTrueSpeech(AlignedSample, PackedSample, Aligned_Size);
-                }
-                free(AlignedSample);
-            }
-            break;
-#endif
-#if defined(__ADPCM_CODEC__)
         case SMP_PACK_ADPCM:
-            Aligned_Size = (Size * 2) + 0x1000;
-            AlignedSample = (short *) malloc(Aligned_Size + 8);
-            if(AlignedSample)
-            {
-                memset(AlignedSample, 0, Aligned_Size + 8);
-                memcpy(AlignedSample, Sample, Size * 2);
-                // Size must be aligned
-                PackedSample = (short *) malloc(Aligned_Size + 8);
-                if(PackedSample)
-                {
-                    memset(PackedSample, 0, Aligned_Size + 8);
-                    PackedLen = ToADPCM(AlignedSample, PackedSample, Aligned_Size);
-                }
-                free(AlignedSample);
-            }
+            PackedSample = (short *) malloc(Size * 2 + 8);
+            memset(PackedSample, 0, Size * 2 + 8);
+            PackedLen = ToADPCM(Sample, PackedSample, Size);
             break;
-#endif
+
         case SMP_PACK_8BIT:
             PackedSample = (short *) malloc(Size * 2 + 8);
             memset(PackedSample, 0, Size * 2 + 8);
             PackedLen = To8Bit(Sample, PackedSample, Size);
             break;
 
-        case SMP_PACK_INTERNAL:
+        case SMP_PACK_WAVPACK:
             PackedSample = (short *) malloc(Size * 2 + 8);
             memset(PackedSample, 0, Size * 2 + 8);
-            PackedLen = ToInternal(Sample, PackedSample, Size);
+            PackedLen = ToWavPack(Sample, PackedSample, Size);
             break;
 
         case SMP_PACK_NONE:
@@ -2136,7 +2093,7 @@ void Clear_Instrument_Dat(int n_index, int split, int lenfir)
 
         // Internal is default compression
 #if !defined(__WINAMP__)
-        SampleCompression[n_index] = SMP_PACK_INTERNAL;
+        SampleCompression[n_index] = SMP_PACK_WAVPACK;
         SamplesSwap[n_index] = FALSE;
 #else
         SampleCompression[n_index] = SMP_PACK_NONE;
@@ -2260,23 +2217,15 @@ void Clear_Input(void)
 int Fix_Codec(int Scheme)
 {
 #if !defined(__AT3_CODEC__)
-    if(Scheme == SMP_PACK_AT3) return SMP_PACK_INTERNAL;
+    if(Scheme == SMP_PACK_AT3) return SMP_PACK_WAVPACK;
 #endif
 
 #if !defined(__MP3_CODEC__)
-    if(Scheme == SMP_PACK_MP3) return SMP_PACK_INTERNAL;
-#endif
-
-#if !defined(__ADPCM_CODEC__)
-    if(Scheme == SMP_PACK_ADPCM) return SMP_PACK_INTERNAL;
-#endif
-
-#if !defined(__TRUESPEECH_CODEC__)
-    if(Scheme == SMP_PACK_TRUESPEECH) return SMP_PACK_INTERNAL;
+    if(Scheme == SMP_PACK_MP3) return SMP_PACK_WAVPACK;
 #endif
 
 #if !defined(__GSM_CODEC__)
-    if(Scheme == SMP_PACK_GSM) return SMP_PACK_INTERNAL;
+    if(Scheme == SMP_PACK_GSM) return SMP_PACK_WAVPACK;
 #endif
 
     return(Scheme);

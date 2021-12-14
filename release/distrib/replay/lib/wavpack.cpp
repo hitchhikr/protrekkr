@@ -36,7 +36,7 @@
 #include "include/samples_unpack.h"
 #include "include/wavpack.h"
 
-#if defined(PTK_INTERNAL)
+#if defined(PTK_WAVPACK)
 
 const char nbits_table [] =
 {
@@ -967,7 +967,7 @@ int32_t read_bytes(void *buff, int32_t bcount)
     return bcount;
 }
 
-void UnpackInternal(Uint8 *Source, short *Dest, int Src_Size, int Dst_Size)
+void UnpackWavPack(Uint8 *Source, short *Dest, int Src_Size, int Dst_Size)
 {
     int32_t temp;
     int32_t temp_buffer[256];

@@ -4,7 +4,9 @@ ProTrekkr releases history
 
 v2.6.0
 
-- Visual improvment of sliders.
+- ADPCM compression is now internal and available in all OSes.
+- Removed TrueSpeech compression: it doesn't exist in latest Windows anymore.
+- Visual improvement of sliders.
 - Fixed a bug with command A in mod import.
 - Track effects number wasn't updated in track (1) tab when modifying it
   from the track header.

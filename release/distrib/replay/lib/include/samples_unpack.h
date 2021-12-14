@@ -67,12 +67,6 @@ void UnpackAT3(Uint8 *Source, short *Dest, int Src_Size, int Dst_Size, int BitRa
 #if defined(PTK_GSM)
 void UnpackGSM(Uint8 *Source, short *Dest, int Src_Size, int Dst_Size);
 #endif
-#if defined(PTK_TRUESPEECH)
-void UnpackTrueSpeech(Uint8 *Source, short *Dest, int Src_Size, int Dst_Size);
-#endif
-#if defined(PTK_ADPCM)
-void UnpackADPCM(Uint8 *Source, short *Dest, int Src_Size, int Dst_Size);
-#endif
 #if defined(PTK_MP3)
 void UnpackMP3(Uint8 *Source, short *Dest, int Src_Size, int Dst_Size, int BitRate);
 #endif
@@ -83,17 +77,12 @@ void UnpackAT3(Uint8 *Source, short *Dest, int Src_Size, int Dst_Size, int BitRa
 #if defined(__GSM_CODEC__)
 void UnpackGSM(Uint8 *Source, short *Dest, int Src_Size, int Dst_Size);
 #endif
-#if defined(__TRUESPEECH_CODEC__)
-void UnpackTrueSpeech(Uint8 *Source, short *Dest, int Src_Size, int Dst_Size);
-#endif
-#if defined(__ADPCM_CODEC__)
-void UnpackADPCM(Uint8 *Source, short *Dest, int Src_Size, int Dst_Size);
-#endif
 #if defined(__MP3_CODEC__)
 void UnpackMP3(Uint8 *Source, short *Dest, int Src_Size, int Dst_Size, int BitRate);
 #endif
 #endif
+void UnpackADPCM(Uint8 *Source, short *Dest, int Src_Size, int Dst_Size);
 void Unpack8Bit(Uint8 *Source, short *Dest, int Src_Size, int Dst_Size);
-void UnpackInternal(Uint8 *Source, short *Dest, int Src_Size, int Dst_Size);
+void UnpackWavPack(Uint8 *Source, short *Dest, int Src_Size, int Dst_Size);
 
 #endif

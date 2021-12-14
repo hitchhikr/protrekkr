@@ -47,13 +47,8 @@ int ToAT3(short *Source, short *Dest, int Size, int BitRate);
 #if defined(__MP3_CODEC__)
 int ToMP3(short *Source, short *Dest, int Size, int BitRate);
 #endif
-#if defined(__TRUESPEECH_CODEC__)
-int ToTrueSpeech(short *Source, short *Dest, int Size);
-#endif
-#if defined(__ADPCM_CODEC__)
 int ToADPCM(short *Source, short *Dest, int Size);
-#endif
 int To8Bit(short *Source, short *Dest, int Size);
-int ToInternal(short *Source, short *Dest, int Size);
+int ToWavPack(short *Source, short *Dest, int Size);
 
 #endif

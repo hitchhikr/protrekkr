@@ -51,12 +51,6 @@
 #if defined(PTK_GSM)
 GSM610WAVEFORMAT GSM_Format;
 #endif
-#if defined(PTK_TRUESPEECH)
-TRUESPEECHWAVEFORMAT TrueSpeech_Format;
-#endif
-#if defined(PTK_ADPCM)
-IMAADPCMWAVEFORMAT ADPCM_Format;
-#endif
 #if defined(PTK_AT3)
 TRUESPEECHWAVEFORMAT At3_Format;
 #endif
@@ -75,16 +69,6 @@ extern MPEGLAYER3WAVEFORMAT MP3_Format;
 extern GSM610WAVEFORMAT GSM_Format;
 #else
 #undef PTK_GSM
-#endif
-#if defined(__TRUESPEECH_CODEC__)
-extern TRUESPEECHWAVEFORMAT TrueSpeech_Format;
-#else
-#undef PTK_TRUESPEECH
-#endif
-#if defined(__ADPCM_CODEC__)
-extern IMAADPCMWAVEFORMAT ADPCM_Format;
-#else
-#undef PTK_ADPCM
 #endif
 #if defined(__AT3_CODEC__)
 extern TRUESPEECHWAVEFORMAT At3_Format;
@@ -207,52 +191,6 @@ void UnpackAT3(Uint8 *Source, short *Dest, int Src_Size, int Dst_Size, int BitRa
 #endif
 
 // ------------------------------------------------------
-// Unpack a TrueSpeech sample
-#if defined(PTK_TRUESPEECH)
-void UnpackTrueSpeech(Uint8 *Source, short *Dest, int Src_Size, int Dst_Size)
-{
-    int i;
-    int Real_Size;
-
-    memset(&Wave_Format, 0, sizeof(WAVEFORMATEX));
-    Wave_Format.wFormatTag = WAVE_FORMAT_PCM;
-
-    TrueSpeech_Format.wfx.wFormatTag = WAVE_FORMAT_DSPGROUP_TRUESPEECH;
-    TrueSpeech_Format.wfx.nChannels = 1;
-    TrueSpeech_Format.wfx.nSamplesPerSec = 0x1f40;
-    TrueSpeech_Format.wfx.nAvgBytesPerSec = 0x42b;
-    TrueSpeech_Format.wfx.nBlockAlign = 0x20;
-    TrueSpeech_Format.wfx.wBitsPerSample = 1;
-    TrueSpeech_Format.wfx.cbSize = 0x20;
-    TrueSpeech_Format.wRevision = 1;
-    TrueSpeech_Format.nSamplesPerBlock = 0xf0;
-
-    acmFormatSuggest(NULL, (LPWAVEFORMATEX) &TrueSpeech_Format, (LPWAVEFORMATEX) &Wave_Format, sizeof(WAVEFORMATEX), ACM_FORMATSUGGESTF_WFORMATTAG);
-    acmStreamOpen(&Unpack_Stream, NULL, (LPWAVEFORMATEX) &TrueSpeech_Format, (LPWAVEFORMATEX) &Wave_Format, NULL, 0, 0, ACM_STREAMOPENF_NONREALTIME);
-
-    acmStreamSize(Unpack_Stream, Src_Size, (DWORD *) &Real_Size, ACM_STREAMSIZEF_SOURCE);
-    short *dwDest = (short *) malloc((Real_Size * 2) + 8);
-    memset(dwDest, 0, (Real_Size * 2) + 8);
-    Unpack_Stream_Head.cbStruct = sizeof(ACMSTREAMHEADER);
-    Unpack_Stream_Head.pbSrc = Source;
-    Unpack_Stream_Head.cbSrcLength = Src_Size;
-    Unpack_Stream_Head.pbDst = (Uint8 *) dwDest;
-    Unpack_Stream_Head.cbDstLength = Real_Size;
-    acmStreamPrepareHeader(Unpack_Stream, &Unpack_Stream_Head, 0);
-    acmStreamConvert(Unpack_Stream, &Unpack_Stream_Head, 0);
-
-    for(i = 0; i < Dst_Size; i++)
-    {
-        Dest[i] = dwDest[i + 0x3e];
-    }
-
-    if(dwDest) free(dwDest);
-    acmStreamUnprepareHeader(Unpack_Stream, &Unpack_Stream_Head, 0);
-    acmStreamClose(Unpack_Stream, 0);
-}
-#endif
-
-// ------------------------------------------------------
 // Unpack a MP3 sample
 #if defined(PTK_MP3)
 void UnpackMP3(Uint8 *Source, short *Dest, int Src_Size, int Dst_Size, int BitRate)
@@ -301,44 +239,92 @@ void UnpackMP3(Uint8 *Source, short *Dest, int Src_Size, int Dst_Size, int BitRa
 // ------------------------------------------------------
 // Unpack an ADPCM sample
 #if defined(PTK_ADPCM)
+static int indexTable[16] =
+{
+	-1, -1, -1, -1, 2, 4, 6, 8,
+	-1, -1, -1, -1, 2, 4, 6, 8
+};
+static int stepsizeTable[89] =
+{
+	7, 8, 9, 10, 11, 12, 13, 14, 16, 17,
+	19, 21, 23, 25, 28, 31, 34, 37, 41, 45,
+	50, 55, 60, 66, 73, 80, 88, 97, 107, 118,
+	130, 143, 157, 173, 190, 209, 230, 253, 279, 307,
+	337, 371, 408, 449, 494, 544, 598, 658, 724, 796,
+	876, 963, 1060, 1166, 1282, 1411, 1552, 1707, 1878, 2066,
+	2272, 2499, 2749, 3024, 3327, 3660, 4026, 4428, 4871, 5358,
+	5894, 6484, 7132, 7845, 8630, 9493, 10442, 11487, 12635, 13899,
+	15289, 16818, 18500, 20350, 22385, 24623, 27086, 29794, 32767
+};
 void UnpackADPCM(Uint8 *Source, short *Dest, int Src_Size, int Dst_Size)
 {
-    int i;
-    int Real_Size;
+    signed char *inp;   /* Input buffer pointer */
+    short *outp;        /* output buffer pointer */
+    int sign;           /* Current adpcm sign bit */
+    int delta;          /* Current adpcm output value */
+    int step;           /* Stepsize */
+    int valpred;        /* Predicted value */
+    int vpdiff;         /* Current change to valpred */
+    int index;          /* Current step change index */
+    int inputbuffer;    /* place to keep next 4-bit value */
+    int bufferstep;     /* toggle between inputbuffer/input */
+    outp = Dest;
+    inp = (signed char *) Source;
 
-    memset(&Wave_Format, 0, sizeof(WAVEFORMATEX));
-    Wave_Format.wFormatTag = WAVE_FORMAT_PCM;
+    valpred = 0;
+    index = 0;
+    step = stepsizeTable[index];
 
-    ADPCM_Format.wfx.wFormatTag = WAVE_FORMAT_IMA_ADPCM;
-    ADPCM_Format.wfx.nChannels = 1;
-    ADPCM_Format.wfx.nSamplesPerSec = 44100;
-    ADPCM_Format.wfx.nAvgBytesPerSec = 0x566d;
-    ADPCM_Format.wfx.nBlockAlign = 0x400;
-    ADPCM_Format.wfx.wBitsPerSample = 4;
-    ADPCM_Format.wfx.cbSize = 2;
-    ADPCM_Format.wSamplesPerBlock = 0x7f9;
-    acmFormatSuggest(NULL, (LPWAVEFORMATEX) &ADPCM_Format, (LPWAVEFORMATEX) &Wave_Format, sizeof(WAVEFORMATEX), ACM_FORMATSUGGESTF_WFORMATTAG);
-    acmStreamOpen(&Unpack_Stream, NULL, (LPWAVEFORMATEX) &ADPCM_Format, (LPWAVEFORMATEX) &Wave_Format, NULL, 0, 0, ACM_STREAMOPENF_NONREALTIME);
+    bufferstep = 0;
 
-    acmStreamSize(Unpack_Stream, Src_Size, (DWORD *) &Real_Size, ACM_STREAMSIZEF_SOURCE);
-    short *dwDest = (short *) malloc((Real_Size * 2) + 8);
-    memset(dwDest, 0, (Real_Size * 2) + 8);
-    Unpack_Stream_Head.cbStruct = sizeof(ACMSTREAMHEADER);
-    Unpack_Stream_Head.pbSrc = Source;
-    Unpack_Stream_Head.cbSrcLength = Src_Size;
-    Unpack_Stream_Head.pbDst = (Uint8 *) dwDest;
-    Unpack_Stream_Head.cbDstLength = Real_Size;
-    acmStreamPrepareHeader(Unpack_Stream, &Unpack_Stream_Head, 0);
-    acmStreamConvert(Unpack_Stream, &Unpack_Stream_Head, 0);
+    for (; Dst_Size > 0; Dst_Size--) {
 
-    for(i = 0; i < Dst_Size; i++)
-    {
-        Dest[i] = dwDest[i];
+        /* Step 1 - get the delta value */
+        if (bufferstep)
+        {
+            delta = inputbuffer & 0xf;
+        }
+        else
+        {
+            inputbuffer = *inp++;
+            delta = (inputbuffer >> 4) & 0xf;
+        }
+        bufferstep = !bufferstep;
+
+        /* Step 2 - Find new index value (for later) */
+        index += indexTable[delta];
+        if (index < 0) index = 0;
+        if (index > 88) index = 88;
+
+        /* Step 3 - Separate sign and magnitude */
+        sign = delta & 8;
+        delta = delta & 7;
+
+        /* Step 4 - Compute difference and new predicted value */
+        /*
+        ** Computes 'vpdiff = (delta+0.5)*step/4', but see comment
+        ** in adpcm_coder.
+        */
+        vpdiff = step >> 3;
+        if (delta & 4) vpdiff += step;
+        if (delta & 2) vpdiff += step >> 1;
+        if (delta & 1) vpdiff += step >> 2;
+
+        if (sign)
+            valpred -= vpdiff;
+        else
+            valpred += vpdiff;
+
+        /* Step 5 - clamp output value */
+        if (valpred > 32767) valpred = 32767;
+        else if (valpred < -32768) valpred = -32768;
+
+        /* Step 6 - Update step value */
+        step = stepsizeTable[index];
+
+        /* Step 7 - Output value */
+        *outp++ = valpred;
     }
-
-    if(dwDest) free(dwDest);
-    acmStreamUnprepareHeader(Unpack_Stream, &Unpack_Stream_Head, 0);
-    acmStreamClose(Unpack_Stream, 0);
 }
 #endif
 

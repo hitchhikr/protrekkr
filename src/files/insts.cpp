@@ -118,7 +118,7 @@ void Load_Inst(char *FileName)
         }
         else
         {
-            SampleCompression[swrite] = SMP_PACK_INTERNAL;
+            SampleCompression[swrite] = SMP_PACK_WAVPACK;
         }
         // Load the bitrate
         if(Mp3_Scheme)

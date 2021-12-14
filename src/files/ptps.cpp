@@ -172,11 +172,10 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
 
     int Store_Gsm = FALSE;
     int Store_Mp3 = FALSE;
-    int Store_TrueSpeech = FALSE;
     int Store_ADPCM = FALSE;
     int Store_At3 = FALSE;
     int Store_8Bit = FALSE;
-    int Store_Internal = FALSE;
+    int Store_WavPack = FALSE;
 
     int Store_Track_Volume = FALSE;
     int Store_Track_Eq = FALSE;
@@ -1443,25 +1442,18 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                             Apply_Interpolation = TRUE;
                             break;
 #endif
-#if defined(__TRUESPEECH_CODEC__)
-                        case SMP_PACK_TRUESPEECH:
-                            Store_TrueSpeech = TRUE;
-                            Apply_Interpolation = TRUE;
-                            break;
-#endif
-#if defined(__ADPCM_CODEC__)
                         case SMP_PACK_ADPCM:
                             Store_ADPCM = TRUE;
                             Apply_Interpolation = TRUE;
                             break;
-#endif
+
                         case SMP_PACK_8BIT:
                             Store_8Bit = TRUE;
                             Apply_Interpolation = TRUE;
                             break;
 
-                        case SMP_PACK_INTERNAL:
-                            Store_Internal = TRUE;
+                        case SMP_PACK_WAVPACK:
+                            Store_WavPack = TRUE;
                             Apply_Interpolation = TRUE;
                             break;
                     }
@@ -1628,11 +1620,10 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
 
     Save_Constant("PTK_GSM", Store_Gsm);
     Save_Constant("PTK_MP3", Store_Mp3);
-    Save_Constant("PTK_TRUESPEECH", Store_TrueSpeech);
     Save_Constant("PTK_ADPCM", Store_ADPCM);
     Save_Constant("PTK_AT3", Store_At3);
     Save_Constant("PTK_8BIT", Store_8Bit);
-    Save_Constant("PTK_INTERNAL", Store_Internal);
+    Save_Constant("PTK_WAVPACK", Store_WavPack);
 
     Write_Mod_Data(&compressor, sizeof(char), 1, in);
 

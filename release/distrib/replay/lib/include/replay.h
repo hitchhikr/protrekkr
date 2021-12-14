@@ -81,12 +81,12 @@
 
 #define SMP_PACK_GSM 0
 #define SMP_PACK_MP3 1
-#define SMP_PACK_TRUESPEECH 2
+#define SMP_PACK_TRUESPEECH 2   // Not used
 #define SMP_PACK_NONE 3
 #define SMP_PACK_AT3 4
 #define SMP_PACK_ADPCM 5
 #define SMP_PACK_8BIT 6
-#define SMP_PACK_INTERNAL 7
+#define SMP_PACK_WAVPACK 7
 
 #define MAX_ROWS 128
 #define MAX_SEQUENCES 256

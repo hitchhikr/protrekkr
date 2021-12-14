@@ -1266,8 +1266,8 @@ short *Unpack_Sample(int Dest_Length, char Pack_Type, int BitRate)
         memset(Dest_Buffer, 0, Dest_Length * 2 + 8);
 
 #if defined(PTK_AT3) || defined(PTK_GSM) || defined(PTK_MP3) || \
-    defined(PTK_TRUESPEECH) || defined(PTK_ADPCM) || defined(PTK_8BIT) || \
-    defined(PTK_INTERNAL)
+    defined(PTK_ADPCM) || defined(PTK_8BIT) || \
+    defined(PTK_WAVPACK)
 
         switch(Pack_Type)
         {
@@ -1292,12 +1292,6 @@ short *Unpack_Sample(int Dest_Length, char Pack_Type, int BitRate)
                 break;
 #endif
 
-#if defined(PTK_TRUESPEECH)
-            case SMP_PACK_TRUESPEECH:
-                UnpackTrueSpeech(Packed_Read_Buffer, Dest_Buffer, Packed_Length, Dest_Length);
-                break;
-#endif
-
 #if defined(PTK_ADPCM)
             case SMP_PACK_ADPCM:
                 UnpackADPCM(Packed_Read_Buffer, Dest_Buffer, Packed_Length, Dest_Length);
@@ -1310,9 +1304,9 @@ short *Unpack_Sample(int Dest_Length, char Pack_Type, int BitRate)
                 break;
 #endif
 
-#if defined(PTK_INTERNAL)
-            case SMP_PACK_INTERNAL:
-                UnpackInternal(Packed_Read_Buffer, Dest_Buffer, Packed_Length, Dest_Length);
+#if defined(PTK_WAVPACK)
+            case SMP_PACK_WAVPACK:
+                UnpackWavPack(Packed_Read_Buffer, Dest_Buffer, Packed_Length, Dest_Length);
                 break;
 #endif
 
@@ -5985,7 +5979,7 @@ void KillInst(int inst_nbr, int all_splits)
     if(all_splits)
     {
         // Internal is the default packing scheme
-        SampleCompression[inst_nbr] = SMP_PACK_INTERNAL;
+        SampleCompression[inst_nbr] = SMP_PACK_WAVPACK;
 
 #if defined(PTK_MP3)
         Mp3_BitRate[inst_nbr] = 0;
