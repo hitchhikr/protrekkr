@@ -867,12 +867,12 @@ int Screen_Update(void)
 
         if(gui_action == GUI_CMD_GOTO_PREVIOUS_ROW)
         {
-            Goto_Previous_Row();
+            Goto_Previous_Row(TRUE);
         }
 
         if(gui_action == GUI_CMD_GOTO_NEXT_ROW)
         {
-            Goto_Next_Row();
+            Goto_Next_Row(TRUE);
         }
 
         if(gui_action == GUI_CMD_REDUCE_SONG_LENGTH)
@@ -3496,25 +3496,25 @@ void Keyboard_Handler(void)
         // Previous row
         if(Keys[SDLK_UP] && !Song_Playing)
         {
-            Goto_Previous_Row();
+            Goto_Previous_Row(TRUE);
         }
 
         // Next row
         if(Keys[SDLK_DOWN] && !Song_Playing)
         {
-            Goto_Next_Row();
+            Goto_Next_Row(TRUE);
         }
 
         // Previous page (16 rows)
         if(Keys[SDLK_PAGEUP] && !Song_Playing)
         {
-            Goto_Previous_Page();
+            Goto_Previous_Page(TRUE);
         }
 
         // Next page (16 rows)
         if(Keys[SDLK_PAGEDOWN] && !Song_Playing)
         {
-            Goto_Next_Page();
+            Goto_Next_Page(TRUE);
         }
 
         // Previous pattern

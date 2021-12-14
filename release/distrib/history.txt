@@ -4,6 +4,8 @@ ProTrekkr releases history
 
 v2.6.0
 
+- Pattern auto-scrolls when selecting a block with the mouse.
+- Patterns selection isn't removed when clicking on right arrows.
 - ADPCM compression is now internal and available in all OSes.
 - Removed TrueSpeech compression: it doesn't exist in latest Windows anymore.
 - Visual improvement of sliders.

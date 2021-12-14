@@ -249,6 +249,11 @@ int Pattern_Scrolling_Vert;
 float Pattern_First_Delay_Vert;
 float Pattern_Delay_Vert;
 
+PtkTimer Select_Timer_Vert;
+int Select_Scrolling_Vert;
+float Select_First_Delay_Vert;
+float Select_Delay_Vert;
+
 char Large_Patterns;
 int Patterns_Lines_Offset = 0;
 
@@ -2524,18 +2529,37 @@ get_tracks_boundaries:
 
 // ------------------------------------------------------
 // return the index of the row located under the mouse pointer
-int Get_Line_Over_Mouse(void)
+int Get_Line_Over_Mouse(int *Need_Scroll)
 {
     int Cur_Position = Get_Song_Position();
 
     int mouse_line = (Mouse.y - (183 + 17));
+    *Need_Scroll = 0;
     // (Highlight line is doubled)
     if(mouse_line >= ((VIEWLINE + 1) * 8)) mouse_line -= 8;
     mouse_line /= 8;
     mouse_line -= VIEWLINE;
     mouse_line += Pattern_Line;
+    if(mouse_line > (VIEWLINE + Pattern_Line))
+    {
+        if(mouse_line >= patternLines[pSequence[Cur_Position]])
+        {
+            mouse_line = patternLines[pSequence[Cur_Position]];
+        }
+        *Need_Scroll = mouse_line - (VIEWLINE + Pattern_Line);
+    }
+    if(mouse_line < -(VIEWLINE - Pattern_Line))
+    {
+        if((VIEWLINE - Pattern_Line) < 0)
+        {
+            *Need_Scroll = -(-(VIEWLINE - Pattern_Line) - mouse_line);
+        }
+    }
     if(mouse_line > patternLines[pSequence[Cur_Position]] - 1) mouse_line = patternLines[pSequence[Cur_Position]] - 1;
-    if(mouse_line < 0) mouse_line = 0;
+    if(mouse_line < 0)
+    {
+        mouse_line = 0;
+    }
     return(mouse_line);
 }
 
@@ -2598,8 +2622,10 @@ void Reset_Pattern_Scrolling_Horiz(void)
     Pattern_Scrolling_Horiz_Left = FALSE;
     Pattern_Scrolling_Horiz_Right = FALSE;
     Pattern_Scrolling_Horiz_Right_Slow = FALSE;
-    Pattern_Delay_Vert = 0;
+    Pattern_Delay_Vert = 0.0f;
     Pattern_Scrolling_Vert = FALSE;
+    Select_Delay_Vert = 0.0f;
+    Select_Scrolling_Vert = FALSE;
 }
 
 // ------------------------------------------------------
@@ -2701,7 +2727,8 @@ void Mouse_Sliders_Right_Pattern_Ed(void)
         {
             if(!is_recording)
             {
-                sched_line = Get_Line_Over_Mouse();
+                int Need_Scroll;
+                sched_line = Get_Line_Over_Mouse(&Need_Scroll);
 
                 if(Pattern_Scrolling_Vert)
                 {
@@ -2821,8 +2848,34 @@ void Mouse_Sliders_Pattern_Ed(void)
     {
         int track;
         int column;
+        int line;
+        int Need_Scroll;
+
         Get_Column_Over_Mouse(&track, &column, FALSE, NULL, TRUE);
-        Mark_Block_End(column, track, Get_Line_Over_Mouse(), 3);
+        line = Get_Line_Over_Mouse(&Need_Scroll);
+        if(Need_Scroll)
+        {
+            // Scroll the pattern upward or downward if the mouse is out of bounds
+                if(Select_Scrolling_Vert)
+                {
+                    Select_Delay_Vert += Select_Timer_Vert.Get_Frames_Delay();
+                    if(Select_Delay_Vert >= Select_First_Delay_Vert)
+                    {
+                        // Scroll it
+                        Select_Delay_Vert = 0;
+                        Select_First_Delay_Vert = 100.0f;
+                        Pattern_Line += Need_Scroll;
+                    }
+                }
+                else
+                {
+                    Select_Timer_Vert.Set_Frames_Counter();
+                    Select_Scrolling_Vert = TRUE;
+                    Select_Delay_Vert = 0;
+                    Select_First_Delay_Vert = 100.0f;
+                }
+        }
+        Mark_Block_End(column, track, line, 3);
     }
 }
 
@@ -2833,6 +2886,7 @@ void Mouse_Left_Pattern_Ed(void)
     int i;
     int start_mute_check_x;
     int tracks;
+    int Need_Scroll;
 
     // Start of the marking block
     if(zcheckMouse(1, 183 + 15, MAX_PATT_SCREEN_X, (Cur_Height - 371) + Patterns_Lines_Offset) && !Song_Playing)
@@ -2841,19 +2895,19 @@ void Mouse_Left_Pattern_Ed(void)
         int column;
         int In_Scrolling = FALSE;
         Get_Column_Over_Mouse(&track, &column, FALSE, NULL, TRUE);
-        Mark_Block_Start(column, track, Get_Line_Over_Mouse());
+        Mark_Block_Start(column, track, Get_Line_Over_Mouse(&Need_Scroll));
     }
 
     // Prev row
     if(zcheckMouse(MAX_PATT_SCREEN_X + 1, 184, 16 + 1, 14) & !Song_Playing)
     {
-        Goto_Previous_Row();
+        Goto_Previous_Row(FALSE);
     }
 
     // Next row
     if(zcheckMouse(MAX_PATT_SCREEN_X + 1, (Cur_Height - 251) + Patterns_Lines_Offset, 16 + 1, 14) & !Song_Playing)
     {
-        Goto_Next_Row();
+        Goto_Next_Row(FALSE);
     }
 
     // Set buffer 1
@@ -3050,13 +3104,13 @@ void Mouse_Right_Pattern_Ed(void)
     // Prev page
     if(zcheckMouse(MAX_PATT_SCREEN_X + 1, 184, 16 + 1, 14) & !Song_Playing)
     {
-        Goto_Previous_Page();
+        Goto_Previous_Page(FALSE);
     }
 
     // Next page
     if(zcheckMouse(MAX_PATT_SCREEN_X + 1, (Cur_Height - 251) + Patterns_Lines_Offset, 16 + 1, 14) & !Song_Playing)
     {
-        Goto_Next_Page();
+        Goto_Next_Page(FALSE);
     }
 }
 
@@ -3107,56 +3161,56 @@ void Solo_Track(int track_to_solo)
 
 // ------------------------------------------------------
 // Move one row above
-void Goto_Previous_Row(void)
+void Goto_Previous_Row(int Remove_Sel)
 {
     int Cur_Position = Get_Song_Position();
 
-    Select_Block_Keyboard(BLOCK_MARK_ROWS);
+    if(Remove_Sel) Select_Block_Keyboard(BLOCK_MARK_ROWS);
     Pattern_Line--;
     if(Continuous_Scroll && !Cur_Position) if(Pattern_Line < 0) Pattern_Line = 0;
     Actupated(0);
-    Select_Block_Keyboard(BLOCK_MARK_ROWS);
+    if(Remove_Sel) Select_Block_Keyboard(BLOCK_MARK_ROWS);
 }
 
 // ------------------------------------------------------
 // Move one row below
-void Goto_Next_Row(void)
+void Goto_Next_Row(int Remove_Sel)
 {
     int Cur_Position = Get_Song_Position();
 
-    Select_Block_Keyboard(BLOCK_MARK_ROWS);
+    if(Remove_Sel) Select_Block_Keyboard(BLOCK_MARK_ROWS);
     Pattern_Line++;
     if(Continuous_Scroll && (Cur_Position == Song_Length - 1)) if(Pattern_Line >= patternLines[pSequence[Cur_Position]]) Pattern_Line = patternLines[pSequence[Cur_Position]] - 1;
     Actupated(0);
-    Select_Block_Keyboard(BLOCK_MARK_ROWS);
+    if(Remove_Sel) Select_Block_Keyboard(BLOCK_MARK_ROWS);
 }
 
 // ------------------------------------------------------
 // Move one page above
-void Goto_Previous_Page(void)
+void Goto_Previous_Page(int Remove_Sel)
 {
     int Cur_Position = Get_Song_Position();
 
-    Select_Block_Keyboard(BLOCK_MARK_ROWS);
+    if(Remove_Sel) Select_Block_Keyboard(BLOCK_MARK_ROWS);
     Pattern_Line -= 16;
     if(!is_recording && !Continuous_Scroll) if(Pattern_Line < 0) Pattern_Line = 0;
     if(Continuous_Scroll && !Cur_Position) if(Pattern_Line < 0) Pattern_Line = 0;
     Actupated(0);
-    Select_Block_Keyboard(BLOCK_MARK_ROWS);
+    if(Remove_Sel) Select_Block_Keyboard(BLOCK_MARK_ROWS);
 }
 
 // ------------------------------------------------------
 // Move one page below
-void Goto_Next_Page(void)
+void Goto_Next_Page(int Remove_Sel)
 {
     int Cur_Position = Get_Song_Position();
 
-    Select_Block_Keyboard(BLOCK_MARK_ROWS);
+    if(Remove_Sel) Select_Block_Keyboard(BLOCK_MARK_ROWS);
     Pattern_Line += 16;
     if(!is_recording && !Continuous_Scroll) if(Pattern_Line >= patternLines[pSequence[Cur_Position]]) Pattern_Line = patternLines[pSequence[Cur_Position]] - 1;
     if(Continuous_Scroll && (Cur_Position == Song_Length - 1)) if(Pattern_Line >= patternLines[pSequence[Cur_Position]]) Pattern_Line = patternLines[pSequence[Cur_Position]] - 1;
     Actupated(0);
-    Select_Block_Keyboard(BLOCK_MARK_ROWS);
+    if(Remove_Sel) Select_Block_Keyboard(BLOCK_MARK_ROWS);
 }
 
 // ------------------------------------------------------

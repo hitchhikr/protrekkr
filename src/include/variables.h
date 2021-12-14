@@ -526,7 +526,7 @@ void FixStereo(int channel);
 void Keyboard_Handler(void);
 void Mouse_Handler(void);
 int Get_Track_Over_Mouse(int Mouse, int *Was_Scrolling, int Left);
-int Get_Line_Over_Mouse(void);
+int Get_Line_Over_Mouse(int *Need_Scroll);
 void Get_Column_Over_Mouse(int *track, int *column,
                            int check_boundaries,
                            int *Was_Scrolling,
