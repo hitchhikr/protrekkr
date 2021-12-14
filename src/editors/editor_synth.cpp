@@ -338,16 +338,16 @@ void Actualize_Synth_Ed(char gode)
            gode == UPDATE_SYNTH_ED_COMBINER||
            gode == UPDATE_SYNTH_ED_VALUES)
         {
-            Gui_Draw_Button_Box(4, (Cur_Height - 100) - 1 + (16 * 0), 17, 16, "+", Allow_Button | BUTTON_TEXT_CENTERED);
-            Gui_Draw_Button_Box(4, (Cur_Height - 100) - 1 + (16 * 1), 17, 16, "-", Allow_Button | BUTTON_TEXT_CENTERED);
-            Gui_Draw_Button_Box(4, (Cur_Height - 100) - 1 + (16 * 2), 17, 16, "*", Allow_Button | BUTTON_TEXT_CENTERED);
-            Gui_Draw_Button_Box(4, (Cur_Height - 100) - 1 + (16 * 3), 17, 16, "/", Allow_Button | BUTTON_TEXT_CENTERED);
+            Gui_Draw_Button_Box(4, (Cur_Height - 95) - 1 + (18 * 0), 17, 16, "+", Allow_Button | BUTTON_TEXT_CENTERED);
+            Gui_Draw_Button_Box(4, (Cur_Height - 95) - 1 + (18 * 1), 17, 16, "-", Allow_Button | BUTTON_TEXT_CENTERED);
+            Gui_Draw_Button_Box(4, (Cur_Height - 95) - 1 + (18 * 2), 17, 16, "*", Allow_Button | BUTTON_TEXT_CENTERED);
+            Gui_Draw_Button_Box(4, (Cur_Height - 95) - 1 + (18 * 3), 17, 16, "/", Allow_Button | BUTTON_TEXT_CENTERED);
             switch(PARASynth[Current_Instrument].osc_combine)
             {
-                case COMBINE_ADD: Gui_Draw_Button_Box(4, (Cur_Height - 100) - 1 + (16 * 0), 17, 16, "+", Allow_Button_Pushed | BUTTON_TEXT_CENTERED); break;
-                case COMBINE_SUB: Gui_Draw_Button_Box(4, (Cur_Height - 100) - 1 + (16 * 1), 17, 16, "-", Allow_Button_Pushed | BUTTON_TEXT_CENTERED); break;
-                case COMBINE_MUL: Gui_Draw_Button_Box(4, (Cur_Height - 100) - 1 + (16 * 2), 17, 16, "*", Allow_Button_Pushed | BUTTON_TEXT_CENTERED); break;
-                case COMBINE_DIV: Gui_Draw_Button_Box(4, (Cur_Height - 100) - 1 + (16 * 3), 17, 16, "/", Allow_Button_Pushed | BUTTON_TEXT_CENTERED); break;
+                case COMBINE_ADD: Gui_Draw_Button_Box(4, (Cur_Height - 95) - 1 + (18 * 0), 17, 16, "+", Allow_Button_Pushed | BUTTON_TEXT_CENTERED); break;
+                case COMBINE_SUB: Gui_Draw_Button_Box(4, (Cur_Height - 95) - 1 + (18 * 1), 17, 16, "-", Allow_Button_Pushed | BUTTON_TEXT_CENTERED); break;
+                case COMBINE_MUL: Gui_Draw_Button_Box(4, (Cur_Height - 95) - 1 + (18 * 2), 17, 16, "*", Allow_Button_Pushed | BUTTON_TEXT_CENTERED); break;
+                case COMBINE_DIV: Gui_Draw_Button_Box(4, (Cur_Height - 95) - 1 + (18 * 3), 17, 16, "/", Allow_Button_Pushed | BUTTON_TEXT_CENTERED); break;
             }
         }
 
@@ -1085,7 +1085,7 @@ void Mouse_Left_Synth_Ed(void)
             {
                 if(File_Exist_Req("%s" SLASH "%s.pts", Dir_Presets, PARASynth[Current_Instrument].presetname))
                 {
-                    Display_Requester(&Overwrite_Requester, GUI_CMD_SAVE_SYNTH);
+                    Display_Requester(&Overwrite_Requester, GUI_CMD_SAVE_SYNTH, NULL, TRUE);
                 }
                 else
                 {
@@ -1309,25 +1309,25 @@ void Mouse_Left_Synth_Ed(void)
 
 
             // Oscillators combiner
-            if(zcheckMouse(4, (Cur_Height - 100) - 1 + (16 * 0), 17, 16))
+            if(zcheckMouse(4, (Cur_Height - 95) - 1 + (18 * 0), 17, 16))
             {
                 PARASynth[Current_Instrument].osc_combine = COMBINE_ADD;
                 teac = UPDATE_SYNTH_ED_ALL;
                 gui_action = GUI_CMD_UPDATE_SYNTH_ED;
             }
-            if(zcheckMouse(4, (Cur_Height - 100) - 1 + (16 * 1), 17, 16))
+            if(zcheckMouse(4, (Cur_Height - 95) - 1 + (18 * 1), 17, 16))
             {
                 PARASynth[Current_Instrument].osc_combine = COMBINE_SUB;
                 teac = UPDATE_SYNTH_ED_ALL;
                 gui_action = GUI_CMD_UPDATE_SYNTH_ED;
             }
-            if(zcheckMouse(4, (Cur_Height - 100) - 1 + (16 * 2), 17, 16))
+            if(zcheckMouse(4, (Cur_Height - 95) - 1 + (18 * 2), 17, 16))
             {
                 PARASynth[Current_Instrument].osc_combine = COMBINE_MUL;
                 teac = UPDATE_SYNTH_ED_ALL;
                 gui_action = GUI_CMD_UPDATE_SYNTH_ED;
             }
-            if(zcheckMouse(4, (Cur_Height - 100) - 1 + (16 * 3), 17, 16))
+            if(zcheckMouse(4, (Cur_Height - 95) - 1 + (18 * 3), 17, 16))
             {
                 PARASynth[Current_Instrument].osc_combine = COMBINE_DIV;
                 teac = UPDATE_SYNTH_ED_ALL;

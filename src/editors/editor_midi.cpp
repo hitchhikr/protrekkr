@@ -280,7 +280,7 @@ void Mouse_Left_Midi_Ed(void)
         {
             if(File_Exist_Req("%s" SLASH "%s.pmi", Dir_MidiCfg, Midi_Name))
             {
-                Display_Requester(&Overwrite_Requester, GUI_CMD_SAVE_MIDI_CFG);
+                Display_Requester(&Overwrite_Requester, GUI_CMD_SAVE_MIDI_CFG, NULL, TRUE);
             }
             else
             {

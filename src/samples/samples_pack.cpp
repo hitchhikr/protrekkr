@@ -243,22 +243,21 @@ int ToAT3(short *Source, short *Dest, int Size, int BitRate)
 
 // ------------------------------------------------------
 // Pack a sample to MP3
-#if defined(__MP3_CODEC__)
 
-BOOL CALLBACK fuck(
+// !!! Currently BROKEN !!!
+
+#if defined(__MP3_CODEC__)
+BOOL CALLBACK enum_drivers(
   HACMDRIVERID hadid,
   LPACMFORMATDETAILS pafd,
   DWORD_PTR dwInstance,
   DWORD fdwSupport
 )
 {
-    int ret;
-
-    ret = fdwSupport;
     return TRUE;
 }
 
-ACMFORMATENUMCB (Acmformatenumcb2) = &fuck;
+ACMFORMATENUMCB (Acmformatenumcb2) = &enum_drivers;
 ACMFORMATDETAILS acmFormatDetails2;
 
 int ToMP3(short *Source, short *Dest, int Size, int BitRate)
@@ -281,15 +280,15 @@ int ToMP3(short *Source, short *Dest, int Size, int BitRate)
     MP3_Format.wfx.cbSize = MPEGLAYER3_WFX_EXTRA_BYTES;
     MP3_Format.wfx.nChannels = 1;
     MP3_Format.wfx.nSamplesPerSec = 44100;
-    MP3_Format.wfx.nAvgBytesPerSec = (BitRate * 1000) / 8;
+    MP3_Format.wfx.nAvgBytesPerSec = (88 * 1000) / 8;
     MP3_Format.wfx.wBitsPerSample = 0;
     MP3_Format.wfx.nBlockAlign = 1;
 
     MP3_Format.wID = MPEGLAYER3_ID_MPEG;
     MP3_Format.fdwFlags = MPEGLAYER3_FLAG_PADDING_OFF;
-    MP3_Format.nBlockSize = 417;
-    MP3_Format.nFramesPerBlock = 1;
-    MP3_Format.nCodecDelay = 1393;
+    MP3_Format.nBlockSize = 0;
+    MP3_Format.nFramesPerBlock = 0;
+    MP3_Format.nCodecDelay = 0;
 
   // Ask for WAVE_FORMAT_MPEGLAYER3 formats.
     ret = acmMetrics(NULL, ACM_METRIC_MAX_SIZE_FORMAT, &cbMaxSize);
@@ -299,18 +298,23 @@ int ToMP3(short *Source, short *Dest, int Size, int BitRate)
 
     WAVEFORMATEX *pWaveFormat = (WAVEFORMATEX *) pFormat;
     pWaveFormat->wFormatTag = WAVE_FORMAT_MPEGLAYER3;
+    pWaveFormat->nChannels = 1;
+    pWaveFormat->nSamplesPerSec = 44100;
+    pWaveFormat->wBitsPerSample = 16;
+    pWaveFormat->nBlockAlign = (pWaveFormat->nChannels * pWaveFormat->wBitsPerSample) / 8;
+    pWaveFormat->nAvgBytesPerSec = pWaveFormat->nSamplesPerSec * pWaveFormat->nBlockAlign;
 
     // Set up the acmFormatDetails structure.
     ZeroMemory(&acmFormatDetails2, sizeof(acmFormatDetails2));
     acmFormatDetails2.cbStruct = sizeof(ACMFORMATDETAILS);
-    acmFormatDetails2.pwfx = pWaveFormat; 
+    acmFormatDetails2.pwfx = pWaveFormat;
     acmFormatDetails2.cbwfx = cbMaxSize;
 
     // For the ACM_FORMATENUMF_WFORMATTAG request, the format
     // tag in acmFormatDetails must match the format tag in
-    // the pFormat buffer.
+    // the pFormat buffer.//
     acmFormatDetails2.dwFormatTag = WAVE_FORMAT_MPEGLAYER3;
-    
+    //
     ret = acmFormatEnum(NULL, &acmFormatDetails2, Acmformatenumcb2, 0, ACM_FORMATENUMF_WFORMATTAG);
     ret = acmFormatSuggest(NULL, (LPWAVEFORMATEX) &Wave_Format, (LPWAVEFORMATEX) &MP3_Format, sizeof(MP3_Format), ACM_FORMATSUGGESTF_WFORMATTAG);
     ret = acmStreamOpen(&Pack_Stream, NULL, (LPWAVEFORMATEX) &Wave_Format, (LPWAVEFORMATEX) &MP3_Format, NULL, 0, 0, 0);

@@ -372,7 +372,7 @@ void Mouse_Left_Reverb_Ed(void)
         {
             if(File_Exist_Req("%s" SLASH "%s.prv", Dir_Reverbs, Reverb_Name))
             {
-                Display_Requester(&Overwrite_Requester, GUI_CMD_SAVE_REVERB);
+                Display_Requester(&Overwrite_Requester, GUI_CMD_SAVE_REVERB, NULL, TRUE);
             }
             else
             {

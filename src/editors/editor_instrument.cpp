@@ -666,7 +666,7 @@ void Mouse_Left_Instrument_Ed(void)
             {
                 if(File_Exist_Req("%s" SLASH "%s.pti", Dir_Instrs, nameins[Current_Instrument]))
                 {
-                    Display_Requester(&Overwrite_Requester, GUI_CMD_SAVE_INSTRUMENT);
+                    Display_Requester(&Overwrite_Requester, GUI_CMD_SAVE_INSTRUMENT, NULL, TRUE);
                 }
                 else
                 {
@@ -689,7 +689,7 @@ void Mouse_Left_Instrument_Ed(void)
             }
             if(File_Exist_Req("%s" SLASH "%s", Dir_Samples, Name))
             {
-                Display_Requester(&Overwrite_Requester, GUI_CMD_EXPORT_WAV);
+                Display_Requester(&Overwrite_Requester, GUI_CMD_EXPORT_WAV, NULL, TRUE);
             }
             else
             {

@@ -847,7 +847,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
                 case SDL_QUIT:
                     if(!In_Requester)
                     {
-                        Display_Requester(&Exit_Requester, GUI_CMD_NOP);
+                        Display_Requester(&Exit_Requester, GUI_CMD_NOP, NULL, TRUE);
                     }
                     break;
 
@@ -901,7 +901,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
         // Display the title requester once
         if(!Burn_Title)
         {
-            Display_Requester(&Title_Requester, GUI_CMD_REFRESH_PALETTE);
+            Display_Requester(&Title_Requester, GUI_CMD_REFRESH_PALETTE, NULL, TRUE);
             Burn_Title = TRUE;
         }
 

@@ -378,6 +378,14 @@ REQUESTER_BUTTON Requester_Btn_All_Delete =
     SDLK_a
 };
 
+REQUESTER_BUTTON Requester_Btn_Ok =
+{
+    NULL,
+    "Ok",
+    BUTTON_DEFAULT,
+    SDLK_SPACE
+};
+
 extern REQUESTER Title_Requester;
 
 REQUESTER Exit_Requester =
@@ -407,6 +415,23 @@ REQUESTER Delete_Requester =
     &Requester_Btn_All_Delete,
     NULL, 0
 };
+
+REQUESTER Helper_Requester =
+{
+    NULL,
+    &Requester_Btn_Ok,
+    NULL, 0
+};
+char Chords_Major[64];
+char Chords_Minor[64];
+char Chords_Sus4[64];
+char Chords_Sus2[64];
+char Chords_Dim[64];
+char Chords_Aug[64];
+char Chords_Maj7[64];
+char Chords_Min7[64];
+char Chords_Add2[64];
+char Chords[512];
 
 char OverWrite_Name[1024];
 
@@ -928,6 +953,118 @@ int Screen_Update(void)
         {
             Current_Octave++;
             Actualize_Patterned();
+        }
+
+        if(gui_action == GUI_CMD_GET_HELP)
+        {
+            // Retrieve the note under the caret
+            int note = Read_Pattern_Note(Get_Song_Position());
+            if(note != -1)
+            {
+                if(note != 121)
+                {
+                    // Display the list of chords
+                    char ascii_chord[16];
+                    char ascii_note1[16];
+                    char ascii_note2[16];
+                    char ascii_note3[16];
+                    char ascii_note4[16];
+                    int octave;
+                    int octave1;
+                    int octave2;
+                    int octave3;
+                    int octave4;
+                    int real_note;
+                    real_note = Get_Note_Ascii(note, ascii_chord, &octave, FALSE);
+
+                    Get_Note_Ascii(note, ascii_note1, &octave1, TRUE);
+
+                    Get_Note_Ascii(note + 4, ascii_note2, &octave2, TRUE);
+                    Get_Note_Ascii(note + 7, ascii_note3, &octave3, TRUE);
+                    sprintf(Chords_Major, "%s Major:    %s%d   %s%d   %s%d", ascii_chord,
+                                                                ascii_note1, octave1,
+                                                                ascii_note2, octave2,
+                                                                ascii_note3, octave3
+                           );
+                    Get_Note_Ascii(note + 3, ascii_note2, &octave2, TRUE);
+                    Get_Note_Ascii(note + 7, ascii_note3, &octave3, TRUE);
+                    sprintf(Chords_Minor, "%s Minor:    %s%d   %s%d   %s%d", ascii_chord,
+                                                                ascii_note1, octave1,
+                                                                ascii_note2, octave2,
+                                                                ascii_note3, octave3
+                           );
+                    Get_Note_Ascii(note + 5, ascii_note2, &octave2, TRUE);
+                    Get_Note_Ascii(note + 7, ascii_note3, &octave3, TRUE);
+                    sprintf(Chords_Sus4, "%s Sus4:    %s%d   %s%d   %s%d", ascii_chord,
+                                                              ascii_note1, octave1,
+                                                              ascii_note2, octave2,
+                                                              ascii_note3, octave3
+                           );
+                    Get_Note_Ascii(note + 2, ascii_note2, &octave2, TRUE);
+                    Get_Note_Ascii(note + 4, ascii_note3, &octave3, TRUE);
+                    Get_Note_Ascii(note + 7, ascii_note4, &octave4, TRUE);
+                    sprintf(Chords_Sus2, "%s Sus2:    %s%d   %s%d   %s%d   %s%d", ascii_chord,
+                                                                 ascii_note1, octave1,
+                                                                 ascii_note2, octave2,
+                                                                 ascii_note3, octave3,
+                                                                 ascii_note4, octave4
+                           );
+                    Get_Note_Ascii(note + 3, ascii_note2, &octave2, TRUE);
+                    Get_Note_Ascii(note + 6, ascii_note3, &octave3, TRUE);
+                    sprintf(Chords_Dim, "%s Dim:    %s%d   %s%d   %s%d", ascii_chord,
+                                                            ascii_note1, octave1,
+                                                            ascii_note2, octave2,
+                                                            ascii_note3, octave3
+                           );
+                    Get_Note_Ascii(note + 4, ascii_note2, &octave2, TRUE);
+                    Get_Note_Ascii(note + 6, ascii_note3, &octave3, TRUE);
+                    sprintf(Chords_Aug, "%s Aug:    %s%d   %s%d   %s%d", ascii_chord,
+                                                            ascii_note1, octave1,
+                                                            ascii_note2, octave2,
+                                                            ascii_note3, octave3
+                           );
+                    Get_Note_Ascii(note + 4, ascii_note2, &octave2, TRUE);
+                    Get_Note_Ascii(note + 7, ascii_note3, &octave3, TRUE);
+                    Get_Note_Ascii(note + 11, ascii_note4, &octave4, TRUE);
+                    sprintf(Chords_Maj7, "%s Maj 7:    %s%d   %s%d   %s%d   %s%d", ascii_chord,
+                                                                  ascii_note1, octave1,
+                                                                  ascii_note2, octave2,
+                                                                  ascii_note3, octave3,
+                                                                  ascii_note4, octave4
+                           );
+                    Get_Note_Ascii(note + 3, ascii_note2, &octave2, TRUE);
+                    Get_Note_Ascii(note + 7, ascii_note3, &octave3, TRUE);
+                    Get_Note_Ascii(note + 11, ascii_note4, &octave4, TRUE);
+                    sprintf(Chords_Min7, "%s Min7:    %s%d   %s%d   %s%d   %s%d", ascii_chord,
+                                                                 ascii_note1, octave1,
+                                                                 ascii_note2, octave2,
+                                                                 ascii_note3, octave3,
+                                                                 ascii_note4, octave4
+                           );
+
+                    Get_Note_Ascii(note + 2, ascii_note2, &octave2, TRUE);
+                    Get_Note_Ascii(note + 4, ascii_note3, &octave3, TRUE);
+                    Get_Note_Ascii(note + 7, ascii_note4, &octave4, TRUE);
+                    sprintf(Chords_Add2, "%s Add2:    %s%d   %s%d   %s%d   %s%d", ascii_chord,
+                                                                 ascii_note1, octave1,
+                                                                 ascii_note2, octave2,
+                                                                 ascii_note3, octave3,
+                                                                 ascii_note4, octave4
+                           );
+
+                    sprintf(Chords, "%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s",
+                                    Chords_Major,
+                                    Chords_Minor,
+                                    Chords_Sus4,
+                                    Chords_Sus2,
+                                    Chords_Dim,
+                                    Chords_Aug,
+                                    Chords_Maj7,
+                                    Chords_Min7,
+                                    Chords_Add2);
+                    Display_Requester(&Helper_Requester, GUI_CMD_NOP, Chords, FALSE);
+                }
+            }
         }
 
         if(gui_action == GUI_CMD_DECREASE_STEP_ADD)
@@ -1503,12 +1640,12 @@ int Screen_Update(void)
 
         if(gui_action == GUI_CMD_MIDI_NOTE_OFF_1_TRACK)
         {
-            Status_Box("Notes Off command sent to this track...");
+            Status_Box("Notes Off command sent to this track.");
         }
 
         if(gui_action == GUI_CMD_MIDI_NOTE_OFF_ALL_TRACKS)
         {
-            Status_Box("Notes Off command sent to all tracks...");
+            Status_Box("Notes Off command sent to all tracks.");
         }
 
         if(gui_action == GUI_CMD_UPDATE_TRACK_FX_ED)
@@ -1619,7 +1756,7 @@ int Screen_Update(void)
 
         if(gui_action == GUI_CMD_EXIT)
         {
-            Display_Requester(&Exit_Requester, GUI_CMD_NOP);
+            Display_Requester(&Exit_Requester, GUI_CMD_NOP, NULL, TRUE);
         }
 
         gui_action = GUI_CMD_NOP;
@@ -1834,6 +1971,8 @@ int Screen_Update(void)
 
     }
 
+    Check_Requester(&Helper_Requester);
+    
     if(Check_Requester(&Exit_Requester) == 1)
     {
         Song_Stop();
@@ -3317,6 +3456,11 @@ void Keyboard_Handler(void)
     if(!Get_LShift() && Keys[SDLK_F1]) gui_action = GUI_CMD_LOWER_OCTAVE;
     // Higher octave
     if(!Get_LShift() && Keys[SDLK_F2]) gui_action = GUI_CMD_HIGHER_OCTAVE;
+    // Helper
+    if(!Get_LShift() && Keys[SDLK_F3]) gui_action = GUI_CMD_GET_HELP;
+
+    if(Get_LCtrl() && Keys[SDLK_F1]) gui_action = GUI_CMD_DECREASE_STEP_ADD;
+    if(Get_LCtrl() && Keys[SDLK_F2]) gui_action = GUI_CMD_INCREASE_STEP_ADD;
 
     if(Get_LShift())
     {
@@ -4367,7 +4511,7 @@ void Keyboard_Handler(void)
                 {
                     if(File_Exist_Req("%s" SLASH "%s.ptk", Dir_Mods, name))
                     {
-                        Display_Requester(&Overwrite_Requester, GUI_CMD_SAVE_MODULE);
+                        Display_Requester(&Overwrite_Requester, GUI_CMD_SAVE_MODULE, NULL, TRUE);
                     }
                     else
                     {
@@ -4408,7 +4552,7 @@ void Keyboard_Handler(void)
                 {
                     if(File_Exist_Req("%s" SLASH "%s.ppb", Dir_Patterns, Selection_Name))
                     {
-                        Display_Requester(&Overwrite_Requester, GUI_CMD_SAVE_PATTERN);
+                        Display_Requester(&Overwrite_Requester, GUI_CMD_SAVE_PATTERN, NULL, TRUE);
                     }
                     else
                     {
@@ -5563,7 +5707,7 @@ void Mouse_Handler(void)
         // Delete instrument
         if(zcheckMouse(320, 108, 64, 16))
         {
-            Display_Requester(&Delete_Requester, GUI_CMD_DELETE_INSTRUMENT);
+            Display_Requester(&Delete_Requester, GUI_CMD_DELETE_INSTRUMENT, NULL, TRUE);
         }
 
         // Zoom'em small

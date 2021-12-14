@@ -274,5 +274,6 @@ void Restore_Default_Palette(SDL_Color *Def, int DefBevel);
 void Display_Mouse_Pointer(int x, int y, int clear);
 void Destroy_UI(void);
 int Get_Font_Height(void);
+int Get_Note_Ascii(int note, char *snote, int *octave, int tiret);
 
 #endif

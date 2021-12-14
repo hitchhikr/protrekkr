@@ -353,7 +353,7 @@ void Mouse_Left_DiskIO_Ed(void)
         {
             if(File_Exist_Req("%s" SLASH "%s.ptk", Dir_Mods, name))
             {
-                Display_Requester(&Overwrite_Requester, GUI_CMD_SAVE_MODULE);
+                Display_Requester(&Overwrite_Requester, GUI_CMD_SAVE_MODULE, NULL, TRUE);
             }
             else
             {
@@ -365,7 +365,7 @@ void Mouse_Left_DiskIO_Ed(void)
         {
             if(File_Exist_Req("%s" SLASH "%s.ptp", Dir_Mods, name))
             {
-                Display_Requester(&Overwrite_Requester, GUI_CMD_SAVE_FINAL);
+                Display_Requester(&Overwrite_Requester, GUI_CMD_SAVE_FINAL, NULL, TRUE);
             }
             else
             {
@@ -421,7 +421,7 @@ void Mouse_Left_DiskIO_Ed(void)
         // Zzaapp
         if(zcheckMouse(8, (Cur_Height - 130), 80, 16))
         {
-            Display_Requester(&Zzaapp_Requester, GUI_CMD_NEW_MODULE);
+            Display_Requester(&Zzaapp_Requester, GUI_CMD_NEW_MODULE, NULL, TRUE);
         }
 
         if(zcheckMouse(90, (Cur_Height - 112), 80, 16))
@@ -444,7 +444,7 @@ void Mouse_Left_DiskIO_Ed(void)
                     if(any_file)
                     {
                         Overwrite_Requester.Text = "Some .wav files are about to be overwritten, is that ok ?";
-                        Display_Requester(&Overwrite_Requester, GUI_CMD_RENDER_WAV);
+                        Display_Requester(&Overwrite_Requester, GUI_CMD_RENDER_WAV, NULL, TRUE);
                     }
                     else
                     {
@@ -455,7 +455,7 @@ void Mouse_Left_DiskIO_Ed(void)
                 {
                     if(File_Exist_Req("%s" SLASH "%s.wav", Dir_Mods, name))
                     {
-                        Display_Requester(&Overwrite_Requester, GUI_CMD_RENDER_WAV);
+                        Display_Requester(&Overwrite_Requester, GUI_CMD_RENDER_WAV, NULL, TRUE);
                     }
                     else
                     {

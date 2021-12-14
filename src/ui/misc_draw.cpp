@@ -3062,3 +3062,33 @@ void Destroy_UI(void)
 {
     if(Pointer_BackBuf) free(Pointer_BackBuf);
 }
+
+// ------------------------------------------------------
+// Get the ascii & octave of a note
+int Get_Note_Ascii(int note, char *snote, int *octave, int tiret)
+{
+    char *anote;
+
+    *octave = note / 12;
+    note = note % 12;
+    switch(note)
+    {
+        case 0: anote = tiret ? "C-" : "C"; break;
+        case 1: anote = Accidental ? "Db" : "C#"; break;
+        case 2: anote = tiret ? "D-" : "D"; break;
+        case 3: anote = Accidental ? "Eb" : "D#"; break;
+        case 4: anote = tiret ? "E-" : "E"; break;
+        case 5: anote = tiret ? "F-" : "F"; break;
+        case 6: anote = Accidental ? "Gb" : "F#"; break;
+        case 7: anote = tiret ? "G-" : "G"; break;
+        case 8: anote = Accidental ? "Ab" : "G#"; break;
+        case 9: anote = tiret ? "A-" : "A"; break;
+        case 10: anote = Accidental ? "Bb" : "A#"; break;
+        case 11: anote = tiret ? "B-" : "B"; break;
+        default:
+            anote = "C"; break;
+    }
+    sprintf(snote, "%s", anote);
+    return note;
+}
+

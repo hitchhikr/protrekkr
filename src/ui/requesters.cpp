@@ -71,7 +71,7 @@ void Restore_Background_Requester();
 
 // ------------------------------------------------------
 // Initialize a requester
-int Display_Requester(LPREQUESTER Requester, int Action)
+int Display_Requester(LPREQUESTER Requester, int Action, char *Text, int Center)
 {
     int i;
     // Inhibit main actions
@@ -91,6 +91,12 @@ int Display_Requester(LPREQUESTER Requester, int Action)
     int Biggest_Button;
     char *txt = Requester->Text;
     char *txt_beg;
+    int min_x;
+
+    if(Text != NULL)
+    {
+        txt = Text;
+    }
     i = 0;
     Nbr_Lines = 0;
     Nbr_Buttons = 0;
@@ -199,6 +205,22 @@ int Display_Requester(LPREQUESTER Requester, int Action)
     {
         Req_Txt_Pos_X[i] = (Size_X - Req_Txt_Pos_X[i]) / 2;
     }
+    if(!Center)
+    {
+        min_x = 65535;
+        for(i = 0; i < Nbr_Lines; i++)
+        {
+            if(Req_Txt_Pos_X[i] < min_x)
+            {
+                min_x = Req_Txt_Pos_X[i];
+            }
+        }
+
+        for(i = 0; i < Nbr_Lines; i++)
+        {
+            Req_Txt_Pos_X[i] = min_x;
+        }
+    }
 
     if(!Nbr_Lines)
     {
@@ -257,7 +279,7 @@ int Check_Requester(LPREQUESTER Requester)
         for(i = 0; i < Nbr_Lines; i++)
         {
             PrintString(Pos_X + Req_Txt_Pos_X[i],
-                    Pos_Y + ((i + 1) * Font_Height) + (Font_Height / 2),
+                    Pos_Y + ((i + 1) * (Font_Height + 1)) + (Font_Height / 2),
                     USE_FONT, Req_Txt_Lines[i]);
         }
 

@@ -985,7 +985,7 @@ void Mouse_Left_303_Ed(void)
         {
             if(File_Exist_Req("%s" SLASH "%s.303", Dir_Patterns, tb303[sl3].pattern_name[tb303[sl3].selectedpattern]))
             {
-                Display_Requester(&Overwrite_Requester, GUI_CMD_SAVE_303_PATTERN);
+                Display_Requester(&Overwrite_Requester, GUI_CMD_SAVE_303_PATTERN, NULL, TRUE);
             }
             else
             {

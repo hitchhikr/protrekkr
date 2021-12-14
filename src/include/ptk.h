@@ -145,5 +145,6 @@ void Send_Note(int Note, int Raw_Note, int One_Channel);
 void Note_Jazz(int track, int note, float volume);
 void Note_Jazz_Off(int note);
 void Display_Beat_Time(void);
+int Read_Pattern_Note(int Position);
 
 #endif

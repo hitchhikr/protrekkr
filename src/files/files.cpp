@@ -769,7 +769,7 @@ Read_Mod_File:
         Init_Tracker_Context_After_ModLoad();
 
 #if !defined(__WINAMP__)
-        Status_Box("Module loaded sucessfully...");
+        Status_Box("Module loaded sucessfully.");
 #endif
 
     }

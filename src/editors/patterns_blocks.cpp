@@ -323,6 +323,22 @@ int Read_Pattern_Column(int Position, int xbc, int ybc)
 }
 
 // ------------------------------------------------------
+// Read a note from the given pattern
+int Read_Pattern_Note(int Position)
+{
+    int start_x = Get_Track_Nibble_Start(Channels_MultiNotes, Channels_Effects, Track_Under_Caret) + Column_Under_Caret + Track_Under_Caret;
+
+    COLUMN_TYPE type = Get_Column_Type(Channels_MultiNotes, Channels_Effects, start_x);
+    switch(type)
+    {
+        case NOTE:
+            return(Get_Pattern_Column(Position, start_x, Pattern_Line));
+        default:
+            return(-1);
+    }
+}
+
+// ------------------------------------------------------
 // Write a byte in the given pattern
 void Write_Pattern_Column(int Position, int xbc, int ybc, int datas)
 {
