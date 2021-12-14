@@ -1720,7 +1720,7 @@ void Actupated(int modac)
                         DISPLAYED_LINES + Max_Lines_Song,
                         (Cur_Height - 452) + Patterns_Lines_Offset,
                         TRUE,
-                        FALSE);
+                        TRUE);
     }
     else
     {
@@ -1730,7 +1730,7 @@ void Actupated(int modac)
                         patternLines[pSequence[Cur_Position]] + DISPLAYED_LINES,
                         (Cur_Height - 452) + Patterns_Lines_Offset,
                         TRUE,
-                        FALSE);
+                        TRUE);
     }
 }
 

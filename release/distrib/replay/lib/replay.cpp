@@ -6430,7 +6430,7 @@ int Get_Pattern_Offset(int pattern, int track, int row)
 }
 
 // ------------------------------------------------------
-// Calculate the boundaries of a carrier for splines calculatation
+// Calculate the boundaries of a carrier for splines calculation
 void Set_Spline_Boundaries(unsigned int Position,
                            unsigned int *Boundaries,
                            int LoopType,
@@ -6515,7 +6515,7 @@ void Set_Spline_Boundaries(unsigned int Position,
 }
 
 // ------------------------------------------------------
-// Obtain the sample loocated at the current position
+// Obtain the sample located at the current position
 float Process_Sample(short *Data, int c, int i, unsigned int res_dec)
 {
 #if defined(__STAND_ALONE__) && !defined(__WINAMP__)

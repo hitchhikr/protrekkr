@@ -4,6 +4,7 @@ ProTrekkr releases history
 
 v2.6.0
 
+- Visual improvment of sliders.
 - Fixed a bug with command A in mod import.
 - Track effects number wasn't updated in track (1) tab when modifying it
   from the track header.

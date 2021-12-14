@@ -1963,7 +1963,7 @@ void Realslider_Vert(int x,
                      int maximum,
                      int size,
                      int enable,
-                     int ext_color)
+                     int invert_color)
 {
     float caret_size;
     float Pos_slider;
@@ -1972,10 +1972,20 @@ void Realslider_Vert(int x,
     Pos_slider = Slider_Calc_Pos(displayed, maximum, size, value);
 
     size -= 2;
+    if(size <= 0)
+    {
+        size = 1;
+    }
+
+    if(Pos_slider > size)
+    {
+        Pos_slider = size - 2;
+    }
 
     caret_size = Slider_Calc_Size(displayed, maximum, size);
 
     if((caret_size + Pos_slider) > size) caret_size -= (caret_size + Pos_slider) - size;
+    if(caret_size < 1.0f) caret_size = 1.0f;
 
     if(enable)
     {
@@ -1983,10 +1993,14 @@ void Realslider_Vert(int x,
         bjbox(x, y, 16 + 1, size + 2);
         SetColor(COL_STATIC_HI);
         bjbox(x + 1, y + 1, 16, size + 1);
-        SetColor(COL_SLIDER_MED);
+        if(invert_color) SetColor(COL_INPUT_MED);
+        else SetColor(COL_SLIDER_MED);
         bjbox(x + 1, y + 1, 16 - 1, size);
-        SetColor(COL_INPUT_MED);
-        slide_max_on = ceil((float) size - Pos_slider );
+        if(invert_color) SetColor(COL_SLIDER_MED);
+        else SetColor(COL_INPUT_MED);
+        slide_max_on = ceil((float) size - Pos_slider);
+        if(slide_max_on > size) slide_max_on = size;
+        if(slide_max_on <= 0.0f) slide_max_on = 1.0f;
         bjbox(x + 1, y + 1 + Pos_slider, 16 - 1, slide_max_on);
     }
     else

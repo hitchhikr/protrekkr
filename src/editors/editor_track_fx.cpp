@@ -220,7 +220,7 @@ void Actualize_Track_Fx_Ed(char gode)
                             100 + 16,
                             64,
                             TRUE,
-                            TRUE);
+                            FALSE);
 
             Realslider_Vert(710 + (22 * 1), (Cur_Height - 120),
                             (int) ((2.0f - EqDat[Track_Under_Caret].mg) * 50.0f),
@@ -228,7 +228,7 @@ void Actualize_Track_Fx_Ed(char gode)
                             100 + 16,
                             64,
                             TRUE,
-                            TRUE);
+                            FALSE);
 
             Realslider_Vert(710 + (22 * 2), (Cur_Height - 120),
                             (int) ((2.0f - EqDat[Track_Under_Caret].hg) * 50.0f),
@@ -236,7 +236,7 @@ void Actualize_Track_Fx_Ed(char gode)
                             100 + 16,
                             64,
                             TRUE,
-                            TRUE);
+                            FALSE);
         }
     }//User gui screen match
 }
