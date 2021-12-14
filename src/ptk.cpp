@@ -383,7 +383,7 @@ REQUESTER_BUTTON Requester_Btn_Ok =
     NULL,
     "Ok",
     BUTTON_DEFAULT,
-    SDLK_SPACE
+    SDLK_ESCAPE
 };
 
 extern REQUESTER Title_Requester;
@@ -961,7 +961,7 @@ int Screen_Update(void)
             int note = Read_Pattern_Note(Get_Song_Position());
             if(note != -1)
             {
-                if(note != 121)
+                if(note != NO_NOTE && note != NOTE_OFF)
                 {
                     // Display the list of chords
                     char ascii_chord[16];
@@ -2560,7 +2560,7 @@ void Newmod(void)
         Songtracks = 6;
         for(int api = 0; api < MAX_ROWS; api++)
         {
-            patternLines[api] = 64;
+            patternLines[api] = DEFAULT_PATTERN_LEN;
         }
         Clear_Patterns_Pool();
         nPatterns = 1;

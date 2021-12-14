@@ -1277,8 +1277,8 @@ int Save_Ptk(char *FileName, int NewFormat, int Simulate, Uint8 *Memory)
                     {
                         for(l = 0; l < MAX_POLYPHONY; l += 2)
                         {
-                            cur_pattern[PATTERN_NOTE1 + l] = 121;
-                            cur_pattern[PATTERN_INSTR1 + l] = 255;
+                            cur_pattern[PATTERN_NOTE1 + l] = NO_NOTE;
+                            cur_pattern[PATTERN_INSTR1 + l] = NO_INSTR;
                         }
                         cur_pattern[PATTERN_VOLUME] = 255;
                         cur_pattern[PATTERN_PANNING] = 255;

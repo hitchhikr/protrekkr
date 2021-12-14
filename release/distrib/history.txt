@@ -5,13 +5,13 @@ ProTrekkr releases history
 v2.6.0
 
 - LCTRL + F1/F2: decrease / increase editing step.
-- Chords help available via F3 key (triggered when the caret is under a note).
+- Chords help available via F3 key (triggered when the caret is over a note).
 - Pattern auto-scrolls when selecting a block with the mouse.
 - Patterns selection isn't removed when clicking on arrows on the right.
 - ADPCM compression is now internal and available in all OSes.
 - Removed TrueSpeech compression: it doesn't exist in latest Windows anymore.
 - Visual improvement of sliders.
-- Fixed a bug with command A in mod import.
+- Fixed a bug with command A which wasn't converted properly in mods import.
 - Track effects number wasn't updated in track (1) tab when modifying it
   from the track header.
 - Added a surround mode per channel.

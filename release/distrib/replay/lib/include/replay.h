@@ -314,7 +314,7 @@ extern char Compress_Master;
 extern unsigned char nPatterns;
 extern char Songtracks;
 extern unsigned char Song_Length;
-extern unsigned char pSequence[256];
+extern unsigned char pSequence[MAX_SEQUENCES];
 extern short patternLines[MAX_ROWS];
 extern char nameins[MAX_INSTRS][20];
 extern char Midiprg[MAX_INSTRS];
