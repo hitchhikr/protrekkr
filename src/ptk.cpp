@@ -1834,7 +1834,7 @@ int Screen_Update(void)
         Gui_Draw_Button_Box(8 + (63 * 2), 152, 61, 10, P_ A_ S_ T_ E_, BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_SMALL_FONT);
         Gui_Draw_Button_Box(8 + (63 * 2), 164, 61, 10, D_ E_ L_ E_ T_ E_, BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_SMALL_FONT);
 
-        Gui_Draw_Button_Box(8 + (63 * 3), 152, 61, 10, S_ P_ R_ E_ A_ D_, BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_SMALL_FONT);
+        Gui_Draw_Button_Box(8 + (63 * 3), 152, 61, 10, I_ N_ T_ E_ R_ P_, BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_SMALL_FONT);
 
         Gui_Draw_Button_Box(8 + (63 * 3), 164, 30, 10, R_ A_ N_ D_ , BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_SMALL_FONT);
         Gui_Draw_Button_Box(8 + (63 * 3) + 32, 164, 29, 10, F_ I_ L_ L_, BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_SMALL_FONT);

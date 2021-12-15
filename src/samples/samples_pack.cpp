@@ -247,7 +247,7 @@ int ToAT3(short *Source, short *Dest, int Size, int BitRate)
 // !!! Currently BROKEN !!!
 
 #if defined(__MP3_CODEC__)
-BOOL CALLBACK enum_drivers(
+/*BOOL CALLBACK enum_drivers(
   HACMDRIVERID hadid,
   LPACMFORMATDETAILS pafd,
   DWORD_PTR dwInstance,
@@ -259,14 +259,14 @@ BOOL CALLBACK enum_drivers(
 
 ACMFORMATENUMCB (Acmformatenumcb2) = &enum_drivers;
 ACMFORMATDETAILS acmFormatDetails2;
-
+*/
 int ToMP3(short *Source, short *Dest, int Size, int BitRate)
 {
     int Src_size;
     int Dest_Size;
     int ret;
-    BYTE *pFormat = NULL;   // Caller allocated.
-    DWORD cbMaxSize = 0;
+  //  BYTE *pFormat = NULL;   // Caller allocated.
+//    DWORD cbMaxSize = 0;
  
     Wave_Format.wFormatTag = WAVE_FORMAT_PCM;
     Wave_Format.nChannels = 1;
@@ -280,7 +280,7 @@ int ToMP3(short *Source, short *Dest, int Size, int BitRate)
     MP3_Format.wfx.cbSize = MPEGLAYER3_WFX_EXTRA_BYTES;
     MP3_Format.wfx.nChannels = 1;
     MP3_Format.wfx.nSamplesPerSec = 44100;
-    MP3_Format.wfx.nAvgBytesPerSec = (88 * 1000) / 8;
+    MP3_Format.wfx.nAvgBytesPerSec = (BitRate * 1000) / 8;
     MP3_Format.wfx.wBitsPerSample = 0;
     MP3_Format.wfx.nBlockAlign = 1;
 
@@ -291,7 +291,7 @@ int ToMP3(short *Source, short *Dest, int Size, int BitRate)
     MP3_Format.nCodecDelay = 0;
 
   // Ask for WAVE_FORMAT_MPEGLAYER3 formats.
-    ret = acmMetrics(NULL, ACM_METRIC_MAX_SIZE_FORMAT, &cbMaxSize);
+/*    ret = acmMetrics(NULL, ACM_METRIC_MAX_SIZE_FORMAT, &cbMaxSize);
  
     pFormat = new BYTE[cbMaxSize];
     ZeroMemory(pFormat, cbMaxSize);
@@ -316,6 +316,7 @@ int ToMP3(short *Source, short *Dest, int Size, int BitRate)
     acmFormatDetails2.dwFormatTag = WAVE_FORMAT_MPEGLAYER3;
     //
     ret = acmFormatEnum(NULL, &acmFormatDetails2, Acmformatenumcb2, 0, ACM_FORMATENUMF_WFORMATTAG);
+*/
     ret = acmFormatSuggest(NULL, (LPWAVEFORMATEX) &Wave_Format, (LPWAVEFORMATEX) &MP3_Format, sizeof(MP3_Format), ACM_FORMATSUGGESTF_WFORMATTAG);
     ret = acmStreamOpen(&Pack_Stream, NULL, (LPWAVEFORMATEX) &Wave_Format, (LPWAVEFORMATEX) &MP3_Format, NULL, 0, 0, 0);
 
@@ -352,7 +353,7 @@ int ToMP3(short *Source, short *Dest, int Size, int BitRate)
 
     acmStreamUnprepareHeader(Pack_Stream, &Pack_Stream_Head, 0);
     acmStreamClose(Pack_Stream, 0);
-    delete [] pFormat;
+//    delete [] pFormat;
     if(rawbuf) free(rawbuf);
     if(Pack_Buf) free(Pack_Buf);
 
