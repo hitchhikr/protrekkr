@@ -254,6 +254,11 @@ int Select_Scrolling_Vert;
 float Select_First_Delay_Vert;
 float Select_Delay_Vert;
 
+PtkTimer Select_Timer_Horz;
+int Select_Scrolling_Horz;
+float Select_First_Delay_Horz;
+float Select_Delay_Horz;
+
 char Large_Patterns;
 int Patterns_Lines_Offset = 0;
 
@@ -1649,8 +1654,8 @@ void Actupated(int modac)
         {
             Track_Under_Caret--;
         }
-        gui_action = GUI_CMD_SET_FOCUS_TRACK;
         gui_track = 0;
+        gui_action = GUI_CMD_SET_FOCUS_TRACK;
     }
     Visible_Columns = Get_Visible_Complete_Tracks();
 
@@ -2474,10 +2479,10 @@ int Get_Last_Column_And_Track(int *track)
 
 // ------------------------------------------------------
 // Return the index of the column located under the mouse pointer
-void Get_Column_Over_Mouse(int *track, int *column,
-                           int check_boundaries,
-                           int *Was_Scrolling,
-                           int Left)
+int Get_Column_Over_Mouse(int *track, int *column,
+                          int check_boundaries,
+                          int *Was_Scrolling,
+                          int Left)
 {
     int i;
     int max_tr = 6;
@@ -2490,13 +2495,18 @@ void Get_Column_Over_Mouse(int *track, int *column,
     int tmp_track;
     int mouse_coord;
     int tmp_column;
+    int need_scroll;
+    int Visible_Columns;
+    int max_track_size;
+    int max_mouse_coord;
 
+    need_scroll = 0;
     mouse = Mouse.x;
+    max_mouse_coord = mouse - PAT_COL_NOTE;
 
 get_tracks_boundaries:
     tmp_track = Get_Track_Over_Mouse(mouse, Was_Scrolling, Left);
     mouse_coord = mouse - PAT_COL_NOTE;
-
     for(i = tmp_track - 1; i >= gui_track; i--)
     {
         track_size = Get_Track_Size(i, NULL);
@@ -2524,7 +2534,22 @@ get_tracks_boundaries:
     {
         *column = tmp_column;
     }
+    Visible_Columns = Get_Visible_Complete_Tracks();
+    if(mouse_coord < 0)
+    {
+        need_scroll = -1;
+    }
+    max_track_size = 0;
+    for(i = 0; i < Visible_Columns; i++)
+    {
+        max_track_size += Get_Track_Size(i, NULL);
+    }
+    if(max_mouse_coord > max_track_size && (Visible_Columns + gui_track) < Songtracks)
+    {
+        need_scroll = 1;
+    }
     *track = tmp_track;
+    return need_scroll;
 }
 
 // ------------------------------------------------------
@@ -2626,6 +2651,8 @@ void Reset_Pattern_Scrolling_Horiz(void)
     Pattern_Scrolling_Vert = FALSE;
     Select_Delay_Vert = 0.0f;
     Select_Scrolling_Vert = FALSE;
+    Select_Delay_Horz = 0.0f;
+    Select_Scrolling_Horz = FALSE;
 }
 
 // ------------------------------------------------------
@@ -2848,14 +2875,58 @@ void Mouse_Sliders_Pattern_Ed(void)
     {
         int track;
         int column;
+        int track2;
+        int column2;
         int line;
         int Need_Scroll;
+        int Visible_Columns;
+        int was_scrolling = 0;
+        int need_horz_scroll = Get_Column_Over_Mouse(&track2, &column2, TRUE, NULL, TRUE);
 
-        Get_Column_Over_Mouse(&track, &column, FALSE, NULL, TRUE);
+        if(need_horz_scroll)
+        {
+                // Scroll the pattern upward or downward if the mouse is out of bounds
+                if(Select_Scrolling_Horz)
+                {
+                    Select_Delay_Horz += Select_Timer_Horz.Get_Frames_Delay();
+                    if(Select_Delay_Horz >= Select_First_Delay_Horz)
+                    {
+                        // Scroll it
+                        Select_Delay_Horz = 0;
+                        Select_First_Delay_Horz = 100.0f;
+                        gui_track += need_horz_scroll;
+                        if(gui_track < 0)
+                        {
+                            gui_track = 0;
+                        }
+                        if(Track_Under_Caret < gui_track)
+                        {
+                            Track_Under_Caret = gui_track;
+                        }
+                        Visible_Columns = Get_Visible_Complete_Tracks();
+
+                        if(Track_Under_Caret > (Visible_Columns + gui_track - 1))
+                        {
+                            Track_Under_Caret = Visible_Columns + gui_track - 1;
+                        }
+                        Actupated(0);
+                        gui_action = GUI_CMD_SET_FOCUS_TRACK;
+                    }
+                }
+                else
+                {
+                    Select_Timer_Horz.Set_Frames_Counter();
+                    Select_Scrolling_Horz = TRUE;
+                    Select_Delay_Horz = 0;
+                    Select_First_Delay_Horz = 100.0f;
+                }
+        }
+
+        need_horz_scroll = Get_Column_Over_Mouse(&track, &column, TRUE, &was_scrolling, TRUE);
         line = Get_Line_Over_Mouse(&Need_Scroll);
         if(Need_Scroll)
         {
-            // Scroll the pattern upward or downward if the mouse is out of bounds
+                // Scroll the pattern upward or downward if the mouse is out of bounds
                 if(Select_Scrolling_Vert)
                 {
                     Select_Delay_Vert += Select_Timer_Vert.Get_Frames_Delay();
