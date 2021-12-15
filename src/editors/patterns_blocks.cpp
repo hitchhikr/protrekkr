@@ -500,7 +500,7 @@ int Delete_Selection(int Position)
                     case PANNINGHI:
                     case VOLUMEHI:
                         data = Get_Pattern_Column(Position, xbc, ybc);
-                        if(data != 0xff)
+                        if(data != 255)
                         {
                             data &= 0xf;
                             if(!data)
@@ -514,7 +514,7 @@ int Delete_Selection(int Position)
                     case VOLUMELO:
                     case PANNINGLO:
                         data = Get_Pattern_Column(Position, xbc, ybc);
-                        if(data != 0xff)
+                        if(data != 255)
                         {
                             data &= 0xf0;
                             if(!data)
@@ -524,23 +524,28 @@ int Delete_Selection(int Position)
                             Set_Pattern_Column(Position, xbc, ybc, data);
                         }
                         break;
-                    case EFFECTLO:
-                    case EFFECTDATLO:
                     case EFFECTHI:
                     case EFFECTDATHI:
-                    case EFFECT2LO:
-                    case EFFECT2DATLO:
                     case EFFECT2HI:
                     case EFFECT2DATHI:
-                    case EFFECT3LO:
-                    case EFFECT3DATLO:
                     case EFFECT3HI:
                     case EFFECT3DATHI:
-                    case EFFECT4LO:
-                    case EFFECT4DATLO:
                     case EFFECT4HI:
                     case EFFECT4DATHI:
-                        Set_Pattern_Column(Position, xbc, ybc, 0);
+                        data = Get_Pattern_Column(Position, xbc + 1, ybc) & 0xf;
+                        Set_Pattern_Column(Position, xbc, ybc, data);
+                        break;
+
+                    case EFFECTLO:
+                    case EFFECTDATLO:
+                    case EFFECT2LO:
+                    case EFFECT2DATLO:
+                    case EFFECT3LO:
+                    case EFFECT3DATLO:
+                    case EFFECT4LO:
+                    case EFFECT4DATLO:
+                        data = Get_Pattern_Column(Position, xbc - 1, ybc) & 0xf0;
+                        Set_Pattern_Column(Position, xbc, ybc, data);
                         break;
                 }
             }
@@ -1005,7 +1010,7 @@ SELECTION Get_Real_Selection(int Default)
     Cur_Sel.x_end = block_end_track[Curr_Buff_Block];
     if(Default)
     {
-        if(!(block_end_track[Curr_Buff_Block] - block_start_track[Curr_Buff_Block]) || !(block_end[Curr_Buff_Block] - block_start[Curr_Buff_Block]))
+        if(((block_end_track[Curr_Buff_Block] - block_start_track[Curr_Buff_Block]) < 1) && ((block_end[Curr_Buff_Block] - block_start[Curr_Buff_Block]) < 1))
         {
             Cur_Sel = Select_Track(Track_Under_Caret);
         }
@@ -1015,195 +1020,149 @@ SELECTION Get_Real_Selection(int Default)
 
 // ------------------------------------------------------
 // Interpolate a selected effects column
+typedef struct
+{
+    int position;
+    int value;
+} POS_INTERP, *LPPOS_INTERP;
 void Interpolate_Block(int Position)
 {
-    int startvalue[10] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-    int endvalue[10] =   { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-    int ranlen;
-    int cran;
-    int tran;
-    int start_value;
-    int end_value;
+    POS_INTERP startvalue_hi[MAX_TRACKS * 24];
+    POS_INTERP endvalue_hi[MAX_TRACKS * 24];
+    POS_INTERP startvalue_lo[MAX_TRACKS * 24];
+    POS_INTERP endvalue_lo[MAX_TRACKS * 24];
     int xbc;
     int ybc;
+    int i;
+    int cur_track;
+    int cur_track_hi;
+    int cur_track_lo;
+    int value_start;
+    int value_end;
+    int ran_len;
+    int tran;
+    int cran;
+    int value;
     COLUMN_TYPE type;
-    int max_columns = Get_Max_Nibble_All_Tracks();
 
     SELECTION Sel = Get_Real_Selection(TRUE);
+    int max_columns = Get_Max_Nibble_All_Tracks();
 
+    for(i = 0; i < MAX_TRACKS * 24; i++)
+    {
+        startvalue_hi[i].position = -1;
+        startvalue_hi[i].value = -1;
+        startvalue_lo[i].position = -1;
+        startvalue_lo[i].value = -1;
+        endvalue_hi[i].position = -1;
+        endvalue_hi[i].value = -1;
+        endvalue_lo[i].position = -1;
+        endvalue_lo[i].value = -1;
+    } 
+
+    cur_track = 0;
+    cur_track_hi = 0;
+    cur_track_lo = 0;
     for(xbc = Sel.x_start; xbc <= Sel.x_end; xbc++)
     {
         type = Get_Column_Type(Channels_MultiNotes, Channels_Effects, xbc);
         switch(type)
         {
             case VOLUMEHI:
-            case VOLUMELO:
-                startvalue[0] |= Read_Pattern_Column(Position, xbc, Sel.y_start);
-                endvalue[0] |= Read_Pattern_Column(Position, xbc, Sel.y_end);
-                break;
-
             case PANNINGHI:
-            case PANNINGLO:
-                startvalue[1] |= Read_Pattern_Column(Position, xbc, Sel.y_start);
-                endvalue[1] |= Read_Pattern_Column(Position, xbc, Sel.y_end);
-                break;
-
-            case EFFECTHI:
-            case EFFECTLO:
-                startvalue[2] |= Read_Pattern_Column(Position, xbc, Sel.y_start);
-                break;
-
-            case EFFECT2HI:
-            case EFFECT2LO:
-                startvalue[3] |= Read_Pattern_Column(Position, xbc, Sel.y_start);
-                break;
-
-            case EFFECT3HI:
-            case EFFECT3LO:
-                startvalue[4] |= Read_Pattern_Column(Position, xbc, Sel.y_start);
-                break;
-
-            case EFFECT4HI:
-            case EFFECT4LO:
-                startvalue[5] |= Read_Pattern_Column(Position, xbc, Sel.y_start);
-                break;
-
             case EFFECTDATHI:
-            case EFFECTDATLO:
-                startvalue[6] |= Read_Pattern_Column(Position, xbc, Sel.y_start);
-                endvalue[6] |= Read_Pattern_Column(Position, xbc, Sel.y_end);
-                break;
             case EFFECT2DATHI:
-            case EFFECT2DATLO:
-                startvalue[7] |= Read_Pattern_Column(Position, xbc, Sel.y_start);
-                endvalue[7] |= Read_Pattern_Column(Position, xbc, Sel.y_end);
-                break;
             case EFFECT3DATHI:
-            case EFFECT3DATLO:
-                startvalue[8] |= Read_Pattern_Column(Position, xbc, Sel.y_start);
-                endvalue[8] |= Read_Pattern_Column(Position, xbc, Sel.y_end);
-                break;
             case EFFECT4DATHI:
+                startvalue_hi[cur_track_hi].position = xbc;
+                startvalue_hi[cur_track_hi].value = Read_Pattern_Column(Position, xbc, Sel.y_start) & 0xf0;
+                endvalue_hi[cur_track_hi].position = xbc;
+                endvalue_hi[cur_track_hi].value = Read_Pattern_Column(Position, xbc, Sel.y_end) & 0xf0;
+                cur_track_hi++;
+                cur_track++;
+                break;
+
+            case VOLUMELO:
+            case PANNINGLO:
+            case EFFECTDATLO:
+            case EFFECT2DATLO:
+            case EFFECT3DATLO:
             case EFFECT4DATLO:
-                startvalue[9] |= Read_Pattern_Column(Position, xbc, Sel.y_start);
-                endvalue[9] |= Read_Pattern_Column(Position, xbc, Sel.y_end);
+                startvalue_lo[cur_track_lo].position = xbc;
+                startvalue_lo[cur_track_lo].value = Read_Pattern_Column(Position, xbc, Sel.y_start) & 0xf;
+                endvalue_lo[cur_track_lo].position = xbc;
+                endvalue_lo[cur_track_lo].value = Read_Pattern_Column(Position, xbc, Sel.y_end) & 0xf;
+                cur_track_lo++;
+                cur_track++;
                 break;
         }
     }
 
-    for(xbc = Sel.x_start; xbc <= Sel.x_end; xbc++)
+    for(i = 0; i < cur_track; i++)
     {
-        type = Get_Column_Type(Channels_MultiNotes, Channels_Effects, xbc);
-        switch(type)
+        // Two nibbles
+        if(startvalue_hi[i].value != -1 && startvalue_lo[i].value != -1)
         {
-            case VOLUMEHI:
-            case VOLUMELO:
-                start_value = startvalue[0];
-                end_value = endvalue[0];
-                break;
-            
-            case PANNINGHI:
-            case PANNINGLO:
-                start_value = startvalue[1];
-                end_value = endvalue[1];
-                break;
-
-            case EFFECTHI:
-            case EFFECTLO:
-                start_value = startvalue[2];
-                end_value = startvalue[2];
-                break;
-
-            case EFFECT2HI:
-            case EFFECT2LO:
-                start_value = startvalue[3];
-                end_value = startvalue[3];
-                break;
-
-            case EFFECT3HI:
-            case EFFECT3LO:
-                start_value = startvalue[4];
-                end_value = startvalue[4];
-                break;
-
-            case EFFECT4HI:
-            case EFFECT4LO:
-                start_value = startvalue[5];
-                end_value = startvalue[5];
-                break;
-
-            case EFFECTDATHI:
-            case EFFECTDATLO:
-                start_value = startvalue[6];
-                end_value = endvalue[6];
-                break;
-            case EFFECT2DATHI:
-            case EFFECT2DATLO:
-                start_value = startvalue[7];
-                end_value = endvalue[7];
-                break;
-            case EFFECT3DATHI:
-            case EFFECT3DATLO:
-                start_value = startvalue[8];
-                end_value = endvalue[8];
-                break;
-            case EFFECT4DATHI:
-            case EFFECT4DATLO:
-                start_value = startvalue[9];
-                end_value = endvalue[9];
-                break;
-        }
-
-        if(start_value != 0xff || end_value != 0xff)
-        {
-            switch(type)
+            value_start = startvalue_hi[i].value | startvalue_lo[i].value;
+            value_end = endvalue_hi[i].value | endvalue_lo[i].value;
+            xbc = startvalue_hi[i].position;
+            ran_len = Sel.y_end - Sel.y_start;
+            if(ran_len == 0) ran_len = 1;
+            cran = 0;
+            tran = value_end - value_start;
+            for(ybc = Sel.y_start; ybc <= Sel.y_end; ybc++)
             {
-
-                case VOLUMEHI:
-                case VOLUMELO:
-                case PANNINGHI:
-                case PANNINGLO:
-                    if(start_value == 0xff) start_value = 0;
-                    if(end_value == 0xff) end_value = 0;
-
-                    // No break
-
-                case EFFECTHI:
-                case EFFECTLO:
-                case EFFECT2HI:
-                case EFFECT2LO:
-                case EFFECT3HI:
-                case EFFECT3LO:
-                case EFFECT4HI:
-                case EFFECT4LO:
-
-                case EFFECTDATHI:
-                case EFFECTDATLO:
-                case EFFECT2DATHI:
-                case EFFECT2DATLO:
-                case EFFECT3DATHI:
-                case EFFECT3DATLO:
-                case EFFECT4DATHI:
-                case EFFECT4DATLO:
-                    if(start_value != 0xff || end_value != 0xff)
-                    {
-                        ranlen = Sel.y_end - Sel.y_start;
-                        if(ranlen == 0) ranlen = 1;
-                        cran = 0;
-                        tran = end_value - start_value;
-                        for(ybc = Sel.y_start; ybc <= Sel.y_end; ybc++)
-                        {
-                            if(xbc < max_columns && ybc < MAX_ROWS)
-                            {
-                                int c_val = (cran * tran) / ranlen;
-                                Write_Pattern_Column(Position, xbc, ybc, start_value + c_val);
-                                cran++;
-                            }
-                        }
-                    }
-                    break;
+                if(xbc < max_columns && ybc < MAX_ROWS)
+                {
+                    int c_val = (cran * tran) / ran_len;
+                    Write_Pattern_Column(Position, xbc, ybc, value_start + c_val);
+                    cran++;
+                }
             }
         }
+        // High nibble
+        if(startvalue_hi[i].value != -1 && startvalue_lo[i].value == -1)
+        {
+            value_start = startvalue_hi[i].value >> 4;
+            value_end = endvalue_hi[i].value >> 4;
+            xbc = startvalue_hi[i].position;
+            ran_len = Sel.y_end - Sel.y_start;
+            if(ran_len == 0) ran_len = 1;
+            cran = 0;
+            tran = value_end - value_start;
+            for(ybc = Sel.y_start; ybc <= Sel.y_end; ybc++)
+            {
+                if(xbc < max_columns && ybc < MAX_ROWS)
+                {
+                    int c_val = (cran * tran) / ran_len;
+                    value = Read_Pattern_Column(Position, xbc + 1, ybc) & 0xf;
+                    Write_Pattern_Column(Position, xbc, ybc, ((value_start + c_val) << 4) | value);
+                    cran++;
+                }
+            }
+        }
+        // Low nibble
+        if(startvalue_hi[i].value == -1 && startvalue_lo[i].value != -1)
+        {
+            value_start = startvalue_lo[i].value;
+            value_end = endvalue_lo[i].value;
+            xbc = startvalue_lo[i].position;
+            ran_len = Sel.y_end - Sel.y_start;
+            if(ran_len == 0) ran_len = 1;
+            cran = 0;
+            tran = value_end - value_start;
+            for(ybc = Sel.y_start; ybc <= Sel.y_end; ybc++)
+            {
+                if(xbc < max_columns && ybc < MAX_ROWS)
+                {
+                    int c_val = (cran * tran) / ran_len;
+                    value = Read_Pattern_Column(Position, xbc - 1, ybc) & 0xf0;
+                    Write_Pattern_Column(Position, xbc, ybc, ((value_start + c_val) & 0xf) | value);
+                    cran++;
+                }
+            }
+        }
+
     }
     Actupated(0);
 }
@@ -1215,6 +1174,7 @@ void Randomize_Block(int Position)
     int ybc;
     int xbc;
     int value;
+    int value2;
     COLUMN_TYPE type;
     int max_columns = Get_Max_Nibble_All_Tracks();
 
@@ -1230,39 +1190,57 @@ void Randomize_Block(int Position)
                 switch(type)
                 {
                     case VOLUMEHI:
+                        value = Get_Pattern_Column(Position, xbc, ybc) & 0xf;
+                        Write_Pattern_Column(Position, xbc, ybc, (rand() & 0xf0) | value);
+                        break;
                     case VOLUMELO:
-                        Write_Pattern_Column(Position, xbc, ybc, (rand() & 0x7f));
+                        value = Get_Pattern_Column(Position, xbc, ybc) & 0xf0;
+                        Write_Pattern_Column(Position, xbc, ybc, (rand() & 0xf) | value);
                         break;
 
                     case PANNINGHI:
                         value = (rand() & 0x7f) & 0xf0;
                         if(value > 0x80) value = 0x80;
-                        if((Read_Pattern_Column(Position, xbc + 1, ybc) & 0xf) > 0 &&
-                                                value == 0x80)
+                        value2 = Read_Pattern_Column(Position, xbc + 1, ybc) & 0xf;
+                        if(value2 > 0 && value == 0x80)
                         {
                             value = 0x80;
                         }
-                        Write_Pattern_Column(Position, xbc, ybc, value & 0xf0);
+                        else
+                        {
+                            value |= value2;
+                        }
+                        Write_Pattern_Column(Position, xbc, ybc, value);
                         break;
 
                     case PANNINGLO:
-                        value = rand() & 0x7f;
-                        if((Read_Pattern_Column(Position, xbc - 1, ybc) & 0xf0) > 0x80)
+                        value = rand() & 0xf;
+                        value2 = Read_Pattern_Column(Position, xbc - 1, ybc);
+                        if((value2 & 0xf0) >= 0x80 && value != 0)
                         {
                             value = 0;
                         }
-                        Write_Pattern_Column(Position, xbc, ybc, value & 0xf);
+                        else
+                        {
+                            value |= value2;
+                        }
+                        Write_Pattern_Column(Position, xbc, ybc, value);
                         break;
 
                     case EFFECTDATHI:
-                    case EFFECTDATLO:
                     case EFFECT2DATHI:
-                    case EFFECT2DATLO:
                     case EFFECT3DATHI:
-                    case EFFECT3DATLO:
                     case EFFECT4DATHI:
+                        value2 = Read_Pattern_Column(Position, xbc, ybc) & 0xf;
+                        Write_Pattern_Column(Position, xbc, ybc, (rand() & 0xf0) | value2);
+                        break;
+                    
+                    case EFFECTDATLO:
+                    case EFFECT2DATLO:
+                    case EFFECT3DATLO:
                     case EFFECT4DATLO:
-                        Write_Pattern_Column(Position, xbc, ybc, (rand() & 0xff));
+                        value2 = Read_Pattern_Column(Position, xbc, ybc) & 0xf0;
+                        Write_Pattern_Column(Position, xbc, ybc, (rand() & 0xf) | value2);
                         break;
                 }
             }
@@ -1278,6 +1256,7 @@ void Fill_Block(int Position)
 {
     int ybc;
     int xbc;
+    int value;
     COLUMN_TYPE type;
 
     int max_columns = Get_Max_Nibble_All_Tracks();
@@ -1294,29 +1273,39 @@ void Fill_Block(int Position)
                 switch(type)
                 {
                     case NOTE:
+                        Set_Pattern_Column(Position, xbc, ybc, Get_Pattern_Column(Position, xbc, Sel.y_start));
+                        break;
+
                     case INSTRHI:
                     case PANNINGHI:
                     case VOLUMEHI:
+                    case EFFECTHI:
+                    case EFFECTDATHI:
+                    case EFFECT2HI:
+                    case EFFECT2DATHI:
+                    case EFFECT3HI:
+                    case EFFECT3DATHI:
+                    case EFFECT4HI:
+                    case EFFECT4DATHI:
+                        value = Get_Pattern_Column(Position, xbc, ybc) & 0xf;
+                        value |= Get_Pattern_Column(Position, xbc, Sel.y_start) & 0xf0;
+                        Set_Pattern_Column(Position, xbc, ybc, value);
+                        break;
+
                     case INSTRLO:
                     case VOLUMELO:
                     case PANNINGLO:
                     case EFFECTLO:
                     case EFFECTDATLO:
-                    case EFFECTHI:
-                    case EFFECTDATHI:
                     case EFFECT2LO:
                     case EFFECT2DATLO:
-                    case EFFECT2HI:
-                    case EFFECT2DATHI:
                     case EFFECT3LO:
                     case EFFECT3DATLO:
-                    case EFFECT3HI:
-                    case EFFECT3DATHI:
                     case EFFECT4LO:
                     case EFFECT4DATLO:
-                    case EFFECT4HI:
-                    case EFFECT4DATHI:
-                        Set_Pattern_Column(Position, xbc, ybc, Get_Pattern_Column(Position, xbc, Sel.y_start));
+                        value = Get_Pattern_Column(Position, xbc, ybc) & 0xf0;
+                        value |= Get_Pattern_Column(Position, xbc, Sel.y_start) & 0xf;
+                        Set_Pattern_Column(Position, xbc, ybc, value);
                         break;
                 }
             }

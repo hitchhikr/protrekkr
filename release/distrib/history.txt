@@ -4,7 +4,8 @@ ProTrekkr releases history
 
 v2.6.0
 
-- Adde fill block command (LCTRL+F).
+- Sanitized block commands.
+- Added fill block command (LCTRL+F).
 - LCTRL + F1/F2: decrease / increase editing step.
 - Chords help available via F3 key (triggered when the caret is over a note).
 - Pattern auto-scrolls when selecting a block with the mouse.

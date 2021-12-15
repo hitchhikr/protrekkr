@@ -1657,7 +1657,7 @@ void Actupated(int modac)
         gui_track = 0;
         gui_action = GUI_CMD_SET_FOCUS_TRACK;
     }
-    Visible_Columns = Get_Visible_Complete_Tracks();
+    Visible_Columns = Get_Visible_Complete_Tracks(NULL);
 
     // Keep the caret in focus
     if(Track_Under_Caret < 0)
@@ -2497,8 +2497,8 @@ int Get_Column_Over_Mouse(int *track, int *column,
     int tmp_column;
     int need_scroll;
     int Visible_Columns;
-    int max_track_size;
     int max_mouse_coord;
+    int pixels;
 
     need_scroll = 0;
     mouse = Mouse.x;
@@ -2534,19 +2534,18 @@ get_tracks_boundaries:
     {
         *column = tmp_column;
     }
-    Visible_Columns = Get_Visible_Complete_Tracks();
-    if(mouse_coord < 0)
+    int mouse_line = (Mouse.y - (183 + 17));
+    if(mouse_line >= 0)
     {
-        need_scroll = -1;
-    }
-    max_track_size = 0;
-    for(i = 0; i < Visible_Columns; i++)
-    {
-        max_track_size += Get_Track_Size(i, NULL);
-    }
-    if(max_mouse_coord > max_track_size && (Visible_Columns + gui_track) < Songtracks)
-    {
-        need_scroll = 1;
+        Visible_Columns = Get_Visible_Complete_Tracks(&pixels);
+        if(mouse_coord < 0)
+        {
+            need_scroll = -1;
+        }
+        if(max_mouse_coord > pixels && (Visible_Columns + gui_track) < Songtracks)
+        {
+            need_scroll = 1;
+        }
     }
     *track = tmp_track;
     return need_scroll;
@@ -2590,7 +2589,7 @@ int Get_Line_Over_Mouse(int *Need_Scroll)
 
 // ------------------------------------------------------
 // Return the number of tracks completly displayed on screen
-int Get_Visible_Complete_Tracks(void)
+int Get_Visible_Complete_Tracks(int *pixels)
 {
     int pixel_visible_tracks = PAT_COL_NOTE;
     int channel_size;
@@ -2606,6 +2605,10 @@ int Get_Visible_Complete_Tracks(void)
         }
         nbr_tracks++;
         pixel_visible_tracks += channel_size;
+    }
+    if(pixels != NULL)
+    {
+        *pixels = pixel_visible_tracks;
     }
     return(nbr_tracks);
 }
@@ -2659,7 +2662,7 @@ void Reset_Pattern_Scrolling_Horiz(void)
 // Set the layout of the horizontal tracks slider and bound the caret
 void Set_Track_Slider(int pos)
 {
-    Visible_Columns = Get_Visible_Complete_Tracks();
+    Visible_Columns = Get_Visible_Complete_Tracks(NULL);
     if(Track_Under_Caret >= pos + Visible_Columns)
     {
         Track_Under_Caret = pos + Visible_Columns;
@@ -2713,7 +2716,7 @@ void Mouse_Wheel_Pattern_Ed(int roll_amount, int allow)
     if(zcheckMouse(POS_HORIZ_SLIDER - 1, (Cur_Height - 171) + Patterns_Lines_Offset,
                    (Cur_Width - (POS_HORIZ_SLIDER + 1)), 16))
     {
-        Visible_Columns = Get_Visible_Complete_Tracks();
+        Visible_Columns = Get_Visible_Complete_Tracks(NULL);
 
         gui_track += -roll_amount;
         if(gui_track < 0)
@@ -2795,7 +2798,7 @@ void Mouse_Sliders_Pattern_Ed(void)
         // Normalize and scale
         Pos_Mouse = Pos_Mouse / ((float) (Cur_Width - (POS_HORIZ_SLIDER - 1)));
         if(Pos_Mouse > 1.0f) Pos_Mouse = 1.0f;
-        Visible_Columns = Get_Visible_Complete_Tracks();
+        Visible_Columns = Get_Visible_Complete_Tracks(NULL);
 
         Pos_Mouse = Pos_Mouse * ((Songtracks - Visible_Columns) + 1);
         gui_track = (int) Pos_Mouse;
@@ -2903,7 +2906,7 @@ void Mouse_Sliders_Pattern_Ed(void)
                         {
                             Track_Under_Caret = gui_track;
                         }
-                        Visible_Columns = Get_Visible_Complete_Tracks();
+                        Visible_Columns = Get_Visible_Complete_Tracks(NULL);
 
                         if(Track_Under_Caret > (Visible_Columns + gui_track - 1))
                         {

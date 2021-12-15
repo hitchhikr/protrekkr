@@ -114,7 +114,7 @@ void Goto_Song_Position(int Position);
 int Get_Track_Size(int Track, int *Column);
 int Get_Track_Real_Size(int Track);
 int Get_Last_Track_Column(int track);
-int Get_Visible_Complete_Tracks(void);
+int Get_Visible_Complete_Tracks(int *pixels);
 int Get_Pattern_Offset(int track, int row, int pattern);
 void Reset_Patterns_Zoom(void);
 void Toggle_Track_Zoom(int track, int large);
