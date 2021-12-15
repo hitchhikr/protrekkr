@@ -6,4 +6,4 @@ targeting small sized intros, demos or games.
 It’s a heavily modified version of the old NoiseTrekker 2 which was made by
 Juan Antonio Arguelles Rius aka Arguru.
 
-Currently the tracker is available on Windows, Linux, FreeBSD, Amiga OS4, AROS, Mac OSX and Haiku.
+Currently the tracker is available on Windows, Linux, FreeBSD, Amiga OS4, AROS, Mac OSX and Haiku OS.

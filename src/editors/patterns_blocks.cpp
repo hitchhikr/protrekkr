@@ -388,6 +388,44 @@ void Write_Pattern_Column(int Position, int xbc, int ybc, int datas)
 }
 
 // ------------------------------------------------------
+// Write a byte in the given pattern without reading the previous one
+void Write_Pattern_Column_No_Read(int Position, int xbc, int ybc, int datas)
+{
+    COLUMN_TYPE type = Get_Column_Type(Channels_MultiNotes, Channels_Effects, xbc);
+
+    switch(type)
+    {
+        case NOTE:
+        case INSTRHI:
+        case VOLUMEHI:
+        case PANNINGHI:
+        case EFFECTHI:
+        case EFFECTDATHI:
+        case EFFECT2HI:
+        case EFFECT2DATHI:
+        case EFFECT3HI:
+        case EFFECT3DATHI:
+        case EFFECT4HI:
+        case EFFECT4DATHI:
+        case INSTRLO:
+        case VOLUMELO:
+        case PANNINGLO:
+        case EFFECTLO:
+        case EFFECTDATLO:
+        case EFFECT2LO:
+        case EFFECT2DATLO:
+        case EFFECT3LO:
+        case EFFECT3DATLO:
+        case EFFECT4LO:
+        case EFFECT4DATLO:
+            Set_Pattern_Column(Position, xbc, ybc, datas);
+            break;
+        default:
+            break;
+    }
+}
+
+// ------------------------------------------------------
 // Read a byte from the copy buffer
 int Read_Buff_Column(int Position, int xbc, int ybc)
 {
@@ -1039,8 +1077,9 @@ void Interpolate_Block(int Position)
     int cur_track_lo;
     int value_start;
     int value_end;
-    int ran_len;
-    int tran;
+    int complete_value;
+    float ran_len;
+    float tran;
     int cran;
     int value;
     COLUMN_TYPE type;
@@ -1106,16 +1145,27 @@ void Interpolate_Block(int Position)
             value_start = startvalue_hi[i].value | startvalue_lo[i].value;
             value_end = endvalue_hi[i].value | endvalue_lo[i].value;
             xbc = startvalue_hi[i].position;
-            ran_len = Sel.y_end - Sel.y_start;
+            type = Get_Column_Type(Channels_MultiNotes, Channels_Effects, xbc);
+            switch(type)
+            {
+                case VOLUMEHI:
+                case PANNINGHI:
+                case VOLUMELO:
+                case PANNINGLO:
+                    if(value_start == 255) value_start = 0;
+                    if(value_end == 255) value_end = 0;
+                    break;
+            }
+            ran_len = (float) (Sel.y_end - Sel.y_start);
             if(ran_len == 0) ran_len = 1;
             cran = 0;
-            tran = value_end - value_start;
+            tran = (float) (value_end - value_start);
             for(ybc = Sel.y_start; ybc <= Sel.y_end; ybc++)
             {
                 if(xbc < max_columns && ybc < MAX_ROWS)
                 {
-                    int c_val = (cran * tran) / ran_len;
-                    Write_Pattern_Column(Position, xbc, ybc, value_start + c_val);
+                    int c_val = (int) ((cran * tran) / ran_len);
+                    Write_Pattern_Column_No_Read(Position, xbc, ybc, value_start + c_val);
                     cran++;
                 }
             }
@@ -1126,17 +1176,31 @@ void Interpolate_Block(int Position)
             value_start = startvalue_hi[i].value >> 4;
             value_end = endvalue_hi[i].value >> 4;
             xbc = startvalue_hi[i].position;
-            ran_len = Sel.y_end - Sel.y_start;
-            if(ran_len == 0) ran_len = 1;
+            type = Get_Column_Type(Channels_MultiNotes, Channels_Effects, xbc);
+            switch(type)
+            {
+                case VOLUMEHI:
+                case PANNINGHI:
+                    if(value_start == 0xf) value_start = 0;
+                    if(value_end == 0xf) value_end = 0;
+                    break;
+            }
+            ran_len = (float) (Sel.y_end - Sel.y_start);
+            if(ran_len == 0) ran_len = 1.0f;
             cran = 0;
-            tran = value_end - value_start;
+            tran = (float) (value_end - value_start);
             for(ybc = Sel.y_start; ybc <= Sel.y_end; ybc++)
             {
                 if(xbc < max_columns && ybc < MAX_ROWS)
                 {
-                    int c_val = (cran * tran) / ran_len;
+                    int c_val = (int) ((cran * tran) / ran_len);
                     value = Read_Pattern_Column(Position, xbc + 1, ybc) & 0xf;
-                    Write_Pattern_Column(Position, xbc, ybc, ((value_start + c_val) << 4) | value);
+                    complete_value = value | (Read_Pattern_Column(Position, xbc, ybc) & 0xf0);
+                    if(complete_value == 255) 
+                    {
+                        value = 0;
+                    }
+                    Write_Pattern_Column_No_Read(Position, xbc, ybc, ((value_start + c_val) << 4) | value);
                     cran++;
                 }
             }
@@ -1147,17 +1211,33 @@ void Interpolate_Block(int Position)
             value_start = startvalue_lo[i].value;
             value_end = endvalue_lo[i].value;
             xbc = startvalue_lo[i].position;
-            ran_len = Sel.y_end - Sel.y_start;
-            if(ran_len == 0) ran_len = 1;
+            complete_value = value_start | (Read_Pattern_Column(Position, xbc - 1, Sel.y_start) & 0xf0);
+            if(complete_value == 255) 
+            {
+                value_start = 0;
+            }
+            complete_value = value_end | (Read_Pattern_Column(Position, xbc - 1, Sel.y_end) & 0xf0);
+            if(complete_value == 255) 
+            {
+                value_end = 0;
+            }
+            ran_len = (float) (Sel.y_end - Sel.y_start);
+            if(ran_len == 0) ran_len = 1.0f;
             cran = 0;
-            tran = value_end - value_start;
+            tran = (float) (value_end - value_start);
             for(ybc = Sel.y_start; ybc <= Sel.y_end; ybc++)
             {
                 if(xbc < max_columns && ybc < MAX_ROWS)
                 {
-                    int c_val = (cran * tran) / ran_len;
+                    int c_val = (int) ((cran * tran) / ran_len);
                     value = Read_Pattern_Column(Position, xbc - 1, ybc) & 0xf0;
-                    Write_Pattern_Column(Position, xbc, ybc, ((value_start + c_val) & 0xf) | value);
+                    complete_value = value | (Read_Pattern_Column(Position, xbc, ybc) & 0xf);
+                    if(complete_value == 255) 
+                    {
+                        value = 0;
+                    }
+                    value = ((value_start + c_val) & 0xf) | value;
+                    Write_Pattern_Column_No_Read(Position, xbc, ybc, value);
                     cran++;
                 }
             }
