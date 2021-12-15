@@ -99,6 +99,8 @@
 #define NOTE_OFF 120
 #define NO_NOTE 121
 #define NO_INSTR 255
+#define NO_VOLUME 255
+#define NO_PANNING 255
 
 #define MAX_FX 4
 

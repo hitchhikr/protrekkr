@@ -1835,7 +1835,9 @@ int Screen_Update(void)
         Gui_Draw_Button_Box(8 + (63 * 2), 164, 61, 10, D_ E_ L_ E_ T_ E_, BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_SMALL_FONT);
 
         Gui_Draw_Button_Box(8 + (63 * 3), 152, 61, 10, S_ P_ R_ E_ A_ D_, BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_SMALL_FONT);
-        Gui_Draw_Button_Box(8 + (63 * 3), 164, 61, 10, R_ A_ N_ D_ O_ M_ I_ Z_ E_, BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_SMALL_FONT);
+
+        Gui_Draw_Button_Box(8 + (63 * 3), 164, 30, 10, R_ A_ N_ D_ , BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_SMALL_FONT);
+        Gui_Draw_Button_Box(8 + (63 * 3) + 32, 164, 29, 10, F_ I_ L_ L_, BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_SMALL_FONT);
 
         Gui_Draw_Button_Box(8 + (63 * 4), 152, 61, 10, S_ E_ M_ I_ TIR_ T_ O_ N_ E_ SPC_ U_ P_, BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE | BUTTON_SMALL_FONT);
         Gui_Draw_Button_Box(8 + (63 * 4), 164, 61, 10, S_ E_ M_ I_ TIR_ T_ O_ N_ E_ SPC_ D_ N_, BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE | BUTTON_SMALL_FONT);
@@ -4547,6 +4549,12 @@ void Keyboard_Handler(void)
                     Randomize_Block(Cur_Position);
                 }
 
+                // Fill the values of a selected block
+                if(Keys[SDLK_f - UNICODE_OFFSET2] && is_editing)
+                {
+                    Fill_Block(Cur_Position);
+                }
+
                 // Randomize the values of a selected block
                 if(Keys[SDLK_w - UNICODE_OFFSET2])
                 {
@@ -5794,9 +5802,14 @@ void Mouse_Handler(void)
             if(is_editing) Interpolate_Block(Cur_Position);
         }
         // Randomize
-        if(zcheckMouse(8 + (63 * 3), 164, 61, 10))
+        if(zcheckMouse(8 + (63 * 3), 164, 31, 10))
         {
             if(is_editing) Randomize_Block(Cur_Position);
+        }
+        // Fill
+        if(zcheckMouse(8 + (63 * 3) + 31, 164, 31, 10))
+        {
+            if(is_editing) Fill_Block(Cur_Position);
         }
         // Semitone up
         if(zcheckMouse(8 + (63 * 4), 152, 61, 10))

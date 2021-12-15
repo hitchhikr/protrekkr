@@ -545,6 +545,7 @@ void Remove_Selection(int Cur_Track, int Position);
 void Copy_Selection(int Position);
 void Cut_Selection(int Position);
 void Interpolate_Block(int Position);
+void Fill_Block(int Position);
 void Randomize_Block(int Position);
 void Semitone_Up_Block(int Position);
 void Semitone_Down_Block(int Position);

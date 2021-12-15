@@ -165,11 +165,11 @@ void Clear_Buff(int Idx)
     {
         for(i = 0; i < MAX_POLYPHONY; i++)
         {
-            *(BuffBlock[Idx] + ipcut + PATTERN_NOTE1 + (i * 2)) = 121;
-            *(BuffBlock[Idx] + ipcut + PATTERN_INSTR1 + (i * 2)) = 255;
+            *(BuffBlock[Idx] + ipcut + PATTERN_NOTE1 + (i * 2)) = NO_NOTE;
+            *(BuffBlock[Idx] + ipcut + PATTERN_INSTR1 + (i * 2)) = NO_INSTR;
         }        
-        *(BuffBlock[Idx] + ipcut + PATTERN_VOLUME) = 255;
-        *(BuffBlock[Idx] + ipcut + PATTERN_PANNING) = 255;
+        *(BuffBlock[Idx] + ipcut + PATTERN_VOLUME) = NO_VOLUME;
+        *(BuffBlock[Idx] + ipcut + PATTERN_PANNING) = NO_PANNING;
         *(BuffBlock[Idx] + ipcut + PATTERN_FX) = 0;
         *(BuffBlock[Idx] + ipcut + PATTERN_FXDATA) = 0;
         *(BuffBlock[Idx] + ipcut + PATTERN_FX2) = 0;
@@ -494,7 +494,7 @@ int Delete_Selection(int Position)
                 switch(type)
                 {
                     case NOTE:
-                        Set_Pattern_Column(Position, xbc, ybc, 121);
+                        Set_Pattern_Column(Position, xbc, ybc, NO_NOTE);
                         break;
                     case INSTRHI:
                     case PANNINGHI:
@@ -505,7 +505,7 @@ int Delete_Selection(int Position)
                             data &= 0xf;
                             if(!data)
                             {
-                                data = 0xff;
+                                data = 255;
                             }
                             Set_Pattern_Column(Position, xbc, ybc, data);
                         }
@@ -519,7 +519,7 @@ int Delete_Selection(int Position)
                             data &= 0xf0;
                             if(!data)
                             {
-                                data = 0xff;
+                                data = 255;
                             }
                             Set_Pattern_Column(Position, xbc, ybc, data);
                         }
@@ -1271,6 +1271,60 @@ void Randomize_Block(int Position)
     Actupated(0);
 }
 
+
+// ------------------------------------------------------
+// Fill a selected block with first row data
+void Fill_Block(int Position)
+{
+    int ybc;
+    int xbc;
+    COLUMN_TYPE type;
+
+    int max_columns = Get_Max_Nibble_All_Tracks();
+    SELECTION Sel = Get_Real_Selection(TRUE);
+
+    // Delete the entire selection
+    for(ybc = Sel.y_start; ybc <= Sel.y_end; ybc++)
+    {
+        for(xbc = Sel.x_start; xbc <= Sel.x_end; xbc++)
+        {
+            if(xbc < max_columns && ybc < MAX_ROWS)
+            {
+                type = Get_Column_Type(Channels_MultiNotes, Channels_Effects, xbc);
+                switch(type)
+                {
+                    case NOTE:
+                    case INSTRHI:
+                    case PANNINGHI:
+                    case VOLUMEHI:
+                    case INSTRLO:
+                    case VOLUMELO:
+                    case PANNINGLO:
+                    case EFFECTLO:
+                    case EFFECTDATLO:
+                    case EFFECTHI:
+                    case EFFECTDATHI:
+                    case EFFECT2LO:
+                    case EFFECT2DATLO:
+                    case EFFECT2HI:
+                    case EFFECT2DATHI:
+                    case EFFECT3LO:
+                    case EFFECT3DATLO:
+                    case EFFECT3HI:
+                    case EFFECT3DATHI:
+                    case EFFECT4LO:
+                    case EFFECT4DATLO:
+                    case EFFECT4HI:
+                    case EFFECT4DATHI:
+                        Set_Pattern_Column(Position, xbc, ybc, Get_Pattern_Column(Position, xbc, Sel.y_start));
+                        break;
+                }
+            }
+        }
+    }
+    Actupated(0);
+}
+
 // ------------------------------------------------------
 // Transpose a block to 1 semitone higher
 void Semitone_Up_Block(int Position)
@@ -1290,10 +1344,10 @@ void Semitone_Up_Block(int Position)
                 if(Get_Column_Type(Channels_MultiNotes, Channels_Effects, xbc) == NOTE)
                 {
                     note = Read_Pattern_Column(Position, xbc, ybc);
-                    if(note < 120)
+                    if(note < NOTE_OFF)
                     {
                         note++;
-                        if(note > 119) note = 119;
+                        if(note > NOTE_MAX) note = NOTE_MAX;
                     }
                     Write_Pattern_Column(Position, xbc, ybc, note);
                 }
@@ -1322,7 +1376,7 @@ void Semitone_Down_Block(int Position)
                 if(Get_Column_Type(Channels_MultiNotes, Channels_Effects, xbc) == NOTE)
                 {
                     note = Read_Pattern_Column(Position, xbc, ybc);
-                    if(note < 120)
+                    if(note < NOTE_OFF)
                     {
                         note--;
                         if(note < 0) note = 0;
@@ -1354,10 +1408,10 @@ void Octave_Up_Block(int Position)
                 if(Get_Column_Type(Channels_MultiNotes, Channels_Effects, xbc) == NOTE)
                 {
                     note = Read_Pattern_Column(Position, xbc, ybc);
-                    if(note < 120)
+                    if(note < NOTE_OFF)
                     {
                         note += 12;
-                        if(note > 119) continue;
+                        if(note > NOTE_MAX) continue;
                     }
                     Write_Pattern_Column(Position, xbc, ybc, note);
                 }
@@ -1386,7 +1440,7 @@ void Octave_Down_Block(int Position)
                 if(Get_Column_Type(Channels_MultiNotes, Channels_Effects, xbc) == NOTE)
                 {
                     note = Read_Pattern_Column(Position, xbc, ybc);
-                    if(note < 120)
+                    if(note < NOTE_OFF)
                     {
                         note -= 12;
                         if(note < 0) continue;
@@ -1430,10 +1484,10 @@ void Instrument_Semitone_Up_Sel(int Position, SELECTION Sel, int Amount, int Ins
                     if(instrument == Instr)
                     {
                         note = Read_Pattern_Column(Position, xbc, ybc);
-                        if(note < 120)
+                        if(note < NOTE_OFF)
                         {
                             note += Amount;
-                            if(note > 119) note = 119;
+                            if(note > NOTE_MAX) note = NOTE_MAX;
                         }
                         Write_Pattern_Column(Position, xbc, ybc, note);
                     }
@@ -1474,7 +1528,7 @@ void Instrument_Semitone_Down_Sel(int Position, SELECTION Sel, int Amount, int I
                     if(instrument == Instr)
                     {
                         note = Read_Pattern_Column(Position, xbc, ybc);
-                        if(note < 120)
+                        if(note < NOTE_OFF)
                         {
                             note -= Amount;
                             if(note < 0) note = 0;
@@ -1511,10 +1565,10 @@ void Instrument_Octave_Up_Block(int Position)
                     if(instrument == Current_Instrument)
                     {
                         note = Read_Pattern_Column(Position, xbc, ybc);
-                        if(note < 120)
+                        if(note < NOTE_OFF)
                         {
                             note += 12;
-                            if(note > 119) continue;
+                            if(note > NOTE_MAX) continue;
                         }
                         Write_Pattern_Column(Position, xbc, ybc, note);
                     }
@@ -1549,7 +1603,7 @@ void Instrument_Octave_Down_Block(int Position)
                     if(instrument == Current_Instrument)
                     {
                         note = Read_Pattern_Column(Position, xbc, ybc);
-                        if(note < 120)
+                        if(note < NOTE_OFF)
                         {
                             note -= 12;
                             if(note < 0) continue;
@@ -1859,11 +1913,11 @@ void Clear_Track_Data(int offset)
 
     for(i = 0; i < MAX_POLYPHONY; i++)
     {
-        *(RawPatterns + offset + PATTERN_NOTE1 + (i * 2)) = 121;
-        *(RawPatterns + offset + PATTERN_INSTR1 + (i * 2)) = 255;
+        *(RawPatterns + offset + PATTERN_NOTE1 + (i * 2)) = NO_NOTE;
+        *(RawPatterns + offset + PATTERN_INSTR1 + (i * 2)) = NO_INSTR;
     }
-    *(RawPatterns + offset + PATTERN_VOLUME) = 255;
-    *(RawPatterns + offset + PATTERN_PANNING) = 255;
+    *(RawPatterns + offset + PATTERN_VOLUME) = NO_VOLUME;
+    *(RawPatterns + offset + PATTERN_PANNING) = NO_PANNING;
     *(RawPatterns + offset + PATTERN_FX) = 0;
     *(RawPatterns + offset + PATTERN_FXDATA) = 0;
     *(RawPatterns + offset + PATTERN_FX2) = 0;
