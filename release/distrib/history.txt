@@ -5,8 +5,8 @@ ProTrekkr releases history
 v2.6.1
 
 - Fixed a possible endless loop in wav renderizer.
-- Selecting a track or a pattern with LCTRL+A or LCTRL+SHIFT+A selected on row
-  to much.
+- Selecting a track or a pattern with LCTRL+A or LCTRL+SHIFT+A
+  selected a row too much.
 
 v2.6.0
 
