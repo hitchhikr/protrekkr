@@ -2058,7 +2058,7 @@ void PTKEXPORT Ptk_Stop(void)
 #endif
 
 #if !defined(__STAND_ALONE__)
-        if(local_curr_ramp_vol == 1.0f && rawrender)
+        if(local_curr_ramp_vol == 1.0f || rawrender)
         {
             break;
         }
