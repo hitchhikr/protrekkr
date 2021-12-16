@@ -1427,6 +1427,7 @@ int Screen_Update(void)
         if(gui_action == GUI_CMD_EXPORT_WAV)
         {
             char buffer[64];
+            char wav_filename[MAX_PATH];
 
             Status_Box("Writing Wav Header And Sample Data...");
 
@@ -1434,18 +1435,17 @@ int Screen_Update(void)
 
             if(strlen(SampleName[Current_Instrument][Current_Instrument_Split]))
             {
-                RF.OpenForWrite(SampleName[Current_Instrument][Current_Instrument_Split],
-                                44100,
-                                16,
-                                Sample_Channels[Current_Instrument][Current_Instrument_Split]);
+                sprintf(wav_filename, "%s" SLASH "%s", Dir_Samples, SampleName[Current_Instrument][Current_Instrument_Split]);
             }
             else
             {
-                RF.OpenForWrite("Untitled.wav",
-                                44100,
-                                16,
-                                Sample_Channels[Current_Instrument][Current_Instrument_Split]);
+                sprintf(wav_filename, "%s" SLASH "Untitled.wav", Dir_Samples);
             }
+
+            RF.OpenForWrite(wav_filename,
+                            44100,
+                            16,
+                            Sample_Channels[Current_Instrument][Current_Instrument_Split]);
 
             char t_stereo;
 
@@ -3076,12 +3076,14 @@ Stop_WavRender:
         }
     }
 
-    int minutes = filesize / 10584000;
-    int seconds = (filesize - minutes * 10584000) / 176400;
+    int minutes;
+    int seconds;
 
     switch(rawrender_target)
     {
         case RENDER_TO_FILE:
+            minutes = filesize / 10584000;
+            seconds = (filesize - minutes * 10584000) / 176400;
             if(do_multi)
             {
                 sprintf(buffer, "Wav rendering finished. File size: %.2f Megabytes per file (Total: %.2f Megabytes). Playback time: %d'%d''.",
@@ -3093,9 +3095,18 @@ Stop_WavRender:
                                 float(filesize / 1048576.0f), minutes, seconds);
             }
             break;
-        default:
+        case RENDER_TO_STEREO:
+            minutes = filesize / 10584000;
+            seconds = (filesize - minutes * 10584000) / 176400;
             sprintf(buffer, "Wav rendering finished. Waveform size: %.2f Megabytes. Playback time: %d'%d''.",
                             float(filesize / 1048576.0f), minutes, seconds);
+            break;
+        default:
+            minutes = (filesize / 10584000) * 3;
+            seconds = ((filesize - minutes * 10584000) / 176400) * 3;
+            sprintf(buffer, "Wav rendering finished. Waveform size: %.2f Megabytes. Playback time: %d'%d''.",
+                            float(filesize / 1048576.0f), minutes, seconds);
+            break;
     }
     Status_Box(buffer);
 
