@@ -2,6 +2,14 @@
 ProTrekkr releases history
 ===============================================================================
 
+v2.6.2
+
+- LCTRL+LSHIFT+F (or right mouse button on icon):
+  Fill a block according to the current step add.
+- LCTRL+LSHIFT+R (or right mouse button on icon):
+  Randomize a block according to the current step add.
+- .wav are now saved in samples directory.
+
 v2.6.1
 
 - Fixed a possible endless loop in wav renderizer.

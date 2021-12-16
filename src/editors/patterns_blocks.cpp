@@ -1249,7 +1249,7 @@ void Interpolate_Block(int Position)
 
 // ------------------------------------------------------
 // Randomize a selected effects column
-void Randomize_Block(int Position)
+void Randomize_Block(int Position, int step)
 {
     int ybc;
     int xbc;
@@ -1260,79 +1260,82 @@ void Randomize_Block(int Position)
 
     SELECTION Sel = Get_Real_Selection(TRUE);
 
-    for(ybc = Sel.y_start; ybc <= Sel.y_end; ybc++)
+    if(step)
     {
-        for(xbc = Sel.x_start; xbc <= Sel.x_end; xbc++)
+        for(ybc = Sel.y_start; ybc <= Sel.y_end; ybc += step)
         {
-            if(xbc < max_columns && ybc < MAX_ROWS)
+            for(xbc = Sel.x_start; xbc <= Sel.x_end; xbc++)
             {
-                type = Get_Column_Type(Channels_MultiNotes, Channels_Effects, xbc);
-                switch(type)
+                if(xbc < max_columns && ybc < MAX_ROWS)
                 {
-                    case VOLUMEHI:
-                        value = Get_Pattern_Column(Position, xbc, ybc) & 0xf;
-                        Write_Pattern_Column(Position, xbc, ybc, (rand() & 0xf0) | value);
-                        break;
-                    case VOLUMELO:
-                        value = Get_Pattern_Column(Position, xbc, ybc) & 0xf0;
-                        Write_Pattern_Column(Position, xbc, ybc, (rand() & 0xf) | value);
-                        break;
+                    type = Get_Column_Type(Channels_MultiNotes, Channels_Effects, xbc);
+                    switch(type)
+                    {
+                        case VOLUMEHI:
+                            value = Get_Pattern_Column(Position, xbc, ybc) & 0xf;
+                            Write_Pattern_Column(Position, xbc, ybc, (rand() & 0xf0) | value);
+                            break;
+                        case VOLUMELO:
+                            value = Get_Pattern_Column(Position, xbc, ybc) & 0xf0;
+                            Write_Pattern_Column(Position, xbc, ybc, (rand() & 0xf) | value);
+                            break;
 
-                    case PANNINGHI:
-                        value = (rand() & 0x7f) & 0xf0;
-                        if(value > 0x80) value = 0x80;
-                        value2 = Read_Pattern_Column(Position, xbc + 1, ybc) & 0xf;
-                        if(value2 > 0 && value == 0x80)
-                        {
-                            value = 0x80;
-                        }
-                        else
-                        {
-                            value |= value2;
-                        }
-                        Write_Pattern_Column(Position, xbc, ybc, value);
-                        break;
+                        case PANNINGHI:
+                            value = (rand() & 0x7f) & 0xf0;
+                            if(value > 0x80) value = 0x80;
+                            value2 = Read_Pattern_Column(Position, xbc + 1, ybc) & 0xf;
+                            if(value2 > 0 && value == 0x80)
+                            {
+                                value = 0x80;
+                            }
+                            else
+                            {
+                                value |= value2;
+                            }
+                            Write_Pattern_Column(Position, xbc, ybc, value);
+                            break;
 
-                    case PANNINGLO:
-                        value = rand() & 0xf;
-                        value2 = Read_Pattern_Column(Position, xbc - 1, ybc);
-                        if((value2 & 0xf0) >= 0x80 && value != 0)
-                        {
-                            value = 0;
-                        }
-                        else
-                        {
-                            value |= value2;
-                        }
-                        Write_Pattern_Column(Position, xbc, ybc, value);
-                        break;
+                        case PANNINGLO:
+                            value = rand() & 0xf;
+                            value2 = Read_Pattern_Column(Position, xbc - 1, ybc);
+                            if((value2 & 0xf0) >= 0x80 && value != 0)
+                            {
+                                value = 0;
+                            }
+                            else
+                            {
+                                value |= value2;
+                            }
+                            Write_Pattern_Column(Position, xbc, ybc, value);
+                            break;
 
-                    case EFFECTDATHI:
-                    case EFFECT2DATHI:
-                    case EFFECT3DATHI:
-                    case EFFECT4DATHI:
-                        value2 = Read_Pattern_Column(Position, xbc, ybc) & 0xf;
-                        Write_Pattern_Column(Position, xbc, ybc, (rand() & 0xf0) | value2);
-                        break;
+                        case EFFECTDATHI:
+                        case EFFECT2DATHI:
+                        case EFFECT3DATHI:
+                        case EFFECT4DATHI:
+                            value2 = Read_Pattern_Column(Position, xbc, ybc) & 0xf;
+                            Write_Pattern_Column(Position, xbc, ybc, (rand() & 0xf0) | value2);
+                            break;
                     
-                    case EFFECTDATLO:
-                    case EFFECT2DATLO:
-                    case EFFECT3DATLO:
-                    case EFFECT4DATLO:
-                        value2 = Read_Pattern_Column(Position, xbc, ybc) & 0xf0;
-                        Write_Pattern_Column(Position, xbc, ybc, (rand() & 0xf) | value2);
-                        break;
+                        case EFFECTDATLO:
+                        case EFFECT2DATLO:
+                        case EFFECT3DATLO:
+                        case EFFECT4DATLO:
+                            value2 = Read_Pattern_Column(Position, xbc, ybc) & 0xf0;
+                            Write_Pattern_Column(Position, xbc, ybc, (rand() & 0xf) | value2);
+                            break;
+                    }
                 }
             }
         }
+        Actupated(0);
     }
-    Actupated(0);
 }
 
 
 // ------------------------------------------------------
 // Fill a selected block with first row data
-void Fill_Block(int Position)
+void Fill_Block(int Position, int step)
 {
     int ybc;
     int xbc;
@@ -1342,51 +1345,54 @@ void Fill_Block(int Position)
     int max_columns = Get_Max_Nibble_All_Tracks();
     SELECTION Sel = Get_Real_Selection(TRUE);
 
-    // Delete the entire selection
-    for(ybc = Sel.y_start; ybc <= Sel.y_end; ybc++)
+    if(step)
     {
-        for(xbc = Sel.x_start; xbc <= Sel.x_end; xbc++)
+        // Delete the entire selection
+        for(ybc = Sel.y_start; ybc <= Sel.y_end; ybc += step)
         {
-            if(xbc < max_columns && ybc < MAX_ROWS)
+            for(xbc = Sel.x_start; xbc <= Sel.x_end; xbc++)
             {
-                type = Get_Column_Type(Channels_MultiNotes, Channels_Effects, xbc);
-                switch(type)
+                if(xbc < max_columns && ybc < MAX_ROWS)
                 {
-                    case NOTE:
-                        Set_Pattern_Column(Position, xbc, ybc, Get_Pattern_Column(Position, xbc, Sel.y_start));
-                        break;
+                    type = Get_Column_Type(Channels_MultiNotes, Channels_Effects, xbc);
+                    switch(type)
+                    {
+                        case NOTE:
+                            Set_Pattern_Column(Position, xbc, ybc, Get_Pattern_Column(Position, xbc, Sel.y_start));
+                            break;
 
-                    case INSTRHI:
-                    case PANNINGHI:
-                    case VOLUMEHI:
-                    case EFFECTHI:
-                    case EFFECTDATHI:
-                    case EFFECT2HI:
-                    case EFFECT2DATHI:
-                    case EFFECT3HI:
-                    case EFFECT3DATHI:
-                    case EFFECT4HI:
-                    case EFFECT4DATHI:
-                        value = Get_Pattern_Column(Position, xbc, ybc) & 0xf;
-                        value |= Get_Pattern_Column(Position, xbc, Sel.y_start) & 0xf0;
-                        Set_Pattern_Column(Position, xbc, ybc, value);
-                        break;
+                        case INSTRHI:
+                        case PANNINGHI:
+                        case VOLUMEHI:
+                        case EFFECTHI:
+                        case EFFECTDATHI:
+                        case EFFECT2HI:
+                        case EFFECT2DATHI:
+                        case EFFECT3HI:
+                        case EFFECT3DATHI:
+                        case EFFECT4HI:
+                        case EFFECT4DATHI:
+                            value = Get_Pattern_Column(Position, xbc, ybc) & 0xf;
+                            value |= Get_Pattern_Column(Position, xbc, Sel.y_start) & 0xf0;
+                            Set_Pattern_Column(Position, xbc, ybc, value);
+                            break;
 
-                    case INSTRLO:
-                    case VOLUMELO:
-                    case PANNINGLO:
-                    case EFFECTLO:
-                    case EFFECTDATLO:
-                    case EFFECT2LO:
-                    case EFFECT2DATLO:
-                    case EFFECT3LO:
-                    case EFFECT3DATLO:
-                    case EFFECT4LO:
-                    case EFFECT4DATLO:
-                        value = Get_Pattern_Column(Position, xbc, ybc) & 0xf0;
-                        value |= Get_Pattern_Column(Position, xbc, Sel.y_start) & 0xf;
-                        Set_Pattern_Column(Position, xbc, ybc, value);
-                        break;
+                        case INSTRLO:
+                        case VOLUMELO:
+                        case PANNINGLO:
+                        case EFFECTLO:
+                        case EFFECTDATLO:
+                        case EFFECT2LO:
+                        case EFFECT2DATLO:
+                        case EFFECT3LO:
+                        case EFFECT3DATLO:
+                        case EFFECT4LO:
+                        case EFFECT4DATLO:
+                            value = Get_Pattern_Column(Position, xbc, ybc) & 0xf0;
+                            value |= Get_Pattern_Column(Position, xbc, Sel.y_start) & 0xf;
+                            Set_Pattern_Column(Position, xbc, ybc, value);
+                            break;
+                    }
                 }
             }
         }

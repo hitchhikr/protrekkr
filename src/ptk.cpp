@@ -1836,8 +1836,8 @@ int Screen_Update(void)
 
         Gui_Draw_Button_Box(8 + (63 * 3), 152, 61, 10, I_ N_ T_ E_ R_ P_, BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_SMALL_FONT);
 
-        Gui_Draw_Button_Box(8 + (63 * 3), 164, 30, 10, R_ A_ N_ D_ , BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_SMALL_FONT);
-        Gui_Draw_Button_Box(8 + (63 * 3) + 32, 164, 29, 10, F_ I_ L_ L_, BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_SMALL_FONT);
+        Gui_Draw_Button_Box(8 + (63 * 3), 164, 30, 10, R_ A_ N_ D_ , BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE | BUTTON_SMALL_FONT);
+        Gui_Draw_Button_Box(8 + (63 * 3) + 32, 164, 29, 10, F_ I_ L_ L_, BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE | BUTTON_SMALL_FONT);
 
         Gui_Draw_Button_Box(8 + (63 * 4), 152, 61, 10, S_ E_ M_ I_ TIR_ T_ O_ N_ E_ SPC_ U_ P_, BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE | BUTTON_SMALL_FONT);
         Gui_Draw_Button_Box(8 + (63 * 4), 164, 61, 10, S_ E_ M_ I_ TIR_ T_ O_ N_ E_ SPC_ D_ N_, BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE | BUTTON_SMALL_FONT);
@@ -4517,107 +4517,146 @@ void Keyboard_Handler(void)
                         if(userscreen == USER_SCREEN_TRACK_EDIT) Actualize_Track_Ed(10);
                         Actupated(0);
                     }
-                }
 
-                // Save
-                if(Keys[SDLK_s - UNICODE_OFFSET2])
-                {
-                    if(File_Exist_Req("%s" SLASH "%s.ptk", Dir_Mods, name))
+                    // Fill the values of a selected block with step add
+                    if(Keys[SDLK_f - UNICODE_OFFSET2] && is_editing)
                     {
-                        Display_Requester(&Overwrite_Requester, GUI_CMD_SAVE_MODULE, NULL, TRUE);
+                        Fill_Block(Cur_Position, Current_Edit_Steps);
                     }
-                    else
+
+                    // Randomize the values of a selected block with step add
+                    if(Keys[SDLK_r - UNICODE_OFFSET2] && is_editing)
                     {
-                        gui_action = GUI_CMD_SAVE_MODULE;
+                        Randomize_Block(Cur_Position, Current_Edit_Steps);
+
                     }
-                }
-
-                // Cut selected block
-                if(Keys[SDLK_x - UNICODE_OFFSET2] &&
-                   block_start_track[Curr_Buff_Block] != -1 &&
-                   block_end_track[Curr_Buff_Block] != -1)
-                {
-                    Cut_Selection(Cur_Position);
-                }
-
-                // Copy selected block
-                if(Keys[SDLK_c - UNICODE_OFFSET2] &&
-                   block_start_track[Curr_Buff_Block] != -1 &&
-                   block_end_track[Curr_Buff_Block] != -1)
-                {
-                    Copy_Selection(Cur_Position);
-                }
-
-                // Interpolate the values of a selected block
-                if(Keys[SDLK_i - UNICODE_OFFSET2] && is_editing)
-                {
-                    Interpolate_Block(Cur_Position);
-                }
-
-                // Randomize the values of a selected block
-                if(Keys[SDLK_r - UNICODE_OFFSET2] && is_editing)
-                {
-                    Randomize_Block(Cur_Position);
-                }
-
-                // Fill the values of a selected block
-                if(Keys[SDLK_f - UNICODE_OFFSET2] && is_editing)
-                {
-                    Fill_Block(Cur_Position);
-                }
-
-                // Randomize the values of a selected block
-                if(Keys[SDLK_w - UNICODE_OFFSET2])
-                {
-                    if(File_Exist_Req("%s" SLASH "%s.ppb", Dir_Patterns, Selection_Name))
+                    // Transpose the selection 1 semitone higher
+                    if(Keys[SDLK_u - UNICODE_OFFSET2] && is_editing)
                     {
-                        Display_Requester(&Overwrite_Requester, GUI_CMD_SAVE_PATTERN, NULL, TRUE);
+                        Instrument_Semitone_Up_Block(Cur_Position);
                     }
-                    else
+
+                    // Transpose the selection 1 semitone lower
+                    if(Keys[SDLK_d - UNICODE_OFFSET2] && is_editing)
                     {
-                        gui_action = GUI_CMD_SAVE_PATTERN;
+                        Instrument_Semitone_Down_Block(Cur_Position);
+                    }
+
+                    // Transpose the selection 1 octave higher
+                    if(Keys[SDLK_k - UNICODE_OFFSET2] && is_editing)
+                    {
+                        Instrument_Octave_Up_Block(Cur_Position);
+                    }
+
+                    // Transpose the selection 1 octave lower
+                    if(Keys[SDLK_l - UNICODE_OFFSET2] && is_editing)
+                    {
+                        Instrument_Octave_Down_Block(Cur_Position);
+                    }
+
+                    // Select the current track or the current pattern
+                    if(Keys[SDLK_a - UNICODE_OFFSET2])
+                    {
+                        Select_Pattern_Block();
                     }
                 }
-
-                // Paste the block buffer into a pattern
-                if(Keys[SDLK_v - UNICODE_OFFSET2] && block_start_track_nibble[Curr_Buff_Block] != -1 && block_end_track_nibble[Curr_Buff_Block] != -1 && is_editing)
+                else
                 {
-                    Paste_Block(Cur_Position, Paste_Across, TRUE);
-                }
+                    // Save
+                    if(Keys[SDLK_s - UNICODE_OFFSET2])
+                    {
+                        if(File_Exist_Req("%s" SLASH "%s.ptk", Dir_Mods, name))
+                        {
+                            Display_Requester(&Overwrite_Requester, GUI_CMD_SAVE_MODULE, NULL, TRUE);
+                        }
+                        else
+                        {
+                            gui_action = GUI_CMD_SAVE_MODULE;
+                        }
+                    }
 
-                // Transpose the selection 1 semitone higher
-                if(Keys[SDLK_u - UNICODE_OFFSET2] && is_editing)
-                {
-                    if(Get_LShift()) Instrument_Semitone_Up_Block(Cur_Position);
-                    else Semitone_Up_Block(Cur_Position);
-                }
+                    // Cut selected block
+                    if(Keys[SDLK_x - UNICODE_OFFSET2] &&
+                       block_start_track[Curr_Buff_Block] != -1 &&
+                       block_end_track[Curr_Buff_Block] != -1)
+                    {
+                        Cut_Selection(Cur_Position);
+                    }
 
-                // Transpose the selection 1 semitone lower
-                if(Keys[SDLK_d - UNICODE_OFFSET2] && is_editing)
-                {
-                    if(Get_LShift()) Instrument_Semitone_Down_Block(Cur_Position);
-                    else Semitone_Down_Block(Cur_Position);
-                }
+                    // Copy selected block
+                    if(Keys[SDLK_c - UNICODE_OFFSET2] &&
+                       block_start_track[Curr_Buff_Block] != -1 &&
+                       block_end_track[Curr_Buff_Block] != -1)
+                    {
+                        Copy_Selection(Cur_Position);
+                    }
 
-                // Transpose the selection 1 octave higher
-                if(Keys[SDLK_k - UNICODE_OFFSET2] && is_editing)
-                {
-                    if(Get_LShift()) Instrument_Octave_Up_Block(Cur_Position);
-                    else Octave_Up_Block(Cur_Position);
-                }
+                    // Interpolate the values of a selected block
+                    if(Keys[SDLK_i - UNICODE_OFFSET2] && is_editing)
+                    {
+                        Interpolate_Block(Cur_Position);
+                    }
 
-                // Transpose the selection 1 octave lower
-                if(Keys[SDLK_l - UNICODE_OFFSET2] && is_editing)
-                {
-                    if(Get_LShift()) Instrument_Octave_Down_Block(Cur_Position);
-                    else Octave_Down_Block(Cur_Position);
-                }
+                    // Randomize the values of a selected block
+                    if(Keys[SDLK_r - UNICODE_OFFSET2] && is_editing)
+                    {
+                        Randomize_Block(Cur_Position, 1);
+                    }
 
-                // Select the current track or the current pattern
-                if(Keys[SDLK_a - UNICODE_OFFSET2])
-                {
-                    if(Get_LShift()) Select_Pattern_Block();
-                    else Select_Track_Block();
+                    // Fill the values of a selected block
+                    if(Keys[SDLK_f - UNICODE_OFFSET2] && is_editing)
+                    {
+                        Fill_Block(Cur_Position, 1);
+                    }
+
+                    // Randomize the values of a selected block
+                    if(Keys[SDLK_w - UNICODE_OFFSET2])
+                    {
+                        if(File_Exist_Req("%s" SLASH "%s.ppb", Dir_Patterns, Selection_Name))
+                        {
+                            Display_Requester(&Overwrite_Requester, GUI_CMD_SAVE_PATTERN, NULL, TRUE);
+                        }
+                        else
+                        {
+                            gui_action = GUI_CMD_SAVE_PATTERN;
+                        }
+                    }
+
+                    // Paste the block buffer into a pattern
+                    if(Keys[SDLK_v - UNICODE_OFFSET2] && block_start_track_nibble[Curr_Buff_Block] != -1 && block_end_track_nibble[Curr_Buff_Block] != -1 && is_editing)
+                    {
+                        Paste_Block(Cur_Position, Paste_Across, TRUE);
+                    }
+
+                    // Transpose the selection 1 semitone higher
+                    if(Keys[SDLK_u - UNICODE_OFFSET2] && is_editing)
+                    {
+                        Semitone_Up_Block(Cur_Position);
+                    }
+
+                    // Transpose the selection 1 semitone lower
+                    if(Keys[SDLK_d - UNICODE_OFFSET2] && is_editing)
+                    {
+                        Semitone_Down_Block(Cur_Position);
+                    }
+
+                    // Transpose the selection 1 octave higher
+                    if(Keys[SDLK_k - UNICODE_OFFSET2] && is_editing)
+                    {
+                        Octave_Up_Block(Cur_Position);
+                    }
+
+                    // Transpose the selection 1 octave lower
+                    if(Keys[SDLK_l - UNICODE_OFFSET2] && is_editing)
+                    {
+                        Octave_Down_Block(Cur_Position);
+                    }
+
+                    // Select the current track or the current pattern
+                    if(Keys[SDLK_a - UNICODE_OFFSET2])
+                    {
+                        Select_Track_Block();
+                    }
                 }
             }
         }
@@ -5815,12 +5854,12 @@ void Mouse_Handler(void)
         // Randomize
         if(zcheckMouse(8 + (63 * 3), 164, 31, 10))
         {
-            if(is_editing) Randomize_Block(Cur_Position);
+            if(is_editing) Randomize_Block(Cur_Position, 1);
         }
         // Fill
         if(zcheckMouse(8 + (63 * 3) + 31, 164, 31, 10))
         {
-            if(is_editing) Fill_Block(Cur_Position);
+            if(is_editing) Fill_Block(Cur_Position, 1);
         }
         // Semitone up
         if(zcheckMouse(8 + (63 * 4), 152, 61, 10))
@@ -6088,6 +6127,18 @@ void Mouse_Handler(void)
         if(zcheckMouse(8 + (63 * 5), 164, 61, 10))
         {
             if(is_editing) Instrument_Octave_Down_Block(Cur_Position);
+        }
+
+        // Fill with step add.
+        if(zcheckMouse(8 + (63 * 3) + 31, 164, 31, 10))
+        {
+            if(is_editing) Fill_Block(Cur_Position, Current_Edit_Steps);
+        }
+
+        // Randomize with step add
+        if(zcheckMouse(8 + (63 * 3), 164, 31, 10))
+        {
+            if(is_editing) Randomize_Block(Cur_Position, Current_Edit_Steps);
         }
 
         // Stereo scopes.

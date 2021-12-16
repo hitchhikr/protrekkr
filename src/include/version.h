@@ -37,7 +37,7 @@
 #define TITLE "Protrekkr"
 #define VER_VER "2"
 #define VER_REV "6"
-#define VER_REVSMALL "1"
+#define VER_REVSMALL "2"
 #define VERSION TITLE " v" VER_VER "." VER_REV "." VER_REVSMALL
 
 #endif
