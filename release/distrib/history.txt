@@ -2,6 +2,10 @@
 ProTrekkr releases history
 ===============================================================================
 
+v2.6.1
+
+- Fixed a possible endless loop in wav renderizer.
+
 v2.6.0
 
 - Sanitized block commands.
