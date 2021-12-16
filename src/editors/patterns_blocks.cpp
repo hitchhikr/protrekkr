@@ -1738,7 +1738,7 @@ void Select_Track_Block(void)
     if(!Song_Playing)
     {
         Mark_Block_Start(0, Track_Under_Caret, 0);
-        nlines = patternLines[pSequence[Song_Position]];
+        nlines = patternLines[pSequence[Song_Position]] - 1;
         Mark_Block_End(Get_Max_Nibble_Track(Channels_MultiNotes, Channels_Effects, Track_Under_Caret) - 1,
                        Track_Under_Caret,
                        nlines,
@@ -1755,7 +1755,7 @@ void Select_Pattern_Block(void)
     if(!Song_Playing)
     {
         Mark_Block_Start(0, 0, 0);
-        nlines = patternLines[pSequence[Song_Position]];
+        nlines = patternLines[pSequence[Song_Position]] - 1;
         Mark_Block_End(Get_Track_Nibble_Start(Channels_MultiNotes, Channels_Effects, Track_Under_Caret) - 1,
                        Songtracks,
                        nlines,
