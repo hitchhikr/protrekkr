@@ -139,6 +139,7 @@ char Keyboard_FileNames[256][256];
 
 const char *Keyboards;
 char Keyboard_Name[MAX_PATH];
+char Keyboards_FileName[MAX_PATH];
 
 // The currently used keyboard
 KEYCORE Keyboard[] =
@@ -379,12 +380,12 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
     char KbFileNameToLoad[MAX_PATH];
     char KbData[64];
     char *KbDataEnd;
-    int next_kb_offset;
     int i;
     int j;
     int Key_Value;
     int Uni_Trans;
     FILE *KbFile;
+    FILE *AllKbsFile;
     int in_note;
     char Win_Coords[64];
     Uint32 ExePath_Size = MAX_PATH;
@@ -478,7 +479,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
         while(!Found_File)
         {
             CHDIR(ExePath);
-            FILE *Test_File = fopen("skins/skin.xml", "rb");
+            FILE *Test_File = fopen("skins/keyboards.txt", "rb");
             if(Test_File)
             {
                 Found_File = TRUE;
@@ -506,26 +507,28 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
 
     if(!strlen(Keyboard_Name)) sprintf(Keyboard_Name, "%s", "kben.txt");
 
-    if(!XML_Init())
-    {
-        SDL_Quit();
-        exit(0);
-    }
+    // All keyboards name
+#if defined(__WIN32__)
+    strcpy(Keyboards_FileName, ExePath);
+    strcat(Keyboards_FileName, "\\skins\\");
+#else
+    strcpy(Keyboards_FileName, ExePath);
+    strcat(Keyboards_FileName, "/skins/");
+#endif
+    strcat(Keyboards_FileName, "keyboards.txt");
 
-    if((Keyboards = XML_get_string("files", "file", "keyboards", "value")) != NULL)
+    AllKbsFile = fopen(Keyboards_FileName, "r");
+    if(AllKbsFile != NULL)
     {
         memset(KbFileNameToLoad, 0, sizeof(KbFileNameToLoad));
 
         Nbr_Keyboards = 0;
 
-        next_kb_offset = 0;
         i = 0;
-        while(next_kb_offset < strlen(Keyboards))
+        while(!feof(AllKbsFile))
         {
-            sscanf(Keyboards + next_kb_offset, "%s", &KbFileName);
-            next_kb_offset += strlen(KbFileName) + 1;
+            fscanf(AllKbsFile, "%s", &KbFileName);
 
-            // Load the keyboard file
 
 #if defined(__WIN32__)
             strcpy(KbFileNameToLoad, ExePath);
@@ -536,6 +539,8 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
 #endif
 
             strcat(KbFileNameToLoad, KbFileName);
+
+            // Load the keyboard file
 
             // Store it
             sprintf(Keyboard_FileNames[i], "%s", KbFileName);
@@ -576,6 +581,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
             }
             i++;
         }
+        fclose(AllKbsFile);
     }
 
     // Avoid a possible flash

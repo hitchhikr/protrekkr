@@ -3073,20 +3073,20 @@ int Get_Note_Ascii(int note, char *snote, int *octave, int tiret)
     note = note % 12;
     switch(note)
     {
-        case 0: anote = tiret ? "C-" : "C"; break;
-        case 1: anote = Accidental ? "Db" : "C#"; break;
-        case 2: anote = tiret ? "D-" : "D"; break;
-        case 3: anote = Accidental ? "Eb" : "D#"; break;
-        case 4: anote = tiret ? "E-" : "E"; break;
-        case 5: anote = tiret ? "F-" : "F"; break;
-        case 6: anote = Accidental ? "Gb" : "F#"; break;
-        case 7: anote = tiret ? "G-" : "G"; break;
-        case 8: anote = Accidental ? "Ab" : "G#"; break;
-        case 9: anote = tiret ? "A-" : "A"; break;
-        case 10: anote = Accidental ? "Bb" : "A#"; break;
-        case 11: anote = tiret ? "B-" : "B"; break;
+        case 0: anote = (char *) (tiret ? "C-" : "C"); break;
+        case 1: anote = (char *) (Accidental ? "Db" : "C#"); break;
+        case 2: anote = (char *) (tiret ? "D-" : "D"); break;
+        case 3: anote = (char *) (Accidental ? "Eb" : "D#"); break;
+        case 4: anote = (char *) (tiret ? "E-" : "E"); break;
+        case 5: anote = (char *) (tiret ? "F-" : "F"); break;
+        case 6: anote = (char *) (Accidental ? "Gb" : "F#"); break;
+        case 7: anote = (char *) (tiret ? "G-" : "G"); break;
+        case 8: anote = (char *) (Accidental ? "Ab" : "G#"); break;
+        case 9: anote = (char *) (tiret ? "A-" : "A"); break;
+        case 10: anote = (char *) (Accidental ? "Bb" : "A#"); break;
+        case 11: anote = (char *) (tiret ? "B-" : "B"); break;
         default:
-            anote = "C"; break;
+            anote = (char *) "C"; break;
     }
     sprintf(snote, "%s", anote);
     return note;

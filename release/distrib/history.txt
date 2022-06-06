@@ -9,6 +9,7 @@ v2.6.2
 - LCTRL+LSHIFT+R (or right mouse button on icon):
   Randomize a block according to the current step add.
 - .wav are now saved in samples directory.
+- Correct size/time is reported after rendering to a mono sample.
 
 v2.6.1
 

@@ -1,12 +1,8 @@
 CXX = g++
 
-LIBS = src/extralibs/tinyxml/tinyxml.o \
-       src/extralibs/tinyxml/tinyxmlparser.o \
-       src/extralibs/tinyxml/tinystr.o \
-       src/extralibs/tinyxml/tinyxmlerror.o \
-       -lasound -lSDL -lsdldraw -lz -lpthread
+LIBS = -lasound -lSDL -lsdldraw -lz -lpthread
 
-FLAGS = -g -O3 -fpermissive -fno-strict-aliasing -ffast-math -fno-rtti -fexceptions -Wno-write-strings -Wno-multichar -Lsrc/extralibs/sdl_draw -Lsrc/extralibs/zlib-1.2.3 \
+FLAGS = -g -O3 -fno-strict-aliasing -ffast-math -fno-rtti -fexceptions -Wno-write-strings -Wno-multichar -Lsrc/extralibs/sdl_draw -Lsrc/extralibs/zlib-1.2.3 \
         -D __LINUX__ -D __GCC__ -D __LINUX_ALSASEQ__ -D __MOT_SWAP__
 
 EXEOBJS = ptk.o \
@@ -18,7 +14,7 @@ EXEOBJS = ptk.o \
           config.o 303s.o synths.o insts.o ptps.o \
           midi.o RtMidi.o midi_dispatch.o \
           timer.o main.o \
-          misc_draw.o draw_primitives.o requesters.o xml.o gadgets.o \
+          misc_draw.o draw_primitives.o requesters.o gadgets.o \
           samples_ops.o aiff.o riff.o \
           spline.o tb_303.o wavpack.o samples_unpack.o replay.o synth.o endianness.o \
           sounddriver_linux.o
@@ -32,7 +28,6 @@ RemObj:
 
 protrekkr: $(EXEOBJS)
 	(cd src/extralibs/sdl_draw; make -f makefile.linux)
-	(cd src/extralibs/tinyxml; make)
 	(cd src/extralibs/zlib-1.2.3; make)
 	$(CXX) -o ./release/distrib/ptk_linux -L./ $(FLAGS) $(EXEOBJS) $(LIBS)
 	strip -s -x ./release/distrib/ptk_linux
@@ -141,9 +136,6 @@ draw_primitives.o: src/ui/draw_primitives.cpp
 	$(CXX) -c -o $(@) $(FLAGS) $<
 
 requesters.o: src/ui/requesters.cpp
-	$(CXX) -c -o $(@) $(FLAGS) $<
-
-xml.o: src/ui/xml.cpp
 	$(CXX) -c -o $(@) $(FLAGS) $<
 
 gadgets.o: src/ui/gadgets.cpp

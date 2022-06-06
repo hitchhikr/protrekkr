@@ -438,31 +438,23 @@ char OverWrite_Name[1024];
 int ZzaappOMatic;
 
 // ------------------------------------------------------
-// Load a skin picture according to the xml script
+// Load a skin picture
 SDL_Surface *Load_Skin_Picture(char *name)
 {
     char filepath[MAX_PATH];
-    const char *pic_filename;
     char error[256];
     SDL_Surface *surface;
 
-    pic_filename = XML_get_string("files", "file", name, "value");
-    if(!pic_filename)
-    {
-        Message_Error("XML error in files tag.");
-        return(NULL);
-    }
-
 #if defined(__WIN32__)
-    sprintf(filepath, "skins\\%s", pic_filename);
+    sprintf(filepath, "skins\\%s", name);
 #else
-    sprintf(filepath, "skins/%s", pic_filename);
+    sprintf(filepath, "skins/%s", name);
 #endif
 
     surface = Load_Picture(filepath);
     if(surface == NULL)
     {
-        sprintf(error, "Can't load %s file.", pic_filename);
+        sprintf(error, "Can't load %s file.", name);
         Message_Error(error);
         return(NULL);
     }
@@ -470,29 +462,20 @@ SDL_Surface *Load_Skin_Picture(char *name)
 }
 
 // ------------------------------------------------------
-// Load the font letters sizes according to the xml script
+// Load the font letters sizes according
 int Load_Font_Datas(char *name)
 {
     char filepath[MAX_PATH];
-    const char *pic_filename;
     char error[256];
 
-    pic_filename = XML_get_string("files", "file", name, "value");
-
-    if(!pic_filename)
-    {
-        Message_Error("XML error in files tag.");
-        return(FALSE);
-    }
-
 #if defined(__WIN32__)
-    sprintf(filepath, "skins\\%s", pic_filename);
+    sprintf(filepath, "skins\\%s", name);
 #else
-    sprintf(filepath, "skins/%s", pic_filename);
+    sprintf(filepath, "skins/%s", name);
 #endif
     if(!Create_Font_Datas(filepath))
     {
-        sprintf(error, "Can't load %s file.", pic_filename);
+        sprintf(error, "Can't load %s file.", name);
         Message_Error(error);
         return(FALSE);
     }
@@ -591,23 +574,23 @@ int Init_Context(void)
 
     Initreverb();
 
-    LOGOPIC = Load_Skin_Picture("logo");
+    LOGOPIC = Load_Skin_Picture("neural.bmp");
     if(!LOGOPIC) return(FALSE);
 
-    POINTER = Load_Skin_Picture("pointer");
+    POINTER = Load_Skin_Picture("pointer.bmp");
     if(!POINTER) return(FALSE);
-    SKIN303 = Load_Skin_Picture("303");
+    SKIN303 = Load_Skin_Picture("303.bmp");
     if(!SKIN303) return(FALSE);
-    PFONT = Load_Skin_Picture("pattern_font");
+    PFONT = Load_Skin_Picture("pattern_font.bmp");
     if(!PFONT) return(FALSE);
-    FONT = Load_Skin_Picture("font");
+    FONT = Load_Skin_Picture("font.bmp");
     if(!FONT) return(FALSE);
-    FONT_LOW = Load_Skin_Picture("font");
+    FONT_LOW = Load_Skin_Picture("font.bmp");
     if(!FONT_LOW) return(FALSE);
 
     if(!Set_Pictures_Colors()) return(FALSE);
 
-    if(!Load_Font_Datas("font_datas")) return(FALSE);
+    if(!Load_Font_Datas("font_datas.txt")) return(FALSE);
 
     SDL_SetColorKey(FONT, SDL_SRCCOLORKEY, 0);
     SDL_SetColorKey(FONT_LOW, SDL_SRCCOLORKEY, 0);

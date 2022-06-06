@@ -84,7 +84,7 @@ void gear303::reset(void)
     tbSample = 0.0f;
     tbOscPosition = 0.0f;
     tbOscSpeed = 0.0f;
-    tbWaveform = 0;
+    tbWaveform = TB303_WAVEFORM_SAW;
     RampVolume = 0.0f;
     tbRampVolume = 0.0f;
 }
@@ -404,10 +404,10 @@ float gear303::tbFilter(void)
     t[1] = tbBuf[1];
     t[2] = tbBuf[2];
     t[3] = tbBuf[3];
-    tbBuf[1] = ((in + tbBuf[0]) * p ) - (tbBuf[1] * f);
-    tbBuf[2] = ((tbBuf[1] + t[1]) * p ) - (tbBuf[2] * f);
-    tbBuf[3] = ((tbBuf[2] + t[2]) * p ) - (tbBuf[3] * f);
-    tbBuf[4] = ((tbBuf[3] + t[3]) * p ) - (tbBuf[4] * f);
+    tbBuf[1] = ((in + tbBuf[0]) * p) - (tbBuf[1] * f);
+    tbBuf[2] = ((tbBuf[1] + t[1]) * p) - (tbBuf[2] * f);
+    tbBuf[3] = ((tbBuf[2] + t[2]) * p) - (tbBuf[3] * f);
+    tbBuf[4] = ((tbBuf[3] + t[3]) * p) - (tbBuf[4] * f);
     tbBuf[0] = in;
     return(tbBuf[4] * 16384.0f);
 }

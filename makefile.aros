@@ -1,10 +1,6 @@
 CXX = g++
 
-LIBS = src/extralibs/tinyxml/tinyxml.o \
-       src/extralibs/tinyxml/tinyxmlparser.o \
-       src/extralibs/tinyxml/tinystr.o \
-       src/extralibs/tinyxml/tinyxmlerror.o \
-       -lSDL -lsdldraw -lz
+LIBS = -lSDL -lsdldraw -lz
 
 FLAGS = -Lsrc/extralibs/sdl_draw -Lsrc/extralibs/zlib-1.2.3 \
         -fno-strict-aliasing -Wno-write-strings -Wno-multichar -D USE_SDL_THREADS -D __AROS__ -D __GCC__ -D __NO_MIDI__ -D __MOT_SWAP__ -I./src/include \
@@ -20,7 +16,7 @@ EXEOBJS = ptk.o \
           config.o 303s.o synths.o insts.o ptps.o \
           midi.o midi_dispatch.o \
           timer.o main.o \
-          misc_draw.o draw_primitives.o requesters.o xml.o gadgets.o \
+          misc_draw.o draw_primitives.o requesters.o gadgets.o \
           samples_ops.o aiff.o riff.o \
           spline.o tb_303.o wavpack.o samples_unpack.o replay.o synth.o endianness.o \
           sounddriver_aros.o
@@ -37,7 +33,6 @@ RemObj:
 
 protrekkr: $(EXEOBJS)
 	(cd src/extralibs/sdl_draw; make -f makefile.aros)
-	(cd src/extralibs/tinyxml; make)
 	(cd src/extralibs/zlib-1.2.3; make)
 	$(CXX) -o ./release/distrib/ptk_aros -L./ $(FLAGS) $(EXEOBJS) $(LIBS)
 	strip --strip-unneeded ./release/distrib/ptk_aros
@@ -149,9 +144,6 @@ draw_primitives.o: src/ui/draw_primitives.cpp
 	$(CXX) -c -o $(@) $(FLAGS) $<
 
 requesters.o: src/ui/requesters.cpp
-	$(CXX) -c -o $(@) $(FLAGS) $<
-
-xml.o: src/ui/xml.cpp
 	$(CXX) -c -o $(@) $(FLAGS) $<
 
 gadgets.o: src/ui/gadgets.cpp

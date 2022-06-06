@@ -1,12 +1,8 @@
 CXX = g++
 
-LIBS = src/extralibs/tinyxml/tinyxml.o \
-       src/extralibs/tinyxml/tinyxmlparser.o \
-       src/extralibs/tinyxml/tinystr.o \
-       src/extralibs/tinyxml/tinyxmlerror.o \
-       -lmingw32 -lsdlmain -lSDL -ldsound -lmsacm32 -lwinmm -lsdldraw -lz
+LIBS = -lmingw32 -lsdlmain -lSDL -ldsound -lmsacm32 -lwinmm -lsdldraw -lz
 
-FLAGS = -mwindows -fpermissive -fno-strict-aliasing -O3 -fno-rtti -fpermissive -fexceptions -Lsrc/extralibs/sdl_draw -Lsrc/extralibs/zlib-1.2.3 \
+FLAGS = -mwindows -fno-strict-aliasing -O3 -fno-rtti -fpermissive -fexceptions -Lsrc/extralibs/sdl_draw -Lsrc/extralibs/zlib-1.2.3 \
         -D G_OS_WIN32 -D __WIN32__ -D __GCC__ -D __WINDOWS_MM__ -D __MOT_SWAP__ \
         -D __MP3_CODEC__ -D __AT3_CODEC__ -D __GSM_CODEC__ -D __ADPCM_CODEC__ -D __TRUESPEECH_CODEC__
 
@@ -19,7 +15,7 @@ EXEOBJS = ptk.o \
           config.o 303s.o synths.o insts.o ptps.o \
           midi.o RtMidi.o midi_dispatch.o \
           timer.o main.o \
-          misc_draw.o draw_primitives.o requesters.o xml.o gadgets.o \
+          misc_draw.o draw_primitives.o requesters.o gadgets.o \
           samples_ops.o aiff.o riff.o \
           spline.o tb_303.o wavpack.o samples_unpack.o replay.o synth.o endianness.o \
           sounddriver_windows.o
@@ -33,7 +29,6 @@ RemObj:
 
 ProTrekkr: $(EXEOBJS)
 	(cd src/extralibs/sdl_draw; make.exe -f makefile.mingw)
-	(cd src/extralibs/tinyxml; make.exe)
 	(cd src/extralibs/zlib-1.2.3; make.exe)
 	$(CXX) -o ./release/distrib/ptk_win.exe -L./ $(FLAGS) $(EXEOBJS) $(LIBS)
 	strip -s -x ./release/distrib/ptk_win.exe
@@ -142,9 +137,6 @@ draw_primitives.o: src/ui/draw_primitives.cpp
 	$(CXX) -c -o $(@) $(FLAGS) $<
 
 requesters.o: src/ui/requesters.cpp
-	$(CXX) -c -o $(@) $(FLAGS) $<
-
-xml.o: src/ui/xml.cpp
 	$(CXX) -c -o $(@) $(FLAGS) $<
 
 gadgets.o: src/ui/gadgets.cpp

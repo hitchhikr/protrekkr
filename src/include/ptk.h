@@ -34,7 +34,6 @@
 
 // ------------------------------------------------------
 // Includes
-#include "../ui/include/xml.h"
 #include "../support/include/main.h"
 
 #include "../samples/wav/include/riff.h"
