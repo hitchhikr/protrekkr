@@ -402,10 +402,6 @@ SOURCE=.\src\UI\Misc_Draw.cpp
 
 SOURCE=.\src\ui\requesters.cpp
 # End Source File
-# Begin Source File
-
-SOURCE=.\src\UI\xml.cpp
-# End Source File
 # End Group
 # Begin Group "Files"
 
