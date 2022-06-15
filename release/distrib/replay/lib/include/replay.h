@@ -39,6 +39,8 @@
 #include "spline.h"
 #if defined(__WIN32__)
 #include "../sounddriver/include/sounddriver_windows.h"
+#elif defined(__FREEBSD__)
+#include "../sounddriver/include/sounddriver_freebsd.h"
 #elif defined(__LINUX__)
 #include "../sounddriver/include/sounddriver_linux.h"
 #elif defined(__MACOSX__)
