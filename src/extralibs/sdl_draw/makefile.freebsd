@@ -9,7 +9,7 @@ RemLibObj:
 	-rm -f $(LIBOBJS)
 	
 sdldraw: $(LIBOBJS)
-	ar -d libsdldraw.a
+	-ar -d libsdldraw.a
 	ar -r libsdldraw.a $(LIBOBJS)
 	-rm -f $(LIBOBJS)
 
