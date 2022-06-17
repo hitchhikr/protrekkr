@@ -41,6 +41,8 @@
 #include "../sounddriver/include/sounddriver_windows.h"
 #elif defined(__FREEBSD__)
 #include "../sounddriver/include/sounddriver_freebsd.h"
+#elif defined(__NETBSD__)
+#include "../sounddriver/include/sounddriver_netbsd.h"
 #elif defined(__LINUX__)
 #include "../sounddriver/include/sounddriver_linux.h"
 #elif defined(__MACOSX__)
@@ -54,7 +56,7 @@
 #elif defined(__HAIKU__)
 #include "../sounddriver/include/sounddriver_haiku.h"
 #else
-#error "Can't work without any sound driver !"
+#error "Can't work without a sound driver !"
 #endif
 #include "samples_unpack.h"
 #include "ptkreplay.h"
