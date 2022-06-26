@@ -1683,7 +1683,7 @@ void Actualize_SynthParSlider(void)
             break;
 
         case 11: /* LFO2_Sustain */
-            Realslider(311, (Cur_Height - 41) - 1, Cur_SynthParam->lfo2_sustain, FALSE);
+            Realslider(311, (Cur_Height - 41) - 1, Cur_SynthParam->lfo2_sustain, Allow_All);
             outlong_small(311 + 167, (Cur_Height - 41) - 1, (Cur_SynthParam->lfo2_sustain * 100) / 128, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_LFO2 = Cur_SynthParam->lfo2_sustain;
             break;
