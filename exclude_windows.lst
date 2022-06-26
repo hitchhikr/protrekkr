@@ -4,6 +4,7 @@
 *.linux*
 *.macosx*
 *.freebsd*
+*.netbsd*
 *.o*
 *.obj*
 *.a

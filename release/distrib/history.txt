@@ -2,6 +2,11 @@
 ProTrekkr releases history
 ===============================================================================
 
+v2.6.3
+
+- Fixed a small bug in synth params.
+- Added some modules.
+
 v2.6.2
 
 - LCTRL+LSHIFT+F (or right mouse button on icon):
