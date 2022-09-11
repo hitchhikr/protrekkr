@@ -40,6 +40,7 @@
 #include <dos/dosextens.h>
 #include <proto/dos.h>
 #include <dirent.h>
+#include <sys/stat.h>
 #if defined(__AROS__)
 #include <stdint.h>
 #define int32 int32_t
@@ -512,6 +513,12 @@ void Read_SMPT(void)
             // Add the directories first
             while ((dp = readdir(dirp)) != NULL)
             {
+                struct stat st;
+                if(dp->d_type == DT_UNKNOWN &&
+                   stat(dp->d_name, &st) == 0)
+                {
+                  dp->d_type = IFTODT(st.st_mode);
+                }
                 if(dp->d_type == DT_DIR)
                 {
                     nbr_dirs++;
@@ -527,6 +534,12 @@ void Read_SMPT(void)
             // Then add the files
             while ((dp = readdir(dirp)) != NULL)
             {
+                struct stat st;
+                if(dp->d_type == DT_UNKNOWN &&
+                   stat(dp->d_name, &st) == 0)
+                {
+                  dp->d_type = IFTODT(st.st_mode);
+                }
                 if(dp->d_type != DT_DIR)
                 {
                     Add_Entry(dp->d_name, 0);
