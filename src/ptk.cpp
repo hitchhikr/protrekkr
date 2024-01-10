@@ -2,7 +2,7 @@
 // Protrekkr
 // Based on Juan Antonio Arguelles Rius's NoiseTrekker.
 //
-// Copyright (C) 2008-2022 Franck Charlet.
+// Copyright (C) 2008-2024 Franck Charlet.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -662,7 +662,9 @@ int Screen_Update(void)
 
     for(i = 0; i < Channels_Polyphony[Track_Under_Caret]; i++)
     {
-        if(sp_Stage[Track_Under_Caret][i] == PLAYING_SAMPLE && Current_Instrument == sp_channelsample[Track_Under_Caret][i] && Current_Instrument_Split == sp_split[Track_Under_Caret][i])
+        if(sp_Stage[Track_Under_Caret][i] == PLAYING_SAMPLE &&
+		   Current_Instrument == sp_channelsample[Track_Under_Caret][i] &&
+		   Current_Instrument_Split == sp_split[Track_Under_Caret][i])
         {
             draw_sampled_wave2 = TRUE;
             boing = TRUE;
@@ -4181,7 +4183,8 @@ void Keyboard_Handler(void)
         if(Keys[SDLK_KP8]) retvalue = 8;
         if(Keys_Unicode[SDLK_9]) retvalue = 9;
         if(Keys[SDLK_KP9]) retvalue = 9;
-        if(Keys[SDLK_a - Shift]) {
+        if(Keys[SDLK_a - Shift])
+		{
             retvalue = 10;
         }
         if(Keys[SDLK_b - Shift]) retvalue = 11;
@@ -4606,7 +4609,10 @@ void Keyboard_Handler(void)
                     }
 
                     // Paste the block buffer into a pattern
-                    if(Keys[SDLK_v - UNICODE_OFFSET2] && block_start_track_nibble[Curr_Buff_Block] != -1 && block_end_track_nibble[Curr_Buff_Block] != -1 && is_editing)
+                    if(Keys[SDLK_v - UNICODE_OFFSET2] &&
+					   block_start_track_nibble[Curr_Buff_Block] != -1 &&
+					   block_end_track_nibble[Curr_Buff_Block] != -1 &&
+					   is_editing)
                     {
                         Paste_Block(Cur_Position, Paste_Across, TRUE);
                     }
@@ -4726,17 +4732,17 @@ void Keyboard_Handler(void)
                    Column_Under_Caret == (19 + j) ||
                    Column_Under_Caret == (21 + j))
                 {
-                    ped_cell = PATTERN_INSTR1 + (i * 2);                    // instrument
-                    if(Column_Under_Caret == (3 + j)) ped_cell = PATTERN_VOLUME;       // volume
-                    if(Column_Under_Caret == (5 + j)) ped_cell = PATTERN_PANNING;      // panning
-                    if(Column_Under_Caret == (7 + j)) ped_cell = PATTERN_FX;           // fx
-                    if(Column_Under_Caret == (9 + j)) ped_cell = PATTERN_FXDATA;       // fx data
-                    if(Column_Under_Caret == (11 + j)) ped_cell = PATTERN_FX2;         // fx 2
-                    if(Column_Under_Caret == (13 + j)) ped_cell = PATTERN_FXDATA2;     // fx 2 data
+                    ped_cell = PATTERN_INSTR1 + (i * 2);                                // instrument
+                    if(Column_Under_Caret == (3 + j)) ped_cell = PATTERN_VOLUME;       	// volume
+                    if(Column_Under_Caret == (5 + j)) ped_cell = PATTERN_PANNING;      	// panning
+                    if(Column_Under_Caret == (7 + j)) ped_cell = PATTERN_FX;           	// fx
+                    if(Column_Under_Caret == (9 + j)) ped_cell = PATTERN_FXDATA;       	// fx data
+                    if(Column_Under_Caret == (11 + j)) ped_cell = PATTERN_FX2;         	// fx 2
+                    if(Column_Under_Caret == (13 + j)) ped_cell = PATTERN_FXDATA2;     	// fx 2 data
                     if(Column_Under_Caret == (15 + j)) ped_cell = PATTERN_FX3;          // fx 3
-                    if(Column_Under_Caret == (17 + j)) ped_cell = PATTERN_FXDATA3;     // fx 3 data
-                    if(Column_Under_Caret == (19 + j)) ped_cell = PATTERN_FX4;         // fx 4
-                    if(Column_Under_Caret == (21 + j)) ped_cell = PATTERN_FXDATA4;     // fx 4 data
+                    if(Column_Under_Caret == (17 + j)) ped_cell = PATTERN_FXDATA3;     	// fx 3 data
+                    if(Column_Under_Caret == (19 + j)) ped_cell = PATTERN_FX4;         	// fx 4
+                    if(Column_Under_Caret == (21 + j)) ped_cell = PATTERN_FXDATA4;     	// fx 4 data
                     
                     ltretvalue = retvalue;
                     xoffseted = (Track_Under_Caret * PATTERN_BYTES) + (Pattern_Line * PATTERN_ROW_LEN) + ped_cell;
@@ -5971,7 +5977,6 @@ void Mouse_Handler(void)
             case SCOPE_ZONE_SYNTH_LIST:
                 Files_List_Move(10);
                 break;
-
 
             case SCOPE_ZONE_MOD_DIR:
             case SCOPE_ZONE_INSTR_DIR:

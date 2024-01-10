@@ -57,8 +57,8 @@ void STDCALL Draw_VLine(SDL_Surface *super,
                       Sint16 x0,Sint16 y0, Sint16 y1,
                       Uint32 color)
 {
-  register Uint8 *p;
-  register Sint16 i;
+  Uint8 *p;
+  Sint16 i;
 
   if (y0 > y1)  { i=y1; y1=y0; y0=i; }
   p = (Uint8*)super->pixels + y0 * super->pitch + x0 * SDL_DRAW_BPP;

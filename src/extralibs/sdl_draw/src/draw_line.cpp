@@ -45,8 +45,8 @@ void STDCALL Draw_Line(SDL_Surface *super,
                       Uint32 color)
 {
   
-  register Sint16 dx;
-  register Sint16 dy;
+  Sint16 dx;
+  Sint16 dy;
   
   Sint16 fbXincr, fbYincr, fbXYincr;
   Sint16 dPr, dPru, P;

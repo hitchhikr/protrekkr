@@ -2,7 +2,7 @@
 // Protrekkr
 // Based on Juan Antonio Arguelles Rius's NoiseTrekker.
 //
-// Copyright (C) 2008-2022 Franck Charlet.
+// Copyright (C) 2008-2024 Franck Charlet.
 // All rights reserved.
 //
 // This file is :
@@ -112,7 +112,7 @@ static const char ones_count_table [] =
 
 ///////////////////////////// executable code ////////////////////////////////
 
-static int mylog2 (uint32_t avalue);
+static int mylog2(uint32_t avalue);
 
 int read_entropy_vars_depack(WavpackStream *wps, WavpackMetadata *wpmd)
 {
@@ -154,7 +154,7 @@ int read_hybrid_profile_depack(WavpackStream *wps, WavpackMetadata *wpmd)
     return TRUE;
 }
 
-void update_error_limit (struct words_data *w, uint32_t flags)
+void update_error_limit(struct words_data *w, uint32_t flags)
 {
     int bitrate_0 = (w->bitrate_acc [0] += w->bitrate_delta [0]) >> 16;
 
@@ -170,7 +170,7 @@ void update_error_limit (struct words_data *w, uint32_t flags)
     }
 }
 
-static uint32_t read_code (Bitstream *bs, uint32_t maxcode);
+static uint32_t read_code(Bitstream *bs, uint32_t maxcode);
 
 int32_t get_words (int32_t *buffer, int nsamples, uint32_t flags,
                    struct words_data *w, Bitstream *bs)

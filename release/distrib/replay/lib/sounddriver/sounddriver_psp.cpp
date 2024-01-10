@@ -2,7 +2,7 @@
 // Protrekkr
 // Based on Juan Antonio Arguelles Rius's NoiseTrekker.
 //
-// Copyright (C) 2008-2021 Franck Charlet.
+// Copyright (C) 2008-2024 Franck Charlet.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -44,7 +44,6 @@ int volatile AUDIO_Acknowledge;
 
 SceUID AUDIO_thid;
 int AUDIO_HWChannel;
-extern int Songplaying;
 extern "C"
 {
     void me_stub(void);
@@ -86,54 +85,50 @@ void Me_Handler(void)
         volatile int *ptrAUDIO_SoundBuffer_Size = (int *) (((int) &AUDIO_SoundBuffer_Size) | 0x40000000);
         volatile int *ptrAUDIO_FlipFlop = (int *) (((int) &AUDIO_FlipFlop) | 0x40000000);
         volatile int *ptrAUDIO_Play_Flag = (int *) (((int) &AUDIO_Play_Flag) | 0x40000000);
-        volatile int *ptrSongplaying = (int *) (((int) &Songplaying) | 0x40000000);
         volatile short *ptrBuffer1 = (short *) (((int) ptrAudio_BufferPlay1) | 0x40000000);
         volatile short *ptrBuffer2 = (short *) (((int) ptrAudio_BufferPlay2) | 0x40000000);
         volatile int *ptrMutex = (int *) (((int) &Mutex) | 0x40000000);
         volatile unsigned int i;
         volatile char *pSamples;
 
-        if(*ptrSongplaying)
+        if(*ptrMutex == FALSE)
         {
-            if(*ptrMutex == FALSE)
+            if(*ptrAUDIO_FlipFlop)
             {
-                if(*ptrAUDIO_FlipFlop)
+                if(*ptrAUDIO_Play_Flag)
                 {
-                    if(*ptrAUDIO_Play_Flag)
-                    {
-                        AUDIO_Mixer((Uint8 *) ptrBuffer1, *ptrAUDIO_SoundBuffer_Size);
-                    }
-                    else
-                    {
-                        pSamples = (volatile char *) ptrBuffer1;
-                        for(i = 0; i < *ptrAUDIO_SoundBuffer_Size; i++)
-                        {
-                            pSamples[i] = 0;
-                        }
-                    }
+                    AUDIO_Mixer((Uint8 *) ptrBuffer1, *ptrAUDIO_SoundBuffer_Size);
                 }
                 else
                 {
-                    if(*ptrAUDIO_Play_Flag)
+                    pSamples = (volatile char *) ptrBuffer1;
+                    for(i = 0; i < *ptrAUDIO_SoundBuffer_Size; i++)
                     {
-                        AUDIO_Mixer((Uint8 *) ptrBuffer2, *ptrAUDIO_SoundBuffer_Size);
-                    }
-                    else
-                    {
-                        pSamples = (volatile char *) ptrBuffer2;
-                        for(i = 0; i < *ptrAUDIO_SoundBuffer_Size; i++)
-                        {
-                            pSamples[i] = 0;
-                        }
+                        pSamples[i] = 0;
                     }
                 }
-
-                *ptrAUDIO_Samples += *ptrAUDIO_SoundBuffer_Size;
-                *ptrAUDIO_Timer = ((((float) *ptrAUDIO_Samples) * (1.0f / (float) AUDIO_Latency)) * 1000.0f);
-                *ptrMutex = TRUE;
-                asm volatile ( "sync\n" );
             }
-        }    
+            else
+            {
+                if(*ptrAUDIO_Play_Flag)
+                {
+                    AUDIO_Mixer((Uint8 *) ptrBuffer2, *ptrAUDIO_SoundBuffer_Size);
+                }
+                else
+                {
+                    pSamples = (volatile char *) ptrBuffer2;
+                    for(i = 0; i < *ptrAUDIO_SoundBuffer_Size; i++)
+                    {
+                        pSamples[i] = 0;
+                    }
+                }
+            }
+
+            *ptrAUDIO_Samples += *ptrAUDIO_SoundBuffer_Size;
+            *ptrAUDIO_Timer = ((((float) *ptrAUDIO_Samples) * (1.0f / (float) AUDIO_Latency)) * 1000.0f);
+            *ptrMutex = TRUE;
+            asm volatile ( "sync\n" );
+        }
     }
 }
 
@@ -147,7 +142,7 @@ SceInt32 AUDIO_Thread(SceSize args, ScePVoid argp)
         volatile int *ptrMutex = (int *) (((int) &Mutex) | 0x40000000);
 
         volatile int *ptrAUDIO_Samples = (int *) (((int) &AUDIO_Samples) | 0x40000000);
-        if(AUDIO_Play_Flag && Songplaying)
+        if(AUDIO_Play_Flag)
         {
             if(sceAudioGetChannelRestLen(AUDIO_HWChannel) <= 0)
             {

@@ -64,8 +64,8 @@ void STDCALL Draw_HLine(SDL_Surface *super,
                       Uint32 color)
 {
 
-  register Uint8 *p;
-  register Sint16 i;
+  Uint8 *p;
+  Sint16 i;
 
   if (x0 > x1) { i=x1; x1=x0; x0=i; }
   p = (Uint8*) super->pixels + y0 * super->pitch + x0 * SDL_DRAW_BPP;
