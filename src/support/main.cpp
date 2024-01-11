@@ -529,7 +529,6 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
         {
             fscanf(AllKbsFile, "%s", &KbFileName);
 
-
 #if defined(__WIN32__)
             strcpy(KbFileNameToLoad, ExePath);
             strcat(KbFileNameToLoad, "\\skins\\");
