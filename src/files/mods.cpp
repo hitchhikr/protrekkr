@@ -406,7 +406,6 @@ void Load_Amiga_Mod(char *Name, const char *FileName, int channels, int digiboos
                 {
                     Digi_Mod[952 + i] = Getc_Mod();
                 }
-
                 for(i = 0; i < 31; i++)
                 {
                     Sample_Length[i][0] = Getc_Mod_Dword();

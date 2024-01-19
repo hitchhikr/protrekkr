@@ -44,15 +44,6 @@ int volatile AUDIO_Acknowledge;
 
 SceUID AUDIO_thid;
 int AUDIO_HWChannel;
-extern "C"
-{
-    void me_stub(void);
-    void me_stub_end(void);
-    void me_disable_int(void);
-    void me_sceKernelDcacheWritebackInvalidateAll(void);
-}
-void Me_Handler(void) __attribute__((aligned(64)));
-
 int AUDIO_SoundBuffer_Size;
 int AUDIO_Latency;
 int AUDIO_Milliseconds = 20;
@@ -71,95 +62,49 @@ void AUDIO_Synth_Play(void);
 short *ptrAudio_BufferPlay1;
 short *ptrAudio_BufferPlay2;
 int AUDIO_FlipFlop = FALSE;
-int Mutex = FALSE;
-
-void Me_Handler(void)
-{
-    volatile int *ptrAUDIO_Samples = (int *) (((int) &AUDIO_Samples) | 0x40000000);
-    me_sceKernelDcacheWritebackInvalidateAll();
-    me_disable_int();
-    for(;;)
-    {
-        volatile int *ptrAUDIO_Samples = (int *) (((int) &AUDIO_Samples) | 0x40000000);
-        volatile int *ptrAUDIO_Timer = (int *) (((int) &AUDIO_Timer) | 0x40000000);
-        volatile int *ptrAUDIO_SoundBuffer_Size = (int *) (((int) &AUDIO_SoundBuffer_Size) | 0x40000000);
-        volatile int *ptrAUDIO_FlipFlop = (int *) (((int) &AUDIO_FlipFlop) | 0x40000000);
-        volatile int *ptrAUDIO_Play_Flag = (int *) (((int) &AUDIO_Play_Flag) | 0x40000000);
-        volatile short *ptrBuffer1 = (short *) (((int) ptrAudio_BufferPlay1) | 0x40000000);
-        volatile short *ptrBuffer2 = (short *) (((int) ptrAudio_BufferPlay2) | 0x40000000);
-        volatile int *ptrMutex = (int *) (((int) &Mutex) | 0x40000000);
-        volatile unsigned int i;
-        volatile char *pSamples;
-
-        if(*ptrMutex == FALSE)
-        {
-            if(*ptrAUDIO_FlipFlop)
-            {
-                if(*ptrAUDIO_Play_Flag)
-                {
-                    AUDIO_Mixer((Uint8 *) ptrBuffer1, *ptrAUDIO_SoundBuffer_Size);
-                }
-                else
-                {
-                    pSamples = (volatile char *) ptrBuffer1;
-                    for(i = 0; i < *ptrAUDIO_SoundBuffer_Size; i++)
-                    {
-                        pSamples[i] = 0;
-                    }
-                }
-            }
-            else
-            {
-                if(*ptrAUDIO_Play_Flag)
-                {
-                    AUDIO_Mixer((Uint8 *) ptrBuffer2, *ptrAUDIO_SoundBuffer_Size);
-                }
-                else
-                {
-                    pSamples = (volatile char *) ptrBuffer2;
-                    for(i = 0; i < *ptrAUDIO_SoundBuffer_Size; i++)
-                    {
-                        pSamples[i] = 0;
-                    }
-                }
-            }
-
-            *ptrAUDIO_Samples += *ptrAUDIO_SoundBuffer_Size;
-            *ptrAUDIO_Timer = ((((float) *ptrAUDIO_Samples) * (1.0f / (float) AUDIO_Latency)) * 1000.0f);
-            *ptrMutex = TRUE;
-            asm volatile ( "sync\n" );
-        }
-    }
-}
 
 SceInt32 AUDIO_Thread(SceSize args, ScePVoid argp)
 {
+    volatile int done;
+
+    done = FALSE;
     for(;;)
     {
-        volatile int *ptrAUDIO_FlipFlop = (int *) (((int) &AUDIO_FlipFlop) | 0x40000000);
-        volatile short *ptrBuffer1 = (short *) (((int) ptrAudio_BufferPlay1) | 0x40000000);
-        volatile short *ptrBuffer2 = (short *) (((int) ptrAudio_BufferPlay2) | 0x40000000);
-        volatile int *ptrMutex = (int *) (((int) &Mutex) | 0x40000000);
+        volatile short *ptrBuffer;
+        volatile int i;
 
-        volatile int *ptrAUDIO_Samples = (int *) (((int) &AUDIO_Samples) | 0x40000000);
+        if(AUDIO_FlipFlop)
+        {
+            ptrBuffer = ptrAudio_BufferPlay1;
+        }
+        else
+        {
+            ptrBuffer = ptrAudio_BufferPlay2;
+        }
         if(AUDIO_Play_Flag)
         {
             if(sceAudioGetChannelRestLen(AUDIO_HWChannel) <= 0)
             {
-                if(*ptrMutex)
+                sceAudioOutput(AUDIO_HWChannel, PSP_AUDIO_VOLUME_MAX, (void *) ptrBuffer);
+                AUDIO_FlipFlop ^= TRUE;
+                done = FALSE;
+                AUDIO_Samples += AUDIO_SoundBuffer_Size;
+                AUDIO_Timer = ((((float) AUDIO_Samples) * (1.0f / (float) AUDIO_Latency)) * 1000.0f);
+            }
+            else
+            {
+                if(done == FALSE)
                 {
-                    if(*ptrAUDIO_FlipFlop)
-                    {
-                        sceAudioOutput(AUDIO_HWChannel, PSP_AUDIO_VOLUME_MAX, (void *) ptrBuffer1);
-                    }
-                    else
-                    {
-                        sceAudioOutput(AUDIO_HWChannel, PSP_AUDIO_VOLUME_MAX, (void *) ptrBuffer2);
-                    }
-                    *ptrAUDIO_FlipFlop ^= TRUE;
-                    *ptrMutex = FALSE;
-                    asm volatile ( "sync\n" );
+                    done = TRUE;
+                    AUDIO_Mixer((Uint8 *) ptrBuffer, AUDIO_SoundBuffer_Size);
                 }
+            }
+        }
+        else
+        {
+            for(i = 0; i < (AUDIO_SoundBuffer_Size >> 1); i++)
+            {
+                ptrBuffer[i] = 0;
             }
         }
         sceKernelDelayThread(10);
@@ -208,37 +153,20 @@ int AUDIO_Create_Sound_Buffer(int milliseconds)
 
     AUDIO_Latency = AUDIO_SoundBuffer_Size;
     int buf_size = AUDIO_SoundBuffer_Size;
-    ptrAudio_BufferPlay1 = (short *) (((int) AUDIO_malloc_64(&buf_size)) | 0x40000000);
+    ptrAudio_BufferPlay1 = (short *) (((int) AUDIO_malloc_64(&buf_size)));
     sceKernelDcacheWritebackInvalidateAll();
     memset((void *) ptrAudio_BufferPlay1, 0, buf_size);
 
-    if((int) ptrAudio_BufferPlay1 != 0x40000000)
+    if((int) ptrAudio_BufferPlay1)
     {
         buf_size = AUDIO_SoundBuffer_Size;
-        ptrAudio_BufferPlay2 = (short *) (((int) AUDIO_malloc_64(&buf_size)) | 0x40000000);
+        ptrAudio_BufferPlay2 = (short *) (((int) AUDIO_malloc_64(&buf_size)));
         sceKernelDcacheWritebackInvalidateAll();
         memset((void *) ptrAudio_BufferPlay2, 0, buf_size);
 
-        if((int) ptrAudio_BufferPlay2 != 0x40000000)
+        if((int) ptrAudio_BufferPlay2)
         {
-            // Install the code for the media engine handler
-            me_sceKernelDcacheWritebackInvalidateAll();
-            sceKernelDcacheWritebackInvalidateAll();
-            int i;
-            u8 *Src = (u8 *) &me_stub;
-            u8 *Dest = (u8 *) 0xbfc00040;
-            for(i = 0; i < (int) ((int) &me_stub_end - (int) &me_stub); i++)
-            {
-                Dest[i] = Src[i];
-            }
-            _sw(((u32) Me_Handler) | 0x40000000, 0xbfc00600);
-            me_sceKernelDcacheWritebackInvalidateAll();
-            sceKernelDcacheWritebackAll();
-            sceSysregMeResetEnable();
-            sceSysregMeBusClockEnable();
-            sceSysregMeResetDisable();
-
-            AUDIO_thid = sceKernelCreateThread("Ptk Audio Thread", AUDIO_Thread, AUDIO_THREAD_PRIORITY, AUDIO_THREAD_STACKSIZE, 0, NULL);
+            AUDIO_thid = sceKernelCreateThread("Ptk", AUDIO_Thread, AUDIO_THREAD_PRIORITY, AUDIO_THREAD_STACKSIZE, 0, NULL);
             if(AUDIO_thid > 0)
             {
                 sceKernelStartThread(AUDIO_thid, 0, NULL);
@@ -308,10 +236,7 @@ void AUDIO_Stop(void)
 void AUDIO_Stop_Sound_Buffer(void)
 {
     AUDIO_Stop();
-    me_sceKernelDcacheWritebackInvalidateAll();
-    sceSysregMeResetEnable();
-    sceSysregMeBusClockDisable();
-    if(AUDIO_thid > 0) sceKernelDeleteThread(AUDIO_thid);
+   if(AUDIO_thid > 0) sceKernelDeleteThread(AUDIO_thid);
     if(AUDIO_HWChannel) sceAudioChRelease(AUDIO_HWChannel);
     if(ptrAudio_BufferPlay1) free((void *) ptrAudio_BufferPlay1);
     if(ptrAudio_BufferPlay2) free((void *) ptrAudio_BufferPlay2);

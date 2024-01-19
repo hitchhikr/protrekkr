@@ -2016,13 +2016,6 @@ void PTKEXPORT Ptk_Play(void)
 #endif
 }
 
-#if defined(__PSP__)
-extern "C"
-{
-    void me_sceKernelDcacheWritebackInvalidateAll(void);
-}
-#endif
-
 // ------------------------------------------------------
 // Stop replaying
 extern int AUDIO_Play_Flag;
@@ -2031,11 +2024,10 @@ void PTKEXPORT Ptk_Stop(void)
 {
 #if defined(__PSP__)
     // Thanks to MIPS, that machine really sucks
-    volatile int *ptr_Done_Reset = (int *) (((int) &Done_Reset) | 0x40000000);
+    volatile int *ptr_Done_Reset = (int *) (((int) &Done_Reset));
     *ptr_Done_Reset = FALSE;
-    volatile float *ptr_local_ramp_vol = (float *) (((int) &local_ramp_vol) | 0x40000000);
-    volatile float *ptr_local_curr_ramp_vol = (float *) (((int) &local_curr_ramp_vol) | 0x40000000);
-    me_sceKernelDcacheWritebackInvalidateAll();
+    volatile float *ptr_local_ramp_vol = (float *) (((int) &local_ramp_vol));
+    volatile float *ptr_local_curr_ramp_vol = (float *) (((int) &local_curr_ramp_vol));
     sceKernelDcacheWritebackInvalidateAll();	
     while(*ptr_Done_Reset == FALSE && AUDIO_Play_Flag && *ptr_local_curr_ramp_vol != 0.0f)
     {

@@ -36,8 +36,6 @@
 // Includes
 #include "files.h"
 #include "reverbs.h"
-//#include "../../editors/include/editor_reverb.h"
-//#include "../../ui/include/misc_draw.h"
 
 // ------------------------------------------------------
 // Structures

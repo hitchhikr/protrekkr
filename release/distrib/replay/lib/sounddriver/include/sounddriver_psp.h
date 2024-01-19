@@ -47,10 +47,8 @@
 // ------------------------------------------------------
 // Constants
 #define AUDIO_PCM_FREQ 44100
-
 #define AUDIO_THREAD_STACKSIZE (1024 * 4)
-#define AUDIO_THREAD_PRIORITY 2
-
+#define AUDIO_THREAD_PRIORITY 8
 #define AUDIO_DBUF_CHANNELS 2
 #define AUDIO_DBUF_RESOLUTION 16
 

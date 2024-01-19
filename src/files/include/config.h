@@ -38,7 +38,6 @@
 #include "files_list.h"
 #include "../../editors/include/editor_pattern.h"
 #include "../../include/ptk.h"
-//#include "../../ui/include/misc_draw.h"
 
 // ------------------------------------------------------
 // Functions
