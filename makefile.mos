@@ -1,0 +1,197 @@
+CXX = ppc-morphos-g++-9 -noixemul
+
+LIBS = -lSDL -I/usr/local/lib -lsdldraw -lz_shared -lpthread 
+
+FLAGS = -O2 -I/usr/local/include -fno-strict-aliasing -ffast-math -fno-rtti -fno-exceptions -Lsrc/extralibs/sdl_draw  \
+		-D__GCC__ -D__BIG_ENDIAN__ -D__MOT_SWAP__ -D__NO_MIDI__ -D__MORPHOS_SHAREDLIBS -DUSE_SDL_THREADS \
+		-fno-strict-aliasing -Wno-write-strings -Wno-multichar -Wno-narrowing
+
+CXXFLAGS = $(FLAGS)
+
+EXEOBJS = ptk.o \
+          editor_303.o editor_pattern.o editor_sequencer.o editor_track.o editor_track_fx.o \
+          patterns_blocks.o editor_synth.o editor_sample.o editor_fx_setup.o editor_setup.o \
+          editor_diskio.o editor_reverb.o editor_instrument.o editor_midi.o \
+          samples_pack.o files_list.o files.o mods.o patterns.o reverbs.o midi_cfg.o \
+          bits.o pack.o tinypack.o words.o wputils.o \
+          config.o 303s.o synths.o insts.o ptps.o \
+          midi.o midi_dispatch.o \
+          timer.o main.o \
+          misc_draw.o draw_primitives.o requesters.o gadgets.o \
+          samples_ops.o aiff.o riff.o \
+          spline.o tb_303.o wavpack.o samples_unpack.o replay.o synth.o endianness.o \
+          sounddriver_aros.o
+LIBOBJS = midi.o \
+          spline.o tb_303.o wavpack.o samples_unpack.o replay.o synth.o endianness.o \
+          sounddriver_aros.o
+
+all: protrekkr
+
+clean: RemObj
+
+RemObj:
+	-rm -f $(EXEOBJS)
+
+protrekkr: $(EXEOBJS)
+	(cd src/extralibs/sdl_draw; make -f makefile.mos)
+	$(CXX) -o ./release/distrib/ptk_mos -L./ $(FLAGS) $(EXEOBJS) $(LIBS)
+	strip -R.comment ./release/distrib/ptk_mos
+
+libptkreplay: $(LIBOBJS)
+	$(AR) -crv libptkreplay.a $(LIBOBJS)
+	
+ptk.o: src/ptk.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<
+
+editor_303.o: src/editors/editor_303.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<
+
+editor_pattern.o: src/editors/editor_pattern.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<
+
+editor_sequencer.o: src/editors/editor_sequencer.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<
+
+editor_track.o: src/editors/editor_track.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<
+
+editor_track_fx.o: src/editors/editor_track_fx.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<
+
+patterns_blocks.o: src/editors/patterns_blocks.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<
+
+editor_synth.o: src/editors/editor_synth.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<
+
+editor_sample.o: src/editors/editor_sample.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<
+
+editor_fx_setup.o: src/editors/editor_fx_setup.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<
+
+editor_setup.o: src/editors/editor_setup.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<
+
+editor_diskio.o: src/editors/editor_diskio.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<
+
+editor_reverb.o: src/editors/editor_reverb.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<
+
+editor_instrument.o: src/editors/editor_instrument.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<
+
+editor_midi.o: src/editors/editor_midi.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<
+
+samples_pack.o: src/samples/samples_pack.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<
+
+files_list.o: src/files/files_list.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<
+
+files.o: src/files/files.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<
+
+mods.o: src/files/mods.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<
+
+patterns.o: src/files/patterns.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<
+
+reverbs.o: src/files/reverbs.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<
+
+midi_cfg.o: src/files/midi_cfg.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<
+
+config.o: src/files/config.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<
+
+303s.o: src/files/303s.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<
+
+synths.o: src/files/synths.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<
+
+insts.o: src/files/insts.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<
+
+ptps.o: src/files/ptps.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<
+
+midi.o: src/midi/midi.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<
+
+RtMidi.o: src/midi/RtMidi.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<
+
+midi_dispatch.o: src/midi/midi_dispatch.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<
+
+timer.o: src/support/timer.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<
+
+main.o: src/support/main.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<
+
+misc_draw.o: src/ui/misc_draw.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<
+
+draw_primitives.o: src/ui/draw_primitives.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<
+
+requesters.o: src/ui/requesters.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<
+
+gadgets.o: src/ui/gadgets.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<
+
+samples_ops.o: src/samples/samples_ops.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<
+
+aiff.o: src/samples/aiff/aiff.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<
+
+riff.o: src/samples/wav/riff.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<
+
+spline.o: release/distrib/replay/lib/spline.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<
+
+tb_303.o: release/distrib/replay/lib/tb_303.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<
+
+wavpack.o: release/distrib/replay/lib/wavpack.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<
+
+samples_unpack.o: release/distrib/replay/lib/samples_unpack.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<
+
+replay.o: release/distrib/replay/lib/replay.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<
+
+synth.o: release/distrib/replay/lib/synth.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<
+
+endianness.o: release/distrib/replay/lib/endianness.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<
+
+sounddriver_aros.o: release/distrib/replay/lib/sounddriver/sounddriver_aros.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<
+	
+bits.o: src/samples/wavpack/bits.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<
+
+pack.o: src/samples/wavpack/pack.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<
+
+words.o: src/samples/wavpack/words.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<
+
+wputils.o: src/samples/wavpack/wputils.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<
+
+tinypack.o: src/samples/wavpack/tinypack.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<

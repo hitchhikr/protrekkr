@@ -36,15 +36,21 @@
 
 #if defined(__WIN32__)
 #include <shlwapi.h>
-#elif defined(__AMIGAOS4__) || defined(__AROS__)
+#elif defined(__AMIGAOS4__) || defined(__AROS__) || defined(__MORPHOS__)
 #include <dos/dosextens.h>
 #include <proto/dos.h>
 #include <dirent.h>
 #include <sys/stat.h>
-#if defined(__AROS__)
+#if defined(__AROS__) || defined(__MORPHOS__)
 #include <stdint.h>
 #define int32 int32_t
 #define uint32 uint32_t
+#endif
+#ifdef __MORPHOS__
+#define PATH_SEPARATOR "/"
+#define MAXLEN 512
+#define AROS_BSTR_strlen(s) *((UBYTE *)BADDR(s))
+#define AROS_BSTR_ADDR(x) (char *)BADDR(x)+1 
 #endif
 #else
 #include <ftw.h>
@@ -204,7 +210,7 @@ void Set_Current_Dir(void)
 {
     char filename[MAX_PATH];
 
-#if defined(__AMIGAOS4__) || defined(__AROS__)
+#if defined(__AMIGAOS4__) || defined(__AROS__) || defined(__MORPHOS__)
     char *tmp = Dir_Act[0] ? &Dir_Act[strlen(Dir_Act) - 1] : NULL;
 
     if (tmp && *tmp == '/') *tmp = 0;
@@ -335,7 +341,7 @@ int list_file(const char *fpath, const struct stat *sb, int typeflag, struct FTW
 #endif
 
 // AROS
-#if defined(__AROS__)
+#if defined(__AROS__) || defined(__MORPHOS__)
 void CopyStringBSTRToC(BSTR in,
                        STRPTR out,
                        uint32_t max)
@@ -478,7 +484,7 @@ void Read_SMPT(void)
         Ptr_Drives += strlen(Ptr_Drives) + 1;
     }
 
-#elif defined(__AMIGAOS4__) || defined(__AROS__)
+#elif defined(__AMIGAOS4__) || defined(__AROS__) || defined(__MORPHOS__)
 
 #if defined(__AMIGAOS4__)
 #define LockDosList(f) IDOS->LockDosList(f)
@@ -504,6 +510,13 @@ void Read_SMPT(void)
     }
     else
     {
+
+#ifdef __MORPHOS__
+		struct stat status;
+		static char full_filename[MAXLEN] = { 0 };
+		static char split[2] = { PATH_SEPARATOR[0], 0 };
+#endif
+
         DIR *dirp;
         struct dirent *dp;
 
@@ -513,6 +526,32 @@ void Read_SMPT(void)
             // Add the directories first
             while ((dp = readdir(dirp)) != NULL)
             {
+
+#ifdef __MORPHOS__
+				full_filename[0] = 0;
+				strncpy(full_filename, Dir_Act, MAXLEN);
+			
+				if (strlen(full_filename) > 0 && full_filename[strlen(full_filename) - 1] != ':' &&
+                    full_filename[strlen(full_filename) - 1] != '/')
+                {
+					strncat(full_filename, PATH_SEPARATOR, MAXLEN - 1);
+                }
+				
+				strncpy(full_filename, dp->d_name, MAXLEN);
+
+				if (stat(full_filename, &status) == 0)
+				{
+					if (S_ISDIR(status.st_mode) > 0) 
+					{
+						nbr_dirs++;
+						Add_Entry(dp->d_name, _A_SUBDIR);
+					}
+                    else
+                    {
+						Add_Entry(dp->d_name, 0);
+					}
+				}
+#else
                 struct stat st;
                 if(dp->d_type == DT_UNKNOWN &&
                    stat(dp->d_name, &st) == 0)
@@ -524,10 +563,13 @@ void Read_SMPT(void)
                     nbr_dirs++;
                     Add_Entry(dp->d_name, _A_SUBDIR);
                 }
+#endif
+
             }
             closedir(dirp);
         }
 
+#ifndef __MORPHOS__
         dirp = opendir(Dir_Act);
         if (dirp)
         {
@@ -547,6 +589,7 @@ void Read_SMPT(void)
             }
             closedir(dirp);
         }
+#endif
 
         if(sort_files)
         {

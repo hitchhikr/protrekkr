@@ -47,7 +47,7 @@
 #include "../sounddriver/include/sounddriver_linux.h"
 #elif defined(__MACOSX__)
 #include "../sounddriver/include/sounddriver_macosx.h"
-#elif defined(__AROS__)
+#elif defined(__AROS__) || defined(__MORPHOS__)
 #include "../sounddriver/include/sounddriver_aros.h"
 #elif defined(__AMIGAOS4__)
 #include "../sounddriver/include/sounddriver_aos4.h"

@@ -37,6 +37,9 @@
 #include <cstdlib>
 #define SDL_putenv putenv
 #define SDL_strcasecmp strcasecmp
+#elif defined(__MORPHOS__)
+#include <cstdlib>
+#define SDL_strcasecmp strcasecmp
 #else
 #define NEED_SDL_GETENV
 #endif
@@ -63,7 +66,7 @@
 #include <libgen.h>
 #endif
 
-#if defined(__AMIGAOS4__) || defined(__AROS__)
+#if defined(__AMIGAOS4__) || defined(__AROS__) || defined(__MORPHOS__)
 const char *AMIGA_VERSION = "\0$VER: " TITLE " " VER_VER "." VER_REV "." VER_REVSMALL "\0";
 #endif
 
@@ -453,7 +456,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
 	chdir(dirname(argv[0]));
 	GETCWD(ExePath, MAX_PATH);
 
-#elif defined(__AMIGAOS4__) || defined(__AROS__)
+#elif defined(__AMIGAOS4__) || defined(__AROS__) || defined(__MORPHOS__)
     CHDIR("/PROGDIR/");
     GETCWD(ExePath, MAX_PATH);
 
@@ -622,7 +625,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
     Mouse.old_x = -16;
     Mouse.old_y = -16;
 
-#if defined(__AMIGAOS4__) || defined(__AROS__)
+#if defined(__AMIGAOS4__) || defined(__AROS__) || defined(__MORPHOS__)
     char *env_var;
     int delay_ms = 0;
 
@@ -858,8 +861,12 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
 
                 case SDL_VIDEORESIZE:
                     // Nullify it
+
+#ifndef __MORPHOS__
                     sprintf(Win_Coords, "SDL_VIDEO_WINDOW_POS=");
                     SDL_putenv(Win_Coords);
+#endif
+
                     Switch_FullScreen(Events[i].resize.w, Events[i].resize.h);
                     break;
 
@@ -910,7 +917,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
             Burn_Title = TRUE;
         }
 
-#if defined(__AMIGAOS4__) || defined(__AROS__)
+#if defined(__AMIGAOS4__) || defined(__AROS__) || defined(__MORPHOS__)
         SDL_Delay(delay_ms);
 #else
         SDL_Delay(10);
@@ -981,8 +988,10 @@ int Switch_FullScreen(int Width, int Height)
     // Flush any pending rects
     Nbr_Update_Rects = 0;
 
+#ifndef __MORPHOS__	
     // Obtain SDL window
     SDL_GetWMInfo(&WMInfo);
+#endif
 
 #if defined(__WIN32__)
     HICON hIcon;

@@ -33,7 +33,7 @@
 // Includes
 #include "include/samples_ops.h"
 
-#if defined(__AROS__)
+#if defined(__AROS__) || defined(__MORPHOS__)
 #include <stdint.h>
 #define int32 int32_t
 #endif

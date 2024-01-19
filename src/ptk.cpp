@@ -812,7 +812,7 @@ int Screen_Update(void)
                         fptr = popen(temp, "r");
                         pclose(fptr);
 #endif
-#if defined(__AROS__) || defined(__AMIGAOS4__)
+#if defined(__AROS__) || defined(__AMIGAOS4__) || defined(__MORPHOS__)
                         // TODO
 #endif
 
