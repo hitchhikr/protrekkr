@@ -935,7 +935,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
 }
 
 // ------------------------------------------------------
-// Display an error messagebox
+// Display an error message somewhere
 void Message_Error(char *Message)
 {
     printf("Error: %s\n", Message);
