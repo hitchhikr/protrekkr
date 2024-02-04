@@ -2693,7 +2693,7 @@ void Create_Pattern_font(SDL_Surface *Dest, int offset,
     int j;
 
     // Create the pattern font
-    Copy_To_Surface(PFONT, Dest, 0, 0, 0, offset, 316, offset + 8);
+    Copy_To_Surface(PFONT, Dest, 0, 0, 0, offset, 320, offset + 8);
 
     // Set the base colors
     while(SDL_LockSurface(Dest) < 0);
@@ -2744,7 +2744,7 @@ void Create_Pattern_font(SDL_Surface *Dest, int offset,
     SDL_UnlockSurface(Dest);
 
     // Blank line
-    Copy_To_Surface(PFONT, Dest, 0, 16, 0, 7, 316, 7 + 1);
+    Copy_To_Surface(PFONT, Dest, 0, 16, 0, 7, 320, 7 + 1);
 
     while(SDL_LockSurface(Dest) < 0);
 
@@ -2863,7 +2863,7 @@ void Create_Pattern_font(SDL_Surface *Dest, int offset,
     SDL_UnlockSurface(Dest);
 
     // Markers arrows
-    Copy_To_Surface(PFONT, Dest, 0, 64, 0, 8, 316, 8 + 7);
+    Copy_To_Surface(PFONT, Dest, 0, 64, 0, 8, 320, 8 + 7);
 }
 
 // ------------------------------------------------------
@@ -2941,12 +2941,12 @@ int Set_Pictures_Colors(void)
         Palette_Logo[i].unused = Pic_Palette->colors[i].unused;
     }
 
-    Temp_PFONT = SDL_AllocSurface(SDL_SWSURFACE, 316, 87 * 2, 8, 0, 0, 0, 0xff);
-    Temp_LARGEPFONT = SDL_AllocSurface(SDL_SWSURFACE, 316, 87 * 2, 8, 0, 0, 0, 0xff);
-    Temp_SMALLPFONT = SDL_AllocSurface(SDL_SWSURFACE, 316, 87 * 2, 8, 0, 0, 0, 0xff);
-    Temp_NOTEPFONT = SDL_AllocSurface(SDL_SWSURFACE, 316, 87 * 2, 8, 0, 0, 0, 0xff);
-    Temp_NOTELARGEPFONT = SDL_AllocSurface(SDL_SWSURFACE, 316, 87 * 2, 8, 0, 0, 0, 0xff);
-    Temp_NOTESMALLPFONT = SDL_AllocSurface(SDL_SWSURFACE, 316, 87 * 2, 8, 0, 0, 0, 0xff);
+    Temp_PFONT = SDL_AllocSurface(SDL_SWSURFACE, 320, 87 * 2, 8, 0, 0, 0, 0xff);
+    Temp_LARGEPFONT = SDL_AllocSurface(SDL_SWSURFACE, 320, 87 * 2, 8, 0, 0, 0, 0xff);
+    Temp_SMALLPFONT = SDL_AllocSurface(SDL_SWSURFACE, 320, 87 * 2, 8, 0, 0, 0, 0xff);
+    Temp_NOTEPFONT = SDL_AllocSurface(SDL_SWSURFACE, 320, 87 * 2, 8, 0, 0, 0, 0xff);
+    Temp_NOTELARGEPFONT = SDL_AllocSurface(SDL_SWSURFACE, 320, 87 * 2, 8, 0, 0, 0, 0xff);
+    Temp_NOTESMALLPFONT = SDL_AllocSurface(SDL_SWSURFACE, 320, 87 * 2, 8, 0, 0, 0, 0xff);
 
     Set_Logo_Palette();
     Get_Phony_Palette();

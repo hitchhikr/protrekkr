@@ -2,7 +2,7 @@ CXX = g++
 
 LIBS = -lasound -lSDL -lsdldraw -lz -lpthread
 
-FLAGS = -O3 -fno-strict-aliasing -ffast-math -fno-rtti -fexceptions -Wno-write-strings -Wno-multichar -Lsrc/extralibs/sdl_draw -Lsrc/extralibs/zlib-1.2.3 \
+FLAGS = -O3 -g -fno-strict-aliasing -ffast-math -fno-rtti -fexceptions -Wno-write-strings -Wno-multichar -Lsrc/extralibs/sdl_draw -Lsrc/extralibs/zlib-1.2.3 \
         -D __LINUX__ -D __GCC__ -D __LINUX_ALSASEQ__ -D __MOT_SWAP__
 
 EXEOBJS = ptk.o \
@@ -30,9 +30,9 @@ protrekkr: $(EXEOBJS)
 	(cd src/extralibs/sdl_draw; make -f makefile.linux)
 	(cd src/extralibs/zlib-1.2.3; make)
 	$(CXX) -o ./release/distrib/ptk_linux -L./ $(FLAGS) $(EXEOBJS) $(LIBS)
-	strip -s -x ./release/distrib/ptk_linux
+#	strip -s -x ./release/distrib/ptk_linux
 #	-rm -f $(EXEOBJS)
-	
+
 ptk.o: src/ptk.cpp
 	$(CXX) -c -o $(@) $(FLAGS) $<
 
