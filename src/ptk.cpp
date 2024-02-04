@@ -79,6 +79,8 @@ extern int pos_scope_latency;
 
 extern float sp_Tvol_Mod[MAX_TRACKS];
 
+int Display_Pointer = FALSE;
+
 int CONSOLE_WIDTH;
 int CHANNELS_WIDTH;
 int TRACKS_WIDTH;
@@ -574,6 +576,8 @@ int Init_Context(void)
 
     LOGOPIC = Load_Skin_Picture("neural.bmp");
     if(!LOGOPIC) return(FALSE);
+    POINTER = Load_Skin_Picture("pointer.bmp");
+    if(!POINTER) return(FALSE);
     SKIN303 = Load_Skin_Picture("303.bmp");
     if(!SKIN303) return(FALSE);
     PFONT = Load_Skin_Picture("pattern_font.bmp");
@@ -589,6 +593,7 @@ int Init_Context(void)
 
     SDL_SetColorKey(FONT, SDL_SRCCOLORKEY, 0);
     SDL_SetColorKey(FONT_LOW, SDL_SRCCOLORKEY, 0);
+    SDL_SetColorKey(POINTER, SDL_SRCCOLORKEY, 0);
 
     Timer = SDL_AddTimer(1000, Timer_Ptr, NULL);
 
@@ -1726,6 +1731,11 @@ int Screen_Update(void)
         if(gui_action == GUI_CMD_REFRESH_SAMPLE_ED)
         {
             Actualize_Sample_Ed(teac);
+        }
+
+        if(gui_action == GUI_CMD_REFRESH_PALETTE)
+        {
+            Display_Pointer = TRUE;
         }
 
         if(gui_action == GUI_CMD_EXIT)

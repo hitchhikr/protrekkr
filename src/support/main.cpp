@@ -98,6 +98,7 @@ REQUESTER Title_Requester =
 const SDL_VideoInfo *Screen_Info;
 int Startup_Width;
 int Startup_Height;
+extern int Display_Pointer;
 int Burn_Title;
 SDL_Surface *Main_Screen;
 SDL_SysWMinfo WMInfo;
@@ -621,6 +622,8 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
     }
 
     SDL_GetMouseState((int *) &Mouse.x, (int *) &Mouse.y);
+    Mouse.old_x = -16;
+    Mouse.old_y = -16;
 
 #if defined(__AMIGAOS4__) || defined(__AROS__) || defined(__MORPHOS__)
     char *env_var;
@@ -894,15 +897,22 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
             }
         }
 
+        if(Display_Pointer) Display_Mouse_Pointer(Mouse.old_x, Mouse.old_y, TRUE);
+
         if(!Screen_Update()) break;
+
+        if(Display_Pointer) Display_Mouse_Pointer(Mouse.x, Mouse.y, FALSE);
 
         // Flush all pending blits
         if(Nbr_Update_Rects) 
-		{
-			SDL_UpdateRects(Main_Screen, Nbr_Update_Rects, Update_Stack);
-		}
+        {
+            SDL_UpdateRects(Main_Screen, Nbr_Update_Rects, Update_Stack);
+        }
         Nbr_Update_Rects = 0;
 
+        Mouse.old_x = Mouse.x;
+        Mouse.old_y = Mouse.y;
+        
         // Display the title requester once
         if(!Burn_Title)
         {
@@ -964,6 +974,7 @@ int Switch_FullScreen(int Width, int Height)
         }
     }
 
+    Cur_Width = Width;
     Cur_Height = Height;
     CONSOLE_WIDTH = Cur_Width;
     CHANNELS_WIDTH = Cur_Width - 20;
@@ -1000,5 +1011,6 @@ int Switch_FullScreen(int Width, int Height)
 
     Init_UI();
 
+    SDL_ShowCursor(0);
     return(TRUE);
 }

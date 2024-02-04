@@ -5,6 +5,8 @@ ProTrekkr releases history
 v2.6.4
 
 - Slightly revised manual.
+- Using hardware surface for interface.
+- Removed custom mouse pointer.
 
 v2.6.3
 
