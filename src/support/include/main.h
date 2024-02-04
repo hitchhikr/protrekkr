@@ -33,8 +33,9 @@
 #define _INTERFACE_H_
 
 // ------------------------------------------------------
-// Includes
+// Includes.
 #include <SDL/SDL.h>
+#include <SDL/SDL_syswm.h>
 #include <SDL/SDL_syswm.h>
 
 #include "../../include/version.h"
@@ -61,8 +62,6 @@ typedef struct
 {
     int x;
     int y;
-    int old_x;
-    int old_y;
     int button;
     int button_oneshot;
     int wheel;

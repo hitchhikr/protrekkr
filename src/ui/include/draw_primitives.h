@@ -47,7 +47,6 @@ extern int Cur_Height;
 
 // ------------------------------------------------------
 // Functions
-void DrawLine(int x1, int y1, int x2, int y2);
 void DrawPixel(int x, int y, int Color);
 void DrawHLine(int y, int x1, int x2, int Color);
 void DrawVLine(int x, int y1, int y2, int Color);

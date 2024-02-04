@@ -1,8 +1,8 @@
 LIBFLAGS = -c
 FLAGS_PPC = -O3 -arch ppc -D G_OS_WIN32 -D __LINUX__ -D __GCC__
 FLAGS_X86 = -O3 -arch i386 -D G_OS_WIN32 -D __LINUX__ -D __GCC__
-LIBOBJS_PPC = draw_hline_ppc.o draw_line_ppc.o draw_pixel_ppc.o draw_vline_ppc.o
-LIBOBJS_X86 = draw_hline_x86.o draw_line_x86.o draw_pixel_x86.o draw_vline_x86.o
+LIBOBJS_PPC = draw_hline_ppc.o draw_pixel_ppc.o draw_vline_ppc.o
+LIBOBJS_X86 = draw_hline_x86.o draw_pixel_x86.o draw_vline_x86.o
 
 all: sdldraw
 clean: RemLibObj
@@ -22,21 +22,14 @@ sdldraw: $(LIBOBJS_PPC) $(LIBOBJS_X86)
 draw_hline_ppc.o: src/draw_hline.cpp
 	g++ -o $(@) $(LIBFLAGS) $(FLAGS_PPC) src/draw_hline.cpp
 
-draw_line_ppc.o: src/draw_line.cpp
-	g++ -o $(@) $(LIBFLAGS) $(FLAGS_PPC) src/draw_line.cpp
-
 draw_pixel_ppc.o: src/draw_pixel.cpp
 	g++ -o $(@) $(LIBFLAGS) $(FLAGS_PPC) src/draw_pixel.cpp
 
 draw_vline_ppc.o: src/draw_vline.cpp
 	g++ -o $(@) $(LIBFLAGS) $(FLAGS_PPC) src/draw_vline.cpp
 
-
 draw_hline_x86.o: src/draw_hline.cpp
 	g++ -o $(@) $(LIBFLAGS) $(FLAGS_X86) src/draw_hline.cpp
-
-draw_line_x86.o: src/draw_line.cpp
-	g++ -o $(@) $(LIBFLAGS) $(FLAGS_X86) src/draw_line.cpp
 
 draw_pixel_x86.o: src/draw_pixel.cpp
 	g++ -o $(@) $(LIBFLAGS) $(FLAGS_X86) src/draw_pixel.cpp

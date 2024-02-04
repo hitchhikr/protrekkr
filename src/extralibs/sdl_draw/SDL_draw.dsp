@@ -91,10 +91,6 @@ SOURCE=.\src\Draw_HLine.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\Draw_Line.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\src\Draw_Pixel.cpp
 # End Source File
 # Begin Source File

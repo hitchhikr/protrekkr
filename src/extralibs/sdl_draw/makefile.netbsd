@@ -1,6 +1,6 @@
 LIBFLAGS = -c
 FLAGS = -O3 -D G_OS_WIN32 -I/usr/pkg/include -I/usr/local/include -D __LINUX__ -D __GCC__
-LIBOBJS = draw_hline.o draw_line.o draw_pixel.o draw_vline.o
+LIBOBJS = draw_hline.o draw_pixel.o draw_vline.o
 
 all: sdldraw
 clean: RemLibObj
@@ -15,9 +15,6 @@ sdldraw: $(LIBOBJS)
 
 draw_hline.o: src/draw_hline.cpp
 	g++ -o $(@) $(LIBFLAGS) $(FLAGS) src/draw_hline.cpp
-
-draw_line.o: src/draw_line.cpp
-	g++ -o $(@) $(LIBFLAGS) $(FLAGS) src/draw_line.cpp
 
 draw_pixel.o: src/draw_pixel.cpp
 	g++ -o $(@) $(LIBFLAGS) $(FLAGS) src/draw_pixel.cpp

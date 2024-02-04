@@ -51,7 +51,6 @@ SDL_Surface *Temp_NOTESMALLPFONT;
 int Beveled = 1;
 char Use_Shadows = TRUE;
 
-int max_colors_Pointer;
 int curr_tab_highlight;
 
 int Nbr_Letters;
@@ -222,7 +221,6 @@ char *HexTab_NoZero[] =
 
 SDL_Color Ptk_Palette[256 * 2];
 SDL_Color Palette_303[256];
-SDL_Color Palette_Pointer[256];
 SDL_Color Palette_Logo[256];
 
 char *Labels_Palette[] =
@@ -1070,8 +1068,6 @@ SDL_Color Default_Palette9[] =
 
 LONGRGB Phony_Palette[sizeof(Default_Palette2) / sizeof(SDL_Color)];
 
-SDL_Surface *POINTER;
-unsigned char *Pointer_BackBuf;
 int bare_color_idx;
 
 // ------------------------------------------------------
@@ -1739,23 +1735,19 @@ void Gui_Draw_Button_Box(int x, int y, int sx, int sy, const char *str, int flag
             {
                 SetColor(COL_STATIC_MED);
                 Fillrect(x, y, x2, y2 + 1);
-                SetColor(COL_STATIC_HI);
-                DrawLine(x, y, x2 - 1, y);
-                DrawLine(x, y, x, y2);
-                SetColor(COL_STATIC_LO);
-                DrawLine(x, y2, x2, y2);
-                DrawLine(x2, y, x2, y2);
+                DrawHLine(y, x, x2 - 1, COL_STATIC_HI);
+                DrawVLine(x, y, y2, COL_STATIC_HI);
+                DrawHLine(y2, x, x2, COL_STATIC_LO);
+                DrawVLine(x2, y, y2, COL_STATIC_LO);
             }
             else
             {
                 SetColor(Colors_Norm[Col_Idx]);
                 Fillrect(x, y, x2, y2 + 1);
-                SetColor(Colors_Norm[Col_Idx + 1]);
-                DrawLine(x, y, x2 - 1, y);
-                DrawLine(x, y, x, y2);
-                SetColor(Colors_Norm[Col_Idx + 2]);
-                DrawLine(x, y2, x2, y2);
-                DrawLine(x2, y, x2, y2);
+                DrawHLine(y, x, x2 - 1, Colors_Norm[Col_Idx + 1]);
+                DrawVLine(x, y, y2, Colors_Norm[Col_Idx + 1]);
+                DrawHLine(y2, x, x2, Colors_Norm[Col_Idx + 2]);
+                DrawVLine(x2, y, y2, Colors_Norm[Col_Idx + 2]);
             }
         }
         else
@@ -1764,23 +1756,19 @@ void Gui_Draw_Button_Box(int x, int y, int sx, int sy, const char *str, int flag
             {
                 SetColor(COL_STATIC_MED);
                 Fillrect(x, y, x2, y2 + 1);
-                SetColor(COL_STATIC_LO);
-                DrawLine(x, y, x2 - 1, y);
-                DrawLine(x, y, x, y2);
-                SetColor(COL_STATIC_HI);
-                DrawLine(x, y2, x2, y2);
-                DrawLine(x2, y, x2, y2);
+                DrawHLine(y, x, x2 - 1, COL_STATIC_LO);
+                DrawVLine(x, y, y2, COL_STATIC_LO);
+                DrawHLine(y2, x, x2, COL_STATIC_HI);
+                DrawVLine(x2, y, y2, COL_STATIC_HI);
             }
             else
             {
                 SetColor(Colors_Pushed[Col_Idx]);
                 Fillrect(x, y, x2, y2 + 1);
-                SetColor(Colors_Pushed[Col_Idx + 2]);
-                DrawLine(x, y, x2 - 1, y);
-                DrawLine(x, y, x, y2);
-                SetColor(Colors_Pushed[Col_Idx + 1]);
-                DrawLine(x, y2, x2, y2);
-                DrawLine(x2, y, x2, y2);
+                DrawHLine(y, x, x2 - 1, Colors_Pushed[Col_Idx + 2]);
+                DrawVLine(x, y, y2, Colors_Pushed[Col_Idx + 2]);
+                DrawHLine(y2, x, x2, Colors_Pushed[Col_Idx + 1]);
+                DrawVLine(x2, y, y2, Colors_Pushed[Col_Idx + 1]);
             }
         }
     }
@@ -2622,7 +2610,11 @@ int Get_Font_Height(void)
 // Load a .bmp picture into a SDL surface
 SDL_Surface *Load_Picture(char *FileName)
 {
-    return(SDL_LoadBMP(FileName));
+    SDL_Surface *temp1 = SDL_LoadBMP(FileName);
+//    return(SDL_LoadBMP(FileName));
+    SDL_Surface *temp2 = SDL_DisplayFormat(temp1);
+    SDL_FreeSurface(temp1);
+    return(temp2);
 }
 
 // ------------------------------------------------------
@@ -2936,15 +2928,6 @@ int Set_Pictures_Colors(void)
         Palette_303[i].unused = Pic_Palette->colors[i].unused;
     }
 
-    Pic_Palette = POINTER->format->palette;
-    for(i = 0; i < max_colors_303; i++)
-    {
-        Palette_Pointer[i].r = Pic_Palette->colors[i].r;
-        Palette_Pointer[i].g = Pic_Palette->colors[i].g;
-        Palette_Pointer[i].b = Pic_Palette->colors[i].b;
-        Palette_Pointer[i].unused = Pic_Palette->colors[i].unused;
-    }
-
     Pic_Palette = LOGOPIC->format->palette;
     for(i = 0; i < max_colors_logo; i++)
     {
@@ -2954,25 +2937,12 @@ int Set_Pictures_Colors(void)
         Palette_Logo[i].unused = Pic_Palette->colors[i].unused;
     }
 
-    // Remap the colors of the pointer
-    Pix = (unsigned char *) POINTER->pixels;
-    max_colors_Pointer = 0;
-    for(i = 0; i < POINTER->w * POINTER->h; i++)
-    {
-        if(Pix[i] > max_colors_Pointer) max_colors_Pointer = Pix[i];
-        if(Pix[i]) Pix[i] += min_idx + max_colors_303;
-    }
-    max_colors_Pointer++;
-
     Temp_PFONT = SDL_AllocSurface(SDL_SWSURFACE, 316, 87 * 2, 8, 0, 0, 0, 0xff);
     Temp_LARGEPFONT = SDL_AllocSurface(SDL_SWSURFACE, 316, 87 * 2, 8, 0, 0, 0, 0xff);
     Temp_SMALLPFONT = SDL_AllocSurface(SDL_SWSURFACE, 316, 87 * 2, 8, 0, 0, 0, 0xff);
     Temp_NOTEPFONT = SDL_AllocSurface(SDL_SWSURFACE, 316, 87 * 2, 8, 0, 0, 0, 0xff);
     Temp_NOTELARGEPFONT = SDL_AllocSurface(SDL_SWSURFACE, 316, 87 * 2, 8, 0, 0, 0, 0xff);
     Temp_NOTESMALLPFONT = SDL_AllocSurface(SDL_SWSURFACE, 316, 87 * 2, 8, 0, 0, 0, 0xff);
-
-    Pointer_BackBuf = (unsigned char *) malloc(POINTER->pitch * POINTER->h * sizeof(unsigned char));
-    memset(Pointer_BackBuf, 0, POINTER->pitch * POINTER->h * sizeof(unsigned char));
 
     Set_Logo_Palette();
     Get_Phony_Palette();
@@ -3019,14 +2989,6 @@ Wait_Palette:
         Ptk_Palette[i + bare_color_idx].b = Palette_303[i].b;
         Ptk_Palette[i + bare_color_idx].unused = Palette_303[i].unused;
     }
-
-    for(i = 0; i < max_colors_Pointer; i++)
-    {
-        Ptk_Palette[i + bare_color_idx + max_colors_303].r = Palette_Pointer[i].r;
-        Ptk_Palette[i + bare_color_idx + max_colors_303].g = Palette_Pointer[i].g;
-        Ptk_Palette[i + bare_color_idx + max_colors_303].b = Palette_Pointer[i].b;
-        Ptk_Palette[i + bare_color_idx + max_colors_303].unused = Palette_Pointer[i].unused;
-    }
 }
 
 void Set_Logo_Palette(void)
@@ -3060,7 +3022,7 @@ void Init_UI(void)
 // Free the allocated resources
 void Destroy_UI(void)
 {
-    if(Pointer_BackBuf) free(Pointer_BackBuf);
+
 }
 
 // ------------------------------------------------------

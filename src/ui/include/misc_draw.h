@@ -251,7 +251,6 @@ void Small_Letter(int x, int y, char ltr, int ys, int y2);
 void Note_Large_Letter(int x, int y, char ltr, int ys, int y2);
 extern void (*Letter_Function)(int x, int y, char ltr, int ys, int y2);
 
-void DrawLine(int x1, int y1, int x2, int y2);
 void DrawPixel(int x, int y, int Color);
 void DrawHLine(int y, int x1, int x2, int Color);
 void DrawVLine(int x, int y1, int y2, int Color);
@@ -271,7 +270,6 @@ void Init_UI(void);
 void Get_Phony_Palette(void);
 void Set_Phony_Palette(void);
 void Restore_Default_Palette(SDL_Color *Def, int DefBevel);
-void Display_Mouse_Pointer(int x, int y, int clear);
 void Destroy_UI(void);
 int Get_Font_Height(void);
 int Get_Note_Ascii(int note, char *snote, int *octave, int tiret);

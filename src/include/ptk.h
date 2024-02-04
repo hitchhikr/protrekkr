@@ -87,7 +87,6 @@ class skin_file
 };
 
 extern list <skin_file> skin_files;
-extern SDL_Surface *POINTER;
 extern REQUESTER Exit_Requester;
 
 // ------------------------------------------------------

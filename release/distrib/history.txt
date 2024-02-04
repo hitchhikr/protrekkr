@@ -2,6 +2,10 @@
 ProTrekkr releases history
 ===============================================================================
 
+v2.6.4
+
+- Slightly revised manual.
+
 v2.6.3
 
 - Fixed a small bug in synth params.

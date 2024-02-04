@@ -48,7 +48,6 @@ extern char *Font_Ascii;
 extern int Nbr_Letters;
 extern int Font_Pos[256];
 extern int Font_Size[256];
-extern unsigned char *Pointer_BackBuf;
 int FgColor;
 
 int Nbr_Update_Rects;
@@ -57,13 +56,6 @@ SDL_Rect Update_Stack[UPDATE_STACK_SIZE];
 // ------------------------------------------------------
 // Functions
 int Get_Char_Position(char *Ascii_Letters, int Max_Letters, char Letter);
-
-// ------------------------------------------------------
-// Draw a line
-void DrawLine(int x1, int y1, int x2, int y2)
-{
-    Draw_Line(Main_Screen, x1, y1, x2, y2, FgColor);
-}
 
 // ------------------------------------------------------
 // Draw a pixel
@@ -166,11 +158,6 @@ void UISetPalette(SDL_Color *Palette, int Amount)
     {
         SDL_SetPalette(Temp_NOTESMALLPFONT, SDL_PHYSPAL, Palette, 0, Amount);
         SDL_SetPalette(Temp_NOTESMALLPFONT, SDL_LOGPAL, Palette, 0, Amount);
-    }
-    if(POINTER)
-    {
-        SDL_SetPalette(POINTER, SDL_PHYSPAL, Palette, 0, Amount);
-        SDL_SetPalette(POINTER, SDL_LOGPAL, Palette, 0, Amount);
     }
 
     SDL_SetPalette(Main_Screen, SDL_PHYSPAL, Palette, 0, Amount);
@@ -290,56 +277,6 @@ void PrintString(int x,
         x += Font_Size[Idx];
         if(early_exit) break;
     }
-}
-
-// ------------------------------------------------------
-// Display or clear the mouse pointer at given coordinates
-void Display_Mouse_Pointer(int x, int y, int clear)
-{
-    if(x >= Cur_Width) return;
-    if(y >= Cur_Height) return;
-    while(SDL_LockSurface(POINTER) < 0);
-
-    int i;
-    int j;
-    int Src_offset;
-    int Dst_offset;
-    int Len_Dst = Main_Screen->pitch * Main_Screen->h;
-    unsigned char *SrcPix = (unsigned char *) POINTER->pixels;
-    unsigned char *DstPix = (unsigned char *) Main_Screen->pixels;
-
-    for(j = 0; j < POINTER->h; j++)
-    {
-        for(i = 0; i < POINTER->w; i++)
-        {
-            Src_offset = (j * POINTER->pitch) + i;
-            Dst_offset = ((j + y) * Main_Screen->pitch) + (i + x);
-            if(Dst_offset >= 0)
-            {
-                if(((i + x) < (Cur_Width - 1)) &&
-                   ((j + y) < (Cur_Height - 1)))
-                {
-                    if(clear)
-                    {
-                        if(SrcPix[Src_offset])
-                        {
-                            DrawPixel((i + x), (j + y), Pointer_BackBuf[Src_offset]);
-                        }
-                    } 
-                    else
-                    {
-                        if(SrcPix[Src_offset])
-                        {
-                            Pointer_BackBuf[Src_offset] = DstPix[Dst_offset];
-                            DrawPixel((i + x), (j + y), SrcPix[Src_offset]);
-                        }
-                    }
-                }
-            }
-        }
-    }
-    SDL_UnlockSurface(POINTER);
-    Push_Update_Rect(x, y, POINTER->w, POINTER->h);
 }
 
 // ------------------------------------------------------
