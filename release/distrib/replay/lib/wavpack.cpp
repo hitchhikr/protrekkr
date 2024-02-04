@@ -175,7 +175,7 @@ static uint32_t read_code(Bitstream *bs, uint32_t maxcode);
 int32_t get_words (int32_t *buffer, int nsamples, uint32_t flags,
                    struct words_data *w, Bitstream *bs)
 {
-    register struct entropy_data *c = w->c;
+    struct entropy_data *c = w->c;
     int csamples;
 
     for (csamples = 0; csamples < nsamples; ++csamples)

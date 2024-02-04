@@ -2610,10 +2610,14 @@ int Get_Font_Height(void)
 // Load a .bmp picture into a SDL surface
 SDL_Surface *Load_Picture(char *FileName)
 {
+    SDL_Surface *temp2 = NULL;
     SDL_Surface *temp1 = SDL_LoadBMP(FileName);
-//    return(SDL_LoadBMP(FileName));
-    SDL_Surface *temp2 = SDL_DisplayFormat(temp1);
-    SDL_FreeSurface(temp1);
+    if(temp1)
+    {
+        //    return(SDL_LoadBMP(FileName));
+        temp2 = SDL_DisplayFormat(temp1);
+        SDL_FreeSurface(temp1);
+    }
     return(temp2);
 }
 
