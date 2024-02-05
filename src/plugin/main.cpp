@@ -109,7 +109,7 @@ void config(HWND hwndParent)
 void about(HWND hwndParent)
 {
 	MessageBox(hwndParent,"Protrekkr Modules Player v" VER_VER "." VER_REV "." VER_REVSMALL "\n\n"
-	                      "(C) Copyright 2008-2021 Franck \"hitchhikr\" Charlet",
+	                      "(C) Copyright 2008-2024 Franck \"hitchhikr\" Charlet",
 		                  "About",
 		                  MB_OK | MB_ICONINFORMATION);
 }
