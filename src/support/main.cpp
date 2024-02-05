@@ -134,6 +134,8 @@ extern int Nbr_Update_Rects;
 extern SDL_Rect Update_Stack[2048];
 
 char *ExePath;
+extern char AutoReload;
+char Last_Used_Ptk[MAX_PATH];
 
 SDL_Event Events[MAX_EVENTS];
 
@@ -647,9 +649,18 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
     Set_Phony_Palette();
     Refresh_Palette();
 
+    // Check if there's an argument
     if(argc != 1)
     {
         LoadFile(0, argv[1]);
+    }
+    else
+    {
+        // Nope: check if auto reload was turned on
+        if(AutoReload)
+        {
+            LoadFile(0, Last_Used_Ptk);
+        }
     }
 
     while(!Prog_End)

@@ -45,12 +45,14 @@ extern int Cur_Height;
 extern int Continuous_Scroll;
 extern char AutoSave;
 extern char AutoBackup;
+extern char AutoReload;
 extern char Scopish_LeftRight;
 extern char Jazz_Edit;
 extern char Accidental;
 extern char Use_Shadows;
 extern char Global_Patterns_Font;
 extern char *cur_dir;
+extern char Last_Used_Ptk[MAX_PATH];
 
 // ------------------------------------------------------
 // Save the configuration file
@@ -59,12 +61,13 @@ void Save_Config(void)
     FILE *out;
     char extension[10];
     char FileName[MAX_PATH];
+    char Temph[MAX_PATH];
     int i;
     int Real_Palette_Idx;
     char KeyboardName[MAX_PATH];
     signed char phony = -1;
 
-    sprintf(extension, "PROTCFGF");
+    sprintf(extension, "PROTCFGG");
     Status_Box("Saving 'ptk.cfg'...");
 
     sprintf(FileName, "%s" SLASH "ptk.cfg", ExePath);
@@ -108,7 +111,8 @@ void Save_Config(void)
         Write_Data_Swap(&Continuous_Scroll, sizeof(Continuous_Scroll), 1, out);
         Write_Data(&AutoSave, sizeof(AutoSave), 1, out);
         Write_Data(&AutoBackup, sizeof(AutoBackup), 1, out);
-        
+        Write_Data(&AutoReload, sizeof(AutoReload), 1, out);
+         
         Write_Data(&Dir_Mods, sizeof(Dir_Mods), 1, out);
         Write_Data(&Dir_Instrs, sizeof(Dir_Instrs), 1, out);
         Write_Data(&Dir_Presets, sizeof(Dir_Presets), 1, out);
@@ -116,6 +120,11 @@ void Save_Config(void)
         Write_Data(&Dir_MidiCfg, sizeof(Dir_MidiCfg), 1, out);
         Write_Data(&Dir_Patterns, sizeof(Dir_Patterns), 1, out);
         Write_Data(&Dir_Samples, sizeof(Dir_Samples), 1, out);
+
+        memset(Temph, 0, MAX_PATH);
+        sprintf(Temph, "%s" SLASH "%s.ptk", Dir_Mods, name);
+        Write_Data(Temph, MAX_PATH, 1, out);
+
         Write_Data(KeyboardName, MAX_PATH, 1, out);
 
         Write_Data(&rawrender_32float, sizeof(char), 1, out);
@@ -181,7 +190,7 @@ void Load_Config(void)
         char extension[10];
 
         Read_Data(extension, sizeof(char), 9, in);
-        if(strcmp(extension, "PROTCFGF") == 0)
+        if(strcmp(extension, "PROTCFGG") == 0)
         {
             Read_Data_Swap(&Current_Edit_Steps, sizeof(Current_Edit_Steps), 1, in);
             Read_Data_Swap(&patt_highlight, sizeof(patt_highlight), 1, in);
@@ -216,6 +225,8 @@ void Load_Config(void)
             Read_Data_Swap(&Continuous_Scroll, sizeof(Continuous_Scroll), 1, in);
             Read_Data(&AutoSave, sizeof(AutoSave), 1, in);
             Read_Data(&AutoBackup, sizeof(AutoBackup), 1, in);
+            Read_Data(&AutoReload, sizeof(AutoReload), 1, in);
+
             Read_Data(&Dir_Mods, sizeof(Dir_Mods), 1, in);
             Read_Data(&Dir_Instrs, sizeof(Dir_Instrs), 1, in);
             Read_Data(&Dir_Presets, sizeof(Dir_Presets), 1, in);
@@ -223,6 +234,9 @@ void Load_Config(void)
             Read_Data(&Dir_MidiCfg, sizeof(Dir_MidiCfg), 1, in);
             Read_Data(&Dir_Patterns, sizeof(Dir_Patterns), 1, in);
             Read_Data(&Dir_Samples, sizeof(Dir_Samples), 1, in);
+
+            Read_Data(&Last_Used_Ptk, sizeof(Last_Used_Ptk), 1, in);
+
             Read_Data(KeyboardName, MAX_PATH, 1, in);
 
             Read_Data(&rawrender_32float, sizeof(char), 1, in);

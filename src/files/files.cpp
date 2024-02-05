@@ -70,6 +70,7 @@ extern SynthParameters PARASynth[128];
 
 extern int Beveled;
 char AutoBackup;
+char AutoReload;
 
 int Mod_Length;
 int Mod_Simulate;

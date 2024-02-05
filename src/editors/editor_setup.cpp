@@ -45,6 +45,7 @@ extern int Cur_Width;
 extern int Cur_Height;
 extern char AutoSave;
 extern char AutoBackup;
+extern char AutoReload;
 extern int Beveled;
 extern char Use_Shadows;
 extern int Continuous_Scroll;
@@ -98,10 +99,8 @@ void Draw_Master_Ed(void)
     Gui_Draw_Flat_Box("UI Setup");
 
     Gui_Draw_Button_Box(8, (Cur_Height - 125), 110, 16, "Metronome (Rows)", BUTTON_NORMAL | BUTTON_DISABLED);
-    //PrintString(8 + 112 + 44 + 21, (Cur_Height - (125 - 2)), USE_FONT, "Rows");
 
     Gui_Draw_Button_Box(8, (Cur_Height - 105), 110, 16, "Latency (Milliseconds)", BUTTON_NORMAL | BUTTON_DISABLED);
-    //PrintString(8 + 112 + 44 + 21, (Cur_Height - (105 - 2)), USE_FONT, "Milliseconds");
 
     Gui_Draw_Button_Box(330, (Cur_Height - 125), 114, 16, "Mousewheel Multiplier", BUTTON_NORMAL | BUTTON_DISABLED);
     Gui_Draw_Button_Box(330, (Cur_Height - 105), 114, 16, "Rows Highlight", BUTTON_NORMAL | BUTTON_DISABLED);
@@ -129,6 +128,8 @@ void Draw_Master_Ed(void)
     Gui_Draw_Button_Box(8, (Cur_Height - 45), 110, 16, "Paste Across Pattern", BUTTON_NORMAL | BUTTON_DISABLED);
     Gui_Draw_Button_Box(184, (Cur_Height - 125), 72, 16, "Play While Edit", BUTTON_NORMAL | BUTTON_DISABLED);
     Gui_Draw_Button_Box(184, (Cur_Height - 105), 72, 16, "Auto Backup", BUTTON_NORMAL | BUTTON_DISABLED);
+
+    Gui_Draw_Button_Box(184, (Cur_Height - 45), 72, 16, "Load Last Ptk", BUTTON_NORMAL | BUTTON_DISABLED);
 
     Gui_Draw_Button_Box(734, (Cur_Height - 125), 42, 16, "Accid.", BUTTON_NORMAL | BUTTON_DISABLED);
 }
@@ -425,6 +426,21 @@ void Actualize_Master_Ed(char gode)
             {
                 Gui_Draw_Button_Box(258, (Cur_Height - 105), 29, 16, "On", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
                 Gui_Draw_Button_Box(258 + 31, (Cur_Height - 105), 29, 16, "Off", BUTTON_PUSHED | BUTTON_TEXT_CENTERED);
+            }
+        }
+
+        // Load last used ptk
+        if(gode == 0 || gode == 24)
+        {
+            if(AutoReload)
+            {
+                Gui_Draw_Button_Box(258, (Cur_Height - 45), 29, 16, "On", BUTTON_PUSHED | BUTTON_TEXT_CENTERED);
+                Gui_Draw_Button_Box(258 + 31, (Cur_Height - 45), 29, 16, "Off", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
+            }
+            else
+            {
+                Gui_Draw_Button_Box(258, (Cur_Height - 45), 29, 16, "On", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
+                Gui_Draw_Button_Box(258 + 31, (Cur_Height - 45), 29, 16, "Off", BUTTON_PUSHED | BUTTON_TEXT_CENTERED);
             }
         }
     }
@@ -854,6 +870,22 @@ void Mouse_Left_Master_Ed(void)
         {
             AutoBackup = FALSE;
             teac = 23;
+            gui_action = GUI_CMD_UPDATE_SETUP_ED;
+        }
+
+        // Load Last Ptk on
+        if(zcheckMouse(258, (Cur_Height - 45), 29, 16))
+        {
+            AutoReload = TRUE;
+            teac = 24;
+            gui_action = GUI_CMD_UPDATE_SETUP_ED;
+        }
+
+        // Load Last Ptk off
+        if(zcheckMouse(258 + 31, (Cur_Height - 45), 29, 16))
+        {
+            AutoReload = FALSE;
+            teac = 24;
             gui_action = GUI_CMD_UPDATE_SETUP_ED;
         }
     }
