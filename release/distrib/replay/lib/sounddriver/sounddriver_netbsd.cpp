@@ -42,7 +42,7 @@ float AUDIO_Timer;
 
 int volatile AUDIO_Acknowledge;
 int AUDIO_Device;
-short *AUDIO_SoundBuffer;
+short *AUDIO_SoundBuffer[2];
 audio_buf_info AUDIO_Info_Buffer;
 pthread_t hThread;
 int volatile Thread_Running;
@@ -50,6 +50,7 @@ int AUDIO_SoundBuffer_Size;
 
 int AUDIO_Latency;
 int AUDIO_Milliseconds = 20;
+int AUDIO_FlipFlop = 0;
 
 // ------------------------------------------------------
 // Functions
@@ -66,24 +67,25 @@ void *AUDIO_Thread(void *arg)
 {
     while(Thread_Running)
     {
-        if(AUDIO_SoundBuffer)
+        if(AUDIO_SoundBuffer[0])
         {
             AUDIO_Acknowledge = FALSE;
             if(AUDIO_Play_Flag)
             {
-                AUDIO_Mixer((Uint8 *) AUDIO_SoundBuffer, AUDIO_SoundBuffer_Size);
+                AUDIO_Mixer((Uint8 *) AUDIO_SoundBuffer[AUDIO_FlipFlop], AUDIO_SoundBuffer_Size);
             }
             else
             {
                 unsigned int i;
-                char *pSamples = (char *) AUDIO_SoundBuffer;
+                char *pSamples = (char *) AUDIO_SoundBuffer[AUDIO_FlipFlop];
                 for(i = 0; i < AUDIO_SoundBuffer_Size; i++)
                 {
                     pSamples[i] = 0;
                 }
                 AUDIO_Acknowledge = TRUE;
             }
-            write(AUDIO_Device, AUDIO_SoundBuffer, AUDIO_SoundBuffer_Size);
+            AUDIO_FlipFlop ^= 1;
+            write(AUDIO_Device, AUDIO_SoundBuffer[AUDIO_FlipFlop], AUDIO_SoundBuffer_Size);
 
             AUDIO_Samples += AUDIO_SoundBuffer_Size;
             AUDIO_Timer = ((((float) AUDIO_Samples) * (1.0f / (float) AUDIO_Latency)) * 1000.0f);
@@ -142,7 +144,6 @@ int AUDIO_Create_Sound_Buffer(int milliseconds)
 
     Dsp_Val = (num_fragments << 16) | frag_size;
     ioctl(AUDIO_Device, SNDCTL_DSP_SETFRAGMENT, &Dsp_Val);
-
     Dsp_Val = AUDIO_DBUF_CHANNELS;
     ioctl(AUDIO_Device, SNDCTL_DSP_CHANNELS, &Dsp_Val);
     Dsp_Val = AFMT_S16_NE;
@@ -158,7 +159,28 @@ int AUDIO_Create_Sound_Buffer(int milliseconds)
     AUDIO_SoundBuffer_Size = AUDIO_Info_Buffer.fragsize;
     AUDIO_Latency = AUDIO_SoundBuffer_Size;
 
-    AUDIO_SoundBuffer = (short *) malloc(AUDIO_SoundBuffer_Size << 1);
+    AUDIO_SoundBuffer[0] = (short *) malloc(AUDIO_SoundBuffer_Size << 1);
+    if(!AUDIO_SoundBuffer[0])
+    {
+
+#if !defined(__STAND_ALONE__) && !defined(__WINAMP__)
+        Message_Error("Can't allocate audio buffer 1");
+#endif
+
+        return(FALSE);
+    }
+    AUDIO_SoundBuffer[1] = (short *) malloc(AUDIO_SoundBuffer_Size << 1);
+    if(!AUDIO_SoundBuffer[1])
+    {
+
+#if !defined(__STAND_ALONE__) && !defined(__WINAMP__)
+        Message_Error("Can't allocate audio buffer 2");
+#endif
+
+        return(FALSE);
+    }
+    memset(AUDIO_SoundBuffer[0], 0, AUDIO_SoundBuffer_Size << 1);
+    memset(AUDIO_SoundBuffer[1], 0, AUDIO_SoundBuffer_Size << 1);
 
     p.sched_priority = 1;
     Thread_Running = 1;
@@ -270,9 +292,11 @@ void AUDIO_Stop_Sound_Buffer(void)
         {
             usleep(10);
         }
-        if(AUDIO_SoundBuffer) free(AUDIO_SoundBuffer);
-        AUDIO_SoundBuffer = NULL;
     }
+    if(AUDIO_SoundBuffer[0]) free(AUDIO_SoundBuffer[0]);
+    AUDIO_SoundBuffer[0] = NULL;
+    if(AUDIO_SoundBuffer[1]) free(AUDIO_SoundBuffer[1]);
+    AUDIO_SoundBuffer[1] = NULL;
 }
 
 // ------------------------------------------------------

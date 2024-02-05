@@ -179,6 +179,8 @@ int AUDIO_Create_Sound_Buffer(int milliseconds)
 
         return(FALSE);
     }
+    memset(AUDIO_SoundBuffer[0], 0, AUDIO_SoundBuffer_Size << 1);
+    memset(AUDIO_SoundBuffer[1], 0, AUDIO_SoundBuffer_Size << 1);
 
     p.sched_priority = 1;
     Thread_Running = 1;
@@ -290,11 +292,11 @@ void AUDIO_Stop_Sound_Buffer(void)
         {
             usleep(10);
         }
-        if(AUDIO_SoundBuffer[0]) free(AUDIO_SoundBuffer[0]);
-        AUDIO_SoundBuffer[0] = NULL;
-        if(AUDIO_SoundBuffer[1]) free(AUDIO_SoundBuffer[1]);
-        AUDIO_SoundBuffer[1] = NULL;
     }
+    if(AUDIO_SoundBuffer[0]) free(AUDIO_SoundBuffer[0]);
+    AUDIO_SoundBuffer[0] = NULL;
+    if(AUDIO_SoundBuffer[1]) free(AUDIO_SoundBuffer[1]);
+    AUDIO_SoundBuffer[1] = NULL;
 }
 
 // ------------------------------------------------------
