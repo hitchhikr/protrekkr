@@ -20,7 +20,7 @@ EXEOBJS_PPC = ptk_ppc.o \
               config_ppc.o 303s_ppc.o synths_ppc.o insts_ppc.o ptps_ppc.o \
               midi_ppc.o RtMidi_ppc.o midi_dispatch_ppc.o \
               timer_ppc.o main_ppc.o sdlmain_ppc.o \
-              misc_draw_ppc.o draw_primitives_ppc.o requesters_ppc.o gadgets_ppc.o \
+              misc_draw_ppc.o draw_primitives_ppc.o requesters_ppc.o \
               samples_ops_ppc.o aiff_ppc.o riff_ppc.o \
               spline_ppc.o tb_303_ppc.o wavpack_ppc.o samples_unpack_ppc.o replay_ppc.o synth_ppc.o endianness_ppc.o \
               sounddriver_macosx_ppc.o
@@ -34,7 +34,7 @@ EXEOBJS_X86 = ptk_x86.o \
               config_x86.o 303s_x86.o synths_x86.o insts_x86.o ptps_x86.o \
               midi_x86.o RtMidi_x86.o midi_dispatch_x86.o \
               timer_x86.o main_x86.o sdlmain_x86.o \
-              misc_draw_x86.o draw_primitives_x86.o requesters_x86.o gadgets_x86.o \
+              misc_draw_x86.o draw_primitives_x86.o requesters_x86.o \
               samples_ops_x86.o aiff_x86.o riff_x86.o \
               spline_x86.o tb_303_x86.o wavpack_x86.o samples_unpack_x86.o replay_x86.o synth_x86.o endianness_x86.o \
               sounddriver_macosx_x86.o
@@ -164,9 +164,6 @@ draw_primitives_ppc.o: src/ui/draw_primitives.cpp
 	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
 
 requesters_ppc.o: src/ui/requesters.cpp
-	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
-
-gadgets_ppc.o: src/ui/gadgets.cpp
 	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
 
 samples_ops_ppc.o: src/samples/samples_ops.cpp
@@ -325,9 +322,6 @@ draw_primitives_x86.o: src/ui/draw_primitives.cpp
 	$(CXX) -c -o $(@) $(FLAGS_X86) $<
 
 requesters_x86.o: src/ui/requesters.cpp
-	$(CXX) -c -o $(@) $(FLAGS_X86) $<
-
-gadgets_x86.o: src/ui/gadgets.cpp
 	$(CXX) -c -o $(@) $(FLAGS_X86) $<
 
 samples_ops_x86.o: src/samples/samples_ops.cpp

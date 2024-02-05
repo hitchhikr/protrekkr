@@ -14,7 +14,7 @@ EXEOBJS = ptk.o \
           config.o 303s.o synths.o insts.o ptps.o \
           midi.o midi_dispatch.o \
           timer.o main.o \
-          misc_draw.o draw_primitives.o requesters.o gadgets.o \
+          misc_draw.o draw_primitives.o requesters.o \
           samples_ops.o aiff.o riff.o \
           spline.o tb_303.o wavpack.o samples_unpack.o replay.o synth.o endianness.o \
           sounddriver_netbsd.o
@@ -137,9 +137,6 @@ draw_primitives.o: src/ui/draw_primitives.cpp
 	$(CXX) -c -o $(@) $(FLAGS) $<
 
 requesters.o: src/ui/requesters.cpp
-	$(CXX) -c -o $(@) $(FLAGS) $<
-
-gadgets.o: src/ui/gadgets.cpp
 	$(CXX) -c -o $(@) $(FLAGS) $<
 
 samples_ops.o: src/samples/samples_ops.cpp

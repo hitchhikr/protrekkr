@@ -34,7 +34,6 @@
 #include "include/editor_reverb.h"
 #include "../files/include/files.h"
 #include "../ui/include/requesters.h"
-#include "../ui/include/gadgets.h"
 
 // ------------------------------------------------------
 // Variables
