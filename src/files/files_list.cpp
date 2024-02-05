@@ -45,10 +45,10 @@
 #include <stdint.h>
 #define int32 int32_t
 #define uint32 uint32_t
-#endif
-#ifdef __MORPHOS__
 #define PATH_SEPARATOR "/"
 #define MAXLEN 512
+#endif
+#ifdef __MORPHOS__
 #define AROS_BSTR_strlen(s) *((UBYTE *)BADDR(s))
 #define AROS_BSTR_ADDR(x) (char *)BADDR(x)+1 
 #endif
@@ -511,7 +511,7 @@ void Read_SMPT(void)
     else
     {
 
-#ifdef __MORPHOS__
+#if defined(__AROS__) || defined(__MORPHOS__)
 		struct stat status;
 		static char full_filename[MAXLEN] = { 0 };
 		static char split[2] = { PATH_SEPARATOR[0], 0 };
@@ -527,7 +527,7 @@ void Read_SMPT(void)
             while ((dp = readdir(dirp)) != NULL)
             {
 
-#ifdef __MORPHOS__
+#if defined(__AROS__) || defined(__MORPHOS__)
 				full_filename[0] = 0;
 				strncpy(full_filename, Dir_Act, MAXLEN);
 			
@@ -569,7 +569,7 @@ void Read_SMPT(void)
             closedir(dirp);
         }
 
-#ifndef __MORPHOS__
+#if !defined(__AROS__) && !defined(__MORPHOS__)
         dirp = opendir(Dir_Act);
         if (dirp)
         {
