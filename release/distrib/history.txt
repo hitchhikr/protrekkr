@@ -6,6 +6,8 @@ v2.6.4
 
 - Slightly revised manual.
 - Using hardware surface for interface.
+- Window now opens at the center of the screen.
+- Window size is now remembered when switching back from full screen.
 
 v2.6.3
 

@@ -120,6 +120,8 @@ int Cur_Left = -1;
 int Cur_Top = -1;
 int Cur_Width = SCREEN_WIDTH;
 int Cur_Height = SCREEN_HEIGHT;
+int Save_Cur_Width = -1;
+int Save_Cur_Height = -1;
 char AutoSave;
 char Window_Title[256];
 extern int gui_pushed;
@@ -949,29 +951,42 @@ int Switch_FullScreen(int Width, int Height)
     if(Width < SCREEN_WIDTH) Width = SCREEN_WIDTH;
     if(Height < SCREEN_HEIGHT) Height = SCREEN_HEIGHT;
     
+#ifndef __MORPHOS__
+    SDL_putenv("SDL_VIDEO_WINDOW_POS=center");
+    SDL_putenv("SDL_VIDEO_CENTERED=1");
+#endif
+
     if(FullScreen)
     {
         if((Main_Screen = SDL_SetVideoMode(Startup_Width,
                                            Startup_Height,
                                            SCREEN_BPP,
-                                           //SDL_SWSURFACE |
                                            (FullScreen ? SDL_FULLSCREEN : 0))) == NULL)
         {
             return(FALSE);
         }
         Width = Startup_Width;
         Height = Startup_Height;
+        Save_Cur_Width = Cur_Width;
+        Save_Cur_Height = Cur_Height;
     }
     else
     {
+
+        if(Save_Cur_Width != -1)
+        {
+            Width = Save_Cur_Width;
+            Height = Save_Cur_Height;
+        }
         if((Main_Screen = SDL_SetVideoMode(Width, Height,
                                            SCREEN_BPP,
                                            SDL_RESIZABLE |
-                                           //SDL_SWSURFACE |
                                            (FullScreen ? SDL_FULLSCREEN : 0))) == NULL)
         {
             return(FALSE);
         }
+        Save_Cur_Width = -1;
+        Save_Cur_Height = -1;
     }
 
     Cur_Width = Width;
