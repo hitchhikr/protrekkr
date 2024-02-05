@@ -84,8 +84,8 @@ void *AUDIO_Thread(void *arg)
                 }
                 AUDIO_Acknowledge = TRUE;
             }
-            AUDIO_FlipFlop ^= 1;
             write(AUDIO_Device, AUDIO_SoundBuffer[AUDIO_FlipFlop], AUDIO_SoundBuffer_Size);
+            AUDIO_FlipFlop ^= 1;
 
             AUDIO_Samples += AUDIO_SoundBuffer_Size;
             AUDIO_Timer = ((((float) AUDIO_Samples) * (1.0f / (float) AUDIO_Latency)) * 1000.0f);

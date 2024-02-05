@@ -120,8 +120,10 @@ void *AUDIO_Thread(void *arg)
             SendIO((struct IORequest *) io);
             if(join) WaitIO((struct IORequest *) join);
             join = io;
-            AHIio = AHIio2; AHIio2 = io;
-            AHIbuf = AHIbuf2; AHIbuf2 = buf;
+            AHIio = AHIio2;
+            AHIio2 = io;
+            AHIbuf = AHIbuf2;
+            AHIbuf2 = buf;
         
             AUDIO_Samples += AUDIO_SoundBuffer_Size;
             AUDIO_Timer = ((((float) AUDIO_Samples) * (1.0f / (float) AUDIO_Latency)) * 1000.0f);
