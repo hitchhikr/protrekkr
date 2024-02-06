@@ -3,8 +3,8 @@
 *.dll
 *install*
 *.mingw*
-*.freebsd*
 *.netbsd*
+*.freebsd*
 *.linux*
 *.dsw*
 *.dsp*
