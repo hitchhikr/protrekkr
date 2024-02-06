@@ -1,5 +1,5 @@
 cd release/distrib/
-tar --bzip2 -cvf ptk_v2.6.4_aros.tar.bz2 * -X../../exclude_linux.lst
+zip -vr ptk_v2.6.4_aros.zip * -x@//exclude_aros.lst
 cd ..
 cd ..
 

@@ -3,6 +3,8 @@
 *.dll
 *install*
 *.mingw*
+*.freebsd*
+*.netbsd*
 *.dsw*
 *.dsp*
 *.sln*
@@ -34,3 +36,5 @@
 *test_linux*
 *ptk_properties.h*
 *.zip*
+*debug*
+*release*
