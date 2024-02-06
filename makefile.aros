@@ -1,8 +1,8 @@
 CXX = g++
 
-LIBS = -lSDL -lsdldraw -lz
+LIBS = -lSDL -lsdldraw -lz -lpthread
 
-FLAGS = -O3 -Lsrc/extralibs/sdl_draw -Lsrc/extralibs/zlib-1.2.3 \
+FLAGS = -O3 -Lsrc/extralibs/sdl_draw -Lsrc/extralibs/zlib-1.2.3 -ffast-math -fno-rtti \
         -fno-strict-aliasing -Wno-write-strings -Wno-multichar -D USE_SDL_THREADS -D __AROS__ -D __GCC__ -D __NO_MIDI__ -D __MOT_SWAP__ -I./src/include \
 
 CXXFLAGS = $(FLAGS)

@@ -2,7 +2,7 @@ CXX = ppc-morphos-g++-9 -noixemul
 
 LIBS = -lSDL -I/usr/local/lib -lsdldraw -lz_shared -lpthread 
 
-FLAGS = -O2 -I/usr/local/include -fno-strict-aliasing -ffast-math -fno-rtti -fno-exceptions -Lsrc/extralibs/sdl_draw  \
+FLAGS = -O3 -I/usr/local/include -fno-strict-aliasing -ffast-math -fno-rtti -fno-exceptions -Lsrc/extralibs/sdl_draw  \
 		-D__GCC__ -D__BIG_ENDIAN__ -D__MOT_SWAP__ -D__NO_MIDI__ -D__MORPHOS_SHAREDLIBS -DUSE_SDL_THREADS \
 		-fno-strict-aliasing -Wno-write-strings -Wno-multichar -Wno-narrowing
 

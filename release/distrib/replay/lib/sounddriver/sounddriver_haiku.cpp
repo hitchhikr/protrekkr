@@ -64,7 +64,7 @@ void AUDIO_Synth_Play(void);
 // ------------------------------------------------------
 // Name: AUDIO_Thread()
 // Desc: Audio rendering
-static void AUDIO_Callback(void* cookie, void* inBuffer, size_t byteCount, BStreamingGameSound* device)
+static void AUDIO_Callback(void *cookie, void *inBuffer, size_t byteCount, BStreamingGameSound *device)
 {
 	assert(byteCount != 0);
     if(AUDIO_Play_Flag)

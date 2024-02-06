@@ -266,7 +266,7 @@ void AUDIO_Wait_For_Thread(void)
         #if defined(USE_SDL_THREADS)
             if(hThread)     // sdl thread
         #else
-            if(hThread.p)   // pthreads
+            if(hThread)     // pthreads
         #endif
             {
                 while(!AUDIO_Acknowledge)
@@ -340,7 +340,7 @@ void AUDIO_Stop_Sound_Buffer(void)
     #if defined(USE_SDL_THREADS)
         if(hThread) //sdl thread
     #else
-        if(hThread.p) //pthreads
+        if(hThread) //pthreads
     #endif
     {
         Thread_Running = 0;

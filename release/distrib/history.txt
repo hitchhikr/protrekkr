@@ -8,6 +8,7 @@ v2.6.4
 - Window now opens at the center of the screen.
 - Window size is now remembered when switching back from full screen.
 - Added an option to reload last used ptk at startup.
+- Removed the custom mouse pointer in all versions except Mac OSX.
 
 v2.6.3
 
