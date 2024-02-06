@@ -438,23 +438,28 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
     Startup_Height = Screen_Info->current_h;
 
 #if defined(__LINUX__)
-    // Note:
-    // it looks like some distros don't have /proc/self
-    // Maybe a better (?) solution would be to use:
-    // sprintf(ExeProc, "/proc/$d/exe", getpid());
-    // readlink(ExeProc, ExePath, sizeof(ExePath));
-    readlink("/proc/self/exe", ExePath, ExePath_Size);
-    int exename_len = strlen(ExePath);
-    while(exename_len--)
-    {
-        if(ExePath[exename_len] == '/')
+
+    #if defined(__FREEBSD__) || defined(__NETBSD__) 
+        GETCWD(ExePath, MAX_PATH);
+    #else
+        // Note:
+        // it looks like some distros don't have /proc/self
+        // Maybe a better (?) solution would be to use:
+        // sprintf(ExeProc, "/proc/$d/exe", getpid());
+        // readlink(ExeProc, ExePath, sizeof(ExePath));
+        readlink("/proc/self/exe", ExePath, ExePath_Size);
+        int exename_len = strlen(ExePath);
+        while(exename_len--)
         {
-            ExePath[exename_len] = 0;
-            exename_len++;
-            break;
+            if(ExePath[exename_len] == '/')
+            {
+                ExePath[exename_len] = 0;
+                exename_len++;
+                break;
+            }
         }
-    }
-    CHDIR(ExePath);
+        CHDIR(ExePath);
+    #endif
 
 #elif defined(__HAIKU__)
 	chdir(dirname(argv[0]));
