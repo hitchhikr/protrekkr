@@ -915,11 +915,14 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
             }
         }
 
+#if defined(__MACOSX__)
         if(Display_Pointer) Display_Mouse_Pointer(Mouse.old_x, Mouse.old_y, TRUE);
-
+#endif
         if(!Screen_Update()) break;
 
+#if defined(__MACOSX__)
         if(Display_Pointer) Display_Mouse_Pointer(Mouse.x, Mouse.y, FALSE);
+#endif
 
         // Flush all pending blits
         if(Nbr_Update_Rects) 
@@ -1042,6 +1045,9 @@ int Switch_FullScreen(int Width, int Height)
 
     Init_UI();
 
+#if defined(__MACOSX__)
     SDL_ShowCursor(0);
+#endif
+
     return(TRUE);
 }
