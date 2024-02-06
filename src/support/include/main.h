@@ -35,8 +35,9 @@
 // ------------------------------------------------------
 // Includes
 #include <SDL/SDL.h>
+#if defined(__WIN32__)
 #include <SDL/SDL_syswm.h>
-#include <SDL/SDL_syswm.h>
+#endif
 
 #include "../../include/version.h"
 

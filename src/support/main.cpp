@@ -101,7 +101,9 @@ int Startup_Height;
 extern int Display_Pointer;
 int Burn_Title;
 SDL_Surface *Main_Screen;
+#if defined(__WIN32__)
 SDL_SysWMinfo WMInfo;
+#endif
 int Prog_End;
 MOUSE Mouse;
 unsigned short Keys[SDLK_LAST];
@@ -1026,14 +1028,10 @@ int Switch_FullScreen(int Width, int Height)
     // Flush any pending rects
     Nbr_Update_Rects = 0;
 
-#ifndef __MORPHOS__	
-    // Obtain SDL window
-    SDL_GetWMInfo(&WMInfo);
-#endif
-
 #if defined(__WIN32__)
     HICON hIcon;
     HICON hIconSmall;
+    SDL_GetWMInfo(&WMInfo);
     Main_Window = WMInfo.window;
     HINSTANCE ApphInstance = GetModuleHandle(0);
     hIcon = LoadIcon(ApphInstance, MAKEINTRESOURCE(IDI_ICON));

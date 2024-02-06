@@ -211,7 +211,7 @@ void AUDIO_Wait_For_Thread(void)
             while(AUDIO_Acknowledge)
             {
                 usleep(10);
-            };
+            }
         }
         else
         {
@@ -220,7 +220,7 @@ void AUDIO_Wait_For_Thread(void)
                 while(!AUDIO_Acknowledge)
                 {
                     usleep(10);
-                };
+                }
             }
         }
     }
