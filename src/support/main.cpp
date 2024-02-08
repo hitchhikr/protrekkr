@@ -612,6 +612,13 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
         SDL_Quit();
         exit(0);
     }
+
+    if(FullScreen)
+    {
+        Save_Cur_Width = SCREEN_WIDTH;
+        Save_Cur_Height = SCREEN_HEIGHT;
+    }
+
     Ptk_Palette[0].r = Save_R;
     Ptk_Palette[0].g = Save_G;
     Ptk_Palette[0].b = Save_B;
@@ -993,7 +1000,6 @@ int Switch_FullScreen(int Width, int Height)
     }
     else
     {
-
         if(Save_Cur_Width != -1)
         {
             Width = Save_Cur_Width;
