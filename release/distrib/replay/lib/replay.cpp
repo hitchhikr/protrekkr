@@ -855,7 +855,7 @@ int delay_time;
     extern signed char c_midiin;
     extern signed char c_midiout;
     int plx;
-    char Midiprg[128];
+    int Midiprg[128];
     int LastProgram[MAX_TRACKS];
     int wait_level;
     char nameins[128][20];
@@ -2629,12 +2629,12 @@ void Sp_Player(void)
                     {
                         if((pl_pan_row == 0x90 && pl_eff_row[i] < 128) && c_midiout != -1)
                         {
-                            Midi_Send(176 + Chan_Midi_Prg[ct], pl_eff_row[i], pl_dat_row[i]);
+                            Midi_Send(0xb0 + Chan_Midi_Prg[ct], pl_eff_row[i], pl_dat_row[i]);
                         }
 
                         if((pl_eff_row[i] == 0x80 && pl_dat_row[i] < 128) && c_midiout != -1)
                         {
-                            Midi_Send(176 + Chan_Midi_Prg[ct], 0, pl_dat_row[i]);
+                            Midi_Send(0xb0 + Chan_Midi_Prg[ct], 0, pl_dat_row[i]);
                         }
                     }
 #endif
@@ -4416,14 +4416,15 @@ void Play_Instrument(int channel, int sub_channel)
                 // Set the midi program if it was modified
                 if(LastProgram[Chan_Midi_Prg[channel]] != Midiprg[associated_sample])
                 {
-                    Midi_Send(192 + Chan_Midi_Prg[channel], Midiprg[associated_sample], 127);
+                    Midi_Send(0xb0 + Chan_Midi_Prg[channel], 0, Midiprg[associated_sample] / 128);
+                    Midi_Send(0xc0 + Chan_Midi_Prg[channel], Midiprg[associated_sample] & 0x7f, 127);
                     LastProgram[Chan_Midi_Prg[channel]] = Midiprg[associated_sample];
                 }
 
                 // Send the note to the midi device
                 float veloc = vol * mas_vol * local_mas_vol * local_ramp_vol;
 
-                Midi_Send(144 + Chan_Midi_Prg[channel], mnote, (int) (veloc * 127));
+                Midi_Send(0x90 + Chan_Midi_Prg[channel], mnote, (int) (veloc * 127));
                 if(midi_sub_channel < 0) Midi_Current_Notes[Chan_Midi_Prg[channel]][(-midi_sub_channel) - 1] = mnote;
                 else Midi_Current_Notes[Chan_Midi_Prg[channel]][midi_sub_channel - 1] = mnote;
             }

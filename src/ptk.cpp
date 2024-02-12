@@ -2068,7 +2068,8 @@ void LoadFile(int Freeindex, const char *str)
            strcmp(extension, "TWNNINS6") == 0 ||
            strcmp(extension, "TWNNINS7") == 0 ||
            strcmp(extension, "TWNNINS8") == 0 ||
-           strcmp(extension, "TWNNINS9") == 0)
+           strcmp(extension, "TWNNINS9") == 0 ||
+           strcmp(extension, "PROTINSA") == 0)
         {
             sprintf(instrname, "%s", FileName);
             Stop_Current_Instrument();
@@ -2099,7 +2100,8 @@ void LoadFile(int Freeindex, const char *str)
                 strcmp(extension, "PROTREKM") == 0 ||
                 strcmp(extension, "PROTREKN") == 0 ||
                 strcmp(extension, "PROTREKO") == 0 ||
-                strcmp(extension, "PROTREKP") == 0)
+                strcmp(extension, "PROTREKP") == 0 ||
+                strcmp(extension, "PROTREKQ") == 0)
         {
             sprintf(name, "%s", FileName);
             Song_Stop();
@@ -2144,9 +2146,9 @@ void LoadFile(int Freeindex, const char *str)
         else
         {
             if((extension_AIFF[0] == FormID &&
-               extension_AIFF[2] == AiffID) ||
+                extension_AIFF[2] == AiffID) ||
                (extension_AIFF[0] == FormID &&
-               extension_AIFF[2] == AifcID))
+                extension_AIFF[2] == AifcID))
             {
                 Status_Box("Attempting of loading an Audio IFF file...");
                 if(AIFF_File.Open(FileName))

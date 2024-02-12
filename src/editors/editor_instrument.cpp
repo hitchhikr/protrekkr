@@ -290,7 +290,7 @@ void Actualize_Instrument_Ed(int typex, char gode)
                     }
                     else
                     {
-                        Gui_Draw_Arrows_Number_Box(570, (Cur_Height - 98), Midiprg[Current_Instrument], BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
+                        Gui_Draw_Arrows_Number_Box(570, (Cur_Height - 98), Midiprg[Current_Instrument] + 1, BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
                     }
 
                     Actualize_Instruments_Synths_List(1);
@@ -613,7 +613,7 @@ void Mouse_Left_Instrument_Ed(void)
             gui_action = GUI_CMD_UPDATE_INSTRUMENT_ED;
             teac = 10;
         }
-        if(zcheckMouse(614, (Cur_Height - 98), 16, 16) && Midiprg[Current_Instrument] < 127)
+        if(zcheckMouse(614, (Cur_Height - 98), 16, 16) && Midiprg[Current_Instrument] < 511)
         {
             Midiprg[Current_Instrument]++;
             gui_action = GUI_CMD_UPDATE_INSTRUMENT_ED;
@@ -931,10 +931,10 @@ void Mouse_Right_Instrument_Ed(void)
             teac = 10;
         }
 
-        if(zcheckMouse(614, (Cur_Height - 98), 16, 16) && Midiprg[Current_Instrument] < 127)
+        if(zcheckMouse(614, (Cur_Height - 98), 16, 16) && Midiprg[Current_Instrument] < 511)
         {
-            if(Midiprg[Current_Instrument] < 111) Midiprg[Current_Instrument] += 16;
-            else Midiprg[Current_Instrument] = 127;
+            if(Midiprg[Current_Instrument] < (511 - 16)) Midiprg[Current_Instrument] += 16;
+            else Midiprg[Current_Instrument] = 511;
             gui_action = GUI_CMD_UPDATE_INSTRUMENT_ED;
             teac = 10;
         }
@@ -1292,7 +1292,7 @@ void Dump_Instruments_Synths_List(int xr, int yr)
                             }
                             else
                             {
-                                sprintf(Line, "Midi prog.: %.2d", Midiprg[rel_val]);
+                                sprintf(Line, "Midi prog.: %.3d", Midiprg[rel_val] + 1);
                                 PrintString(xr + (Cur_Width - 480), yr + (counter * 12), USE_FONT, Line);
                             }
                             break;

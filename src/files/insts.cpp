@@ -46,6 +46,7 @@ void Load_Inst(char *FileName)
     int New_Env = FALSE;
     int Glob_Vol = FALSE;
     int Combine = FALSE;
+    int Long_Midi_Prg = FALSE;
 
     Status_Box("Attempting to load an instrument file...");
     FILE *in;
@@ -59,6 +60,8 @@ void Load_Inst(char *FileName)
 
         switch(extension[7])
         {
+            case 'A':
+                Long_Midi_Prg = TRUE;
             case '9':
                 Combine = TRUE;
             case '8':
@@ -90,8 +93,18 @@ void Load_Inst(char *FileName)
 
         int swrite = Current_Instrument;
 
-        Read_Data(&Midiprg[swrite], sizeof(char), 1, in);
+        if(Long_Midi_Prg)
+        {
+            Read_Data_Swap(&Midiprg[swrite], sizeof(int), 1, in);
+        }
+        else
+        {
+            char OldMidiPrg;
 
+            Read_Data(&OldMidiPrg, sizeof(char), 1, in);
+            Midiprg[swrite] = OldMidiPrg;
+        }
+            
         Read_Data(&Synthprg[swrite], sizeof(char), 1, in);
 
         PARASynth[swrite].disto = 0;
@@ -205,7 +218,7 @@ void Save_Inst(void)
     char synth_prg;
     int synth_save;
 
-    sprintf(extension, "TWNNINS9");
+    sprintf(extension, "TWNNINSA");
 
     if(!strlen(nameins[Current_Instrument])) sprintf(nameins[Current_Instrument], "Untitled");
     sprintf (Temph, "Saving '%s.pti' instrument in instruments directory...", nameins[Current_Instrument]);
@@ -223,7 +236,7 @@ void Save_Inst(void)
         // Writing sample data
         int swrite = Current_Instrument;
 
-        Write_Data(&Midiprg[swrite], sizeof(char), 1, in);
+        Write_Data_Swap(&Midiprg[swrite], sizeof(int), 1, in);
 
         switch(Synthprg[swrite])
         {

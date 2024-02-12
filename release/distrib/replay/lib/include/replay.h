@@ -323,7 +323,7 @@ extern unsigned char Song_Length;
 extern unsigned char pSequence[MAX_SEQUENCES];
 extern short patternLines[MAX_ROWS];
 extern char nameins[MAX_INSTRS][20];
-extern char Midiprg[MAX_INSTRS];
+extern int Midiprg[MAX_INSTRS];
 
 #if defined(PTK_SYNTH)
 extern unsigned char Synthprg[MAX_INSTRS];

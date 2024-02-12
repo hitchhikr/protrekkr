@@ -255,7 +255,7 @@ void Midi_Send(int nbr_track, int eff_dat, int row_dat)
 
     if(c_midiout != -1)
     {
-        if((nbr_track & 0xfff0) == 144)
+        if((nbr_track & 0xfff0) == 0x90)
         {
             for(i = 0; i < 256; i++)
             {
@@ -280,7 +280,7 @@ void Midi_NoteOff(int channel, int note)
     if(c_midiout != -1)
     {
         note++;
-        _Midi_Send(176 + Chan_Midi_Prg[channel], 0x40, 0);
+        _Midi_Send(0xb0 + Chan_Midi_Prg[channel], 0x40, 0);
         if(note)
         {
             for(i = 0; i < 256; i++)
