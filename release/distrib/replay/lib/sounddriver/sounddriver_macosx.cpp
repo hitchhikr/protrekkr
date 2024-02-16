@@ -100,9 +100,9 @@ int AUDIO_Init_Driver(void (*Mixer)(Uint8 *, Uint32))
                                 &Amount,
                                 (void *) &AUDIO_Device) == noErr)
     {
-        if(AudioDeviceAddIOProc(AUDIO_Device,
-                                AUDIO_Callback,
-                                NULL) == noErr)
+//        if(AudioDeviceAddIOProc(AUDIO_Device,
+  //                              AUDIO_Callback,
+    //                            NULL) == noErr)
         {
             return(AUDIO_Create_Sound_Buffer(AUDIO_Milliseconds));
         }
@@ -154,7 +154,7 @@ int AUDIO_Create_Sound_Buffer(int milliseconds)
         Desc.mSampleRate = AUDIO_PCM_FREQ;
         Desc.mChannelsPerFrame = AUDIO_DBUF_CHANNELS;
         Desc.mBitsPerChannel = sizeof(short) << 3;
-        Desc.mFormatFlags = kAudioFormatFlagIsSignedInteger;//kLinearPCMFormatFlagIsPacked | 
+        Desc.mFormatFlags = kLinearPCMFormatFlagIsPacked | kAudioFormatFlagIsSignedInteger;
         Desc.mFormatID = kAudioFormatLinearPCM;
         Desc.mFramesPerPacket = 1;
         Desc.mBytesPerFrame = (Desc.mBitsPerChannel * Desc.mChannelsPerFrame) >> 3;
