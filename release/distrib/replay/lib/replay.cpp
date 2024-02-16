@@ -5915,8 +5915,8 @@ void Fire303(unsigned char number, int unit)
                     tb303engine[unit].tbTargetRealVolume = 1.0f;
                     tb303engine[unit].tbCurMultiple = tb303[unit].scale;
                     break;
-
-        default: // No Fire
+        default:
+            // No Fire
             tb303engine[unit].tbLine = 255;
             tb303engine[unit].RampVolume = 0.0f;
             tb303engine[unit].tbTargetRealVolume = 0.0f;
