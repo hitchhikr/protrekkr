@@ -178,7 +178,7 @@ int AUDIO_Create_Sound_Buffer(int milliseconds)
         Desc.mSampleRate = AUDIO_PCM_FREQ;
         Desc.mChannelsPerFrame = AUDIO_DBUF_CHANNELS;
         Desc.mBitsPerChannel = sizeof(short) << 3;
-        Desc.mFormatFlags = kLinearPCMFormatFlagIsPacked | kAudioFormatFlagIsSignedInteger;
+        Desc.mFormatFlags = kLinearPCMFormatFlagIsPacked;// | kAudioFormatFlagIsSignedInteger
         Desc.mFormatID = kAudioFormatLinearPCM;
         Desc.mFramesPerPacket = 1;
         Desc.mBytesPerFrame = (Desc.mBitsPerChannel * Desc.mChannelsPerFrame) >> 3;

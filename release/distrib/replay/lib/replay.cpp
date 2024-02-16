@@ -5451,13 +5451,13 @@ void Get_Player_Values(void)
     //  i don't know if it's a bug from Linux mixer/Driver or anything)
 
     // It looks like they (hopefully) fixed their shit so this nasty hack is no longer required.
-#if defined(__MACOSX_X86__)
+/*#if defined(__MACOSX_X86__)
     left_value = (int) (left_float * 8192.0f);
     right_value = (int) (right_float * 8192.0f);
-#else
+#else*/
     left_value = (int) (left_float * 32767.0f);
     right_value = (int) (right_float * 32767.0f);
-#endif
+//#endif
 
 }
 
