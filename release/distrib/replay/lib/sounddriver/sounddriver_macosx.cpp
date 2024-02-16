@@ -149,14 +149,12 @@ int AUDIO_Create_Sound_Buffer(int milliseconds)
     if(AudioDeviceGetProperty(AUDIO_Device,
                               0,
                               FALSE,
-                              kAudioDevicePropertyStreamFormat,
-                              &Amount,
-                              &Desc) == noErr)
+                              kAudioDevicePropertyStreamFormat, &Amount, &Desc) == noErr)
     {
         Desc.mSampleRate = AUDIO_PCM_FREQ;
         Desc.mChannelsPerFrame = AUDIO_DBUF_CHANNELS;
         Desc.mBitsPerChannel = sizeof(short) << 3;
-        Desc.mFormatFlags = kLinearPCMFormatFlagIsPacked | kAudioFormatFlagIsSignedInteger;
+        Desc.mFormatFlags = kAudioFormatFlagIsSignedInteger;//kLinearPCMFormatFlagIsPacked | 
         Desc.mFormatID = kAudioFormatLinearPCM;
         Desc.mFramesPerPacket = 1;
         Desc.mBytesPerFrame = (Desc.mBitsPerChannel * Desc.mChannelsPerFrame) >> 3;
@@ -171,9 +169,7 @@ int AUDIO_Create_Sound_Buffer(int milliseconds)
                                   NULL,
                                   0,
                                   FALSE,
-                                  kAudioDevicePropertyStreamFormat,
-                                  sizeof(AudioStreamBasicDescription),
-                                  &Desc) != noErr)
+                                  kAudioDevicePropertyStreamFormat, sizeof(AudioStreamBasicDescription), &Desc) != noErr)
         {
             // Try with 32 bit floating points
             AUDIO_16Bits = FALSE;
@@ -194,9 +190,7 @@ int AUDIO_Create_Sound_Buffer(int milliseconds)
                                       NULL,
                                       0,
                                       FALSE,
-                                      kAudioDevicePropertyStreamFormat,
-                                      sizeof(AudioStreamBasicDescription),
-                                      &Desc) != noErr)
+                                      kAudioDevicePropertyStreamFormat, sizeof(AudioStreamBasicDescription), &Desc) != noErr)
             {
                 found_pcmformat = FALSE;
             }
