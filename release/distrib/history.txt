@@ -5,6 +5,8 @@ ProTrekkr releases history
 v2.6.5
 
 - Added handling for 512 midi patches via bank selection.
+- Fixed a couple of bugs in the standalone replay.
+- Added effects 3F & 40 to set the scale of the two 303 units.
 
 v2.6.4
 
