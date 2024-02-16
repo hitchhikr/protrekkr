@@ -2,7 +2,7 @@ include test/module.macosx
 
 LIBS_PPC = -lptkreplay_ppc -framework CoreAudio -framework AudioUnit -framework Cocoa 
 DEBUG = 
-FLAGS_PPC = $(DEBUG) -O2 -arch ppc -mcpu=G4 -fomit-frame-pointer -fno-strict-aliasing -ffast-math --prefetch-loop-arrays -faltivec -maltivec -mtune=G4 -fno-rtti -D __MACOSX_PPC__ -D __GCC__ -D __STAND_ALONE__ -D __BIG_ENDIAN__
+FLAGS_PPC = $(DEBUG) -Os -arch ppc -mcpu=G4 -fomit-frame-pointer -fno-strict-aliasing -ffast-math --prefetch-loop-arrays -faltivec -maltivec -mtune=G4 -fno-rtti -D __MACOSX_PPC__ -D __GCC__ -D __STAND_ALONE__ -D __BIG_ENDIAN__
 EXEOBJS_PPC = test_ppc.o module_ppc.o
 
 all: module ptkreplay replaytest
