@@ -5,6 +5,7 @@
 *.mingw*
 *.freebsd*
 *.netbsd*
+*.x86*
 *.dsw*
 *.dsp*
 *.sln*
