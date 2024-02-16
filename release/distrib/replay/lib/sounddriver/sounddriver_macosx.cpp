@@ -106,14 +106,14 @@ int AUDIO_Init_Driver(void (*Mixer)(Uint8 *, Uint32))
         {
             return(AUDIO_Create_Sound_Buffer(AUDIO_Milliseconds));
         }
-
+/*
 #if !defined(__STAND_ALONE__) && !defined(__WINAMP__)
         else
         {
             Message_Error("Error while calling AudioDeviceAddIOProc()");
         }
 #endif
-
+*/
     }
 
 #if !defined(__STAND_ALONE__) && !defined(__WINAMP__)
