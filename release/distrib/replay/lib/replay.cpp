@@ -948,12 +948,12 @@ void Reset_Values(void);
 // Audio mixer
 void STDCALL Mixer(Uint8 *Buffer, Uint32 Len)
 {
+
 #if defined(__MACOSX_PPC__) || defined(__MACOSX_X86__)
     float *pSamples_flt = (float *) Buffer;
-    short *pSamples_int = (short *) Buffer;
-#else
-    short *pSamples = (short *) Buffer;
 #endif
+
+    short *pSamples = (short *) Buffer;
     int i;
 
 #if !defined(__STAND_ALONE__)
@@ -1022,8 +1022,8 @@ void STDCALL Mixer(Uint8 *Buffer, Uint32 Len)
 #if defined(__MACOSX_PPC__) || defined(__MACOSX_X86__)
             if(AUDIO_16Bits)
             {
-                *pSamples_int++ = left_value;
-                *pSamples_int++ = right_value;
+                *pSamples++ = left_value;
+                *pSamples++ = right_value;
             }
             else
             {
@@ -5451,13 +5451,14 @@ void Get_Player_Values(void)
     //  i don't know if it's a bug from Linux mixer/Driver or anything)
 
     // It looks like they (hopefully) fixed their shit so this nasty hack is no longer required.
-/*    #if defined(__LINUX__) && !defined(__FREEBSD__)
-        left_value = (int) (left_float * 8192.0f);
-        right_value = (int) (right_float * 8192.0f);
-    #else*/
-        left_value = (int) (left_float * 32767.0f);
-        right_value = (int) (right_float * 32767.0f);
-//    #endif
+#if defined(__MACOSX_X86__)
+    left_value = (int) (left_float * 8192.0f);
+    right_value = (int) (right_float * 8192.0f);
+#else
+    left_value = (int) (left_float * 32767.0f);
+    right_value = (int) (right_float * 32767.0f);
+#endif
+
 }
 
 // ------------------------------------------------------
