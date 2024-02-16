@@ -51,7 +51,7 @@ snd_pcm_t *playback_handle;
 snd_pcm_sframes_t latency;
 
 int AUDIO_Latency;
-int AUDIO_Milliseconds = 20;
+int AUDIO_Milliseconds = 10;
 
 // ------------------------------------------------------
 // Functions

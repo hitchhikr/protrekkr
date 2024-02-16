@@ -58,7 +58,7 @@ int Midi_Notes_History[MAX_TRACKS][256];
 int Midi_Current_Notes[MAX_TRACKS][MAX_POLYPHONY];
 int Midi_Notes_History_Amount;
 
-RtMidiIn  *midiin = 0;
+RtMidiIn *midiin = 0;
 RtMidiOut *midiout = 0;
 
 int midiin_changed = 0;

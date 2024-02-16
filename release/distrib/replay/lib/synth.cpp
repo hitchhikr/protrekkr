@@ -1118,7 +1118,7 @@ float CSynth::GetSample(short *Left_Samples,
     }
 
 // ------------------------------------------------
-// Oscillator 3
+// Oscillator 3 (sub)
 
 #if defined(PTK_SYNTH_OSC3)
     if(Data.OSC3_SWITCH)

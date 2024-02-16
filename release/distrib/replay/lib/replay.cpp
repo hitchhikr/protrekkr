@@ -2557,6 +2557,7 @@ void Sp_Player(void)
                         Fire303(pl_dat_row[i], 1);
                     }
 #endif
+
                 }
 
 #if !defined(__STAND_ALONE__)
@@ -4442,7 +4443,8 @@ void Do_Effects_Tick_0(void)
 {
 
 #if defined(PTK_FX_ARPEGGIO) || defined(PTK_FX_VIBRATO) || defined(PTK_FX_REVERSE) || defined(PTK_SHUFFLE) || \
-    defined(PTK_FX_SETREVCUTO) || defined(PTK_FX_SETREVRESO)
+    defined(PTK_FX_SETREVCUTO) || defined(PTK_FX_SETREVRESO) || defined(PTK_FX_SETBPM) || defined(PTK_FX_SETSPEED)
+
     int i;
     int j;
     int pltr_eff_row[MAX_FX];
@@ -4537,6 +4539,7 @@ void Do_Effects_Tick_0(void)
                     break;
 #endif
 
+
 #if defined(PTK_FX_SETBPM)
                 // $f0 Set BPM
                 case 0xf0:
@@ -4588,7 +4591,7 @@ void Do_Effects_Tick_0(void)
         }
     }      
 
-#endif  // defined(PTK_FX_ARPEGGIO) || defined(PTK_FX_VIBRATO) || defined(PTK_FX_REVERSE)
+#endif  // defined(PTK_FX_ARPEGGIO) || defined(PTK_FX_VIBRATO) || defined(PTK_FX_REVERSE) etc.
 
 }
 
@@ -4767,7 +4770,8 @@ void Do_Effects_Ticks_X(void)
     defined(PTK_FX_FINEPITCHUP) || defined(PTK_FX_FINEPITCHDOWN) || \
     defined(PTK_FX_SENDTODELAYCOMMAND) || defined(PTK_FX_SENDTOREVERBCOMMAND) || \
     defined(PTK_FX_SETDISTORTIONTHRESHOLD) || defined(PTK_FX_SETDISTORTIONCLAMP) || \
-    defined(PTK_FX_SETFILTERRESONANCE) || defined(PTK_FX_SWITCHFLANGER)
+    defined(PTK_FX_SETFILTERRESONANCE) || defined(PTK_FX_SWITCHFLANGER) || \
+    defined(PTK_FX_TRACK_FILTER_LFO)
 
             // Only at tick 0 but after instruments data
             if(PosInTick == 0)
