@@ -628,7 +628,7 @@ Read_Mod_File:
         Read_Mod_Data_Swap(&lchorus_feedback, sizeof(float), 1, in);
         Read_Mod_Data_Swap(&rchorus_feedback, sizeof(float), 1, in);
 
-        Read_Mod_Data_Swap(&shuffle, sizeof(int), 1, in);
+        Read_Mod_Data_Swap(&shuffle_amount, sizeof(int), 1, in);
 
         // Load the new reverb data
         if(New_Reverb)
@@ -1412,7 +1412,7 @@ int Save_Ptk(char *FileName, int NewFormat, int Simulate, Uint8 *Memory)
             Write_Mod_Data_Swap(&rchorus_delay, sizeof(int), 1, in);
             Write_Mod_Data_Swap(&lchorus_feedback, sizeof(float), 1, in);
             Write_Mod_Data_Swap(&rchorus_feedback, sizeof(float), 1, in);
-            Write_Mod_Data_Swap(&shuffle, sizeof(int), 1, in);
+            Write_Mod_Data_Swap(&shuffle_amount, sizeof(int), 1, in);
 
             // Save the reverb data
             Save_Reverb_Data(Write_Mod_Data, Write_Mod_Data_Swap, in);
@@ -1888,7 +1888,7 @@ int Calc_Length(void)
     int have_break = 255;
     int PosTicks;
     int shuffle_switch;
-    int shuffle_stp = shuffle;
+    int shuffle_stp = shuffle_amount;
     double len;
     int nbr_ticks;
     int Samples;
@@ -1898,8 +1898,8 @@ int Calc_Length(void)
 
     shuffle_switch = -1;
     Samples = (int) ((60 * MIX_RATE) / (Beats_Per_Min * Ticks_Per_Beat));
-    if(shuffle_switch == 1) shuffle_stp = -((Samples * shuffle) / 200);
-    else shuffle_stp = (Samples * shuffle) / 200;
+    if(shuffle_switch == 1) shuffle_stp = -((Samples * shuffle_amount) / 200);
+    else shuffle_stp = (Samples * shuffle_amount) / 200;
 
     PosTicks = 0;
     nbr_ticks = 0;
@@ -2000,11 +2000,11 @@ int Calc_Length(void)
 
                 if(shuffle_switch == 1)
                 {
-                    shuffle_stp = -((Samples * shuffle) / 200);
+                    shuffle_stp = -((Samples * shuffle_amount) / 200);
                 }
                 else
                 {
-                    shuffle_stp = (Samples * shuffle) / 200;
+                    shuffle_stp = (Samples * shuffle_amount) / 200;
                 }
                 len += PosTicks - 1;
 

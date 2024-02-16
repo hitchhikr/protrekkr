@@ -607,7 +607,7 @@ int glide;
 float Sample_Vol[MAX_INSTRS];
 unsigned int SubCounter;
 unsigned int SamplesPerSub;
-int shuffle;
+int shuffle_amount;
 
 #if defined(PTK_SHUFFLE)
 int shufflestep;
@@ -1685,7 +1685,7 @@ int PTKEXPORT Ptk_InitModule(Uint8 *Module, int start_position)
         Mod_Dat_Read(&lchorus_feedback, sizeof(float));
         Mod_Dat_Read(&rchorus_feedback, sizeof(float));
 
-        Mod_Dat_Read(&shuffle, sizeof(int));
+        Mod_Dat_Read(&shuffle_amount, sizeof(int));
 
         // Reading track part sequence
         for(int tps_pos = 0; tps_pos < Song_Length; tps_pos++)
@@ -2077,7 +2077,7 @@ void Pre_Song_Init(void)
     sprintf(style, "Anything Goes");
 #endif
 
-    shuffle = 0;
+    shuffle_amount = 0;
     
     for(int ini = 0; ini < MAX_TRACKS; ini++)
     {
@@ -4501,7 +4501,7 @@ void Do_Effects_Tick_0(void)
 
 #if defined(PTK_SHUFFLE)
                 case 0x25:
-                    shuffle = (int) ((float) pltr_dat_row[j] * 0.39216f);
+                    shuffle_amount = (int) ((float) pltr_dat_row[j] * 0.39216f);
                     Update_Shuffle();
 
 #if !defined(__STAND_ALONE__) && !defined(__WINAMP__)
@@ -6704,7 +6704,7 @@ float do_eq(LPEQSTATE es, float sample, int Left)
 #if defined(PTK_SHUFFLE)
 void Update_Shuffle(void)
 {
-    if(shuffleswitch == 1) shufflestep = -((SamplesPerTick * shuffle) / 200);
-    else shufflestep = (SamplesPerTick * shuffle) / 200;
+    if(shuffleswitch == 1) shufflestep = -((SamplesPerTick * shuffle_amount) / 200);
+    else shufflestep = (SamplesPerTick * shuffle_amount) / 200;
 }
 #endif

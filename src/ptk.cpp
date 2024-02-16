@@ -6351,12 +6351,12 @@ void Display_Shuffle(void)
 {
     char string[64];
 
-    if(shuffle > 100) shuffle = 100;
-    if(shuffle < 0) shuffle = 0;
+    if(shuffle_amount > 100) shuffle_amount = 100;
+    if(shuffle_amount < 0) shuffle_amount = 0;
     Gui_Draw_Button_Box(586, 6, 40, 16, "Shuffle", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
 
-    Realslider_Size(586 + 40, 6, 100, shuffle, TRUE);
-    sprintf(string, "%d%%", shuffle);
+    Realslider_Size(586 + 40, 6, 100, shuffle_amount, TRUE);
+    sprintf(string, "%d%%", shuffle_amount);
     Print_String(string, 586 + 40, 8, 116, BUTTON_TEXT_CENTERED);
     Gui_Draw_Button_Box(746, 6, Cur_Width - 802, 16, "", BUTTON_NORMAL | BUTTON_DISABLED);
 }
@@ -6390,7 +6390,7 @@ void Mouse_Sliders_Master_Shuffle(void)
     // Shuffle
     if(zcheckMouse(586 + 40, 6, 120, 18))
     {
-        shuffle = (int) ((Mouse.x - (586 + 40 + 10)));
+        shuffle_amount = (int) ((Mouse.x - (586 + 40 + 10)));
         Display_Shuffle();
     }
 }
