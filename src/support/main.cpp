@@ -58,7 +58,7 @@
 #include <shlwapi.h>
 #endif
 
-#if defined(__MACOSX_PPC__)
+#if defined(__MACOSX_PPC__) || defined(__MACOSX_X86__)
 #include <mach-o/dyld.h>
 #endif
 
