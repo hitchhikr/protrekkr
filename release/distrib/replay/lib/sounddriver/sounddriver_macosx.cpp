@@ -163,9 +163,9 @@ int AUDIO_Create_Sound_Buffer(int milliseconds)
         Desc.mBytesPerPacket = Desc.mBytesPerFrame * Desc.mFramesPerPacket;
 
 #if defined(__BIG_ENDIAN__)
-#endif
         Desc.mFormatFlags |= kLinearPCMFormatFlagIsBigEndian;
-        Message_Error("Trying 16 bit...");
+#endif
+
         // Try with 16 bit integers
         if(AudioDeviceSetProperty(AUDIO_Device,
                                   NULL,

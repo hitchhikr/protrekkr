@@ -948,7 +948,7 @@ void Reset_Values(void);
 // Audio mixer
 void STDCALL Mixer(Uint8 *Buffer, Uint32 Len)
 {
-#if defined(__MACOSX_PPC__)
+#if defined(__MACOSX_PPC__) || defined(__MACOSX_X86__)
     float *pSamples_flt = (float *) Buffer;
     short *pSamples_int = (short *) Buffer;
 #else
@@ -966,7 +966,7 @@ void STDCALL Mixer(Uint8 *Buffer, Uint32 Len)
     {
 #endif
 
-#if defined(__MACOSX_PPC__)
+#if defined(__MACOSX_PPC__) || defined(__MACOSX_X86__)
         for(i = Len - 1; i >= 0; i -= AUDIO_16Bits ? 4 : 8)
 #else
         for(i = Len - 1; i >= 0; i -= 4)
@@ -991,7 +991,7 @@ void STDCALL Mixer(Uint8 *Buffer, Uint32 Len)
                            (Metronome_Dats[(metronome_internal_counter_int * 2)] & 0xff);
                 Right_Dat = Left_Dat;
 
-#if defined(__MACOSX_PPC__)
+#if defined(__MACOSX_PPC__) || defined(__MACOSX_X86__)
                 if(AUDIO_16Bits)
                 {
                     left_value += Left_Dat;
@@ -1019,7 +1019,7 @@ void STDCALL Mixer(Uint8 *Buffer, Uint32 Len)
 #endif
 #endif
 
-#if defined(__MACOSX_PPC__)
+#if defined(__MACOSX_PPC__) || defined(__MACOSX_X86__)
             if(AUDIO_16Bits)
             {
                 *pSamples_int++ = left_value;
