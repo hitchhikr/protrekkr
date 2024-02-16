@@ -180,9 +180,9 @@ struct WaveFormat_Chunk
     {
         return header.ckID == FourCC("fmt ") &&
                (data.nChannels == 1 || data.nChannels == 2) &&
-                data.nAvgBytesPerSec == ((data.nChannels * data.nSamplesPerSec * data.nBitsPerSample) / 8) &&
-                data.nBlockAlign == ((data.nChannels * data.nBitsPerSample) / 8) ||
-                data.nBitsPerSample == 12;
+                (data.nAvgBytesPerSec == ((data.nChannels * data.nSamplesPerSec * data.nBitsPerSample) / 8)) &&
+                (data.nBlockAlign == ((data.nChannels * data.nBitsPerSample) / 8)) ||
+                (data.nBitsPerSample == 12);
     }
 };
 
