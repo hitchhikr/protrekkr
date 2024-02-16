@@ -66,9 +66,9 @@ void AUDIO_Synth_Play(void);
 // Name: AUDIO_Thread()
 // Desc: Audio rendering
 static OSStatus AUDIO_Callback(AudioDeviceID device,
-                               const AudioTimeStamp* current_time,
-	                           const AudioBufferList* data_in,
-                               const AudioTimeStamp* time_in,
+                               const AudioTimeStamp *current_time,
+	                           const AudioBufferList *data_in,
+                               const AudioTimeStamp *time_in,
 	                           AudioBufferList *data_out,
                                const AudioTimeStamp *time_out,
                                void *client_data)
@@ -178,7 +178,7 @@ int AUDIO_Create_Sound_Buffer(int milliseconds)
         Desc.mSampleRate = AUDIO_PCM_FREQ;
         Desc.mChannelsPerFrame = AUDIO_DBUF_CHANNELS;
         Desc.mBitsPerChannel = sizeof(short) << 3;
-        Desc.mFormatFlags = kLinearPCMFormatFlagIsPacked;// | kAudioFormatFlagIsSignedInteger
+        Desc.mFormatFlags = kLinearPCMFormatFlagIsPacked | kAudioFormatFlagIsSignedInteger;
         Desc.mFormatID = kAudioFormatLinearPCM;
         Desc.mFramesPerPacket = 1;
         Desc.mBytesPerFrame = (Desc.mBitsPerChannel * Desc.mChannelsPerFrame) >> 3;
@@ -189,11 +189,11 @@ int AUDIO_Create_Sound_Buffer(int milliseconds)
 #endif
 
         // Try with 16 bit integers
-        if(AudioDeviceSetProperty(AUDIO_Device,
-                                  NULL,
-                                  0,
-                                  FALSE,
-                                  kAudioDevicePropertyStreamFormat, sizeof(AudioStreamBasicDescription), &Desc) != noErr)
+//        if(AudioDeviceSetProperty(AUDIO_Device,
+  //                                NULL,
+    //                              0,
+      //                            FALSE,
+        //                          kAudioDevicePropertyStreamFormat, sizeof(AudioStreamBasicDescription), &Desc) != noErr)
         {
             // Try with 32 bit floating points
             AUDIO_16Bits = FALSE;
@@ -353,7 +353,13 @@ void AUDIO_Stop(void)
 void AUDIO_Stop_Sound_Buffer(void)
 {
     AUDIO_Stop();
+
+#if defined(__MACOSX_X86__)
+    AudioDeviceStop(AUDIO_Device, ProcID);
+#else
     AudioDeviceStop(AUDIO_Device, AUDIO_Callback);
+#endif
+
 }
 
 // ------------------------------------------------------
