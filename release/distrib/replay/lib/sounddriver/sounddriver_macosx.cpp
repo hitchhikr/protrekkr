@@ -165,7 +165,7 @@ int AUDIO_Create_Sound_Buffer(int milliseconds)
 #if defined(__BIG_ENDIAN__)
         Desc.mFormatFlags |= kLinearPCMFormatFlagIsBigEndian;
 #endif
-
+        Message_Error("Trying 16 bit...");
         // Try with 16 bit integers
         if(AudioDeviceSetProperty(AUDIO_Device,
                                   NULL,
@@ -177,6 +177,7 @@ int AUDIO_Create_Sound_Buffer(int milliseconds)
         {
             // Try with 32 bit floating points
             AUDIO_16Bits = FALSE;
+            Message_Error("Trying 32 bit floats...");
             Desc.mSampleRate = AUDIO_PCM_FREQ;
             Desc.mChannelsPerFrame = AUDIO_DBUF_CHANNELS;
             Desc.mBitsPerChannel = sizeof(float) << 3;
