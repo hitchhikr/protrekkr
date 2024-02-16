@@ -5,7 +5,7 @@
 *.mingw*
 *.freebsd*
 *.netbsd*
-*.ppc*
+*ppc*
 *.dsw*
 *.dsp*
 *.sln*
