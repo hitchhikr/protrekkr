@@ -5,7 +5,7 @@ LIBS_X86 = -lsdldraw_x86 -lz -framework CoreAudio -framework CoreMidi -framework
 DEBUG = 
 
 FLAGS_X86 = $(DEBUG) -O3 -ffast-math -fomit-frame-pointer -fno-rtti -I/Library/Frameworks/SDL.framework/Headers \
-            -fno-strict-aliasing -arch i386 -D __MACOSX__ -D __GCC__ -D __MACOSX_CORE__ -D __MOT_SWAP__ -D __AIFF__
+            -fno-strict-aliasing -arch i386 -wlogical-op-parentheses -D __MACOSX__ -D __GCC__ -D __MACOSX_CORE__ -D __MOT_SWAP__ -D __AIFF__
 
 EXEOBJS_X86 = ptk_x86.o \
               editor_303_x86.o editor_pattern_x86.o editor_sequencer_x86.o editor_track_x86.o editor_track_fx_x86.o \
