@@ -125,7 +125,7 @@ void Draw_Master_Ed(void)
 
     Gui_Draw_Button_Box(8, (Cur_Height - 65), 110, 16, "Default Pattern Font", BUTTON_NORMAL | BUTTON_DISABLED);
 
-    Gui_Draw_Button_Box(8, (Cur_Height - 45), 110, 16, "Paste Across Pattern", BUTTON_NORMAL | BUTTON_DISABLED);
+    Gui_Draw_Button_Box(8, (Cur_Height - 45), 110, 16, "Paste Across Patterns", BUTTON_NORMAL | BUTTON_DISABLED);
     Gui_Draw_Button_Box(184, (Cur_Height - 125), 72, 16, "Play While Edit", BUTTON_NORMAL | BUTTON_DISABLED);
     Gui_Draw_Button_Box(184, (Cur_Height - 105), 72, 16, "Auto Backup", BUTTON_NORMAL | BUTTON_DISABLED);
 

@@ -10,6 +10,7 @@ v2.6.5
 - The file keyboards.txt was missing from the repository.
 - Added effects 29, 2A & 2B to turn tracks compressor on/off,
   set compression threshold & ratio respectively.
+- Fixed the audio bug on Intel Macs.
 
 v2.6.4
 
