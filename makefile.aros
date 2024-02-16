@@ -36,7 +36,7 @@ protrekkr: $(EXEOBJS)
 	(cd src/extralibs/zlib-1.2.3; make)
 	$(CXX) -o ./release/distrib/ptk_aros -L./ $(FLAGS) $(EXEOBJS) $(LIBS)
 	strip --strip-unneeded ./release/distrib/ptk_aros
-	cp defaultlogo.png ./release/distrib/ptk_aros.info
+	cp ptk_aros.info ./release/distrib/ptk_aros.info
 
 libptkreplay: $(LIBOBJS)
 	$(AR) -crv libptkreplay.a $(LIBOBJS)

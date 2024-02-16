@@ -31,6 +31,7 @@ RemObj:
 protrekkr: $(EXEOBJS_PPC)
 	(cd src/extralibs/sdl_draw; make -f makefile.macosx_ppc)
 	(cd src/extralibs/zlib-1.2.3; make -f makefile.macosx_ppc)
+	(cd src/extralibs/bin2c; make -f makefile.macosx_ppc)
 	-mkdir ./release/distrib/protrekkr.app/Contents/MacOS/
 	$(CXX) -o ./release/distrib/protrekkr.app/Contents/MacOS/Protrekkr -L./ -Lsrc/extralibs/sdl_draw -Lsrc/extralibs/zlib-1.2.3 \
            -L/library/frameworks $(FLAGS_PPC) $(EXEOBJS_PPC) $(LIBS_PPC)
