@@ -7,6 +7,9 @@ v2.6.5
 - Added handling for 512 midi patches via bank selection.
 - Fixed a couple of bugs in the standalone replay.
 - Added effects 3F & 40 to set the scale of the two 303 units.
+- The file keyboards.txt was missing from the repository.
+- Added effects 29, 2A & 2B to turn tracks compressor on/off,
+  set compression threshold & ratio respectively.
 
 v2.6.4
 

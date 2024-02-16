@@ -4540,6 +4540,48 @@ void Do_Effects_Tick_0(void)
                     break;
 #endif
 
+#if defined(PTK_LIMITER_TRACKS)
+                case 0x29:
+
+                    Compress_Track[trackef] = pltr_dat_row[j] & TRUE;
+
+#if !defined(__STAND_ALONE__)
+                    if(userscreen == USER_SCREEN_TRACK_FX_EDIT)
+                    {
+                        Display_Track_Compressor_Status(trackef);
+                    }
+#endif
+
+                    break;
+#endif
+
+#if defined(PTK_LIMITER_TRACKS)
+                case 0x2a:
+                    Mas_Compressor_Set_Variables_Track(trackef, pltr_dat_row[j] / 255.0f * 100.0f, mas_comp_ratio_Track[trackef]);
+
+#if !defined(__STAND_ALONE__)
+                    if(userscreen == USER_SCREEN_TRACK_FX_EDIT)
+                    {
+                        Display_Track_Compressor(trackef);
+                    }
+#endif
+
+                    break;
+#endif
+
+#if defined(PTK_LIMITER_TRACKS)
+                case 0x2b:
+                    Mas_Compressor_Set_Variables_Track(trackef, mas_threshold_Track[trackef], pltr_dat_row[j] / 255.0f * 100.0f);
+
+#if !defined(__STAND_ALONE__)
+                    if(userscreen == USER_SCREEN_TRACK_FX_EDIT)
+                    {
+                        Display_Track_Compressor(trackef);
+                    }
+#endif
+
+                    break;
+#endif
 
 #if defined(PTK_FX_SETBPM)
                 // $f0 Set BPM

@@ -40,7 +40,6 @@ extern EQSTATE EqDat[MAX_TRACKS];
 
 // ------------------------------------------------------
 // Functions
-void Display_Track_Compressor(void);
 void Display_Track_Volume(void);
 
 void Draw_Track_Fx_Ed(void)
@@ -190,21 +189,12 @@ void Actualize_Track_Fx_Ed(char gode)
 
         if(gode == 0 || gode == 12)
         {
-            if(Compress_Track[Track_Under_Caret])
-            {
-                Gui_Draw_Button_Box(602, (Cur_Height - 121), 20, 16, "On", BUTTON_PUSHED);
-                Gui_Draw_Button_Box(624, (Cur_Height - 121), 20, 16, "Off", BUTTON_NORMAL);
-            }
-            else
-            {
-                Gui_Draw_Button_Box(602, (Cur_Height - 121), 20, 16, "On", BUTTON_NORMAL);
-                Gui_Draw_Button_Box(624, (Cur_Height - 121), 20, 16, "Off", BUTTON_PUSHED);
-            }
+            Display_Track_Compressor_Status(Track_Under_Caret);
         }
 
         if(gode == 0 || gode == 12)
         {
-            Display_Track_Compressor();
+            Display_Track_Compressor(Track_Under_Caret);
         }
 
         if(gode == 0 || gode == 13)
@@ -448,21 +438,43 @@ void Mouse_Left_Track_Fx_Ed(void)
 }
 
 // ------------------------------------------------------
+// Display compressor on/off status
+void Display_Track_Compressor_Status(int Track)
+{
+    if(Track == Track_Under_Caret)
+    {
+        if(Compress_Track[Track_Under_Caret])
+        {
+            Gui_Draw_Button_Box(602, (Cur_Height - 121), 20, 16, "On", BUTTON_PUSHED);
+            Gui_Draw_Button_Box(624, (Cur_Height - 121), 20, 16, "Off", BUTTON_NORMAL);
+        }
+        else
+        {
+            Gui_Draw_Button_Box(602, (Cur_Height - 121), 20, 16, "On", BUTTON_NORMAL);
+            Gui_Draw_Button_Box(624, (Cur_Height - 121), 20, 16, "Off", BUTTON_PUSHED);
+        }
+    }
+}
+
+// ------------------------------------------------------
 // Display compressor sliders
-void Display_Track_Compressor(void)
+void Display_Track_Compressor(int Track)
 {
     char string[64];
 
-    Gui_Draw_Button_Box(544, (Cur_Height - 103), 56, 16, "Threshold", BUTTON_NORMAL | BUTTON_DISABLED);
-    Realslider_Size(601, (Cur_Height - 103), 50, (int) (mas_comp_threshold_Track[Track_Under_Caret] * 0.5f), Compress_Track[Track_Under_Caret] ? TRUE : FALSE);
-    sprintf(string, "%d%%", (int) (mas_comp_threshold_Track[Track_Under_Caret]));
-    Print_String(string, 601, (Cur_Height - 101), 67, BUTTON_TEXT_CENTERED);
+    if(Track == Track_Under_Caret)
+    {
+        Gui_Draw_Button_Box(544, (Cur_Height - 103), 56, 16, "Threshold", BUTTON_NORMAL | BUTTON_DISABLED);
+        Realslider_Size(601, (Cur_Height - 103), 50, (int) (mas_comp_threshold_Track[Track_Under_Caret] * 0.5f), Compress_Track[Track_Under_Caret] ? TRUE : FALSE);
+        sprintf(string, "%d%%", (int) (mas_comp_threshold_Track[Track_Under_Caret]));
+        Print_String(string, 601, (Cur_Height - 101), 67, BUTTON_TEXT_CENTERED);
 
-    Gui_Draw_Button_Box(544, (Cur_Height - 85), 56, 16, "Ratio", BUTTON_NORMAL | BUTTON_DISABLED);
-    Realslider_Size(601, (Cur_Height - 85), 50, (int) (mas_comp_ratio_Track[Track_Under_Caret] * 0.5f), Compress_Track[Track_Under_Caret] ? TRUE : FALSE);
-    sprintf(string, "%d%%", (int) (mas_comp_ratio_Track[Track_Under_Caret]));
-    Print_String(string, 601, (Cur_Height - 83), 67, BUTTON_TEXT_CENTERED);
-}
+        Gui_Draw_Button_Box(544, (Cur_Height - 85), 56, 16, "Ratio", BUTTON_NORMAL | BUTTON_DISABLED);
+        Realslider_Size(601, (Cur_Height - 85), 50, (int) (mas_comp_ratio_Track[Track_Under_Caret] * 0.5f), Compress_Track[Track_Under_Caret] ? TRUE : FALSE);
+        sprintf(string, "%d%%", (int) (mas_comp_ratio_Track[Track_Under_Caret]));
+        Print_String(string, 601, (Cur_Height - 83), 67, BUTTON_TEXT_CENTERED);
+    }
+ }
 
 // ------------------------------------------------------
 // Display volume slider

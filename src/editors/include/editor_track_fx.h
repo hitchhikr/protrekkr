@@ -48,5 +48,7 @@ void Draw_Track_Fx_Ed(void);
 void Actualize_Track_Fx_Ed(char gode);
 void Mouse_Sliders_Track_Fx_Ed(void);
 void Mouse_Left_Track_Fx_Ed(void);
+void Display_Track_Compressor(int Track);
+void Display_Track_Compressor_Status(int Track);
 
 #endif

@@ -297,6 +297,8 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
     int pwrite;
     int swrite;
     char Constant_Filename[MAX_PATH];
+    char Comp_Flag_Main = FALSE;
+    char Comp_Flag_Tracks = FALSE;
 
     Out_constants = NULL;
     Out_FX = NULL;
@@ -916,6 +918,14 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                                 // $28 Switch tracker LFO
                                 case 0x28:
                                     Store_FX_SwitchTrackLFO = TRUE;
+                                    break;
+
+                                // $29 Switch tracker LFO
+                                case 0x29:
+                                    if(TmpPatterns_Notes[i + 1] & TRUE)
+                                    {
+                                        Comp_Flag_Tracks = TRUE;
+                                    }
                                     break;
 
                                 // $31 First TB303 control
@@ -1731,7 +1741,6 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
 
     float threshold = mas_comp_threshold_Master;
     float ratio = mas_comp_ratio_Master;
-    char Comp_Flag = FALSE;
 
     if(threshold < 0.01f) threshold = 0.01f;
     if(threshold > 100.0f) threshold = 100.0f;
@@ -1742,29 +1751,28 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
     {
         threshold *= 0.001f;
         ratio *= 0.01f;
-        Comp_Flag = TRUE;
-        Write_Mod_Data(&Comp_Flag, sizeof(char), 1, in);
+        Comp_Flag_Main = TRUE;
+        Write_Mod_Data(&Comp_Flag_Main, sizeof(char), 1, in);
         Write_Mod_Data(&threshold, sizeof(float), 1, in);
         Write_Mod_Data(&ratio, sizeof(float), 1, in);
         Save_Constant("PTK_LIMITER_MASTER", TRUE);
     }
     else
     {
-        Write_Mod_Data(&Comp_Flag, sizeof(char), 1, in);
+        Write_Mod_Data(&Comp_Flag_Main, sizeof(char), 1, in);
         Save_Constant("PTK_LIMITER_MASTER", FALSE);
     }
 
-    Comp_Flag = FALSE;
     for(i = 0; i < Songtracks; i++)
     {
         // At least 1 track is compressed
         if(Compress_Track[i])
         {
-            Comp_Flag = TRUE;
+            Comp_Flag_Tracks = TRUE;
             break;
         }
     }
-    if(Comp_Flag)
+    if(Comp_Flag_Tracks)
     {
         Save_Constant("PTK_LIMITER_TRACKS", TRUE);
     }
@@ -1772,9 +1780,9 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
     {
         Save_Constant("PTK_LIMITER_TRACKS", FALSE);
     }
-    Write_Mod_Data(&Comp_Flag, sizeof(char), 1, in);
+    Write_Mod_Data(&Comp_Flag_Tracks, sizeof(char), 1, in);
 
-    if(Comp_Flag)
+    if(Comp_Flag_Tracks)
     {
         for(i = 0; i < Songtracks; i++)
         {
@@ -1812,7 +1820,6 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
     Save_Constant("PTK_TRACKFILTERS", Store_TrackFilters);
 
     Save_Constant("PTK_FILTER_LOHIBAND", Store_Filter_LoHiBand);
-
     Save_Constant("PTK_FILTER_LO24", Store_Filter_Lo24);
     Save_Constant("PTK_FILTER_LO48", Store_Filter_Lo48);
     Save_Constant("PTK_FILTER_LP24", Store_Filter_Lp24);
