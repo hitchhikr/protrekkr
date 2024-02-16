@@ -34,6 +34,9 @@
 
 // ------------------------------------------------------
 // Includes
+#if defined(__MACOSX_X86__)
+#include <CoreAudio/CoreAudio.h>
+#endif
 #include <AudioUnit/AudioUnit.h>
 #include <unistd.h>
 
