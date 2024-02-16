@@ -486,11 +486,7 @@ int Load_Font_Datas(char *name)
 // Load the necessary datas and initialize the interface
 int Init_Context(void)
 {
-#if defined(__WIN32__)
-    srand(GetTickCount());
-#else
-    srand(rand());
-#endif
+    srand(time(0));
 
     ctipoftheday = rand() % 12;
 

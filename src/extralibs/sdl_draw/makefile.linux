@@ -1,5 +1,5 @@
 LIBFLAGS = -c
-FLAGS = -O3 -D G_OS_WIN32 -D __LINUX__ -D __GCC__
+FLAGS = -O3 -D __LINUX__ -D __GCC__
 LIBOBJS = draw_hline.o draw_pixel.o draw_vline.o
 
 all: sdldraw
