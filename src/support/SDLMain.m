@@ -5,7 +5,11 @@
     Feel free to customize this file to suit your needs
 */
 
+#if defined(__MACOX_X86__)
+#import <SDL/SDL.h>
+#else
 #import "SDL.h"
+#endif
 #import "include/SDLMain.h"
 #import <sys/param.h> /* for MAXPATHLEN */
 #import <unistd.h>
