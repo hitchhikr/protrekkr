@@ -293,7 +293,7 @@ void Set_Current_Dir(void)
     }
 }
 
-#if defined(__LINUX__) || defined(__MACOSX_PPC__) || defined(__HAIKU__)
+#if defined(__LINUX__) || defined(__MACOSX_PPC__) || defined(__MACOSX_X86__) || defined(__HAIKU__)
 int list_file(const char *fpath, const struct stat *sb, int typeflag, struct FTW *ftwbuf)
 {
     int i;
