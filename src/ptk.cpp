@@ -37,7 +37,7 @@
 // Constants
 // This is a nasty hack: we should have a specific ASCII buffer
 // instead of using the unicode one.
-#if !defined(__MACOSX__)
+#if !defined(__MACOSX_PPC__)
 #define UNICODE_OFFSET1 0x20
 #define UNICODE_OFFSET2 0x60
 #else
@@ -47,7 +47,7 @@
 
 // ------------------------------------------------------
 // Variables
-#if defined(__MACOSX__)
+#if defined(__MACOSX_PPC__)
 SystemSoundActionID WavActionID;
 #endif
 
@@ -632,7 +632,7 @@ void Destroy_Context(void)
 
 // ------------------------------------------------------
 // Strictly for Mac OS X
-#if defined(__MACOSX__)
+#if defined(__MACOSX_PPC__)
 OSStatus CompletionRoutine(SystemSoundActionID inAction, void *UserDat)
 {
     SystemSoundRemoveActionID(inAction);
@@ -647,7 +647,7 @@ int Screen_Update(void)
     int FineTune_Value;
     int i;
 
-#if defined(__MACOSX__)
+#if defined(__MACOSX_PPC__)
     FSRef soundFileRef;
 #endif
 
@@ -791,7 +791,7 @@ int Screen_Update(void)
 #if defined(__WIN32__)
                         PlaySound(Get_FileName(lt_curr[Scopish]), NULL, SND_FILENAME | SND_ASYNC);
 #endif
-#if defined(__MACOSX__)
+#if defined(__MACOSX_PPC__)
                         if(FSPathMakeRef((Uint8 *) Get_FileName(lt_curr[Scopish]), &soundFileRef, NULL) == noErr)
                         {
                             SystemSoundGetActionID(&soundFileRef, &WavActionID);

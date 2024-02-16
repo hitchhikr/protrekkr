@@ -45,7 +45,7 @@
 #include "../sounddriver/include/sounddriver_netbsd.h"
 #elif defined(__LINUX__)
 #include "../sounddriver/include/sounddriver_linux.h"
-#elif defined(__MACOSX__)
+#elif defined(__MACOSX_PPC__)
 #include "../sounddriver/include/sounddriver_macosx.h"
 #elif defined(__AROS__) || defined(__MORPHOS__)
 #include "../sounddriver/include/sounddriver_aros.h"

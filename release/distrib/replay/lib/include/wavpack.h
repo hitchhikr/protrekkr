@@ -44,7 +44,7 @@
 #if defined(__GCC__)
 #if !defined(__LINUX__)
 #include <stdint.h>
-#if defined(__MACOSX__)
+#if defined(__MACOSX_PPC__)
 typedef unsigned int uint32_t;
 #endif
 #if defined(__WIN32__)

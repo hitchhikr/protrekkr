@@ -58,7 +58,7 @@
 #include <shlwapi.h>
 #endif
 
-#if defined(__MACOSX__)
+#if defined(__MACOSX_PPC__)
 #include <mach-o/dyld.h>
 #endif
 
@@ -399,7 +399,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
     char Win_Coords[64];
     Uint32 ExePath_Size = MAX_PATH;
 
-#if defined(__MACOSX__)
+#if defined(__MACOSX_PPC__)
     Uint32 Path_Length;
 #endif
 
@@ -472,7 +472,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
     GETCWD(ExePath, MAX_PATH);
 
 #else
-    #if defined(__MACOSX__)
+    #if defined(__MACOSX_PPC__)
         Path_Length = ExePath_Size;
         _NSGetExecutablePath(ExePath, &Path_Length);
         while(Path_Length--)
@@ -724,7 +724,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
                         // Otherwise it doesn't work under Mac OSX
                         Keys_Unicode[Uni_Trans] = TRUE;
 
-#if !defined(__MACOSX__)
+#if !defined(__MACOSX_PPC__)
                         if(!Uni_Trans) Uni_Trans = Symbol;
 #else
                         Uni_Trans = Symbol;
@@ -924,12 +924,12 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
             }
         }
 
-#if defined(__MACOSX__)
+#if defined(__MACOSX_PPC__)
         if(Display_Pointer) Display_Mouse_Pointer(Mouse.old_x, Mouse.old_y, TRUE);
 #endif
         if(!Screen_Update()) break;
 
-#if defined(__MACOSX__)
+#if defined(__MACOSX_PPC__)
         if(Display_Pointer) Display_Mouse_Pointer(Mouse.x, Mouse.y, FALSE);
 #endif
 
@@ -1051,7 +1051,7 @@ int Switch_FullScreen(int Width, int Height)
 
     Init_UI();
 
-#if defined(__MACOSX__)
+#if defined(__MACOSX_PPC__)
     SDL_ShowCursor(0);
 #endif
 
