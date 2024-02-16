@@ -5,7 +5,7 @@
     Feel free to customize this file to suit your needs
 */
 
-#if defined(__MACOX_X86__)
+#if defined(__MACOSX_X86__)
 #import <SDL/SDL.h>
 #else
 #import "SDL.h"
