@@ -47,6 +47,8 @@
 #include "../sounddriver/include/sounddriver_linux.h"
 #elif defined(__MACOSX_PPC__)
 #include "../sounddriver/include/sounddriver_macosx.h"
+#elif defined(__MACOSX_X86__)
+#include "../sounddriver/include/sounddriver_macosx.h"
 #elif defined(__AROS__) || defined(__MORPHOS__)
 #include "../sounddriver/include/sounddriver_aros.h"
 #elif defined(__AMIGAOS4__)
@@ -56,7 +58,7 @@
 #elif defined(__HAIKU__)
 #include "../sounddriver/include/sounddriver_haiku.h"
 #else
-#error "Can't work without a sound driver !"
+#error "No sound driver defined !"
 #endif
 #include "samples_unpack.h"
 #include "ptkreplay.h"
