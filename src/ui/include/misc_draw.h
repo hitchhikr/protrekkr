@@ -148,7 +148,7 @@
 #define Y_ "\246"
 #define Z_ "\247"
 #define __0 "\360"
-#define __1 "\361"
+#define __1_ "\361"
 #define __2 "\362"
 #define __3 "\363"
 #define __4 "\364"
