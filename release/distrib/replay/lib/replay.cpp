@@ -967,7 +967,7 @@ void STDCALL Mixer(Uint8 *Buffer, Uint32 Len)
 #endif
 
 #if defined(__MACOSX_PPC__) || defined(__MACOSX_X86__)
-        for(i = Len - 1; i >= 0; i -= AUDIO_16Bits ? 4 : 8)
+        for(i = Len - 1; i >= 0; i -= 8)
 #else
         for(i = Len - 1; i >= 0; i -= 4)
 #endif
@@ -992,17 +992,9 @@ void STDCALL Mixer(Uint8 *Buffer, Uint32 Len)
                 Right_Dat = Left_Dat;
 
 #if defined(__MACOSX_PPC__) || defined(__MACOSX_X86__)
-                if(AUDIO_16Bits)
-                {
-                    left_value += Left_Dat;
-                    right_value += Right_Dat;
-                }
-                else
-                {
-                    // ([1.0..-1.0f])
-                    left_float += (float) (Left_Dat) / 32767.0f;
-                    right_float += (float) (Right_Dat) / 32767.0f;
-                }
+                // ([1.0..-1.0f])
+                left_float += (float) (Left_Dat) / 32767.0f;
+                right_float += (float) (Right_Dat) / 32767.0f;
 #else
                 left_value += Left_Dat;
                 right_value += Right_Dat;
@@ -1020,16 +1012,8 @@ void STDCALL Mixer(Uint8 *Buffer, Uint32 Len)
 #endif
 
 #if defined(__MACOSX_PPC__) || defined(__MACOSX_X86__)
-            if(AUDIO_16Bits)
-            {
-                *pSamples++ = left_value;
-                *pSamples++ = right_value;
-            }
-            else
-            {
-                *pSamples_flt++ = left_float;
-                *pSamples_flt++ = right_float;
-            }
+            *pSamples_flt++ = left_float;
+            *pSamples_flt++ = right_float;
 #else
             *pSamples++ = left_value;
             *pSamples++ = right_value;
@@ -5446,19 +5430,8 @@ void Get_Player_Values(void)
     right_float_render = right_float;
 #endif
 
-    // It looks like the maximum range for OSS is -8192 +8192
-    // (higher than that will produce heavily saturated signals
-    //  i don't know if it's a bug from Linux mixer/Driver or anything)
-
-    // It looks like they (hopefully) fixed their shit so this nasty hack is no longer required.
-/*#if defined(__MACOSX_X86__)
-    left_value = (int) (left_float * 8192.0f);
-    right_value = (int) (right_float * 8192.0f);
-#else*/
     left_value = (int) (left_float * 32767.0f);
     right_value = (int) (right_float * 32767.0f);
-//#endif
-
 }
 
 // ------------------------------------------------------

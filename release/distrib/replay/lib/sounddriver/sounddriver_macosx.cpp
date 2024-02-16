@@ -52,7 +52,6 @@ AudioDeviceIOProcID ProcID;
 int AUDIO_SoundBuffer_Size;
 int AUDIO_Latency;
 int AUDIO_Milliseconds = 10;
-int AUDIO_16Bits;
 
 // ------------------------------------------------------
 // Functions
@@ -167,8 +166,6 @@ int AUDIO_Create_Sound_Buffer(int milliseconds)
 
     AudioValueRange Frame_Range;
 
-    AUDIO_16Bits = TRUE;
-
     Amount = sizeof(AudioStreamBasicDescription);
     if(AudioDeviceGetProperty(AUDIO_Device,
                               0,
@@ -177,47 +174,24 @@ int AUDIO_Create_Sound_Buffer(int milliseconds)
     {
         Desc.mSampleRate = AUDIO_PCM_FREQ;
         Desc.mChannelsPerFrame = AUDIO_DBUF_CHANNELS;
-        Desc.mBitsPerChannel = sizeof(short) << 3;
-        Desc.mFormatFlags = kLinearPCMFormatFlagIsPacked | kAudioFormatFlagIsSignedInteger;
+        Desc.mBitsPerChannel = sizeof(float) << 3;
+        Desc.mFormatFlags = kLinearPCMFormatFlagIsPacked | kAudioFormatFlagIsFloat;
         Desc.mFormatID = kAudioFormatLinearPCM;
         Desc.mFramesPerPacket = 1;
         Desc.mBytesPerFrame = (Desc.mBitsPerChannel * Desc.mChannelsPerFrame) >> 3;
         Desc.mBytesPerPacket = Desc.mBytesPerFrame * Desc.mFramesPerPacket;
 
 #if defined(__BIG_ENDIAN__)
-        Desc.mFormatFlags |= kLinearPCMFormatFlagIsBigEndian;
-#endif
-
-        // Try with 16 bit integers
-//        if(AudioDeviceSetProperty(AUDIO_Device,
-  //                                NULL,
-    //                              0,
-      //                            FALSE,
-        //                          kAudioDevicePropertyStreamFormat, sizeof(AudioStreamBasicDescription), &Desc) != noErr)
-        {
-            // Try with 32 bit floating points
-            AUDIO_16Bits = FALSE;
-            Desc.mSampleRate = AUDIO_PCM_FREQ;
-            Desc.mChannelsPerFrame = AUDIO_DBUF_CHANNELS;
-            Desc.mBitsPerChannel = sizeof(float) << 3;
-            Desc.mFormatFlags = kLinearPCMFormatFlagIsPacked | kAudioFormatFlagIsFloat;
-            Desc.mFormatID = kAudioFormatLinearPCM;
-            Desc.mFramesPerPacket = 1;
-            Desc.mBytesPerFrame = (Desc.mBitsPerChannel * Desc.mChannelsPerFrame) >> 3;
-            Desc.mBytesPerPacket = Desc.mBytesPerFrame * Desc.mFramesPerPacket;
-
-#if defined(__BIG_ENDIAN__)
             Desc.mFormatFlags |= kLinearPCMFormatFlagIsBigEndian;
 #endif
 
-            if(AudioDeviceSetProperty(AUDIO_Device,
-                                      NULL,
-                                      0,
-                                      FALSE,
-                                      kAudioDevicePropertyStreamFormat, sizeof(AudioStreamBasicDescription), &Desc) != noErr)
-            {
-                found_pcmformat = FALSE;
-            }
+        if(AudioDeviceSetProperty(AUDIO_Device,
+                                  NULL,
+                                  0,
+                                  FALSE,
+                                  kAudioDevicePropertyStreamFormat, sizeof(AudioStreamBasicDescription), &Desc) != noErr)
+        {
+            found_pcmformat = FALSE;
         }
 
         if(found_pcmformat)
