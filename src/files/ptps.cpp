@@ -915,12 +915,12 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                                     Store_FX_RevReso = TRUE;
                                     break;
 
-                                // $28 Switch tracker LFO
+                                // $28 Switch track LFO
                                 case 0x28:
                                     Store_FX_SwitchTrackLFO = TRUE;
                                     break;
 
-                                // $29 Switch tracker LFO
+                                // $29 Switch track compressor
                                 case 0x29:
                                     if(TmpPatterns_Notes[i + 1] & TRUE)
                                     {

@@ -18,11 +18,7 @@
 
 CC=gcc
 
-CFLAGS=-O3 -arch i386 -arch ppc
-#CFLAGS=-O -DMAX_WBITS=14 -DMAX_MEM_LEVEL=7
-#CFLAGS=-g -DDEBUG
-#CFLAGS=-O3 -Wall -Wwrite-strings -Wpointer-arith -Wconversion \
-#           -Wstrict-prototypes -Wmissing-prototypes
+CFLAGS=-O3 -arch i386
 
 LDFLAGS=-L. libz.a
 LDSHARED=gcc

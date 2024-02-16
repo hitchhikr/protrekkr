@@ -1,0 +1,16 @@
+BIN2C_LIBS_X86 = -framework Cocoa
+BIN2C_X86 = bin2c_x86.o
+
+all: bin2c
+clean: remobj_bin2c
+
+remobj_bin2c:
+	-rm -f $(BIN2C_X86)
+	
+bin2c: $(BIN2C_X86)
+	g++ -o bin2c -s -L./ $(FLAGS_X86) $(BIN2C_X86) $(BIN2C_LIBS_X86)
+	-rm -f $(BIN2C_X86)
+	strip -x -X -S bin2c
+
+bin2c_x86.o: ../../../src/extralibs/bin2c/bin2c.cpp
+	g++ -c -o $(@) $(FLAGS_X86) ../../../src/extralibs/bin2c/bin2c.cpp

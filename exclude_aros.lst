@@ -24,11 +24,11 @@
 *.plg*
 *.map*
 *.ncb*
-*.lib*
 *.ppb*
 *.303*
 *.snd*
 *.aif*
+*module.s*
 *stderr*
 *stdout*
 *windows*
@@ -37,7 +37,7 @@
 *test_linux*
 *ptk_properties.h*
 *.zip*
-*bin2c_uni*
+*bin2c*
 *protrekkr.app*
 *debug*
 *release*

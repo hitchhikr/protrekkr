@@ -22,7 +22,6 @@
 *.psm*
 *.ppb*
 *.303*
-*.lib*
 *.plg*
 *.map*
 *.ncb*
