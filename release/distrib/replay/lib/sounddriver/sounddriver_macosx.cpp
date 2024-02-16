@@ -45,6 +45,10 @@ AudioDeviceID AUDIO_Device;
 UInt32 Amount;
 AudioStreamBasicDescription	Desc;
 
+#if defined(__MACOSX_X86__)
+AudioDeviceIOProcID ProcID;
+#endif
+
 int AUDIO_SoundBuffer_Size;
 int AUDIO_Latency;
 int AUDIO_Milliseconds = 10;
@@ -100,20 +104,40 @@ int AUDIO_Init_Driver(void (*Mixer)(Uint8 *, Uint32))
                                 &Amount,
                                 (void *) &AUDIO_Device) == noErr)
     {
-//        if(AudioDeviceAddIOProc(AUDIO_Device,
-  //                              AUDIO_Callback,
-    //                            NULL) == noErr)
+
+#if defined(__MACOSX_X86__)
+        if(AudioDeviceCreateIOProcID(AUDIO_Device,
+                                      AUDIO_Callback,
+                                      NULL,
+                                      &ProcID) == noErr)
         {
             return(AUDIO_Create_Sound_Buffer(AUDIO_Milliseconds));
         }
-/*
+
+#if !defined(__STAND_ALONE__) && !defined(__WINAMP__)
+        else
+        {
+            Message_Error("Error while calling AudioDeviceCreateIOProcID()");
+        }
+#endif
+
+#else
+        if(AudioDeviceAddIOProc(AUDIO_Device,
+                                AUDIO_Callback,
+                                NULL) == noErr)
+        {
+            return(AUDIO_Create_Sound_Buffer(AUDIO_Milliseconds));
+        }
+
 #if !defined(__STAND_ALONE__) && !defined(__WINAMP__)
         else
         {
             Message_Error("Error while calling AudioDeviceAddIOProc()");
         }
 #endif
-*/
+
+#endif
+
     }
 
 #if !defined(__STAND_ALONE__) && !defined(__WINAMP__)
@@ -225,7 +249,13 @@ int AUDIO_Create_Sound_Buffer(int milliseconds)
                                       sizeof(AUDIO_SoundBuffer_Size),
                                       &AUDIO_SoundBuffer_Size) == noErr)
             {
+
+#if defined(__MACOSX_X86__)
+                AudioDeviceStart(AUDIO_Device, ProcID);
+#else
                 AudioDeviceStart(AUDIO_Device, AUDIO_Callback);
+#endif
+
                 return(TRUE);
             }
 
