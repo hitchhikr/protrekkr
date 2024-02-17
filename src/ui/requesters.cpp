@@ -413,11 +413,11 @@ void Restore_Background_Requester()
 {
     if(Req_Back)
     {
-        if(Main_Screen->locked) SDL_UnlockSurface(Main_Screen);
-        Copy_To_Surface(Req_Back, Main_Screen, Pos_X, Pos_Y,
-                        0, 0,
-                        Pos_X + Size_X + 1,
-                        Pos_Y + Size_Y + 1);
+        Copy(Req_Back,
+             Pos_X, Pos_Y,
+             0, 0,
+             Pos_X + Size_X + 1,
+             Pos_Y + Size_Y + 1);
         SDL_FreeSurface(Req_Back);
         Req_Back = NULL;
     }
