@@ -51,7 +51,9 @@ SDL_Surface *Temp_NOTESMALLPFONT;
 int Beveled = 1;
 char Use_Shadows = TRUE;
 
+#if defined(__MACOSX_PPC__)
 int max_colors_Pointer;
+#endif
 int curr_tab_highlight;
 
 int Nbr_Letters;
@@ -248,7 +250,9 @@ char *HexTab_NoZero[] =
 
 SDL_Color Ptk_Palette[256 * 2];
 SDL_Color Palette_303[256];
+#if defined(__MACOSX_PPC__)
 SDL_Color Palette_Pointer[256];
+#endif
 SDL_Color Palette_Logo[256];
 
 char *Labels_Palette[] =
@@ -1096,8 +1100,10 @@ SDL_Color Default_Palette9[] =
 
 LONGRGB Phony_Palette[sizeof(Default_Palette2) / sizeof(SDL_Color)];
 
+#if defined(__MACOSX_PPC__)
 SDL_Surface *POINTER;
 unsigned char *Pointer_BackBuf;
+#endif
 int bare_color_idx;
 
 // ------------------------------------------------------
@@ -2977,6 +2983,7 @@ int Set_Pictures_Colors(void)
         Palette_303[i].unused = Pic_Palette->colors[i].unused;
     }
 
+#if defined(__MACOSX_PPC__)
     Pic_Palette = POINTER->format->palette;
     for(i = 0; i < max_colors_303; i++)
     {
@@ -2985,6 +2992,7 @@ int Set_Pictures_Colors(void)
         Palette_Pointer[i].b = Pic_Palette->colors[i].b;
         Palette_Pointer[i].unused = Pic_Palette->colors[i].unused;
     }
+#endif
     
     Pic_Palette = LOGOPIC->format->palette;
     for(i = 0; i < max_colors_logo; i++)
@@ -2995,6 +3003,7 @@ int Set_Pictures_Colors(void)
         Palette_Logo[i].unused = Pic_Palette->colors[i].unused;
     }
 
+#if defined(__MACOSX_PPC__)
     // Remap the colors of the pointer
     Pix = (unsigned char *) POINTER->pixels;
     max_colors_Pointer = 0;
@@ -3004,6 +3013,7 @@ int Set_Pictures_Colors(void)
         if(Pix[i]) Pix[i] += min_idx + max_colors_303;
     }
     max_colors_Pointer++;
+#endif
 
     Temp_PFONT = SDL_AllocSurface(SDL_SWSURFACE, 320, 87 * 2, 8, 0, 0, 0, 0xff);
     Temp_LARGEPFONT = SDL_AllocSurface(SDL_SWSURFACE, 320, 87 * 2, 8, 0, 0, 0, 0xff);
@@ -3012,8 +3022,10 @@ int Set_Pictures_Colors(void)
     Temp_NOTELARGEPFONT = SDL_AllocSurface(SDL_SWSURFACE, 320, 87 * 2, 8, 0, 0, 0, 0xff);
     Temp_NOTESMALLPFONT = SDL_AllocSurface(SDL_SWSURFACE, 320, 87 * 2, 8, 0, 0, 0, 0xff);
 
+#if defined(__MACOSX_PPC__)
     Pointer_BackBuf = (unsigned char *) malloc(POINTER->pitch * POINTER->h * sizeof(unsigned char));
     memset(Pointer_BackBuf, 0, POINTER->pitch * POINTER->h * sizeof(unsigned char));
+#endif
 
     Set_Logo_Palette();
     Get_Phony_Palette();
@@ -3061,6 +3073,7 @@ Wait_Palette:
         Ptk_Palette[i + bare_color_idx].unused = Palette_303[i].unused;
     }
 
+#if defined(__MACOSX_PPC__)
     for(i = 0; i < max_colors_Pointer; i++)
     {
         Ptk_Palette[i + bare_color_idx + max_colors_303].r = Palette_Pointer[i].r;
@@ -3068,6 +3081,7 @@ Wait_Palette:
         Ptk_Palette[i + bare_color_idx + max_colors_303].b = Palette_Pointer[i].b;
         Ptk_Palette[i + bare_color_idx + max_colors_303].unused = Palette_Pointer[i].unused;
     }
+#endif
 }
 
 void Set_Logo_Palette(void)
@@ -3101,7 +3115,9 @@ void Init_UI(void)
 // Free the allocated resources
 void Destroy_UI(void)
 {
+#if defined(__MACOSX_PPC__)
    if(Pointer_BackBuf) free(Pointer_BackBuf);
+#endif
 }
 
 // ------------------------------------------------------

@@ -48,7 +48,9 @@ extern char *Font_Ascii;
 extern int Nbr_Letters;
 extern int Font_Pos[256];
 extern int Font_Size[256];
+#if defined(__MACOSX_PPC__)
 extern unsigned char *Pointer_BackBuf;
+#endif
 int FgColor;
 
 int Nbr_Update_Rects;
@@ -149,10 +151,13 @@ void UISetPalette(SDL_Color *Palette, int Amount)
     {
         SDL_SetPalette(Temp_NOTESMALLPFONT, SDL_LOGPAL, Palette, 0, Amount);
     }
+
+#if defined(__MACOSX_PPC__)
     if(POINTER)
     {
         SDL_SetPalette(POINTER, SDL_LOGPAL, Palette, 0, Amount);
     }
+#endif
 
     SDL_SetPalette(Main_Screen, SDL_PHYSPAL, Palette, 0, Amount);
     SDL_SetPalette(Main_Screen, SDL_LOGPAL, Palette, 0, Amount);

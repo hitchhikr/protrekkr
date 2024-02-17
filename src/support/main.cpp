@@ -98,7 +98,9 @@ REQUESTER Title_Requester =
 const SDL_VideoInfo *Screen_Info;
 int Startup_Width;
 int Startup_Height;
+#if defined(__MACOSX_PPC__)
 extern int Display_Pointer;
+#endif
 int Burn_Title;
 SDL_Surface *Main_Screen;
 #if defined(__WIN32__)

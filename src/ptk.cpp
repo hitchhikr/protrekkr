@@ -79,7 +79,9 @@ extern int pos_scope_latency;
 
 extern float sp_Tvol_Mod[MAX_TRACKS];
 
+#if defined(__MACOSX_PPC__)
 int Display_Pointer = FALSE;
+#endif
 
 int CONSOLE_WIDTH;
 int CHANNELS_WIDTH;
@@ -572,8 +574,10 @@ int Init_Context(void)
 
     LOGOPIC = Load_Skin_Picture("neural.bmp");
     if(!LOGOPIC) return(FALSE);
+#if defined(__MACOSX_PPC__)
     POINTER = Load_Skin_Picture("pointer.bmp");
     if(!POINTER) return(FALSE);
+#endif
     SKIN303 = Load_Skin_Picture("303.bmp");
     if(!SKIN303) return(FALSE);
     PFONT = Load_Skin_Picture("pattern_font.bmp");
@@ -589,7 +593,9 @@ int Init_Context(void)
 
     SDL_SetColorKey(FONT, SDL_SRCCOLORKEY, 0);
     SDL_SetColorKey(FONT_LOW, SDL_SRCCOLORKEY, 0);
+#if defined(__MACOSX_PPC__)
     SDL_SetColorKey(POINTER, SDL_SRCCOLORKEY, 0);
+#endif
 
     Timer = SDL_AddTimer(1000, Timer_Ptr, NULL);
 
@@ -1729,10 +1735,12 @@ int Screen_Update(void)
             Actualize_Sample_Ed(teac);
         }
 
+#if defined(__MACOSX_PPC__)
         if(gui_action == GUI_CMD_REFRESH_PALETTE)
         {
             Display_Pointer = TRUE;
         }
+#endif
 
         if(gui_action == GUI_CMD_EXIT)
         {
