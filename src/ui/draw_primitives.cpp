@@ -107,62 +107,50 @@ void UISetPalette(SDL_Color *Palette, int Amount)
 {
     if(FONT_LOW)
     {
-//        SDL_SetPalette(FONT_LOW, SDL_PHYSPAL, Palette, 0, Amount);
         SDL_SetPalette(FONT_LOW, SDL_LOGPAL, Palette, 0, Amount);
     }
     if(FONT)
     {
-//        SDL_SetPalette(FONT, SDL_PHYSPAL, Palette, 0, Amount);
         SDL_SetPalette(FONT, SDL_LOGPAL, Palette, 0, Amount);
     }
     if(PFONT)
     {
-//        SDL_SetPalette(PFONT, SDL_PHYSPAL, Palette, 0, Amount);
         SDL_SetPalette(PFONT, SDL_LOGPAL, Palette, 0, Amount);
     }
     if(SKIN303)
     {
-//        SDL_SetPalette(SKIN303, SDL_PHYSPAL, Palette, 0, Amount);
         SDL_SetPalette(SKIN303, SDL_LOGPAL, Palette, 0, Amount);
     }
     if(LOGOPIC)
     {
-//        SDL_SetPalette(LOGOPIC, SDL_PHYSPAL, Palette, 0, Amount);
         SDL_SetPalette(LOGOPIC, SDL_LOGPAL, Palette, 0, Amount);
     }
     if(Temp_PFONT)
     {
-//        SDL_SetPalette(Temp_PFONT, SDL_PHYSPAL, Palette, 0, Amount);
         SDL_SetPalette(Temp_PFONT, SDL_LOGPAL, Palette, 0, Amount);
     }
     if(Temp_LARGEPFONT)
     {
-//        SDL_SetPalette(Temp_LARGEPFONT, SDL_PHYSPAL, Palette, 0, Amount);
         SDL_SetPalette(Temp_LARGEPFONT, SDL_LOGPAL, Palette, 0, Amount);
     }
     if(Temp_SMALLPFONT)
     {
-//        SDL_SetPalette(Temp_SMALLPFONT, SDL_PHYSPAL, Palette, 0, Amount);
         SDL_SetPalette(Temp_SMALLPFONT, SDL_LOGPAL, Palette, 0, Amount);
     }
     if(Temp_NOTEPFONT)
     {
-//        SDL_SetPalette(Temp_NOTEPFONT, SDL_PHYSPAL, Palette, 0, Amount);
         SDL_SetPalette(Temp_NOTEPFONT, SDL_LOGPAL, Palette, 0, Amount);
     }
     if(Temp_NOTELARGEPFONT)
     {
-//        SDL_SetPalette(Temp_NOTELARGEPFONT, SDL_PHYSPAL, Palette, 0, Amount);
         SDL_SetPalette(Temp_NOTELARGEPFONT, SDL_LOGPAL, Palette, 0, Amount);
     }
     if(Temp_NOTESMALLPFONT)
     {
-//        SDL_SetPalette(Temp_NOTESMALLPFONT, SDL_PHYSPAL, Palette, 0, Amount);
         SDL_SetPalette(Temp_NOTESMALLPFONT, SDL_LOGPAL, Palette, 0, Amount);
     }
     if(POINTER)
     {
-//        SDL_SetPalette(POINTER, SDL_PHYSPAL, Palette, 0, Amount);
         SDL_SetPalette(POINTER, SDL_LOGPAL, Palette, 0, Amount);
     }
 
