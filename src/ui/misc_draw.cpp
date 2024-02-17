@@ -2678,8 +2678,7 @@ void Set_Channel_State_Pic(int x, int color, int inv_color)
 
     if(SDL_MUSTLOCK(Temp_PFONT))
     {
-        while(SDL_LockSurface(Temp_PFONT) < 0);
-        was_locked = TRUE;
+        if(!SDL_LockSurface(Temp_PFONT)) was_locked = TRUE;
     }
 
     Pix = (unsigned char *) Temp_PFONT->pixels;
@@ -2730,8 +2729,7 @@ void Create_Pattern_font(SDL_Surface *Dest, int offset,
 
     if(SDL_MUSTLOCK(Dest))
     {
-        while(SDL_LockSurface(Dest) < 0);
-        was_locked = TRUE;
+        if(!SDL_LockSurface(Dest)) was_locked = TRUE;
     }
 
     Pix = (unsigned char *) Dest->pixels;
@@ -2788,8 +2786,7 @@ void Create_Pattern_font(SDL_Surface *Dest, int offset,
     was_locked = FALSE;
     if(SDL_MUSTLOCK(Dest))
     {
-        while(SDL_LockSurface(Dest) < 0);
-        was_locked = TRUE;
+        if(!SDL_LockSurface(Dest)) was_locked = TRUE;
     }
 
     Pix = (unsigned char *) Dest->pixels;

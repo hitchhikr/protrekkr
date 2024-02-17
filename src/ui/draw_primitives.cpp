@@ -285,17 +285,15 @@ void Display_Mouse_Pointer(int x, int y, int clear)
     if(y >= Cur_Height) return;
     
     main_was_locked = FALSE;
-    if(SDL_MUSTLOCK(POINTER))
+    if(SDL_MUSTLOCK(Main_Screen))
     {
-        while(SDL_LockSurface(Main_Screen) < 0);
-        main_was_locked = TRUE;
+        if(!SDL_LockSurface(Main_Screen)) main_was_locked = TRUE;
     }
 
     was_locked = FALSE;
     if(SDL_MUSTLOCK(POINTER))
     {
-        while(SDL_LockSurface(POINTER) < 0);
-        was_locked = TRUE;
+        if(!SDL_LockSurface(POINTER)) was_locked = TRUE;
     }
 
     int i;
