@@ -991,7 +991,7 @@ int Switch_FullScreen(int Width, int Height)
         if((Main_Screen = SDL_SetVideoMode(Startup_Width,
                                            Startup_Height,
                                            SCREEN_BPP,
-                                           SDL_SWSURFACE | SDL_PREALLOC |
+                                           SDL_SWSURFACE | SDL_PREALLOC | SDL_HWPALETTE |
                                            (FullScreen ? SDL_FULLSCREEN : 0))) == NULL)
         {
             return(FALSE);
@@ -1011,7 +1011,7 @@ int Switch_FullScreen(int Width, int Height)
         if((Main_Screen = SDL_SetVideoMode(Width, Height,
                                            SCREEN_BPP,
                                            SDL_RESIZABLE |
-                                           SDL_SWSURFACE | SDL_PREALLOC |
+                                           SDL_SWSURFACE | SDL_PREALLOC | SDL_HWPALETTE |
                                            (FullScreen ? SDL_FULLSCREEN : 0))) == NULL)
         {
             return(FALSE);

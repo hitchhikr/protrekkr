@@ -2938,14 +2938,32 @@ int Set_Pictures_Colors(void)
 {
     int i;
     unsigned char *Pix;
+    int was_locked;
 
     SDL_Palette *Pic_Palette;
     int min_idx = sizeof(Default_Palette2) / sizeof(SDL_Color);
+
+    was_locked = FALSE;
+    if(SDL_MUSTLOCK(FONT))
+    {
+        if(!SDL_LockSurface(FONT)) was_locked = TRUE;
+    }
 
     Pix = (unsigned char *) FONT->pixels;
     for(i = 0; i < FONT->w * FONT->h; i++)
     {
         if(Pix[i]) Pix[i] = COL_FONT_HI;
+    }
+
+    if(was_locked)
+    {
+        SDL_UnlockSurface(FONT);
+    }
+
+    was_locked = FALSE;
+    if(SDL_MUSTLOCK(FONT_LOW))
+    {
+        if(!SDL_LockSurface(FONT_LOW)) was_locked = TRUE;
     }
 
     Pix = (unsigned char *) FONT_LOW->pixels;
@@ -2954,7 +2972,18 @@ int Set_Pictures_Colors(void)
         if(Pix[i]) Pix[i] = COL_FONT_LO;
     }
    
+    if(was_locked)
+    {
+        SDL_UnlockSurface(FONT_LOW);
+    }
+
     bare_color_idx = min_idx;
+
+    was_locked = FALSE;
+    if(SDL_MUSTLOCK(SKIN303))
+    {
+        if(!SDL_LockSurface(SKIN303)) was_locked = TRUE;
+    }
 
     Pix = (unsigned char *) SKIN303->pixels;
     max_colors_303 = 0;
@@ -2965,6 +2994,17 @@ int Set_Pictures_Colors(void)
     }
     max_colors_303++;
 
+    if(was_locked)
+    {
+        SDL_UnlockSurface(SKIN303);
+    }
+
+    was_locked = FALSE;
+    if(SDL_MUSTLOCK(LOGOPIC))
+    {
+        if(!SDL_LockSurface(LOGOPIC)) was_locked = TRUE;
+    }
+
     Pix = (unsigned char *) LOGOPIC->pixels;
     max_colors_logo = 0;
     for(i = 0; i < LOGOPIC->w * LOGOPIC->h; i++)
@@ -2973,6 +3013,11 @@ int Set_Pictures_Colors(void)
         Pix[i] += min_idx;
     }
     max_colors_logo++;
+
+    if(was_locked)
+    {
+        SDL_UnlockSurface(LOGOPIC);
+    }
 
     Pic_Palette = SKIN303->format->palette;
     for(i = 0; i < max_colors_303; i++)
