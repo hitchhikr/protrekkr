@@ -190,8 +190,8 @@ void Copy(SDL_Surface *Source,
     Src_Rect.w = Dst_Rect.w + 1;
     Src_Rect.h = Dst_Rect.h + 1;
 
-    if(Main_Screen->locked) SDL_UnlockSurface(Main_Screen);
-    if(Source->locked) SDL_UnlockSurface(Source);
+//    if(Main_Screen->locked) SDL_UnlockSurface(Main_Screen);
+  //  if(Source->locked) SDL_UnlockSurface(Source);
 
     SDL_BlitSurface(Source, &Src_Rect, Main_Screen, &Dst_Rect);
     Push_Update_Rect(x, y, x2 - x1, y2 - y1);
@@ -215,8 +215,8 @@ void Copy_To_Surface(SDL_Surface *Source, SDL_Surface *dest,
     Dst_Rect.w = (x2 - x1);
     Dst_Rect.h = (y2 - y1);
 
-    if(dest->locked) SDL_UnlockSurface(dest);
-    if(Source->locked) SDL_UnlockSurface(Source);
+//    if(dest->locked) SDL_UnlockSurface(dest);
+  //  if(Source->locked) SDL_UnlockSurface(Source);
 
     SDL_BlitSurface(Source, &Src_Rect, dest, &Dst_Rect);
     Push_Update_Rect(x, y, x2 - x1, y2 - y1);
@@ -269,15 +269,15 @@ void PrintString(int x,
         Dst_Rect.x = pos_x;
         Dst_Rect.w = Src_Rect.w;
 
-        if(Main_Screen->locked) SDL_UnlockSurface(Main_Screen);
+//        if(Main_Screen->locked) SDL_UnlockSurface(Main_Screen);
         if(Font_Type == USE_FONT)
         {
-            if(FONT->locked) SDL_UnlockSurface(FONT);
+  //          if(FONT->locked) SDL_UnlockSurface(FONT);
             SDL_BlitSurface(FONT, &Src_Rect, Main_Screen, &Dst_Rect);
         }
         else
         {
-            if(FONT_LOW->locked) SDL_UnlockSurface(FONT_LOW);
+    //        if(FONT_LOW->locked) SDL_UnlockSurface(FONT_LOW);
             SDL_BlitSurface(FONT_LOW, &Src_Rect, Main_Screen, &Dst_Rect);
         }
         x += Font_Size[Idx];
@@ -289,9 +289,17 @@ void PrintString(int x,
 // Display or clear the mouse pointer at given coordinates
 void Display_Mouse_Pointer(int x, int y, int clear)
 {
+    int was_locked;
+
     if(x >= Cur_Width) return;
     if(y >= Cur_Height) return;
-    while(SDL_LockSurface(POINTER) < 0);
+    
+    was_locked = FALSE;
+    if(SDL_MUSTLOCK(POINTER))
+    {
+        while(SDL_LockSurface(POINTER) < 0);
+        was_locked = TRUE;
+    }
 
     int i;
     int j;
@@ -331,7 +339,12 @@ void Display_Mouse_Pointer(int x, int y, int clear)
             }
         }
     }
-    SDL_UnlockSurface(POINTER);
+
+    if(was_locked)
+    {
+        SDL_UnlockSurface(POINTER);
+    }
+
     Push_Update_Rect(x, y, POINTER->w, POINTER->h);
 }
 

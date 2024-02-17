@@ -2674,8 +2674,13 @@ void Set_Channel_State_Pic(int x, int color, int inv_color)
     int i;
     int j;
     unsigned char *Pix;
+    int was_locked = FALSE;
 
-    while(SDL_LockSurface(Temp_PFONT) < 0);
+    if(SDL_MUSTLOCK(Temp_PFONT))
+    {
+        while(SDL_LockSurface(Temp_PFONT) < 0);
+        was_locked = TRUE;
+    }
 
     Pix = (unsigned char *) Temp_PFONT->pixels;
 
@@ -2696,7 +2701,10 @@ void Set_Channel_State_Pic(int x, int color, int inv_color)
         }
     }
 
-    SDL_UnlockSurface(Temp_PFONT);
+    if(was_locked)
+    {
+        SDL_UnlockSurface(Temp_PFONT);
+    }
 }
 
 // ------------------------------------------------------
@@ -2713,12 +2721,18 @@ void Create_Pattern_font(SDL_Surface *Dest, int offset,
     int Surface_offset_Dest;
     int i;
     int j;
+    int was_locked = FALSE;
 
     // Create the pattern font
     Copy_To_Surface(PFONT, Dest, 0, 0, 0, offset, 320, offset + 8);
 
     // Set the base colors
-    while(SDL_LockSurface(Dest) < 0);
+
+    if(SDL_MUSTLOCK(Dest))
+    {
+        while(SDL_LockSurface(Dest) < 0);
+        was_locked = TRUE;
+    }
 
     Pix = (unsigned char *) Dest->pixels;
     Pix3 = Pix + (87 * Dest->pitch);
@@ -2763,12 +2777,20 @@ void Create_Pattern_font(SDL_Surface *Dest, int offset,
         }
     }
 
-    SDL_UnlockSurface(Dest);
+    if(was_locked)
+    {
+        SDL_UnlockSurface(Dest);
+    }
 
     // Blank line
     Copy_To_Surface(PFONT, Dest, 0, 16, 0, 7, 320, 7 + 1);
 
-    while(SDL_LockSurface(Dest) < 0);
+    was_locked = FALSE;
+    if(SDL_MUSTLOCK(Dest))
+    {
+        while(SDL_LockSurface(Dest) < 0);
+        was_locked = TRUE;
+    }
 
     Pix2 = Pix;
     Pix2 += (16 * Dest->pitch);
@@ -2882,7 +2904,10 @@ void Create_Pattern_font(SDL_Surface *Dest, int offset,
         }
     }
 
-    SDL_UnlockSurface(Dest);
+    if(was_locked)
+    {
+        SDL_UnlockSurface(Dest);
+    }
 
     // Markers arrows
     Copy_To_Surface(PFONT, Dest, 0, 64, 0, 8, 320, 8 + 7);
