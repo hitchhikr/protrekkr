@@ -2792,6 +2792,7 @@ void Create_Pattern_font(SDL_Surface *Dest, int offset,
         was_locked = TRUE;
     }
 
+    Pix = (unsigned char *) Dest->pixels;
     Pix2 = Pix;
     Pix2 += (16 * Dest->pitch);
 

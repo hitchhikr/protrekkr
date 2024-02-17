@@ -936,7 +936,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
         // Flush all pending blits
         if(Nbr_Update_Rects) 
         {
-            SDL_UpdateRects(Main_Screen, Nbr_Update_Rects, Update_Stack);
+           SDL_UpdateRects(Main_Screen, Nbr_Update_Rects, Update_Stack);
         }
         Nbr_Update_Rects = 0;
 
@@ -989,7 +989,7 @@ int Switch_FullScreen(int Width, int Height)
         if((Main_Screen = SDL_SetVideoMode(Startup_Width,
                                            Startup_Height,
                                            SCREEN_BPP,
-                                           SDL_SWSURFACE |
+                                           SDL_SWSURFACE | SDL_PREALLOC |
                                            (FullScreen ? SDL_FULLSCREEN : 0))) == NULL)
         {
             return(FALSE);
@@ -1009,7 +1009,7 @@ int Switch_FullScreen(int Width, int Height)
         if((Main_Screen = SDL_SetVideoMode(Width, Height,
                                            SCREEN_BPP,
                                            SDL_RESIZABLE |
-                                           SDL_SWSURFACE |
+                                           SDL_SWSURFACE | SDL_PREALLOC |
                                            (FullScreen ? SDL_FULLSCREEN : 0))) == NULL)
         {
             return(FALSE);

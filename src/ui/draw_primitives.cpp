@@ -107,62 +107,62 @@ void UISetPalette(SDL_Color *Palette, int Amount)
 {
     if(FONT_LOW)
     {
-        SDL_SetPalette(FONT_LOW, SDL_PHYSPAL, Palette, 0, Amount);
+//        SDL_SetPalette(FONT_LOW, SDL_PHYSPAL, Palette, 0, Amount);
         SDL_SetPalette(FONT_LOW, SDL_LOGPAL, Palette, 0, Amount);
     }
     if(FONT)
     {
-        SDL_SetPalette(FONT, SDL_PHYSPAL, Palette, 0, Amount);
+//        SDL_SetPalette(FONT, SDL_PHYSPAL, Palette, 0, Amount);
         SDL_SetPalette(FONT, SDL_LOGPAL, Palette, 0, Amount);
     }
     if(PFONT)
     {
-        SDL_SetPalette(PFONT, SDL_PHYSPAL, Palette, 0, Amount);
+//        SDL_SetPalette(PFONT, SDL_PHYSPAL, Palette, 0, Amount);
         SDL_SetPalette(PFONT, SDL_LOGPAL, Palette, 0, Amount);
     }
     if(SKIN303)
     {
-        SDL_SetPalette(SKIN303, SDL_PHYSPAL, Palette, 0, Amount);
+//        SDL_SetPalette(SKIN303, SDL_PHYSPAL, Palette, 0, Amount);
         SDL_SetPalette(SKIN303, SDL_LOGPAL, Palette, 0, Amount);
     }
     if(LOGOPIC)
     {
-        SDL_SetPalette(LOGOPIC, SDL_PHYSPAL, Palette, 0, Amount);
+//        SDL_SetPalette(LOGOPIC, SDL_PHYSPAL, Palette, 0, Amount);
         SDL_SetPalette(LOGOPIC, SDL_LOGPAL, Palette, 0, Amount);
     }
     if(Temp_PFONT)
     {
-        SDL_SetPalette(Temp_PFONT, SDL_PHYSPAL, Palette, 0, Amount);
+//        SDL_SetPalette(Temp_PFONT, SDL_PHYSPAL, Palette, 0, Amount);
         SDL_SetPalette(Temp_PFONT, SDL_LOGPAL, Palette, 0, Amount);
     }
     if(Temp_LARGEPFONT)
     {
-        SDL_SetPalette(Temp_LARGEPFONT, SDL_PHYSPAL, Palette, 0, Amount);
+//        SDL_SetPalette(Temp_LARGEPFONT, SDL_PHYSPAL, Palette, 0, Amount);
         SDL_SetPalette(Temp_LARGEPFONT, SDL_LOGPAL, Palette, 0, Amount);
     }
     if(Temp_SMALLPFONT)
     {
-        SDL_SetPalette(Temp_SMALLPFONT, SDL_PHYSPAL, Palette, 0, Amount);
+//        SDL_SetPalette(Temp_SMALLPFONT, SDL_PHYSPAL, Palette, 0, Amount);
         SDL_SetPalette(Temp_SMALLPFONT, SDL_LOGPAL, Palette, 0, Amount);
     }
     if(Temp_NOTEPFONT)
     {
-        SDL_SetPalette(Temp_NOTEPFONT, SDL_PHYSPAL, Palette, 0, Amount);
+//        SDL_SetPalette(Temp_NOTEPFONT, SDL_PHYSPAL, Palette, 0, Amount);
         SDL_SetPalette(Temp_NOTEPFONT, SDL_LOGPAL, Palette, 0, Amount);
     }
     if(Temp_NOTELARGEPFONT)
     {
-        SDL_SetPalette(Temp_NOTELARGEPFONT, SDL_PHYSPAL, Palette, 0, Amount);
+//        SDL_SetPalette(Temp_NOTELARGEPFONT, SDL_PHYSPAL, Palette, 0, Amount);
         SDL_SetPalette(Temp_NOTELARGEPFONT, SDL_LOGPAL, Palette, 0, Amount);
     }
     if(Temp_NOTESMALLPFONT)
     {
-        SDL_SetPalette(Temp_NOTESMALLPFONT, SDL_PHYSPAL, Palette, 0, Amount);
+//        SDL_SetPalette(Temp_NOTESMALLPFONT, SDL_PHYSPAL, Palette, 0, Amount);
         SDL_SetPalette(Temp_NOTESMALLPFONT, SDL_LOGPAL, Palette, 0, Amount);
     }
     if(POINTER)
     {
-        SDL_SetPalette(POINTER, SDL_PHYSPAL, Palette, 0, Amount);
+//        SDL_SetPalette(POINTER, SDL_PHYSPAL, Palette, 0, Amount);
         SDL_SetPalette(POINTER, SDL_LOGPAL, Palette, 0, Amount);
     }
 
@@ -190,7 +190,7 @@ void Copy(SDL_Surface *Source,
     Src_Rect.w = Dst_Rect.w + 1;
     Src_Rect.h = Dst_Rect.h + 1;
 
-//    if(Main_Screen->locked) SDL_UnlockSurface(Main_Screen);
+    if(Main_Screen->locked) SDL_UnlockSurface(Main_Screen);
   //  if(Source->locked) SDL_UnlockSurface(Source);
 
     SDL_BlitSurface(Source, &Src_Rect, Main_Screen, &Dst_Rect);
@@ -269,7 +269,7 @@ void PrintString(int x,
         Dst_Rect.x = pos_x;
         Dst_Rect.w = Src_Rect.w;
 
-//        if(Main_Screen->locked) SDL_UnlockSurface(Main_Screen);
+        if(Main_Screen->locked) SDL_UnlockSurface(Main_Screen);
         if(Font_Type == USE_FONT)
         {
   //          if(FONT->locked) SDL_UnlockSurface(FONT);
@@ -287,13 +287,22 @@ void PrintString(int x,
 
 // ------------------------------------------------------
 // Display or clear the mouse pointer at given coordinates
+#if defined(__MACOSX_PPC__)
 void Display_Mouse_Pointer(int x, int y, int clear)
 {
     int was_locked;
+    int main_was_locked;
 
     if(x >= Cur_Width) return;
     if(y >= Cur_Height) return;
     
+    main_was_locked = FALSE;
+    if(SDL_MUSTLOCK(POINTER))
+    {
+        while(SDL_LockSurface(Main_Screen) < 0);
+        main_was_locked = TRUE;
+    }
+
     was_locked = FALSE;
     if(SDL_MUSTLOCK(POINTER))
     {
@@ -345,8 +354,14 @@ void Display_Mouse_Pointer(int x, int y, int clear)
         SDL_UnlockSurface(POINTER);
     }
 
+    if(main_was_locked)
+    {
+        SDL_UnlockSurface(Main_Screen);
+    }
+
     Push_Update_Rect(x, y, POINTER->w, POINTER->h);
 }
+#endif
 
 // ------------------------------------------------------
 // See if a rect have to be scheduled or not
