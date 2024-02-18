@@ -32,7 +32,7 @@ protrekkr_ia64: $(EXEOBJS_IA64)
 	(cd src/extralibs/sdl_draw; make -f makefile.macosx_ia64)
 	(cd src/extralibs/zlib-1.2.3; make -f makefile.macosx_ia64)
 	(cd src/extralibs/bin2c; make -f makefile.macosx_ia64)
-	-mkdir ./release/distrib/protrekkr.app/Contents/MacOS/
+	-mkdir ./release/distrib/protrekkr_ia64.app/Contents/MacOS/
 	$(CXX) -o ./release/distrib/protrekkr_ia64.app/Contents/MacOS/Protrekkr \
            -L./ -L/library/frameworks -Lsrc/extralibs/sdl_draw -Lsrc/extralibs/zlib-1.2.3 $(FLAGS_IA64) $(EXEOBJS_IA64) $(LIBS_IA64)
 	strip -x -X -S ./release/distrib/protrekkr_ia64.app/Contents/MacOS/Protrekkr
