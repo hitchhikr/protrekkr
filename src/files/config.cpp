@@ -275,33 +275,6 @@ void Load_Config(void)
 
             Read_Data_Swap(&Cur_Left, sizeof(int), 1, in);
             Read_Data_Swap(&Cur_Top, sizeof(int), 1, in);
-            Desktop = SDL_SetVideoMode(0, 0,
-                                       SCREEN_BPP,
-                                       SDL_RESIZABLE |
-                                       SDL_SWSURFACE | SDL_PREALLOC | SDL_HWPALETTE);
-            if(Desktop)
-            {
-                // Check if the coords are too big
-                if(Cur_Width > SDL_GetVideoSurface()->w)
-                {
-                    Cur_Left = 0;
-                    Cur_Width = SDL_GetVideoSurface()->w;
-                }
-                if(Cur_Height > SDL_GetVideoSurface()->h)
-                {
-                    Cur_Top = 0;
-                    Cur_Height = SDL_GetVideoSurface()->h;
-                }
-                if(Cur_Left == -1 ||
-                   Cur_Top == -1)
-                {
-                    Cur_Left = SDL_GetVideoSurface()->w;
-                    Cur_Top = SDL_GetVideoSurface()->h;
-                    Cur_Left = (Cur_Left - Cur_Width) / 2;
-                    Cur_Top = (Cur_Top - Cur_Height) / 2;
-                }
-                SDL_FreeSurface(Desktop);
-            }
 
 #ifndef __MORPHOS__
             sprintf(Win_Coords,
