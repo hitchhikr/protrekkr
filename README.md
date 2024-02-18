@@ -24,7 +24,7 @@ Notice that you'll need SDL 1.
 ---
 This is a FREEWARE tool, this means that you can use it for whatever you want and for free.
 There's NO GUARANTEE that this program will perform well or even run on your computer.
----
+--
 
 ---
 So far, ProTrekkr was used in these intros or demos (the ones i'm aware of, at least) :<br><br>
