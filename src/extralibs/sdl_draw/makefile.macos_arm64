@@ -1,0 +1,23 @@
+LIBFLAGS = -c
+FLAGS_ARM64 = -O3 -arch arm64 -D __LINUX__ -D __GCC__ -I/opt/local/include
+LIBOBJS_ARM64 = draw_hline_arm64.o draw_pixel_arm64.o draw_vline_arm64.o
+
+all: sdldraw
+clean: RemLibObj
+
+RemLibObj:
+	-rm -f $(LIBOBJS_ARM64)
+	
+sdldraw: $(LIBOBJS_ARM64)
+	-rm libsdldraw_arm64.a
+	ar -s -r libsdldraw_arm64.a $(LIBOBJS_ARM64)
+	-rm -f $(LIBOBJS_ARM64)
+
+draw_hline_arm64.o: src/draw_hline.cpp
+	g++ -o $(@) $(LIBFLAGS) $(FLAGS_ARM64) src/draw_hline.cpp
+
+draw_pixel_arm64.o: src/draw_pixel.cpp
+	g++ -o $(@) $(LIBFLAGS) $(FLAGS_ARM64) src/draw_pixel.cpp
+
+draw_vline_arm64.o: src/draw_vline.cpp
+	g++ -o $(@) $(LIBFLAGS) $(FLAGS_ARM64) src/draw_vline.cpp

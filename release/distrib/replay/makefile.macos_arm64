@@ -1,0 +1,32 @@
+include test/module.macosx
+
+LIBS_ARM64 = -lptkreplay_arm64 -framework CoreAudio -framework AudioUnit -framework Cocoa
+DEBUG = 
+FLAGS_ARM64 = $(DEBUG) -Os -arch arm64 -fomit-frame-pointer -fno-rtti -fno-strict-aliasing -ffast-math -D __MACOSX_X86__ -D __GCC__ -D __STAND_ALONE__
+EXEOBJS_ARM64 = test_arm64.o module_arm64.o
+
+all: module ptkreplay replaytest
+clean: remobj remlibobj
+
+remobj:
+	-rm -f module.cpp
+	-rm -f $(EXEOBJS_ARM64)
+	-rm -f replaytest
+
+replaytest: $(EXEOBJS_ARM64)
+	g++ -o replaytest -L./ $(FLAGS_ARM64) $(EXEOBJS_ARM64) $(LIBS_ARM64)
+	strip -x -X -S replaytest
+	-rm -f module.cpp
+
+test_arm64.o: test/test_macosx.cpp
+	g++ -c -o $(@) $(FLAGS_ARM64) test/test_macosx.cpp
+
+module_arm64.o: module.cpp
+	g++ -c -o $(@) -arch arm64 module.cpp
+
+module:
+	chmod +x ./bin2c
+	./bin2c $(MODULE) module.cpp _PTK_MODULE
+
+# the library itself #
+include lib/makefile.macosx_arm64

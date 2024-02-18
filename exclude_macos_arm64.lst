@@ -6,9 +6,10 @@
 *.freebsd*
 *.netbsd*
 *ppc*
+*x86*
 *ia64*
-*arm64*
-*.dsw*
+*protrekkr.app*
+.dsw*
 *.dsp*
 *.sln*
 *.vcproj*

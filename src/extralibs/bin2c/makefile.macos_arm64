@@ -1,0 +1,18 @@
+BIN2C_LIBS_ARM64 = -framework Cocoa
+BIN2C_ARM64 = bin2c_arm64.o
+FLAGS_ARM64 = -O3 -arch arm64
+
+all: bin2c
+clean: remobj_bin2c
+
+remobj_bin2c:
+	-rm -f $(BIN2C_ARM64)
+	
+bin2c: $(BIN2C_ARM64)
+	g++ -o ../../../release/distrib/replay/bin2c -L./ $(FLAGS_ARM64) $(BIN2C_ARM64) $(BIN2C_LIBS_ARM64)
+	-rm -f $(BIN2C_ARM64)
+	strip -x -X -S ../../../release/distrib/replay/bin2c
+	chmod +x ../../../release/distrib/replay/bin2c
+
+bin2c_arm64.o: bin2c.cpp
+	g++ -c -o $(@) $(FLAGS_ARM64) bin2c.cpp

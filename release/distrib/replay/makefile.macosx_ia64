@@ -22,7 +22,7 @@ test_ia64.o: test/test_macosx.cpp
 	g++ -c -o $(@) $(FLAGS_IA64) test/test_macosx.cpp
 
 module_ia64.o: module.cpp
-	g++ -c -o $(@) -arch i386 module.cpp
+	g++ -c -o $(@) -arch x86_64 module.cpp
 
 module:
 	chmod +x ./bin2c

@@ -1,0 +1,195 @@
+CXX = g++
+
+LIBS_ARM64 = -lsdldraw_arm64 -lz -framework CoreAudio -framework CoreMidi -framework AudioUnit -framework Cocoa -lSDL
+
+DEBUG = 
+
+FLAGS_ARM64 = $(DEBUG) -O3 -arch arm64 -ffast-math -fomit-frame-pointer -fno-rtti -I/opt/local/include \
+            -fno-strict-aliasing -w -D __MACOSX_X86__ -D __GCC__ -D __MACOSX_CORE__ -D __MOT_SWAP__ -D __AIFF__
+
+EXEOBJS_ARM64 = ptk_arm64.o \
+              editor_303_arm64.o editor_pattern_arm64.o editor_sequencer_arm64.o editor_track_arm64.o editor_track_fx_arm64.o \
+              patterns_blocks_arm64.o editor_synth_arm64.o editor_sample_arm64.o editor_fx_setup_arm64.o editor_setup_arm64.o \
+              editor_diskio_arm64.o editor_reverb_arm64.o editor_instrument_arm64.o editor_midi_arm64.o \
+              samples_pack_arm64.o files_list_arm64.o files_arm64.o mods_arm64.o patterns_arm64.o reverbs_arm64.o midi_cfg_arm64.o \
+              bits_arm64.o pack_arm64.o tinypack_arm64.o words_arm64.o wputils_arm64.o \
+              config_arm64.o 303s_arm64.o synths_arm64.o insts_arm64.o ptps_arm64.o \
+              midi_arm64.o RtMidi_arm64.o midi_dispatch_arm64.o \
+              timer_arm64.o main_arm64.o sdlmain_arm64.o \
+              misc_draw_arm64.o draw_primitives_arm64.o requesters_arm64.o \
+              samples_ops_arm64.o aiff_arm64.o riff_arm64.o \
+              spline_arm64.o tb_303_arm64.o wavpack_arm64.o samples_unpack_arm64.o replay_arm64.o synth_arm64.o endianness_arm64.o \
+              sounddriver_macosx_arm64.o
+
+all: protrekkr_arm64
+
+clean: RemObj
+
+RemObj:
+	-rm -f $(EXEOBJS_ARM64)
+
+protrekkr_arm64: $(EXEOBJS_ARM64)
+	(cd src/extralibs/sdl_draw; make -f makefile.macosx_arm64)
+	(cd src/extralibs/zlib-1.2.3; make -f makefile.macosx_arm64)
+	(cd src/extralibs/bin2c; make -f makefile.macosx_arm64)
+	$(CXX) -o ./release/distrib/protrekkr_arm64.app/Contents/MacOS/Protrekkr \
+           -L./ -L/opt/local/lib -L/library/frameworks -Lsrc/extralibs/sdl_draw -Lsrc/extralibs/zlib-1.2.3 $(FLAGS_ARM64) $(EXEOBJS_ARM64) $(LIBS_ARM64)
+	strip -x -X -S ./release/distrib/protrekkr_arm64.app/Contents/MacOS/Protrekkr
+	chmod +x ./release/distrib/protrekkr_arm64.app/Contents/MacOS/Protrekkr
+	install_name_tool ./release/distrib/protrekkr_arm64.app/Contents/MacOS/Protrekkr -change /opt/local/lib/libSDL-1.2.0.dylib @executable_path/libSDL-1.2.0.dylib
+
+ptk_arm64.o: src/ptk.cpp
+	$(CXX) -c -o $(@) $(FLAGS_ARM64) $<
+
+editor_303_arm64.o: src/editors/editor_303.cpp
+	$(CXX) -c -o $(@) $(FLAGS_ARM64) $<
+
+editor_pattern_arm64.o: src/editors/editor_pattern.cpp
+	$(CXX) -c -o $(@) $(FLAGS_ARM64) $<
+
+editor_sequencer_arm64.o: src/editors/editor_sequencer.cpp
+	$(CXX) -c -o $(@) $(FLAGS_ARM64) $<
+
+editor_track_arm64.o: src/editors/editor_track.cpp
+	$(CXX) -c -o $(@) $(FLAGS_ARM64) $<
+
+editor_track_fx_arm64.o: src/editors/editor_track_fx.cpp
+	$(CXX) -c -o $(@) $(FLAGS_ARM64) $<
+
+patterns_blocks_arm64.o: src/editors/patterns_blocks.cpp
+	$(CXX) -c -o $(@) $(FLAGS_ARM64) $<
+
+editor_synth_arm64.o: src/editors/editor_synth.cpp
+	$(CXX) -c -o $(@) $(FLAGS_ARM64) $<
+
+editor_sample_arm64.o: src/editors/editor_sample.cpp
+	$(CXX) -c -o $(@) $(FLAGS_ARM64) $<
+
+editor_fx_setup_arm64.o: src/editors/editor_fx_setup.cpp
+	$(CXX) -c -o $(@) $(FLAGS_ARM64) $<
+
+editor_setup_arm64.o: src/editors/editor_setup.cpp
+	$(CXX) -c -o $(@) $(FLAGS_ARM64) $<
+
+editor_diskio_arm64.o: src/editors/editor_diskio.cpp
+	$(CXX) -c -o $(@) $(FLAGS_ARM64) $<
+
+editor_reverb_arm64.o: src/editors/editor_reverb.cpp
+	$(CXX) -c -o $(@) $(FLAGS_ARM64) $<
+
+editor_instrument_arm64.o: src/editors/editor_instrument.cpp
+	$(CXX) -c -o $(@) $(FLAGS_ARM64) $<
+
+editor_midi_arm64.o: src/editors/editor_midi.cpp
+	$(CXX) -c -o $(@) $(FLAGS_ARM64) $<
+
+samples_pack_arm64.o: src/samples/samples_pack.cpp
+	$(CXX) -c -o $(@) $(FLAGS_ARM64) $<
+
+files_list_arm64.o: src/files/files_list.cpp
+	$(CXX) -c -o $(@) $(FLAGS_ARM64) $<
+
+files_arm64.o: src/files/files.cpp
+	$(CXX) -c -o $(@) $(FLAGS_ARM64) $<
+
+mods_arm64.o: src/files/mods.cpp
+	$(CXX) -c -o $(@) $(FLAGS_ARM64) $<
+
+patterns_arm64.o: src/files/patterns.cpp
+	$(CXX) -c -o $(@) $(FLAGS_ARM64) $<
+
+reverbs_arm64.o: src/files/reverbs.cpp
+	$(CXX) -c -o $(@) $(FLAGS_ARM64) $<
+
+midi_cfg_arm64.o: src/files/midi_cfg.cpp
+	$(CXX) -c -o $(@) $(FLAGS_ARM64) $<
+
+config_arm64.o: src/files/config.cpp
+	$(CXX) -c -o $(@) $(FLAGS_ARM64) $<
+
+303s_arm64.o: src/files/303s.cpp
+	$(CXX) -c -o $(@) $(FLAGS_ARM64) $<
+
+synths_arm64.o: src/files/synths.cpp
+	$(CXX) -c -o $(@) $(FLAGS_ARM64) $<
+
+insts_arm64.o: src/files/insts.cpp
+	$(CXX) -c -o $(@) $(FLAGS_ARM64) $<
+
+ptps_arm64.o: src/files/ptps.cpp
+	$(CXX) -c -o $(@) $(FLAGS_ARM64) $<
+
+midi_arm64.o: src/midi/midi.cpp
+	$(CXX) -c -o $(@) $(FLAGS_ARM64) $<
+
+RtMidi_arm64.o: src/midi/RtMidi.cpp
+	$(CXX) -c -o $(@) $(FLAGS_ARM64) $<
+
+midi_dispatch_arm64.o: src/midi/midi_dispatch.cpp
+	$(CXX) -c -o $(@) $(FLAGS_ARM64) $<
+
+timer_arm64.o: src/support/timer.cpp
+	$(CXX) -c -o $(@) $(FLAGS_ARM64) $<
+
+main_arm64.o: src/support/main.cpp
+	$(CXX) -c -o $(@) $(FLAGS_ARM64) $<
+
+sdlmain_arm64.o: src/support/sdlmain.m
+	$(CXX) -c -o $(@) $(FLAGS_ARM64) $<
+
+misc_draw_arm64.o: src/ui/misc_draw.cpp
+	$(CXX) -c -o $(@) $(FLAGS_ARM64) $<
+
+draw_primitives_arm64.o: src/ui/draw_primitives.cpp
+	$(CXX) -c -o $(@) $(FLAGS_ARM64) $<
+
+requesters_arm64.o: src/ui/requesters.cpp
+	$(CXX) -c -o $(@) $(FLAGS_ARM64) $<
+
+samples_ops_arm64.o: src/samples/samples_ops.cpp
+	$(CXX) -c -o $(@) $(FLAGS_ARM64) $<
+
+aiff_arm64.o: src/samples/aiff/aiff.cpp
+	$(CXX) -c -o $(@) $(FLAGS_ARM64) $<
+
+riff_arm64.o: src/samples/wav/riff.cpp
+	$(CXX) -c -o $(@) $(FLAGS_ARM64) $<
+
+spline_arm64.o: release/distrib/replay/lib/spline.cpp
+	$(CXX) -c -o $(@) $(FLAGS_ARM64) $<
+
+tb_303_arm64.o: release/distrib/replay/lib/tb_303.cpp
+	$(CXX) -c -o $(@) $(FLAGS_ARM64) $<
+
+wavpack_arm64.o: release/distrib/replay/lib/wavpack.cpp
+	$(CXX) -c -o $(@) $(FLAGS_ARM64) $<
+
+samples_unpack_arm64.o: release/distrib/replay/lib/samples_unpack.cpp
+	$(CXX) -c -o $(@) $(FLAGS_ARM64) $<
+
+replay_arm64.o: release/distrib/replay/lib/replay.cpp
+	$(CXX) -c -o $(@) $(FLAGS_ARM64) $<
+
+synth_arm64.o: release/distrib/replay/lib/synth.cpp
+	$(CXX) -c -o $(@) $(FLAGS_ARM64) $<
+
+endianness_arm64.o: release/distrib/replay/lib/endianness.cpp
+	$(CXX) -c -o $(@) $(FLAGS_ARM64) $<
+
+sounddriver_macosx_arm64.o: release/distrib/replay/lib/sounddriver/sounddriver_macosx.cpp
+	$(CXX) -c -o $(@) $(FLAGS_ARM64) $<
+
+bits_arm64.o: src/samples/wavpack/bits.cpp
+	$(CXX) -c -o $(@) $(FLAGS_ARM64) $<
+
+pack_arm64.o: src/samples/wavpack/pack.cpp
+	$(CXX) -c -o $(@) $(FLAGS_ARM64) $<
+
+words_arm64.o: src/samples/wavpack/words.cpp
+	$(CXX) -c -o $(@) $(FLAGS_ARM64) $<
+
+wputils_arm64.o: src/samples/wavpack/wputils.cpp
+	$(CXX) -c -o $(@) $(FLAGS_ARM64) $<
+
+tinypack_arm64.o: src/samples/wavpack/tinypack.cpp
+	$(CXX) -c -o $(@) $(FLAGS_ARM64) $<
