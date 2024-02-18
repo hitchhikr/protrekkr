@@ -929,6 +929,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
 #if defined(__MACOSX_PPC__)
         if(Display_Pointer) Display_Mouse_Pointer(Mouse.old_x, Mouse.old_y, TRUE);
 #endif
+
         if(!Screen_Update()) break;
 
 #if defined(__MACOSX_PPC__)

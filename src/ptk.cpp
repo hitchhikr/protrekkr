@@ -506,8 +506,7 @@ int Init_Context(void)
         case 9: sprintf(tipoftheday, "Tip Of The Hour: Use '90' command in the panning column to change midi controllers values."); break;
         case 10: sprintf(tipoftheday, "Tip Of The Hour: Increase latency time if sound is distorted."); break;
         case 11: sprintf(tipoftheday, "Tip Of The Hour: Pressing right mouse button on most arrows buttons (\03\04) will speed operation up.");
-
-        default: sprintf(tipoftheday, "Tip Of The Hour: See readme.txt for more infos about help and pattern commands."); break;
+        default: sprintf(tipoftheday, "Tip Of The Hour: See manual.pdf for more infos about help and pattern commands."); break;
     }
 
     L_MaxLevel = 0;
@@ -551,27 +550,6 @@ int Init_Context(void)
         return(FALSE);
     }
 
-    // Player initialization
-#if defined(__WIN32__)
-    if(!Ptk_InitDriver(Main_Window, AUDIO_Milliseconds))
-#else
-    if(!Ptk_InitDriver(AUDIO_Milliseconds))
-#endif
-    {
-        Ptk_ReleaseDriver();
-        return(FALSE);
-    }
-
-    Set_Default_Channels_Polyphony();
-    init_sample_bank();
-    Pre_Song_Init();
-    Post_Song_Init();
-
-    // Old preset by default
-    Load_Old_Reverb_Presets(0);
-
-    Initreverb();
-
     LOGOPIC = Load_Skin_Picture("neural.bmp");
     if(!LOGOPIC) return(FALSE);
 #if defined(__MACOSX_PPC__)
@@ -593,9 +571,30 @@ int Init_Context(void)
 
     SDL_SetColorKey(FONT, SDL_SRCCOLORKEY, 0);
     SDL_SetColorKey(FONT_LOW, SDL_SRCCOLORKEY, 0);
+
 #if defined(__MACOSX_PPC__)
     SDL_SetColorKey(POINTER, SDL_SRCCOLORKEY, 0);
 #endif
+
+    // Player initialization
+#if defined(__WIN32__)
+    if(!Ptk_InitDriver(Main_Window, AUDIO_Milliseconds))
+#else
+    if(!Ptk_InitDriver(AUDIO_Milliseconds))
+#endif
+    {
+        Ptk_ReleaseDriver();
+        return(FALSE);
+    }
+
+    Set_Default_Channels_Polyphony();
+    init_sample_bank();
+    Pre_Song_Init();
+    Post_Song_Init();
+
+    // Old preset by default
+    Load_Old_Reverb_Presets(0);
+    Initreverb();
 
     Timer = SDL_AddTimer(1000, Timer_Ptr, NULL);
 

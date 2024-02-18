@@ -2138,6 +2138,7 @@ void Pre_Song_Init(void)
     tb303engine[0].reset();
     tb303engine[1].reset();
 #endif
+
     for(i = 0; i < MAX_INSTRS; i++)
     {
         Sample_Vol[i] = 1.0f;
@@ -2398,9 +2399,11 @@ void Post_Song_Init(void)
         Delays_Pos_Sound_Buffer[i].Line = 0;
         Delays_Pos_Sound_Buffer[i].Pos = 0;
         Delays_Pos_Sound_Buffer[i].SamplesPerTick = 0;
+
 #if defined(PTK_SHUFFLE)
         Delays_Pos_Sound_Buffer[i].shufflestep = 0;
 #endif
+
     }
 }
 
@@ -2412,6 +2415,7 @@ void Record_Delay_Event()
 #if defined(PTK_SHUFFLE)
     Delays_Pos_Sound_Buffer[Cur_Delay_Sound_Buffer].shufflestep = shufflestep;
 #endif
+
     Delays_Pos_Sound_Buffer[Cur_Delay_Sound_Buffer].SamplesPerTick = SamplesPerTick;
     Delays_Pos_Sound_Buffer[Cur_Delay_Sound_Buffer].Line = Pattern_Line;
     Delays_Pos_Sound_Buffer[Cur_Delay_Sound_Buffer].Pos = Song_Position;
@@ -2471,14 +2475,18 @@ void Sp_Player(void)
     int i;
     int j;
     int trigger_note_off;
+
 #if defined(PTK_SYNTH) || defined(PTK_INSTRUMENTS)
     float dest_volume;
 #endif
+
     int toffset;
     int free_sub_channel;
+
 #if defined(PTK_FX_SETVOLUME)
     int no_fx3;
 #endif
+
     int Glide_Synth[MAX_POLYPHONY];
 
 #if defined(PTK_TRACKFILTERS)
