@@ -1,5 +1,5 @@
 LIBFLAGS = -c
-FLAGS_ARM64 = -O3 -arch arm64 -D __LINUX__ -D __GCC__ -I/opt/local/include
+FLAGS_ARM64 = -O3 -arch arm64 -D __LINUX__ -D __GCC__ -I/opt/local/libexec/libsdl12/include
 LIBOBJS_ARM64 = draw_hline_arm64.o draw_pixel_arm64.o draw_vline_arm64.o
 
 all: sdldraw
