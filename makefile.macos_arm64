@@ -29,9 +29,9 @@ RemObj:
 	-rm -f $(EXEOBJS_ARM64)
 
 protrekkr_arm64: $(EXEOBJS_ARM64)
-	(cd src/extralibs/sdl_draw; make -f makefile.macosx_arm64)
-	(cd src/extralibs/zlib-1.2.3; make -f makefile.macosx_arm64)
-	(cd src/extralibs/bin2c; make -f makefile.macosx_arm64)
+	(cd src/extralibs/sdl_draw; make -f makefile.macos_arm64)
+	(cd src/extralibs/zlib-1.2.3; make -f makefile.macos_arm64)
+	(cd src/extralibs/bin2c; make -f makefile.macos_arm64)
 	$(CXX) -o ./release/distrib/protrekkr_arm64.app/Contents/MacOS/Protrekkr \
            -L./ -L/opt/local/lib -L/library/frameworks -Lsrc/extralibs/sdl_draw -Lsrc/extralibs/zlib-1.2.3 $(FLAGS_ARM64) $(EXEOBJS_ARM64) $(LIBS_ARM64)
 	strip -x -X -S ./release/distrib/protrekkr_arm64.app/Contents/MacOS/Protrekkr
