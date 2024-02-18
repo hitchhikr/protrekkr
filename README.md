@@ -6,7 +6,7 @@ targeting small sized intros, demos or games.
 It’s a heavily modified version of the old NoiseTrekker 2 which was made by
 Juan Antonio Arguelles Rius aka Arguru.
 
-Currently the tracker is available on Windows and more or less on Linux, FreeBSD, NetBSD, Amiga OS4, AROS, MorphOS, Mac OS (ppc, x86, ia64 & arm64) and Haiku OS.
+Currently the tracker is available on Windows, Linux, FreeBSD, NetBSD, Amiga OS4, AROS, MorphOS, Mac OS (ppc, x86, ia64 & arm64) and Haiku OS.
 
 ![alt text](ptk.png)
 
@@ -19,8 +19,8 @@ make -f makefile.linux
 
 The executable will be created in the release/distrib directory.
 
-Notice that you'll need SDL 1.
-Important when compiling for Linux or Mac OS: Use libSDL12 and not libSDL12-compat.
+Notice that you'll need SDL 1.<br>
+Important when compiling for Linux or Mac OS: Use libSDL12 and NOT libSDL12-compat.
 
 ---
 This is a FREEWARE tool, this means that you can use it for whatever you want and for free.
