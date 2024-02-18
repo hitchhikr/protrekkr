@@ -18,7 +18,7 @@
 
 CC=gcc
 
-CFLAGS=-O3
+CFLAGS=-O3 -arch x86_64
 
 LDFLAGS=-L. libz.a
 LDSHARED=gcc

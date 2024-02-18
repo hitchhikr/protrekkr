@@ -1,6 +1,6 @@
 BIN2C_LIBS_IA64 = -framework Cocoa
 BIN2C_IA64 = bin2c_ia64.o
-FLAGS_IA64 = -O3
+FLAGS_IA64 = -O3 -arch x86_64
 
 all: bin2c
 clean: remobj_bin2c

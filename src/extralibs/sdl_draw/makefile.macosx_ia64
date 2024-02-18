@@ -1,5 +1,5 @@
 LIBFLAGS = -c
-FLAGS_IA64 = -O3 -D __LINUX__ -D __GCC__
+FLAGS_IA64 = -O3 -arch x86_64 -D __LINUX__ -D __GCC__
 LIBOBJS_IA64 = draw_hline_ia64.o draw_pixel_ia64.o draw_vline_ia64.o
 
 all: sdldraw
