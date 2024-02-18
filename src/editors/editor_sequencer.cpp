@@ -123,7 +123,7 @@ void Draw_Sequencer_Ed(void)
     Gui_Draw_Button_Box(120, (Cur_Height - 134), 132, 90, "", BUTTON_NORMAL);
 
     Gui_Draw_Button_Box(480, (Cur_Height - 134), 306, 28, "", BUTTON_NORMAL | BUTTON_DISABLED);
-    Gui_Draw_Button_Box(480, (Cur_Height - 128), 190, 26, "Save selection :", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_NO_BORDER | BUTTON_TEXT_VTOP);
+    Gui_Draw_Button_Box(480, (Cur_Height - 128), 190, 26, "Save Selection :", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_NO_BORDER | BUTTON_TEXT_VTOP);
     Gui_Draw_Button_Box(745, (Cur_Height - 128), 34, 16, "Save", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
 
     Gui_Draw_Button_Box(480, (Cur_Height - 99), 306, 64, "Remap Instrument", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_VTOP);

@@ -119,7 +119,7 @@ void Load_Pattern(char *FileName)
 
     if(!is_editing)
     {
-        Status_Box("Edit mode isn't turned on.");
+        Status_Box("Edit Mode Isn't Turned On.");
         return;
     }
 
@@ -136,23 +136,23 @@ void Load_Pattern(char *FileName)
         if(version)
         {
             // Ok, extension matched!
-            Status_Box("Loading Pattern data...");
+            Status_Box("Loading Pattern Data...");
 
             Read_Data(Selection_Name, sizeof(char), 20, in);
             Load_Pattern_Data(Read_Data, Read_Data_Swap, in, version);
             Actupated(0);
 
-            Status_Box("Pattern data loaded ok.");
+            Status_Box("Pattern Data Loaded Successfully.");
         }
         else
         {
-            Status_Box("That file is not a " TITLE " Pattern file...");
+            Status_Box("That File Is Not A " TITLE " Pattern File...");
         }
         fclose(in);
     }
     else
     {
-        Status_Box("Pattern data loading failed. (Possible cause: file not found)");
+        Status_Box("Pattern Data Loading Failed. (Possible Cause: File Not Found)");
     }
 }
 
@@ -165,7 +165,7 @@ void Save_Pattern(void)
     char extension[10];
 
     sprintf(extension, "PROTBLK2");
-    sprintf(Temph, "Saving '%s.ppb' data in patterns directory...", Selection_Name);
+    sprintf(Temph, "Saving '%s.ppb' Data In Patterns Directory...", Selection_Name);
     Status_Box(Temph);
     sprintf(Temph, "%s" SLASH "%s.ppb", Dir_Patterns, Selection_Name);
 
@@ -181,11 +181,11 @@ void Save_Pattern(void)
         Read_SMPT();
         last_index = -1;
         Actualize_Files_List(0);
-        Status_Box("Pattern data saved succesfully.");   
+        Status_Box("Pattern Data Saved Successfully.");   
     }
     else
     {
-        Status_Box("Pattern data save failed.");
+        Status_Box("Pattern Data Saving Failed.");
     }
 
     Clear_Input();

@@ -109,24 +109,24 @@ void Load_Reverb(char *FileName)
             }
 
             // Ok, extension matched!
-            Status_Box("Loading Reverb data...");
+            Status_Box("Loading Reverb Data...");
 
             Read_Data(Reverb_Name, sizeof(char), 20, in);
             Load_Reverb_Data(Read_Data, Read_Data_Swap, in, New_Reverb);
             Initreverb();
             Actualize_Reverb_Ed(0);
 
-            Status_Box("Reverb data loaded ok.");
+            Status_Box("Reverb Data Loaded Successfully.");
         }
         else
         {
-            Status_Box("That file is not a " TITLE " Reverb file...");
+            Status_Box("That File Is Not A " TITLE " Reverb File...");
         }
         fclose(in);
     }
     else
     {
-        Status_Box("Reverb data loading failed. (Possible cause: file not found)");
+        Status_Box("Reverb Data Loading Failed. (Possible Cause: File Not Found)");
     }
 }
 
@@ -139,7 +139,7 @@ void Save_Reverb(void)
     char extension[10];
 
     sprintf(extension, "TWNNREV1");
-    sprintf(Temph, "Saving '%s.prv' data in reverbs directory...", Reverb_Name);
+    sprintf(Temph, "Saving '%s.prv' Data In Reverbs Directory...", Reverb_Name);
     Status_Box(Temph);
     sprintf(Temph, "%s" SLASH "%s.prv", Dir_Reverbs, Reverb_Name);
 
@@ -155,11 +155,11 @@ void Save_Reverb(void)
         Read_SMPT();
         last_index = -1;
         Actualize_Files_List(0);
-        Status_Box("Reverb data saved succesfully.");   
+        Status_Box("Reverb Data Saved Successfully.");   
     }
     else
     {
-        Status_Box("Reverb data save failed.");
+        Status_Box("Reverb Data Saving Failed.");
     }
 
     Clear_Input();

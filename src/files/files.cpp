@@ -207,7 +207,7 @@ int Load_Ptk(char *FileName)
     {
 
 #if !defined(__WINAMP__)
-        Status_Box("Attempting to load the song file...");
+        Status_Box("Attempting To Load The Song File...");
 #endif
 
         Song_Playing = FALSE;
@@ -280,7 +280,7 @@ int Load_Ptk(char *FileName)
 Read_Mod_File:
 
 #if !defined(__WINAMP__)
-        Status_Box("Loading song -> Header...");
+        Status_Box("Loading Song -> Header...");
 #endif
         Free_Samples();
 
@@ -453,7 +453,7 @@ Read_Mod_File:
         }
 
 #if !defined(__WINAMP__)
-        Status_Box("Loading song -> Sample data...");
+        Status_Box("Loading Song -> Sample Data...");
 #endif
         for(int swrite = 0; swrite < MAX_INSTRS; swrite++)
         {
@@ -557,7 +557,7 @@ Read_Mod_File:
         }
 
 #if !defined(__WINAMP__)
-        Status_Box("Loading song -> Track info, patterns and sequences...");   
+        Status_Box("Loading Song -> Track Info, Patterns And Sequences...");   
 #endif
 
         Set_Default_Channels_Polyphony();
@@ -784,7 +784,7 @@ Read_Mod_File:
         Init_Tracker_Context_After_ModLoad();
 
 #if !defined(__WINAMP__)
-        Status_Box("Module loaded sucessfully.");
+        Status_Box("Module Loaded Successfully.");
 #endif
 
     }
@@ -792,7 +792,7 @@ Read_Mod_File:
     {
 
 #if !defined(__WINAMP__)
-        Status_Box("Module loading failed. (Possible cause: file not found)");
+        Status_Box("Module Loading Failed. (Possible Cause: File Not Found)");
 #endif
 
         return(FALSE);
@@ -1164,13 +1164,13 @@ int Save_Ptk(char *FileName, int NewFormat, int Simulate, Uint8 *Memory)
     {
         if(NewFormat)
         {
-            sprintf(Temph, "Saving '%s.ptp' song in modules directory...", FileName);
+            sprintf(Temph, "Saving '%s.ptp' Song In Modules Directory...", FileName);
             Status_Box(Temph);
             sprintf(Temph, "%s" SLASH "%s.ptp", Dir_Mods, FileName);
         }
         else
         {
-            sprintf(Temph, "Saving '%s.ptk' song in modules directory...", FileName);
+            sprintf(Temph, "Saving '%s.ptk' Song In Modules Directory...", FileName);
             Status_Box(Temph);
             sprintf(Temph, "%s" SLASH "%s.ptk", Dir_Mods, FileName);
         }
@@ -1521,20 +1521,20 @@ int Save_Ptk(char *FileName, int NewFormat, int Simulate, Uint8 *Memory)
                 char name[128];
                 if(NewFormat)
                 {
-                    sprintf(name, "Module '%s.ptp' saved succesfully.", FileName);
+                    sprintf(name, "Module '%s.ptp' Saved Successfully.", FileName);
                 }
                 else
                 {
-                    sprintf(name, "Module '%s.ptk' saved succesfully.", FileName);
+                    sprintf(name, "Module '%s.ptk' Saved Successfully.", FileName);
                 }
                 Status_Box(name);
             }
         }
-        if(!Ok_Memory) Status_Box("Not enough memory.");
+        if(!Ok_Memory) Status_Box("Not Enough Memory.");
     }
     else
     {
-        if(!Simulate) Status_Box("Module save failed.");   
+        if(!Simulate) Status_Box("Module Saving Failed.");   
     }
 
     return(Mod_Length);
@@ -1659,7 +1659,7 @@ int Pack_Module(char *FileName)
     
     if(!strlen(FileName))
     {
-        sprintf(name, "Can't save module without a name...");
+        sprintf(name, "Can't Save A Module Without A Name...");
         Status_Box(name);
         return(FALSE);
     }
@@ -1687,11 +1687,11 @@ int Pack_Module(char *FileName)
         Write_Data_Swap(&Depack_Size, sizeof(int), 1, output);
         Write_Data(Final_Mem_Out, sizeof(char), Len, output);
         fclose(output);
-        sprintf(name, "Module '%s.ptk' saved succesfully.", FileName);
+        sprintf(name, "Module '%s.ptk' Saved Successfully.", FileName);
     }
     else
     {
-        sprintf(name, "Module save failed.");
+        sprintf(name, "Module Saving Failed.");
     }
     if(Final_Mem_Out) free(Final_Mem_Out);
     if(Final_Mem) free(Final_Mem);

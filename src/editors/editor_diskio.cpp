@@ -137,7 +137,7 @@ void Draw_DiskIO_Ed(void)
     PrintString(654, (Cur_Height - 124), USE_FONT, "Render To :");
 
     Gui_Draw_Button_Box(350, (Cur_Height - 68), 106, 16, "Output Bits Quality", BUTTON_NORMAL | BUTTON_DISABLED);
-    Gui_Draw_Button_Box(350, (Cur_Height - 49), 106, 16, "One file per track", BUTTON_NORMAL | BUTTON_DISABLED);
+    Gui_Draw_Button_Box(350, (Cur_Height - 49), 106, 16, "One File Per Track", BUTTON_NORMAL | BUTTON_DISABLED);
 
     Gui_Draw_Button_Box(532, (Cur_Height - 86), 60, 26, "From", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_NO_BORDER | BUTTON_TEXT_VTOP);
     Gui_Draw_Button_Box(532, (Cur_Height - 66), 60, 26, "To", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_NO_BORDER | BUTTON_TEXT_VTOP);

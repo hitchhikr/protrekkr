@@ -110,7 +110,7 @@ void Draw_Reverb_Ed(void)
     Draw_Editors_Bar(USER_SCREEN_REVERB_EDIT);
 
     Gui_Draw_Button_Box(0, (Cur_Height - 153), fsize, 130, "", BUTTON_NORMAL | BUTTON_DISABLED);
-    Gui_Draw_Flat_Box("Reverb customizer");
+    Gui_Draw_Flat_Box("Reverb Customizer");
 
     Gui_Draw_Button_Box(10, (Cur_Height - 135), 60, 16, "Echoes", BUTTON_NORMAL | BUTTON_DISABLED);
 

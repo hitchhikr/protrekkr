@@ -158,11 +158,11 @@ void Save_Config(void)
         Read_SMPT();
         last_index = -1;
         Actualize_Files_List(0);
-        Status_Box("Configuration file saved succesfully.");  
+        Status_Box("Configuration File Saved Successfully.");  
     }
     else
     {
-        Status_Box("Configuration file save failed.");
+        Status_Box("Configuration File Saving Failed.");
     }
 }
 

@@ -48,7 +48,7 @@ void Load_Inst(char *FileName)
     int Combine = FALSE;
     int Long_Midi_Prg = FALSE;
 
-    Status_Box("Attempting to load an instrument file...");
+    Status_Box("Attempting To Load An Instrument File...");
     FILE *in;
     in = fopen(FileName, "rb");
 
@@ -89,7 +89,7 @@ void Load_Inst(char *FileName)
         Read_Data(&nameins[Current_Instrument], sizeof(char), 20, in);
 
         // Reading sample data
-        Status_Box("Loading Instrument -> Sample data...");
+        Status_Box("Loading Instrument -> Sample Data...");
 
         int swrite = Current_Instrument;
 
@@ -198,11 +198,11 @@ void Load_Inst(char *FileName)
         Actualize_Patterned();
         Actualize_Instrument_Ed(2, 0);
         Actualize_Synth_Ed(UPDATE_SYNTH_ED_ALL);
-        Status_Box("Instrument loaded ok.");
+        Status_Box("Instrument Loaded Successfully.");
     }
     else
     {
-        Status_Box("Instrument loading failed. (Possible cause: file not found)");
+        Status_Box("Instrument Loading Failed. (Possible Cause: File Not Found)");
     }
     
     Clear_Input();
@@ -221,7 +221,7 @@ void Save_Inst(void)
     sprintf(extension, "TWNNINSA");
 
     if(!strlen(nameins[Current_Instrument])) sprintf(nameins[Current_Instrument], "Untitled");
-    sprintf (Temph, "Saving '%s.pti' instrument in instruments directory...", nameins[Current_Instrument]);
+    sprintf (Temph, "Saving '%s.pti' Instrument In Instruments Directory...", nameins[Current_Instrument]);
     Status_Box(Temph);
     sprintf(Temph, "%s" SLASH "%s.pti", Dir_Instrs, nameins[Current_Instrument]);
 
@@ -298,11 +298,11 @@ void Save_Inst(void)
         last_index = -1;
         Actualize_Files_List(0);
         Actualize_Patterned();
-        Status_Box("Instrument saved succesfully."); 
+        Status_Box("Instrument Saved Successfully."); 
     }
     else
     {
-        Status_Box("Instrument save failed.");
+        Status_Box("Instrument Saving Failed.");
     }
 
     Clear_Input();

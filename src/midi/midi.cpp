@@ -322,18 +322,18 @@ void Midi_InitIn(void)
                 midiin->openPort(c_midiin);
                 midiin->setCallback(&Midi_CallBackIn);
                 midiin->ignoreTypes(1, 1, 1);
-                if(midiin_changed == 1) Status_Box("Midi In device activated.");
+                if(midiin_changed == 1) Status_Box("Midi In Device Activated.");
                 midiin_port_opened = TRUE;
             }
             catch(...)
             {
-                Status_Box("Midi In device failed to open.");
+                Status_Box("Midi In Device Failed To Open.");
             }
         }
         else
         {
             Midi_CloseIn();
-            if(midiin_changed == 1) Status_Box("Midi In device disconnected.");
+            if(midiin_changed == 1) Status_Box("Midi In Device Disconnected.");
         }
         midiin_changed = 0;
     }
@@ -366,17 +366,17 @@ void Midi_InitOut(void)
             try
             {
                 midiout->openPort(c_midiout);
-                if(midiout_changed == 1) Status_Box("Midi Out device activated.");
+                if(midiout_changed == 1) Status_Box("Midi Out Device Activated.");
             }
             catch(...)
             {
-                Status_Box("Midi Out device failed to open.");
+                Status_Box("Midi Out Device Failed To Open.");
             }
         }
         else
         {
             Midi_CloseOut();
-            if(midiout_changed == 1) Status_Box("Midi Out device disconnected.");
+            if(midiout_changed == 1) Status_Box("Midi Out Device Disconnected.");
         }
         midiout_changed = 0;
     }

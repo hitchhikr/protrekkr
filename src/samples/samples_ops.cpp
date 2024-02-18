@@ -80,7 +80,7 @@ int Sample_Rotate_Left(int32 range_start, int32 range_end, int amount)
             if(nc == 2) RawSamples[Current_Instrument][1][Current_Instrument_Split][i] = sample2;
         }
 
-        Status_Box("Shift left done.");
+        Status_Box("Shift Left Done.");
         return 1;
     }
     return 0;
@@ -119,7 +119,7 @@ int Sample_Rotate_Right(int32 range_start, int32 range_end, int amount)
             if(nc == 2) RawSamples[Current_Instrument][1][Current_Instrument_Split][range_start] = sample2;
         }
 
-        Status_Box("Shift right done.");
+        Status_Box("Shift Right Done.");
         return 1;
     }
     return 0;
@@ -155,7 +155,7 @@ int Sample_Reverse(int32 range_start, int32 range_end)
             }
             p_s--;
         }
-        Status_Box("Reverse done.");
+        Status_Box("Reverse Done.");
         return 1;
     }
     return 0;
@@ -214,7 +214,7 @@ int Sample_Crop(int32 range_start, int32 range_end)
         }
         Sample_Length[Current_Instrument][Current_Instrument_Split] = cropsize;
 
-        Status_Box("Crop done.");
+        Status_Box("Crop Done.");
         AUDIO_Play();
         return 1;
     }
@@ -264,7 +264,7 @@ int Sample_Copy(int32 range_start, int32 range_end)
             *dest_mono++ = *(RawSamples[Current_Instrument][0][Current_Instrument_Split] + i);
             if(nc == 2) *dest_stereo++ = *(RawSamples[Current_Instrument][1][Current_Instrument_Split] + i);
         }
-        Status_Box("Copy done.");
+        Status_Box("Copy Done.");
         return 1;
     }
     return 0;
@@ -348,7 +348,7 @@ int Sample_Paste(int32 range_start)
         }
         Sample_Length[Current_Instrument][Current_Instrument_Split] = newsize;
 
-        Status_Box("Paste done.");
+        Status_Box("Paste Done.");
         AUDIO_Play();
         return 1;
     }
@@ -433,7 +433,7 @@ int Sample_Cut(int32 range_start, int32 range_end, int do_copy)
         }
         Sample_Length[Current_Instrument][Current_Instrument_Split] = newsize;
 
-        Status_Box("Cut done.");
+        Status_Box("Cut Done.");
         AUDIO_Play();
         return 1;
     }
@@ -441,11 +441,11 @@ int Sample_Cut(int32 range_start, int32 range_end, int do_copy)
     {
         if(do_copy)
         {
-            Status_Box("You cannot cut entire sample, use 'delete' on instrument instead.");
+            Status_Box("You Cannot Cut Entire Sample, Use 'Delete' On Instrument Instead.");
         }
         else
         {
-            Status_Box("You cannot zap entire sample, use 'delete' on instrument instead.");
+            Status_Box("You Cannot Zap Entire Sample, Use 'Delete' On Instrument Instead.");
         }
         return 0;
     }
@@ -490,7 +490,7 @@ void Sample_DC_Adjust(int32 range_start, int32 range_end)
     }
 
     draw_sampled_wave = TRUE;
-    Status_Box("DC adjust done.");
+    Status_Box("DC Adjust Done.");
 }
 
 // ------------------------------------------------------
@@ -539,7 +539,7 @@ void Sample_Maximize(int32 range_start, int32 range_end)
     }
 
     draw_sampled_wave = TRUE;
-    Status_Box("Maximize done.");
+    Status_Box("Maximize Done.");
 }
 
 // ------------------------------------------------------
@@ -559,7 +559,7 @@ void Sample_Zeroize(int32 range_start, int32 range_end)
     }
 
     draw_sampled_wave = TRUE;
-    Status_Box("Zero done.");
+    Status_Box("Zero Done.");
 }
 
 // ------------------------------------------------------
@@ -593,7 +593,7 @@ void Sample_FadeIn(int32 range_start, int32 range_end)
     }
 
     draw_sampled_wave = TRUE;
-    Status_Box("Fade in done.");
+    Status_Box("Fade In Done.");
 }
 
 // ------------------------------------------------------
@@ -631,7 +631,7 @@ void Sample_FadeOut(int32 range_start, int32 range_end)
     }
 
     draw_sampled_wave = TRUE;
-    Status_Box("Fade out done.");
+    Status_Box("Fade Out Done.");
 }
 
 // ------------------------------------------------------
@@ -659,7 +659,7 @@ void Sample_Half(int32 range_start, int32 range_end)
     }
 
     draw_sampled_wave = TRUE;
-    Status_Box("Half done.");
+    Status_Box("Half Done.");
 }
 
 // ------------------------------------------------------
@@ -740,7 +740,7 @@ int Sample_Duplicate(int32 range_start, int32 range_end)
         }
         Sample_Length[Current_Instrument][Current_Instrument_Split] = newsize;
 
-        Status_Box("Insert zeroes done.");
+        Status_Box("Insert Zeroes Done.");
         AUDIO_Play();
         return 1;
     }
@@ -820,7 +820,7 @@ int Sample_InsertZero(int32 range_start, int32 range_end)
         }
         Sample_Length[Current_Instrument][Current_Instrument_Split] = newsize;
 
-        Status_Box("Duplicate done.");
+        Status_Box("Duplicate Done.");
         AUDIO_Play();
         return 1;
     }

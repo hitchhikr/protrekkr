@@ -491,19 +491,19 @@ int Init_Context(void)
 
     switch(rand() % 13)
     {
-        case 0: sprintf(tipoftheday, "Tip Of The Hour: Pressing CTRL+I will interpolate effect value on a marked block."); break;
-        case 1: sprintf(tipoftheday, "Tip Of The Hour: The right mouse button will have a secondary action on most buttons."); break;
-        case 2: sprintf(tipoftheday, "Tip Of The Hour: Don't set excessive track reverb send values, to get better quality."); break;
-        case 3: sprintf(tipoftheday, "Tip Of The Hour: When recording, number of positions will grow automatically when necessary."); break;
-        case 4: sprintf(tipoftheday, "Remember: MIDI is not audio, realtime fx will not affect midi sound."); break;
-        case 5: sprintf(tipoftheday, "Tip Of The Hour: On lower CPUs, you can renderize patterns to wav, and use them as samples without any loss of quality."); break;
-        case 6: sprintf(tipoftheday, "Tip Of The Hour: Volume note-cut command 'Fx' is very useful to avoid sample-clicking."); break;
-        case 7: sprintf(tipoftheday, "Tip Of The Hour: Left-Clicking on pattern editor channels numbers will mute/unmute any track (right clicking will solo it)."); break;
-        case 8: sprintf(tipoftheday, "Tip Of The Hour: Pattern command '16xx' will reset the Filter LFO of the track. No parameter required."); break;
-        case 9: sprintf(tipoftheday, "Tip Of The Hour: Use '90' command in the panning column to change midi controllers values."); break;
-        case 10: sprintf(tipoftheday, "Tip Of The Hour: Increase latency time if sound is distorted."); break;
-        case 11: sprintf(tipoftheday, "Tip Of The Hour: Pressing right mouse button on most arrows buttons (\03\04) will speed operation up."); break;
-        default: sprintf(tipoftheday, "Tip Of The Hour: See manual.pdf for more infos about help and pattern commands."); break;
+        case 0: sprintf(tipoftheday, "Tip Of The Hour: Pressing CTRL+I Will Interpolate Effect Value On A Marked Block."); break;
+        case 1: sprintf(tipoftheday, "Tip Of The Hour: The Right Mouse Button Will Have A Secondary Action On Most Buttons."); break;
+        case 2: sprintf(tipoftheday, "Tip Of The Hour: Don't Set Excessive Track Reverb Send Values, To Get Better Quality."); break;
+        case 3: sprintf(tipoftheday, "Tip Of The Hour: When Recording, Number Of Positions Will Grow Automatically When Necessary."); break;
+        case 4: sprintf(tipoftheday, "Tip Of The Hour: Remember: MIDI Is Not Audio, Realtime Fx Will Not Affect Midi Sound."); break;
+        case 5: sprintf(tipoftheday, "Tip Of The Hour: On Lower CPUs, You Can Renderize Patterns To Wav, And Use Them As Samples Without Any Loss Of Quality."); break;
+        case 6: sprintf(tipoftheday, "Tip Of The Hour: Volume Note-Cut Ccommand 'Fx' Is Very Useful To Avoid Sample-clicking."); break;
+        case 7: sprintf(tipoftheday, "Tip Of The Hour: Left-Clicking On Pattern Editor Channels Numbers Will Mute/Unmute Any Track (Right Clicking Will Solo It)."); break;
+        case 8: sprintf(tipoftheday, "Tip Of The Hour: Pattern Command '16xx' Will Reset The Filter LFO Of The Track. No Parameter Required."); break;
+        case 9: sprintf(tipoftheday, "Tip Of The Hour: Use '90' Command In The Panning Column To Change Midi Controllers Values."); break;
+        case 10: sprintf(tipoftheday, "Tip Of The Hour: Increase Latency Time If Sound Is Distorted."); break;
+        case 11: sprintf(tipoftheday, "Tip Of The Hour: Pressing Right Mouse Button On Most Arrows Buttons (\03\04) Will Speed Operation Up."); break;
+        default: sprintf(tipoftheday, "Tip Of The Hour: See 'manual.pdf' For More Infos About Help And Pattern Commands."); break;
     }
 
     L_MaxLevel = 0;
@@ -1471,8 +1471,8 @@ int Screen_Update(void)
             }
 
             RF.Close();
-            if(strlen(SampleName[Current_Instrument][Current_Instrument_Split])) sprintf(buffer, "File '%s' saved.", SampleName[Current_Instrument][Current_Instrument_Split]);
-            else sprintf(buffer, "File 'Untitled.wav' saved.");
+            if(strlen(SampleName[Current_Instrument][Current_Instrument_Split])) sprintf(buffer, "File '%s' Saved.", SampleName[Current_Instrument][Current_Instrument_Split]);
+            else sprintf(buffer, "File 'Untitled.wav' Saved.");
             Status_Box(buffer);
 
             Read_SMPT();
@@ -1622,12 +1622,12 @@ int Screen_Update(void)
 
         if(gui_action == GUI_CMD_MIDI_NOTE_OFF_1_TRACK)
         {
-            Status_Box("Notes Off command sent to this track.");
+            Status_Box("Notes Off Command Sent To This Track.");
         }
 
         if(gui_action == GUI_CMD_MIDI_NOTE_OFF_ALL_TRACKS)
         {
-            Status_Box("Notes Off command sent to all tracks.");
+            Status_Box("Notes Off Command Sent To All Tracks.");
         }
 
         if(gui_action == GUI_CMD_UPDATE_TRACK_FX_ED)
@@ -1723,7 +1723,7 @@ int Screen_Update(void)
 
         if(gui_action == GUI_CMD_PATTERNS_POOL_EXHAUSTED)
         {
-            Status_Box("Maximum number of patterns reached.");
+            Status_Box("Maximum Number Of Patterns Reached.");
         }
 
         if(gui_action == GUI_CMD_REFRESH_SAMPLE_ED)
@@ -1768,7 +1768,7 @@ int Screen_Update(void)
         }
         else
         {
-            Status_Box("Feeling groovy.");
+            Status_Box("Feeling Groovy.");
         }
 
         Gui_Draw_Button_Box(0, 6, 16, 16, "\011", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
@@ -2150,7 +2150,7 @@ void LoadFile(int Freeindex, const char *str)
                (extension_AIFF[0] == FormID &&
                 extension_AIFF[2] == AifcID))
             {
-                Status_Box("Attempting of loading an Audio IFF file...");
+                Status_Box("Attempting To Load An Audio IFF File...");
                 if(AIFF_File.Open(FileName))
                 {
                     int bits = AIFF_File.BitsPerSample();
@@ -2158,7 +2158,7 @@ void LoadFile(int Freeindex, const char *str)
 
                     if(channels != 1 && channels != 2)
                     {
-                        Status_Box("Protrekkr can only load mono or stereo samples.");
+                        Status_Box(TITLE " Can Only Load Mono Or Stereo Samples.");
                     }
                     else
                     {
@@ -2169,7 +2169,7 @@ void LoadFile(int Freeindex, const char *str)
                            bits != 32 &&
                            bits != 64)
                         {
-                            Status_Box("Protrekkr can only load 8, 12, 16, 24, 32 or 64 bits samples.");
+                            Status_Box(TITLE " Can Only Load 8, 12, 16, 24, 32 Or 64 Bit Samples.");
                         }
                         else
                         {
@@ -2226,22 +2226,22 @@ void LoadFile(int Freeindex, const char *str)
                             switch(bits)
                             {
                                 case 64:
-                                    Status_Box("64 bit Audio IFF PCM converted into 16 bit format.");
+                                    Status_Box("64 Bit Audio IFF PCM Converted Into 16 Bit Format.");
                                     break;
                                 case 32:
-                                    Status_Box("32 bit Audio IFF PCM converted into 16 bit format.");
+                                    Status_Box("32 Bit Audio IFF PCM Converted Into 16 Bit Format.");
                                     break;
                                 case 24:
-                                    Status_Box("24 bit Audio IFF PCM converted into 16 bit format.");
+                                    Status_Box("24 Bit Audio IFF PCM Converted Into 16 Bit Format.");
                                     break;
                                 case 12:
-                                    Status_Box("12 bit Audio IFF PCM converted into 16 bit format.");
+                                    Status_Box("12 Bit Audio IFF PCM Converted Into 16 Bit Format.");
                                     break;
                                 case 8:
-                                    Status_Box("8 bit Audio IFF PCM converted into 16 bit format.");
+                                    Status_Box("8 Bit Audio IFF PCM Converted Into 16 Bit Format.");
                                     break;
                                 default:
-                                    Status_Box("16 bit Audio IFF PCM loaded.");
+                                    Status_Box("16 Bit Audio IFF PCM Loaded.");
                                     break;
                             }
                         }
@@ -2251,13 +2251,13 @@ void LoadFile(int Freeindex, const char *str)
                 }
                 else
                 {
-                    Status_Box("Corrupted or unsupported Audio IFF file.");
+                    Status_Box("Corrupted Or Unsupported Audio IFF File.");
                 }
             }
             else
             {
 
-                Status_Box("Attempting of loading a RIFF file...");
+                Status_Box("Attempting to Load A RIFF File...");
 
                 // We need the length
                 if(Wav_File.OpenForRead(FileName) == DDC_SUCCESS)
@@ -2266,7 +2266,7 @@ void LoadFile(int Freeindex, const char *str)
                     int channels = Wav_File.NumChannels();
                     if(channels != 1 && channels != 2)
                     {
-                        Status_Box("Protrekkr can only load mono or stereo samples.");
+                        Status_Box(TITLE " Can Only Load Mono Or Stereo Samples.");
                     }
                     else
                     {
@@ -2277,7 +2277,7 @@ void LoadFile(int Freeindex, const char *str)
                            bits != 32 &&
                            bits != 64)
                         {
-                            Status_Box("Protrekkr can only load 8, 12, 16, 24, 32 or 64 bits samples.");
+                            Status_Box(TITLE " Can Only Load 8, 12, 16, 24, 32 Or 64 Bit Samples.");
                         }
                         else
                         {
@@ -2329,22 +2329,22 @@ void LoadFile(int Freeindex, const char *str)
                             switch(bits)
                             {
                                 case 64:
-                                    Status_Box("64 bit WAV PCM converted into 16 bit format.");
+                                    Status_Box("64 Bit WAV PCM Converted Into 16 Bit Format.");
                                     break;
                                 case 32:
-                                    Status_Box("32 bit WAV PCM converted into 16 bit format.");
+                                    Status_Box("32 Bit WAV PCM Converted Into 16 Bit Format.");
                                     break;
                                 case 24:
-                                    Status_Box("24 bit WAV PCM converted into 16 bit format.");
+                                    Status_Box("24 Bit WAV PCM Converted Into 16 Bit Format.");
                                     break;
                                 case 12:
-                                    Status_Box("12 bit WAV PCM converted into 16 bit format.");
+                                    Status_Box("12 Bit WAV PCM Converted Into 16 Bit Format.");
                                     break;
                                 case 8:
-                                    Status_Box("8 bit WAV PCM converted into 16 bit format.");
+                                    Status_Box("8 Bit WAV PCM Converted Into 16 Bit Format.");
                                     break;
                                 default:
-                                    Status_Box("16 bit WAV PCM loaded.");
+                                    Status_Box("16 Bit WAV PCM Loaded.");
                                     break;
                             }
                         }
@@ -2354,7 +2354,7 @@ void LoadFile(int Freeindex, const char *str)
                 }
                 else
                 {
-                    Status_Box("Invalid file format. I only accept '.wav' '.aiff' '.aifc' '.ptk' '.pti' '.303' '.pts' '.ppb' '.prv' '.mod' '.dbm' or '.ft' files.");
+                    Status_Box("Invalid File Format. I Only Accept '.wav' '.aiff' '.aifc' '.ptk' '.pti' '.303' '.pts' '.ppb' '.prv' '.mod' '.dbm' Or '.ft' Files.");
                 }
             }
         }
@@ -2362,7 +2362,7 @@ void LoadFile(int Freeindex, const char *str)
     }
     else
     {
-        Status_Box("File loading error. (Possible cause: file not found)");
+        Status_Box("File Loading Error. (Possible Cause: File Not Found)");
     }
     gui_action = GUI_CMD_NONE;
     Actualize_DiskIO_Ed(0);
@@ -2457,14 +2457,14 @@ void Notify_Play(void)
             Gui_Draw_Button_Box(49, 28, 39, 16, "\253", BUTTON_NORMAL | BUTTON_RIGHT_MOUSE | BUTTON_TEXT_CENTERED);
             Gui_Draw_Button_Box(8, 28, 39, 16, "\04", BUTTON_PUSHED | BUTTON_RIGHT_MOUSE | BUTTON_TEXT_CENTERED);
             Switch_Cmd_Playing(FALSE);
-            Status_Box("Playing song...");
+            Status_Box("Playing Song...");
         }
         else
         {
             Gui_Draw_Button_Box(8, 28, 39, 16, "\04", BUTTON_NORMAL | BUTTON_RIGHT_MOUSE | BUTTON_TEXT_CENTERED);
             Gui_Draw_Button_Box(49, 28, 39, 16, "\253", BUTTON_PUSHED | BUTTON_RIGHT_MOUSE | BUTTON_TEXT_CENTERED);
             Switch_Cmd_Playing(FALSE);
-            Status_Box("Playing pattern...");
+            Status_Box("Playing Pattern...");
         }
     }
     else
@@ -2481,7 +2481,7 @@ void Song_Stop(void)
     Ptk_Stop();
     Gui_Draw_Button_Box(8, 28, 39, 16, "\04", BUTTON_NORMAL | BUTTON_RIGHT_MOUSE | BUTTON_TEXT_CENTERED);
     Gui_Draw_Button_Box(49, 28, 39, 16, "\253", BUTTON_NORMAL | BUTTON_RIGHT_MOUSE | BUTTON_TEXT_CENTERED);
-    Status_Box("Feeling groovy.");
+    Status_Box("Feeling Groovy.");
     // Make sure the visuals stay
     Song_Position = Song_Position_Visual;
     Pattern_Line = Pattern_Line_Visual;
@@ -2653,7 +2653,7 @@ void Newmod(void)
 
     Draw_Scope();
 
-    Status_Box("Zzaapp done.");
+    Status_Box("Zzaapp Done.");
 
     Refresh_UI_Context();
 }
@@ -2869,17 +2869,17 @@ void WavRenderizer()
                 case RENDER_TO_FILE:
                     if(RF[j].OpenForWrite(buffer_name, 44100, rawrender_32float ? 32 : 16, 2) != DDC_SUCCESS)
                     {
-                        sprintf(buffer, "Can't open '%s' file.", buffer_name);
+                        sprintf(buffer, "Can't Open '%s' File.", buffer_name);
                         Status_Box(buffer);
                         return;
                     }
                     if(rawrender_range)
                     {
-                        sprintf(buffer, "Rendering selection to '%s' file. Please wait...", buffer_name);
+                        sprintf(buffer, "Rendering Selection To '%s' File. Please Wait...", buffer_name);
                     }
                     else
                     {
-                        sprintf(buffer, "Rendering module to '%s' file. Please wait...", buffer_name);
+                        sprintf(buffer, "Rendering Module To '%s' File. Please Wait...", buffer_name);
                     }
                     break;
 
@@ -2887,13 +2887,13 @@ void WavRenderizer()
                 case RENDER_TO_STEREO:
                     if(rawrender_range)
                     {
-                        sprintf(buffer, "Rendering selection to instrument %d (split %d). Please wait...",
+                        sprintf(buffer, "Rendering Selection To Instrument %d (Split %d). Please Wait...",
                                 Current_Instrument,
                                 Current_Instrument_Split);
                     }
                     else
                     {
-                        sprintf(buffer, "Rendering module to instrument %d (split %d). Please wait...",
+                        sprintf(buffer, "Rendering Module To Instrument %d (Split %d). Please Wait...",
                                 Current_Instrument,
                                 Current_Instrument_Split);
                     }
@@ -3072,25 +3072,25 @@ Stop_WavRender:
             seconds = (filesize - minutes * 10584000) / 176400;
             if(do_multi)
             {
-                sprintf(buffer, "Wav rendering finished. File size: %.2f Megabytes per file (Total: %.2f Megabytes). Playback time: %d'%d''.",
+                sprintf(buffer, "Wav Rendering Finished. File Size: %.2f Megabytes Per File (Total: %.2f Megabytes). Playback Time: %d'%d''.",
                                 float(filesize / 1048576.0f), float(filesize / 1048576.0f) * rendered_track, minutes, seconds);
             }
             else
             {
-                sprintf(buffer, "Wav rendering finished. File size: %.2f Megabytes. Playback time: %d'%d''.",
+                sprintf(buffer, "Wav Rendering Finished. File Size: %.2f Megabytes. Playback Time: %d'%d''.",
                                 float(filesize / 1048576.0f), minutes, seconds);
             }
             break;
         case RENDER_TO_STEREO:
             minutes = filesize / 10584000;
             seconds = (filesize - minutes * 10584000) / 176400;
-            sprintf(buffer, "Wav rendering finished. Waveform size: %.2f Megabytes. Playback time: %d'%d''.",
+            sprintf(buffer, "Wav Rendering Finished. Waveform Size: %.2f Megabytes. Playback Time: %d'%d''.",
                             float(filesize / 1048576.0f), minutes, seconds);
             break;
         default:
             minutes = (filesize / 10584000) * 3;
             seconds = ((filesize - minutes * 10584000) / 176400) * 3;
-            sprintf(buffer, "Wav rendering finished. Waveform size: %.2f Megabytes. Playback time: %d'%d''.",
+            sprintf(buffer, "Wav Rendering Finished. Waveform Size: %.2f Megabytes. Playback Time: %d'%d''.",
                             float(filesize / 1048576.0f), minutes, seconds);
             break;
     }
@@ -3135,7 +3135,7 @@ void DeleteInstrument(void)
         Actualize_Master(0);
         Final_Mod_Length = 0;
         Actualize_Synth_Ed(UPDATE_SYNTH_ED_ALL);
-        Status_Box("Synth deleted.");
+        Status_Box("Synth Deleted.");
     }
 
     if(ZzaappOMatic == ZZAAPP_SPLIT)
@@ -3152,7 +3152,7 @@ void DeleteInstrument(void)
             Synthprg[Current_Instrument] = 1;
         }
         Renew_Sample_Ed();
-        Status_Box("Instrument deleted.");
+        Status_Box("Instrument Deleted.");
         RefreshSample();
         Actualize_Master(0);
     }
@@ -3171,7 +3171,7 @@ void DeleteInstrument(void)
             Synthprg[Current_Instrument] = 1;
         }
         Renew_Sample_Ed();
-        Status_Box("Instrument deleted.");
+        Status_Box("Instrument Deleted.");
         RefreshSample();
         Actualize_Master(0);
     }
@@ -3256,9 +3256,9 @@ void ShowInfo(void)
             }
         }
     }
-    sprintf(tmp, "%d instruments (%d bytes), "
-                 "%d synths, "
-                 "%d patterns (%d bytes).",
+    sprintf(tmp, "%d Instruments (%d Bytes), "
+                 "%d Synths, "
+                 "%d Patterns (%d Bytes).",
                  nbr_samp, sampsize,
                  nbr_synth, 
                  nPatterns, pattsize);
