@@ -40,7 +40,7 @@ So far, ProTrekkr was used in these intros or demos (the ones i'm aware of, at l
 <a href="http://www.pouet.net/prod.php?which=55505" target=_parent>Buenzli 19 invitation by clrsrc</a><br>
 <br>Also some sampled tune from the tracker has been used in the end part of this Atari ST demo :<br><br>
 <a href="http://pouet.net/prod.php?which=50486" target=_parent>Morphonic lab.VI by checkpoint</a><br>
-<br>And a module done by BitArts (Norbert Röcher) with the tracker (in MP3 format): <a href="bitarts - nightflight.mp3" target=_parent>NightFlight</a>
+<br>And a module done by BitArts (Norbert Röcher) with the tracker (in MP3 format): <a href="https://hitchhikr.net/bitarts%20-%20nightflight.mp3" target=_parent>NightFlight</a>
 <br><br>Some more music also produced with the tracker available on SoundCloud :<br><br>
 <a href="https://soundcloud.com/defraq79/distorted-reality" target=_parent>distorted reality</a><br>
 <a href="https://soundcloud.com/defraq79/sign" target=_parent>sign</a><br>
