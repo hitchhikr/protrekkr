@@ -106,10 +106,13 @@ int AUDIO_Init_Driver(void (*Mixer)(Uint8 *, Uint32))
 
     char *Mixer_Name;
     int8 Mixer_Volume[4];
+    struct sched_param p;
 
     AUDIO_Device = open("/dev/dsp", O_WRONLY, 0);
     if(AUDIO_Device >= 0)
     {
+        p.sched_priority = 1;
+        pthread_setschedparam(pthread_self(), SCHED_FIFO, &p);
         return(AUDIO_Create_Sound_Buffer(AUDIO_Milliseconds));
     }
     
@@ -138,7 +141,6 @@ int AUDIO_Create_Sound_Buffer(int milliseconds)
     frag_size = (int) (AUDIO_PCM_FREQ * (milliseconds / 1000.0f));
 
     int Dsp_Val;
-    struct sched_param p;
 
 	frag_size = 10 + (int) (logf((float) (frag_size >> 9)) / logf(2.0f));
 
@@ -182,9 +184,7 @@ int AUDIO_Create_Sound_Buffer(int milliseconds)
     memset(AUDIO_SoundBuffer[0], 0, AUDIO_SoundBuffer_Size << 1);
     memset(AUDIO_SoundBuffer[1], 0, AUDIO_SoundBuffer_Size << 1);
 
-    p.sched_priority = 1;
     Thread_Running = 1;
-    pthread_setschedparam(pthread_self(), SCHED_FIFO , &p);
     if(pthread_create(&hThread, NULL, AUDIO_Thread, NULL) == 0)
     {
         return(TRUE);
@@ -292,6 +292,7 @@ void AUDIO_Stop_Sound_Buffer(void)
         {
             usleep(10);
         }
+        hThread = NULL;
     }
     if(AUDIO_SoundBuffer[0]) free(AUDIO_SoundBuffer[0]);
     AUDIO_SoundBuffer[0] = NULL;
@@ -306,5 +307,5 @@ void AUDIO_Stop_Driver(void)
 {
     AUDIO_Stop_Sound_Buffer();
     if(AUDIO_Device) close(AUDIO_Device);
-    AUDIO_Device = 0;
+    AUDIO_Device = NULL;
 }

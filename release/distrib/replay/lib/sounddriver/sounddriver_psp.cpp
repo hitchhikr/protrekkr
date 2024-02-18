@@ -237,9 +237,13 @@ void AUDIO_Stop_Sound_Buffer(void)
 {
     AUDIO_Stop();
     if(AUDIO_thid > 0) sceKernelDeleteThread(AUDIO_thid);
+    AUDIO_thid = NULL;
     if(AUDIO_HWChannel) sceAudioChRelease(AUDIO_HWChannel);
+    AUDIO_HWChannel = NULL;
     if(ptrAudio_BufferPlay1) free((void *) ptrAudio_BufferPlay1);
+    ptrAudio_BufferPlay1 = NULL;
     if(ptrAudio_BufferPlay2) free((void *) ptrAudio_BufferPlay2);
+    ptrAudio_BufferPlay2 = NULL;
 }
 
 // ------------------------------------------------------

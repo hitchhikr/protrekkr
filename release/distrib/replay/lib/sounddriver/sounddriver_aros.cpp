@@ -263,11 +263,7 @@ void AUDIO_Wait_For_Thread(void)
         }
         else
         {
-        #if defined(USE_SDL_THREADS)
-            if(hThread)     // sdl thread
-        #else
-            if(hThread)     // pthreads
-        #endif
+            if(hThread)
             {
                 while(!AUDIO_Acknowledge)
                 {
@@ -337,17 +333,14 @@ void AUDIO_Stop_Sound_Buffer(void)
 {
     AUDIO_Stop();
 
-    #if defined(USE_SDL_THREADS)
-        if(hThread) //sdl thread
-    #else
-        if(hThread) //pthreads
-    #endif
+    if(hThread) 
     {
         Thread_Running = 0;
         while(!Thread_Running)
         {
             usleep(10);
         }
+        hThread = NULL;
     }
     FreeVec(AHIbuf);
     FreeVec(AHIbuf2);

@@ -343,5 +343,5 @@ void AUDIO_Stop_Driver(void)
 {
     AUDIO_Stop_Sound_Buffer();
     AudioDeviceRemoveIOProc(AUDIO_Device, AUDIO_Callback);
-    AUDIO_Device = 0;
+    AUDIO_Device = NULL;
 }

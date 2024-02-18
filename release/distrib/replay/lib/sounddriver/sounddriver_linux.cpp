@@ -113,6 +113,7 @@ void *AUDIO_Thread(void *arg)
 int AUDIO_Init_Driver(void (*Mixer)(Uint8 *, Uint32))
 {
     const char *device;
+    struct sched_param p;
 
     AUDIO_Mixer = Mixer;
 
@@ -121,6 +122,9 @@ int AUDIO_Init_Driver(void (*Mixer)(Uint8 *, Uint32))
     {
         device = "default";
     }
+
+    p.sched_priority = 1;
+    pthread_setschedparam(pthread_self(), SCHED_FIFO, &p);
 
     if(snd_pcm_open(&playback_handle, device, SND_PCM_STREAM_PLAYBACK, 0) >= 0)
     {
@@ -143,28 +147,25 @@ int AUDIO_Init_Driver(void (*Mixer)(Uint8 *, Uint32))
 int AUDIO_Create_Sound_Buffer(int milliseconds)
 {
     unsigned int frag_size;
-    struct sched_param p;
     unsigned int bitrate = AUDIO_PCM_FREQ;
 
     if(milliseconds < 10) milliseconds = 10;
     if(milliseconds > 250) milliseconds = 250;
     // US = MS * 1000
-    frag_size = (int) (AUDIO_PCM_FREQ * (230 / 1000.0f));
+    frag_size = (int) (AUDIO_PCM_FREQ * (milliseconds / 100.0f));
     snd_pcm_set_params(playback_handle,
                        SND_PCM_FORMAT_S16_LE,
                        SND_PCM_ACCESS_RW_INTERLEAVED,
-		       AUDIO_DBUF_CHANNELS,
+                       AUDIO_DBUF_CHANNELS,
                        AUDIO_PCM_FREQ,
                        1,
-                       230000);
+                       milliseconds * 10000);
 
     AUDIO_SoundBuffer_Size = frag_size;
     AUDIO_Latency = AUDIO_SoundBuffer_Size;
     AUDIO_SoundBuffer = (short *) malloc(AUDIO_SoundBuffer_Size << 1);
 
-    p.sched_priority = 1;
     Thread_Running = 1;
-    pthread_setschedparam(pthread_self(), SCHED_FIFO , &p);
     if(pthread_create(&hThread, NULL, AUDIO_Thread, NULL) == 0)
     {
         return(TRUE);
@@ -272,6 +273,12 @@ void AUDIO_Stop_Sound_Buffer(void)
         {
             usleep(10);
         }
+        hThread = NULL;
+    }
+    if(AUDIO_SoundBuffer)
+    {
+        free(AUDIO_SoundBuffer);
+        AUDIO_SoundBuffer = NULL;
     }
 }
 

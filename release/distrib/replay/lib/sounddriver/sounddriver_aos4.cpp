@@ -134,6 +134,8 @@ void *AUDIO_Thread(void *arg)
 // Desc: Init the audio driver
 int AUDIO_Init_Driver(void (*Mixer)(Uint8 *, Uint32))
 {
+    struct sched_param p;
+    
     AUDIO_Mixer = Mixer;
     AHImp = (struct MsgPort *) IExec->AllocSysObject(ASOT_PORT, NULL);
 
@@ -175,6 +177,11 @@ int AUDIO_Init_Driver(void (*Mixer)(Uint8 *, Uint32))
         return(FALSE);
     }
     IExec->CopyMem(AHIio, AHIio2, sizeof(struct AHIRequest));
+
+    memset(&p, 0, sizeof(p));
+    p.sched_priority = 1;
+    pthread_setschedparam(pthread_self(), SCHED_FIFO, &p);
+
     return(AUDIO_Create_Sound_Buffer(AUDIO_Milliseconds));
 }
 
@@ -192,8 +199,6 @@ int AUDIO_Create_Sound_Buffer(int milliseconds)
     num_fragments = 6;
     frag_size = (int) (AUDIO_PCM_FREQ * (milliseconds / 1000.0f));
 
-    struct sched_param p;
-    
     AUDIO_SoundBuffer_Size = frag_size << 2;
     AUDIO_Latency = AUDIO_SoundBuffer_Size;
     
@@ -209,10 +214,7 @@ int AUDIO_Create_Sound_Buffer(int milliseconds)
         return(FALSE);
     }
     
-    memset(&p, 0, sizeof(p));
-    p.sched_priority = 1;
     Thread_Running = 1;
-    pthread_setschedparam(pthread_self(), SCHED_FIFO , &p);
     if(pthread_create(&hThread, NULL, AUDIO_Thread, NULL) == 0)
     {
         return(TRUE);
@@ -318,6 +320,7 @@ void AUDIO_Stop_Sound_Buffer(void)
         {
             usleep(10);
         }
+        hThread = NULL;
     }
     IExec->FreeVec(AHIbuf);
     IExec->FreeVec(AHIbuf2);
