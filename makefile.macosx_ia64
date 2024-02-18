@@ -1,0 +1,195 @@
+CXX = g++
+
+LIBS_IA64 = -lsdldraw_ia64 -lz -framework CoreAudio -framework CoreMidi -framework AudioUnit -framework Cocoa -framework SDL
+
+DEBUG = 
+
+FLAGS_IA64 = $(DEBUG) -O3 -ffast-math -fomit-frame-pointer -fno-rtti -I/Library/Frameworks/SDL.framework/Headers \
+            -fno-strict-aliasing -w -D __MACOSX_X86__ -D __GCC__ -D __MACOSX_CORE__ -D __MOT_SWAP__ -D __AIFF__
+
+EXEOBJS_IA64 = ptk_ia64.o \
+              editor_303_ia64.o editor_pattern_ia64.o editor_sequencer_ia64.o editor_track_ia64.o editor_track_fx_ia64.o \
+              patterns_blocks_ia64.o editor_synth_ia64.o editor_sample_ia64.o editor_fx_setup_ia64.o editor_setup_ia64.o \
+              editor_diskio_ia64.o editor_reverb_ia64.o editor_instrument_ia64.o editor_midi_ia64.o \
+              samples_pack_ia64.o files_list_ia64.o files_ia64.o mods_ia64.o patterns_ia64.o reverbs_ia64.o midi_cfg_ia64.o \
+              bits_ia64.o pack_ia64.o tinypack_ia64.o words_ia64.o wputils_ia64.o \
+              config_ia64.o 303s_ia64.o synths_ia64.o insts_ia64.o ptps_ia64.o \
+              midi_ia64.o RtMidi_ia64.o midi_dispatch_ia64.o \
+              timer_ia64.o main_ia64.o sdlmain_ia64.o \
+              misc_draw_ia64.o draw_primitives_ia64.o requesters_ia64.o \
+              samples_ops_ia64.o aiff_ia64.o riff_ia64.o \
+              spline_ia64.o tb_303_ia64.o wavpack_ia64.o samples_unpack_ia64.o replay_ia64.o synth_ia64.o endianness_ia64.o \
+              sounddriver_macosx_ia64.o
+
+all: protrekkr_ia64
+
+clean: RemObj
+
+RemObj:
+	-rm -f $(EXEOBJS_IA64)
+
+protrekkr_ia64: $(EXEOBJS_IA64)
+	(cd src/extralibs/sdl_draw; make -f makefile.macosx_ia64)
+	(cd src/extralibs/zlib-1.2.3; make -f makefile.macosx_ia64)
+	(cd src/extralibs/bin2c; make -f makefile.macosx_ia64)
+	-mkdir ./release/distrib/protrekkr.app/Contents/MacOS/
+	$(CXX) -o ./release/distrib/protrekkr.app/Contents/MacOS/Protrekkr \
+           -L./ -L/library/frameworks -Lsrc/extralibs/sdl_draw -Lsrc/extralibs/zlib-1.2.3 $(FLAGS_IA64) $(EXEOBJS_IA64) $(LIBS_IA64)
+	strip -x -X -S ./release/distrib/protrekkr.app/Contents/MacOS/Protrekkr
+	chmod +x ./release/distrib/protrekkr.app/Contents/MacOS/Protrekkr
+
+ptk_ia64.o: src/ptk.cpp
+	$(CXX) -c -o $(@) $(FLAGS_IA64) $<
+
+editor_303_ia64.o: src/editors/editor_303.cpp
+	$(CXX) -c -o $(@) $(FLAGS_IA64) $<
+
+editor_pattern_ia64.o: src/editors/editor_pattern.cpp
+	$(CXX) -c -o $(@) $(FLAGS_IA64) $<
+
+editor_sequencer_ia64.o: src/editors/editor_sequencer.cpp
+	$(CXX) -c -o $(@) $(FLAGS_IA64) $<
+
+editor_track_ia64.o: src/editors/editor_track.cpp
+	$(CXX) -c -o $(@) $(FLAGS_IA64) $<
+
+editor_track_fx_ia64.o: src/editors/editor_track_fx.cpp
+	$(CXX) -c -o $(@) $(FLAGS_IA64) $<
+
+patterns_blocks_ia64.o: src/editors/patterns_blocks.cpp
+	$(CXX) -c -o $(@) $(FLAGS_IA64) $<
+
+editor_synth_ia64.o: src/editors/editor_synth.cpp
+	$(CXX) -c -o $(@) $(FLAGS_IA64) $<
+
+editor_sample_ia64.o: src/editors/editor_sample.cpp
+	$(CXX) -c -o $(@) $(FLAGS_IA64) $<
+
+editor_fx_setup_ia64.o: src/editors/editor_fx_setup.cpp
+	$(CXX) -c -o $(@) $(FLAGS_IA64) $<
+
+editor_setup_ia64.o: src/editors/editor_setup.cpp
+	$(CXX) -c -o $(@) $(FLAGS_IA64) $<
+
+editor_diskio_ia64.o: src/editors/editor_diskio.cpp
+	$(CXX) -c -o $(@) $(FLAGS_IA64) $<
+
+editor_reverb_ia64.o: src/editors/editor_reverb.cpp
+	$(CXX) -c -o $(@) $(FLAGS_IA64) $<
+
+editor_instrument_ia64.o: src/editors/editor_instrument.cpp
+	$(CXX) -c -o $(@) $(FLAGS_IA64) $<
+
+editor_midi_ia64.o: src/editors/editor_midi.cpp
+	$(CXX) -c -o $(@) $(FLAGS_IA64) $<
+
+samples_pack_ia64.o: src/samples/samples_pack.cpp
+	$(CXX) -c -o $(@) $(FLAGS_IA64) $<
+
+files_list_ia64.o: src/files/files_list.cpp
+	$(CXX) -c -o $(@) $(FLAGS_IA64) $<
+
+files_ia64.o: src/files/files.cpp
+	$(CXX) -c -o $(@) $(FLAGS_IA64) $<
+
+mods_ia64.o: src/files/mods.cpp
+	$(CXX) -c -o $(@) $(FLAGS_IA64) $<
+
+patterns_ia64.o: src/files/patterns.cpp
+	$(CXX) -c -o $(@) $(FLAGS_IA64) $<
+
+reverbs_ia64.o: src/files/reverbs.cpp
+	$(CXX) -c -o $(@) $(FLAGS_IA64) $<
+
+midi_cfg_ia64.o: src/files/midi_cfg.cpp
+	$(CXX) -c -o $(@) $(FLAGS_IA64) $<
+
+config_ia64.o: src/files/config.cpp
+	$(CXX) -c -o $(@) $(FLAGS_IA64) $<
+
+303s_ia64.o: src/files/303s.cpp
+	$(CXX) -c -o $(@) $(FLAGS_IA64) $<
+
+synths_ia64.o: src/files/synths.cpp
+	$(CXX) -c -o $(@) $(FLAGS_IA64) $<
+
+insts_ia64.o: src/files/insts.cpp
+	$(CXX) -c -o $(@) $(FLAGS_IA64) $<
+
+ptps_ia64.o: src/files/ptps.cpp
+	$(CXX) -c -o $(@) $(FLAGS_IA64) $<
+
+midi_ia64.o: src/midi/midi.cpp
+	$(CXX) -c -o $(@) $(FLAGS_IA64) $<
+
+RtMidi_ia64.o: src/midi/RtMidi.cpp
+	$(CXX) -c -o $(@) $(FLAGS_IA64) $<
+
+midi_dispatch_ia64.o: src/midi/midi_dispatch.cpp
+	$(CXX) -c -o $(@) $(FLAGS_IA64) $<
+
+timer_ia64.o: src/support/timer.cpp
+	$(CXX) -c -o $(@) $(FLAGS_IA64) $<
+
+main_ia64.o: src/support/main.cpp
+	$(CXX) -c -o $(@) $(FLAGS_IA64) $<
+
+sdlmain_ia64.o: src/support/sdlmain.m
+	$(CXX) -c -o $(@) $(FLAGS_IA64) $<
+
+misc_draw_ia64.o: src/ui/misc_draw.cpp
+	$(CXX) -c -o $(@) $(FLAGS_IA64) $<
+
+draw_primitives_ia64.o: src/ui/draw_primitives.cpp
+	$(CXX) -c -o $(@) $(FLAGS_IA64) $<
+
+requesters_ia64.o: src/ui/requesters.cpp
+	$(CXX) -c -o $(@) $(FLAGS_IA64) $<
+
+samples_ops_ia64.o: src/samples/samples_ops.cpp
+	$(CXX) -c -o $(@) $(FLAGS_IA64) $<
+
+aiff_ia64.o: src/samples/aiff/aiff.cpp
+	$(CXX) -c -o $(@) $(FLAGS_IA64) $<
+
+riff_ia64.o: src/samples/wav/riff.cpp
+	$(CXX) -c -o $(@) $(FLAGS_IA64) $<
+
+spline_ia64.o: release/distrib/replay/lib/spline.cpp
+	$(CXX) -c -o $(@) $(FLAGS_IA64) $<
+
+tb_303_ia64.o: release/distrib/replay/lib/tb_303.cpp
+	$(CXX) -c -o $(@) $(FLAGS_IA64) $<
+
+wavpack_ia64.o: release/distrib/replay/lib/wavpack.cpp
+	$(CXX) -c -o $(@) $(FLAGS_IA64) $<
+
+samples_unpack_ia64.o: release/distrib/replay/lib/samples_unpack.cpp
+	$(CXX) -c -o $(@) $(FLAGS_IA64) $<
+
+replay_ia64.o: release/distrib/replay/lib/replay.cpp
+	$(CXX) -c -o $(@) $(FLAGS_IA64) $<
+
+synth_ia64.o: release/distrib/replay/lib/synth.cpp
+	$(CXX) -c -o $(@) $(FLAGS_IA64) $<
+
+endianness_ia64.o: release/distrib/replay/lib/endianness.cpp
+	$(CXX) -c -o $(@) $(FLAGS_IA64) $<
+
+sounddriver_macosx_ia64.o: release/distrib/replay/lib/sounddriver/sounddriver_macosx.cpp
+	$(CXX) -c -o $(@) $(FLAGS_IA64) $<
+
+bits_ia64.o: src/samples/wavpack/bits.cpp
+	$(CXX) -c -o $(@) $(FLAGS_IA64) $<
+
+pack_ia64.o: src/samples/wavpack/pack.cpp
+	$(CXX) -c -o $(@) $(FLAGS_IA64) $<
+
+words_ia64.o: src/samples/wavpack/words.cpp
+	$(CXX) -c -o $(@) $(FLAGS_IA64) $<
+
+wputils_ia64.o: src/samples/wavpack/wputils.cpp
+	$(CXX) -c -o $(@) $(FLAGS_IA64) $<
+
+tinypack_ia64.o: src/samples/wavpack/tinypack.cpp
+	$(CXX) -c -o $(@) $(FLAGS_IA64) $<
