@@ -148,8 +148,8 @@ void Save_Config(void)
         Write_Data_Swap(&Cur_Width, sizeof(int), 1, out);
         Write_Data_Swap(&Cur_Height, sizeof(int), 1, out);
 
-        Cur_Left = -1;
-        Cur_Top = -1;
+        if(Cur_Left < 0) Cur_Left = 0;
+        if(Cur_Top < 0) Cur_Top = 0;
         Write_Data_Swap(&Cur_Left, sizeof(int), 1, out);
         Write_Data_Swap(&Cur_Top, sizeof(int), 1, out);
 
