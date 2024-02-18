@@ -10,6 +10,7 @@ Currently the tracker is available on Windows and more or less on Linux, FreeBSD
 
 ![alt text](ptk.png)
 
+---
 In order to compile it, use the provided makefile for your target architecture (if available).
 
 Example:
@@ -19,18 +20,18 @@ make -f makefile.linux
 The executable will be created in release/distrib directory.
 
 Notice that you'll need SDL 1.
-
+---
 This is a FREEWARE tool, this means that you can use it for whatever you want and for free.
 There's NO GUARANTEE that this program will perform well or even run on your computer.
-
-So far, ProTrekkr was used in these intros or demos (the ones i'm aware of, at least) :
-<a href="http://pouet.net/prod.php?which=51129" target=_parent>Nebula by Sqny</a><br>
-<a href="http://pouet.net/prod.php?which=51286" target=_parent>Kaivo by Clrsrc</a><br>
-<a href="http://pouet.net/prod.php?which=52876" target=_parent>Kaolin beach2009 by Kaolin</a><br>
-<a href="http://pouet.net/prod.php?which=53473" target=_parent>Genesis cracktro by Genesis & Nooon</a><br>
-<a href="http://pouet.net/prod.php?which=53496" target=_parent>Arjttdoasw by Mayhem</a><br>
-<a href="http://pouet.net/prod.php?which=53897" target=_parent>Ediacara by Traction</a><br>
-<a href="http://pouet.net/prod.php?which=54430" target=_parent>Hatred crackmo.short by Hatred & Neural</a><br>
+---
+So far, ProTrekkr was used in these intros or demos (the ones i'm aware of, at least) :<br>
+<a href="http://www.pouet.net/prod.php?which=51129" target=_parent>Nebula by Sqny</a><br>
+<a href="http://www.pouet.net/prod.php?which=51286" target=_parent>Kaivo by Clrsrc</a><br>
+<a href="http://www.pouet.net/prod.php?which=52876" target=_parent>Kaolin beach2009 by Kaolin</a><br>
+<a href="http://www.pouet.net/prod.php?which=53473" target=_parent>Genesis cracktro by Genesis & Nooon</a><br>
+<a href="http://www.pouet.net/prod.php?which=53496" target=_parent>Arjttdoasw by Mayhem</a><br>
+<a href="http://www.pouet.net/prod.php?which=53897" target=_parent>Ediacara by Traction</a><br>
+<a href="http://www.pouet.net/prod.php?which=54430" target=_parent>Hatred crackmo.short by Hatred & Neural</a><br>
 <a href="http://www.pouet.net/prod.php?which=54589" target=_parent>Primitive by Brainstorm</a><br>
 <a href="http://www.pouet.net/prod.php?which=55302" target=_parent>Mozog by Mayhem</a><br>
 <a href="http://www.pouet.net/prod.php?which=55505" target=_parent>Buenzli 19 invitation by clrsrc</a><br>
