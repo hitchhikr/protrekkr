@@ -273,7 +273,7 @@ void AUDIO_Stop_Sound_Buffer(void)
         {
             usleep(10);
         }
-        hThread = NULL;
+        hThread = 0;
     }
     if(AUDIO_SoundBuffer)
     {

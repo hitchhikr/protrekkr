@@ -141,8 +141,9 @@ void *AUDIO_Thread(void *arg)
     Thread_Running = 1;
     
     #if !defined(USE_SDL_THREADS)
-        //pthread_exit(0);
+        pthread_exit(0);
     #endif
+
     return(0);
 }
 
@@ -340,7 +341,7 @@ void AUDIO_Stop_Sound_Buffer(void)
         {
             usleep(10);
         }
-        hThread = NULL;
+        hThread = 0;
     }
     FreeVec(AHIbuf);
     FreeVec(AHIbuf2);
