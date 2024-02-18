@@ -109,7 +109,6 @@ int multifactor = 4;
 char seditor = 0;
 int Done_Tip = FALSE;
 char tipoftheday[256];
-int ctipoftheday = 0;
 char Current_Instrument_Split = 0;
 
 int player_pos = -1;
@@ -490,9 +489,7 @@ int Init_Context(void)
 {
     srand(time(0));
 
-    ctipoftheday = rand() % 12;
-
-    switch(ctipoftheday)
+    switch(rand() % 13)
     {
         case 0: sprintf(tipoftheday, "Tip Of The Hour: Pressing CTRL+I will interpolate effect value on a marked block."); break;
         case 1: sprintf(tipoftheday, "Tip Of The Hour: The right mouse button will have a secondary action on most buttons."); break;
@@ -505,7 +502,7 @@ int Init_Context(void)
         case 8: sprintf(tipoftheday, "Tip Of The Hour: Pattern command '16xx' will reset the Filter LFO of the track. No parameter required."); break;
         case 9: sprintf(tipoftheday, "Tip Of The Hour: Use '90' command in the panning column to change midi controllers values."); break;
         case 10: sprintf(tipoftheday, "Tip Of The Hour: Increase latency time if sound is distorted."); break;
-        case 11: sprintf(tipoftheday, "Tip Of The Hour: Pressing right mouse button on most arrows buttons (\03\04) will speed operation up.");
+        case 11: sprintf(tipoftheday, "Tip Of The Hour: Pressing right mouse button on most arrows buttons (\03\04) will speed operation up."); break;
         default: sprintf(tipoftheday, "Tip Of The Hour: See manual.pdf for more infos about help and pattern commands."); break;
     }
 
