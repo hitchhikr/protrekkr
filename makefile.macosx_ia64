@@ -1,10 +1,10 @@
 CXX = g++
 
-LIBS_IA64 = -lsdldraw_ia64 -lz -framework CoreAudio -framework CoreMidi -framework AudioUnit -framework Cocoa -framework SDL
+LIBS_IA64 = -lsdldraw_ia64 -lz -framework CoreAudio -framework CoreMidi -framework AudioUnit -framework Cocoa -lSDL
 
 DEBUG = 
 
-FLAGS_IA64 = $(DEBUG) -O3 -arch x86_64 -ffast-math -fomit-frame-pointer -fno-rtti -I/Library/Frameworks/SDL.framework/Headers \
+FLAGS_IA64 = $(DEBUG) -O3 -arch x86_64 -ffast-math -fomit-frame-pointer -fno-rtti -I/opt/local/libexec/libsdl12/include \
             -fno-strict-aliasing -w -D __MACOSX_X86__ -D __GCC__ -D __MACOSX_CORE__ -D __MOT_SWAP__ -D __AIFF__
 
 EXEOBJS_IA64 = ptk_ia64.o \
@@ -34,9 +34,10 @@ protrekkr_ia64: $(EXEOBJS_IA64)
 	(cd src/extralibs/bin2c; make -f makefile.macosx_ia64)
 	-mkdir ./release/distrib/protrekkr_ia64.app/Contents/MacOS/
 	$(CXX) -o ./release/distrib/protrekkr_ia64.app/Contents/MacOS/Protrekkr \
-           -L./ -L/library/frameworks -Lsrc/extralibs/sdl_draw -Lsrc/extralibs/zlib-1.2.3 $(FLAGS_IA64) $(EXEOBJS_IA64) $(LIBS_IA64)
+           -L./ -L/opt/local/libexec/libsdl12/lib -L/library/frameworks -Lsrc/extralibs/sdl_draw -Lsrc/extralibs/zlib-1.2.3 $(FLAGS_IA64) $(EXEOBJS_IA64) $(LIBS_IA64)
 	strip -x -X -S ./release/distrib/protrekkr_ia64.app/Contents/MacOS/Protrekkr
 	chmod +x ./release/distrib/protrekkr_ia64.app/Contents/MacOS/Protrekkr
+	install_name_tool ./release/distrib/protrekkr_ia64.app/Contents/MacOS/Protrekkr -change /opt/local/lib/libSDL-1.2.0.dylib @executable_path/libSDL-1.2.0.dylib
 
 ptk_ia64.o: src/ptk.cpp
 	$(CXX) -c -o $(@) $(FLAGS_IA64) $<
