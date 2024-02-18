@@ -6,6 +6,7 @@
 *.freebsd*
 *.netbsd*
 *ppc*
+*ia64*
 *.dsw*
 *.dsp*
 *.sln*

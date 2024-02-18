@@ -1,5 +1,5 @@
 LIBFLAGS = -c
-FLAGS_PPC = -O3 -arch ppc -D G_OS_WIN32 -D __LINUX__ -D __GCC__
+FLAGS_PPC = -O3 -arch ppc -D __LINUX__ -D __GCC__
 LIBOBJS_PPC = draw_hline_ppc.o draw_pixel_ppc.o draw_vline_ppc.o
 
 all: sdldraw

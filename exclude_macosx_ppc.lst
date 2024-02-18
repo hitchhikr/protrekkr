@@ -6,6 +6,7 @@
 *.freebsd*
 *.netbsd*
 *x86*
+*ia64*
 *.dsw*
 *.dsp*
 *.sln*

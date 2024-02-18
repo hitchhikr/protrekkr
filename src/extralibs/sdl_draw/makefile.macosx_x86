@@ -1,5 +1,5 @@
 LIBFLAGS = -c
-FLAGS_X86 = -O3 -arch i386 -D G_OS_WIN32 -D __LINUX__ -D __GCC__
+FLAGS_X86 = -O3 -D __LINUX__ -D __GCC__
 LIBOBJS_X86 = draw_hline_x86.o draw_pixel_x86.o draw_vline_x86.o
 
 all: sdldraw

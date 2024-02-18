@@ -28,6 +28,6 @@
 *ptk_properties.h*
 *.zip*
 *bin2c*
-*protrekkr.app*
+*.app*
 *debug*
 *release*
