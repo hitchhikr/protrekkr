@@ -9,7 +9,7 @@
 *x86*
 *ia64*
 *protrekkr.app*
-.dsw*
+*.dsw*
 *.dsp*
 *.sln*
 *.vcproj*
