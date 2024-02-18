@@ -1042,6 +1042,7 @@ void STDCALL Mixer(Uint8 *Buffer, Uint32 Len)
             if(pos_scope >= (AUDIO_Latency / 2)) pos_scope = 0;
             pos_scope_latency = pos_scope - (AUDIO_Latency / 4);
             if(pos_scope_latency < 0) pos_scope_latency = (AUDIO_Latency / 2) + pos_scope_latency;
+            if(pos_scope_latency < 0) pos_scope_latency = 0;
 #endif
         }
 

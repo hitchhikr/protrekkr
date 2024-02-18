@@ -6819,19 +6819,19 @@ int Init_Scopes_Buffers(void)
     for(i = 0; i < MAX_TRACKS; i++)
     {  
         if(Scope_Dats[i]) free(Scope_Dats[i]);
-        Scope_Dats[i] = (float *) malloc(((AUDIO_Latency + 1) + (512 * 4)) * 2);
+        Scope_Dats[i] = (float *) malloc(((AUDIO_Latency + 1) + (512 * 4)) * 2 * sizeof(float));
         if(!Scope_Dats[i]) return(FALSE);
-        memset(Scope_Dats[i], 0, ((AUDIO_Latency + 1) + (512 * 4)) * 2);
+        memset(Scope_Dats[i], 0, ((AUDIO_Latency + 1) + (512 * 4)) * 2 * sizeof(float));
     }
 
     if(Scope_Dats_LeftRight[0]) free(Scope_Dats_LeftRight[0]);
     if(Scope_Dats_LeftRight[1]) free(Scope_Dats_LeftRight[1]);
-    Scope_Dats_LeftRight[0] = (float *) malloc(((AUDIO_Latency + 1) + (512 * 4)) * 2);
+    Scope_Dats_LeftRight[0] = (float *) malloc(((AUDIO_Latency + 1) + (512 * 4)) * 2 * sizeof(float));
     if(!Scope_Dats_LeftRight[0]) return(FALSE);
-    Scope_Dats_LeftRight[1] = (float *) malloc(((AUDIO_Latency + 1) + (512 * 4)) * 2);
+    Scope_Dats_LeftRight[1] = (float *) malloc(((AUDIO_Latency + 1) + (512 * 4)) * 2 * sizeof(float));
     if(!Scope_Dats_LeftRight[1]) return(FALSE);
-    memset(Scope_Dats_LeftRight[0], 0, ((AUDIO_Latency + 1) + (512 * 4)) * 2);
-    memset(Scope_Dats_LeftRight[1], 0, ((AUDIO_Latency + 1) + (512 * 4)) * 2);
+    memset(Scope_Dats_LeftRight[0], 0, ((AUDIO_Latency + 1) + (512 * 4)) * 2 * sizeof(float));
+    memset(Scope_Dats_LeftRight[1], 0, ((AUDIO_Latency + 1) + (512 * 4)) * 2 * sizeof(float));
     return(TRUE);
 }
 
