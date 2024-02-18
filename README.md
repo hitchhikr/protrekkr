@@ -17,7 +17,7 @@ Example:
 
 make -f makefile.linux
 
-The executable will be created in release/distrib directory.
+The executable will be created in the release/distrib directory.
 
 Notice that you'll need SDL 1.
 
