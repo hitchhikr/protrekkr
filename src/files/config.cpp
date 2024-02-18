@@ -267,7 +267,7 @@ void Load_Config(void)
                 curr_tab_highlight = USER_SCREEN_DISKIO_EDIT;
             }
 
-            // Reload the compelte midi automation config
+            // Reload the complete midi automation config
             Load_Midi_Cfg_Data(Read_Data, Read_Data_Swap, in);
 
             Read_Data_Swap(&Cur_Width, sizeof(int), 1, in);
@@ -275,7 +275,10 @@ void Load_Config(void)
 
             Read_Data_Swap(&Cur_Left, sizeof(int), 1, in);
             Read_Data_Swap(&Cur_Top, sizeof(int), 1, in);
-            Desktop = SDL_SetVideoMode(0, 0, 0, 0);
+            Desktop = SDL_SetVideoMode(0, 0,
+                                       SCREEN_BPP,
+                                       SDL_RESIZABLE |
+                                       SDL_SWSURFACE | SDL_PREALLOC | SDL_HWPALETTE);
             if(Desktop)
             {
                 // Check if the coords are too big

@@ -962,7 +962,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
     }
     Save_Config();
 
-	if(ExePath) free(ExePath);
+    if(ExePath) free(ExePath);
 
     exit(0);
 }
