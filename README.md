@@ -21,7 +21,7 @@ The executable will be created in the release/distrib directory.
 
 Notice that you'll need SDL 1.<br>
 > [!CAUTION]
-> When compiling for Linux or Mac OS: Use libSDL12 and NOT libSDL12-compat.
+> **When compiling for Linux or Mac OS: Use libSDL12 and NOT libSDL12-compat.**
 
 ---
 This is a FREEWARE tool, this means that you can use it for whatever you want and for free.
