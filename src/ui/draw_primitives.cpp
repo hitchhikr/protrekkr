@@ -171,19 +171,16 @@ void Copy(SDL_Surface *Source,
 
     Dst_Rect.x = x;
     Dst_Rect.y = y;
-    Dst_Rect.w = x2 - x1;
-    Dst_Rect.h = y2 - y1;
+    Dst_Rect.w = (x2 - x1) + 1;
+    Dst_Rect.h = (y2 - y1) + 1;
 
     Src_Rect.x = x1;
     Src_Rect.y = y1;
-    Src_Rect.w = Dst_Rect.w + 1;
-    Src_Rect.h = Dst_Rect.h + 1;
-
-    //if(Main_Screen->locked) SDL_UnlockSurface(Main_Screen);
-    //if(Source->locked) SDL_UnlockSurface(Source);
+    Src_Rect.w = Dst_Rect.w;
+    Src_Rect.h = Dst_Rect.h;
 
     SDL_BlitSurface(Source, &Src_Rect, Main_Screen, &Dst_Rect);
-    Push_Update_Rect(x, y, x2 - x1, y2 - y1);
+    Push_Update_Rect(x, y, Dst_Rect.w, Dst_Rect.h);
 }
 
 // ------------------------------------------------------
@@ -203,9 +200,6 @@ void Copy_To_Surface(SDL_Surface *Source, SDL_Surface *dest,
     Dst_Rect.y = y;
     Dst_Rect.w = (x2 - x1);
     Dst_Rect.h = (y2 - y1);
-
-//    if(dest->locked) SDL_UnlockSurface(dest);
-  //  if(Source->locked) SDL_UnlockSurface(Source);
 
     SDL_BlitSurface(Source, &Src_Rect, dest, &Dst_Rect);
     Push_Update_Rect(x, y, x2 - x1, y2 - y1);
@@ -258,15 +252,12 @@ void PrintString(int x,
         Dst_Rect.x = pos_x;
         Dst_Rect.w = Src_Rect.w;
 
-//        if(Main_Screen->locked) SDL_UnlockSurface(Main_Screen);
         if(Font_Type == USE_FONT)
         {
-  //          if(FONT->locked) SDL_UnlockSurface(FONT);
             SDL_BlitSurface(FONT, &Src_Rect, Main_Screen, &Dst_Rect);
         }
         else
         {
-    //        if(FONT_LOW->locked) SDL_UnlockSurface(FONT_LOW);
             SDL_BlitSurface(FONT_LOW, &Src_Rect, Main_Screen, &Dst_Rect);
         }
         x += Font_Size[Idx];
