@@ -2545,7 +2545,6 @@ void Sp_Player(void)
 #endif
                     {
                         live303(pl_eff_row[i], pl_dat_row[i]);
-
                     }
 
                     // 303 are always available
@@ -2563,15 +2562,6 @@ void Sp_Player(void)
 #endif
 
                 }
-
-#if !defined(__STAND_ALONE__) && !defined(__WINAMP__)
-                // Check if the user is recording 303 effects
-                // In that case we don't read the row data
-                if(!sr_isrecording)
-                {
-                    Actualize_303_Ed(0);
-                }
-#endif
 
 #if defined(PTK_VOLUME_COLUMN) || defined(PTK_FX_SETVOLUME)
                 for(i = 0; i < Channels_Effects[ct]; i++)
@@ -4500,6 +4490,7 @@ void Do_Effects_Tick_0(void)
 #if !defined(__STAND_ALONE__) && !defined(__WINAMP__)
                     gui_bpm_action = TRUE;
 #endif
+
                     break;
 #endif
 
@@ -4511,7 +4502,7 @@ void Do_Effects_Tick_0(void)
 #if !defined(__STAND_ALONE__)
                     if(userscreen == USER_SCREEN_FX_SETUP_EDIT)
                     {
-                        Display_Reverb_Cutoff();
+                        gui_action = GUI_CMD_UPDATE_FX_ED;
                     }
 #endif
 
@@ -4526,7 +4517,7 @@ void Do_Effects_Tick_0(void)
 #if !defined(__STAND_ALONE__)
                     if(userscreen == USER_SCREEN_FX_SETUP_EDIT)
                     {
-                        Display_Reverb_Resonance();
+                        gui_action = GUI_CMD_UPDATE_FX_ED;
                     }
 #endif
 
@@ -4541,7 +4532,7 @@ void Do_Effects_Tick_0(void)
 #if !defined(__STAND_ALONE__)
                     if(userscreen == USER_SCREEN_TRACK_FX_EDIT)
                     {
-                        Display_Track_Compressor_Status(trackef);
+                        gui_action = GUI_CMD_UPDATE_TRACK_FX_ED;
                     }
 #endif
 
@@ -4555,7 +4546,7 @@ void Do_Effects_Tick_0(void)
 #if !defined(__STAND_ALONE__)
                     if(userscreen == USER_SCREEN_TRACK_FX_EDIT)
                     {
-                        Display_Track_Compressor(trackef);
+                        gui_action = GUI_CMD_UPDATE_TRACK_FX_ED;
                     }
 #endif
 
@@ -4569,7 +4560,7 @@ void Do_Effects_Tick_0(void)
 #if !defined(__STAND_ALONE__)
                     if(userscreen == USER_SCREEN_TRACK_FX_EDIT)
                     {
-                        Display_Track_Compressor(trackef);
+                        gui_action = GUI_CMD_UPDATE_TRACK_FX_ED;
                     }
 #endif
 
@@ -5738,35 +5729,166 @@ float filter2px(int stereo, int ch, float input, float f, float q)
 #if defined(PTK_303)
 void live303(int pltr_eff_row, int pltr_dat_row)
 {
+
+#if !defined(__STAND_ALONE__)
+    int change_303_unit = 0;
+    int change_303_param = 0;
+#endif
+
     switch(pltr_eff_row)
     {
-        case 0x33: tb303[0].cutoff = pltr_dat_row / 2; break;
-        case 0x34: tb303[1].cutoff = pltr_dat_row / 2; break;
-        case 0x35: tb303[0].resonance = pltr_dat_row / 2; break;
-        case 0x36: tb303[1].resonance = pltr_dat_row / 2; break;
-        case 0x37: tb303[0].envmod = pltr_dat_row / 2; break;
-        case 0x38: tb303[1].envmod = pltr_dat_row / 2; break;
-        case 0x39: tb303[0].decay = pltr_dat_row / 2; break;
-        case 0x3a: tb303[1].decay = pltr_dat_row / 2; break;
-        case 0x3b: tb303[0].accent = pltr_dat_row / 2; break;
-        case 0x3c: tb303[1].accent = pltr_dat_row / 2; break;
-        case 0x3d: tb303[0].tune = pltr_dat_row / 2; break;
-        case 0x3e: tb303[1].tune = pltr_dat_row / 2; break;
+        case 0x33:
+            tb303[0].cutoff = pltr_dat_row / 2;
+
+#if !defined(__STAND_ALONE__)
+            change_303_unit = 0;
+            change_303_param = 4;
+#endif
+
+            break;
+        case 0x34:
+            tb303[1].cutoff = pltr_dat_row / 2;
+
+#if !defined(__STAND_ALONE__)
+            change_303_unit = 1;
+            change_303_param = 4;
+#endif
+
+            break;
+        case 0x35:
+            tb303[0].resonance = pltr_dat_row / 2;
+
+#if !defined(__STAND_ALONE__)
+            change_303_unit = 0;
+            change_303_param = 5;
+#endif
+
+            break;
+        case 0x36:
+            tb303[1].resonance = pltr_dat_row / 2;
+
+#if !defined(__STAND_ALONE__)
+            change_303_unit = 1;
+            change_303_param = 5;
+#endif
+
+            break;
+        case 0x37:
+            tb303[0].envmod = pltr_dat_row / 2;
+
+#if !defined(__STAND_ALONE__)
+            change_303_unit = 0;
+            change_303_param = 6;
+#endif
+
+            break;
+        case 0x38:
+            tb303[1].envmod = pltr_dat_row / 2;
+
+#if !defined(__STAND_ALONE__)
+            change_303_unit = 1;
+            change_303_param = 6;
+#endif
+
+            break;
+        case 0x39:
+            tb303[0].decay = pltr_dat_row / 2;
+
+#if !defined(__STAND_ALONE__)
+            change_303_unit = 0;
+            change_303_param = 7;
+#endif
+
+            break;
+        case 0x3a:
+            tb303[1].decay = pltr_dat_row / 2;
+
+#if !defined(__STAND_ALONE__)
+            change_303_unit = 1;
+            change_303_param = 7;
+#endif
+
+            break;
+        case 0x3b:
+            tb303[0].accent = pltr_dat_row / 2;
+
+#if !defined(__STAND_ALONE__)
+            change_303_unit = 0;
+            change_303_param = 8;
+#endif
+
+            break;
+        case 0x3c:
+            tb303[1].accent = pltr_dat_row / 2;
+
+#if !defined(__STAND_ALONE__)
+            change_303_unit = 1;
+            change_303_param = 8;
+#endif
+
+            break;
+        case 0x3d:
+            tb303[0].tune = pltr_dat_row / 2;
+
+#if !defined(__STAND_ALONE__)
+            change_303_unit = 0;
+            change_303_param = 3;
+#endif
+
+            break;
+        case 0x3e:
+            tb303[1].tune = pltr_dat_row / 2;
+
+#if !defined(__STAND_ALONE__)
+            change_303_unit = 1;
+            change_303_param = 3;
+#endif
+
+            break;
         case 0x3f: 
             if(pltr_dat_row < 1) pltr_dat_row = 1;
             if(pltr_dat_row > 16) pltr_dat_row = 16;
             tb303[0].scale = pltr_dat_row;
             tb303engine[0].tbCurMultiple = tb303[0].scale;
+
+#if !defined(__STAND_ALONE__)
+            change_303_unit = 0;
+            change_303_param = 19;
+#endif
+
             break;
         case 0x40:
             if(pltr_dat_row < 1) pltr_dat_row = 1;
             if(pltr_dat_row > 16) pltr_dat_row = 16;
             tb303[1].scale = pltr_dat_row;
             tb303engine[1].tbCurMultiple = tb303[1].scale;
+
+#if !defined(__STAND_ALONE__)
+            change_303_unit = 1;
+            change_303_param = 19;
+#endif
+
             break;
-        case 0x41: tb303engine[0].tbTargetRealVolume = ((float) pltr_dat_row) / 255.0f; break;
-        case 0x42: tb303engine[1].tbTargetRealVolume = ((float) pltr_dat_row) / 255.0f; break;
+        case 0x41:
+            tb303engine[0].tbTargetRealVolume = ((float) pltr_dat_row) / 255.0f;
+            break;
+        case 0x42:
+            tb303engine[1].tbTargetRealVolume = ((float) pltr_dat_row) / 255.0f;
+            break;
     }
+
+#if !defined(__STAND_ALONE__) && !defined(__WINAMP__)
+        // Check if the user is recording 303 effects
+        // In that case we don't read the row data
+        if(!sr_isrecording && change_303_param)
+        {
+            Refresh_Unit_Param = change_303_param;
+            Refresh_Unit = change_303_unit;
+            gui_action = GUI_CMD_REFRESH_TB303_PARAMS_EXTERNAL;
+            //Actualize_303_Ed(0);
+        }
+#endif
+
 }
 
 void Fire303(unsigned char number, int unit)
@@ -5947,10 +6069,6 @@ void Fire303(unsigned char number, int unit)
             tb303engine[unit].tbTargetRealVolume = 0.0f;
             break;
     }
-
-#if !defined(__STAND_ALONE__) && !defined(__WINAMP__)
-    if(!sr_isrecording) Actualize_303_Ed(0);
-#endif
 }
 
 void noteoff303(char strack)

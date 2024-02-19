@@ -1497,7 +1497,7 @@ int Screen_Update(void)
 
         if(gui_action == GUI_CMD_REFRESH_TB303_PARAMS_EXTERNAL)
         {
-            Refresh_303_Unit(Refresh_Unit, teac);
+            Refresh_303_Unit(Refresh_Unit, Refresh_Unit_Param);
         }
 
         if(gui_action == GUI_CMD_SAVE_303_PATTERN)

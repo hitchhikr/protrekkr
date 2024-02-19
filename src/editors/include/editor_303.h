@@ -53,6 +53,7 @@ extern gear303 tb303engine[2];
 extern para303 tb303[2];
 extern unsigned char sl3;
 extern int Refresh_Unit;
+extern int Refresh_Unit_Param;
 
 // ------------------------------------------------------
 // Functions

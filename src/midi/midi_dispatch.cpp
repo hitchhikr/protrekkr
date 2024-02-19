@@ -81,7 +81,7 @@ void Midi_303_Set_Tune(int Unit, int Data)
     }
     if(Unit == sl3)
     {
-        teac = 3;
+        Refresh_Unit_Param = 3;
         Refresh_Unit = Unit;
         gui_action = GUI_CMD_REFRESH_TB303_PARAMS_EXTERNAL;
     }
@@ -103,7 +103,7 @@ void Midi_303_Set_Cutoff(int Unit, int Data)
     }
     if(Unit == sl3)
     {
-        teac = 4;
+        Refresh_Unit_Param = 4;
         Refresh_Unit = Unit;
         gui_action = GUI_CMD_REFRESH_TB303_PARAMS_EXTERNAL;
     }
@@ -125,7 +125,7 @@ void Midi_303_Set_Resonance(int Unit, int Data)
     }
     if(Unit == sl3)
     {
-        teac = 5;
+        Refresh_Unit_Param = 5;
         Refresh_Unit = Unit;
         gui_action = GUI_CMD_REFRESH_TB303_PARAMS_EXTERNAL;
     }
@@ -147,7 +147,7 @@ void Midi_303_Set_Envmod(int Unit, int Data)
     }
     if(Unit == sl3)
     {
-        teac = 6;
+        Refresh_Unit_Param = 6;
         Refresh_Unit = Unit;
         gui_action = GUI_CMD_REFRESH_TB303_PARAMS_EXTERNAL;
     }
@@ -169,7 +169,7 @@ void Midi_303_Set_Decay(int Unit, int Data)
     }
     if(Unit == sl3)
     {
-        teac = 7;
+        Refresh_Unit_Param = 7;
         Refresh_Unit = Unit;
         gui_action = GUI_CMD_REFRESH_TB303_PARAMS_EXTERNAL;
     }
@@ -191,7 +191,7 @@ void Midi_303_Set_Accent(int Unit, int Data)
     }
     if(Unit == sl3)
     {
-        teac = 8;
+        Refresh_Unit_Param = 8;
         Refresh_Unit = Unit;
         gui_action = GUI_CMD_REFRESH_TB303_PARAMS_EXTERNAL;
     }
@@ -213,7 +213,7 @@ void Midi_303_Set_Volume(int Unit, int Data)
     }
     if(Unit == sl3)
     {
-        teac = 15;
+        Refresh_Unit_Param = 15;
         Refresh_Unit = Unit;
         gui_action = GUI_CMD_REFRESH_TB303_PARAMS_EXTERNAL;
     }
