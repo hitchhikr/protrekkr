@@ -4,7 +4,7 @@ LIBS_ARM64 = -lsdldraw_arm64 -lz -framework CoreAudio -framework CoreMidi -frame
 
 DEBUG = 
 
-FLAGS_ARM64 = $(DEBUG) -O3 -arch arm64 -ffast-math -fomit-frame-pointer -fno-rtti -I/opt/local/libexec/libsdl12/include \
+FLAGS_ARM64 = $(DEBUG) -O3 -arch arm64 -ffast-math -fomit-frame-pointer -fno-rtti -I/opt/local/include \
             -fno-strict-aliasing -w -D __MACOSX_X86__ -D __GCC__ -D __MACOSX_CORE__ -D __MOT_SWAP__ -D __AIFF__
 
 EXEOBJS_ARM64 = ptk_arm64.o \
@@ -33,7 +33,7 @@ protrekkr_arm64: $(EXEOBJS_ARM64)
 	(cd src/extralibs/zlib-1.2.3; make -f makefile.macos_arm64)
 	(cd src/extralibs/bin2c; make -f makefile.macos_arm64)
 	$(CXX) -o ./release/distrib/protrekkr_arm64.app/Contents/MacOS/Protrekkr \
-           -L./ -L/opt/local/libexec/libsdl12/lib -L/library/frameworks -Lsrc/extralibs/sdl_draw -Lsrc/extralibs/zlib-1.2.3 $(FLAGS_ARM64) $(EXEOBJS_ARM64) $(LIBS_ARM64)
+           -L./ -L/opt/local/lib -L/library/frameworks -Lsrc/extralibs/sdl_draw -Lsrc/extralibs/zlib-1.2.3 $(FLAGS_ARM64) $(EXEOBJS_ARM64) $(LIBS_ARM64)
 	strip -x -X -S ./release/distrib/protrekkr_arm64.app/Contents/MacOS/Protrekkr
 	chmod +x ./release/distrib/protrekkr_arm64.app/Contents/MacOS/Protrekkr
 	install_name_tool ./release/distrib/protrekkr_arm64.app/Contents/MacOS/Protrekkr -change /opt/local/lib/libSDL-1.2.0.dylib @executable_path/libSDL-1.2.0.dylib
