@@ -861,7 +861,6 @@ int delay_time;
     char nameins[128][20];
     char SampleName[128][16][64];
     unsigned char nPatterns = 1;
-    void Actualize_303_Ed(char gode);
     extern char sr_isrecording;
     extern int32 sed_range_start;
     extern int32 sed_range_end;
@@ -5885,7 +5884,6 @@ void live303(int pltr_eff_row, int pltr_dat_row)
             Refresh_Unit_Param = change_303_param;
             Refresh_Unit = change_303_unit;
             gui_action = GUI_CMD_REFRESH_TB303_PARAMS_EXTERNAL;
-            //Actualize_303_Ed(0);
         }
 #endif
 
