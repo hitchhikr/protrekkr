@@ -2634,7 +2634,7 @@ void Sp_Player(void)
                     ComputeStereo(ct);
 
 #if !defined(__STAND_ALONE__)
-                    if(userscreen == USER_SCREEN_TRACK_FX_EDIT)
+                    if(userscreen == USER_SCREEN_TRACK_EDIT)
                     {
                         gui_action_external |= GUI_UPDATE_EXTERNAL_SET_PANNING;
                     }
