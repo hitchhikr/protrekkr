@@ -39,6 +39,7 @@
 // ------------------------------------------------------
 // Variables
 extern int gui_bpm_action;
+extern int player_line;
 
 // ------------------------------------------------------
 // Master volume (LIVE)
@@ -81,9 +82,15 @@ void Midi_303_Set_Tune(int Unit, int Data)
     }
     if(Unit == sl3)
     {
-        Refresh_Unit_Param = 3;
-        Refresh_Unit = Unit;
-        gui_action = GUI_CMD_REFRESH_TB303_PARAMS_EXTERNAL;
+        if(Song_Playing && Pattern_Line_Visual != player_line)
+        {
+            if(Unit) gui_action_external |= GUI_UPDATE_EXTERNAL_303_2_TUNE;
+            else gui_action_external |= GUI_UPDATE_EXTERNAL_303_1_TUNE;
+        }
+        else
+        {
+            Refresh_303_Unit(Unit, 3);
+        }
     }
 }
 
@@ -103,9 +110,15 @@ void Midi_303_Set_Cutoff(int Unit, int Data)
     }
     if(Unit == sl3)
     {
-        Refresh_Unit_Param = 4;
-        Refresh_Unit = Unit;
-        gui_action = GUI_CMD_REFRESH_TB303_PARAMS_EXTERNAL;
+        if(Song_Playing && Pattern_Line_Visual != player_line)
+        {
+            if(Unit) gui_action_external |= GUI_UPDATE_EXTERNAL_303_2_CUTOFF;
+            else gui_action_external |= GUI_UPDATE_EXTERNAL_303_1_CUTOFF;
+        }
+        else
+        {
+            Refresh_303_Unit(Unit, 4);
+        }
     }
 }
 
@@ -125,9 +138,15 @@ void Midi_303_Set_Resonance(int Unit, int Data)
     }
     if(Unit == sl3)
     {
-        Refresh_Unit_Param = 5;
-        Refresh_Unit = Unit;
-        gui_action = GUI_CMD_REFRESH_TB303_PARAMS_EXTERNAL;
+        if(Song_Playing && Pattern_Line_Visual != player_line)
+        {
+            if(Unit) gui_action_external |= GUI_UPDATE_EXTERNAL_303_2_RESONANCE;
+            else gui_action_external |= GUI_UPDATE_EXTERNAL_303_1_RESONANCE;
+        }
+        else
+        {
+            Refresh_303_Unit(Unit, 5);
+        }
     }
 }
 
@@ -147,9 +166,15 @@ void Midi_303_Set_Envmod(int Unit, int Data)
     }
     if(Unit == sl3)
     {
-        Refresh_Unit_Param = 6;
-        Refresh_Unit = Unit;
-        gui_action = GUI_CMD_REFRESH_TB303_PARAMS_EXTERNAL;
+        if(Song_Playing && Pattern_Line_Visual != player_line)
+        {
+            if(Unit) gui_action_external |= GUI_UPDATE_EXTERNAL_303_2_ENVMOD;
+            else gui_action_external |= GUI_UPDATE_EXTERNAL_303_1_ENVMOD;
+        }
+        else
+        {
+            Refresh_303_Unit(Unit, 6);
+        }
     }
 }
 
@@ -169,9 +194,15 @@ void Midi_303_Set_Decay(int Unit, int Data)
     }
     if(Unit == sl3)
     {
-        Refresh_Unit_Param = 7;
-        Refresh_Unit = Unit;
-        gui_action = GUI_CMD_REFRESH_TB303_PARAMS_EXTERNAL;
+        if(Song_Playing && Pattern_Line_Visual != player_line)
+        {
+            if(Unit) gui_action_external |= GUI_UPDATE_EXTERNAL_303_2_DECAY;
+            else gui_action_external |= GUI_UPDATE_EXTERNAL_303_1_DECAY;
+        }
+        else
+        {
+            Refresh_303_Unit(Unit, 7);
+        }
     }
 }
 
@@ -191,9 +222,15 @@ void Midi_303_Set_Accent(int Unit, int Data)
     }
     if(Unit == sl3)
     {
-        Refresh_Unit_Param = 8;
-        Refresh_Unit = Unit;
-        gui_action = GUI_CMD_REFRESH_TB303_PARAMS_EXTERNAL;
+        if(Song_Playing && Pattern_Line_Visual != player_line)
+        {
+            if(Unit) gui_action_external |= GUI_UPDATE_EXTERNAL_303_2_ACCENT;
+            else gui_action_external |= GUI_UPDATE_EXTERNAL_303_1_ACCENT;
+        }
+        else
+        {
+            Refresh_303_Unit(Unit, 8);
+        }
     }
 }
 
@@ -213,9 +250,8 @@ void Midi_303_Set_Volume(int Unit, int Data)
     }
     if(Unit == sl3)
     {
-        Refresh_Unit_Param = 15;
         Refresh_Unit = Unit;
-        gui_action = GUI_CMD_REFRESH_TB303_PARAMS_EXTERNAL;
+        gui_action = GUI_CMD_REFRESH_TB303_VOLUME_EXTERNAL;
     }
 }
 
@@ -242,7 +278,14 @@ void Midi_Track_Set_Panning(int Data)
         liveparam = LIVE_PARAM_TRACK_PANNING;
         livevalue = Data;
     }
-    Actualize_Track_Ed(9);
+    if(Song_Playing && Pattern_Line_Visual != player_line)
+    {
+        gui_action_external |= GUI_UPDATE_EXTERNAL_SET_PANNING;
+    }
+    else
+    {
+        Actualize_Track_Ed(9);
+    }
 }
 
 // ------------------------------------------------------
@@ -257,7 +300,7 @@ void Midi_Track_Set_Volume(int Data)
 }
 
 // ------------------------------------------------------
-// Track volume (LIVE)
+// Track LFO (LIVE)
 void Midi_Track_Set_LFO_Carrier(int Data)
 {
     if(sr_isrecording || is_editing)
@@ -277,7 +320,14 @@ void Midi_Track_Set_Cutoff(int Data)
         liveparam = LIVE_PARAM_TRACK_CUTOFF;
         livevalue = Data;
     }
-    Actualize_Track_Ed(1);
+    if(Song_Playing && Pattern_Line_Visual != player_line)
+    {
+        gui_action_external |= GUI_UPDATE_EXTERNAL_FILTER_CUTOFF;
+    }
+    else
+    {
+        Actualize_Track_Ed(1);
+    }
 }
 
 // ------------------------------------------------------
@@ -290,7 +340,14 @@ void Midi_Track_Set_Resonance(int Data)
         liveparam = LIVE_PARAM_TRACK_RESONANCE;
         livevalue = Data;
     }
-    Actualize_Track_Ed(2);
+    if(Song_Playing && Pattern_Line_Visual != player_line)
+    {
+        gui_action_external |= GUI_UPDATE_EXTERNAL_FILTER_RESONANCE;
+    }
+    else
+    {
+        Actualize_Track_Ed(2);
+    }
 }
 
 // ------------------------------------------------------
@@ -303,7 +360,14 @@ void Midi_Track_Set_Reverb(int Data)
         liveparam = LIVE_PARAM_TRACK_REVERB_SEND;
         livevalue = Data;
     }
-    Actualize_Track_Ed(5);
+    if(Song_Playing && Pattern_Line_Visual != player_line)
+    {
+        gui_action_external |= GUI_UPDATE_EXTERNAL_SEND_TO_REVERB;
+    }
+    else
+    {
+        Actualize_Track_Ed(5);
+    }
 }
 
 // ------------------------------------------------------
@@ -316,7 +380,14 @@ void Midi_Track_Set_Disto_Threshold(int Data)
         liveparam = LIVE_PARAM_TRACK_THRESHOLD;
         livevalue = Data;
     }
-    Actualize_Track_Ed(7);
+    if(Song_Playing && Pattern_Line_Visual != player_line)
+    {
+        gui_action_external |= GUI_UPDATE_EXTERNAL_DISTO_THRESHOLD;
+    }
+    else
+    {
+        Actualize_Track_Ed(7);
+    }
 }
 
 // ------------------------------------------------------
@@ -329,7 +400,14 @@ void Midi_Track_Set_Disto_Clamp(int Data)
         liveparam = LIVE_PARAM_TRACK_CLAMP;
         livevalue = Data;
     }
-    Actualize_Track_Ed(8);
+    if(Song_Playing && Pattern_Line_Visual != player_line)
+    {
+        gui_action_external |= GUI_UPDATE_EXTERNAL_DISTO_CLAMP;
+    }
+    else
+    {
+        Actualize_Track_Ed(8);
+    }
 }
 
 // ------------------------------------------------------
@@ -393,7 +471,7 @@ void Midi_Edit_Set_Row(int Data)
         int Pos = Get_Song_Position();
         int Rows = patternLines[pSequence[Pos]];
         float factor = ((float) Rows / 127.0f);
-        
+
         Pattern_Line = (int) (Data * factor);
         if(Pattern_Line < 0) Pattern_Line = 0;
         if(Pattern_Line >= Rows) Pattern_Line = Rows - 1;

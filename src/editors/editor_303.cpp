@@ -49,7 +49,6 @@ unsigned char tb303_buffer_tone[4][16];
 unsigned char editsteps[2][32];
 
 int Refresh_Unit;
-int Refresh_Unit_Param;
 
 extern REQUESTER Overwrite_Requester;
 

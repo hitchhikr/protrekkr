@@ -123,6 +123,8 @@ int tretletter = 0;
 int posletter = 0;
 int last_index = -1;
 int gui_action = GUI_CMD_NOP;
+int gui_action_external = 0;
+int gui_action_external_303 = 0;
 int gui_action_metronome = GUI_CMD_NOP;
 int Column_Under_Caret = 0;
 int Track_Under_Caret = 0;
@@ -1495,10 +1497,9 @@ int Screen_Update(void)
             Actualize_303_Ed(teac);
         }
 
-        // !!!!
-        if(gui_action == GUI_CMD_REFRESH_TB303_PARAMS_EXTERNAL)
+        if(gui_action == GUI_CMD_REFRESH_TB303_VOLUME_EXTERNAL)
         {
-            Refresh_303_Unit(Refresh_Unit, Refresh_Unit_Param);
+            Refresh_303_Unit(Refresh_Unit, 15);
         }
 
         if(gui_action == GUI_CMD_SAVE_303_PATTERN)
@@ -1610,7 +1611,7 @@ int Screen_Update(void)
         {
             Actualize_Fx_Ed(teac);
         }
-
+        
         if(gui_action == GUI_CMD_UPDATE_SETUP_ED)
         {
             Actualize_Master_Ed(teac);
@@ -1631,7 +1632,6 @@ int Screen_Update(void)
             Status_Box("Notes Off Command Sent To All Tracks.");
         }
 
-        // !!!!
         if(gui_action == GUI_CMD_UPDATE_TRACK_FX_ED)
         {
             Actualize_Track_Fx_Ed(teac);
@@ -1860,11 +1860,170 @@ int Screen_Update(void)
 
     if(Song_Playing && Pattern_Line_Visual != player_line)
     {
+        // --------------------------------------
+        // Updates coming from the replay
         if(!sr_isrecording)
         {
-            Actualize_Track_Ed(15);
-            Actualize_Track_Fx_Ed(11);
+            if(gui_action_external & GUI_UPDATE_EXTERNAL_REVERB_FILTER)
+            {
+                Actualize_Fx_Ed(9);
+                Actualize_Fx_Ed(14);
+                gui_action_external &= ~GUI_UPDATE_EXTERNAL_REVERB_FILTER;
+            }
+
+            if(gui_action_external & GUI_UPDATE_EXTERNAL_COMPRESSOR)
+            {
+                Actualize_Track_Fx_Ed(12);
+                gui_action_external &= ~GUI_UPDATE_EXTERNAL_COMPRESSOR;
+            }
+
+            if(gui_action_external & GUI_UPDATE_EXTERNAL_SEND_TO_REVERB)
+            {
+                Actualize_Track_Ed(5);
+                gui_action_external &= ~GUI_UPDATE_EXTERNAL_SEND_TO_REVERB;
+            }
+
+            if(gui_action_external & GUI_UPDATE_EXTERNAL_DISTO_THRESHOLD)
+            {
+                Actualize_Track_Ed(7);
+                gui_action_external &= ~GUI_UPDATE_EXTERNAL_DISTO_THRESHOLD;
+            }
+
+            if(gui_action_external & GUI_UPDATE_EXTERNAL_DISTO_CLAMP)
+            {
+                Actualize_Track_Ed(8);
+                gui_action_external &= ~GUI_UPDATE_EXTERNAL_DISTO_CLAMP;
+            }
+
+            if(gui_action_external & GUI_UPDATE_EXTERNAL_FILTER_CUTOFF)
+            {
+                Actualize_Track_Ed(1);
+                gui_action_external &= ~GUI_UPDATE_EXTERNAL_FILTER_CUTOFF;
+            }
+
+            if(gui_action_external & GUI_UPDATE_EXTERNAL_FILTER_RESONANCE)
+            {
+                Actualize_Track_Ed(2);
+                gui_action_external &= ~GUI_UPDATE_EXTERNAL_FILTER_RESONANCE;
+            }
+
+            if(gui_action_external & GUI_UPDATE_EXTERNAL_FILTER_TYPE)
+            {
+                Actualize_Track_Ed(4);
+                gui_action_external &= ~GUI_UPDATE_EXTERNAL_FILTER_TYPE;
+            }
+
+            if(gui_action_external & GUI_UPDATE_EXTERNAL_FLANGER)
+            {
+                Actualize_Track_Fx_Ed(11);
+                gui_action_external &= ~GUI_UPDATE_EXTERNAL_FLANGER;
+            }
+
+            if(gui_action_external & GUI_UPDATE_EXTERNAL_LFO)
+            {
+                Actualize_Track_Fx_Ed(15);
+                gui_action_external &= ~GUI_UPDATE_EXTERNAL_LFO;
+            }
+
+            if(gui_action_external & GUI_UPDATE_EXTERNAL_SET_PANNING)
+            {
+                Actualize_Track_Ed(9);
+                gui_action_external &= ~GUI_UPDATE_EXTERNAL_SET_PANNING;
+            }
+
+            if(gui_action_external_303 & GUI_UPDATE_EXTERNAL_303_1_TUNE)
+            {
+                Refresh_303_Unit(0, 3);
+                gui_action_external_303 &= ~GUI_UPDATE_EXTERNAL_303_1_TUNE;
+            }
+
+            if(gui_action_external_303 & GUI_UPDATE_EXTERNAL_303_2_TUNE)
+            {
+                Refresh_303_Unit(1, 3);
+                gui_action_external_303 &= ~GUI_UPDATE_EXTERNAL_303_2_TUNE;
+            }
+
+            if(gui_action_external_303 & GUI_UPDATE_EXTERNAL_303_1_CUTOFF)
+            {
+                Refresh_303_Unit(0, 4);
+                gui_action_external_303 &= ~GUI_UPDATE_EXTERNAL_303_1_CUTOFF;
+            }
+
+            if(gui_action_external_303 & GUI_UPDATE_EXTERNAL_303_2_CUTOFF)
+            {
+                Refresh_303_Unit(1, 4);
+                gui_action_external_303 &= ~GUI_UPDATE_EXTERNAL_303_2_CUTOFF;
+            }
+
+            if(gui_action_external_303 & GUI_UPDATE_EXTERNAL_303_1_RESONANCE)
+            {
+                Refresh_303_Unit(0, 5);
+                gui_action_external_303 &= ~GUI_UPDATE_EXTERNAL_303_1_RESONANCE;
+            }
+
+            if(gui_action_external_303 & GUI_UPDATE_EXTERNAL_303_2_RESONANCE)
+            {
+                Refresh_303_Unit(1, 5);
+                gui_action_external_303 &= ~GUI_UPDATE_EXTERNAL_303_2_RESONANCE;
+            }
+
+            if(gui_action_external_303 & GUI_UPDATE_EXTERNAL_303_1_ENVMOD)
+            {
+                Refresh_303_Unit(0, 6);
+                gui_action_external_303 &= ~GUI_UPDATE_EXTERNAL_303_1_ENVMOD;
+            }
+
+            if(gui_action_external_303 & GUI_UPDATE_EXTERNAL_303_2_ENVMOD)
+            {
+                Refresh_303_Unit(1, 6);
+                gui_action_external_303 &= ~GUI_UPDATE_EXTERNAL_303_2_ENVMOD;
+            }
+
+            if(gui_action_external_303 & GUI_UPDATE_EXTERNAL_303_1_DECAY)
+            {
+                Refresh_303_Unit(0, 7);
+                gui_action_external_303 &= ~GUI_UPDATE_EXTERNAL_303_1_DECAY;
+            }
+
+            if(gui_action_external_303 & GUI_UPDATE_EXTERNAL_303_2_DECAY)
+            {
+                Refresh_303_Unit(1, 7);
+                gui_action_external_303 &= ~GUI_UPDATE_EXTERNAL_303_2_DECAY;
+            }
+
+            if(gui_action_external_303 & GUI_UPDATE_EXTERNAL_303_1_ACCENT)
+            {
+                Refresh_303_Unit(0, 8);
+                gui_action_external_303 &= ~GUI_UPDATE_EXTERNAL_303_1_ACCENT;
+            }
+
+            if(gui_action_external_303 & GUI_UPDATE_EXTERNAL_303_2_ACCENT)
+            {
+                Refresh_303_Unit(1, 8);
+                gui_action_external_303 &= ~GUI_UPDATE_EXTERNAL_303_2_ACCENT;
+            }
+
+            if(gui_action_external_303 & GUI_UPDATE_EXTERNAL_303_1_SCALE)
+            {
+                Refresh_303_Unit(0, 19);
+                gui_action_external_303 &= ~GUI_UPDATE_EXTERNAL_303_1_SCALE;
+            }
+
+            if(gui_action_external_303 & GUI_UPDATE_EXTERNAL_303_2_SCALE)
+            {
+                Refresh_303_Unit(1, 19);
+                gui_action_external_303 &= ~GUI_UPDATE_EXTERNAL_303_2_SCALE;
+            }
+
         }
+
+        // --------------------------------------
+//        if(!sr_isrecording)
+  //      {
+            //Actualize_Track_Ed(15);
+            //Actualize_Track_Fx_Ed(11);
+    //    }
+
         Actupated(0);
         player_line = Pattern_Line_Visual;
     }

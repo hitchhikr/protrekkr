@@ -126,39 +126,7 @@ void Actualize_Track_Fx_Ed(char gode)
             outlong(458, (Cur_Height - 85), (int) (FLANGER_AMPL[Track_Under_Caret] * 10000.0f), 1);
         }
 
-        if(gode == 0 || gode == 2 || gode == 11)
-        {
-            if(LFO_RATE[Track_Under_Caret] < 0.0001f) LFO_RATE[Track_Under_Caret] = 0.0001f;
-            if(LFO_RATE[Track_Under_Caret] > 0.0078125f) LFO_RATE[Track_Under_Caret] = 0.0078125f;
-            Realslider(74, (Cur_Height - 110), (int) (LFO_RATE[Track_Under_Caret] * 16384.0f), LFO_ON[Track_Under_Caret]);
-            float tmprate = (8.1632653f / LFO_RATE[Track_Under_Caret]);
-            outlong(76, (Cur_Height - 74), (long) tmprate, 2);
-            tmprate = 1000.0f / tmprate;
-            outfloat(138, (Cur_Height - 74), tmprate, 3);
-        }
-
-        if(gode == 0 || gode == 3 || gode == 11)
-        {
-            if(LFO_AMPL[Track_Under_Caret] < 0) LFO_AMPL[Track_Under_Caret] = 0;
-            if(LFO_AMPL[Track_Under_Caret] > 128) LFO_AMPL[Track_Under_Caret] = 128;
-            Realslider(74, (Cur_Height - 92), (int) (LFO_AMPL[Track_Under_Caret]), LFO_ON[Track_Under_Caret]);
-        }
-
-        if(gode == 0 || gode == 9 || gode == 11)
-        {
-            if(LFO_ON[Track_Under_Caret] == 1)
-            {
-                Gui_Draw_Button_Box(74, (Cur_Height - 128), 20, 16, "On", BUTTON_PUSHED);
-                Gui_Draw_Button_Box(96, (Cur_Height - 128), 20, 16, "Off", BUTTON_NORMAL);
-            }
-            else
-            {
-                Gui_Draw_Button_Box(74, (Cur_Height - 128), 20, 16, "On", BUTTON_NORMAL);
-                Gui_Draw_Button_Box(96, (Cur_Height - 128), 20, 16, "Off", BUTTON_PUSHED);
-            }
-        }
-
-        if(gode == 0 || gode == 10 || gode == 11)
+                if(gode == 0 || gode == 10 || gode == 11)
         {
             if(FLANGER_ON[Track_Under_Caret])
             {
@@ -185,6 +153,38 @@ void Actualize_Track_Fx_Ed(char gode)
             }
             Realslider(308, (Cur_Height - 49), FLANGER_DELAY[Track_Under_Caret] / 32, FLANGER_ON[Track_Under_Caret]);
             outlong(458, (Cur_Height - 49), long(FLANGER_DELAY[Track_Under_Caret] / 44.1f), 2);
+        }
+
+        if(gode == 0 || gode == 2 || gode == 15)
+        {
+            if(LFO_RATE[Track_Under_Caret] < 0.0001f) LFO_RATE[Track_Under_Caret] = 0.0001f;
+            if(LFO_RATE[Track_Under_Caret] > 0.0078125f) LFO_RATE[Track_Under_Caret] = 0.0078125f;
+            Realslider(74, (Cur_Height - 110), (int) (LFO_RATE[Track_Under_Caret] * 16384.0f), LFO_ON[Track_Under_Caret]);
+            float tmprate = (8.1632653f / LFO_RATE[Track_Under_Caret]);
+            outlong(76, (Cur_Height - 74), (long) tmprate, 2);
+            tmprate = 1000.0f / tmprate;
+            outfloat(138, (Cur_Height - 74), tmprate, 3);
+        }
+
+        if(gode == 0 || gode == 3 || gode == 15)
+        {
+            if(LFO_AMPL[Track_Under_Caret] < 0) LFO_AMPL[Track_Under_Caret] = 0;
+            if(LFO_AMPL[Track_Under_Caret] > 128) LFO_AMPL[Track_Under_Caret] = 128;
+            Realslider(74, (Cur_Height - 92), (int) (LFO_AMPL[Track_Under_Caret]), LFO_ON[Track_Under_Caret]);
+        }
+
+        if(gode == 0 || gode == 9 || gode == 15)
+        {
+            if(LFO_ON[Track_Under_Caret] == 1)
+            {
+                Gui_Draw_Button_Box(74, (Cur_Height - 128), 20, 16, "On", BUTTON_PUSHED);
+                Gui_Draw_Button_Box(96, (Cur_Height - 128), 20, 16, "Off", BUTTON_NORMAL);
+            }
+            else
+            {
+                Gui_Draw_Button_Box(74, (Cur_Height - 128), 20, 16, "On", BUTTON_NORMAL);
+                Gui_Draw_Button_Box(96, (Cur_Height - 128), 20, 16, "Off", BUTTON_PUSHED);
+            }
         }
 
         if(gode == 0 || gode == 12)

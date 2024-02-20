@@ -327,7 +327,7 @@ void gear303::tbNoteOn(int tbNote, para303 *PARAT303)
             tbOscSpeedFreak = (tbDestiny - tbSource) / tbInnertime;  // Get glide coefficient
         }
 
-        // Start volume rmaping if there's a pause and we're not sliding
+        // Start volume ramping if there's a pause and we're not sliding
         if(!PARAT303->flag[tbPattern][tbLine].pause && forcefault)
         {
             tbRealVolume = 0;

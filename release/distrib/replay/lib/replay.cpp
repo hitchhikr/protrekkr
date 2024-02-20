@@ -2588,6 +2588,12 @@ void Sp_Player(void)
                 pl_vol_row = *(RawPatterns + efactor + PATTERN_VOLUME);
                 pl_pan_row = *(RawPatterns + efactor + PATTERN_PANNING);
                 
+                for(i = 0; i < Channels_Effects[ct]; i++)
+                {
+                    pl_eff_row[i] = *(RawPatterns + efactor + PATTERN_FX + (i * 2));
+                    pl_dat_row[i] = *(RawPatterns + efactor + PATTERN_FXDATA + (i * 2));
+                }
+
 #if defined(PTK_VOLUME_COLUMN) || defined(PTK_FX_SETVOLUME)
                 for(i = 0; i < Channels_Effects[ct]; i++)
                 {
@@ -2626,6 +2632,14 @@ void Sp_Player(void)
                 {
                     TPan[ct] = (float) pl_pan_row * 0.0078125f; 
                     ComputeStereo(ct);
+
+#if !defined(__STAND_ALONE__)
+                    if(userscreen == USER_SCREEN_TRACK_FX_EDIT)
+                    {
+                        gui_action_external |= GUI_UPDATE_EXTERNAL_SET_PANNING;
+                    }
+#endif
+
                 }
 
                 // Don't check those fx if the channel isn't active
@@ -2677,7 +2691,7 @@ void Sp_Player(void)
                 glide = 0;
                 for(i = 0; i < Channels_Effects[ct]; i++)
                 {
-                    if(pl_eff_row[i] == 9) toffset = pl_dat_row[i];
+                    if(pl_eff_row[i] == 0x9) toffset = pl_dat_row[i];
                     else if(pl_eff_row[i] == 5) glide = 1;
                 }
 
@@ -4436,7 +4450,8 @@ void Do_Effects_Tick_0(void)
 {
 
 #if defined(PTK_FX_ARPEGGIO) || defined(PTK_FX_VIBRATO) || defined(PTK_FX_REVERSE) || defined(PTK_SHUFFLE) || \
-    defined(PTK_FX_SETREVCUTO) || defined(PTK_FX_SETREVRESO) || defined(PTK_FX_SETBPM) || defined(PTK_FX_SETSPEED)
+    defined(PTK_FX_SETREVCUTO) || defined(PTK_FX_SETREVRESO) || defined(PTK_LIMITER_TRACKS) || defined(PTK_FX_SETBPM) || \
+    defined(PTK_FX_SETSPEED)
 
     int i;
     int j;
@@ -4511,7 +4526,7 @@ void Do_Effects_Tick_0(void)
 #if !defined(__STAND_ALONE__)
                     if(userscreen == USER_SCREEN_FX_SETUP_EDIT)
                     {
-                        gui_action = GUI_CMD_UPDATE_FX_ED;
+                        gui_action_external |= GUI_UPDATE_EXTERNAL_REVERB_FILTER;
                     }
 #endif
 
@@ -4526,7 +4541,7 @@ void Do_Effects_Tick_0(void)
 #if !defined(__STAND_ALONE__)
                     if(userscreen == USER_SCREEN_FX_SETUP_EDIT)
                     {
-                        gui_action = GUI_CMD_UPDATE_FX_ED;
+                        gui_action_external |= GUI_UPDATE_EXTERNAL_REVERB_FILTER;
                     }
 #endif
 
@@ -4541,7 +4556,7 @@ void Do_Effects_Tick_0(void)
 #if !defined(__STAND_ALONE__)
                     if(userscreen == USER_SCREEN_TRACK_FX_EDIT)
                     {
-                        gui_action = GUI_CMD_UPDATE_TRACK_FX_ED;
+                        gui_action_external |= GUI_UPDATE_EXTERNAL_COMPRESSOR;
                     }
 #endif
 
@@ -4555,7 +4570,7 @@ void Do_Effects_Tick_0(void)
 #if !defined(__STAND_ALONE__)
                     if(userscreen == USER_SCREEN_TRACK_FX_EDIT)
                     {
-                        gui_action = GUI_CMD_UPDATE_TRACK_FX_ED;
+                        gui_action_external |= GUI_UPDATE_EXTERNAL_COMPRESSOR;
                     }
 #endif
 
@@ -4569,7 +4584,7 @@ void Do_Effects_Tick_0(void)
 #if !defined(__STAND_ALONE__)
                     if(userscreen == USER_SCREEN_TRACK_FX_EDIT)
                     {
-                        gui_action = GUI_CMD_UPDATE_TRACK_FX_ED;
+                        gui_action_external |= GUI_UPDATE_EXTERNAL_COMPRESSOR;
                     }
 #endif
 
@@ -4806,8 +4821,8 @@ void Do_Effects_Ticks_X(void)
     defined(PTK_FX_FINEPITCHUP) || defined(PTK_FX_FINEPITCHDOWN) || \
     defined(PTK_FX_SENDTODELAYCOMMAND) || defined(PTK_FX_SENDTOREVERBCOMMAND) || \
     defined(PTK_FX_SETDISTORTIONTHRESHOLD) || defined(PTK_FX_SETDISTORTIONCLAMP) || \
-    defined(PTK_FX_SETFILTERRESONANCE) || defined(PTK_FX_SWITCHFLANGER) || \
-    defined(PTK_FX_TRACK_FILTER_LFO)
+    defined(PTK_FX_SETCUTOFF) || defined(PTK_FX_SETFILTERRESONANCE) || defined(PTK_FX_SWITCHFLANGER) || \
+    defined(PTK_FX_TRACK_FILTER_LFO) || defined(PTK_FX_SETFILTERTYPE)
 
             // Only at tick 0 but after instruments data
             if(PosInTick == 0)
@@ -4868,6 +4883,14 @@ void Do_Effects_Ticks_X(void)
                     // $11 Send to reverb Command
                     case 0x11:
                         DSend[trackef] = (float) pltr_dat_row[k] / 255.0f;
+
+#if !defined(__STAND_ALONE__)
+                        if(userscreen == USER_SCREEN_TRACK_EDIT)
+                        {
+                            gui_action_external |= GUI_UPDATE_EXTERNAL_SEND_TO_REVERB;
+                        }
+#endif
+
                         break;
 #endif
 
@@ -4875,6 +4898,14 @@ void Do_Effects_Ticks_X(void)
                     // $12 Set distortion Threshold
                     case 0x12:
                         DThreshold[trackef] = (float) pltr_dat_row[k] * 128.0f;
+
+#if !defined(__STAND_ALONE__)
+                        if(userscreen == USER_SCREEN_TRACK_EDIT)
+                        {
+                            gui_action_external |= GUI_UPDATE_EXTERNAL_DISTO_THRESHOLD;
+                        }
+#endif
+
                         break;
 #endif
 
@@ -4882,6 +4913,29 @@ void Do_Effects_Ticks_X(void)
                     // $13 Set distortion clamp
                     case 0x13: 
                         DClamp[trackef] = (float) pltr_dat_row[k] * 128.0f;
+
+#if !defined(__STAND_ALONE__)
+                        if(userscreen == USER_SCREEN_TRACK_EDIT)
+                        {
+                            gui_action_external |= GUI_UPDATE_EXTERNAL_DISTO_CLAMP;
+                        }
+#endif
+
+                        break;
+#endif
+
+#if defined(PTK_FX_SETCUTOFF)
+                    // $08 Set filter cutoff
+                    case 0x8:
+                        TCut[trackef] = (float) pltr_dat_row[k] / 2.0f;
+
+#if !defined(__STAND_ALONE__)
+                        if(userscreen == USER_SCREEN_TRACK_EDIT)
+                        {
+                            gui_action_external |= GUI_UPDATE_EXTERNAL_FILTER_CUTOFF;
+                        }
+#endif
+
                         break;
 #endif
 
@@ -4889,6 +4943,14 @@ void Do_Effects_Ticks_X(void)
                     // $14 Set filter resonance
                     case 0x14:
                         FRez[trackef] = (int) (pltr_dat_row[k] / 2);
+
+#if !defined(__STAND_ALONE__)
+                        if(userscreen == USER_SCREEN_TRACK_EDIT)
+                        {
+                            gui_action_external |= GUI_UPDATE_EXTERNAL_FILTER_RESONANCE;
+                        }
+#endif
+
                         break;
 #endif
 
@@ -4896,6 +4958,14 @@ void Do_Effects_Ticks_X(void)
                     // $24 Switch flanger on/off
                     case 0x24:
                         FLANGER_ON[trackef] = (int) pltr_dat_row[k] & 1;
+
+#if !defined(__STAND_ALONE__)
+                        if(userscreen == USER_SCREEN_TRACK_FX_EDIT)
+                        {
+                            gui_action_external |= GUI_UPDATE_EXTERNAL_FLANGER;
+                        }
+#endif
+
                         break;
 #endif
 
@@ -4903,9 +4973,38 @@ void Do_Effects_Ticks_X(void)
                     // $28 Switch track filter on/off
                     case 0x28:
                         LFO_ON[trackef] = (int) pltr_dat_row[k] & 1;
+
+#if !defined(__STAND_ALONE__)
+                        if(userscreen == USER_SCREEN_TRACK_FX_EDIT)
+                        {
+                            gui_action_external |= GUI_UPDATE_EXTERNAL_LFO;
+                        }
+#endif
+
                         break;
 #endif
+
+#if defined(PTK_FX_SETFILTERTYPE)
+                    // $15 Set filter Type
+                    case 0x15:
+                        if(pltr_dat_row[k] <= MAX_FILTER)
+                        {
+                            FType[trackef] = (int) pltr_dat_row[k];
+
+#if !defined(__STAND_ALONE__)
+                            if(userscreen == USER_SCREEN_TRACK_EDIT)
+                            {
+                                gui_action_external |= GUI_UPDATE_EXTERNAL_FILTER_TYPE;
+                            }
+#endif
+                        
+                        }
+                        break;
+#endif
+
+
                 }
+
             }
 
 #endif
@@ -4991,13 +5090,6 @@ void Do_Effects_Ticks_X(void)
                     break;
 #endif
 
-#if defined(PTK_FX_SETCUTOFF)
-                // $08 SetCutOff
-                case 0x8:
-                    TCut[trackef] = (float) pltr_dat_row[k] / 2.0f;
-                    break;
-#endif
-
 #if defined(PTK_FX_SETRANDOMCUTOFF)
                 // $0a SetRandomCutOff
                 case 0xa:
@@ -5007,6 +5099,14 @@ void Do_Effects_Ticks_X(void)
 
                         if(TCut[trackef] < 1) TCut[trackef] = 1;
                         if(TCut[trackef] > 127) TCut[trackef] = 127;
+
+#if !defined(__STAND_ALONE__)
+                        if(userscreen == USER_SCREEN_TRACK_EDIT)
+                        {
+                            gui_action_external |= GUI_UPDATE_EXTERNAL_FILTER_CUTOFF;
+                        }
+#endif
+                    
                     }
                     break;
 #endif
@@ -5018,6 +5118,14 @@ void Do_Effects_Ticks_X(void)
                     {
                         TCut[trackef] += pltr_dat_row[k];
                         if(TCut[trackef] > 127) TCut[trackef] = 127;
+
+#if !defined(__STAND_ALONE__)
+                        if(userscreen == USER_SCREEN_TRACK_EDIT)
+                        {
+                            gui_action_external |= GUI_UPDATE_EXTERNAL_FILTER_CUTOFF;
+                        }
+#endif
+
                     }
                     break;
 #endif
@@ -5029,6 +5137,14 @@ void Do_Effects_Ticks_X(void)
                     {
                         TCut[trackef] -= pltr_dat_row[k];
                         if(TCut[trackef] < 1) TCut[trackef] = 1;
+
+#if !defined(__STAND_ALONE__)
+                        if(userscreen == USER_SCREEN_TRACK_EDIT)
+                        {
+                            gui_action_external |= GUI_UPDATE_EXTERNAL_FILTER_CUTOFF;
+                        }
+#endif
+
                     }
                     break;
 #endif
@@ -5098,13 +5214,6 @@ void Do_Effects_Ticks_X(void)
                                                 Pattern_Line);
                         }
                     }
-                    break;
-#endif
-
-#if defined(PTK_FX_SETFILTERTYPE)
-                // $15 Set filter Type
-                case 0x15:
-                    if(pltr_dat_row[k] <= MAX_FILTER) FType[trackef] = (int) pltr_dat_row[k];
                     break;
 #endif
 
@@ -5750,8 +5859,7 @@ void live303(int pltr_eff_row, int pltr_dat_row)
             tb303[0].cutoff = pltr_dat_row / 2;
 
 #if !defined(__STAND_ALONE__)
-            change_303_unit = 0;
-            change_303_param = 4;
+            gui_action_external_303 = GUI_UPDATE_EXTERNAL_303_1_CUTOFF;
 #endif
 
             break;
@@ -5759,8 +5867,7 @@ void live303(int pltr_eff_row, int pltr_dat_row)
             tb303[1].cutoff = pltr_dat_row / 2;
 
 #if !defined(__STAND_ALONE__)
-            change_303_unit = 1;
-            change_303_param = 4;
+            gui_action_external_303 = GUI_UPDATE_EXTERNAL_303_2_CUTOFF;
 #endif
 
             break;
@@ -5768,8 +5875,7 @@ void live303(int pltr_eff_row, int pltr_dat_row)
             tb303[0].resonance = pltr_dat_row / 2;
 
 #if !defined(__STAND_ALONE__)
-            change_303_unit = 0;
-            change_303_param = 5;
+            gui_action_external_303 = GUI_UPDATE_EXTERNAL_303_1_RESONANCE;
 #endif
 
             break;
@@ -5777,8 +5883,7 @@ void live303(int pltr_eff_row, int pltr_dat_row)
             tb303[1].resonance = pltr_dat_row / 2;
 
 #if !defined(__STAND_ALONE__)
-            change_303_unit = 1;
-            change_303_param = 5;
+            gui_action_external_303 = GUI_UPDATE_EXTERNAL_303_2_RESONANCE;
 #endif
 
             break;
@@ -5786,8 +5891,7 @@ void live303(int pltr_eff_row, int pltr_dat_row)
             tb303[0].envmod = pltr_dat_row / 2;
 
 #if !defined(__STAND_ALONE__)
-            change_303_unit = 0;
-            change_303_param = 6;
+            gui_action_external_303 = GUI_UPDATE_EXTERNAL_303_1_ENVMOD;
 #endif
 
             break;
@@ -5795,8 +5899,7 @@ void live303(int pltr_eff_row, int pltr_dat_row)
             tb303[1].envmod = pltr_dat_row / 2;
 
 #if !defined(__STAND_ALONE__)
-            change_303_unit = 1;
-            change_303_param = 6;
+            gui_action_external_303 = GUI_UPDATE_EXTERNAL_303_2_ENVMOD;
 #endif
 
             break;
@@ -5804,8 +5907,7 @@ void live303(int pltr_eff_row, int pltr_dat_row)
             tb303[0].decay = pltr_dat_row / 2;
 
 #if !defined(__STAND_ALONE__)
-            change_303_unit = 0;
-            change_303_param = 7;
+            gui_action_external_303 = GUI_UPDATE_EXTERNAL_303_1_DECAY;
 #endif
 
             break;
@@ -5813,8 +5915,7 @@ void live303(int pltr_eff_row, int pltr_dat_row)
             tb303[1].decay = pltr_dat_row / 2;
 
 #if !defined(__STAND_ALONE__)
-            change_303_unit = 1;
-            change_303_param = 7;
+            gui_action_external_303 = GUI_UPDATE_EXTERNAL_303_2_DECAY;
 #endif
 
             break;
@@ -5822,8 +5923,7 @@ void live303(int pltr_eff_row, int pltr_dat_row)
             tb303[0].accent = pltr_dat_row / 2;
 
 #if !defined(__STAND_ALONE__)
-            change_303_unit = 0;
-            change_303_param = 8;
+            gui_action_external_303 = GUI_UPDATE_EXTERNAL_303_1_ACCENT;
 #endif
 
             break;
@@ -5831,8 +5931,7 @@ void live303(int pltr_eff_row, int pltr_dat_row)
             tb303[1].accent = pltr_dat_row / 2;
 
 #if !defined(__STAND_ALONE__)
-            change_303_unit = 1;
-            change_303_param = 8;
+            gui_action_external_303 = GUI_UPDATE_EXTERNAL_303_2_ACCENT;
 #endif
 
             break;
@@ -5840,8 +5939,7 @@ void live303(int pltr_eff_row, int pltr_dat_row)
             tb303[0].tune = pltr_dat_row / 2;
 
 #if !defined(__STAND_ALONE__)
-            change_303_unit = 0;
-            change_303_param = 3;
+            gui_action_external_303 = GUI_UPDATE_EXTERNAL_303_1_TUNE;
 #endif
 
             break;
@@ -5849,8 +5947,7 @@ void live303(int pltr_eff_row, int pltr_dat_row)
             tb303[1].tune = pltr_dat_row / 2;
 
 #if !defined(__STAND_ALONE__)
-            change_303_unit = 1;
-            change_303_param = 3;
+            gui_action_external_303 = GUI_UPDATE_EXTERNAL_303_2_TUNE;
 #endif
 
             break;
@@ -5861,8 +5958,7 @@ void live303(int pltr_eff_row, int pltr_dat_row)
             tb303engine[0].tbCurMultiple = tb303[0].scale;
 
 #if !defined(__STAND_ALONE__)
-            change_303_unit = 0;
-            change_303_param = 19;
+            gui_action_external_303 = GUI_UPDATE_EXTERNAL_303_1_SCALE;
 #endif
 
             break;
@@ -5873,8 +5969,7 @@ void live303(int pltr_eff_row, int pltr_dat_row)
             tb303engine[1].tbCurMultiple = tb303[1].scale;
 
 #if !defined(__STAND_ALONE__)
-            change_303_unit = 1;
-            change_303_param = 19;
+            gui_action_external_303 = GUI_UPDATE_EXTERNAL_303_2_SCALE;
 #endif
 
             break;
@@ -5885,18 +5980,6 @@ void live303(int pltr_eff_row, int pltr_dat_row)
             tb303engine[1].tbTargetRealVolume = ((float) pltr_dat_row) / 255.0f;
             break;
     }
-
-#if !defined(__STAND_ALONE__) && !defined(__WINAMP__)
-        // Check if the user is recording 303 effects
-        // In that case we don't read the row data
-        if(!sr_isrecording && change_303_param)
-        {
-            Refresh_Unit_Param = change_303_param;
-            Refresh_Unit = change_303_unit;
-            gui_action = GUI_CMD_REFRESH_TB303_PARAMS_EXTERNAL;
-        }
-#endif
-
 }
 
 void Fire303(unsigned char number, int unit)

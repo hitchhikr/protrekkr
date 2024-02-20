@@ -100,7 +100,6 @@ void Actualize_Track_Ed(char gode)
             }
             Realslider(77, (Cur_Height - 116), (int) TCut[Track_Under_Caret], FType[Track_Under_Caret] != 4);
         }
-//            Realslider(77, (Cur_Height - 116), (int) TCut[Track_Under_Caret], FALSE);
 
         if(gode == 0 || gode == 2 || gode == 15)
         {
