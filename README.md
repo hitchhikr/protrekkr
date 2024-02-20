@@ -21,8 +21,8 @@ The executable will be created in the release/distrib directory.
 
 Notice that you'll need SDL 1.<br>
 > [!CAUTION]
-> **When compiling for Linux or Mac OS: Use libSDL12 and NOT libSDL12-compat.**<br>
-> **On Linux use libsdl12-dev and on Mac OS use libsdl from Mac Ports**<br>
+> **When compiling for Linux or Mac OS: Use libSDL12 and NOT libSDL12-compat.**<br><br>
+> **On Linux use libsdl12-dev and on Mac OS use libsdl from Mac Ports.**<br><br>
 > **If your Linux distribution doesn't include SDL 1.2 then try your luck here:<br>https://github.com/libsdl-org/SDL-1.2**
 
 ---
