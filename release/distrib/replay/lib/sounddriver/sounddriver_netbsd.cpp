@@ -308,5 +308,5 @@ void AUDIO_Stop_Driver(void)
 {
     AUDIO_Stop_Sound_Buffer();
     if(AUDIO_Device) close(AUDIO_Device);
-    AUDIO_Device = NULL;
+    AUDIO_Device = 0;
 }
