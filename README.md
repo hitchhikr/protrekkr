@@ -23,7 +23,7 @@ Notice that you'll need SDL 1.<br>
 > [!CAUTION]
 > **When compiling for Linux or Mac OS: Use libSDL12 and NOT libSDL12-compat.**<br>
 > **On Linux use libsdl12-dev and on Mac OS use libsdl from Mac Ports**<br>
-> **If your Linux distribution doesn't include SDL 1.2 then try your luck here: https://github.com/libsdl-org/SDL-1.2**
+> **If your Linux distribution doesn't include SDL 1.2 then try your luck here:<br>https://github.com/libsdl-org/SDL-1.2**
 
 ---
 This is a FREEWARE tool, this means that you can use it for whatever you want and for free.
