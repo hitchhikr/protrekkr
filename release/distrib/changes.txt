@@ -7,6 +7,7 @@ v2.6.6
 - Doesn't actualize UI from audio thread anymore (which fixed a few issues).
 - Fixed the 303 units note off bug.
 - Added a function to swap two instruments in the patterns.
+- Refactored a lot of the code.
 
 v2.6.5
 
