@@ -73,7 +73,7 @@ void gear303::reset(void)
     tbEnvmod = 0.5f;
     tbDecay = 0.5f;
     tbAccent = 0.0f;
-    Note_Off = 0;
+    Note_Off = FALSE;
 
     for(i = 0 ; i < 5; i++)
     { 
@@ -175,12 +175,12 @@ float gear303::tbGetSample(para303 *PARAT303)
 
     if(tbCurrentVolume < tbTargetVolume)
     {
-        tbCurrentVolume += 0.001f;// / (float) PARAT303->scale;
+        tbCurrentVolume += 0.001f;
         if(tbCurrentVolume > tbTargetVolume) tbCurrentVolume = tbTargetVolume;
     }
     else
     {
-        tbCurrentVolume -= 0.001f;// / (float) PARAT303->scale;
+        tbCurrentVolume -= 0.001f;
         if(tbCurrentVolume < tbTargetVolume) tbCurrentVolume = tbTargetVolume;
     }
 
@@ -190,30 +190,30 @@ float gear303::tbGetSample(para303 *PARAT303)
 
     if(tbAccent > 0.0f)
     {
-        tbAccent -= 0.0001f;// / (float) PARAT303->scale;
+        tbAccent -= 0.0001f;
         if(tbAccent < 0.0f) tbAccent = 0.0f;
     }
 
     if(tbRampVolume > RampVolume)
     {
         // That's for an explicit note off
-        tbRampVolume -= 0.0005f;// / (float) PARAT303->scale;
+        tbRampVolume -= 0.0005f;
         if(tbRampVolume < RampVolume) tbRampVolume = RampVolume;
     }
     else
     {
-        tbRampVolume += 0.05f;// / (float) PARAT303->scale;
+        tbRampVolume += 0.05f;
         if(tbRampVolume > RampVolume) tbRampVolume = RampVolume;
     }
 
     if(tbTargetRealVolumeRamp > tbTargetRealVolume)
     {
-        tbTargetRealVolumeRamp -= 0.1f;// / (float) PARAT303->scale;
+        tbTargetRealVolumeRamp -= 0.1f;
         if(tbTargetRealVolumeRamp < tbTargetRealVolume) tbTargetRealVolumeRamp = tbTargetRealVolume;
     }
     else
     {
-        tbTargetRealVolumeRamp += 0.1f;// / (float) PARAT303->scale;
+        tbTargetRealVolumeRamp += 0.1f;
         if(tbTargetRealVolumeRamp > tbTargetRealVolume) tbTargetRealVolumeRamp = tbTargetRealVolume;
     }
     return(output * tbTargetRealVolumeRamp * tbRampVolume * tbCurrentVolume);
@@ -353,6 +353,7 @@ void gear303::tbNoteOn(int tbNote, para303 *PARAT303)
                 tbRealResonance = tbResonance;
                 tbDecay = (1.0f - (((float) PARAT303->decay) / 127.0f));
             }
+
             // There's a slight deprecation when sliding
             if(PARAT303->flag[tbPattern][tbLine].slide_flag)
             {
@@ -368,10 +369,6 @@ void gear303::tbNoteOn(int tbNote, para303 *PARAT303)
                 tbDecay = 1.0f;
             }
         }
-    }
-    else
-    {
-        Note_Off = 0;
     }
 }
 

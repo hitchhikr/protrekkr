@@ -1495,6 +1495,7 @@ int Screen_Update(void)
             Actualize_303_Ed(teac);
         }
 
+        // !!!!
         if(gui_action == GUI_CMD_REFRESH_TB303_PARAMS_EXTERNAL)
         {
             Refresh_303_Unit(Refresh_Unit, Refresh_Unit_Param);
@@ -1630,6 +1631,7 @@ int Screen_Update(void)
             Status_Box("Notes Off Command Sent To All Tracks.");
         }
 
+        // !!!!
         if(gui_action == GUI_CMD_UPDATE_TRACK_FX_ED)
         {
             Actualize_Track_Fx_Ed(teac);

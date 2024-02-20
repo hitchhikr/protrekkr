@@ -1807,17 +1807,8 @@ void PTKEXPORT Ptk_SetPosition(int new_position)
     if(new_position >= Song_Length) new_position = Song_Length - 1;
     if(new_position < 0) new_position = 0;
 
-/*#if !defined(__WINAMP__)
-    Song_Playing_Pattern = 0;
-#endif*/
-
     Song_Position = new_position;
     Pattern_Line = 0;
-    //Song_Position_Visual = new_position;
-    //PosInTick = 0;
-    //PosInTick_Delay = 0;
-    //SubCounter = 0;
-    //Subicounter = 0;
 
 #if defined(PTK_FX_PATTERNLOOP)
     // No repeat loop
@@ -2475,6 +2466,9 @@ void Sp_Player(void)
     int i;
     int j;
     int trigger_note_off;
+    int ct;
+    int fired_303_1;
+    int fired_303_2;
 
 #if defined(PTK_SYNTH) || defined(PTK_INSTRUMENTS)
     float dest_volume;
@@ -2515,27 +2509,30 @@ void Sp_Player(void)
             Patbreak_Line = 255;
 #endif
 
-            for(int ct = 0; ct < Songtracks; ct++)
+#if defined(PTK_303)
+            fired_303_1 = FALSE;
+            fired_303_2 = FALSE;
+
+            for(ct = 0; ct < Songtracks; ct++)
             {
                 int efactor = Get_Pattern_Offset(pSequence[Song_Position], ct, Pattern_Line);
                 
-                // Store the notes & instruments numbers
+                // Was a note off (always available even if channels are turned off)
+                trigger_note_off = FALSE;
                 for(i = 0; i < Channels_MultiNotes[ct]; i++)
                 {
                     pl_note[i] = *(RawPatterns + efactor + PATTERN_NOTE1 + (i * 2));
-                    pl_sample[i] = *(RawPatterns + efactor + PATTERN_INSTR1 + (i * 2));
+                    if(pl_note[i] == 120)
+                    {
+                        trigger_note_off = TRUE;
+                    }
                 }
 
-                pl_vol_row = *(RawPatterns + efactor + PATTERN_VOLUME);
-                pl_pan_row = *(RawPatterns + efactor + PATTERN_PANNING);
-                
                 // Store the effects
                 for(i = 0; i < Channels_Effects[ct]; i++)
                 {
                     pl_eff_row[i] = *(RawPatterns + efactor + PATTERN_FX + (i * 2));
                     pl_dat_row[i] = *(RawPatterns + efactor + PATTERN_FXDATA + (i * 2));
-
-#if defined(PTK_303)
 
 #if !defined(__STAND_ALONE__)
                     // Check if the user is recording 303 effects
@@ -2552,16 +2549,45 @@ void Sp_Player(void)
                     {
                         track3031 = ct;
                         Fire303(pl_dat_row[i], 0);
+                        fired_303_1 = TRUE;
                     }
                     if(pl_eff_row[i] == 0x32)
                     {
                         track3032 = ct;
                         Fire303(pl_dat_row[i], 1);
-                    }
-#endif
-
+                        fired_303_2 = TRUE;
+                   }
                 }
 
+#if defined(PTK_303)
+                // There was a note off on any notes slot and no 303 was fired,
+                // see if a 303 is running on that track
+                if(trigger_note_off && (!fired_303_1 || !fired_303_2))
+                {
+                    noteoff303(ct);
+                }
+#endif
+
+            }
+
+            Go303();
+
+#endif
+
+            for(ct = 0; ct < Songtracks; ct++)
+            {
+                int efactor = Get_Pattern_Offset(pSequence[Song_Position], ct, Pattern_Line);
+                
+                // Store the notes & instruments numbers
+                for(i = 0; i < Channels_MultiNotes[ct]; i++)
+                {
+                    pl_note[i] = *(RawPatterns + efactor + PATTERN_NOTE1 + (i * 2));
+                    pl_sample[i] = *(RawPatterns + efactor + PATTERN_INSTR1 + (i * 2));
+                }
+
+                pl_vol_row = *(RawPatterns + efactor + PATTERN_VOLUME);
+                pl_pan_row = *(RawPatterns + efactor + PATTERN_PANNING);
+                
 #if defined(PTK_VOLUME_COLUMN) || defined(PTK_FX_SETVOLUME)
                 for(i = 0; i < Channels_Effects[ct]; i++)
                 {
@@ -2767,12 +2793,10 @@ void Sp_Player(void)
                 }
 
                 // Was a note off (always available even if channels are turned off)
-                trigger_note_off = FALSE;
                 for(i = 0; i < Channels_MultiNotes[ct]; i++)
                 {
                     if(pl_note[i] == 120)
                     {
-                        trigger_note_off = TRUE;
                         if(Note_Sub_Channels[ct][i] != -1)
                         {
                             j = Reserved_Sub_Channels[ct][i];
@@ -2806,29 +2830,15 @@ void Sp_Player(void)
                     }
                 }
 
-#if defined(PTK_303)
-                // There was a note off on any notes slot,
-                // see if a 303 is running on that track
-                if(trigger_note_off)
-                {
-                    noteoff303(ct);
-                }
-#endif
-
 #if defined(PTK_FX_PATTERNLOOP)
-            if(Chan_Active_State[Song_Position][ct])
-            {
-                Do_Pattern_Loop(ct);
-            }
+                if(Chan_Active_State[Song_Position][ct])
+                {
+                    Do_Pattern_Loop(ct);
+                }
 #endif
 
 
             } // Channels loop
-
-
-#if defined(PTK_303)
-            Go303();
-#endif
 
         } // Pos in tick == 0
 
@@ -5892,7 +5902,8 @@ void live303(int pltr_eff_row, int pltr_dat_row)
 void Fire303(unsigned char number, int unit)
 {
     tb303engine[unit].tbLine = 0;
-   
+    tb303engine[unit].Note_Off = FALSE;
+
     switch(number)
     {
         case 0x00:  tb303engine[unit].tbPattern = tb303[unit].selectedpattern;
@@ -6083,7 +6094,7 @@ void noteoff303(char strack)
     }
 }
 
-void Go303(void)
+void Go303()
 {
     if(tb303engine[0].tbPattern != 255)
     {
@@ -6091,20 +6102,25 @@ void Go303(void)
         if(tb303engine[0].tbCurMultiple >= tb303[0].scale)
         {
             tb303engine[0].tbCurMultiple = 0;
-            tb303engine[0].tbNoteOn(tb303[0].tone[tb303engine[0].tbPattern][tb303engine[0].tbLine], &tb303[0]);
+            if(!tb303engine[0].Note_Off)
+            {
+                tb303engine[0].tbNoteOn(tb303[0].tone[tb303engine[0].tbPattern][tb303engine[0].tbLine], &tb303[0]);
+            }
             tb303engine[0].tbLine++;
             // End of pattern
             if(tb303engine[0].tbLine == tb303[0].patternlength[tb303engine[0].tbPattern]) tb303engine[0].tbLine = 0;
         }
     }
-
     if(tb303engine[1].tbPattern != 255)
     {
         tb303engine[1].tbCurMultiple++;
         if(tb303engine[1].tbCurMultiple >= tb303[1].scale)
         {
             tb303engine[1].tbCurMultiple = 0;
-            tb303engine[1].tbNoteOn(tb303[1].tone[tb303engine[1].tbPattern][tb303engine[1].tbLine], &tb303[1]);
+            if(!tb303engine[1].Note_Off)
+            {
+                tb303engine[1].tbNoteOn(tb303[1].tone[tb303engine[1].tbPattern][tb303engine[1].tbLine], &tb303[1]);
+            }
             tb303engine[1].tbLine++;
             // End of pattern
             if(tb303engine[1].tbLine == tb303[1].patternlength[tb303engine[1].tbPattern]) tb303engine[1].tbLine = 0; 
