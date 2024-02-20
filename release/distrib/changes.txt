@@ -4,8 +4,9 @@ ProTrekkr releases history
 
 v2.6.6
 
-- Doesn't actualize UI from audio thread anymore.
-- Fixed 303 units note off bug.
+- Doesn't actualize UI from audio thread anymore (which fixed a few issues).
+- Fixed the 303 units note off bug.
+- Added a function to swap two instruments in the patterns.
 
 v2.6.5
 

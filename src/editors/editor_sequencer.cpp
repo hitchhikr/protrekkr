@@ -75,6 +75,7 @@ int cur_seq_buffer[] =
 
 int Remap_From;
 int Remap_To;
+int Remap_Swap;
 
 int Ext_Pos_Switch;
 int Ext_Track_Switch;
@@ -126,7 +127,10 @@ void Draw_Sequencer_Ed(void)
     Gui_Draw_Button_Box(480, (Cur_Height - 128), 190, 26, "Save Selection :", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_NO_BORDER | BUTTON_TEXT_VTOP);
     Gui_Draw_Button_Box(745, (Cur_Height - 128), 34, 16, "Save", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
 
-    Gui_Draw_Button_Box(480, (Cur_Height - 99), 306, 64, "Remap Instrument", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_VTOP);
+    Gui_Draw_Button_Box(480, (Cur_Height - 99), 306, 64, "Instrument", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_VTOP);
+    Gui_Draw_Button_Box(590, (Cur_Height - 99 + 3), 60, 16, "Remap", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
+    Gui_Draw_Button_Box(652, (Cur_Height - 99 + 3), 60, 16, "Swap", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
+
     Gui_Draw_Button_Box(720, (Cur_Height - 99), 60, 18, "Transpose", BUTTON_NO_BORDER | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
     Gui_Draw_Button_Box(720, (Cur_Height - 56), 60, 18, "Semitones", BUTTON_NO_BORDER | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
 
@@ -173,7 +177,7 @@ void Actualize_Seq_Ed(char gode)
                 } // sub for
             }
             else
-            { // rel range OK
+            {   // rel range OK
                 PrintString(93, (Cur_Height - 95) + lseq * 12, USE_FONT, "000");
                 PrintString(261, (Cur_Height - 95) + lseq * 12, USE_FONT, "000");
             }
@@ -218,6 +222,21 @@ void Actualize_Seq_Ed(char gode)
             if(transpose_semitones > 120) transpose_semitones = 120;
             value_box_format(720, (Cur_Height - 76), transpose_semitones, BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE, "%d");
         }
+
+        if(gode == 0 || gode == 5)
+        {
+            if(Remap_Swap)
+            {
+                Gui_Draw_Button_Box(590, (Cur_Height - 99 + 3), 60, 16, "Remap", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
+                Gui_Draw_Button_Box(652, (Cur_Height - 99 + 3), 60, 16, "Swap", BUTTON_PUSHED | BUTTON_TEXT_CENTERED);
+            }
+            else
+            {
+                Gui_Draw_Button_Box(590, (Cur_Height - 99 + 3), 60, 16, "Remap", BUTTON_PUSHED | BUTTON_TEXT_CENTERED);
+                Gui_Draw_Button_Box(652, (Cur_Height - 99 + 3), 60, 16, "Swap", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
+            }
+        }
+
     }
 }
 
@@ -250,8 +269,9 @@ void Mouse_Left_Sequencer_Ed(void)
                     }
                 }
             }
-            Instrument_Remap_Sel(Cur_Position, Get_Real_Selection(FALSE), Remap_From, Remap_To);
+            Instrument_Remap_Sel(Cur_Position, Get_Real_Selection(FALSE), Remap_From, Remap_To, Remap_Swap);
         }
+        
         // Remap Track
         if(zcheckMouse(590, (Cur_Height - 56), 60, 16))
         {
@@ -272,8 +292,9 @@ void Mouse_Left_Sequencer_Ed(void)
                     }
                 }
             }
-            Instrument_Remap_Sel(Cur_Position, Select_Track(Track_Under_Caret), Remap_From, Remap_To);
+            Instrument_Remap_Sel(Cur_Position, Select_Track(Track_Under_Caret), Remap_From, Remap_To, Remap_Swap);
         }
+
         // Remap Pattern
         if(zcheckMouse(652, (Cur_Height - 76), 60, 16))
         {
@@ -296,9 +317,10 @@ void Mouse_Left_Sequencer_Ed(void)
                         }
                     }
                 }
-                Instrument_Remap_Sel(Cur_Position, Select_Track(i), Remap_From, Remap_To);
+                Instrument_Remap_Sel(Cur_Position, Select_Track(i), Remap_From, Remap_To, Remap_Swap);
             }
         }
+
         // Remap Song
         if(zcheckMouse(652, (Cur_Height - 56), 60, 16))
         {
@@ -342,13 +364,27 @@ void Mouse_Left_Sequencer_Ed(void)
                                     }
                                 }
                             }
-                            Instrument_Remap_Sel(j, Select_Track(i), Remap_From, Remap_To);
+                            Instrument_Remap_Sel(j, Select_Track(i), Remap_From, Remap_To, Remap_Swap);
                         }
                         Done_Pattern[pSequence[j]] = TRUE;
                     }
                 }
                 free(Done_Pattern);
             }
+        }
+
+        if(zcheckMouse(590, (Cur_Height - 99 + 3), 60, 16))
+        {
+            Remap_Swap = FALSE;
+            gui_action = GUI_CMD_UPDATE_SEQUENCER;
+            teac = 5;
+        }
+
+        if(zcheckMouse(652, (Cur_Height - 99 + 3), 60, 16))
+        {
+            Remap_Swap = TRUE;
+            gui_action = GUI_CMD_UPDATE_SEQUENCER;
+            teac = 5;
         }
 
         // From Instrument

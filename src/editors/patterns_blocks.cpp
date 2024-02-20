@@ -1693,7 +1693,7 @@ void Instrument_Octave_Down_Block(int Position)
 
 // ------------------------------------------------------
 // Remap an instrument
-void Instrument_Remap_Sel(int Position, SELECTION Sel, int From, int To)
+void Instrument_Remap_Sel(int Position, SELECTION Sel, int From, int To, int Swap)
 {
     int ybc;
     int xbc;
@@ -1711,22 +1711,122 @@ void Instrument_Remap_Sel(int Position, SELECTION Sel, int From, int To)
                     case INSTRHI:
                         instrument = Read_Pattern_Column(Position, xbc, ybc);
                         instrument |= Read_Pattern_Column(Position, xbc + 1, ybc);
-                        if(instrument == From)
+                        if(Swap)
                         {
-                            Write_Pattern_Column(Position, xbc, ybc, To);
-                            Write_Pattern_Column(Position, xbc + 1, ybc, To);
+                            if(instrument == From)
+                            {
+                                // Set to a phony instrument value
+                                Write_Pattern_Column(Position, xbc, ybc, 0xaa);
+                                Write_Pattern_Column(Position, xbc + 1, ybc, 0xaa);
+                            }
+                            else if(instrument == To)
+                            {
+                                // Set to a phony instrument value
+                                Write_Pattern_Column(Position, xbc, ybc, 0xab);
+                                Write_Pattern_Column(Position, xbc + 1, ybc, 0xab);
+                            }
+                        }
+                        else
+                        {
+                            if(instrument == From)
+                            {
+                                Write_Pattern_Column(Position, xbc, ybc, To);
+                                Write_Pattern_Column(Position, xbc + 1, ybc, To);
+                            }
                         }
                         break;
 
                     case INSTRLO:
                         instrument = Read_Pattern_Column(Position, xbc - 1, ybc);
                         instrument |= Read_Pattern_Column(Position, xbc, ybc);
-                        if(instrument == From)
+                        if(Swap)
                         {
-                            Write_Pattern_Column(Position, xbc - 1, ybc, To);
-                            Write_Pattern_Column(Position, xbc, ybc, To);
+                            if(instrument == From)
+                            {
+                                Write_Pattern_Column(Position, xbc - 1, ybc, 0xaa);
+                                Write_Pattern_Column(Position, xbc, ybc, 0xaa);
+                            }
+                            else if(instrument == To)
+                            {
+                                Write_Pattern_Column(Position, xbc - 1, ybc, 0xab);
+                                Write_Pattern_Column(Position, xbc, ybc, 0xab);
+                            }
+                        }
+                        else
+                        {
+                            if(instrument == From)
+                            {
+                                Write_Pattern_Column(Position, xbc - 1, ybc, To);
+                                Write_Pattern_Column(Position, xbc, ybc, To);
+                            }
                         }
                         break;
+                }
+            }
+        }
+    }
+ 
+    if(Swap)
+    {
+        for(ybc = Sel.y_start; ybc <= Sel.y_end; ybc++)
+        {
+            for(xbc = Sel.x_start; xbc <= Sel.x_end; xbc++)
+            {
+                if(xbc < max_columns && ybc < MAX_ROWS)
+                {
+                    switch(Get_Column_Type(Channels_MultiNotes, Channels_Effects, xbc))
+                    {
+                        case INSTRHI:
+                            instrument = Read_Pattern_Column(Position, xbc, ybc);
+                            instrument |= Read_Pattern_Column(Position, xbc + 1, ybc);
+                            if(instrument == 0xaa)
+                            {
+                                Write_Pattern_Column(Position, xbc, ybc, To);
+                                Write_Pattern_Column(Position, xbc + 1, ybc, To);
+                            }
+                            break;
+
+                        case INSTRLO:
+                            instrument = Read_Pattern_Column(Position, xbc - 1, ybc);
+                            instrument |= Read_Pattern_Column(Position, xbc, ybc);
+                            if(instrument == 0xaa)
+                            {
+                                Write_Pattern_Column(Position, xbc - 1, ybc, To);
+                                Write_Pattern_Column(Position, xbc, ybc, To);
+                            }
+                            break;
+                    }
+                }
+            }
+        }
+        for(ybc = Sel.y_start; ybc <= Sel.y_end; ybc++)
+        {
+            for(xbc = Sel.x_start; xbc <= Sel.x_end; xbc++)
+            {
+                if(xbc < max_columns && ybc < MAX_ROWS)
+                {
+                    switch(Get_Column_Type(Channels_MultiNotes, Channels_Effects, xbc))
+                    {
+                        case INSTRHI:
+                            instrument = Read_Pattern_Column(Position, xbc, ybc);
+                            instrument |= Read_Pattern_Column(Position, xbc + 1, ybc);
+                            if(instrument == 0xab)
+                            {
+                                Write_Pattern_Column(Position, xbc, ybc, From);
+                                Write_Pattern_Column(Position, xbc + 1, ybc, From);
+                            }
+                            break;
+
+                        case INSTRLO:
+                            instrument = Read_Pattern_Column(Position, xbc - 1, ybc);
+                            instrument |= Read_Pattern_Column(Position, xbc, ybc);
+                            if(instrument == 0xab)
+                            {
+                                Write_Pattern_Column(Position, xbc - 1, ybc, From);
+                                Write_Pattern_Column(Position, xbc, ybc, From);
+                            }
+                            break;
+                    }
                 }
             }
         }

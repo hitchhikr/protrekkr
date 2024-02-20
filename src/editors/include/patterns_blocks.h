@@ -126,7 +126,7 @@ void Octave_Up_Block(int Position);
 void Octave_Down_Block(int Position);
 void Instrument_Octave_Up_Block(int Position);
 void Instrument_Octave_Down_Block(int Position);
-void Instrument_Remap_Sel(int Position, SELECTION Sel, int From, int To);
+void Instrument_Remap_Sel(int Position, SELECTION Sel, int From, int To, int Swap);
 void Select_Track_Block(void);
 void Select_Pattern_Block(void);
 void Select_Note_Block(void);

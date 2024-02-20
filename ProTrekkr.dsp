@@ -88,10 +88,10 @@ LINK32=link.exe
 
 # Name "ProTrekkr - Win32 Release"
 # Name "ProTrekkr - Win32 Debug"
-# Begin Group "SDL"
+# Begin Group "Main"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
-# Begin Group "SDL Include"
+# Begin Group "Main Include"
 
 # PROP Default_Filter ""
 # Begin Source File
@@ -613,7 +613,11 @@ SOURCE=.\src\samples\samples_pack.cpp
 # End Group
 # Begin Source File
 
-SOURCE=.\release\distrib\history.txt
+SOURCE=.\release\distrib\changes.txt
+# End Source File
+# Begin Source File
+
+SOURCE=.\release\distrib\license.txt
 # End Source File
 # Begin Source File
 

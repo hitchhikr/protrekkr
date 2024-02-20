@@ -184,6 +184,29 @@ void Copy(SDL_Surface *Source,
 }
 
 // ------------------------------------------------------
+// Copy a surface onto the main screen without recording the rect
+void Copy_No_Refresh(SDL_Surface *Source,
+          int x, int y,
+          int x1, int y1,
+          int x2, int y2)
+{
+    SDL_Rect Src_Rect;
+    SDL_Rect Dst_Rect;
+
+    Dst_Rect.x = x;
+    Dst_Rect.y = y;
+    Dst_Rect.w = (x2 - x1) + 1;
+    Dst_Rect.h = (y2 - y1) + 1;
+
+    Src_Rect.x = x1;
+    Src_Rect.y = y1;
+    Src_Rect.w = Dst_Rect.w;
+    Src_Rect.h = Dst_Rect.h;
+
+    SDL_BlitSurface(Source, &Src_Rect, Main_Screen, &Dst_Rect);
+}
+
+// ------------------------------------------------------
 // Copy a rectangle onto a given surface
 void Copy_To_Surface(SDL_Surface *Source, SDL_Surface *dest,
                      int x, int y, int x1, int y1, int x2, int y2)
