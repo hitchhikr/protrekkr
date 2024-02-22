@@ -19,7 +19,7 @@ make -f makefile.linux
 
 The executable will be created in the release/distrib directory.
 
-Notice that you'll need SDL 1 (to compile the tracker only, the replay routines themselves have no dependencies).<br>
+Notice that you'll need SDL 1 (only to compile the tracker, the replay routines themselves have no dependencies).<br>
 > [!CAUTION]
 > **When compiling for Linux or Mac OS: Use libSDL12 and NOT libSDL12-compat.**<br><br>
 > **On Linux use libsdl12-dev and on Mac OS use libsdl from Mac Ports.**<br><br>
