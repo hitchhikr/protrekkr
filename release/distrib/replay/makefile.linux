@@ -3,7 +3,7 @@ AS = as
 AR = ar
 STRIP = strip
 LIBS = -lptkreplay -lpthread
-FLAGS = -Os -fno-strict-aliasing -ffast-math -D __LINUX__ -D __GCC__ -D __STAND_ALONE__ -D __NO_MIDI__
+FLAGS = -Os -fno-strict-aliasing -ffast-math -D __LINUX__ -D __GCC__ -D __STAND_ALONE__
 EXEOBJS = test.o module.o
 
 all: ptkreplay replaytest
