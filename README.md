@@ -7,6 +7,7 @@ It’s a heavily modified version of the old NoiseTrekker 2 which was made by
 Juan Antonio Arguelles Rius aka Arguru.
 
 Currently the tracker is available on Windows, Linux, FreeBSD, NetBSD, Amiga OS4, AROS, MorphOS, Mac OS (ppc, x86, ia64 & arm64) and Haiku OS.
+With standalone replay routines for most of those.
 
 ![alt text](ptk.png)
 
@@ -52,4 +53,3 @@ So far, ProTrekkr was used in these intros or demos (the ones i'm aware of, at l
 <a href="https://soundcloud.com/defraq79/starburst" target=_parent>starburst</a><br>
 <br>A video recording of another module done with the tracker: <a href="https://www.youtube.com/watch?v=N5Hr4uiPAZk" target=_parent>Crutokk by Vojta Nedved</a>
 <br>Another video recording of yet another module done with the tracker: <a href="https://www.youtube.com/watch?v=XMvkCSP4eEs" target=_parent>Horse Heads and Gray Biscuits by Man With No Alias</a>
-
