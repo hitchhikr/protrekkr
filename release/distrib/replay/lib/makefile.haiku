@@ -13,7 +13,7 @@ ptkreplay: $(LIBOBJS)
 	$(AR) -r libptkreplay.a $(LIBOBJS)
 	-rm -f $(LIBOBJS)
 
-sounddriver_linux.o: lib/sounddriver/sounddriver_haiku.cpp
+sounddriver_haiku.o: lib/sounddriver/sounddriver_haiku.cpp
 	$(CC) -o $(@) $(LIBFLAGS) $(FLAGS) lib/sounddriver/sounddriver_haiku.cpp
 
 samples_unpack.o: lib/samples_unpack.cpp
