@@ -1,10 +1,10 @@
-TARGET = ptkreplay2
-TITLE_ID = VSDK00002
+TARGET = ptkreplay
+TITLE_ID = VSDK00001
 APP_VER = 01.00
 # path to the PSVita SDK
-VITASDK = D:/Tools/msys64/usr/local/vitasdk
+VITASDK =
 
-ifndef VITASDK
+ifeq ($(VITASDK),)
     $(error VITASDK is not defined !)
 endif
 
