@@ -31,16 +31,14 @@
 
 // ------------------------------------------------------
 // Includes
-#include "include/sounddriver_psp.h"
+#include "include/sounddriver_psvita.h"
 
 // ------------------------------------------------------
 // Variables
 unsigned int AUDIO_To_Fill;
-int AUDIO_Samples __attribute__((aligned(64)));
-int AUDIO_Play_Flag __attribute__((aligned(64)));
-float AUDIO_Timer __attribute__((aligned(64)));
-
-int volatile AUDIO_Acknowledge;
+int AUDIO_Samples;
+int AUDIO_Play_Flag;
+float AUDIO_Timer;
 
 SceUID AUDIO_thid;
 int AUDIO_HWChannel;
@@ -59,53 +57,37 @@ void AUDIO_Synth_Play(void);
 // ------------------------------------------------------
 // Name: AUDIO_Thread()
 // Desc: Audio rendering
-short *ptrAudio_BufferPlay1;
-short *ptrAudio_BufferPlay2;
-int AUDIO_FlipFlop = FALSE;
+short *AUDIO_SoundBuffer[2];
+int AUDIO_FlipFlop = 0;
 
 SceInt32 AUDIO_Thread(SceSize args, ScePVoid argp)
 {
-    volatile int done;
+	int volumes[2] = { SCE_AUDIO_VOLUME_0DB, SCE_AUDIO_VOLUME_0DB };
 
-    done = FALSE;
     for(;;)
     {
-        volatile short *ptrBuffer;
-        volatile int i;
-
-        if(AUDIO_FlipFlop)
+        if(AUDIO_SoundBuffer[0])
         {
-            ptrBuffer = ptrAudio_BufferPlay1;
-        }
-        else
-        {
-            ptrBuffer = ptrAudio_BufferPlay2;
-        }
-        if(AUDIO_Play_Flag)
-        {
-            if(sceAudioGetChannelRestLen(AUDIO_HWChannel) <= 0)
+            if(AUDIO_Play_Flag)
             {
-                sceAudioOutput(AUDIO_HWChannel, PSP_AUDIO_VOLUME_MAX, (void *) ptrBuffer);
-                AUDIO_FlipFlop ^= TRUE;
-                done = FALSE;
-                AUDIO_Samples += AUDIO_SoundBuffer_Size;
-                AUDIO_Timer = ((((float) AUDIO_Samples) * (1.0f / (float) AUDIO_Latency)) * 1000.0f);
+                AUDIO_Mixer((Uint8 *) AUDIO_SoundBuffer[AUDIO_FlipFlop], AUDIO_SoundBuffer_Size);
             }
             else
             {
-                if(done == FALSE)
+                int i;
+
+                char *pSamples = (char *) AUDIO_SoundBuffer[AUDIO_FlipFlop];
+                for(i = 0; i < AUDIO_SoundBuffer_Size; i++)
                 {
-                    done = TRUE;
-                    AUDIO_Mixer((Uint8 *) ptrBuffer, AUDIO_SoundBuffer_Size);
+                    pSamples[i] = 0;
                 }
             }
-        }
-        else
-        {
-            for(i = 0; i < (AUDIO_SoundBuffer_Size >> 1); i++)
-            {
-                ptrBuffer[i] = 0;
-            }
+            sceAudioOutOutput(AUDIO_HWChannel, (void *) AUDIO_SoundBuffer[AUDIO_FlipFlop]);
+            sceAudioOutSetVolume(AUDIO_HWChannel, (SceAudioOutChannelFlag) (SCE_AUDIO_VOLUME_FLAG_L_CH | SCE_AUDIO_VOLUME_FLAG_R_CH), volumes);
+            AUDIO_FlipFlop ^= 1;
+
+            AUDIO_Samples += AUDIO_SoundBuffer_Size;
+            AUDIO_Timer = ((((float) AUDIO_Samples) * (1.0f / (float) AUDIO_Latency)) * 1000.0f);
         }
         sceKernelDelayThread(10);
     }
@@ -122,13 +104,33 @@ int AUDIO_Init_Driver(void (*Mixer)(Uint8 *, Uint32))
 }
 
 // ------------------------------------------------------
-// Name: AUDIO_malloc_64()
-// Desc: Allocate aligned memory
-void *AUDIO_malloc_64(int *size)
+// Name: PSVITA_malloc()
+// Desc: Allocate a memory block
+#define ALIGN(x, a)	(((x) + ((a) - 1)) & ~((a) - 1))
+void *PSVITA_malloc(int size)
 {
-    int mod_64 = *size & 0x3f;
-    if(mod_64 != 0) *size += 64 - mod_64;
-    return((void *) memalign(64, *size));
+    SceUID ret;
+    int *mem_block;
+
+    size = ALIGN(size + 4, 4096);
+	ret = sceKernelAllocMemBlock("", SCE_KERNEL_MEMBLOCK_TYPE_USER_MAIN_NC_RW, size, 0);
+    if(ret < 0) return(NULL);
+    sceKernelGetMemBlockBase(ret, (void **) &mem_block);
+    memset((void *) mem_block, 0, size);
+    mem_block[0] = ret;
+    return((void *) &mem_block[1]);
+}
+
+// ------------------------------------------------------
+// Name: PSVITA_free()
+// Desc: Free a memory block
+void PSVITA_free(void *mem_block)
+{
+    int *block = (int *) mem_block;
+    if(block)
+    {
+        sceKernelFreeMemBlock(block[-1]);
+    }
 }
 
 // ------------------------------------------------------
@@ -136,45 +138,36 @@ void *AUDIO_malloc_64(int *size)
 // Desc: Create an audio buffer of given milliseconds
 int AUDIO_Create_Sound_Buffer(int milliseconds)
 {
-    int num_fragments;
     int frag_size;
+	int volumes[2] = { 0, 0 };
 
     if(milliseconds < 10) milliseconds = 10;
     if(milliseconds > 250) milliseconds = 250;
 
-    num_fragments = 6;
     frag_size = (int) (AUDIO_PCM_FREQ * (milliseconds / 1000.0f));
 
     AUDIO_SoundBuffer_Size = frag_size * ((AUDIO_DBUF_RESOLUTION * AUDIO_DBUF_CHANNELS) >> 3);
-    AUDIO_SoundBuffer_Size = PSP_AUDIO_SAMPLE_ALIGN(AUDIO_SoundBuffer_Size);
+    AUDIO_SoundBuffer_Size = AUDIO_SAMPLE_ALIGN(AUDIO_SoundBuffer_Size);
 
-    AUDIO_HWChannel = sceAudioChReserve(PSP_AUDIO_NEXT_CHANNEL, AUDIO_SoundBuffer_Size, PSP_AUDIO_FORMAT_STEREO);
+    AUDIO_HWChannel = sceAudioOutOpenPort(SCE_AUDIO_OUT_PORT_TYPE_BGM, AUDIO_SoundBuffer_Size, AUDIO_PCM_FREQ, SCE_AUDIO_OUT_MODE_STEREO);
+    sceAudioOutSetVolume(AUDIO_HWChannel, (SceAudioOutChannelFlag) (SCE_AUDIO_VOLUME_FLAG_L_CH | SCE_AUDIO_VOLUME_FLAG_R_CH), volumes);
     AUDIO_SoundBuffer_Size <<= 2;
 
     AUDIO_Latency = AUDIO_SoundBuffer_Size;
-    int buf_size = AUDIO_SoundBuffer_Size;
-    ptrAudio_BufferPlay1 = (short *) (((int) AUDIO_malloc_64(&buf_size)));
-    sceKernelDcacheWritebackInvalidateAll();
-
-    if((int) ptrAudio_BufferPlay1)
+	AUDIO_SoundBuffer[0] = (short *) PSVITA_malloc(AUDIO_SoundBuffer_Size);
+    if(AUDIO_SoundBuffer[0])
     {
-        memset((void *) ptrAudio_BufferPlay1, 0, buf_size);
-        buf_size = AUDIO_SoundBuffer_Size;
-        ptrAudio_BufferPlay2 = (short *) (((int) AUDIO_malloc_64(&buf_size)));
-        sceKernelDcacheWritebackInvalidateAll();
-
-        if((int) ptrAudio_BufferPlay2)
+        AUDIO_SoundBuffer[1] = (short *) PSVITA_malloc(AUDIO_SoundBuffer_Size);
+        if(AUDIO_SoundBuffer[1])
         {
-            memset((void *) ptrAudio_BufferPlay2, 0, buf_size);
-            AUDIO_thid = sceKernelCreateThread("Ptk", AUDIO_Thread, AUDIO_THREAD_PRIORITY, AUDIO_THREAD_STACKSIZE, PSP_THREAD_ATTR_VFPU, NULL);
-            if(AUDIO_thid > 0)
+            AUDIO_thid = sceKernelCreateThread("Ptk", AUDIO_Thread, AUDIO_THREAD_PRIORITY, AUDIO_THREAD_STACKSIZE, 0, SCE_KERNEL_CPU_MASK_USER_ALL, NULL);
+            if(AUDIO_thid >= 0)
             {
                 sceKernelStartThread(AUDIO_thid, 0, NULL);
                 return(TRUE);
             }
         }
     }
-
     return(FALSE);
 }
 
@@ -185,7 +178,6 @@ void AUDIO_Play(void)
 {
     AUDIO_ResetTimer();
     AUDIO_Play_Flag = TRUE;
-    sceKernelDcacheWritebackInvalidateAll();
 }
 
 // ------------------------------------------------------
@@ -203,7 +195,6 @@ void AUDIO_ResetTimer(void)
 {
     AUDIO_Samples = 0;
     AUDIO_Timer = 0.0f;
-    sceKernelDcacheWritebackInvalidateAll();
 }
 
 // ------------------------------------------------------
@@ -238,12 +229,10 @@ void AUDIO_Stop_Sound_Buffer(void)
     AUDIO_Stop();
     if(AUDIO_thid > 0) sceKernelDeleteThread(AUDIO_thid);
     AUDIO_thid = NULL;
-    if(AUDIO_HWChannel) sceAudioChRelease(AUDIO_HWChannel);
+    if(AUDIO_HWChannel) sceAudioOutReleasePort(AUDIO_HWChannel);
     AUDIO_HWChannel = NULL;
-    if(ptrAudio_BufferPlay1) free((void *) ptrAudio_BufferPlay1);
-    ptrAudio_BufferPlay1 = NULL;
-    if(ptrAudio_BufferPlay2) free((void *) ptrAudio_BufferPlay2);
-    ptrAudio_BufferPlay2 = NULL;
+    if(AUDIO_SoundBuffer[0]) PSVITA_free((void *) AUDIO_SoundBuffer[0]);
+    if(AUDIO_SoundBuffer[1]) PSVITA_free((void *) AUDIO_SoundBuffer[1]);
 }
 
 // ------------------------------------------------------

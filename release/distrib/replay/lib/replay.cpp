@@ -601,6 +601,7 @@ int pl_sample[MAX_POLYPHONY];
 int pl_vol_row;
 int pl_pan_row;
 unsigned char *RawPatterns;
+
 int pl_eff_row[MAX_FX];
 int pl_dat_row[MAX_FX];
 int glide;
@@ -1233,18 +1234,35 @@ short *Unpack_Sample(int Dest_Length, char Pack_Type, int BitRate)
     if(Packed_Length == -1)
     {
         // Sample wasn't packed
+
+#if defined(__PSVITA__)
+        Packed_Read_Buffer = (Uint8 *) PSVITA_malloc(Dest_Length * 2 + 8);
+#else
         Packed_Read_Buffer = (Uint8 *) malloc(Dest_Length * 2 + 8);
         memset(Packed_Read_Buffer, 0, Dest_Length * 2 + 8);
+#endif
+
         Mod_Dat_Read(Packed_Read_Buffer, sizeof(char) * (Dest_Length * 2));
         return((short *) Packed_Read_Buffer);
     }
     else
     {
+
+#if defined(__PSVITA__)
+        Packed_Read_Buffer = (Uint8 *) PSVITA_malloc(Packed_Length);
+#else
         Packed_Read_Buffer = (Uint8 *) malloc(Packed_Length);
+#endif
+
         // Read the packer buffer
         Mod_Dat_Read(Packed_Read_Buffer, sizeof(char) * Packed_Length);
+
+#if defined(__PSVITA__)
+        Dest_Buffer = (short *) PSVITA_malloc(Dest_Length * 2 + 8);
+#else
         Dest_Buffer = (short *) malloc(Dest_Length * 2 + 8);
         memset(Dest_Buffer, 0, Dest_Length * 2 + 8);
+#endif
 
 #if defined(PTK_AT3) || defined(PTK_GSM) || defined(PTK_MP3) || \
     defined(PTK_ADPCM) || defined(PTK_8BIT) || \
@@ -1294,7 +1312,12 @@ short *Unpack_Sample(int Dest_Length, char Pack_Type, int BitRate)
         }
 #endif
 
+#if defined(__PSVITA__)
+        PSVITA_free(Packed_Read_Buffer);
+#else
         free(Packed_Read_Buffer);
+#endif
+
         return(Dest_Buffer);
     }
 }
@@ -1343,16 +1366,25 @@ int PTKEXPORT Ptk_InitModule(Uint8 *Module, int start_position)
         // Allocated the necessary room for the patterns
         int max_lines = (PATTERN_LEN * nPatterns);
 
+#if defined(__PSVITA__)
+        // Free the patterns block
+        if(RawPatterns) PSVITA_free(RawPatterns);
+#else
         // Free the patterns block
         if(RawPatterns) free(RawPatterns);
+#endif
 
 #if defined(__PSP__)
         RawPatterns = (unsigned char *) AUDIO_malloc_64(&max_lines);
-        if(!RawPatterns) return(FALSE);
+#else
+#if defined(__PSVITA__)
+        RawPatterns = (unsigned char *) PSVITA_malloc(max_lines);
 #else
         RawPatterns = (unsigned char *) malloc(max_lines);
-        if(!RawPatterns) return(FALSE);
 #endif
+#endif
+
+        if(!RawPatterns) return(FALSE);
 
         // Multi notes
         Mod_Dat_Read(Channels_MultiNotes, sizeof(char) * Songtracks);
@@ -1430,7 +1462,6 @@ int PTKEXPORT Ptk_InitModule(Uint8 *Module, int start_position)
 
             }
 #endif
-
             for(int slwrite = 0; slwrite < MAX_INSTRS_SPLITS; slwrite++)
             {
                 Mod_Dat_Read(&SampleType[swrite][slwrite], sizeof(char));
@@ -1479,8 +1510,13 @@ int PTKEXPORT Ptk_InitModule(Uint8 *Module, int start_position)
 #endif
                                                      );
 
+#if defined(__PSVITA__)
+                        Sample_Dest_Buffer = (short *) PSVITA_malloc((Save_Len * 2 * sizeof(short)) + 8);
+#else
                         Sample_Dest_Buffer = (short *) malloc((Save_Len * 2 * sizeof(short)) + 8);
                         memset(Sample_Dest_Buffer, 0, (Save_Len * 2 * sizeof(short)) + 8);
+#endif
+
                         // Interpolate samples
                         for(iSmp = 0; iSmp < Save_Len; iSmp++)
                         {
@@ -1520,7 +1556,6 @@ int PTKEXPORT Ptk_InitModule(Uint8 *Module, int start_position)
 #endif
                                                                       );
                     }
-                    //*(RawSamples[swrite][0][slwrite]) = 0;
 
                     // Stereo flag
                     Mod_Dat_Read(&Sample_Channels[swrite][slwrite], sizeof(char));
@@ -1544,8 +1579,13 @@ int PTKEXPORT Ptk_InitModule(Uint8 *Module, int start_position)
 #endif
                                                          );
 
+#if defined(__PSVITA__)
+                            Sample_Dest_Buffer = (short *) PSVITA_malloc((Save_Len * 2 * sizeof(short)) + 8);
+#else
                             Sample_Dest_Buffer = (short *) malloc((Save_Len * 2 * sizeof(short)) + 8);
                             memset(Sample_Dest_Buffer, 0, (Save_Len * 2 * sizeof(short)) + 8);
+#endif
+
                             for(iSmp = 0; iSmp < Save_Len; iSmp++)
                             {
                                 Sample1 = Sample_Buffer[iSmp];
@@ -1581,9 +1621,13 @@ int PTKEXPORT Ptk_InitModule(Uint8 *Module, int start_position)
 #endif
                                                                           );
                         }
-                        //*RawSamples[swrite][1][slwrite] = 0;
                     }
+
+#if defined(__PSVITA__)
+                    if(Sample_Buffer) PSVITA_free(Sample_Buffer);
+#else
                     if(Sample_Buffer) free(Sample_Buffer);
+#endif
 
                 }// Exist Sample
 #endif // PTK_INSTRUMENTS
@@ -1607,6 +1651,7 @@ int PTKEXPORT Ptk_InitModule(Uint8 *Module, int start_position)
             Mod_Dat_Read(&FRez[twrite], sizeof(int));
             Mod_Dat_Read(&DThreshold[twrite], sizeof(float));
             Mod_Dat_Read(&DClamp[twrite], sizeof(float));
+
 #if defined(PTK_COMPRESSOR)
             if(compressor)
             {
@@ -2033,7 +2078,11 @@ void PTKEXPORT Ptk_Stop(void)
 
 #if defined(__STAND_ALONE__) && !defined(__WINAMP__)
     // Free the patterns block
+#if defined(__PSVITA__)
+    if(RawPatterns) PSVITA_free(RawPatterns);
+#else
     if(RawPatterns) free(RawPatterns);
+#endif
     RawPatterns = NULL;
 #endif
 
@@ -6416,12 +6465,24 @@ void Free_Samples(void)
         {
             if(SampleType[freer][pedsplit] != 0)
             {
+
+#if defined(__PSVITA__)
+                if(RawSamples[freer][0][pedsplit]) PSVITA_free(RawSamples[freer][0][pedsplit]);
+#else
                 if(RawSamples[freer][0][pedsplit]) free(RawSamples[freer][0][pedsplit]);
+#endif
                 RawSamples[freer][0][pedsplit] = NULL;
+
                 if(Sample_Channels[freer][pedsplit] == 2)
                 {
+
+#if defined(__PSVITA__)
+                    if(RawSamples[freer][1][pedsplit]) PSVITA_free(RawSamples[freer][1][pedsplit]);
+#else
                     if(RawSamples[freer][1][pedsplit]) free(RawSamples[freer][1][pedsplit]);
+#endif                    
                     RawSamples[freer][1][pedsplit] = NULL;
+                    
                 }
             }
 

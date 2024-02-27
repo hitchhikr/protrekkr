@@ -1,0 +1,57 @@
+TARGET = ptkreplay2
+TITLE_ID = VSDK00002
+APP_VER = 01.00
+# path to the PSVita SDK
+VITASDK = D:/Tools/msys64/usr/local/vitasdk
+
+ifndef VITASDK
+    $(error VITASDK is not defined !)
+endif
+
+OBJS = test/test_psvita.o test/module.o
+# lib/sounddriver/common/debugScreen.o
+
+INCDIR =
+CFLAGS = -ffast-math -fno-strict-aliasing -fsingle-precision-constant -w -Os -D __GCC__ -D __STAND_ALONE__ -D __NO_MIDI__ -D __PSVITA__
+CXXFLAGS = $(CFLAGS) -fno-exceptions -fno-rtti
+ASFLAGS = -c
+
+LIBDIR =
+LDFLAGS = -Wl,-q -nostartfiles -ffast-math
+LIBS = -lptkreplay -lSceAudio_stub -lSceSysmem_stub -lm
+
+CC       = $(VITASDK)/bin/arm-vita-eabi-gcc
+CXX      = $(VITASDK)/bin/arm-vita-eabi-gcc
+AS       = $(VITASDK)/bin/arm-vita-eabi-as
+LD       = $(VITASDK)/bin/arm-vita-eabi-gcc
+AR       = $(VITASDK)/bin/arm-vita-eabi-ar
+STRIP    = $(VITASDK)/bin/arm-vita-eabi-strip
+MKSFO    = $(VITASDK)/bin/vita-mksfoex
+CREATE_VELF = $(VITASDK)/bin/vita-elf-create
+MAKE_SELF = $(VITASDK)/bin/vita-make-fself
+PACK_VPK  = $(VITASDK)/bin/vita-pack-vpk
+
+INCDIR   := $(INCDIR) . $(VITASDK)/arm-vita-eabi/include
+LIBDIR   := $(LIBDIR) . $(VITASDK)/arm-vita-eabi/lib
+
+CFLAGS   := $(addprefix -I,$(INCDIR)) $(CFLAGS)
+FLAGS    = $(CXXFLAGS)
+
+LDFLAGS  := $(addprefix -L,$(LIBDIR)) $(LDFLAGS)
+
+LIBS     := $(LIBS)
+
+# the library itself
+include lib/makefile.psvita
+
+all: $(TARGET).vpk
+#$(VITASDK)/arm-vita-eabi/lib/crt0.o
+$(TARGET).vpk: $(OBJS) $(EXPORT_OBJ)
+	$(LINK.c) $^ $(LIBS) -o $(TARGET).elf
+	$(CREATE_VELF) -s $(TARGET).elf $(TARGET).velf
+	$(MAKE_SELF) -c $(TARGET).velf EBOOT.BIN
+	$(MKSFO) -s APP_VER=$(APP_VER) -s TITLE_ID=$(TITLE_ID) "$(TARGET)" param.sfo
+	$(PACK_VPK) -s param.sfo -b EBOOT.BIN $(TARGET).vpk
+
+clean:
+	-rm -f $(TARGET).vpk $(TARGET).velf $(TARGET).velf.tmp $(TARGET).elf param.sfo $(OBJS) EBOOT.BIN

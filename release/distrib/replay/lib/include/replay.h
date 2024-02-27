@@ -55,6 +55,8 @@
 #include "../sounddriver/include/sounddriver_aos4.h"
 #elif defined(__PSP__)
 #include "../sounddriver/include/sounddriver_psp.h"
+#elif defined(__PSVITA__)
+#include "../sounddriver/include/sounddriver_psvita.h"
 #elif defined(__HAIKU__)
 #include "../sounddriver/include/sounddriver_haiku.h"
 #else
