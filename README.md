@@ -6,7 +6,7 @@ targeting small sized intros, demos or games.
 It’s a heavily modified version of the old NoiseTrekker 2 which was made by
 Juan Antonio Arguelles Rius aka Arguru.
 
-Currently the tracker is available on Windows, Linux, FreeBSD, NetBSD, Amiga OS4, AROS, MorphOS, Mac OS (ppc, x86, ia64 & arm64) and Haiku OS.
+Currently the tracker is available on Windows, Linux, FreeBSD, NetBSD, Amiga OS4, AROS, MorphOS, Mac OS (ppc, x86, ia64 & arm64) and Haiku OS.<br>
 With standalone replay routines for most of those (the replay is also available for the PlayStation Portable & PlayStation Vita).
 
 ![alt text](ptk.png)
