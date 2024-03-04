@@ -1786,22 +1786,34 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
     {
         for(i = 0; i < Songtracks; i++)
         {
-            threshold = mas_comp_threshold_Track[i];
-            if(threshold < 0.01f) threshold = 0.01f;
-            if(threshold > 100.0f) threshold = 100.0f;
-            threshold *= 0.001f;
-            Write_Mod_Data(&threshold, sizeof(float), 1, in);
+            if(!Track_Is_Muted(i))
+            {
+                threshold = mas_comp_threshold_Track[i];
+                if(threshold < 0.01f) threshold = 0.01f;
+                if(threshold > 100.0f) threshold = 100.0f;
+                threshold *= 0.001f;
+                Write_Mod_Data(&threshold, sizeof(float), 1, in);
+            }
         }
         for(i = 0; i < Songtracks; i++)
         {
-            ratio = mas_comp_ratio_Track[i];
-            if(ratio < 0.01f) ratio = 0.01f;
-            if(ratio > 100.0f) ratio = 100.0f;
-            ratio *= 0.01f;
-            Write_Mod_Data(&ratio, sizeof(float), 1, in);
+            if(!Track_Is_Muted(i))
+            {
+                ratio = mas_comp_ratio_Track[i];
+                if(ratio < 0.01f) ratio = 0.01f;
+                if(ratio > 100.0f) ratio = 100.0f;
+                ratio *= 0.01f;
+                Write_Mod_Data(&ratio, sizeof(float), 1, in);
+            }
         }
-        Write_Mod_Data(&Compress_Track, sizeof(char), Songtracks, in);
-   }
+        for(i = 0; i < Songtracks; i++)
+        {
+            if(!Track_Is_Muted(i))
+            {
+                Write_Mod_Data(&Compress_Track[i], sizeof(char), 1, in);
+            }
+        }
+    }
 
     Write_Mod_Data(&Feedback, sizeof(float), 1, in);
     

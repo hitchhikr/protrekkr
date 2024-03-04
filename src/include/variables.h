@@ -542,7 +542,7 @@ void Notify_Play(void);
 void ComputeCoefs(int freq, int r, int t);
 void live303(int pltr_eff_row, int pltr_dat_row);
 float Filter(int stereo, float x, char i);
-float Kutoff(int v);
+float Cutoff(int v);
 float Reonance(float v);
 float Bandwidth(int v);
 float ApplyLfo(float cy, char trcy);

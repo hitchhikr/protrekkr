@@ -3,7 +3,7 @@ TARGET = ptkreplay
 OBJS = test/test_psp.o test/module.o
          
 INCDIR =
-CFLAGS = -n -ffast-math -fno-strict-aliasing -fsingle-precision-constant -I$(PSPDSK)/include -g -G0 -Os -D __GCC__ -D __STAND_ALONE__ -D __NO_MIDI__ -D __PSP__
+CFLAGS = -g -n -ffast-math -fno-strict-aliasing -fsingle-precision-constant -I$(PSPDSK)/include -g -G0 -Os -D __GCC__ -D __STAND_ALONE__ -D __NO_MIDI__ -D __PSP__
 CXXFLAGS = $(CFLAGS) -fno-exceptions -fno-rtti
 ASFLAGS = -c $(CFLAGS)
 
@@ -39,7 +39,7 @@ include lib/makefile.psp
 all: $(TARGET).prx
 
 $(TARGET).prx: $(OBJS) $(EXPORT_OBJ)
-	$(LINK.c) $^ $(LIBS) -o $@
+	$(LINK.c) -g -Wl,-Map=fuck.map  $^ $(LIBS) -o $@
 	$(FIXUP) $@
 	$(PRXGEN) $@ BOOT.BIN
 

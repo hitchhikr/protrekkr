@@ -3,4 +3,4 @@
 
                 global _PTK_MODULE
 
-_PTK_MODULE:   incbin "aquarium.ptp"
+_PTK_MODULE:   incbin "aa.ptp"

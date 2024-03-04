@@ -929,7 +929,7 @@ float filterhp2(int stereo, int ch, float input, float f, float q);
     void Go303(void);
 #endif
 
-float Kutoff(int v);
+float Cutoff(int v);
 float Resonance(float v);
 float Bandwidth(int v);
 void Reverb_work(void);
@@ -1680,7 +1680,7 @@ int PTKEXPORT Ptk_InitModule(Uint8 *Module, int start_position)
         }
 #endif
 
-        // Tracks compressors
+        // Tracks compressors.
         Mod_Dat_Read(&Comp_Flag, sizeof(char));
 #if defined(PTK_LIMITER_TRACKS)
         if(Comp_Flag)
@@ -1690,7 +1690,7 @@ int PTKEXPORT Ptk_InitModule(Uint8 *Module, int start_position)
             Mod_Dat_Read(&Compress_Track, sizeof(char) * Songtracks);
         }
 #endif
-        
+
         Mod_Dat_Read(&Feedback, sizeof(float));
 
 #if defined(PTK_COMPRESSOR)
@@ -2508,16 +2508,16 @@ void Sp_Player(void)
 
 #if defined(PTK_303)
     float Signal_303 = 0.0f;
+    int fired_303_1;
+    int fired_303_2;
+    int trigger_note_off;
 #endif
 
     char gotsome;
     int c;
     int i;
     int j;
-    int trigger_note_off;
     int ct;
-    int fired_303_1;
-    int fired_303_2;
 
 #if defined(PTK_SYNTH) || defined(PTK_INSTRUMENTS)
     float dest_volume;
@@ -3741,9 +3741,6 @@ ByPass_Wav:
             fstep1 = POWF2(SIN[(int) (gr_value * 359.0f)] * FLANGER_AMPL[c]);
             fstep2 = POWF2(SIN[(int) (de_value * 359.0f)] * FLANGER_AMPL[c]);
             
-            //fstep1 = POWF2(sinf(FLANGER_GR[c]) * FLANGER_AMPL[c]);
-            //fstep2 = POWF2(sinf(FLANGER_GR[c] + FLANGER_DEPHASE[c]) * FLANGER_AMPL[c]);
-            
             FLANGER_OFFSET2[c] += fstep1;
             FLANGER_OFFSET1[c] += fstep2;  
 
@@ -4599,7 +4596,6 @@ void Do_Effects_Tick_0(void)
 
 #if defined(PTK_LIMITER_TRACKS)
                 case 0x29:
-
                     Compress_Track[trackef] = pltr_dat_row[j] & TRUE;
 
 #if !defined(__STAND_ALONE__)
@@ -4772,7 +4768,9 @@ void Do_Effects_Ticks_X(void)
     int64 pltr_eff_row[MAX_FX];
 #endif
 
+#if defined(PTK_FX_0) || defined(PTK_FX_X)
     int64 pltr_dat_row[MAX_FX];
+#endif
 
     for(int trackef = 0; trackef < Songtracks; trackef++)
     {
@@ -5606,7 +5604,7 @@ void Get_Player_Values(void)
 #if defined(PTK_FILTER_LOHIBAND)
 void ComputeCoefs(int freq, int r, int t)
 {
-    float omega = float(2 * PI * Kutoff(freq) / fMIX_RATE);
+    float omega = float(2 * PI * Cutoff(freq) / fMIX_RATE);
     float sn = (float) sinf(omega);
     float cs = (float) cosf(omega);
     float alpha;
@@ -5688,7 +5686,7 @@ float Filter(int stereo, float x, char i)
 }
 #endif
 
-float Kutoff(int v)
+float Cutoff(int v)
 {
     return POWF((v + 5.0f) / (127.0f + 5.0f), 1.7f) * 13000.0f + 30.0f;
 }
@@ -6688,7 +6686,6 @@ float Do_RMS(float input, float *rms_sum, float *buffer)
 #endif
 
 #if defined(PTK_LIMITER_TRACKS)
-#if !defined(__STAND_ALONE__) || defined(__WINAMP__)
 void Mas_Compressor_Set_Variables_Track(int Track, float threshold, float ratio)
 {
     if(threshold < 0.01f) threshold = 0.01f;
@@ -6700,7 +6697,6 @@ void Mas_Compressor_Set_Variables_Track(int Track, float threshold, float ratio)
     mas_threshold_Track[Track] = threshold * 0.001f;
     mas_ratio_Track[Track] = ratio * 0.01f;
 }
-#endif
 
 float Mas_Compressor_Track(int Track, float input, float *rms_sum, float *buffer, float *env)
 {
@@ -6888,6 +6884,18 @@ float Process_Sample(short *Data, int c, int i, unsigned int res_dec)
 }
 
 #if defined(USE_FASTPOW)
+#if defined(__PSP__)
+float FastPow2(float x)
+{
+	float result;
+
+	__asm__ volatile(
+		"mtv      %1, S000\n"
+		"vexp2.s  S000, S000\n"
+		"mfv      %0, S000\n"
+	: "=r"(result) : "r"(x));
+	return result;
+}
 void ToFloat(int *dest, int val)
 {
     *dest = val;
@@ -6896,6 +6904,28 @@ float FastLog(float i)
 {
 	float x;
 	float y;
+    return i;
+	x = (float) (*(int *) &i);
+	x *= 1.0f / (1 << 23);
+	x = x - 127;
+	y = x - floorf(x);
+	y = (y - y * y) * 0.346607f;
+	return x + y;
+}
+float FastPow(float a, float b)
+{
+    return FastPow2(b * FastLog(a));
+}
+#else
+void ToFloat(int *dest, int val)
+{
+    *dest = val;
+}
+float FastLog(float i)
+{
+	float x;
+	float y;
+    return i;
 	x = (float) (*(int *) &i);
 	x *= 1.0f / (1 << 23);
 	x = x - 127;
@@ -6917,6 +6947,7 @@ float FastPow(float a, float b)
 {
     return FastPow2(b * FastLog(a));
 }
+#endif
 #endif
 
 #if defined(PTK_TRACK_EQ)

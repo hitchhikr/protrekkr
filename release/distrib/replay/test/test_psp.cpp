@@ -64,7 +64,7 @@ int main_thread(SceSize args, void *argp)
 
 // ---------------------------------------------------------------
 // Program entry point
-int module_start(SceSize args, void *argp)
+extern "C" int module_start(SceSize args, void *argp)
 {
     sceKernelStartThread(sceKernelCreateThread("Ptk", (int (*)(SceSize, void*)) (((unsigned int) main_thread) & 0x7fffffff), 10, STACK_SIZE, PSP_THREAD_ATTR_VFPU, 0), 0, 0);
 	return 0;
