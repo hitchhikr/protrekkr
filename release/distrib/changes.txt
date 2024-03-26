@@ -2,6 +2,10 @@
 ProTrekkr releases history
 ===============================================================================
 
+v2.6.7
+
+- Added a replay routine for the PlayStation Vita.
+
 v2.6.6
 
 - Doesn't actualize UI from audio thread anymore (which fixed a few issues).

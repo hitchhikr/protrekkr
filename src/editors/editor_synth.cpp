@@ -2556,10 +2556,10 @@ void Rand_OSC1()
     {
         PARASynth[Current_Instrument].osc1_pw = rand() & 0x1ff;
     }
-    PARASynth[Current_Instrument].env1_attack = rand();
-    PARASynth[Current_Instrument].env1_decay = rand();
+    PARASynth[Current_Instrument].env1_attack = rand() & 0xffff;
+    PARASynth[Current_Instrument].env1_decay = rand() & 0xffff;
     PARASynth[Current_Instrument].env1_sustain = rand() & 0x7f;
-    PARASynth[Current_Instrument].env1_release = rand();
+    PARASynth[Current_Instrument].env1_release = rand() & 0xffff;
     PARASynth[Current_Instrument].osc3_volume = rand() & 0x7f;
     Actualize_Synth_Ed(UPDATE_SYNTH_ED_VALUES);
 }
@@ -2572,10 +2572,10 @@ void Rand_OSC2()
         PARASynth[Current_Instrument].osc2_pw = rand() & 0x1ff;
     }
     PARASynth[Current_Instrument].osc2_finetune = rand() & 0x7f;
-    PARASynth[Current_Instrument].env2_attack = rand();
-    PARASynth[Current_Instrument].env2_decay = rand();
+    PARASynth[Current_Instrument].env2_attack = rand()  & 0xffff;
+    PARASynth[Current_Instrument].env2_decay = rand()  & 0xffff;
     PARASynth[Current_Instrument].env2_sustain = rand() & 0x7f;
-    PARASynth[Current_Instrument].env2_release = rand();
+    PARASynth[Current_Instrument].env2_release = rand() & 0xffff;
     PARASynth[Current_Instrument].osc2_detune = rand() & 0x7f;
 
     Actualize_Synth_Ed(UPDATE_SYNTH_ED_VALUES);
@@ -2607,10 +2607,10 @@ void Rand_LFO1()
     PARASynth[Current_Instrument].lfo1_osc1_pitch = rand() & 0x7f;
     PARASynth[Current_Instrument].lfo1_osc2_pitch = rand() & 0x7f;
 
-    PARASynth[Current_Instrument].lfo1_attack = rand();
-    PARASynth[Current_Instrument].lfo1_decay = rand();
+    PARASynth[Current_Instrument].lfo1_attack = rand() & 0xffff;
+    PARASynth[Current_Instrument].lfo1_decay = rand() & 0xffff;
     PARASynth[Current_Instrument].lfo1_sustain = rand() & 0x7f;
-    PARASynth[Current_Instrument].lfo1_release = rand();
+    PARASynth[Current_Instrument].lfo1_release = rand() & 0xffff;
     Actualize_Synth_Ed(UPDATE_SYNTH_ED_VALUES);
 }
 
@@ -2632,10 +2632,10 @@ void Rand_LFO2()
     PARASynth[Current_Instrument].lfo2_osc1_pitch = rand() & 0x7f;
     PARASynth[Current_Instrument].lfo2_osc2_pitch = rand() & 0x7f;
 
-    PARASynth[Current_Instrument].lfo2_attack = rand();
-    PARASynth[Current_Instrument].lfo2_decay = rand();
+    PARASynth[Current_Instrument].lfo2_attack = rand() & 0xffff;
+    PARASynth[Current_Instrument].lfo2_decay = rand() & 0xffff;
     PARASynth[Current_Instrument].lfo2_sustain = rand() & 0x7f;
-    PARASynth[Current_Instrument].lfo2_release = rand();
+    PARASynth[Current_Instrument].lfo2_release = rand() & 0xffff;
     Actualize_Synth_Ed(UPDATE_SYNTH_ED_VALUES);
 }
 
