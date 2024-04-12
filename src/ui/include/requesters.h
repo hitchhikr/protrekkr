@@ -70,6 +70,7 @@ extern LPREQUESTER Current_Requester;
 void Mouse_Handler_Requester(void);
 void Keyboard_Handler_Requester(void);
 int Display_Requester(LPREQUESTER Requester, int Action, char *Text, int Center);
+void Kill_Requester(void);
 int Check_Requester(LPREQUESTER Requester);
 
 #endif

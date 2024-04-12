@@ -313,7 +313,6 @@ void Load_Config(void)
 
     if(SplashScreen == FALSE)
     {
-        Burn_Title = TRUE;
 
 #if defined(__MACOSX_PPC__)
         Display_Pointer = TRUE;

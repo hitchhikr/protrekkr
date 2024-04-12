@@ -953,6 +953,11 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
             Display_Requester(&Title_Requester, GUI_CMD_REFRESH_PALETTE, NULL, TRUE);
             Burn_Title = TRUE;
         }
+        if(!Burn_Title && !SplashScreen)
+        {
+            Kill_Requester();
+            Burn_Title = TRUE;
+        }
 
 #if defined(__AMIGAOS4__) || defined(__AROS__) || defined(__MORPHOS__)
         SDL_Delay(delay_ms);
