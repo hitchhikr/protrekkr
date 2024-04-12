@@ -10,7 +10,7 @@ Currently the tracker is available on Windows, Linux, FreeBSD, NetBSD, Amiga OS4
 Standalone replay routines are available for most of these Operating Systems and also for the PlayStation Portable & PlayStation Vita.<br>
 
 > [!CAUTION]
-> **The tracker itself requires at least a 1,5ghz processor to run properly under heavy load.
+> **The tracker itself requires at least a 1,5ghz processor to run properly under heavy load.**
 
 ![alt text](ptk.png)
 
