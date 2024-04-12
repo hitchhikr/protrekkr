@@ -39,4 +39,6 @@
 *ptk_properties.h*
 *.zip*
 *debug*
+*Debug*
 *release*
+*Release*

@@ -37,4 +37,6 @@
 *bin2c*
 *.app*
 *debug*
+*Debug*
 *release*
+*Release*

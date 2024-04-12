@@ -55,6 +55,9 @@ extern char Global_Patterns_Font;
 extern char *cur_dir;
 extern char Last_Used_Ptk[MAX_PATH];
 extern int Burn_Title;
+#if defined(__MACOSX_PPC__)
+extern int Display_Pointer;
+#endif
 
 // ------------------------------------------------------
 // Save the configuration file
@@ -311,6 +314,11 @@ void Load_Config(void)
     if(SplashScreen == FALSE)
     {
         Burn_Title = TRUE;
+
+#if defined(__MACOSX_PPC__)
+        Display_Pointer = TRUE;
+#endif
+    
     }
     sprintf(Keyboard_Name, "%s", KeyboardName);
 
