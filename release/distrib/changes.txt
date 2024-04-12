@@ -4,7 +4,10 @@ ProTrekkr releases history
 
 v2.6.7
 
+- Fixed a crash when using rand functions on synth oscs & lfos under Linux.
 - Added a replay routine for the PlayStation Vita.
+- Fixed a crash when loading older NoiseTrekker modules.
+- Startup splash screen is now optional.
 
 v2.6.6
 

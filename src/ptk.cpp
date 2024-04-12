@@ -51,6 +51,8 @@
 SystemSoundActionID WavActionID;
 #endif
 
+extern char SplashScreen;
+
 extern int metronome_rows_counter;
 extern int metronome_magnify;
 
@@ -2048,8 +2050,10 @@ int Screen_Update(void)
             gui_action = GUI_CMD_TIMED_REFRESH_SEQUENCER;
         }
     }
-
-    Check_Requester(&Title_Requester);
+    if(SplashScreen)
+    {
+        Check_Requester(&Title_Requester);
+    }
 
     if(Check_Requester(&Overwrite_Requester) == 2)
     {

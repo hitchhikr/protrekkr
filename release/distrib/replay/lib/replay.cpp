@@ -1170,7 +1170,7 @@ int STDCALL Ptk_InitDriver(void)
     }
 #endif // PTK_SYNTH
 
-    // Initializing working SINETABLE
+    // Initializing work SINETABLE
     for(i = 0; i < 360; i++)
     {
         SIN[i] = (float) sinf(i * 0.0174532f);

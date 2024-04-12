@@ -71,6 +71,7 @@ extern SynthParameters PARASynth[128];
 extern int Beveled;
 char AutoBackup;
 char AutoReload;
+char SplashScreen = TRUE;
 
 int Mod_Length;
 int Mod_Simulate;
@@ -269,12 +270,12 @@ int Load_Ptk(char *FileName)
                 goto Read_Mod_File;
 
             // Old noisetrekker
-            //case '2':
-            //    Old_Ntk = TRUE;
+            case '2':
+                Old_Ntk = TRUE;
 
             // Noisetrekker Beta (1.6)
-            //case '1':
-            //    Ntk_Beta = TRUE;
+            case '1':
+                Ntk_Beta = TRUE;
         }
 
 Read_Mod_File:
@@ -765,7 +766,10 @@ Read_Mod_File:
                             Read_Mod_Data_Swap(&tb303[j].flag[k][i], sizeof(struct flag303), 1, in);
                         }
                     }
-                    Read_Mod_Data(&tb303[j].pattern_name, sizeof(char), 32 * 20, in);
+                    if(!Old_Ntk)
+                    {
+                        Read_Mod_Data(&tb303[j].pattern_name, sizeof(char), 32 * 20, in);
+                    }
                 }
             }
             Read_Mod_Data_Swap(&tb303engine[0].tbVolume, sizeof(float), 1, in);

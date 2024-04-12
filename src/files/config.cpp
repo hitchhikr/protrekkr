@@ -46,6 +46,7 @@ extern int Continuous_Scroll;
 extern char AutoSave;
 extern char AutoBackup;
 extern char AutoReload;
+extern char SplashScreen;
 extern char Scopish_LeftRight;
 extern char Jazz_Edit;
 extern char Accidental;
@@ -53,6 +54,7 @@ extern char Use_Shadows;
 extern char Global_Patterns_Font;
 extern char *cur_dir;
 extern char Last_Used_Ptk[MAX_PATH];
+extern int Burn_Title;
 
 // ------------------------------------------------------
 // Save the configuration file
@@ -67,7 +69,7 @@ void Save_Config(void)
     char KeyboardName[MAX_PATH];
     signed char phony = -1;
 
-    sprintf(extension, "PROTCFGG");
+    sprintf(extension, "PROTCFGH");
     Status_Box("Saving 'ptk.cfg'...");
 
     sprintf(FileName, "%s" SLASH "ptk.cfg", ExePath);
@@ -112,7 +114,8 @@ void Save_Config(void)
         Write_Data(&AutoSave, sizeof(AutoSave), 1, out);
         Write_Data(&AutoBackup, sizeof(AutoBackup), 1, out);
         Write_Data(&AutoReload, sizeof(AutoReload), 1, out);
-         
+        Write_Data(&SplashScreen, sizeof(SplashScreen), 1, out);
+
         Write_Data(&Dir_Mods, sizeof(Dir_Mods), 1, out);
         Write_Data(&Dir_Instrs, sizeof(Dir_Instrs), 1, out);
         Write_Data(&Dir_Presets, sizeof(Dir_Presets), 1, out);
@@ -172,6 +175,8 @@ void Load_Config(void)
 {
     FILE *in;
     int i;
+    int older_cfg = FALSE;
+    int ok_cfg = FALSE;
     int Real_Palette_Idx;
     char FileName[MAX_PATH];
     char KeyboardName[MAX_PATH];
@@ -190,7 +195,19 @@ void Load_Config(void)
         char extension[10];
 
         Read_Data(extension, sizeof(char), 9, in);
-        if(strcmp(extension, "PROTCFGG") == 0)
+        ok_cfg = TRUE;
+        if(strcmp(extension, "PROTCFGH") != 0)
+        {
+            if(strcmp(extension, "PROTCFGG") == 0)
+            {
+                older_cfg = TRUE;
+            }
+            else
+            {
+                ok_cfg = FALSE;
+            }
+        }
+        if(ok_cfg)
         {
             Read_Data_Swap(&Current_Edit_Steps, sizeof(Current_Edit_Steps), 1, in);
             Read_Data_Swap(&patt_highlight, sizeof(patt_highlight), 1, in);
@@ -226,7 +243,10 @@ void Load_Config(void)
             Read_Data(&AutoSave, sizeof(AutoSave), 1, in);
             Read_Data(&AutoBackup, sizeof(AutoBackup), 1, in);
             Read_Data(&AutoReload, sizeof(AutoReload), 1, in);
-
+            if(!older_cfg)
+            {
+                Read_Data(&SplashScreen, sizeof(SplashScreen), 1, in);
+            }
             Read_Data(&Dir_Mods, sizeof(Dir_Mods), 1, in);
             Read_Data(&Dir_Instrs, sizeof(Dir_Instrs), 1, in);
             Read_Data(&Dir_Presets, sizeof(Dir_Presets), 1, in);
@@ -286,6 +306,11 @@ void Load_Config(void)
 
         }
         fclose(in);
+    }
+
+    if(SplashScreen == FALSE)
+    {
+        Burn_Title = TRUE;
     }
     sprintf(Keyboard_Name, "%s", KeyboardName);
 

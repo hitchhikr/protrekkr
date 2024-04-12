@@ -139,6 +139,7 @@ extern SDL_Rect Update_Stack[2048];
 
 char *ExePath;
 extern char AutoReload;
+extern char SplashScreen;
 char Last_Used_Ptk[MAX_PATH];
 
 SDL_Event Events[MAX_EVENTS];
@@ -947,7 +948,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
         Mouse.old_y = Mouse.y;
         
         // Display the title requester once
-        if(!Burn_Title)
+        if(!Burn_Title && SplashScreen)
         {
             Display_Requester(&Title_Requester, GUI_CMD_REFRESH_PALETTE, NULL, TRUE);
             Burn_Title = TRUE;

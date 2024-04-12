@@ -64,29 +64,30 @@ void Read_Synth_Params(int (*Read_Function)(void *, int ,int, FILE *),
             {
                 if(Ntk_Beta)
                 {
+                    char phony;
                     Read_Function(&PARASynth[idx].presetname, sizeof(char), 20, in);
         
                     Read_Function(&PARASynth[idx].osc1_waveform, sizeof(char), 1, in);
                     Read_Function(&PARASynth[idx].osc2_waveform, sizeof(char), 1, in);
+                    Read_Function(&phony, sizeof(char), 1, in);
+                    Read_Function(&phony, sizeof(char), 1, in);
         
                     Read_Function_Swap(&PARASynth[idx].osc1_pw, sizeof(int), 1, in);
                     Read_Function_Swap(&PARASynth[idx].osc2_pw, sizeof(int), 1, in);
-        
+
                     Read_Function(&PARASynth[idx].osc2_detune, sizeof(char), 1, in);
                     Read_Function(&PARASynth[idx].osc2_finetune, sizeof(char), 1, in);
         
                     Read_Function(&PARASynth[idx].vcf_cutoff, sizeof(char), 1, in);
                     Read_Function(&PARASynth[idx].vcf_resonance, sizeof(char), 1, in);
-                    char phony;
                     Read_Function(&phony, sizeof(char), 1, in);
                     Read_Function(&phony, sizeof(char), 1, in);
                     Read_Function(&PARASynth[idx].vcf_type, sizeof(char), 1, in);
                     Read_Function(&phony, sizeof(char), 1, in);
-                    Read_Function(&phony, sizeof(char), 1, in);
-                    Read_Function(&phony, sizeof(char), 1, in);
     
                     Read_Function_Swap(&PARASynth[idx].env1_attack, sizeof(int), 1, in);
                     Read_Function_Swap(&PARASynth[idx].env1_decay, sizeof(int), 1, in);
+
                     Read_Function(&PARASynth[idx].env1_sustain, sizeof(char), 1, in);   //44
                     Read_Function(&phony, sizeof(char), 1, in);
                     Read_Function(&phony, sizeof(char), 1, in);
@@ -95,6 +96,7 @@ void Read_Synth_Params(int (*Read_Function)(void *, int ,int, FILE *),
                     Read_Function_Swap(&PARASynth[idx].env1_release, sizeof(int), 1, in);
                     Read_Function_Swap(&PARASynth[idx].env2_attack, sizeof(int), 1, in);
                     Read_Function_Swap(&PARASynth[idx].env2_decay, sizeof(int), 1, in);
+
                     Read_Function(&PARASynth[idx].env2_sustain, sizeof(char), 1, in);
                     Read_Function(&phony, sizeof(char), 1, in);
                     Read_Function(&phony, sizeof(char), 1, in);
