@@ -101,7 +101,7 @@ int Startup_Height;
 #if defined(__MACOSX_PPC__)
 extern int Display_Pointer;
 #endif
-int Burn_Title;
+int Burn_Title = FALSE;
 SDL_Surface *Main_Screen;
 #if defined(__WIN32__)
 SDL_SysWMinfo WMInfo;
