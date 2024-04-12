@@ -9,6 +9,8 @@ Juan Antonio Arguelles Rius aka Arguru.
 Currently the tracker is available on Windows, Linux, FreeBSD, NetBSD, Amiga OS4, AROS, MorphOS, Mac OS (ppc, x86, ia64 & arm64) and Haiku OS.<br><br>
 Standalone replay routines are available for most of these Operating Systems and also for the PlayStation Portable & PlayStation Vita.<br><br>
 
+The tracker itself requires at least a 1,5ghz processor to run properly under heavy load.
+
 ![alt text](ptk.png)
 
 ---
