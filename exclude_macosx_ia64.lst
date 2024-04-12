@@ -8,6 +8,7 @@
 *ppc*
 *x86*
 *arm64*
+*.haiku*
 *protrekkr.app*
 *.dsw*
 *.dsp*
@@ -31,7 +32,6 @@
 *.ncb*
 *.snd*
 *.aif*
-*module.s*
 *stderr*
 *stdout*
 *windows*

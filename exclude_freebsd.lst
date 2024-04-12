@@ -27,7 +27,6 @@
 *.303*
 *.snd*
 *.aif*
-*module.s*
 *stderr*
 *stdout*
 *windows*

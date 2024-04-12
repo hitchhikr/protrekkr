@@ -5,6 +5,7 @@
 *.mingw*
 *.freebsd*
 *.netbsd*
+*.haiku*
 *ppc*
 *x86*
 *ia64*
@@ -31,7 +32,6 @@
 *.ncb*
 *.snd*
 *.aif*
-*module.s*
 *stderr*
 *stdout*
 *windows*

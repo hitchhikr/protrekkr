@@ -8,6 +8,7 @@
 *ppc*
 *ia64*
 *arm64*
+*.haiku*
 *.dsw*
 *.dsp*
 *.sln*
@@ -30,7 +31,6 @@
 *.ncb*
 *.snd*
 *.aif*
-*module.s*
 *stderr*
 *stdout*
 *windows*

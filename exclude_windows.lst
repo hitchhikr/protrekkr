@@ -3,6 +3,9 @@
 *.cfg*
 *.linux*
 *.macosx*
+*ia64*
+*arm64*
+*.haiku*
 *.freebsd*
 *.netbsd*
 *.o*
@@ -19,7 +22,6 @@
 *.lib*
 *.snd*
 *.aif*
-*module.s*
 *stderr*
 *stdout*
 *.elf*

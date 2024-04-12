@@ -5,6 +5,8 @@
 *.mingw*
 *.freebsd*
 *.linux*
+*arm64*
+*.haiku*
 *.dsw*
 *.dsp*
 *.sln*
@@ -27,7 +29,6 @@
 *.303*
 *.snd*
 *.aif*
-*module.s*
 *stderr*
 *stdout*
 *windows*
