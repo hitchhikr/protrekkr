@@ -5,6 +5,8 @@
 *.mingw*
 *.freebsd*
 *.netbsd*
+*arm64*
+*.haiku*
 *.dsw*
 *.dsp*
 *.sln*
