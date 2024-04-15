@@ -2,6 +2,10 @@
 ProTrekkr releases history
 ===============================================================================
 
+v2.6.8
+
+- Copy buffers icons weren't updated properly when selected with keyboard.
+
 v2.6.7
 
 - Fixed a crash when using rand functions on synth oscs & lfos under Linux.

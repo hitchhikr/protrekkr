@@ -4619,21 +4619,25 @@ void Keyboard_Handler(void)
                 if(Keys[SDLK_1] || Keys[SDLK_KP1])
                 {
                     Curr_Buff_Block = 0;
+                    Draw_Pattern_Right_Stuff();
                     Actupated(0);
                 }
                 if(Keys[SDLK_2] || Keys[SDLK_KP2])
                 {
                     Curr_Buff_Block = 1;
+                    Draw_Pattern_Right_Stuff();
                     Actupated(0);
                 }
                 if(Keys[SDLK_3] || Keys[SDLK_KP3])
                 {
                     Curr_Buff_Block = 2;
+                    Draw_Pattern_Right_Stuff();
                     Actupated(0);
                 }
                 if(Keys[SDLK_4] || Keys[SDLK_KP4])
                 {
                     Curr_Buff_Block = 3;
+                    Draw_Pattern_Right_Stuff();
                     Actupated(0);
                 }
 
