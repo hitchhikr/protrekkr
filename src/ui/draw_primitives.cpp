@@ -337,11 +337,11 @@ void UISetPalette(SDL_Color *Palette, int Amount, int LogoPalette)
     }
     if(SKIN303 && LogoPalette)
     {
-//        SDL_SetPalette(SKIN303, SDL_LOGPAL, Palette, 0, Amount);
+  //      SDL_SetPalette(SKIN303, SDL_LOGPAL, Palette, 0, Amount);
     }
     if(LOGOPIC)
     {
-  //      SDL_SetPalette(LOGOPIC, SDL_LOGPAL, Palette, 0, Amount);
+        SDL_SetPalette(LOGOPIC, SDL_LOGPAL, Palette, 0, Amount);
     }
     if(Temp_PFONT)
     {

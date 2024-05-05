@@ -67,6 +67,7 @@ int Beveled = 1;
 char Use_Shadows = TRUE;
 
 int done_303_palette = FALSE;
+int done_logo_palette = FALSE;
 int curr_tab_highlight;
 
 int Nbr_Letters;
@@ -3006,24 +3007,28 @@ void Set_Pictures_Colors(int LogoPalette)
         done_303_palette = TRUE;
     }
 
-    was_locked = FALSE;
-    if(SDL_MUSTLOCK(LOGOPIC))
+    if(!done_logo_palette)
     {
-        if(!SDL_LockSurface(LOGOPIC)) was_locked = TRUE;
-    }
+        was_locked = FALSE;
+        if(SDL_MUSTLOCK(LOGOPIC))
+        {
+            if(!SDL_LockSurface(LOGOPIC)) was_locked = TRUE;
+        }
 
-    Pix = (unsigned char *) LOGOPIC->pixels;
-    max_colors_logo = 0;
-    for(i = 0; i < LOGOPIC->w * LOGOPIC->h; i++)
-    {
-        if(Pix[i] > max_colors_logo) max_colors_logo = Pix[i];
-        Pix[i] += min_idx;
-    }
-    max_colors_logo++;
+        Pix = (unsigned char *) LOGOPIC->pixels;
+        max_colors_logo = 0;
+        for(i = 0; i < LOGOPIC->w * LOGOPIC->h; i++)
+        {
+            if(Pix[i] > max_colors_logo) max_colors_logo = Pix[i];
+            Pix[i] += min_idx;
+        }
+        max_colors_logo++;
 
-    if(was_locked)
-    {
-        SDL_UnlockSurface(LOGOPIC);
+        if(was_locked)
+        {
+            SDL_UnlockSurface(LOGOPIC);
+        }
+        done_logo_palette = TRUE;
     }
 
     if(!LogoPalette)

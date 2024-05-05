@@ -6867,7 +6867,7 @@ void Draw_Scope(void)
     if(Scopish == SCOPE_ZONE_SCOPE)
     {
         SetColor(COL_BACKGROUND);
-        Fillrect(394, 42, Cur_Width, 178);
+        Fillrect(394, 42, Cur_Width, 179);
 
         cur_pos_x = 0;
         if(Scopish_LeftRight)
@@ -7015,8 +7015,7 @@ void Draw_Scope_Files_Button(void)
     switch(Scopish)
     {
         case SCOPE_ZONE_SCOPE:
-            SetColor(COL_BACKGROUND);
-            bjbox(394, 42, 405, 137);
+            Draw_Scope();
             Gui_Draw_Button_Box(394, 24, Cur_Width - 522, 16, "", BUTTON_NORMAL | BUTTON_DISABLED);
             Gui_Draw_Button_Box(Cur_Width - 54, 6, 16, 16, "\255", BUTTON_PUSHED | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
 

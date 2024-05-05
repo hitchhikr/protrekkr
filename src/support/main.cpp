@@ -907,7 +907,10 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
                 case SDL_ACTIVEEVENT:
                     if(Events[i].active.gain)
                     {
-                        Set_Pictures_Colors(FALSE);
+                        if(FullScreen)
+                        {
+                            Set_Pictures_Colors(FALSE);
+                        }
                         memset(Keys, 0, sizeof(Keys));
                         memset(Keys_Sym, 0, sizeof(Keys_Sym));
                         memset(Keys_Unicode, 0, sizeof(Keys_Raw));

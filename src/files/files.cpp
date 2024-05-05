@@ -138,7 +138,6 @@ void Init_Tracker_Context_After_ModLoad(void)
     Display_Song_Length();
 
     Scopish = SCOPE_ZONE_MOD_DIR;
-    //Draw_Scope_Files_Button();
 
     Reset_Tracks_To_Render();
 
