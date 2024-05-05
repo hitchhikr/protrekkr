@@ -60,7 +60,7 @@ void Draw_303_Ed(void);
 void Actualize_303_Ed(char gode);
 void Refresh_303_Unit(int Unit, int gode);
 void number303(unsigned char number,int x,int y);
-void Skincopy(int xd, int yd, int xs, int ys, int w, int h);
+void Skin_Copy(int xd, int yd, int xs, int ys, int w, int h);
 void knob(int x, int y, unsigned char number);
 void Mouse_Right_303_Ed(void);
 

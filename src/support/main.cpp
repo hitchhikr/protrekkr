@@ -52,6 +52,7 @@
 
 #include "../files/include/files.h"
 #include "../files/include/config.h"
+#include "../ui/include/misc_draw.h"
 
 #if defined(__WIN32__)
 #include <windows.h>
@@ -135,7 +136,7 @@ float delay_refresh;
 float delay_refresh2;
 
 extern int Nbr_Update_Rects;
-extern SDL_Rect Update_Stack[2048];
+extern SDL_Rect Update_Stack[UPDATE_STACK_SIZE];
 
 char *ExePath;
 extern char AutoReload;
@@ -406,6 +407,10 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
     Uint32 Path_Length;
 #endif
 
+#if defined(__USE_OPENGL__)
+    SDL_putenv("SDL_VIDEO_DRIVER=opengl");
+#endif
+
     if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_NOPARACHUTE) < 0)
     {
         Message_Error("Can't open SDL.");
@@ -642,6 +647,8 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
         exit(0);
     }
 
+    Set_Pictures_Colors(TRUE);
+
     SDL_GetMouseState((int *) &Mouse.x, (int *) &Mouse.y);
     Mouse.old_x = -16;
     Mouse.old_y = -16;
@@ -657,14 +664,14 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
     }
     else
     {
-        delay_ms = 40;
+        delay_ms = 10;
     }
     if(delay_ms < 10) delay_ms = 10;
     if(delay_ms > 1000) delay_ms = 1000;
 #endif
 
-    Set_Phony_Palette();
-    Refresh_Palette();
+//    Set_Phony_Palette();
+  //  Refresh_Palette();
 
     // Check if there's an argument
     if(argc != 1)
@@ -898,6 +905,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
 #endif
 
                     Switch_FullScreen(Events[i].resize.w, Events[i].resize.h);
+                    Set_Pictures_Colors(FALSE);
                     break;
 
                 case SDL_ACTIVEEVENT:
@@ -906,7 +914,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
                         if(FullScreen)
                         {
                             Env_Change = TRUE;
-                            Init_UI();
+                            Set_Pictures_Colors(FALSE);
                         }
                         memset(Keys, 0, sizeof(Keys));
                         memset(Keys_Sym, 0, sizeof(Keys_Sym));
@@ -927,6 +935,20 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
             }
         }
 
+#if defined(__USE_OPENGL__)
+        Enter_2D_Mode(Cur_Width, Cur_Height);
+		glDisable(GL_DEPTH_TEST);
+		glDisable(GL_LIGHTING);
+		glDisable(GL_LINE_SMOOTH);
+		glDisable(GL_POINT_SMOOTH);
+		glDisable(GL_POLYGON_SMOOTH);
+	    glDisable(GL_BLEND);
+        glHint(GL_POINT_SMOOTH_HINT, GL_FASTEST);
+        glHint(GL_LINE_SMOOTH_HINT, GL_FASTEST);
+        glHint(GL_POLYGON_SMOOTH_HINT, GL_FASTEST);
+        glShadeModel(GL_FLAT);
+#endif
+
 #if defined(__MACOSX_PPC__)
         if(Display_Pointer) Display_Mouse_Pointer(Mouse.old_x, Mouse.old_y, TRUE);
 #endif
@@ -937,12 +959,14 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
         if(Display_Pointer) Display_Mouse_Pointer(Mouse.x, Mouse.y, FALSE);
 #endif
 
+#if !defined(__USE_OPENGL__)
         // Flush all pending blits
         if(Nbr_Update_Rects) 
         {
            SDL_UpdateRects(Main_Screen, Nbr_Update_Rects, Update_Stack);
         }
         Nbr_Update_Rects = 0;
+#endif
 
         Mouse.old_x = Mouse.x;
         Mouse.old_y = Mouse.y;
@@ -958,6 +982,11 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
             Kill_Requester();
             Burn_Title = TRUE;
         }
+
+#if defined(__USE_OPENGL__)
+	    Leave_2d_Mode();
+        SDL_GL_SwapBuffers();
+#endif
 
 #if defined(__AMIGAOS4__) || defined(__AROS__) || defined(__MORPHOS__)
         SDL_Delay(delay_ms);
@@ -993,13 +1022,27 @@ int Switch_FullScreen(int Width, int Height)
     SDL_putenv("SDL_VIDEO_CENTERED=1");
 #endif
 
+#if defined(__USE_OPENGL__)
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, TRUE);
+    SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1);
+    SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, TRUE);
+#endif
+
     if(FullScreen)
     {
+#if defined(__USE_OPENGL__)
+        if((Main_Screen = SDL_SetVideoMode(Startup_Width,
+                                           Startup_Height,
+                                           SCREEN_BPP,
+                                           SDL_OPENGL | SDL_HWSURFACE | SDL_PREALLOC | SDL_HWPALETTE |
+                                           (FullScreen ? SDL_FULLSCREEN : 0))) == NULL)
+#else
         if((Main_Screen = SDL_SetVideoMode(Startup_Width,
                                            Startup_Height,
                                            SCREEN_BPP,
                                            SDL_SWSURFACE | SDL_PREALLOC | SDL_HWPALETTE |
                                            (FullScreen ? SDL_FULLSCREEN : 0))) == NULL)
+#endif
         {
             return(FALSE);
         }
@@ -1015,11 +1058,19 @@ int Switch_FullScreen(int Width, int Height)
             Width = Save_Cur_Width;
             Height = Save_Cur_Height;
         }
+#if defined(__USE_OPENGL__)
+        if((Main_Screen = SDL_SetVideoMode(Width, Height,
+                                           SCREEN_BPP,
+                                           SDL_RESIZABLE |
+                                           SDL_OPENGL | SDL_HWSURFACE | SDL_PREALLOC | SDL_HWPALETTE |
+                                           (FullScreen ? SDL_FULLSCREEN : 0))) == NULL)
+#else
         if((Main_Screen = SDL_SetVideoMode(Width, Height,
                                            SCREEN_BPP,
                                            SDL_RESIZABLE |
                                            SDL_SWSURFACE | SDL_PREALLOC | SDL_HWPALETTE |
                                            (FullScreen ? SDL_FULLSCREEN : 0))) == NULL)
+#endif
         {
             return(FALSE);
         }
@@ -1029,6 +1080,11 @@ int Switch_FullScreen(int Width, int Height)
 
     Cur_Width = Width;
     Cur_Height = Height;
+
+#if defined(__USE_OPENGL__)
+    glViewport(0, 0, Cur_Width, Cur_Height);
+#endif
+    
     CONSOLE_WIDTH = Cur_Width;
     CHANNELS_WIDTH = Cur_Width - 20;
     TRACKS_WIDTH = Cur_Width - 20 - PAT_COL_NOTE;
@@ -1057,8 +1113,6 @@ int Switch_FullScreen(int Width, int Height)
     SendMessage(Main_Window, WM_SETICON, ICON_BIG, (LONG) hIcon);
     SendMessage(Main_Window, WM_SETICON, ICON_SMALL, (LONG) hIconSmall);
 #endif
-
-    Init_UI();
 
 #if defined(__MACOSX_PPC__)
     SDL_ShowCursor(0);

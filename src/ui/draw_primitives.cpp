@@ -52,6 +52,11 @@ extern int Font_Size[256];
 extern unsigned char *Pointer_BackBuf;
 #endif
 int FgColor;
+#if defined(__USE_OPENGL__)
+SDL_Color GLPalette[256];
+extern GLuint FONT_GL;
+extern GLuint FONT_LOW_GL;
+#endif
 
 int Nbr_Update_Rects;
 SDL_Rect Update_Stack[UPDATE_STACK_SIZE];
@@ -60,27 +65,241 @@ SDL_Rect Update_Stack[UPDATE_STACK_SIZE];
 // Functions
 int Get_Char_Position(char *Ascii_Letters, int Max_Letters, char Letter);
 
+#if defined(__USE_OPENGL__)
+// ------------------------------------------------------
+// Set 2d ortho mode
+void Enter_2D_Mode(float Width, float Height)
+{
+    double _Width = Width;
+    double _Height = Height;
+
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glLoadIdentity();
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    glOrtho(0.0, _Width, _Height, 0.0, 0.0, 1.0);
+}
+
+// ------------------------------------------------------
+// Restore previous matrices mode
+void Leave_2d_Mode(void)
+{
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
+    glPopMatrix();
+}
+
+// ------------------------------------------------------
+// Draw a horizontal line
+void Draw_HLine_(int x, int y, int Width, int Color)
+{
+    glPushMatrix();
+        glTranslatef(x, y, 0.0f);
+        glColor4f((float) Ptk_Palette[Color].r / 255.0f,
+                  (float) Ptk_Palette[Color].g / 255.0f,
+                  (float) Ptk_Palette[Color].b / 255.0f,
+                  1.0f);
+        glBegin(GL_QUADS);
+            glVertex2f(0.0f, 0.0f);
+            glVertex2f(0.0f, 1.0f);
+            glVertex2f(Width + 0.0f, 1.0f);
+            glVertex2f(Width, 0.0f);
+        glEnd();
+    glPopMatrix();
+}
+
+// ------------------------------------------------------
+// Draw a vertical line
+void Draw_VLine_(int x, int y, int Height, int Color)
+{
+    glPushMatrix();
+        glTranslatef(x, y, 0.0f);
+        glColor4f((float) Ptk_Palette[Color].r / 255.0f,
+                  (float) Ptk_Palette[Color].g / 255.0f,
+                  (float) Ptk_Palette[Color].b / 255.0f,
+                  1.0f);
+        glBegin(GL_QUADS);
+            glVertex2f(0.0f, 0.0f);
+            glVertex2f(0.0f, Height);
+            glVertex2f(1.0f, Height);
+            glVertex2f(1.0f, 0.0f);
+        glEnd();
+    glPopMatrix();
+}
+
+// ------------------------------------------------------
+// Draw a vertical line
+void Draw_Pixel_(int x, int y, int Color)
+{
+    glPushMatrix();
+        glTranslatef(x, y, 0.0f);
+        glColor4f((float) Ptk_Palette[Color].r / 255.0f,
+                  (float) Ptk_Palette[Color].g / 255.0f,
+                  (float) Ptk_Palette[Color].b / 255.0f,
+                  1.0f);
+        glBegin(GL_QUADS);
+            glVertex2f(0.0f, 0.0f);
+            glVertex2f(0.0f, 1.0f);
+            glVertex2f(1.0f, 1.0f);
+            glVertex2f(1.0f, 0.0f);
+        glEnd();
+    glPopMatrix();
+}
+
+// ------------------------------------------------------
+// Draw a one colored rectangle
+void Draw_Flat_Rectangle(float x, float y,
+                         int Width, int Height, int Color)
+{
+    glPushMatrix();
+        glTranslatef(x, y, 0.0f);
+        glColor4f((float) Ptk_Palette[Color].r / 255.0f,
+                  (float) Ptk_Palette[Color].g / 255.0f,
+                  (float) Ptk_Palette[Color].b / 255.0f,
+                  1.0f);
+        glBegin(GL_QUADS);
+            glVertex2f(0.0f, 0.0f);
+            glVertex2f(0.0f, Height);
+            glVertex2f(Width, Height);
+            glVertex2f(Width, 0.0f);
+        glEnd();
+    glPopMatrix();
+}
+
+// ------------------------------------------------------
+// Create a texture
+GLuint Create_Texture(SDL_Surface *Source, int Width)
+{
+    GLuint txId = 0;
+    unsigned int *RGBTexture;
+    unsigned char *SrcPic;
+    int was_locked = FALSE;
+    int i;
+    int j;
+    int index;
+
+    if(SDL_MUSTLOCK(Source))
+    {
+        if(!SDL_LockSurface(Source)) was_locked = TRUE;
+    }
+
+    RGBTexture = (unsigned int *) malloc(Width * Width * sizeof(unsigned int));
+    if(RGBTexture)
+    {
+        memset(RGBTexture, 0, Width * Width * sizeof(unsigned int));
+        SrcPic = (unsigned char *) Source->pixels;
+        for(j = 0; j < Source->h; j++)
+        {
+            for(i = 0; i < Source->w; i++)
+            {
+
+                index = SrcPic[(j * Source->pitch) + i];
+                RGBTexture[(j * Width) + i] = (GLPalette[index].r) | (GLPalette[index].g << 8) | (GLPalette[index].b << 16);
+                if(index)
+                {
+                    RGBTexture[(j * Width) + i] |= 0xff000000;
+                }
+            }
+        }
+        glGenTextures(1, &txId);
+        if(txId)
+        {
+            glBindTexture(GL_TEXTURE_2D, txId);
+            glEnable(GL_TEXTURE_2D);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, Width, Width, 0,
+                         GL_RGBA, GL_UNSIGNED_BYTE, RGBTexture);
+            glDisable(GL_TEXTURE_2D);
+        }
+        if(RGBTexture)
+        {
+            free(RGBTexture);
+        }
+    }
+    if(was_locked)
+    {
+        SDL_UnlockSurface(Source);
+    }
+    return(txId);
+}
+
+// ------------------------------------------------------
+// Delete a previously created texture
+void Destroy_Texture(GLuint txId)
+{
+    glDeleteTextures(1, &txId);
+}
+
+// ------------------------------------------------------
+// Draw bitmap
+void Draw_Tx_Quad(float x, float y, float x1, float y1, float Width, float Height, GLuint TexID, int Blend)
+{
+    glPushMatrix();
+        glTranslatef(x, y, 0.0f);
+        glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+        if(Blend)
+        {
+		    glEnable(GL_BLEND);
+		    glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+        }
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, TexID);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glBegin(GL_QUADS);
+            glTexCoord2f((x1 / (float) TEXTURES_SIZE), (y1 / (float) TEXTURES_SIZE)); glVertex2f(0.0f, 0.0f);
+            glTexCoord2f((x1 / (float) TEXTURES_SIZE), (Height / (float) TEXTURES_SIZE) + (y1 / (float) TEXTURES_SIZE)); glVertex2f(0.0f, Height);
+            glTexCoord2f((Width / (float) TEXTURES_SIZE) + (x1 / (float) TEXTURES_SIZE), (Height / (float) TEXTURES_SIZE) + (y1 / (float) TEXTURES_SIZE)); glVertex2f(Width, Height);
+            glTexCoord2f((Width / (float) TEXTURES_SIZE) + (x1 / (float) TEXTURES_SIZE), y1 / (float) TEXTURES_SIZE); glVertex2f(Width, 0.0f);
+        glEnd();
+        if(Blend)
+        {
+		    glDisable(GL_BLEND);
+        }
+        glDisable(GL_TEXTURE_2D);
+    glPopMatrix();
+}
+#endif
+
 // ------------------------------------------------------
 // Draw a pixel
 void DrawPixel(int x, int y, int Color)
 {
+#if defined(__USE_OPENGL__)
+    Draw_Pixel_(x, y, Color);
+#else
     Draw_Pixel(Main_Screen, x, y, Color);
+#endif
 }
 
 // ------------------------------------------------------
 // Draw an horizontal line
 void DrawHLine(int y, int x1, int x2, int Color)
 {
+#if defined(__USE_OPENGL__)
+    Draw_HLine_(x1, y, (x2 - x1) + 1, Color);
+#else
     Draw_HLine(Main_Screen, x1, y, x2, Color);
     Push_Update_Rect(x1, y, x2 - x1, y + 1);
+#endif
 }
 
 // ------------------------------------------------------
 // Draw a vertical line
 void DrawVLine(int x, int y1, int y2, int Color)
 {
+#if defined(__USE_OPENGL__)
+    Draw_VLine_(x, y1, (y2 - y1) + 1, Color);
+#else
     Draw_VLine(Main_Screen, x, y1, y2, Color);
     Push_Update_Rect(x, y1, x + 1, y2 - y1);
+#endif
 }
 
 // ------------------------------------------------------
@@ -94,6 +313,9 @@ void SetColor(int color)
 // Fill a rectangle with the current color
 void Fillrect(int x1, int y1, int x2, int y2)
 {
+#if defined(__USE_OPENGL__)
+    Draw_Flat_Rectangle(x1, y1, x2 - x1, y2 - y1, FgColor);
+#else
     SDL_Rect Dst_Rect;
     Dst_Rect.x = x1;
     Dst_Rect.y = y1;
@@ -101,6 +323,7 @@ void Fillrect(int x1, int y1, int x2, int y2)
     Dst_Rect.h = y2 - y1;
     SDL_FillRect(Main_Screen, &Dst_Rect, FgColor);
     Push_Update_Rect(x1, y1, x2 - x1, y2 - y1);
+#endif
 }
 
 // ------------------------------------------------------
@@ -155,13 +378,32 @@ void UISetPalette(SDL_Color *Palette, int Amount)
     }
 #endif
 
+#if !defined(__USE_OPENGL__)
+
     SDL_SetPalette(Main_Screen, SDL_PHYSPAL, Palette, 0, Amount);
     SDL_SetPalette(Main_Screen, SDL_LOGPAL, Palette, 0, Amount);
+
+#else
+
+    int i;
+
+    for(i = 0; i < Amount; i++)
+    {
+        GLPalette[i].r = Palette[i].r;
+        GLPalette[i].g = Palette[i].g;
+        GLPalette[i].b = Palette[i].b;
+    }
+#endif
+
 }
 
 // ------------------------------------------------------
 // Copy a surface onto the main screen
+#if defined(__USE_OPENGL__)
+void Copy(GLuint Source,
+#else
 void Copy(SDL_Surface *Source,
+#endif
           int x, int y,
           int x1, int y1,
           int x2, int y2)
@@ -179,13 +421,26 @@ void Copy(SDL_Surface *Source,
     Src_Rect.w = Dst_Rect.w;
     Src_Rect.h = Dst_Rect.h;
 
+#if defined(__USE_OPENGL__)
+    Draw_Tx_Quad(x, y,
+                 x1, y1,
+                 Dst_Rect.w - 1,
+                 Dst_Rect.h,
+                 Source, FALSE);
+#else
     SDL_BlitSurface(Source, &Src_Rect, Main_Screen, &Dst_Rect);
     Push_Update_Rect(x, y, Dst_Rect.w, Dst_Rect.h);
+#endif
+
 }
 
 // ------------------------------------------------------
 // Copy a surface onto the main screen without recording the rect
+#if defined(__USE_OPENGL__)
+void Copy_No_Refresh(GLuint Source,
+#else
 void Copy_No_Refresh(SDL_Surface *Source,
+#endif
           int x, int y,
           int x1, int y1,
           int x2, int y2)
@@ -203,7 +458,15 @@ void Copy_No_Refresh(SDL_Surface *Source,
     Src_Rect.w = Dst_Rect.w;
     Src_Rect.h = Dst_Rect.h;
 
+#if defined(__USE_OPENGL__)
+    Draw_Tx_Quad(x, y,
+                 x1, y1,
+                 Dst_Rect.w, 
+                 Dst_Rect.h,
+                 Source, FALSE);
+#else
     SDL_BlitSurface(Source, &Src_Rect, Main_Screen, &Dst_Rect);
+#endif
 }
 
 // ------------------------------------------------------
@@ -275,6 +538,7 @@ void PrintString(int x,
         Dst_Rect.x = pos_x;
         Dst_Rect.w = Src_Rect.w;
 
+#if !defined(__USE_OPENGL__)
         if(Font_Type == USE_FONT)
         {
             SDL_BlitSurface(FONT, &Src_Rect, Main_Screen, &Dst_Rect);
@@ -283,6 +547,24 @@ void PrintString(int x,
         {
             SDL_BlitSurface(FONT_LOW, &Src_Rect, Main_Screen, &Dst_Rect);
         }
+#else
+        if(Font_Type == USE_FONT)
+        {
+            Draw_Tx_Quad(Dst_Rect.x, Dst_Rect.y,
+                         Src_Rect.x, Src_Rect.y,
+                         Dst_Rect.w, Dst_Rect.h,
+                         FONT_GL, TRUE);
+        }
+        else
+        {
+            Draw_Tx_Quad(Dst_Rect.x, Dst_Rect.y,
+                         Src_Rect.x, Src_Rect.y,
+                         Dst_Rect.w, Dst_Rect.h,
+                         FONT_LOW_GL, TRUE);
+        }
+
+#endif
+
         x += Font_Size[Idx];
         if(early_exit) break;
     }

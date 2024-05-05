@@ -60,6 +60,9 @@ int Req_Default_Button;
 static int Cancel_Button;
 SDL_Surface *Req_Picture;
 SDL_Surface *Req_Back;
+#if defined(__USE_OPENGL__)
+GLuint Req_Picture_GL;
+#endif
 int Req_TimeOut;
 int Req_Timer;
 extern SDL_Event Events[MAX_EVENTS];
@@ -104,8 +107,20 @@ int Display_Requester(LPREQUESTER Requester, int Action, char *Text, int Center)
     Req_Timer = 0;
     Req_TimeOut = Requester->TimeOut;
     Req_Picture = NULL;
-    if(Requester->Picture) Req_Picture = *Requester->Picture;
-    
+
+#if defined(__USE_OPENGL__)
+    Req_Picture_GL = 0;
+#endif
+
+    if(Requester->Picture)
+    {
+        Req_Picture = *Requester->Picture;
+
+#if defined(__USE_OPENGL__)
+        Req_Picture_GL = Create_Texture(Req_Picture, TEXTURES_SIZE);
+#endif
+
+    }
     Req_Default_Button = -1;
     Cancel_Button = -1;
 
@@ -234,14 +249,17 @@ int Display_Requester(LPREQUESTER Requester, int Action, char *Text, int Center)
     Pos_X = (CONSOLE_WIDTH - Size_X) / 2;
     Pos_Y = (CONSOLE_HEIGHT - Size_Y) / 2;
 
+#if !defined(__USE_OPENGL__)
     Req_Back = SDL_AllocSurface(SDL_SWSURFACE, Size_X + 1, Size_Y + 1, 8, 0, 0, 0, 0xff);
     if(Req_Back)
     {
+
         Copy_To_Surface(Main_Screen, Req_Back, 0, 0,
                         Pos_X, Pos_Y,
                         Pos_X + Size_X + 1,
                         Pos_Y + Size_Y + 1);
     }
+#endif
     return(0);
 }
 
@@ -256,21 +274,17 @@ int Check_Requester(LPREQUESTER Requester)
         if(Req_Picture)
         {
             SetColor(COL_BLACK);
-            /*Fillrect(Pos_X + BEVEL_SIZE,
-                     Pos_Y + BEVEL_SIZE,
-                     Pos_X + BEVEL_SIZE + Size_X - (BEVEL_SIZE * 2) + 1,
-                     Pos_Y + BEVEL_SIZE + Size_Y - (BEVEL_SIZE * 2) + 1);*/
             // Display the picture
-            Copy(Req_Picture, Pos_X + BEVEL_SIZE + 1, Pos_Y + BEVEL_SIZE + 1,
+            Copy(GET_SURFACE(Req_Picture), Pos_X + BEVEL_SIZE + 1, Pos_Y + BEVEL_SIZE + 1,
                  0, 0, Req_Picture->w, Req_Picture->h - 2);
         }
         else
         {
+            // Or the intern box
             Gui_Draw_Button_Box(Pos_X, Pos_Y, Size_X, Size_Y, "", BUTTON_NORMAL | BUTTON_DISABLED);
             Gui_Draw_Button_Box(Pos_X + BEVEL_SIZE - 1, Pos_Y + BEVEL_SIZE - 1,
                                 Size_X - ((BEVEL_SIZE - 1) * 2), Size_Y - ((BEVEL_SIZE - 1) * 2),
                                 "", BUTTON_PUSHED | BUTTON_DISABLED);
-            // Or the intern box
             Gui_Draw_Button_Box(Pos_X + (BEVEL_SIZE + 1), Pos_Y + (BEVEL_SIZE + 1),
                                 Size_X - ((BEVEL_SIZE + 1) * 2), Size_Y - ((BEVEL_SIZE + 1) * 2),
                                 "", BUTTON_NORMAL | BUTTON_DISABLED);
@@ -394,8 +408,7 @@ void Kill_Requester(void)
         if(Req_Txt_Lines[Nbr_Lines]) free(Req_Txt_Lines[Nbr_Lines]);
         Req_Txt_Lines[Nbr_Lines] = NULL;
     }
-    Set_Main_Palette();
-    Refresh_Palette();
+    Set_Pictures_Colors(FALSE);
     Restore_Background_Requester();
     Current_Requester = NULL;
     Req_TimeOut = 0;
@@ -413,6 +426,8 @@ void Restore_Background_Requester()
 {
     if(Req_Back)
     {
+
+#if !defined(__USE_OPENGL__)
         Copy(Req_Back,
              Pos_X, Pos_Y,
              0, 0,
@@ -420,5 +435,12 @@ void Restore_Background_Requester()
              Pos_Y + Size_Y + 1);
         SDL_FreeSurface(Req_Back);
         Req_Back = NULL;
+#else
+        if(Req_Picture_GL)
+        {
+            Destroy_Texture(Req_Picture_GL);
+            Req_Picture_GL = 0;
+        }
+#endif
     }
 }

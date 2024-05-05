@@ -513,7 +513,7 @@ void Actualize_Track_Ed(char gode);
 void Actualize_Songname(int *newletter, char *nam);
 void Get_Player_Values(void);
 void Check_Loops(void);
-void Skincopy(int xd, int yd, int xs, int ys, int w, int h);
+void Skin_Copy(int xd, int yd, int xs, int ys, int w, int h);
 void Go303(void);
 void knob(int x, int y, unsigned char number);
 void ShowInfo(void);

@@ -41,6 +41,7 @@
 #include "../include/variables.h"
 
 #include "../ui/include/misc_draw.h"
+#include "../ui/include/draw_primitives.h"
 #include "../ui/include/requesters.h"
 
 #include "../files/include/files.h"

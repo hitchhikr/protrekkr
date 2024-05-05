@@ -566,8 +566,6 @@ int Init_Context(void)
     FONT_LOW = Load_Skin_Picture("font.bmp");
     if(!FONT_LOW) return(FALSE);
 
-    if(!Set_Pictures_Colors()) return(FALSE);
-
     if(!Load_Font_Datas("font_datas.txt")) return(FALSE);
 
     SDL_SetColorKey(FONT, SDL_SRCCOLORKEY, 0);

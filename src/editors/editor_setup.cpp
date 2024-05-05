@@ -139,6 +139,7 @@ void Draw_Master_Ed(void)
 void Actualize_Master_Ed(char gode)
 {
     int Real_Palette_Idx;
+    int RefreshTex = FALSE;
 
     if(userscreen == USER_SCREEN_SETUP_EDIT)
     {
@@ -277,7 +278,10 @@ void Actualize_Master_Ed(char gode)
             Realslider(518, (Cur_Height - 45), Ptk_Palette[Real_Palette_Idx].b / 2, TRUE);
             outlong_small(668, (Cur_Height - 45), Ptk_Palette[Real_Palette_Idx].b, 0, 41, BUTTON_NORMAL | BUTTON_DISABLED);
             Set_Phony_Palette();
-            Refresh_Palette();
+            if(gode) 
+            {
+                RefreshTex = TRUE;
+            }
         }
 
         // Bevel on/off
@@ -296,7 +300,10 @@ void Actualize_Master_Ed(char gode)
                     break;
             }
             Set_Phony_Palette();
-            Refresh_Palette();
+            if(gode) 
+            {
+                RefreshTex = TRUE;
+            }
         }
 
         // Set auto save interval
@@ -459,6 +466,10 @@ void Actualize_Master_Ed(char gode)
                 Gui_Draw_Button_Box(258, (Cur_Height - 45), 29, 16, "On", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
                 Gui_Draw_Button_Box(258 + 31, (Cur_Height - 45), 29, 16, "Off", BUTTON_PUSHED | BUTTON_TEXT_CENTERED);
             }
+        }
+        if(RefreshTex)
+        {
+            Set_Pictures_Colors(FALSE);
         }
     }
 }

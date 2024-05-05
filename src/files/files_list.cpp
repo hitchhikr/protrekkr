@@ -74,7 +74,7 @@ int list_counter[SCOPE_LAST_DIR];
 int sort_files = TRUE;              // Just in case i would need to make it optional someday
 int nbr_dirs;
 
-FILEENTRY SMPT_LIST[2048];
+FILEENTRY SMPT_LIST[MAX_SMPT_LIST];
 char UpName1[1024];
 char UpName2[1024];
 
@@ -96,7 +96,7 @@ char *cur_dir;
 // Functions
 void Clear_Files_List(void)
 {
-    for(int listcleaner = 0; listcleaner < 2048; listcleaner++)
+    for(int listcleaner = 0; listcleaner < MAX_SMPT_LIST; listcleaner++)
     {
         memset(SMPT_LIST[listcleaner].Name, 0, sizeof(SMPT_LIST[0]));
     }

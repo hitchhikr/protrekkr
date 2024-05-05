@@ -2318,7 +2318,42 @@ void Post_Song_Init(void)
 
         oldspawn[i] = 0;
         roldspawn[i] = 0;
+
+#if defined(PTK_TRACK_EQ)
+        EqDat[i].f1p0[0] = 0.0f;
+        EqDat[i].f1p0[1] = 0.0f;
         
+        EqDat[i].f1p1[0] = 0.0f;
+        EqDat[i].f1p1[1] = 0.0f;
+        
+        EqDat[i].f1p2[0] = 0.0f;
+        EqDat[i].f1p2[1] = 0.0f;
+        
+        EqDat[i].f1p3[0] = 0.0f;
+        EqDat[i].f1p3[1] = 0.0f;
+        
+        EqDat[i].f2p0[0] = 0.0f;
+        EqDat[i].f2p0[1] = 0.0f;
+
+        EqDat[i].f2p1[0] = 0.0f;
+        EqDat[i].f2p1[1] = 0.0f;
+
+        EqDat[i].f2p2[0] = 0.0f;
+        EqDat[i].f2p2[1] = 0.0f;
+        
+        EqDat[i].f2p3[0] = 0.0f;
+        EqDat[i].f2p3[1] = 0.0f;
+
+        EqDat[i].sdm1[0] = 0.0f;
+        EqDat[i].sdm1[1] = 0.0f;
+
+        EqDat[i].sdm2[0] = 0.0f;
+        EqDat[i].sdm2[1] = 0.0f;
+
+        EqDat[i].sdm3[0] = 0.0f;
+        EqDat[i].sdm3[1] = 0.0f;
+#endif
+
 #if defined(PTK_FX_TRANCEGLIDER)
         glidestep[i] = 0;
 #endif
@@ -6904,7 +6939,6 @@ float FastLog(float i)
 {
 	float x;
 	float y;
-    return i;
 	x = (float) (*(int *) &i);
 	x *= 1.0f / (1 << 23);
 	x = x - 127;
@@ -6925,7 +6959,6 @@ float FastLog(float i)
 {
 	float x;
 	float y;
-    return i;
 	x = (float) (*(int *) &i);
 	x *= 1.0f / (1 << 23);
 	x = x - 127;

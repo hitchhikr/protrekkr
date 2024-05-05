@@ -35,6 +35,13 @@
 // ------------------------------------------------------
 // Include
 #include <SDL/SDL.h>
+#if defined(__USE_OPENGL__)
+#if defined(__WIN32__)
+#include <windows.h>
+#endif
+#include <SDL/SDL_opengl.h>
+#define TEXTURES_SIZE 2048
+#endif
 
 // ------------------------------------------------------
 // Constants
@@ -53,10 +60,22 @@ void DrawVLine(int x, int y1, int y2, int Color);
 void SetColor(int color);
 void Fillrect(int x1, int y1, int x2, int y2);
 void UISetPalette(SDL_Color *Palette, int Amount);
+#if defined(__USE_OPENGL__)
+GLuint Create_Texture(SDL_Surface *Source, int Width);
+void Destroy_Texture(GLuint txId);
+void Draw_Tx_Quad(float x, float y, float x1, float y1, float Width, float Height, GLuint TexID, int Blend);
+void Copy(GLuint Source, int x, int y, int x1, int y1, int x2, int y2);
+void Copy_No_Refresh(GLuint Source, int x, int y, int x1, int y1, int x2, int y2);
+#else
 void Copy(SDL_Surface *Source, int x, int y, int x1, int y1, int x2, int y2);
 void Copy_No_Refresh(SDL_Surface *Source, int x, int y, int x1, int y1, int x2, int y2);
+#endif
 void Copy_To_Surface(SDL_Surface *Source, SDL_Surface *dest, int x, int y, int x1, int y1, int x2, int y2);
 void PrintString(int x, int y, int Font_Type, char *String, int max_x = -1);
 void Push_Update_Rect(int x, int y, int width, int height);
+#if defined(__USE_OPENGL__)
+void Enter_2D_Mode(float Width, float Height);
+void Leave_2d_Mode(void);
+#endif
 
 #endif
