@@ -106,7 +106,6 @@ void Draw_HLine_(int x, int y, int Width, int Color)
             glVertex2f(Width, 0.0f);
         glEnd();
     glPopMatrix();
-    Nbr_Update_Rects++;
 }
 
 // ------------------------------------------------------
@@ -126,7 +125,6 @@ void Draw_VLine_(int x, int y, int Height, int Color)
             glVertex2f(1.0f, 0.0f);
         glEnd();
     glPopMatrix();
-    Nbr_Update_Rects++;
 }
 
 // ------------------------------------------------------
@@ -146,7 +144,6 @@ void Draw_Pixel_(int x, int y, int Color)
             glVertex2f(1.0f, 0.0f);
         glEnd();
     glPopMatrix();
-    Nbr_Update_Rects++;
 }
 
 // ------------------------------------------------------
@@ -167,7 +164,6 @@ void Draw_Flat_Rectangle(float x, float y,
             glVertex2f(Width, 0.0f);
         glEnd();
     glPopMatrix();
-    Nbr_Update_Rects++;
 }
 
 // ------------------------------------------------------
@@ -265,7 +261,6 @@ void Draw_Tx_Quad(float x, float y, float x1, float y1, float Width, float Heigh
         }
         glDisable(GL_TEXTURE_2D);
     glPopMatrix();
-    Nbr_Update_Rects++;
 }
 #endif
 

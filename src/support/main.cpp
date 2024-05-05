@@ -667,9 +667,6 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
     if(delay_ms > 1000) delay_ms = 1000;
 #endif
 
-//    Set_Phony_Palette();
-  //  Refresh_Palette();
-
     // Check if there's an argument
     if(argc != 1)
     {
@@ -973,11 +970,6 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
 #if defined(__USE_OPENGL__)
         Leave_2d_Mode();
         glFlush();
-/*        if(Nbr_Update_Rects)
-        {
-            SDL_GL_SwapBuffers();
-            Nbr_Update_Rects = 0;
-        }*/
 #endif
 
 #if defined(__AMIGAOS4__) || defined(__AROS__) || defined(__MORPHOS__)
