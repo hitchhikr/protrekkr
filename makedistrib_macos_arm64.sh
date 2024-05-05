@@ -1,4 +1,4 @@
 cd release/distrib/
-zip -vr ptk_v2.6.8_macos_arm64.zip * -x@../../exclude_macos_arm64.lst
+zip -vr ptk_v2.7.0_macos_arm64.zip * -x@../../exclude_macos_arm64.lst
 cd ..
 cd ..
