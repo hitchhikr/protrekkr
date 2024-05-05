@@ -66,6 +66,7 @@ extern GLuint SKIN303_GL;
 int Beveled = 1;
 char Use_Shadows = TRUE;
 
+int done_303_palette = FALSE;
 int curr_tab_highlight;
 
 int Nbr_Letters;
@@ -2981,24 +2982,28 @@ void Set_Pictures_Colors(int LogoPalette)
 
     bare_color_idx = min_idx;
 
-    was_locked = FALSE;
-    if(SDL_MUSTLOCK(SKIN303))
+    if(!LogoPalette && !done_303_palette)
     {
-        if(!SDL_LockSurface(SKIN303)) was_locked = TRUE;
-    }
+        was_locked = FALSE;
+        if(SDL_MUSTLOCK(SKIN303))
+        {
+            if(!SDL_LockSurface(SKIN303)) was_locked = TRUE;
+        }
 
-    Pix = (unsigned char *) SKIN303->pixels;
-    max_colors_303 = 0;
-    for(i = 0; i < SKIN303->w * SKIN303->h; i++)
-    {
-        if(Pix[i] > max_colors_303) max_colors_303 = Pix[i];
-        Pix[i] += min_idx;
-    }
-    max_colors_303++;
+        Pix = (unsigned char *) SKIN303->pixels;
+        max_colors_303 = 0;
+        for(i = 0; i < SKIN303->w * SKIN303->h; i++)
+        {
+            if(Pix[i] > max_colors_303) max_colors_303 = Pix[i];
+            Pix[i] += min_idx;
+        }
+        max_colors_303++;
 
-    if(was_locked)
-    {
-        SDL_UnlockSurface(SKIN303);
+        if(was_locked)
+        {
+            SDL_UnlockSurface(SKIN303);
+        }
+        done_303_palette = TRUE;
     }
 
     was_locked = FALSE;
@@ -3021,13 +3026,16 @@ void Set_Pictures_Colors(int LogoPalette)
         SDL_UnlockSurface(LOGOPIC);
     }
 
-    Pic_Palette = SKIN303->format->palette;
-    for(i = 0; i < max_colors_303; i++)
+    if(!LogoPalette)
     {
-        Palette_303[i].r = Pic_Palette->colors[i].r;
-        Palette_303[i].g = Pic_Palette->colors[i].g;
-        Palette_303[i].b = Pic_Palette->colors[i].b;
-        Palette_303[i].unused = Pic_Palette->colors[i].unused;
+        Pic_Palette = SKIN303->format->palette;
+        for(i = 0; i < max_colors_303; i++)
+        {
+            Palette_303[i].r = Pic_Palette->colors[i].r;
+            Palette_303[i].g = Pic_Palette->colors[i].g;
+            Palette_303[i].b = Pic_Palette->colors[i].b;
+            Palette_303[i].unused = Pic_Palette->colors[i].unused;
+        }
     }
 
     Pic_Palette = LOGOPIC->format->palette;
@@ -3078,7 +3086,7 @@ void Set_Pictures_Colors(int LogoPalette)
     Ptk_Palette[0].g = 0;
     Ptk_Palette[0].b = 0;
 
-    UISetPalette(Ptk_Palette, 256);
+    UISetPalette(Ptk_Palette, 256, LogoPalette);
 
     Env_Change = TRUE;
 
@@ -3107,13 +3115,7 @@ void Set_Pictures_Colors(int LogoPalette)
     Destroy_Textures();
     FONT_GL = Create_Texture(FONT, TEXTURES_SIZE);
     FONT_LOW_GL = Create_Texture(FONT_LOW, TEXTURES_SIZE);
-    if(!LogoPalette)
-    {
-        if(!SKIN303_GL)
-        {
-            SKIN303_GL = Create_Texture(SKIN303, TEXTURES_SIZE);
-        }
-    }
+    SKIN303_GL = Create_Texture(SKIN303, TEXTURES_SIZE);
     Temp_PFONT_GL = Create_Texture(Temp_PFONT, TEXTURES_SIZE);
     Temp_LARGEPFONT_GL = Create_Texture(Temp_LARGEPFONT, TEXTURES_SIZE);
     Temp_SMALLPFONT_GL = Create_Texture(Temp_SMALLPFONT, TEXTURES_SIZE);
@@ -3137,6 +3139,11 @@ void Destroy_Textures()
         Destroy_Texture(FONT_GL);
     }
     FONT_GL = 0;
+    if(SKIN303_GL)
+    {
+        Destroy_Texture(SKIN303_GL);
+    }
+    SKIN303_GL = 0;
     if(Temp_PFONT_GL)
     {
         Destroy_Texture(Temp_PFONT_GL);
@@ -3206,11 +3213,6 @@ void Destroy_UI(void)
 
 #if defined(__USE_OPENGL__)
     Destroy_Textures();
-    if(SKIN303_GL)
-    {
-        Destroy_Texture(SKIN303_GL);
-    }
-    SKIN303_GL = 0;
 #endif
 
 }

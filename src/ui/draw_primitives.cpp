@@ -325,7 +325,7 @@ void Fillrect(int x1, int y1, int x2, int y2)
 
 // ------------------------------------------------------
 // Set the current palette
-void UISetPalette(SDL_Color *Palette, int Amount)
+void UISetPalette(SDL_Color *Palette, int Amount, int LogoPalette)
 {
     if(FONT_LOW)
     {
@@ -335,13 +335,13 @@ void UISetPalette(SDL_Color *Palette, int Amount)
     {
         SDL_SetPalette(FONT, SDL_LOGPAL, Palette, 0, Amount);
     }
-    if(SKIN303)
+    if(SKIN303 && LogoPalette)
     {
-        SDL_SetPalette(SKIN303, SDL_LOGPAL, Palette, 0, Amount);
+//        SDL_SetPalette(SKIN303, SDL_LOGPAL, Palette, 0, Amount);
     }
     if(LOGOPIC)
     {
-        SDL_SetPalette(LOGOPIC, SDL_LOGPAL, Palette, 0, Amount);
+  //      SDL_SetPalette(LOGOPIC, SDL_LOGPAL, Palette, 0, Amount);
     }
     if(Temp_PFONT)
     {
@@ -414,7 +414,7 @@ void Copy(SDL_Surface *Source,
 #if defined(__USE_OPENGL__)
     Draw_Tx_Quad(x, y,
                  x1, y1,
-                 Dst_Rect.w - 1,
+                 Dst_Rect.w,
                  Dst_Rect.h,
                  Source, FALSE);
 #else

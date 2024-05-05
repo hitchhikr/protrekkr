@@ -276,7 +276,7 @@ int Check_Requester(LPREQUESTER Requester)
             SetColor(COL_BLACK);
             // Display the picture
             Copy(GET_SURFACE(Req_Picture), Pos_X + BEVEL_SIZE + 1, Pos_Y + BEVEL_SIZE + 1,
-                 0, 0, Req_Picture->w, Req_Picture->h - 2);
+                 0, 0, Req_Picture->w - 1, Req_Picture->h - 2);
         }
         else
         {

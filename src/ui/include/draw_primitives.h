@@ -59,7 +59,7 @@ void DrawHLine(int y, int x1, int x2, int Color);
 void DrawVLine(int x, int y1, int y2, int Color);
 void SetColor(int color);
 void Fillrect(int x1, int y1, int x2, int y2);
-void UISetPalette(SDL_Color *Palette, int Amount);
+void UISetPalette(SDL_Color *Palette, int Amount, int LogoPalette);
 #if defined(__USE_OPENGL__)
 GLuint Create_Texture(SDL_Surface *Source, int Width);
 void Destroy_Texture(GLuint txId);
