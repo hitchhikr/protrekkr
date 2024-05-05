@@ -971,8 +971,12 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
         }
 
 #if defined(__USE_OPENGL__)
-	    Leave_2d_Mode();
-        SDL_GL_SwapBuffers();
+        Leave_2d_Mode();
+        if(Nbr_Update_Rects)
+        {
+            SDL_GL_SwapBuffers();
+            Nbr_Update_Rects = 0;
+        }
 #endif
 
 #if defined(__AMIGAOS4__) || defined(__AROS__) || defined(__MORPHOS__)

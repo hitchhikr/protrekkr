@@ -1,6 +1,6 @@
 CXX = g++
 
-LIBS_X86 = -lsdldraw_x86 -lz -framework CoreAudio -framework CoreMidi -framework AudioUnit -framework Cocoa -framework SDL
+LIBS_X86 = -lsdldraw_x86 -lz -framework CoreAudio -framework CoreMidi -framework AudioUnit -framework Cocoa -framework OpenGL -framework SDL
 
 DEBUG = 
 
