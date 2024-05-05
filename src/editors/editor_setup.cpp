@@ -682,7 +682,7 @@ void Mouse_Left_Master_Ed(void)
             {
                 FullScreen = TRUE;
                 teac = 9;
-                Switch_FullScreen(Cur_Width, Cur_Height);
+                Switch_FullScreen(Cur_Width, Cur_Height, TRUE);
             }
         }
 
@@ -693,7 +693,7 @@ void Mouse_Left_Master_Ed(void)
             {
                 FullScreen = FALSE;
                 teac = 9;
-                Switch_FullScreen(Cur_Width, Cur_Height);
+                Switch_FullScreen(Cur_Width, Cur_Height, TRUE);
             }
         }
 

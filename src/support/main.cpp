@@ -99,9 +99,6 @@ REQUESTER Title_Requester =
 const SDL_VideoInfo *Screen_Info;
 int Startup_Width;
 int Startup_Height;
-#if defined(__MACOSX_PPC__)
-extern int Display_Pointer;
-#endif
 int Burn_Title = FALSE;
 SDL_Surface *Main_Screen;
 #if defined(__WIN32__)
@@ -614,7 +611,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
     Ptk_Palette[0].g = 0;
     Ptk_Palette[0].b = 0;
 
-    if(!Switch_FullScreen(Cur_Width, Cur_Height))
+    if(!Switch_FullScreen(Cur_Width, Cur_Height, FALSE))
     {
         Message_Error("Can't open screen.");
         SDL_Quit();
@@ -782,7 +779,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
                         if(Keys[SDLK_RETURN])
                         {
                             FullScreen ^= TRUE;
-                            Switch_FullScreen(Cur_Width, Cur_Height);
+                            Switch_FullScreen(Cur_Width, Cur_Height, TRUE);
                         }
                     }
                     break;
@@ -904,18 +901,13 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
                     SDL_putenv(Win_Coords);
 #endif
 
-                    Switch_FullScreen(Events[i].resize.w, Events[i].resize.h);
-                    Set_Pictures_Colors(FALSE);
+                    Switch_FullScreen(Events[i].resize.w, Events[i].resize.h, TRUE);
                     break;
 
                 case SDL_ACTIVEEVENT:
                     if(Events[i].active.gain)
                     {
-                        if(FullScreen)
-                        {
-                            Env_Change = TRUE;
-                            Set_Pictures_Colors(FALSE);
-                        }
+                        Set_Pictures_Colors(FALSE);
                         memset(Keys, 0, sizeof(Keys));
                         memset(Keys_Sym, 0, sizeof(Keys_Sym));
                         memset(Keys_Unicode, 0, sizeof(Keys_Raw));
@@ -949,15 +941,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
         glShadeModel(GL_FLAT);
 #endif
 
-#if defined(__MACOSX_PPC__)
-        if(Display_Pointer) Display_Mouse_Pointer(Mouse.old_x, Mouse.old_y, TRUE);
-#endif
-
         if(!Screen_Update()) break;
-
-#if defined(__MACOSX_PPC__)
-        if(Display_Pointer) Display_Mouse_Pointer(Mouse.x, Mouse.y, FALSE);
-#endif
 
 #if !defined(__USE_OPENGL__)
         // Flush all pending blits
@@ -1011,7 +995,7 @@ void Message_Error(char *Message)
 
 // ------------------------------------------------------
 // Swap window/fullscreen mode
-int Switch_FullScreen(int Width, int Height)
+int Switch_FullScreen(int Width, int Height, int Refresh)
 {
     Env_Change = TRUE;
     if(Width < SCREEN_WIDTH) Width = SCREEN_WIDTH;
@@ -1114,9 +1098,9 @@ int Switch_FullScreen(int Width, int Height)
     SendMessage(Main_Window, WM_SETICON, ICON_SMALL, (LONG) hIconSmall);
 #endif
 
-#if defined(__MACOSX_PPC__)
-    SDL_ShowCursor(0);
-#endif
-
+    if(Refresh)
+    {
+        Set_Pictures_Colors(FALSE);
+    }
     return(TRUE);
 }

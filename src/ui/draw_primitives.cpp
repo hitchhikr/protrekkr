@@ -48,9 +48,6 @@ extern char *Font_Ascii;
 extern int Nbr_Letters;
 extern int Font_Pos[256];
 extern int Font_Size[256];
-#if defined(__MACOSX_PPC__)
-extern unsigned char *Pointer_BackBuf;
-#endif
 int FgColor;
 #if defined(__USE_OPENGL__)
 SDL_Color GLPalette[256];
@@ -371,13 +368,6 @@ void UISetPalette(SDL_Color *Palette, int Amount)
         SDL_SetPalette(Temp_NOTESMALLPFONT, SDL_LOGPAL, Palette, 0, Amount);
     }
 
-#if defined(__MACOSX_PPC__)
-    if(POINTER)
-    {
-        SDL_SetPalette(POINTER, SDL_LOGPAL, Palette, 0, Amount);
-    }
-#endif
-
 #if !defined(__USE_OPENGL__)
 
     SDL_SetPalette(Main_Screen, SDL_PHYSPAL, Palette, 0, Amount);
@@ -569,82 +559,6 @@ void PrintString(int x,
         if(early_exit) break;
     }
 }
-
-// ------------------------------------------------------
-// Display or clear the mouse pointer at given coordinates
-#if defined(__MACOSX_PPC__)
-void Display_Mouse_Pointer(int x, int y, int clear)
-{
-    int was_locked;
-    int main_was_locked;
-
-    if(x >= Cur_Width) return;
-    if(y >= Cur_Height) return;
-    
-    main_was_locked = FALSE;
-    if(SDL_MUSTLOCK(Main_Screen))
-    {
-        if(!SDL_LockSurface(Main_Screen)) main_was_locked = TRUE;
-    }
-
-    was_locked = FALSE;
-    if(SDL_MUSTLOCK(POINTER))
-    {
-        if(!SDL_LockSurface(POINTER)) was_locked = TRUE;
-    }
-
-    int i;
-    int j;
-    int Src_offset;
-    int Dst_offset;
-    int Len_Dst = Main_Screen->pitch * Main_Screen->h;
-    unsigned char *SrcPix = (unsigned char *) POINTER->pixels;
-    unsigned char *DstPix = (unsigned char *) Main_Screen->pixels;
-
-    for(j = 0; j < POINTER->h; j++)
-    {
-        for(i = 0; i < POINTER->w; i++)
-        {
-            Src_offset = (j * POINTER->pitch) + i;
-            Dst_offset = ((j + y) * Main_Screen->pitch) + (i + x);
-            if(Dst_offset >= 0)
-            {
-                if(((i + x) < (Cur_Width - 1)) &&
-                   ((j + y) < (Cur_Height - 1)))
-                {
-                    if(clear)
-                    {
-                        if(SrcPix[Src_offset])
-                        {
-                            DrawPixel((i + x), (j + y), Pointer_BackBuf[Src_offset]);
-                        }
-                    } 
-                    else
-                    {
-                        if(SrcPix[Src_offset])
-                        {
-                            Pointer_BackBuf[Src_offset] = DstPix[Dst_offset];
-                            DrawPixel((i + x), (j + y), SrcPix[Src_offset]);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    if(was_locked)
-    {
-        SDL_UnlockSurface(POINTER);
-    }
-
-    if(main_was_locked)
-    {
-        SDL_UnlockSurface(Main_Screen);
-    }
-
-    Push_Update_Rect(x, y, POINTER->w, POINTER->h);
-}
-#endif
 
 // ------------------------------------------------------
 // See if a rect have to be scheduled or not

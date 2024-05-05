@@ -91,7 +91,7 @@ extern char Keyboard_Name[];
 // Functions
 void Run_Interface(void);
 void Message_Error(char *Message);
-int Switch_FullScreen(int Width, int Height);
+int Switch_FullScreen(int Width, int Height, int Refresh);
 int Get_LShift(void);
 int Get_RShift(void);
 int Get_Caps(void);
