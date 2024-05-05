@@ -972,11 +972,12 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
 
 #if defined(__USE_OPENGL__)
         Leave_2d_Mode();
-        if(Nbr_Update_Rects)
+        glFlush();
+/*        if(Nbr_Update_Rects)
         {
             SDL_GL_SwapBuffers();
             Nbr_Update_Rects = 0;
-        }
+        }*/
 #endif
 
 #if defined(__AMIGAOS4__) || defined(__AROS__) || defined(__MORPHOS__)
@@ -1014,8 +1015,8 @@ int Switch_FullScreen(int Width, int Height, int Refresh)
 #endif
 
 #if defined(__USE_OPENGL__)
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, TRUE);
-    SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1);
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 0);
+    SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 0);
     SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, TRUE);
 #endif
 
