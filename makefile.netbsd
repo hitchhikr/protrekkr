@@ -3,7 +3,7 @@ CXX = g++
 LIBS = -lSDL -lsdldraw -lz -lpthread
 
 FLAGS = -O3 -fno-strict-aliasing -ffast-math -fno-rtti -fno-exceptions -w -I/usr/pkg/include -I/usr/local/include -L/usr/pkg/lib -L/usr/local/lib -Lsrc/extralibs/sdl_draw -Lsrc/extralibs/zlib-1.2.3 \
-        -D __LINUX__ -D __GCC__ -D __NO_MIDI__ -D __NETBSD__ -D __MOT_SWAP__
+        -D __LINUX__ -D __GCC__ -D __NO_MIDI__ -D __NETBSD__ -D __MOT_SWAP__ -D __USE_OPENGL__
 
 EXEOBJS = ptk.o \
           editor_303.o editor_pattern.o editor_sequencer.o editor_track.o editor_track_fx.o \

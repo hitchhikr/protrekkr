@@ -5,7 +5,7 @@ LIBS_PPC = -lsdldraw_ppc -lz -framework CoreAudio -framework CoreMidi -framework
 DEBUG = 
 
 FLAGS_PPC = $(DEBUG) -O3 -mcpu=G4 -fomit-frame-pointer -ffast-math -faltivec -maltivec -mtune=G4 -fno-rtti -I/Library/Frameworks/SDL.framework/Headers \
-            -fno-strict-aliasing -arch ppc -D __MACOSX_PPC__ -D __GCC__ -D __MACOSX_CORE__ -D __BIG_ENDIAN__ -D __MOT_SWAP__ -D __AIFF__
+            -fno-strict-aliasing -arch ppc -D __MACOSX_PPC__ -D __GCC__ -D __MACOSX_CORE__ -D __BIG_ENDIAN__ -D __MOT_SWAP__ -D __AIFF__ -D __USE_OPENGL__
 
 EXEOBJS_PPC = ptk_ppc.o \
               editor_303_ppc.o editor_pattern_ppc.o editor_sequencer_ppc.o editor_track_ppc.o editor_track_fx_ppc.o \
