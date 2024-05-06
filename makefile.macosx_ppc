@@ -1,11 +1,11 @@
 CXX = g++
 
-LIBS_PPC = -lsdldraw_ppc -lz -framework CoreAudio -framework CoreMidi -framework AudioUnit -framework Cocoa -framework OpenGL -framework SDL
+LIBS_PPC = -lsdldraw_ppc -lz -framework CoreAudio -framework CoreMidi -framework AudioUnit -framework Cocoa -framework OpenGL -lSDL
 
 DEBUG = 
 
-FLAGS_PPC = $(DEBUG) -O3 -mcpu=G4 -fomit-frame-pointer -ffast-math -faltivec -maltivec -mtune=G4 -fno-rtti -I/Library/Frameworks/SDL.framework/Headers \
-            -fno-strict-aliasing -arch ppc -D __MACOSX_PPC__ -D __GCC__ -D __MACOSX_CORE__ -D __BIG_ENDIAN__ -D __MOT_SWAP__ -D __AIFF__ -D __USE_OPENGL__
+FLAGS_PPC = $(DEBUG) -O3 -arch ppc -mcpu=G4 -fomit-frame-pointer -ffast-math -faltivec -maltivec -mtune=G4 -fno-rtti -I/usr/local/include \
+            -fno-strict-aliasing -D __MACOSX_PPC__ -D __GCC__ -D __MACOSX_CORE__ -D __BIG_ENDIAN__ -D __MOT_SWAP__ -D __AIFF__ -D __USE_OPENGL__
 
 EXEOBJS_PPC = ptk_ppc.o \
               editor_303_ppc.o editor_pattern_ppc.o editor_sequencer_ppc.o editor_track_ppc.o editor_track_fx_ppc.o \
@@ -21,22 +21,22 @@ EXEOBJS_PPC = ptk_ppc.o \
               spline_ppc.o tb_303_ppc.o wavpack_ppc.o samples_unpack_ppc.o replay_ppc.o synth_ppc.o endianness_ppc.o \
               sounddriver_macosx_ppc.o
 
-all: protrekkr
+all: protrekkr_ppc
 
 clean: RemObj
 
 RemObj:
 	-rm -f $(EXEOBJS_PPC)
 
-protrekkr: $(EXEOBJS_PPC)
+protrekkr_ppc: $(EXEOBJS_PPC)
 	(cd src/extralibs/sdl_draw; make -f makefile.macosx_ppc)
 	(cd src/extralibs/zlib-1.2.3; make -f makefile.macosx_ppc)
 	(cd src/extralibs/bin2c; make -f makefile.macosx_ppc)
-	-mkdir ./release/distrib/protrekkr.app/Contents/MacOS/
-	$(CXX) -o ./release/distrib/protrekkr.app/Contents/MacOS/Protrekkr -L./ -Lsrc/extralibs/sdl_draw -Lsrc/extralibs/zlib-1.2.3 \
-           -L/library/frameworks $(FLAGS_PPC) $(EXEOBJS_PPC) $(LIBS_PPC)
-	strip -x -X -S ./release/distrib/protrekkr.app/Contents/MacOS/Protrekkr
-	chmod +x ./release/distrib/protrekkr.app/Contents/MacOS/Protrekkr
+	$(CXX) -o ./release/distrib/protrekkr_ppc.app/Contents/MacOS/Protrekkr -L./ -Lsrc/extralibs/sdl_draw -Lsrc/extralibs/zlib-1.2.3 \
+           -L/usr/local/lib -L/library/frameworks $(FLAGS_PPC) $(EXEOBJS_PPC) $(LIBS_PPC)
+	strip -x -X -S ./release/distrib/protrekkr_ppc.app/Contents/MacOS/Protrekkr
+	chmod +x ./release/distrib/protrekkr_ppc.app/Contents/MacOS/Protrekkr
+	install_name_tool ./release/distrib/protrekkr_ppc.app/Contents/MacOS/Protrekkr -change /usr/local/lib/libSDL-1.2.0.dylib @executable_path/libSDL-1.2.0.dylib
 	
 ptk_ppc.o: src/ptk.cpp
 	$(CXX) -c -o $(@) $(FLAGS_PPC) $<

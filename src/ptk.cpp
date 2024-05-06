@@ -644,7 +644,6 @@ int Screen_Update(void)
     {
         redraw_everything = TRUE;
         Env_Change = FALSE;
-        
     }
 
     for(i = 0; i < Channels_Polyphony[Track_Under_Caret]; i++)
@@ -1999,12 +1998,6 @@ int Screen_Update(void)
         }
 
         // --------------------------------------
-//        if(!sr_isrecording)
-  //      {
-            //Actualize_Track_Ed(15);
-            //Actualize_Track_Fx_Ed(11);
-    //    }
-
         Actupated(0);
         player_line = Pattern_Line_Visual;
     }

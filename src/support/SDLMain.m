@@ -8,7 +8,7 @@
 #if defined(__MACOSX_X86__)
 #import <SDL/SDL.h>
 #else
-#import "SDL.h"
+#import "SDL/SDL.h"
 #endif
 #import "include/SDLMain.h"
 #import <sys/param.h> /* for MAXPATHLEN */

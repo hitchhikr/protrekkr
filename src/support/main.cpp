@@ -928,6 +928,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
         }
 
 #if defined(__USE_OPENGL__)
+        glDrawBuffer(GL_BACK);
         Enter_2D_Mode(Cur_Width, Cur_Height);
 		glDisable(GL_DEPTH_TEST);
 		glDisable(GL_LIGHTING);
@@ -935,6 +936,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
 		glDisable(GL_POINT_SMOOTH);
 		glDisable(GL_POLYGON_SMOOTH);
 	    glDisable(GL_BLEND);
+        glDisable( GL_CULL_FACE );
         glHint(GL_POINT_SMOOTH_HINT, GL_FASTEST);
         glHint(GL_LINE_SMOOTH_HINT, GL_FASTEST);
         glHint(GL_POLYGON_SMOOTH_HINT, GL_FASTEST);
@@ -969,7 +971,12 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
 
 #if defined(__USE_OPENGL__)
         Leave_2d_Mode();
-        glFlush();
+        glFinish();
+        glReadBuffer(GL_BACK);
+        glDrawBuffer(GL_FRONT);
+        glRasterPos2f(-1.0f, -1.0f);
+        glCopyPixels(0, 0, Cur_Width, Cur_Height, GL_COLOR);
+        glFinish();
 #endif
 
 #if defined(__AMIGAOS4__) || defined(__AROS__) || defined(__MORPHOS__)
@@ -1007,7 +1014,7 @@ int Switch_FullScreen(int Width, int Height, int Refresh)
 #endif
 
 #if defined(__USE_OPENGL__)
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 0);
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 0);
     SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, TRUE);
 #endif
