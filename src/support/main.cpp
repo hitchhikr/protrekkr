@@ -611,6 +611,12 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
     Ptk_Palette[0].g = 0;
     Ptk_Palette[0].b = 0;
 
+#if defined(__USE_OPENGL__)
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1);
+    SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, TRUE);
+#endif
+
     if(!Switch_FullScreen(Cur_Width, Cur_Height, FALSE))
     {
         Message_Error("Can't open screen.");
@@ -1012,12 +1018,6 @@ int Switch_FullScreen(int Width, int Height, int Refresh)
 #ifndef __MORPHOS__
     SDL_putenv("SDL_VIDEO_WINDOW_POS=center");
     SDL_putenv("SDL_VIDEO_CENTERED=1");
-#endif
-
-#if defined(__USE_OPENGL__)
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-    SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1);
-    SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, TRUE);
 #endif
 
     if(FullScreen)
