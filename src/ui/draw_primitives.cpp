@@ -333,7 +333,7 @@ void Fillrect(int x1, int y1, int x2, int y2)
 
 // ------------------------------------------------------
 // Set the current palette
-void UISetPalette(SDL_Color *Palette, int Amount, int LogoPalette)
+void UISetPalette(SDL_Color *Palette, int Amount)
 {
     if(FONT_LOW)
     {
@@ -342,10 +342,6 @@ void UISetPalette(SDL_Color *Palette, int Amount, int LogoPalette)
     if(FONT)
     {
         SDL_SetPalette(FONT, SDL_LOGPAL, Palette, 0, Amount);
-    }
-    if(SKIN303 && LogoPalette)
-    {
-  //      SDL_SetPalette(SKIN303, SDL_LOGPAL, Palette, 0, Amount);
     }
     if(LOGOPIC)
     {

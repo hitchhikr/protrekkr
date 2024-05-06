@@ -68,6 +68,7 @@ char Use_Shadows = TRUE;
 
 int done_303_palette = FALSE;
 int done_logo_palette = FALSE;
+extern int Burn_Title;
 int curr_tab_highlight;
 
 int Nbr_Letters;
@@ -2944,6 +2945,11 @@ void Set_Pictures_Colors(int LogoPalette)
     unsigned char *Pix;
     int was_locked;
 
+    if(!Burn_Title && LogoPalette == FALSE)
+    {
+        return;
+    }
+
     SDL_Palette *Pic_Palette;
     int min_idx = sizeof(Default_Palette2) / sizeof(SDL_Color);
 
@@ -3091,7 +3097,7 @@ void Set_Pictures_Colors(int LogoPalette)
     Ptk_Palette[0].g = 0;
     Ptk_Palette[0].b = 0;
 
-    UISetPalette(Ptk_Palette, 256, LogoPalette);
+    UISetPalette(Ptk_Palette, 256);
 
     Env_Change = TRUE;
 

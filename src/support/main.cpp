@@ -963,8 +963,8 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
         }
         if(!Burn_Title && !SplashScreen)
         {
-            Kill_Requester();
             Burn_Title = TRUE;
+            Kill_Requester();
         }
 
 #if defined(__USE_OPENGL__)
