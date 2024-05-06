@@ -1077,6 +1077,8 @@ int Switch_FullScreen(int Width, int Height, int Refresh)
 
 #if defined(__USE_OPENGL__)
     glViewport(0, 0, Cur_Width, Cur_Height);
+    glReadBuffer(GL_FRONT);
+    glDrawBuffer(GL_BACK);
 #endif
     
     CONSOLE_WIDTH = Cur_Width;
