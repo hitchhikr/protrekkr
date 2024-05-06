@@ -970,14 +970,12 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
 
 #if defined(__USE_OPENGL__)
         Leave_2d_Mode();
-        glFlush();
-        glFinish();
         glDrawBuffer(GL_FRONT);
         glRasterPos2i(-1.0f, -1.0f);
         glCopyPixels(0, 0, Cur_Width, Cur_Height, GL_COLOR);
+        glDrawBuffer(GL_BACK);
         glFlush();
         glFinish();
-        glDrawBuffer(GL_BACK);
 #endif
 
 #if defined(__AMIGAOS4__) || defined(__AROS__) || defined(__MORPHOS__)
@@ -1023,14 +1021,12 @@ int Switch_FullScreen(int Width, int Height, int Refresh)
     if(FullScreen)
     {
 #if defined(__USE_OPENGL__)
-        if((Main_Screen = SDL_SetVideoMode(Startup_Width,
-                                           Startup_Height,
+        if((Main_Screen = SDL_SetVideoMode(Startup_Width, Startup_Height,
                                            SCREEN_BPP,
                                            SDL_OPENGL | SDL_HWSURFACE | SDL_HWPALETTE |
                                            (FullScreen ? SDL_FULLSCREEN : 0))) == NULL)
 #else
-        if((Main_Screen = SDL_SetVideoMode(Startup_Width,
-                                           Startup_Height,
+        if((Main_Screen = SDL_SetVideoMode(Startup_Width, Startup_Height,
                                            SCREEN_BPP,
                                            SDL_SWSURFACE | SDL_PREALLOC | SDL_HWPALETTE |
                                            (FullScreen ? SDL_FULLSCREEN : 0))) == NULL)
@@ -1075,7 +1071,6 @@ int Switch_FullScreen(int Width, int Height, int Refresh)
 
 #if defined(__USE_OPENGL__)
     glViewport(0, 0, Cur_Width, Cur_Height);
-    glDrawBuffer(GL_BACK);
 #endif
     
     CONSOLE_WIDTH = Cur_Width;
