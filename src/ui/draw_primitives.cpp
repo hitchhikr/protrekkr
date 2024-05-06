@@ -194,11 +194,19 @@ GLuint Create_Texture(SDL_Surface *Source, int Width)
             {
 
                 index = SrcPic[(j * Source->pitch) + i];
+#if defined(__BIG_ENDIAN__)
+                RGBTexture[(j * Width) + i] = (GLPalette[index].r << 24) | (GLPalette[index].g << 16) | (GLPalette[index].b << 8);
+                if(index)
+                {
+                    RGBTexture[(j * Width) + i] |= 0xff;
+                }
+#else
                 RGBTexture[(j * Width) + i] = (GLPalette[index].r) | (GLPalette[index].g << 8) | (GLPalette[index].b << 16);
                 if(index)
                 {
                     RGBTexture[(j * Width) + i] |= 0xff000000;
                 }
+#endif
             }
         }
         glGenTextures(1, &txId);
