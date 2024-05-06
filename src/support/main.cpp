@@ -984,6 +984,8 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
         glRasterPos2i(-1.0f, -1.0f);
         glCopyPixels(0, 0, Cur_Width, Cur_Height, GL_COLOR);
         glFinish();
+        glReadBuffer(GL_FRONT);
+        glDrawBuffer(GL_BACK);
 #endif
 
 #if defined(__AMIGAOS4__) || defined(__AROS__) || defined(__MORPHOS__)
