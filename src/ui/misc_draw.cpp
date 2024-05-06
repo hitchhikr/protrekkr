@@ -3133,6 +3133,8 @@ void Set_Pictures_Colors(int LogoPalette)
     Temp_NOTEPFONT_GL = Create_Texture(Temp_NOTEPFONT, TEXTURES_SIZE);
     Temp_NOTELARGEPFONT_GL = Create_Texture(Temp_NOTELARGEPFONT, TEXTURES_SIZE);
     Temp_NOTESMALLPFONT_GL = Create_Texture(Temp_NOTESMALLPFONT, TEXTURES_SIZE);
+
+    glFinish();
 #endif
 
 }
