@@ -1074,6 +1074,8 @@ int Switch_FullScreen(int Width, int Height, int Refresh)
     Cur_Height = Height;
 
 #if defined(__USE_OPENGL__)
+    glReadBuffer(GL_FRONT);
+    glDrawBuffer(GL_BACK);
     glViewport(0, 0, Cur_Width, Cur_Height);
 #endif
     
@@ -1110,10 +1112,6 @@ int Switch_FullScreen(int Width, int Height, int Refresh)
     {
         Set_Pictures_Colors(FALSE);
     }
-
-#if defined(__USE_OPENGL__)
-        glFinish();
-#endif
 
     return(TRUE);
 }
