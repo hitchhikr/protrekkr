@@ -1110,5 +1110,10 @@ int Switch_FullScreen(int Width, int Height, int Refresh)
     {
         Set_Pictures_Colors(FALSE);
     }
+
+#if defined(__USE_OPENGL__)
+        glFinish();
+#endif
+
     return(TRUE);
 }
