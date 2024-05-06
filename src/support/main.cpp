@@ -972,13 +972,11 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
         Leave_2d_Mode();
         glFlush();
         glFinish();
-        glReadBuffer(GL_BACK);
         glDrawBuffer(GL_FRONT);
         glRasterPos2i(-1.0f, -1.0f);
         glCopyPixels(0, 0, Cur_Width, Cur_Height, GL_COLOR);
         glFlush();
         glFinish();
-        glReadBuffer(GL_FRONT);
         glDrawBuffer(GL_BACK);
 #endif
 
@@ -1077,7 +1075,6 @@ int Switch_FullScreen(int Width, int Height, int Refresh)
 
 #if defined(__USE_OPENGL__)
     glViewport(0, 0, Cur_Width, Cur_Height);
-    glReadBuffer(GL_FRONT);
     glDrawBuffer(GL_BACK);
 #endif
     
