@@ -611,12 +611,6 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
     Ptk_Palette[0].g = 0;
     Ptk_Palette[0].b = 0;
 
-#if defined(__USE_OPENGL__)
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-    SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1);
-    SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, TRUE);
-#endif
-
     if(!Switch_FullScreen(Cur_Width, Cur_Height, FALSE))
     {
         Message_Error("Can't open screen.");
@@ -934,8 +928,6 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
         }
 
 #if defined(__USE_OPENGL__)
-        glReadBuffer(GL_BACK);
-        glDrawBuffer(GL_BACK);
         Enter_2D_Mode(Cur_Width, Cur_Height);
 		glDisable(GL_DEPTH_TEST);
 		glDisable(GL_LIGHTING);
@@ -1022,6 +1014,12 @@ int Switch_FullScreen(int Width, int Height, int Refresh)
     SDL_putenv("SDL_VIDEO_CENTERED=1");
 #endif
 
+#if defined(__USE_OPENGL__)
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1);
+    SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, TRUE);
+#endif
+
     if(FullScreen)
     {
 #if defined(__USE_OPENGL__)
@@ -1076,8 +1074,6 @@ int Switch_FullScreen(int Width, int Height, int Refresh)
     Cur_Height = Height;
 
 #if defined(__USE_OPENGL__)
-    glReadBuffer(GL_BACK);
-    glDrawBuffer(GL_BACK);
     glViewport(0, 0, Cur_Width, Cur_Height);
 #endif
     
