@@ -1,8 +1,8 @@
 CXX = g++
 
-LIBS = -lSDL -lsdldraw -lz -lpthread
+LIBS = -lGL -lSDL -lsdldraw -lz -lpthread
 
-FLAGS = -O3 -fno-strict-aliasing -ffast-math -fno-rtti -fno-exceptions -w -I/usr/pkg/include -I/usr/local/include -L/usr/pkg/lib -L/usr/local/lib -Lsrc/extralibs/sdl_draw -Lsrc/extralibs/zlib-1.2.3 \
+FLAGS = -O3 -fno-strict-aliasing -ffast-math -fno-rtti -fno-exceptions -w -I/usr/pkg/include -I/usr/X11R7/include -L/usr/pkg/lib -L/usr/X11R7/lib -Lsrc/extralibs/sdl_draw -Lsrc/extralibs/zlib-1.2.3 \
         -D __LINUX__ -D __GCC__ -D __NO_MIDI__ -D __NETBSD__ -D __MOT_SWAP__ -D __USE_OPENGL__
 
 EXEOBJS = ptk.o \
@@ -32,7 +32,6 @@ protrekkr: $(EXEOBJS)
 	$(CXX) -o ./release/distrib/ptk_netbsd -L./ $(FLAGS) $(EXEOBJS) $(LIBS)
 	strip -s -x ./release/distrib/ptk_netbsd
 	chmod +x ./release/distrib/ptk_netbsd
-#	-rm -f $(EXEOBJS)
 	
 ptk.o: src/ptk.cpp
 	$(CXX) -c -o $(@) $(FLAGS) $<
