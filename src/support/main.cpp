@@ -934,7 +934,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
         }
 
 #if defined(__USE_OPENGL__)
-        glReadBuffer(GL_FRONT);
+        glReadBuffer(GL_BACK);
         glDrawBuffer(GL_BACK);
         Enter_2D_Mode(Cur_Width, Cur_Height);
 		glDisable(GL_DEPTH_TEST);
@@ -984,7 +984,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
         glRasterPos2i(-1.0f, -1.0f);
         glCopyPixels(0, 0, Cur_Width, Cur_Height, GL_COLOR);
         glFinish();
-        glReadBuffer(GL_FRONT);
+        glReadBuffer(GL_BACK);
         glDrawBuffer(GL_BACK);
 #endif
 
@@ -1076,7 +1076,7 @@ int Switch_FullScreen(int Width, int Height, int Refresh)
     Cur_Height = Height;
 
 #if defined(__USE_OPENGL__)
-    glReadBuffer(GL_FRONT);
+    glReadBuffer(GL_BACK);
     glDrawBuffer(GL_BACK);
     glViewport(0, 0, Cur_Width, Cur_Height);
 #endif
