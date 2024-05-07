@@ -616,6 +616,12 @@ void Destroy_Context(void)
     RawPatterns = NULL;
 
     Destroy_UI();
+
+#if defined(__USE_OPENGL__)
+    glFlush();
+    glFinish();
+#endif
+
     SDL_Quit();
 }
 
@@ -3423,7 +3429,6 @@ Uint32 Timer_CallBack(Uint32 interval, void *param)
             Pack_Module(name);
         }
     }
-
     return(interval);
 }
 
