@@ -66,7 +66,6 @@ void AUDIO_Synth_Play(void);
 // Desc: Audio rendering
 static void AUDIO_Callback(void *cookie, void *inBuffer, size_t byteCount, BStreamingGameSound *device)
 {
-	assert(byteCount != 0);
     if(AUDIO_Play_Flag)
     {
         AUDIO_Mixer((Uint8 *) inBuffer, byteCount);
