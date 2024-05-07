@@ -5,7 +5,7 @@ ProTrekkr releases history
 v2.7.0
 
 - Copy buffers icons weren't updated properly when selected with keyboard.
-- Migrated the user interface to OpenGL.
+- Migrated the user interface to OpenGL for slower systems.
 - Fixed a nasty regression bug in log & pow functions.
 - Various bugs fixed here and there.
 
