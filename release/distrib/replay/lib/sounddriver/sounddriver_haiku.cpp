@@ -45,13 +45,12 @@ int AUDIO_Play_Flag;
 float AUDIO_Timer;
 
 int volatile AUDIO_Acknowledge;
-BStreamingGameSound* AUDIO_Device;
+BStreamingGameSound *AUDIO_Device;
 Uint32 Amount;
 
 int AUDIO_SoundBuffer_Size;
 int AUDIO_Latency;
 int AUDIO_Milliseconds = 10;
-int AUDIO_16Bits;
 
 // ------------------------------------------------------
 // Functions
@@ -108,8 +107,6 @@ int AUDIO_Create_Sound_Buffer(int milliseconds)
 
     num_fragments = 6;
     frag_size = (int) (AUDIO_PCM_FREQ * (milliseconds / 1000.0f));
-
-    AUDIO_16Bits = TRUE;
 
 	struct gs_audio_format format;
 	format.frame_rate = AUDIO_PCM_FREQ;

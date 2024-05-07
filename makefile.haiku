@@ -30,7 +30,7 @@ protrekkr: $(EXEOBJS)
 	(cd src/extralibs/sdl_draw; $(MAKE) -f makefile.haiku)
 	(cd src/extralibs/zlib-1.2.3; $(MAKE))
 	$(CXX) -o ./release/distrib/ptk_haiku -L./ $(FLAGS) $(EXEOBJS) $(LIBS)
-#	strip -s -x ./release/distrib/ptk_haiku
+	strip -s -x ./release/distrib/ptk_haiku
 	chmod +x ./release/distrib/ptk_haiku
 	
 ptk.o: src/ptk.cpp
