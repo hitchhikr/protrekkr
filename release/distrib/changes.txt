@@ -7,6 +7,7 @@ v2.7.0
 - Copy buffers icons weren't updated properly when selected with keyboard.
 - Migrated the user interface to OpenGL.
 - Fixed a nasty regression bug in log & pow functions.
+- Various bugs fixed here and there.
 
 v2.6.7
 

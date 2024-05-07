@@ -276,35 +276,41 @@ void Draw_Tx_Quad(float x, float y, float x1, float y1, float Width, float Heigh
 // Draw a pixel
 void DrawPixel(int x, int y, int Color)
 {
+
 #if defined(__USE_OPENGL__)
     Draw_Pixel_(x, y, Color);
 #else
     Draw_Pixel(Main_Screen, x, y, Color);
 #endif
+
 }
 
 // ------------------------------------------------------
 // Draw an horizontal line
 void DrawHLine(int y, int x1, int x2, int Color)
 {
+
 #if defined(__USE_OPENGL__)
     Draw_HLine_(x1, y, (x2 - x1) + 1, Color);
 #else
     Draw_HLine(Main_Screen, x1, y, x2, Color);
     Push_Update_Rect(x1, y, x2 - x1, y + 1);
 #endif
+
 }
 
 // ------------------------------------------------------
 // Draw a vertical line
 void DrawVLine(int x, int y1, int y2, int Color)
 {
+
 #if defined(__USE_OPENGL__)
     Draw_VLine_(x, y1, (y2 - y1) + 1, Color);
 #else
     Draw_VLine(Main_Screen, x, y1, y2, Color);
     Push_Update_Rect(x, y1, x + 1, y2 - y1);
 #endif
+
 }
 
 // ------------------------------------------------------
@@ -318,6 +324,7 @@ void SetColor(int color)
 // Fill a rectangle with the current color
 void Fillrect(int x1, int y1, int x2, int y2)
 {
+
 #if defined(__USE_OPENGL__)
     Draw_Flat_Rectangle(x1, y1, x2 - x1, y2 - y1, FgColor);
 #else
@@ -329,6 +336,7 @@ void Fillrect(int x1, int y1, int x2, int y2)
     SDL_FillRect(Main_Screen, &Dst_Rect, FgColor);
     Push_Update_Rect(x1, y1, x2 - x1, y2 - y1);
 #endif
+
 }
 
 // ------------------------------------------------------
@@ -345,7 +353,7 @@ void UISetPalette(SDL_Color *Palette, int Amount)
     }
     if(LOGOPIC)
     {
-        SDL_SetPalette(LOGOPIC, SDL_LOGPAL, Palette, 0, Amount);
+//        SDL_SetPalette(LOGOPIC, SDL_LOGPAL, Palette, 0, Amount);
     }
     if(Temp_PFONT)
     {
@@ -373,12 +381,9 @@ void UISetPalette(SDL_Color *Palette, int Amount)
     }
 
 #if !defined(__USE_OPENGL__)
-
     SDL_SetPalette(Main_Screen, SDL_PHYSPAL, Palette, 0, Amount);
     SDL_SetPalette(Main_Screen, SDL_LOGPAL, Palette, 0, Amount);
-
 #else
-
     int i;
 
     for(i = 0; i < Amount; i++)

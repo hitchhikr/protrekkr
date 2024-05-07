@@ -63,8 +63,6 @@ typedef struct
 {
     int x;
     int y;
-    int old_x;
-    int old_y;
     int button;
     int button_oneshot;
     int wheel;

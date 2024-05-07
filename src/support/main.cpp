@@ -429,6 +429,11 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
     {
         sprintf(Window_Title, "%s", VERSION);
     }
+
+#if defined(__USE_OPENGL__)
+    strcat(Window_Title, " - (OpenGL version)");
+#endif
+
     SDL_WM_SetCaption(Window_Title, NULL);
 
     ExePath = (char *) malloc(ExePath_Size + 1);
@@ -442,6 +447,8 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
     Screen_Info = SDL_GetVideoInfo();
     Startup_Width = Screen_Info->current_w;
     Startup_Height = Screen_Info->current_h;
+    if(Startup_Width < SCREEN_WIDTH) Startup_Width = SCREEN_WIDTH;
+    if(Startup_Height < SCREEN_HEIGHT) Startup_Height = SCREEN_HEIGHT;
 
 #if defined(__LINUX__)
 
@@ -641,11 +648,9 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
         exit(0);
     }
 
-    Set_Pictures(TRUE);
+    Set_Pictures_And_Palettes(TRUE);
 
     SDL_GetMouseState((int *) &Mouse.x, (int *) &Mouse.y);
-    Mouse.old_x = -16;
-    Mouse.old_y = -16;
 
 #if defined(__AMIGAOS4__) || defined(__AROS__) || defined(__MORPHOS__)
     char *env_var;
@@ -891,8 +896,11 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
                     // Nullify it
 
 #ifndef __MORPHOS__
-                    sprintf(Win_Coords, "SDL_VIDEO_WINDOW_POS=");
-                    SDL_putenv(Win_Coords);
+                    if(!FullScreen)
+                    {
+                        sprintf(Win_Coords, "SDL_VIDEO_WINDOW_POS=");
+                        SDL_putenv(Win_Coords);
+                    }
 #endif
 
                     Switch_FullScreen(Events[i].resize.w, Events[i].resize.h, TRUE);
@@ -903,7 +911,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
                     {
                         if(FullScreen)
                         {
-                            Set_Pictures(FALSE);
+                            Set_Pictures_And_Palettes(FALSE);
                         }
                         memset(Keys, 0, sizeof(Keys));
                         memset(Keys_Sym, 0, sizeof(Keys_Sym));
@@ -925,7 +933,6 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
         }
 
 #if defined(__USE_OPENGL__)
-
         Enter_2D_Mode(Cur_Width, Cur_Height);
 		glDisable(GL_DEPTH_TEST);
 		glDisable(GL_LIGHTING);
@@ -933,7 +940,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
 		glDisable(GL_POINT_SMOOTH);
 		glDisable(GL_POLYGON_SMOOTH);
 	    glDisable(GL_BLEND);
-        glDisable( GL_CULL_FACE );
+        glDisable(GL_CULL_FACE);
         glHint(GL_POINT_SMOOTH_HINT, GL_FASTEST);
         glHint(GL_LINE_SMOOTH_HINT, GL_FASTEST);
         glHint(GL_POLYGON_SMOOTH_HINT, GL_FASTEST);
@@ -951,9 +958,6 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
         Nbr_Update_Rects = 0;
 #endif
 
-        Mouse.old_x = Mouse.x;
-        Mouse.old_y = Mouse.y;
-
         // Display the title requester once
         if(!Burn_Title && SplashScreen)
         {
@@ -969,7 +973,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
 #if defined(__USE_OPENGL__)
         Leave_2d_Mode();
         glDrawBuffer(GL_FRONT);
-        glRasterPos2i(-1.0f, -1.0f);
+        glRasterPos2f(-1.0f, -1.0f);
         glCopyPixels(0, 0, Cur_Width, Cur_Height, GL_COLOR);
         glDrawBuffer(GL_BACK);
         glFlush();
@@ -1012,17 +1016,17 @@ int Switch_FullScreen(int Width, int Height, int Refresh)
     if(Height < SCREEN_HEIGHT) Height = SCREEN_HEIGHT;
     
 #ifndef __MORPHOS__
-    SDL_putenv("SDL_VIDEO_WINDOW_POS=center");
-    SDL_putenv("SDL_VIDEO_CENTERED=1");
+    if(!FullScreen)
+    {
+        SDL_putenv("SDL_VIDEO_WINDOW_POS=center");
+        SDL_putenv("SDL_VIDEO_CENTERED=1");
+    }
 #endif
 
 #if defined(__USE_OPENGL__)
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1);
     SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, TRUE);
-#endif
-
-#if defined(__USE_OPENGL__)
     Destroy_Textures();
 #endif
 
@@ -1037,7 +1041,7 @@ int Switch_FullScreen(int Width, int Height, int Refresh)
 #else
         if((Main_Screen = SDL_SetVideoMode(Startup_Width, Startup_Height,
                                            SCREEN_BPP,
-                                           SDL_SWSURFACE | SDL_PREALLOC | SDL_HWPALETTE |
+                                           SDL_SWSURFACE | SDL_HWPALETTE |
                                            (FullScreen ? SDL_FULLSCREEN : 0))) == NULL)
 #endif
 
@@ -1067,7 +1071,7 @@ int Switch_FullScreen(int Width, int Height, int Refresh)
         if((Main_Screen = SDL_SetVideoMode(Width, Height,
                                            SCREEN_BPP,
                                            SDL_RESIZABLE |
-                                           SDL_SWSURFACE | SDL_PREALLOC | SDL_HWPALETTE |
+                                           SDL_SWSURFACE | SDL_HWPALETTE |
                                            (FullScreen ? SDL_FULLSCREEN : 0))) == NULL)
 #endif
 
@@ -1102,21 +1106,24 @@ int Switch_FullScreen(int Width, int Height, int Refresh)
     Nbr_Update_Rects = 0;
 
 #if defined(__WIN32__)
-    HICON hIcon;
-    HICON hIconSmall;
     SDL_GetWMInfo(&WMInfo);
     Main_Window = WMInfo.window;
-    HINSTANCE ApphInstance = GetModuleHandle(0);
-    hIcon = LoadIcon(ApphInstance, MAKEINTRESOURCE(IDI_ICON));
-    hIconSmall = LoadIcon(ApphInstance, MAKEINTRESOURCE(IDI_ICONSMALL));
-    // Set the icon of the window
-    SendMessage(Main_Window, WM_SETICON, ICON_BIG, (LONG) hIcon);
-    SendMessage(Main_Window, WM_SETICON, ICON_SMALL, (LONG) hIconSmall);
+    if(!FullScreen)
+    {
+        HICON hIcon;
+        HICON hIconSmall;
+        HINSTANCE ApphInstance = GetModuleHandle(0);
+        hIcon = LoadIcon(ApphInstance, MAKEINTRESOURCE(IDI_ICON));
+        hIconSmall = LoadIcon(ApphInstance, MAKEINTRESOURCE(IDI_ICONSMALL));
+        // Set the icon of the window
+        SendMessage(Main_Window, WM_SETICON, ICON_BIG, (LONG) hIcon);
+        SendMessage(Main_Window, WM_SETICON, ICON_SMALL, (LONG) hIconSmall);
+    }
 #endif
 
     if(Refresh)
     {
-        Set_Pictures(FALSE);
+        Set_Pictures_And_Palettes(FALSE);
     }
 
     return(TRUE);

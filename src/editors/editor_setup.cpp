@@ -469,7 +469,7 @@ void Actualize_Master_Ed(char gode)
         }
         if(RefreshTex)
         {
-            Set_Pictures(FALSE);
+            Set_Pictures_And_Palettes(FALSE);
         }
     }
 }

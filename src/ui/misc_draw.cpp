@@ -2939,16 +2939,18 @@ void Restore_Default_Palette(SDL_Color *Def, int DefBevel)
 
 // ------------------------------------------------------
 // Remap the pictures colors for our usage
-void Set_Pictures(int LogoPalette)
+void Set_Pictures_And_Palettes(int LogoPalette)
 {
     int i;
     unsigned char *Pix;
     int was_locked;
 
+#if defined(__USE_OPENGL__)
     if(!Burn_Title && LogoPalette == FALSE)
     {
         return;
     }
+#endif
 
     SDL_Palette *Pic_Palette;
     int min_idx = sizeof(Default_Palette2) / sizeof(SDL_Color);
@@ -3002,7 +3004,9 @@ void Set_Pictures(int LogoPalette)
         for(i = 0; i < SKIN303->w * SKIN303->h; i++)
         {
             if(Pix[i] > max_colors_303) max_colors_303 = Pix[i];
+#if defined(__USE_OPENGL__)
             Pix[i] += min_idx;
+#endif
         }
         max_colors_303++;
 
@@ -3026,7 +3030,9 @@ void Set_Pictures(int LogoPalette)
         for(i = 0; i < LOGOPIC->w * LOGOPIC->h; i++)
         {
             if(Pix[i] > max_colors_logo) max_colors_logo = Pix[i];
+#if defined(__USE_OPENGL__)
             Pix[i] += min_idx;
+#endif
         }
         max_colors_logo++;
 

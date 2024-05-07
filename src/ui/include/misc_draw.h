@@ -271,7 +271,7 @@ void Print_String(char *str, int x, int y, int size_x, int flag);
 int Get_Size_Text(char *String);
 SDL_Surface *Load_Picture(char *FileName);
 int Create_Font_Datas(char *FontName);
-void Set_Pictures(int LogPalette);
+void Set_Pictures_And_Palettes(int LogPalette);
 void Set_Main_Palette(void);
 void Set_Logo_Palette(void);
 void Get_Phony_Palette(void);
