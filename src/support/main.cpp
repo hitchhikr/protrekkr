@@ -644,7 +644,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
         exit(0);
     }
 
-    Set_Pictures_Colors(TRUE);
+    Set_Pictures(TRUE);
 
     SDL_GetMouseState((int *) &Mouse.x, (int *) &Mouse.y);
     Mouse.old_x = -16;
@@ -906,7 +906,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
                     {
                         if(FullScreen)
                         {
-                            Set_Pictures_Colors(FALSE);
+                            Set_Pictures(FALSE);
                         }
                         memset(Keys, 0, sizeof(Keys));
                         memset(Keys_Sym, 0, sizeof(Keys_Sym));
@@ -1104,7 +1104,7 @@ int Switch_FullScreen(int Width, int Height, int Refresh)
 
     if(Refresh)
     {
-        Set_Pictures_Colors(FALSE);
+        Set_Pictures(FALSE);
     }
 
     return(TRUE);

@@ -2939,7 +2939,7 @@ void Restore_Default_Palette(SDL_Color *Def, int DefBevel)
 
 // ------------------------------------------------------
 // Remap the pictures colors for our usage
-void Set_Pictures_Colors(int LogoPalette)
+void Set_Pictures(int LogoPalette)
 {
     int i;
     unsigned char *Pix;
@@ -3226,6 +3226,61 @@ void Destroy_UI(void)
     Destroy_Textures();
 #endif
 
+    if(Temp_PFONT)
+    {
+        SDL_FreeSurface(Temp_PFONT);
+        Temp_PFONT = NULL;
+    }
+    if(Temp_LARGEPFONT)
+    {
+        SDL_FreeSurface(Temp_LARGEPFONT);
+        Temp_LARGEPFONT = NULL;
+    }
+    if(Temp_SMALLPFONT)
+    {
+        SDL_FreeSurface(Temp_SMALLPFONT);
+        Temp_SMALLPFONT = NULL;
+    }
+    if(Temp_NOTEPFONT)
+    {
+        SDL_FreeSurface(Temp_NOTEPFONT);
+        Temp_NOTEPFONT = NULL;
+    }
+    if(Temp_NOTELARGEPFONT)
+    {
+        SDL_FreeSurface(Temp_NOTELARGEPFONT);
+        Temp_NOTELARGEPFONT = NULL;
+    }
+    if(Temp_NOTESMALLPFONT)
+    {
+        SDL_FreeSurface(Temp_NOTESMALLPFONT);
+        Temp_NOTESMALLPFONT = NULL;
+    }
+    if(LOGOPIC)
+    {
+        SDL_FreeSurface(LOGOPIC);
+        LOGOPIC = NULL;
+    }
+    if(SKIN303)
+    {
+        SDL_FreeSurface(SKIN303);
+        SKIN303 = NULL;
+    }
+    if(PFONT)
+    {
+        SDL_FreeSurface(PFONT);
+        PFONT = NULL;
+    }
+    if(FONT)
+    {
+        SDL_FreeSurface(FONT);
+        FONT = NULL;
+    }
+    if(FONT_LOW)
+    {
+        SDL_FreeSurface(FONT_LOW);
+        FONT_LOW = NULL;
+    }
 }
 
 // ------------------------------------------------------

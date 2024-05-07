@@ -408,7 +408,7 @@ void Kill_Requester(void)
         if(Req_Txt_Lines[Nbr_Lines]) free(Req_Txt_Lines[Nbr_Lines]);
         Req_Txt_Lines[Nbr_Lines] = NULL;
     }
-    Set_Pictures_Colors(FALSE);
+    Set_Pictures(FALSE);
     Restore_Background_Requester();
     Current_Requester = NULL;
     Req_TimeOut = 0;

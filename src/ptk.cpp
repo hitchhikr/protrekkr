@@ -613,6 +613,7 @@ void Destroy_Context(void)
 
     // Freeing Allocated Patterns
     if(RawPatterns) free(RawPatterns);
+    RawPatterns = NULL;
 
     Destroy_UI();
     SDL_Quit();
