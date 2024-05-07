@@ -593,7 +593,12 @@ int Init_Context(void)
 extern int volatile AUDIO_Acknowledge;
 void Destroy_Context(void)
 {
-    if(Timer) SDL_RemoveTimer(Timer);
+    if(Timer)
+    {
+        while(SDL_RemoveTimer(Timer) == FALSE)
+        {
+        };
+    }
     AUDIO_Acknowledge = TRUE;
 
     Ptk_ReleaseDriver();
