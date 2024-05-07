@@ -1827,9 +1827,12 @@ void PTKEXPORT Ptk_ReleaseDriver(void)
     for(i = 0; i < MAX_TRACKS; i++)
     {  
         if(Scope_Dats[i]) free(Scope_Dats[i]);
+        Scope_Dats[i] = NULL;
     }
     if(Scope_Dats_LeftRight[0]) free(Scope_Dats_LeftRight[0]);
+    Scope_Dats_LeftRight[0] = NULL;
     if(Scope_Dats_LeftRight[1]) free(Scope_Dats_LeftRight[1]);
+    Scope_Dats_LeftRight[1] = NULL;
 #endif
 
 }

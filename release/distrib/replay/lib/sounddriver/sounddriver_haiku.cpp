@@ -35,8 +35,6 @@
 #include <game/StreamingGameSound.h>
 #include <media/MediaDefs.h>
 
-#include <assert.h>
-
 // ------------------------------------------------------
 // Variables
 unsigned int AUDIO_To_Fill;
@@ -116,12 +114,18 @@ int AUDIO_Create_Sound_Buffer(int milliseconds)
 	format.buffer_size = 4096 * num_fragments;
 
 	AUDIO_Device = new BStreamingGameSound(4096, &format);
-	assert(AUDIO_Device->InitCheck() == B_OK);
+	if(AUDIO_Device->InitCheck() != B_OK)
+    {
+        return(FALSE);
+    }
 
     AUDIO_SoundBuffer_Size = format.buffer_size;
 
     AUDIO_Latency = AUDIO_SoundBuffer_Size;
-	assert(AUDIO_Latency != 0);
+	if(AUDIO_Latency == 0)
+    {
+        return(FALSE);
+    }
 
 	AUDIO_Device->SetStreamHook(&AUDIO_Callback, NULL);
 	AUDIO_Device->StartPlaying();
@@ -193,8 +197,14 @@ void AUDIO_Stop(void)
 // Desc: Release the audio buffer
 void AUDIO_Stop_Sound_Buffer(void)
 {
-    AUDIO_Stop();
-	AUDIO_Device->StopPlaying();
+    if(AUDIO_Device)
+    {
+        AUDIO_Stop();
+        AUDIO_Device->StopPlaying();
+        AUDIO_Wait_For_Thread();
+        delete AUDIO_Device;
+        AUDIO_Device = NULL;
+    }
 }
 
 // ------------------------------------------------------
@@ -203,6 +213,4 @@ void AUDIO_Stop_Sound_Buffer(void)
 void AUDIO_Stop_Driver(void)
 {
     AUDIO_Stop_Sound_Buffer();
-    delete AUDIO_Device;
-    AUDIO_Device = NULL;
 }

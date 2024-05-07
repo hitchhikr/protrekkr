@@ -305,4 +305,5 @@ void AUDIO_Stop_Driver(void)
 {
     AUDIO_Stop_Sound_Buffer();
     if(AUDIO_DSound_Context) AUDIO_DSound_Context->Release();
+    AUDIO_DSound_Context = NULL;
 }
