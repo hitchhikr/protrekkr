@@ -620,7 +620,6 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
     if(!Switch_FullScreen(Cur_Width, Cur_Height, FALSE))
     {
         Message_Error("Can't open screen.");
-        SDL_Quit();
         exit(0);
     }
 
@@ -644,7 +643,6 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
 
     if(!Init_Context())
     {
-        SDL_Quit();
         exit(0);
     }
 
