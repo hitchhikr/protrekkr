@@ -1021,8 +1021,13 @@ int Switch_FullScreen(int Width, int Height, int Refresh)
     SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, TRUE);
 #endif
 
+#if defined(__USE_OPENGL__)
+    Destroy_Textures();
+#endif
+
     if(FullScreen)
     {
+
 #if defined(__USE_OPENGL__)
         if((Main_Screen = SDL_SetVideoMode(Startup_Width, Startup_Height,
                                            SCREEN_BPP,
@@ -1034,6 +1039,7 @@ int Switch_FullScreen(int Width, int Height, int Refresh)
                                            SDL_SWSURFACE | SDL_PREALLOC | SDL_HWPALETTE |
                                            (FullScreen ? SDL_FULLSCREEN : 0))) == NULL)
 #endif
+
         {
             return(FALSE);
         }
@@ -1049,6 +1055,7 @@ int Switch_FullScreen(int Width, int Height, int Refresh)
             Width = Save_Cur_Width;
             Height = Save_Cur_Height;
         }
+
 #if defined(__USE_OPENGL__)
         if((Main_Screen = SDL_SetVideoMode(Width, Height,
                                            SCREEN_BPP,
@@ -1062,6 +1069,7 @@ int Switch_FullScreen(int Width, int Height, int Refresh)
                                            SDL_SWSURFACE | SDL_PREALLOC | SDL_HWPALETTE |
                                            (FullScreen ? SDL_FULLSCREEN : 0))) == NULL)
 #endif
+
         {
             return(FALSE);
         }
