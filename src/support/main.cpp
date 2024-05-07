@@ -104,7 +104,6 @@ SDL_Surface *Main_Screen;
 #if defined(__WIN32__)
 SDL_SysWMinfo WMInfo;
 #endif
-int Prog_End;
 MOUSE Mouse;
 unsigned short Keys[SDLK_LAST];
 unsigned short Keys_Sym[SDLK_LAST];
@@ -631,8 +630,6 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
     SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
     SDL_EnableUNICODE(TRUE);
 
-    Prog_End = FALSE;
-
 #if !defined(__NO_MIDI__)
     // Load midi devices infos
     Midi_GetAll();
@@ -681,7 +678,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
         }
     }
 
-    while(!Prog_End)
+    while(1)
     {
         Mouse.wheel = 0;
         if(Mouse.button_oneshot & MOUSE_LEFT_BUTTON) Mouse.button_oneshot &= ~MOUSE_LEFT_BUTTON;
@@ -955,7 +952,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
 
         Mouse.old_x = Mouse.x;
         Mouse.old_y = Mouse.y;
-        
+
         // Display the title requester once
         if(!Burn_Title && SplashScreen)
         {
@@ -985,6 +982,12 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
 #endif
 
     }
+
+#if defined(__USE_OPENGL__)
+    glFlush();
+    glFinish();
+#endif
+        
     Save_Config();
 
     if(ExePath) free(ExePath);
