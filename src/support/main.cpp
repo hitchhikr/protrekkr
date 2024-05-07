@@ -925,6 +925,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
         }
 
 #if defined(__USE_OPENGL__)
+
         Enter_2D_Mode(Cur_Width, Cur_Height);
 		glDisable(GL_DEPTH_TEST);
 		glDisable(GL_LIGHTING);
