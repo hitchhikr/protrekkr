@@ -351,10 +351,6 @@ void UISetPalette(SDL_Color *Palette, int Amount)
     {
         SDL_SetPalette(FONT, SDL_LOGPAL, Palette, 0, Amount);
     }
-    if(LOGOPIC)
-    {
-//        SDL_SetPalette(LOGOPIC, SDL_LOGPAL, Palette, 0, Amount);
-    }
     if(Temp_PFONT)
     {
         SDL_SetPalette(Temp_PFONT, SDL_LOGPAL, Palette, 0, Amount);

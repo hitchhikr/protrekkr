@@ -48,6 +48,8 @@ struct AHIRequest *join;
 short *AHIbuf;
 short *AHIbuf2;
 int volatile Thread_Running;
+int32 old_sigbit;
+void *old_sigtask;
 
 #include <string.h>
 #if defined(USE_SDL_THREADS)
@@ -79,8 +81,8 @@ int AUDIO_Thread(void *arg)
 void *AUDIO_Thread(void *arg)
 #endif
 {
-    int32 old_sigbit = AHImp->mp_SigBit;
-    void *old_sigtask = AHImp->mp_SigTask;
+    old_sigbit = AHImp->mp_SigBit;
+    old_sigtask = AHImp->mp_SigTask;
     AHImp->mp_SigBit = AllocSignal(-1);
     AHImp->mp_SigTask = FindTask(NULL);
 
@@ -118,7 +120,10 @@ void *AUDIO_Thread(void *arg)
             io->ahir_Position = 0x8000;
             io->ahir_Link = join;
             SendIO((struct IORequest *) io);
-            if(join) WaitIO((struct IORequest *) join);
+            if(join)
+            {
+                WaitIO((struct IORequest *) join);
+            }
             join = io;
             AHIio = AHIio2;
             AHIio2 = io;
@@ -130,21 +135,8 @@ void *AUDIO_Thread(void *arg)
         }
         usleep(10);
     }
-    if (join)
-    {
-        AbortIO((struct IORequest *) join);
-        WaitIO((struct IORequest *) join);
-    }
-    FreeSignal(AHImp->mp_SigBit);
-    AHImp->mp_SigBit = old_sigbit;
-    AHImp->mp_SigTask = old_sigtask;
     Thread_Running = 1;
-    
-    #if !defined(USE_SDL_THREADS)
-        pthread_exit(0);
-    #endif
-
-    return(0);
+    return(NULL);
 }
 
 // ------------------------------------------------------
@@ -342,6 +334,14 @@ void AUDIO_Stop_Sound_Buffer(void)
             usleep(10);
         }
         hThread = 0;
+        if(join)
+        {
+            AbortIO((struct IORequest *) join);
+            WaitIO((struct IORequest *) join);
+        }
+        FreeSignal(AHImp->mp_SigBit);
+        AHImp->mp_SigBit = old_sigbit;
+        AHImp->mp_SigTask = old_sigtask;
     }
     FreeVec(AHIbuf);
     FreeVec(AHIbuf2);
