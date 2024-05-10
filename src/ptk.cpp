@@ -277,6 +277,7 @@ int Table_Left_Tab_Notes[] =
 };
 
 int gui_thread_action = FALSE;
+int gui_thread_can_act = FALSE;
 int gui_bpm_action = FALSE;
 
 int Keyboard_Events_Channels[256];
@@ -1846,7 +1847,7 @@ int Screen_Update(void)
         Actupated(0);
     }
 
-    if(gui_thread_action)
+    if(gui_thread_action && gui_thread_can_act)
     {
         gui_thread_action = FALSE;
         Actupated(0);

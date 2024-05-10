@@ -1573,7 +1573,7 @@ void Actupated(int modac)
         is_editing = 0;
         Notify_Edit();
     }
-    
+
     if(!Song_Playing)
     {
         Pattern_Line_Visual = Pattern_Line;

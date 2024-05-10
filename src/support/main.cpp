@@ -131,6 +131,7 @@ int key_on = 0;
 float delay_refresh;
 float delay_refresh2;
 
+extern int gui_thread_can_act;
 extern int Nbr_Update_Rects;
 extern SDL_Rect Update_Stack[UPDATE_STACK_SIZE];
 
@@ -953,6 +954,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
         {
             Burn_Title = TRUE;
             Kill_Requester();
+            gui_thread_can_act = TRUE;
         }
 
 #if defined(__USE_OPENGL__)
