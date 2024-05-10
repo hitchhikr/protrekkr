@@ -983,8 +983,18 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
         glDrawBuffer(GL_BACK);
         glFlush();
         glFinish();
-#else
-        SDL_GL_SwapBuffers();
+/*        glReadBuffer(GL_BACK);
+        glAccum(GL_LOAD, 1.0f);
+        glFlush();
+        glFinish();
+        glDrawBuffer(GL_FRONT);
+        glAccum(GL_RETURN, 2.0f);
+        glFlush();
+        glFinish();
+        glDrawBuffer(GL_BACK);
+        glFlush();
+        glFinish();#else
+        SDL_GL_SwapBuffers();*/
 #endif
 #endif
 
