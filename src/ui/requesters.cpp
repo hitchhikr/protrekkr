@@ -70,7 +70,6 @@ extern SDL_Event Events[MAX_EVENTS];
 // ------------------------------------------------------
 // Functions
 void Kill_Requester(void);
-void Restore_Background_Requester();
 
 // ------------------------------------------------------
 // Initialize a requester
@@ -405,11 +404,36 @@ void Kill_Requester(void)
 
     for(i = 0; i < Nbr_Lines; i++)
     {
-        if(Req_Txt_Lines[Nbr_Lines]) free(Req_Txt_Lines[Nbr_Lines]);
+        if(Req_Txt_Lines[Nbr_Lines])
+        {
+            free(Req_Txt_Lines[Nbr_Lines]);
+        }
         Req_Txt_Lines[Nbr_Lines] = NULL;
     }
+
+#if defined(__USE_OPENGL__)
+    if(Req_Picture_GL)
+    {
+        Destroy_Texture(&Req_Picture_GL);
+        Req_Picture_GL = 0;
+    }
+#endif
+
     Set_Pictures_And_Palettes(FALSE);
-    Restore_Background_Requester();
+
+#if !defined(__USE_OPENGL__)
+    if(Req_Back)
+    {
+        Copy(Req_Back,
+             Pos_X, Pos_Y,
+             0, 0,
+             Pos_X + Size_X + 1,
+             Pos_Y + Size_Y + 1);
+        SDL_FreeSurface(Req_Back);
+        Req_Back = NULL;
+    }
+#endif
+
     Current_Requester = NULL;
     Req_TimeOut = 0;
     Env_Change = TRUE;
@@ -418,29 +442,4 @@ void Kill_Requester(void)
     SDL_Event event;
     while(SDL_PollEvent(&event));
     memset(Events, 0, sizeof(Events));
-}
-
-// ------------------------------------------------------
-// Restore the background below the requester and free it's surface
-void Restore_Background_Requester()
-{
-    if(Req_Back)
-    {
-
-#if !defined(__USE_OPENGL__)
-        Copy(Req_Back,
-             Pos_X, Pos_Y,
-             0, 0,
-             Pos_X + Size_X + 1,
-             Pos_Y + Size_Y + 1);
-        SDL_FreeSurface(Req_Back);
-        Req_Back = NULL;
-#else
-        if(Req_Picture_GL)
-        {
-            Destroy_Texture(&Req_Picture_GL);
-            Req_Picture_GL = 0;
-        }
-#endif
-    }
 }

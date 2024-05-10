@@ -211,6 +211,7 @@ GLuint Create_Texture(SDL_Surface *Source, int Width)
         glGenTextures(1, &txId);
         if(txId)
         {
+            glDisable(GL_TEXTURE_2D);
             glBindTexture(GL_TEXTURE_2D, txId);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);

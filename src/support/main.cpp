@@ -1097,6 +1097,9 @@ int Switch_FullScreen(int Width, int Height, int Refresh)
     glHint(GL_POLYGON_SMOOTH_HINT, GL_FASTEST);
     glShadeModel(GL_FLAT);
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    glDrawBuffer(GL_FRONT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_ACCUM_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+    glDrawBuffer(GL_BACK);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_ACCUM_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 #endif
     
