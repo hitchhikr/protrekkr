@@ -972,6 +972,8 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
         Leave_2d_Mode();
 #if !defined(__WIN32__)
         glDrawBuffer(GL_FRONT);
+        glFlush();
+        glFinish();
         glRasterPos2f(-1.0f, -1.0f);
         glCopyPixels(0, 0, Cur_Width, Cur_Height, GL_COLOR);
         glFlush();
