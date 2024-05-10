@@ -936,17 +936,6 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
 #if defined(__USE_OPENGL__)
         glDrawBuffer(GL_BACK);
         Enter_2D_Mode(Cur_Width, Cur_Height);
-        glDisable(GL_DEPTH_TEST);
-        glDisable(GL_LIGHTING);
-        glDisable(GL_LINE_SMOOTH);
-        glDisable(GL_POINT_SMOOTH);
-        glDisable(GL_POLYGON_SMOOTH);
-        glDisable(GL_BLEND);
-        glDisable(GL_CULL_FACE);
-        glHint(GL_POINT_SMOOTH_HINT, GL_FASTEST);
-        glHint(GL_LINE_SMOOTH_HINT, GL_FASTEST);
-        glHint(GL_POLYGON_SMOOTH_HINT, GL_FASTEST);
-        glShadeModel(GL_FLAT);
 #endif
 
         if(!Screen_Update()) break;
@@ -979,7 +968,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
         glDrawBuffer(GL_FRONT);
         glRasterPos2f(-1.0f, -1.0f);
         glCopyPixels(0, 0, Cur_Width, Cur_Height, GL_COLOR);
-//        glFinish();
+        glFinish();
 /*        glReadBuffer(GL_BACK);
         glAccum(GL_LOAD, 1.0f);
         glFlush();
@@ -1097,6 +1086,17 @@ int Switch_FullScreen(int Width, int Height, int Refresh)
 
 #if defined(__USE_OPENGL__)
     glViewport(0, 0, Cur_Width, Cur_Height);
+    glDisable(GL_DEPTH_TEST);
+    glDisable(GL_LIGHTING);
+    glDisable(GL_LINE_SMOOTH);
+    glDisable(GL_POINT_SMOOTH);
+    glDisable(GL_POLYGON_SMOOTH);
+    glDisable(GL_BLEND);
+    glDisable(GL_CULL_FACE);
+    glHint(GL_POINT_SMOOTH_HINT, GL_FASTEST);
+    glHint(GL_LINE_SMOOTH_HINT, GL_FASTEST);
+    glHint(GL_POLYGON_SMOOTH_HINT, GL_FASTEST);
+    glShadeModel(GL_FLAT);
 #endif
     
     CONSOLE_WIDTH = Cur_Width;
