@@ -688,7 +688,7 @@ int Screen_Update(void)
 
     if(Scopish == SCOPE_ZONE_SCOPE) Draw_Scope();
 
-    // Sample ed.
+    // Sample ed. stuff
     Draw_Wave_Data();
 
     int Lt_vu = (int) (MIN_VUMETER + (((float) L_MaxLevel / 32767.0f) * LARG_VUMETER));
@@ -729,7 +729,10 @@ int Screen_Update(void)
     DrawHLine(17, Rt_vu_Peak, MAX_VUMETER - 2, COL_BACKGROUND);
     DrawHLine(18, Rt_vu_Peak, MAX_VUMETER - 2, COL_BACKGROUND);
 
-    if(actuloop) Afloop();
+    if(actuloop)
+    {
+        Afloop();
+    }
 
     if(gui_action_metronome == GUI_CMD_FLASH_METRONOME_ON)
     {

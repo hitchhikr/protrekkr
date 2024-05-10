@@ -954,7 +954,6 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
         {
             Burn_Title = TRUE;
             Kill_Requester();
-            gui_thread_can_act = TRUE;
         }
 
 #if defined(__USE_OPENGL__)
@@ -987,7 +986,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
 #else
         SDL_Delay(10);
 #endif
-
+        gui_thread_can_act = TRUE;
     }
 
 #if defined(__USE_OPENGL__)
@@ -1015,6 +1014,7 @@ int Switch_FullScreen(int Width, int Height, int Refresh)
 {
     int Real_FullScreen = 0;
     
+    gui_thread_can_act = FALSE;
     Env_Change = TRUE;
     if(Width < SCREEN_WIDTH) Width = SCREEN_WIDTH;
     if(Height < SCREEN_HEIGHT) Height = SCREEN_HEIGHT;
