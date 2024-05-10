@@ -212,14 +212,14 @@ GLuint Create_Texture(SDL_Surface *Source, int Width)
         if(txId)
         {
             glBindTexture(GL_TEXTURE_2D, txId);
-            glEnable(GL_TEXTURE_2D);
+//            glEnable(GL_TEXTURE_2D);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, Width, Width, 0,
                          GL_RGBA, GL_UNSIGNED_BYTE, RGBTexture);
-            glDisable(GL_TEXTURE_2D);
+   //         glDisable(GL_TEXTURE_2D);
         }
         free(RGBTexture);
     }
@@ -259,11 +259,11 @@ void Draw_Tx_Quad(float x, float y, float x1, float y1, float Width, float Heigh
             glTexCoord2f((Width / (float) TEXTURES_SIZE) + (x1 / (float) TEXTURES_SIZE), (Height / (float) TEXTURES_SIZE) + (y1 / (float) TEXTURES_SIZE)); glVertex2f(Width, Height);
             glTexCoord2f((Width / (float) TEXTURES_SIZE) + (x1 / (float) TEXTURES_SIZE), y1 / (float) TEXTURES_SIZE); glVertex2f(Width, 0.0f);
         glEnd();
-        glDisable(GL_TEXTURE_2D);
         if(Blend)
         {
 		    glDisable(GL_BLEND);
         }
+        glDisable(GL_TEXTURE_2D);
     glPopMatrix();
 }
 #endif
