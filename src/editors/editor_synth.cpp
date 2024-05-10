@@ -218,7 +218,7 @@ void Draw_Synth_Ed(void)
 {
     Draw_Editors_Bar(USER_SCREEN_SYNTH_EDIT);
 
-    Gui_Draw_Button_Box(0, (Cur_Height - 153), fsize, 130, "", BUTTON_NORMAL | BUTTON_DISABLED);
+    Gui_Draw_Button_Box(0, (Cur_Height - 153), fsize, 130, NULL, BUTTON_NORMAL | BUTTON_DISABLED);
     Gui_Draw_Flat_Box("Instrument Editor [Synth]");
 
     Gui_Draw_Button_Box(508, (Cur_Height - 150), 56, 16, "Program", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);

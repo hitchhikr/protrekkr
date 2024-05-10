@@ -53,7 +53,7 @@ void Draw_Fx_Ed(void)
 {
     Draw_Editors_Bar(USER_SCREEN_FX_SETUP_EDIT);
 
-    Gui_Draw_Button_Box(0, (Cur_Height - 153), fsize, 130, "", BUTTON_NORMAL | BUTTON_DISABLED);
+    Gui_Draw_Button_Box(0, (Cur_Height - 153), fsize, 130, NULL, BUTTON_NORMAL | BUTTON_DISABLED);
     Gui_Draw_Flat_Box("FX Setup (Global)");
     Gui_Draw_Button_Box(8, (Cur_Height - 136), 224, 110, "Reverb Setup", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_VTOP);
     Gui_Draw_Button_Box(18, (Cur_Height - 120), 56, 16, "Switch", BUTTON_NORMAL | BUTTON_DISABLED);

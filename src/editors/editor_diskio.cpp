@@ -113,7 +113,7 @@ void Draw_DiskIO_Ed(void)
 {
     Draw_Editors_Bar(USER_SCREEN_DISKIO_EDIT);
 
-    Gui_Draw_Button_Box(0, (Cur_Height - 153), fsize, 130, "", BUTTON_NORMAL | BUTTON_DISABLED);
+    Gui_Draw_Button_Box(0, (Cur_Height - 153), fsize, 130, NULL, BUTTON_NORMAL | BUTTON_DISABLED);
     Gui_Draw_Flat_Box("Disk Operations / Module Credits");
 
     Gui_Draw_Button_Box(254, (Cur_Height - 112), 80, 16, "Calc .ptp Size", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
@@ -129,7 +129,7 @@ void Draw_DiskIO_Ed(void)
     Gui_Draw_Button_Box(90, (Cur_Height - 112), 80, 16, "WAV Render", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
     Gui_Draw_Button_Box(90, (Cur_Height - 130), 80, 16, "Show Info", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
 
-    Gui_Draw_Button_Box(342, (Cur_Height - 130), 404, 102, "", BUTTON_NORMAL | BUTTON_DISABLED);
+    Gui_Draw_Button_Box(342, (Cur_Height - 130), 404, 102, NULL, BUTTON_NORMAL | BUTTON_DISABLED);
 
     PrintString(350, (Cur_Height - 128), USE_FONT, "Tracks To Render :");
     Display_Tracks_To_Render();
@@ -588,7 +588,7 @@ void Display_Song_Length(void)
     if(userscreen == USER_SCREEN_DISKIO_EDIT)
     {
         sprintf(ms, "%.2d:%.2d:%.2d", song_Hours, song_Minutes, song_Seconds);
-        Gui_Draw_Button_Box(254, (Cur_Height - 58), 80, 16, "", BUTTON_NORMAL | BUTTON_DISABLED);
+        Gui_Draw_Button_Box(254, (Cur_Height - 58), 80, 16, NULL, BUTTON_NORMAL | BUTTON_DISABLED);
         PrintString(274, (Cur_Height - 56), USE_FONT, ms);
     }
 }

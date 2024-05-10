@@ -131,6 +131,7 @@ int key_on = 0;
 float delay_refresh;
 float delay_refresh2;
 
+extern int gui_thread_action;
 extern int gui_thread_can_act;
 extern int Nbr_Update_Rects;
 extern SDL_Rect Update_Stack[UPDATE_STACK_SIZE];
@@ -933,7 +934,10 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
         Enter_2D_Mode(Cur_Width, Cur_Height);
 #endif
 
-        if(!Screen_Update()) break;
+        if(!Screen_Update())
+        {
+            break;
+        }
 
 #if !defined(__USE_OPENGL__)
         // Flush all pending blits
@@ -1015,6 +1019,7 @@ int Switch_FullScreen(int Width, int Height, int Refresh)
     int Real_FullScreen = 0;
     
     gui_thread_can_act = FALSE;
+    gui_thread_action = FALSE;
     Env_Change = TRUE;
     if(Width < SCREEN_WIDTH) Width = SCREEN_WIDTH;
     if(Height < SCREEN_HEIGHT) Height = SCREEN_HEIGHT;

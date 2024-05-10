@@ -1829,14 +1829,17 @@ void Gui_Draw_Button_Box(int x, int y, int sx, int sy, const char *str, int flag
         }
     }
 
-    if(flags & BUTTON_TEXT_CENTERED)
+    if(str)
     {
-        x += ((sx + 1) - Get_Size_Text((char *) str)) / 2;
-        PrintString(x, y + y_center, flags & BUTTON_LOW_FONT ? USE_FONT_LOW : USE_FONT, (char *) str);
-    }
-    else
-    {
-        PrintString(x + 4, y + y_center, flags & BUTTON_LOW_FONT ? USE_FONT_LOW : USE_FONT, (char *) str);
+        if(flags & BUTTON_TEXT_CENTERED)
+        {
+            x += ((sx + 1) - Get_Size_Text((char *) str)) / 2;
+            PrintString(x, y + y_center, flags & BUTTON_LOW_FONT ? USE_FONT_LOW : USE_FONT, (char *) str);
+        }
+        else
+        {
+            PrintString(x + 4, y + y_center, flags & BUTTON_LOW_FONT ? USE_FONT_LOW : USE_FONT, (char *) str);
+        }
     }
 }
 
@@ -1855,7 +1858,10 @@ void Gui_Draw_Flat_Box(const char *str)
     SetColor(COL_STATIC_MED);
 
     Fillrect(2, (Cur_Height - 150), Cur_Width - 6, (Cur_Height - 24));
-    PrintString(4, (Cur_Height - 151), USE_FONT, (char *) str);
+    if(str)
+    {
+        PrintString(4, (Cur_Height - 151), USE_FONT, (char *) str);
+    }
 }
 
 // ------------------------------------------------------
@@ -1875,7 +1881,8 @@ void Status_Box(char const *str)
 // ------------------------------------------------------
 // Display a horizontal slider
 void Realslider_Size(int x, int y, int size, int val, int Enabled)
-{   y--;
+{   
+    y--;
     if(Enabled)
     {
         SetColor(COL_STATIC_LO);
@@ -1898,11 +1905,11 @@ void Realslider_Size(int x, int y, int size, int val, int Enabled)
     }
     if(Enabled)
     {
-        Gui_Draw_Button_Box(x + 4 + val, y + 2, 13, 14, "", BUTTON_NORMAL);
+        Gui_Draw_Button_Box(x + 4 + val, y + 2, 13, 14, NULL, BUTTON_NORMAL);
     }
     else
     {
-        Gui_Draw_Button_Box(x + 4 + val, y + 2, 13, 14, "", BUTTON_NORMAL | BUTTON_DISABLED);
+        Gui_Draw_Button_Box(x + 4 + val, y + 2, 13, 14, NULL, BUTTON_NORMAL | BUTTON_DISABLED);
     }
 }
 
@@ -2003,7 +2010,7 @@ void Realslider_Horiz(int x, int y, int value, int displayed, int maximum, int s
         SetColor(COL_STATIC_MED);
         bjbox(x + 1, y + 1, size, 16 - 1);
     }
-    Gui_Draw_Button_Box(x + 1 + (int) Pos_slider, y + 1, (int) caret_size, 16 - 2, "", BUTTON_NORMAL | (enable ? 0 : BUTTON_DISABLED));
+    Gui_Draw_Button_Box(x + 1 + (int) Pos_slider, y + 1, (int) caret_size, 16 - 2, NULL, BUTTON_NORMAL | (enable ? 0 : BUTTON_DISABLED));
 }
 
 // ------------------------------------------------------
@@ -2064,7 +2071,7 @@ void Realslider_Vert(int x,
         SetColor(COL_STATIC_MED);
         bjbox(x + 1, y + 1, 16 - 1, size);
     }    
-    Gui_Draw_Button_Box(x + 1, y + 1 + (int) Pos_slider, 16 - 2, (int) caret_size, "", BUTTON_NORMAL | (enable ? 0 : BUTTON_DISABLED));
+    Gui_Draw_Button_Box(x + 1, y + 1 + (int) Pos_slider, 16 - 2, (int) caret_size, NULL, BUTTON_NORMAL | (enable ? 0 : BUTTON_DISABLED));
 }
 
 // ------------------------------------------------------
@@ -3146,51 +3153,59 @@ void Set_Pictures_And_Palettes(int LogoPalette)
 #if defined(__USE_OPENGL__)
 void Destroy_Textures()
 {
-    if(Temp_NOTESMALLPFONT_GL)
-    {
-        Destroy_Texture(&Temp_NOTESMALLPFONT_GL);
-    }
-    Temp_NOTESMALLPFONT_GL = 0;
-    if(Temp_NOTELARGEPFONT_GL)
-    {
-        Destroy_Texture(&Temp_NOTELARGEPFONT_GL);
-    }
-    Temp_NOTELARGEPFONT_GL = 0;
-    if(Temp_NOTEPFONT_GL)
-    {
-        Destroy_Texture(&Temp_NOTEPFONT_GL);
-    }
-    Temp_NOTEPFONT_GL = 0;
-    if(Temp_SMALLPFONT_GL)
-    {
-        Destroy_Texture(&Temp_SMALLPFONT_GL);
-    }
-    Temp_SMALLPFONT_GL = 0;
-    if(Temp_LARGEPFONT_GL)
-    {
-        Destroy_Texture(&Temp_LARGEPFONT_GL);
-    }
-    Temp_LARGEPFONT_GL = 0;
-    if(Temp_PFONT_GL)
-    {
-        Destroy_Texture(&Temp_PFONT_GL);
-    }
-    Temp_PFONT_GL = 0;
-    if(SKIN303_GL)
-    {
-        Destroy_Texture(&SKIN303_GL);
-    }
-    SKIN303_GL = 0;
-    if(FONT_LOW_GL)
-    {
-        Destroy_Texture(&FONT_LOW_GL);
-    }
-    FONT_LOW_GL = 0;
     if(FONT_GL)
     {
         Destroy_Texture(&FONT_GL);
     }
     FONT_GL = 0;
+
+    if(FONT_LOW_GL)
+    {
+        Destroy_Texture(&FONT_LOW_GL);
+    }
+    FONT_LOW_GL = 0;
+
+    if(SKIN303_GL)
+    {
+        Destroy_Texture(&SKIN303_GL);
+    }
+    SKIN303_GL = 0;
+
+    if(Temp_PFONT_GL)
+    {
+        Destroy_Texture(&Temp_PFONT_GL);
+    }
+    Temp_PFONT_GL = 0;
+    
+    if(Temp_LARGEPFONT_GL)
+    {
+        Destroy_Texture(&Temp_LARGEPFONT_GL);
+    }
+    Temp_LARGEPFONT_GL = 0;
+    
+    if(Temp_SMALLPFONT_GL)
+    {
+        Destroy_Texture(&Temp_SMALLPFONT_GL);
+    }
+    Temp_SMALLPFONT_GL = 0;
+    
+    if(Temp_NOTEPFONT_GL)
+    {
+        Destroy_Texture(&Temp_NOTEPFONT_GL);
+    }
+    Temp_NOTEPFONT_GL = 0;
+    
+    if(Temp_NOTELARGEPFONT_GL)
+    {
+        Destroy_Texture(&Temp_NOTELARGEPFONT_GL);
+    }
+    Temp_NOTELARGEPFONT_GL = 0;
+
+    if(Temp_NOTESMALLPFONT_GL)
+    {
+        Destroy_Texture(&Temp_NOTESMALLPFONT_GL);
+    }
+    Temp_NOTESMALLPFONT_GL = 0;
 }
 #endif
 

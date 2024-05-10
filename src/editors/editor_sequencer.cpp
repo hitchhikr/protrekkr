@@ -94,7 +94,7 @@ void Draw_Sequencer_Ed(void)
 {
     Draw_Editors_Bar(USER_SCREEN_SEQUENCER);
 
-    Gui_Draw_Button_Box(0, (Cur_Height - 153), fsize, 130, "", BUTTON_NORMAL | BUTTON_DISABLED);
+    Gui_Draw_Button_Box(0, (Cur_Height - 153), fsize, 130, NULL, BUTTON_NORMAL | BUTTON_DISABLED);
     Gui_Draw_Flat_Box("Sequencer");
 
     Gui_Draw_Button_Box(4, (Cur_Height - 134), 80, 16, "Clear All", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
@@ -119,11 +119,11 @@ void Draw_Sequencer_Ed(void)
     Gui_Draw_Button_Box(288, (Cur_Height - 78), 16, 16, "\02", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
     Gui_Draw_Button_Box(288, (Cur_Height - 60), 16, 16, "\10", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
 
-    Gui_Draw_Button_Box(89, (Cur_Height - 134), 24, 90, "", BUTTON_NORMAL);
-    Gui_Draw_Button_Box(257, (Cur_Height - 134), 24, 90, "", BUTTON_NORMAL);
-    Gui_Draw_Button_Box(120, (Cur_Height - 134), 132, 90, "", BUTTON_NORMAL);
+    Gui_Draw_Button_Box(89, (Cur_Height - 134), 24, 90, NULL, BUTTON_NORMAL);
+    Gui_Draw_Button_Box(257, (Cur_Height - 134), 24, 90, NULL, BUTTON_NORMAL);
+    Gui_Draw_Button_Box(120, (Cur_Height - 134), 132, 90, NULL, BUTTON_NORMAL);
 
-    Gui_Draw_Button_Box(480, (Cur_Height - 134), 306, 28, "", BUTTON_NORMAL | BUTTON_DISABLED);
+    Gui_Draw_Button_Box(480, (Cur_Height - 134), 306, 28, NULL, BUTTON_NORMAL | BUTTON_DISABLED);
     Gui_Draw_Button_Box(480, (Cur_Height - 128), 190, 26, "Save Selection :", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_NO_BORDER | BUTTON_TEXT_VTOP);
     Gui_Draw_Button_Box(745, (Cur_Height - 128), 34, 16, "Save", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
 

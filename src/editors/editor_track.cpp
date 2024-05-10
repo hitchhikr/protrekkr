@@ -40,7 +40,7 @@ void Draw_Track_Ed(void)
 {
     Draw_Editors_Bar(USER_SCREEN_TRACK_EDIT);
 
-    Gui_Draw_Button_Box(0, (Cur_Height - 153), fsize, 130, "", BUTTON_NORMAL | BUTTON_DISABLED);
+    Gui_Draw_Button_Box(0, (Cur_Height - 153), fsize, 130, NULL, BUTTON_NORMAL | BUTTON_DISABLED);
     Gui_Draw_Flat_Box("Track: Properties & Fx Send");
 
     Gui_Draw_Button_Box(508, (Cur_Height - 132), 60, 16, "Track", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);

@@ -686,7 +686,10 @@ int Screen_Update(void)
         }
     }
 
-    if(Scopish == SCOPE_ZONE_SCOPE) Draw_Scope();
+    if(Scopish == SCOPE_ZONE_SCOPE)
+    {
+        Draw_Scope();
+    }
 
     // Sample ed. stuff
     Draw_Wave_Data();
@@ -741,7 +744,7 @@ int Screen_Update(void)
     }
     if(gui_action_metronome == GUI_CMD_FLASH_METRONOME_OFF)
     {
-        Gui_Draw_Button_Box(72, 82, 16, 16, "", BUTTON_DISABLED);
+        Gui_Draw_Button_Box(72, 82, 16, 16, NULL, BUTTON_DISABLED);
     }
     gui_action_metronome = GUI_CMD_NOP;
 
@@ -1760,7 +1763,8 @@ int Screen_Update(void)
         Fillrect(0, 0, CONSOLE_WIDTH, CONSOLE_HEIGHT);
 
         last_index = -1;
-        Gui_Draw_Button_Box(MIN_VUMETER - 4, 6, (MAX_VUMETER - MIN_VUMETER) + 6, 16, "", BUTTON_NORMAL | BUTTON_DISABLED);
+        // Box around the vu-meters
+        Gui_Draw_Button_Box(MIN_VUMETER - 4, 6, (MAX_VUMETER - MIN_VUMETER) + 6, 16, NULL, BUTTON_NORMAL | BUTTON_DISABLED);
 
         Display_Master_Comp();
         Display_Master_Volume();
@@ -1780,22 +1784,22 @@ int Screen_Update(void)
 
         Gui_Draw_Button_Box(0, 6, 16, 16, "\011", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
 
-        Gui_Draw_Button_Box(0, 180, fsize, 2, "", BUTTON_NORMAL | BUTTON_DISABLED);
+        Gui_Draw_Button_Box(0, 180, fsize, 2, NULL, BUTTON_NORMAL | BUTTON_DISABLED);
 
-        Gui_Draw_Button_Box(0, 24, 96, 78, "", BUTTON_NORMAL | BUTTON_DISABLED);
+        Gui_Draw_Button_Box(0, 24, 96, 78, NULL, BUTTON_NORMAL | BUTTON_DISABLED);
         
         Gui_Draw_Button_Box(8, 46, 80, 16, "\254", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
         Notify_Play();
         Start_Rec();
         Notify_Edit();
 
-        Gui_Draw_Button_Box(98, 24, 156, 78, "", BUTTON_NORMAL | BUTTON_DISABLED);
+        Gui_Draw_Button_Box(98, 24, 156, 78, NULL, BUTTON_NORMAL | BUTTON_DISABLED);
         Gui_Draw_Button_Box(106, 28, 80, 16, "Position", BUTTON_NORMAL | BUTTON_DISABLED);
         Gui_Draw_Button_Box(106, 46, 80, 16, "Pattern", BUTTON_NORMAL | BUTTON_DISABLED);
         Gui_Draw_Button_Box(106, 64, 80, 16, "Song Length", BUTTON_NORMAL | BUTTON_DISABLED);
         Gui_Draw_Button_Box(106, 82, 80, 16, "Pattern Lines", BUTTON_NORMAL | BUTTON_DISABLED);
 
-        Gui_Draw_Button_Box(256, 24, 136, 78, "", BUTTON_NORMAL | BUTTON_DISABLED);
+        Gui_Draw_Button_Box(256, 24, 136, 78, NULL, BUTTON_NORMAL | BUTTON_DISABLED);
 
         Gui_Draw_Button_Box(262, 28, 38, 16, "Tracks", BUTTON_NORMAL | BUTTON_DISABLED);
         Gui_Draw_Button_Box(302, 28, 9, 16, I_, BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_SMALL_FONT);
@@ -1804,7 +1808,7 @@ int Screen_Update(void)
         Gui_Draw_Button_Box(262, 64, 60, 16, "Ticks/Beat", BUTTON_NORMAL | BUTTON_DISABLED);
         Display_Beat_Time();
 
-        Gui_Draw_Button_Box(0, 104, 392, 42, "", BUTTON_NORMAL | BUTTON_DISABLED);
+        Gui_Draw_Button_Box(0, 104, 392, 42, NULL, BUTTON_NORMAL | BUTTON_DISABLED);
         Gui_Draw_Button_Box(8, 108, 80, 16, "Instrument", BUTTON_NORMAL | BUTTON_DISABLED);
         Gui_Draw_Button_Box(320, 108, 64, 16, "Delete", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
         Gui_Draw_Button_Box(8, 126, 80, 16, "Step Add", BUTTON_NORMAL | BUTTON_DISABLED);
@@ -1815,7 +1819,7 @@ int Screen_Update(void)
         Gui_Draw_Button_Box(332 + 18, 126, 16, 16, "\013", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
         Gui_Draw_Button_Box(332 + (18 * 2), 126, 16, 16, "\014", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
 
-        Gui_Draw_Button_Box(0, 148, 392, 30, "", BUTTON_NORMAL | BUTTON_DISABLED);
+        Gui_Draw_Button_Box(0, 148, 392, 30, NULL, BUTTON_NORMAL | BUTTON_DISABLED);
         Gui_Draw_Button_Box(8, 152, 61, 10, S_ E_ L_ DOT_ SPC_ T_ R_ A_ C_ K_, BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE | BUTTON_SMALL_FONT);
         Gui_Draw_Button_Box(8, 164, 61, 10, S_ E_ L_ DOT_ SPC_ N_ O_ T_ E_, BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE | BUTTON_SMALL_FONT);
 
@@ -2594,7 +2598,7 @@ void Notify_Edit(void)
     {
         Gui_Draw_Button_Box(8, 82, 62, 16, "Edit/Rec.", BUTTON_NORMAL | BUTTON_RIGHT_MOUSE | BUTTON_TEXT_CENTERED);
     }
-    Gui_Draw_Button_Box(72, 82, 16, 16, "", BUTTON_DISABLED);
+    Gui_Draw_Button_Box(72, 82, 16, 16, NULL, BUTTON_DISABLED);
     gui_action_metronome = GUI_CMD_FLASH_METRONOME_OFF;
 }
 
@@ -6523,7 +6527,7 @@ void Display_Shuffle(void)
     Realslider_Size(586 + 40, 6, 100, shuffle_amount, TRUE);
     sprintf(string, "%d%%", shuffle_amount);
     Print_String(string, 586 + 40, 8, 116, BUTTON_TEXT_CENTERED);
-    Gui_Draw_Button_Box(746, 6, Cur_Width - 802, 16, "", BUTTON_NORMAL | BUTTON_DISABLED);
+    Gui_Draw_Button_Box(746, 6, Cur_Width - 802, 16, NULL, BUTTON_NORMAL | BUTTON_DISABLED);
 }
 
 // ------------------------------------------------------
@@ -7033,7 +7037,7 @@ void Draw_Scope_Files_Button(void)
     {
         case SCOPE_ZONE_SCOPE:
             Draw_Scope();
-            Gui_Draw_Button_Box(394, 24, Cur_Width - 522, 16, "", BUTTON_NORMAL | BUTTON_DISABLED);
+            Gui_Draw_Button_Box(394, 24, Cur_Width - 522, 16, NULL, BUTTON_NORMAL | BUTTON_DISABLED);
             Gui_Draw_Button_Box(Cur_Width - 54, 6, 16, 16, "\255", BUTTON_PUSHED | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
 
             Display_Dirs_Icons(0);

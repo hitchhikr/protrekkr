@@ -46,10 +46,10 @@ void Draw_Track_Fx_Ed(void)
 {
     Draw_Editors_Bar(USER_SCREEN_TRACK_FX_EDIT);
 
-    Gui_Draw_Button_Box(0, (Cur_Height - 153), fsize, 130, "", BUTTON_NORMAL | BUTTON_DISABLED);
+    Gui_Draw_Button_Box(0, (Cur_Height - 153), fsize, 130, NULL, BUTTON_NORMAL | BUTTON_DISABLED);
     Gui_Draw_Flat_Box("Track: Properties, Flanger & Compressor");
 
-    Gui_Draw_Button_Box(4, (Cur_Height - 138), 228, 110, "", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_VTOP);
+    Gui_Draw_Button_Box(4, (Cur_Height - 138), 228, 110, NULL, BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_VTOP);
 
     Gui_Draw_Button_Box(8, (Cur_Height - 128), 64, 16, "Filter LFO", BUTTON_NORMAL | BUTTON_DISABLED);
     Gui_Draw_Button_Box(118, (Cur_Height - 128), 64, 16, "Flanger", BUTTON_NORMAL | BUTTON_DISABLED);
@@ -69,7 +69,7 @@ void Draw_Track_Fx_Ed(void)
     Gui_Draw_Button_Box(536, (Cur_Height - 138), 144, 76, "Compressor", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_VTOP);
     Gui_Draw_Button_Box(544, (Cur_Height - 121), 56, 16, "Active", BUTTON_NORMAL | BUTTON_DISABLED);
 
-    Gui_Draw_Button_Box(536, (Cur_Height - 58), 144, 30, "", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_VTOP);
+    Gui_Draw_Button_Box(536, (Cur_Height - 58), 144, 30, NULL, BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_VTOP);
     
     Gui_Draw_Button_Box(690, (Cur_Height - 138), 100, 110, "Equalizer", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_VTOP);
 

@@ -660,7 +660,7 @@ void Dump_Files_List(int xr, int yr)
             bjbox(xr - 1, yr + 1, Cur_Width - 412, 137);
 
             // Current dir background
-            Gui_Draw_Button_Box(394, 24, Cur_Width - 522, 16, "", BUTTON_NORMAL | BUTTON_DISABLED);
+            Gui_Draw_Button_Box(394, 24, Cur_Width - 522, 16, NULL, BUTTON_NORMAL | BUTTON_DISABLED);
 
             switch(Scopish)
             {
@@ -808,7 +808,7 @@ void Draw_Lists_Slider(int idx)
     SetColor(COL_SLIDER_MED);
     bjbox(Cur_Width - 17, 59 + idx, 15, 103 - idx);
 
-    Gui_Draw_Button_Box(MAX_PATT_SCREEN_X + 2, 58 + idx + 1, 16 - 2, 32, "", BUTTON_NORMAL);
+    Gui_Draw_Button_Box(MAX_PATT_SCREEN_X + 2, 58 + idx + 1, 16 - 2, 32, NULL, BUTTON_NORMAL);
 
     Gui_Draw_Button_Box(MAX_PATT_SCREEN_X + 1, 42, 16, 14, "\01", BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
     Gui_Draw_Button_Box(MAX_PATT_SCREEN_X + 1, 164, 16, 14, "\02", BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);

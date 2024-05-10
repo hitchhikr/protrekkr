@@ -92,7 +92,7 @@ void Draw_Instrument_Ed(void)
 {
     Draw_Editors_Bar(USER_SCREEN_INSTRUMENT_EDIT);
 
-    Gui_Draw_Button_Box(0, (Cur_Height - 153), fsize, 130, "", BUTTON_NORMAL | BUTTON_DISABLED);
+    Gui_Draw_Button_Box(0, (Cur_Height - 153), fsize, 130, NULL, BUTTON_NORMAL | BUTTON_DISABLED);
 
     switch(seditor)
     {
@@ -125,7 +125,7 @@ void Draw_Instrument_Ed(void)
             Gui_Draw_Button_Box(427, (Cur_Height - 130), 58, 16, "LS. Value", BUTTON_NORMAL | BUTTON_DISABLED);
             Gui_Draw_Button_Box(427, (Cur_Height - 112), 58, 16, "LE. Value", BUTTON_NORMAL | BUTTON_DISABLED);
             Gui_Draw_Button_Box(20, (Cur_Height - 130), 56, 16, "Loop Start", BUTTON_NORMAL | BUTTON_DISABLED);
-            Gui_Draw_Button_Box(20, (Cur_Height - 112), 403, 68, "", BUTTON_NORMAL);
+            Gui_Draw_Button_Box(20, (Cur_Height - 112), 403, 68, NULL, BUTTON_NORMAL);
             break;
     } //Switch Sampler Screen
 }
@@ -1422,7 +1422,7 @@ void Actualize_Instruments_Synths_List(int modeac)
             Draw_Lists_Slider(Instrs_ykar);
             Dump_Instruments_Synths_List(395, 41);
 
-            Gui_Draw_Button_Box(394, 24, Cur_Width - 522, 16, "", BUTTON_NORMAL | BUTTON_DISABLED);
+            Gui_Draw_Button_Box(394, 24, Cur_Width - 522, 16, NULL, BUTTON_NORMAL | BUTTON_DISABLED);
             switch(Scopish)
             {
                 case SCOPE_ZONE_INSTR_LIST:

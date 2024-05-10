@@ -96,7 +96,7 @@ void Draw_Master_Ed(void)
 
     Draw_Editors_Bar(USER_SCREEN_SETUP_EDIT);
 
-    Gui_Draw_Button_Box(0, (Cur_Height - 153), fsize, 130, "", BUTTON_NORMAL | BUTTON_DISABLED);
+    Gui_Draw_Button_Box(0, (Cur_Height - 153), fsize, 130, NULL, BUTTON_NORMAL | BUTTON_DISABLED);
     Gui_Draw_Flat_Box("UI Setup");
 
     Gui_Draw_Button_Box(8, (Cur_Height - 125), 110, 16, "Metronome (Rows)", BUTTON_NORMAL | BUTTON_DISABLED);
