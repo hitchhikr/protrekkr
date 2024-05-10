@@ -932,12 +932,12 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
 
 #if defined(__USE_OPENGL__)
         Enter_2D_Mode(Cur_Width, Cur_Height);
-		glDisable(GL_DEPTH_TEST);
-		glDisable(GL_LIGHTING);
-		glDisable(GL_LINE_SMOOTH);
-		glDisable(GL_POINT_SMOOTH);
-		glDisable(GL_POLYGON_SMOOTH);
-	    glDisable(GL_BLEND);
+        glDisable(GL_DEPTH_TEST);
+        glDisable(GL_LIGHTING);
+        glDisable(GL_LINE_SMOOTH);
+        glDisable(GL_POINT_SMOOTH);
+        glDisable(GL_POLYGON_SMOOTH);
+        glDisable(GL_BLEND);
         glDisable(GL_CULL_FACE);
         glHint(GL_POINT_SMOOTH_HINT, GL_FASTEST);
         glHint(GL_LINE_SMOOTH_HINT, GL_FASTEST);
@@ -971,19 +971,16 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
 #if defined(__USE_OPENGL__)
         Leave_2d_Mode();
 #if !defined(__WIN32__)
-/*        glReadBuffer(GL_BACK);
-        glAccum(GL_LOAD, 1.0f);
-        glFlush();
-        glFinish();
         glDrawBuffer(GL_FRONT);
-        glAccum(GL_RETURN, 2.0f);
+        glRasterPos2f(-1.0f, -1.0f);
+        glCopyPixels(0, 0, Cur_Width, Cur_Height, GL_COLOR);
         glFlush();
         glFinish();
         glDrawBuffer(GL_BACK);
         glFlush();
-        glFinish();*/
+        glFinish();
 #else
-//        SDL_GL_SwapBuffers();
+        SDL_GL_SwapBuffers();
 #endif
 #endif
 
