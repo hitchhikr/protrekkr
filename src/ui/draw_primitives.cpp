@@ -178,9 +178,6 @@ GLuint Create_Texture(SDL_Surface *Source, int Width)
     int j;
     int index;
 
-    glFlush();
-    glFinish();
-
     if(SDL_MUSTLOCK(Source))
     {
         if(!SDL_LockSurface(Source)) was_locked = TRUE;
