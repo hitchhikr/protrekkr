@@ -3198,9 +3198,6 @@ void Set_Main_Palette(void)
 {
     int i;
 
-Wait_Palette:
-    if(SKIN303 == NULL) goto Wait_Palette;
-
     for(i = 0; i < max_colors_303; i++)
     {
         Ptk_Palette[i + bare_color_idx].r = Palette_303[i].r;
