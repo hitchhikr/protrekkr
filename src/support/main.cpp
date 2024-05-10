@@ -971,6 +971,8 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
 #if defined(__USE_OPENGL__)
         Leave_2d_Mode();
 #if !defined(__WIN32__)
+        glFlush();
+        glFinish();
         glDrawBuffer(GL_FRONT);
         glFlush();
         glFinish();

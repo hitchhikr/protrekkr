@@ -219,8 +219,6 @@ GLuint Create_Texture(SDL_Surface *Source, int Width)
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, Width, Width, 0,
                          GL_RGBA, GL_UNSIGNED_BYTE, RGBTexture);
-            //int toto = glGetError();
-            //printf("Create: %d\n", toto);
             glDisable(GL_TEXTURE_2D);
         }
         free(RGBTexture);
