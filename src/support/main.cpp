@@ -970,8 +970,8 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
 
 #if defined(__USE_OPENGL__)
         Leave_2d_Mode();
-//#if !defined(__WIN32__)
-        glReadBuffer(GL_BACK);
+#if !defined(__WIN32__)
+/*        glReadBuffer(GL_BACK);
         glAccum(GL_LOAD, 1.0f);
         glFlush();
         glFinish();
@@ -981,10 +981,10 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
         glFinish();
         glDrawBuffer(GL_BACK);
         glFlush();
-        glFinish();
-//#else
- //       SDL_GL_SwapBuffers();
-//#endif
+        glFinish();*/
+#else
+//        SDL_GL_SwapBuffers();
+#endif
 #endif
 
 #if defined(__AMIGAOS4__) || defined(__AROS__) || defined(__MORPHOS__)
