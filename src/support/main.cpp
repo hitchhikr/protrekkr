@@ -681,9 +681,6 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
         }
     }
 
-    SDL_Event event;
-    while(SDL_PollEvent(&event));
-
     while(1)
     {
         Mouse.wheel = 0;
@@ -934,7 +931,6 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
         }
 
 #if defined(__USE_OPENGL__)
-        glDrawBuffer(GL_BACK);
         Enter_2D_Mode(Cur_Width, Cur_Height);
 #endif
 
@@ -942,7 +938,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
 
 #if !defined(__USE_OPENGL__)
         // Flush all pending blits
-        if(Nbr_Update_Rects) 
+        if(Nbr_Update_Rects)
         {
            SDL_UpdateRects(Main_Screen, Nbr_Update_Rects, Update_Stack);
         }
@@ -964,11 +960,12 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
 #if defined(__USE_OPENGL__)
         Leave_2d_Mode();
 #if !defined(__WIN32__)
-  //      glFinish();
+        glFinish();
         glDrawBuffer(GL_FRONT);
         glRasterPos2f(-1.0f, -1.0f);
         glCopyPixels(0, 0, Cur_Width, Cur_Height, GL_COLOR);
         glFinish();
+        glDrawBuffer(GL_BACK);
 /*        glReadBuffer(GL_BACK);
         glAccum(GL_LOAD, 1.0f);
         glFlush();
@@ -1016,7 +1013,9 @@ void Message_Error(char *Message)
 // Swap window/fullscreen mode
 int Switch_FullScreen(int Width, int Height, int Refresh)
 {
-    int Real_FullScreen = 0;Env_Change = TRUE;
+    int Real_FullScreen = 0;
+    
+    Env_Change = TRUE;
     if(Width < SCREEN_WIDTH) Width = SCREEN_WIDTH;
     if(Height < SCREEN_HEIGHT) Height = SCREEN_HEIGHT;
     
@@ -1097,6 +1096,8 @@ int Switch_FullScreen(int Width, int Height, int Refresh)
     glHint(GL_LINE_SMOOTH_HINT, GL_FASTEST);
     glHint(GL_POLYGON_SMOOTH_HINT, GL_FASTEST);
     glShadeModel(GL_FLAT);
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
 #endif
     
     CONSOLE_WIDTH = Cur_Width;
