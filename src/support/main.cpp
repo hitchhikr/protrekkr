@@ -646,9 +646,9 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
         exit(0);
     }
 
-    Set_Pictures_And_Palettes(TRUE);
-
     SDL_GetMouseState((int *) &Mouse.x, (int *) &Mouse.y);
+
+    Set_Pictures_And_Palettes(TRUE);
 
 #if defined(__AMIGAOS4__) || defined(__AROS__) || defined(__MORPHOS__)
     char *env_var;
@@ -680,6 +680,9 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
             LoadFile(0, Last_Used_Ptk);
         }
     }
+
+    SDL_Event event;
+    while(SDL_PollEvent(&event));
 
     while(1)
     {
@@ -972,11 +975,11 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
 #if defined(__USE_OPENGL__)
         Leave_2d_Mode();
 #if !defined(__WIN32__)
-        glFinish();
+  //      glFinish();
         glDrawBuffer(GL_FRONT);
         glRasterPos2f(-1.0f, -1.0f);
         glCopyPixels(0, 0, Cur_Width, Cur_Height, GL_COLOR);
-        glFinish();
+//        glFinish();
 /*        glReadBuffer(GL_BACK);
         glAccum(GL_LOAD, 1.0f);
         glFlush();
