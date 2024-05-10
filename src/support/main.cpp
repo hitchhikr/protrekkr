@@ -1049,7 +1049,7 @@ int Switch_FullScreen(int Width, int Height, int Refresh)
         if((Main_Screen = SDL_SetVideoMode(Startup_Width, Startup_Height,
                                            SCREEN_BPP,
                                            SDL_OPENGL | SDL_HWSURFACE | SDL_HWPALETTE  | SDL_NOFRAME
-                                           )) == NULL)²
+                                           )) == NULL)
 #else
         if((Main_Screen = SDL_SetVideoMode(Startup_Width, Startup_Height,
                                            SCREEN_BPP,
