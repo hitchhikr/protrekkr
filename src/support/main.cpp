@@ -969,6 +969,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
         glCopyPixels(0, 0, Cur_Width, Cur_Height, GL_COLOR);
         glFinish();
         glDrawBuffer(GL_BACK);
+        glFinish();
 /*        glReadBuffer(GL_BACK);
         glAccum(GL_LOAD, 1.0f);
         glFlush();
