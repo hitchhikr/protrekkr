@@ -211,8 +211,8 @@ GLuint Create_Texture(SDL_Surface *Source, int Width)
         glGenTextures(1, &txId);
         if(txId)
         {
-            glEnable(GL_TEXTURE_2D);
             glBindTexture(GL_TEXTURE_2D, txId);
+            glEnable(GL_TEXTURE_2D);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -249,8 +249,8 @@ void Draw_Tx_Quad(float x, float y, float x1, float y1, float Width, float Heigh
             glEnable(GL_BLEND);
 		    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         }
-        glEnable(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, TexID);
+        glEnable(GL_TEXTURE_2D);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glBegin(GL_QUADS);

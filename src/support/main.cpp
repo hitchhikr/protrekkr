@@ -1024,9 +1024,7 @@ void Message_Error(char *Message)
 // Swap window/fullscreen mode
 int Switch_FullScreen(int Width, int Height, int Refresh)
 {
-    int Real_FullScreen = 0;
-
-    Env_Change = TRUE;
+    int Real_FullScreen = 0;Env_Change = TRUE;
     if(Width < SCREEN_WIDTH) Width = SCREEN_WIDTH;
     if(Height < SCREEN_HEIGHT) Height = SCREEN_HEIGHT;
     
