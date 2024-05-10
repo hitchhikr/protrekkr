@@ -71,6 +71,9 @@ class RtMidi
         void *apiData_;
         bool connected_;
         char errorString_[256];
+#if defined(__AROS__)
+        struct Library *CamdBase = NULL;
+#endif
 };
 
 /**********************************************************************/

@@ -3146,51 +3146,51 @@ void Set_Pictures_And_Palettes(int LogoPalette)
 #if defined(__USE_OPENGL__)
 void Destroy_Textures()
 {
+    if(Temp_NOTESMALLPFONT_GL)
+    {
+        Destroy_Texture(&Temp_NOTESMALLPFONT_GL);
+    }
+    Temp_NOTESMALLPFONT_GL = 0;
+    if(Temp_NOTELARGEPFONT_GL)
+    {
+        Destroy_Texture(&Temp_NOTELARGEPFONT_GL);
+    }
+    Temp_NOTELARGEPFONT_GL = 0;
+    if(Temp_NOTEPFONT_GL)
+    {
+        Destroy_Texture(&Temp_NOTEPFONT_GL);
+    }
+    Temp_NOTEPFONT_GL = 0;
+    if(Temp_SMALLPFONT_GL)
+    {
+        Destroy_Texture(&Temp_SMALLPFONT_GL);
+    }
+    Temp_SMALLPFONT_GL = 0;
+    if(Temp_LARGEPFONT_GL)
+    {
+        Destroy_Texture(&Temp_LARGEPFONT_GL);
+    }
+    Temp_LARGEPFONT_GL = 0;
+    if(Temp_PFONT_GL)
+    {
+        Destroy_Texture(&Temp_PFONT_GL);
+    }
+    Temp_PFONT_GL = 0;
+    if(SKIN303_GL)
+    {
+        Destroy_Texture(&SKIN303_GL);
+    }
+    SKIN303_GL = 0;
     if(FONT_LOW_GL)
     {
-        Destroy_Texture(FONT_LOW_GL);
+        Destroy_Texture(&FONT_LOW_GL);
     }
     FONT_LOW_GL = 0;
     if(FONT_GL)
     {
-        Destroy_Texture(FONT_GL);
+        Destroy_Texture(&FONT_GL);
     }
     FONT_GL = 0;
-    if(SKIN303_GL)
-    {
-        Destroy_Texture(SKIN303_GL);
-    }
-    SKIN303_GL = 0;
-    if(Temp_PFONT_GL)
-    {
-        Destroy_Texture(Temp_PFONT_GL);
-    }
-    Temp_PFONT_GL = 0;
-    if(Temp_LARGEPFONT_GL)
-    {
-        Destroy_Texture(Temp_LARGEPFONT_GL);
-    }
-    Temp_LARGEPFONT_GL = 0;
-    if(Temp_SMALLPFONT_GL)
-    {
-        Destroy_Texture(Temp_SMALLPFONT_GL);
-    }
-    Temp_SMALLPFONT_GL = 0;
-    if(Temp_NOTEPFONT_GL)
-    {
-        Destroy_Texture(Temp_NOTEPFONT_GL);
-    }
-    Temp_NOTEPFONT_GL = 0;
-    if(Temp_NOTELARGEPFONT_GL)
-    {
-        Destroy_Texture(Temp_NOTELARGEPFONT_GL);
-    }
-    Temp_NOTELARGEPFONT_GL = 0;
-    if(Temp_NOTESMALLPFONT_GL)
-    {
-        Destroy_Texture(Temp_NOTESMALLPFONT_GL);
-    }
-    Temp_NOTESMALLPFONT_GL = 0;
 }
 #endif
 

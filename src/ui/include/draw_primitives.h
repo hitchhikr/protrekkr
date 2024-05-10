@@ -40,7 +40,7 @@
 #include <windows.h>
 #endif
 #include <SDL/SDL_opengl.h>
-#define TEXTURES_SIZE 2048
+#define TEXTURES_SIZE 1024
 #endif
 
 // ------------------------------------------------------
@@ -62,7 +62,7 @@ void Fillrect(int x1, int y1, int x2, int y2);
 void UISetPalette(SDL_Color *Palette, int Amount);
 #if defined(__USE_OPENGL__)
 GLuint Create_Texture(SDL_Surface *Source, int Width);
-void Destroy_Texture(GLuint txId);
+void Destroy_Texture(GLuint *txId);
 void Draw_Tx_Quad(float x, float y, float x1, float y1, float Width, float Height, GLuint TexID, int Blend);
 void Copy(GLuint Source, int x, int y, int x1, int y1, int x2, int y2);
 void Copy_No_Refresh(GLuint Source, int x, int y, int x1, int y1, int x2, int y2);

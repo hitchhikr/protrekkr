@@ -70,7 +70,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /ML /W3 /Gm /GX /ZI /Od /D "__WIN32__" /D "_DEBUG" /D "_WINDOWS-" /D "__WINDOWS_MM__" /D "__MOT_SWAP__" /D "__MP3_CODEC__" /D "__AT3_CODEC__" /D "__GSM_CODEC__" /D "__ADPCM_CODEC__" /D "__TRUESPEECH_CODEC__" /FR /FD /Zm500 /GZ /c
+# ADD CPP /nologo /ML /W3 /Gm /GX /ZI /Od /D "__WIN32__" /D "_DEBUG" /D "_WINDOWS-" /D "__WINDOWS_MM__" /D "__MOT_SWAP__" /D "__MP3_CODEC__" /D "__AT3_CODEC__" /D "__GSM_CODEC__" /D "__ADPCM_CODEC__" /D "__TRUESPEECH_CODEC__" /D "__USE_OPENGL__" /FR /FD /Zm500 /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x407 /d "_DEBUG"

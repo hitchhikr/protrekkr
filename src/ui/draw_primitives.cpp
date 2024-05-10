@@ -98,11 +98,11 @@ void Draw_HLine_(int x, int y, int Width, int Color)
         glColor4f((float) Ptk_Palette[Color].r / 255.0f,
                   (float) Ptk_Palette[Color].g / 255.0f,
                   (float) Ptk_Palette[Color].b / 255.0f,
-                  1.0f);
+                  (float) Ptk_Palette[Color].unused / 255.0f);
         glBegin(GL_QUADS);
             glVertex2f(0.0f, 0.0f);
             glVertex2f(0.0f, 1.0f);
-            glVertex2f(Width + 0.0f, 1.0f);
+            glVertex2f(Width, 1.0f);
             glVertex2f(Width, 0.0f);
         glEnd();
     glPopMatrix();
@@ -117,7 +117,7 @@ void Draw_VLine_(int x, int y, int Height, int Color)
         glColor4f((float) Ptk_Palette[Color].r / 255.0f,
                   (float) Ptk_Palette[Color].g / 255.0f,
                   (float) Ptk_Palette[Color].b / 255.0f,
-                  1.0f);
+                  (float) Ptk_Palette[Color].unused / 255.0f);
         glBegin(GL_QUADS);
             glVertex2f(0.0f, 0.0f);
             glVertex2f(0.0f, Height);
@@ -136,7 +136,7 @@ void Draw_Pixel_(int x, int y, int Color)
         glColor4f((float) Ptk_Palette[Color].r / 255.0f,
                   (float) Ptk_Palette[Color].g / 255.0f,
                   (float) Ptk_Palette[Color].b / 255.0f,
-                  1.0f);
+                  (float) Ptk_Palette[Color].unused / 255.0f);
         glBegin(GL_QUADS);
             glVertex2f(0.0f, 0.0f);
             glVertex2f(0.0f, 1.0f);
@@ -156,7 +156,7 @@ void Draw_Flat_Rectangle(float x, float y,
         glColor4f((float) Ptk_Palette[Color].r / 255.0f,
                   (float) Ptk_Palette[Color].g / 255.0f,
                   (float) Ptk_Palette[Color].b / 255.0f,
-                  1.0f);
+                  (float) Ptk_Palette[Color].unused / 255.0f);
         glBegin(GL_QUADS);
             glVertex2f(0.0f, 0.0f);
             glVertex2f(0.0f, Height);
@@ -192,7 +192,6 @@ GLuint Create_Texture(SDL_Surface *Source, int Width)
         {
             for(i = 0; i < Source->w; i++)
             {
-
                 index = SrcPic[(j * Source->pitch) + i];
 #if defined(__BIG_ENDIAN__)
                 RGBTexture[(j * Width) + i] = (GLPalette[index].r << 24) | (GLPalette[index].g << 16) | (GLPalette[index].b << 8);
@@ -212,20 +211,19 @@ GLuint Create_Texture(SDL_Surface *Source, int Width)
         glGenTextures(1, &txId);
         if(txId)
         {
-            glBindTexture(GL_TEXTURE_2D, txId);
             glEnable(GL_TEXTURE_2D);
+            glBindTexture(GL_TEXTURE_2D, txId);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, Width, Width, 0,
                          GL_RGBA, GL_UNSIGNED_BYTE, RGBTexture);
+            //int toto = glGetError();
+            //printf("Create: %d\n", toto);
             glDisable(GL_TEXTURE_2D);
         }
-        if(RGBTexture)
-        {
-            free(RGBTexture);
-        }
+        free(RGBTexture);
     }
     if(was_locked)
     {
@@ -236,9 +234,9 @@ GLuint Create_Texture(SDL_Surface *Source, int Width)
 
 // ------------------------------------------------------
 // Delete a previously created texture
-void Destroy_Texture(GLuint txId)
+void Destroy_Texture(GLuint *txId)
 {
-    glDeleteTextures(1, &txId);
+    glDeleteTextures(1, txId);
 }
 
 // ------------------------------------------------------
@@ -250,8 +248,8 @@ void Draw_Tx_Quad(float x, float y, float x1, float y1, float Width, float Heigh
         glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         if(Blend)
         {
-		    glEnable(GL_BLEND);
-		    glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+            glEnable(GL_BLEND);
+		    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         }
         glEnable(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, TexID);
@@ -263,11 +261,11 @@ void Draw_Tx_Quad(float x, float y, float x1, float y1, float Width, float Heigh
             glTexCoord2f((Width / (float) TEXTURES_SIZE) + (x1 / (float) TEXTURES_SIZE), (Height / (float) TEXTURES_SIZE) + (y1 / (float) TEXTURES_SIZE)); glVertex2f(Width, Height);
             glTexCoord2f((Width / (float) TEXTURES_SIZE) + (x1 / (float) TEXTURES_SIZE), y1 / (float) TEXTURES_SIZE); glVertex2f(Width, 0.0f);
         glEnd();
+        glDisable(GL_TEXTURE_2D);
         if(Blend)
         {
 		    glDisable(GL_BLEND);
         }
-        glDisable(GL_TEXTURE_2D);
     glPopMatrix();
 }
 #endif

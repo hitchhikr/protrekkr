@@ -438,7 +438,7 @@ void Restore_Background_Requester()
 #else
         if(Req_Picture_GL)
         {
-            Destroy_Texture(Req_Picture_GL);
+            Destroy_Texture(&Req_Picture_GL);
             Req_Picture_GL = 0;
         }
 #endif

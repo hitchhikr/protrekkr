@@ -161,7 +161,6 @@ void Midi_CallBackIn(double deltatime,
         case 0xb0:
             Midi_Datas_1 = (Param1 >> 8) & 0xff;
             Midi_Datas_2 = (Param1 >> 16) & 0xff;
-            
             Dispatch_Midi_Msg(Midi_Datas_1, Midi_Datas_2);
             break;
 

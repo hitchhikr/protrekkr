@@ -3,7 +3,7 @@ CXX = g++
 LIBS = -lGL -lSDL -lsdldraw -lz -lstdc++ -lsupc++ -lgame
 
 FLAGS = -O3 -std=c++98 -fno-strict-aliasing -ffast-math -fno-rtti -fno-exceptions -w -I/usr/local/include -L/usr/local/lib -Lsrc/extralibs/sdl_draw -Lsrc/extralibs/zlib-1.2.3 \
-        -D __GCC__ -D __NO_MIDI__ -D __MOT_SWAP__ -D__HAIKU__ -D __USE_OPENGL__
+        -D __GCC__ -D __NO_MIDI__ -D __MOT_SWAP__ -D__HAIKU__
 
 EXEOBJS = ptk.o \
           editor_303.o editor_pattern.o editor_sequencer.o editor_track.o editor_track_fx.o \

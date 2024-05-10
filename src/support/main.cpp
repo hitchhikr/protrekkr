@@ -970,14 +970,17 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
 
 #if defined(__USE_OPENGL__)
         Leave_2d_Mode();
-        glDrawBuffer(GL_FRONT);
-        glRasterPos2f(-1.0f, -1.0f);
-        glCopyPixels(0, 0, Cur_Width, Cur_Height, GL_COLOR);
-        glFlush();
-        glFinish();
-        glDrawBuffer(GL_BACK);
-        glFlush();
-        glFinish();
+//        glAccum(GL_LOAD, 1.0f);
+//        glFlush();
+  //      glFinish();
+        SDL_GL_SwapBuffers();
+        //glDrawBuffer(GL_FRONT);
+//        glAccum(GL_RETURN, 2.0f);
+    //    glFlush();
+      //  glFinish();
+        //glDrawBuffer(GL_BACK);
+        //glFlush();
+       // glFinish();
 #endif
 
 #if defined(__AMIGAOS4__) || defined(__AROS__) || defined(__MORPHOS__)
@@ -1024,6 +1027,15 @@ int Switch_FullScreen(int Width, int Height, int Refresh)
 #endif
 
 #if defined(__USE_OPENGL__)
+    SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_ACCUM_RED_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_ACCUM_GREEN_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_ACCUM_BLUE_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_ACCUM_ALPHA_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1);
     SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, TRUE);
@@ -1036,13 +1048,13 @@ int Switch_FullScreen(int Width, int Height, int Refresh)
 #if defined(__USE_OPENGL__)
         if((Main_Screen = SDL_SetVideoMode(Startup_Width, Startup_Height,
                                            SCREEN_BPP,
-                                           SDL_OPENGL | SDL_HWSURFACE | SDL_HWPALETTE |
-                                           (FullScreen ? SDL_FULLSCREEN : 0))) == NULL)
+                                           SDL_OPENGL | SDL_HWSURFACE | SDL_HWPALETTE  | SDL_NOFRAME
+                                           )) == NULL)²
 #else
         if((Main_Screen = SDL_SetVideoMode(Startup_Width, Startup_Height,
                                            SCREEN_BPP,
-                                           SDL_SWSURFACE | SDL_HWPALETTE |
-                                           (FullScreen ? SDL_FULLSCREEN : 0))) == NULL)
+                                           SDL_SWSURFACE | SDL_HWPALETTE | SDL_NOFRAME
+                                           )) == NULL)
 #endif
 
         {
