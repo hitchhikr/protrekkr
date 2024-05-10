@@ -931,6 +931,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
         }
 
 #if defined(__USE_OPENGL__)
+        glDrawBuffer(GL_BACK);
         Enter_2D_Mode(Cur_Width, Cur_Height);
         glDisable(GL_DEPTH_TEST);
         glDisable(GL_LIGHTING);
@@ -971,10 +972,11 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
 #if defined(__USE_OPENGL__)
         Leave_2d_Mode();
 #if !defined(__WIN32__)
+        glFinish();
         glDrawBuffer(GL_FRONT);
         glRasterPos2f(-1.0f, -1.0f);
         glCopyPixels(0, 0, Cur_Width, Cur_Height, GL_COLOR);
-        glDrawBuffer(GL_BACK);
+        glFinish();
 /*        glReadBuffer(GL_BACK);
         glAccum(GL_LOAD, 1.0f);
         glFlush();
@@ -1022,6 +1024,8 @@ void Message_Error(char *Message)
 // Swap window/fullscreen mode
 int Switch_FullScreen(int Width, int Height, int Refresh)
 {
+    int Real_FullScreen = 0;
+
     Env_Change = TRUE;
     if(Width < SCREEN_WIDTH) Width = SCREEN_WIDTH;
     if(Height < SCREEN_HEIGHT) Height = SCREEN_HEIGHT;
@@ -1032,6 +1036,10 @@ int Switch_FullScreen(int Width, int Height, int Refresh)
         SDL_putenv("SDL_VIDEO_WINDOW_POS=center");
         SDL_putenv("SDL_VIDEO_CENTERED=1");
     }
+#endif
+
+#if defined(__LINUX__)
+    Real_FullScreen = SDL_FULLSCREEN;
 #endif
 
 #if defined(__USE_OPENGL__)
@@ -1046,10 +1054,10 @@ int Switch_FullScreen(int Width, int Height, int Refresh)
 
 #if defined(__USE_OPENGL__)
         if((Main_Screen = SDL_SetVideoMode(Startup_Width, Startup_Height,
-                                           SCREEN_BPP, SDL_OPENGL | SDL_HWSURFACE | SDL_HWPALETTE  | SDL_NOFRAME)) == NULL)
+                                           SCREEN_BPP, SDL_OPENGL | SDL_HWSURFACE | SDL_HWPALETTE  | SDL_NOFRAME | Real_FullScreen)) == NULL)
 #else
         if((Main_Screen = SDL_SetVideoMode(Startup_Width, Startup_Height,
-                                           SCREEN_BPP, SDL_SWSURFACE | SDL_HWPALETTE | SDL_NOFRAME)) == NULL)
+                                           SCREEN_BPP, SDL_SWSURFACE | SDL_HWPALETTE | SDL_NOFRAME | Real_FullScreen)) == NULL)
 #endif
 
         {
