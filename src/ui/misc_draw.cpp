@@ -2945,12 +2945,12 @@ void Set_Pictures_And_Palettes(int LogoPalette)
     unsigned char *Pix;
     int was_locked;
 
-#if defined(__USE_OPENGL__)
+//#if defined(__USE_OPENGL__)
     if(!Burn_Title && LogoPalette == FALSE)
     {
         return;
     }
-#endif
+//#endif
 
     SDL_Palette *Pic_Palette;
     int min_idx = sizeof(Default_Palette2) / sizeof(SDL_Color);

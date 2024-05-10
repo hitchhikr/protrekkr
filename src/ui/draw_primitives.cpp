@@ -212,14 +212,14 @@ GLuint Create_Texture(SDL_Surface *Source, int Width)
         if(txId)
         {
             glBindTexture(GL_TEXTURE_2D, txId);
-//            glEnable(GL_TEXTURE_2D);
+            glEnable(GL_TEXTURE_2D);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, Width, Width, 0,
                          GL_RGBA, GL_UNSIGNED_BYTE, RGBTexture);
-   //         glDisable(GL_TEXTURE_2D);
+            glDisable(GL_TEXTURE_2D);
         }
         free(RGBTexture);
     }
