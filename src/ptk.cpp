@@ -535,7 +535,10 @@ int Init_Context(void)
 
     CHDIR(Prog_Path);
 
-    if(!Init_Block_Work()) return(FALSE);
+    if(!Init_Block_Work())
+    {
+        return(FALSE);
+    }
 
 #if !defined(__NO_MIDI__)
     Midi_Reset();
@@ -565,6 +568,8 @@ int Init_Context(void)
 
     SDL_SetColorKey(FONT, SDL_SRCCOLORKEY, 0);
     SDL_SetColorKey(FONT_LOW, SDL_SRCCOLORKEY, 0);
+
+    Set_Pictures_And_Palettes(TRUE);
 
     // Player initialization
 #if defined(__WIN32__)

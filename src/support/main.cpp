@@ -641,14 +641,12 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
     Midi_GetAll();
 #endif
 
+    SDL_GetMouseState((int *) &Mouse.x, (int *) &Mouse.y);
+
     if(!Init_Context())
     {
         exit(0);
     }
-
-    SDL_GetMouseState((int *) &Mouse.x, (int *) &Mouse.y);
-
-    Set_Pictures_And_Palettes(TRUE);
 
 #if defined(__AMIGAOS4__) || defined(__AROS__) || defined(__MORPHOS__)
     char *env_var;
