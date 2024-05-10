@@ -2946,10 +2946,10 @@ void Set_Pictures_And_Palettes(int LogoPalette)
     int was_locked;
 
 //#if defined(__USE_OPENGL__)
-    if(!Burn_Title && LogoPalette == FALSE)
+/*    if(!Burn_Title && LogoPalette == FALSE)
     {
         return;
-    }
+    }*/
 //#endif
 
     SDL_Palette *Pic_Palette;
