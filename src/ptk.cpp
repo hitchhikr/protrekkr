@@ -687,19 +687,19 @@ int Screen_Update(void)
 
     int Lt_vu = (int) (MIN_VUMETER + (((float) L_MaxLevel / 32767.0f) * LARG_VUMETER));
     int Rt_vu = (int) (MIN_VUMETER + (((float) R_MaxLevel / 32767.0f) * LARG_VUMETER));
+    if(Lt_vu > MIN_PEAK) Lt_vu = MIN_PEAK;
+    if(Rt_vu > MIN_PEAK) Rt_vu = MIN_PEAK;
     int Lt_vu_Peak = Lt_vu;
     int Rt_vu_Peak = Rt_vu;
     if(Lt_vu_Peak > MAX_VUMETER - 2) Lt_vu_Peak = MAX_VUMETER - 2;
     if(Rt_vu_Peak > MAX_VUMETER - 2) Rt_vu_Peak = MAX_VUMETER - 2;
-    if(Lt_vu > MIN_PEAK) Lt_vu = MIN_PEAK;
-    if(Rt_vu > MIN_PEAK) Rt_vu = MIN_PEAK;
 
     // Draw the vu meters
-    for(i = MIN_VUMETER ; i < Lt_vu; i += 2)
+    for(i = MIN_VUMETER; i < Lt_vu; i += 2)
     {
         DrawVLine(i, 10, 13, COL_VUMETER);
     }
-    for(i = MIN_VUMETER ; i < Rt_vu; i += 2)
+    for(i = MIN_VUMETER; i < Rt_vu; i += 2)
     {
         DrawVLine(i, 15, 18, COL_VUMETER);
     }
