@@ -971,16 +971,17 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
 #if defined(__USE_OPENGL__)
         Leave_2d_Mode();
 #if !defined(__WIN32__)
+        glReadBuffer(GL_FRONT);
         glAccum(GL_LOAD, 1.0f);
-//        glFlush();
-  //      glFinish();
+        glFlush();
+        glFinish();
         glDrawBuffer(GL_FRONT);
         glAccum(GL_RETURN, 2.0f);
-    //    glFlush();
-      //  glFinish();
+        glFlush();
+        glFinish();
         glDrawBuffer(GL_BACK);
-        //glFlush();
-       // glFinish();
+        glFlush();
+        glFinish();
 #else
         SDL_GL_SwapBuffers();
 #endif
