@@ -970,8 +970,8 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
 
 #if defined(__USE_OPENGL__)
         Leave_2d_Mode();
-#if !defined(__WIN32__)
-        glReadBuffer(GL_FRONT);
+//#if !defined(__WIN32__)
+        glReadBuffer(GL_BACK);
         glAccum(GL_LOAD, 1.0f);
         glFlush();
         glFinish();
@@ -979,13 +979,12 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
         glAccum(GL_RETURN, 2.0f);
         glFlush();
         glFinish();
-        glReadBuffer(GL_BACK);
         glDrawBuffer(GL_BACK);
         glFlush();
         glFinish();
-#else
-        SDL_GL_SwapBuffers();
-#endif
+//#else
+ //       SDL_GL_SwapBuffers();
+//#endif
 #endif
 
 #if defined(__AMIGAOS4__) || defined(__AROS__) || defined(__MORPHOS__)
@@ -1044,14 +1043,10 @@ int Switch_FullScreen(int Width, int Height, int Refresh)
 
 #if defined(__USE_OPENGL__)
         if((Main_Screen = SDL_SetVideoMode(Startup_Width, Startup_Height,
-                                           SCREEN_BPP,
-                                           SDL_OPENGL | SDL_HWSURFACE | SDL_HWPALETTE  | SDL_NOFRAME
-                                           )) == NULL)
+                                           SCREEN_BPP, SDL_OPENGL | SDL_HWSURFACE | SDL_HWPALETTE  | SDL_NOFRAME)) == NULL)
 #else
         if((Main_Screen = SDL_SetVideoMode(Startup_Width, Startup_Height,
-                                           SCREEN_BPP,
-                                           SDL_SWSURFACE | SDL_HWPALETTE | SDL_NOFRAME
-                                           )) == NULL)
+                                           SCREEN_BPP, SDL_SWSURFACE | SDL_HWPALETTE | SDL_NOFRAME)) == NULL)
 #endif
 
         {
@@ -1072,16 +1067,10 @@ int Switch_FullScreen(int Width, int Height, int Refresh)
 
 #if defined(__USE_OPENGL__)
         if((Main_Screen = SDL_SetVideoMode(Width, Height,
-                                           SCREEN_BPP,
-                                           SDL_RESIZABLE |
-                                           SDL_OPENGL | SDL_HWSURFACE | SDL_HWPALETTE |
-                                           (FullScreen ? SDL_FULLSCREEN : 0))) == NULL)
+                                           SCREEN_BPP, SDL_RESIZABLE | SDL_OPENGL | SDL_HWSURFACE | SDL_HWPALETTE)) == NULL)
 #else
         if((Main_Screen = SDL_SetVideoMode(Width, Height,
-                                           SCREEN_BPP,
-                                           SDL_RESIZABLE |
-                                           SDL_SWSURFACE | SDL_HWPALETTE |
-                                           (FullScreen ? SDL_FULLSCREEN : 0))) == NULL)
+                                           SCREEN_BPP, SDL_RESIZABLE | SDL_SWSURFACE | SDL_HWPALETTE)) == NULL)
 #endif
 
         {
