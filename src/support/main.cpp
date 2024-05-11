@@ -980,6 +980,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
         glRasterPos2f(-1.0f, -1.0f);
         glCopyPixels(0, 0, Cur_Width, Cur_Height, GL_COLOR);
         glDrawBuffer(GL_BACK);
+        glFinish();
 #else
         SDL_GL_SwapBuffers();
 #endif
