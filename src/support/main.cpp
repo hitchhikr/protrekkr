@@ -621,7 +621,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
 
     if(!Switch_FullScreen(Cur_Width, Cur_Height, FALSE))
     {
-        Message_Error("Can't open screen.");
+        Message_Error(SDL_GetError());
         exit(0);
     }
 
@@ -1032,14 +1032,21 @@ int Switch_FullScreen(int Width, int Height, int Refresh)
 #endif
 
 #if defined(__USE_OPENGL__)
+#if !defined(__LINUX__)
     SDL_GL_SetAttribute(SDL_GL_ACCUM_RED_SIZE, 8);
     SDL_GL_SetAttribute(SDL_GL_ACCUM_GREEN_SIZE, 8);
     SDL_GL_SetAttribute(SDL_GL_ACCUM_BLUE_SIZE, 8);
     SDL_GL_SetAttribute(SDL_GL_ACCUM_ALPHA_SIZE, 8);
+#endif
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1);
     SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, TRUE);
     Destroy_Textures();
+    if(Refresh)
+    {
+        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_ACCUM_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+    }
 #endif
 
     if(FullScreen)
@@ -1101,9 +1108,6 @@ int Switch_FullScreen(int Width, int Height, int Refresh)
     glHint(GL_POLYGON_SMOOTH_HINT, GL_FASTEST);
     glShadeModel(GL_FLAT);
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-    glDrawBuffer(GL_FRONT);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_ACCUM_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-    glDrawBuffer(GL_BACK);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_ACCUM_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 #endif
     
