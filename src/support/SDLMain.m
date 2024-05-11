@@ -93,7 +93,8 @@ static NSString *getApplicationName(void)
         char parentdir[MAXPATHLEN];
 		CFURLRef url = CFBundleCopyBundleURL(CFBundleGetMainBundle());
 		CFURLRef url2 = CFURLCreateCopyDeletingLastPathComponent(0, url);
-		if (CFURLGetFileSystemRepresentation(url2, true, (UInt8 *)parentdir, MAXPATHLEN)) {
+		if (CFURLGetFileSystemRepresentation(url2, true, (UInt8 *)parentdir, MAXPATHLEN))
+        {
 	        assert ( chdir (parentdir) == 0 );   /* chdir to the binary app's parent */
 		}
 		CFRelease(url);
@@ -159,7 +160,6 @@ static void setApplicationMenu(void)
     title = [@"Quit " stringByAppendingString:appName];
     [appleMenu addItemWithTitle:title action:@selector(terminate:) keyEquivalent:@"q"];
 
-    
     /* Put menu into the menubar */
     menuItem = [[NSMenuItem alloc] initWithTitle:@"" action:nil keyEquivalent:@""];
     [menuItem setSubmenu:appleMenu];
@@ -223,12 +223,10 @@ static void CustomApplicationMain (int argc, char **argv)
     /* Set up the menubar */
     [NSApp setMainMenu:[[NSMenu alloc] init]];
     setApplicationMenu();
-    setupWindowMenu();
-
+    //setupWindowMenu();
     /* Create SDLMain and make it the app delegate */
     sdlMain = [[SDLMain alloc] init];
     [NSApp setDelegate:sdlMain];
-    
     /* Start the main event loop */
     [NSApp run];
     
@@ -350,12 +348,9 @@ static void CustomApplicationMain (int argc, char **argv)
 
 @end
 
-
-
 #ifdef main
 #  undef main
 #endif
-
 
 /* Main entry point to executable - should *not* be SDL_main! */
 int main (int argc, char **argv)
