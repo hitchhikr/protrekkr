@@ -126,6 +126,7 @@ int Cur_Height = SCREEN_HEIGHT;
 int Save_Cur_Width = -1;
 int Save_Cur_Height = -1;
 int do_resize = FALSE;
+int done_expose = FALSE;
 char AutoSave;
 char Window_Title[256];
 extern int gui_pushed;
@@ -687,7 +688,8 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
     Resize_Width = Cur_Width;
     Resize_Height = Cur_Height;
     do_resize = TRUE;
-
+    done_expose = FALSE;
+    
     while(1)
     {
         Mouse.wheel = 0;
@@ -910,18 +912,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
                     Resize_Width = Events[i].resize.w;
                     Resize_Height = Events[i].resize.h;
                     do_resize = TRUE;
-                    break;
-
-                case SDL_VIDEOEXPOSE:
-                    if(!FullScreen)
-                    {
-                        if(!do_resize)
-                        {
-                            Resize_Width = Cur_Width;
-                            Resize_Height = Cur_Height;
-                            do_resize = TRUE;
-                        }
-                    }
+                    done_expose = TRUE;
                     break;
 
                 case SDL_ACTIVEEVENT:
@@ -985,20 +976,11 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
 #if defined(__USE_OPENGL__)
         Leave_2d_Mode();
 #if !defined(__WIN32__)
-        glFlush();
         glDrawBuffer(GL_FRONT);
         glRasterPos2f(-1.0f, -1.0f);
         glCopyPixels(0, 0, Cur_Width, Cur_Height, GL_COLOR);
-        glFlush();
         glDrawBuffer(GL_BACK);
-        glFlush();
 #else
-/*        glReadBuffer(GL_BACK);
-        glAccum(GL_LOAD, 1.0f);
-        glDrawBuffer(GL_FRONT);
-        glAccum(GL_RETURN, 1.0f);
-        glDrawBuffer(GL_BACK);*/
-    //    glReadBuffer(GL_FRONT);
         SDL_GL_SwapBuffers();
 #endif
 #endif
@@ -1049,17 +1031,17 @@ int Switch_FullScreen(int Width, int Height, int Refresh)
     }
 #endif
 
-#if defined(__LINUX__)
+#if defined(__LINUX__) || defined(__MACOSX_PPC__) || defined(__MACOSX_X86__)
     Real_FullScreen = SDL_FULLSCREEN;
 #endif
 
 #if defined(__USE_OPENGL__)
-/*#if !defined(__LINUX__)
+#if !defined(__LINUX__)
     SDL_GL_SetAttribute(SDL_GL_ACCUM_RED_SIZE, 8);
     SDL_GL_SetAttribute(SDL_GL_ACCUM_GREEN_SIZE, 8);
     SDL_GL_SetAttribute(SDL_GL_ACCUM_BLUE_SIZE, 8);
     SDL_GL_SetAttribute(SDL_GL_ACCUM_ALPHA_SIZE, 8);
-#endif*/
+#endif
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1);
