@@ -51,16 +51,16 @@ SDL_Surface *Temp_NOTESMALLPFONT;
 SDL_Surface *Note_Surface;
 SDL_Surface *Note_Alt_Surface;
 #if defined(__USE_OPENGL__)
-GLuint Temp_PFONT_GL = 0;
-GLuint Temp_LARGEPFONT_GL = 0;
-GLuint Temp_SMALLPFONT_GL = 0;
-GLuint Temp_NOTEPFONT_GL = 0;
-GLuint Temp_NOTELARGEPFONT_GL = 0;
-GLuint Temp_NOTESMALLPFONT_GL = 0;
-GLuint Note_Surface_GL = 0;
-GLuint Note_Alt_Surface_GL = 0;
-GLuint FONT_GL = 0;
-GLuint FONT_LOW_GL = 0;
+GLuint Temp_PFONT_GL = -1;
+GLuint Temp_LARGEPFONT_GL = -1;
+GLuint Temp_SMALLPFONT_GL = -1;
+GLuint Temp_NOTEPFONT_GL = -1;
+GLuint Temp_NOTELARGEPFONT_GL = -1;
+GLuint Temp_NOTESMALLPFONT_GL = -1;
+GLuint Note_Surface_GL = -1;
+GLuint Note_Alt_Surface_GL = -1;
+GLuint FONT_GL = -1;
+GLuint FONT_LOW_GL = -1;
 extern GLuint SKIN303_GL;
 #endif
 int Beveled = 1;
@@ -2427,29 +2427,29 @@ void Note_Small_Letter(int x, int y, char ltr, int ys, int y2)
 
 void blitnote(int x, int y, int note, int y1, int y2)
 {
-    Letter_Function = Note_Letter;
     GET_SURFACE(Note_Surface) = GET_SURFACE(Temp_NOTEPFONT);
     GET_SURFACE(Note_Alt_Surface) = GET_SURFACE(Temp_PFONT);
     if(Accidental) Blit_note(x, y, note, y1, y2, 8, Accidental_Table_b[note]);
     else Blit_note(x, y, note, y1, y2, 8, Accidental_Table[note]);
+    Letter_Function = Note_Letter;
 }
 
 void blitlargenote(int x, int y, int note, int y1, int y2)
 {
-    Letter_Function = Note_Large_Letter;
     GET_SURFACE(Note_Surface) = GET_SURFACE(Temp_NOTELARGEPFONT);
     GET_SURFACE(Note_Alt_Surface) = GET_SURFACE(Temp_LARGEPFONT);
     if(Accidental) Blit_note(x, y, note, y1, y2, 11, Accidental_Table_b[note]);
     else Blit_note(x, y, note, y1, y2, 11, Accidental_Table[note]);
+    Letter_Function = Note_Large_Letter;
 }
 
 void blitsmallnote(int x, int y, int note, int y1, int y2)
 {
-    Letter_Function = Note_Small_Letter;
     GET_SURFACE(Note_Alt_Surface) = GET_SURFACE(Temp_SMALLPFONT);
     GET_SURFACE(Note_Surface) = GET_SURFACE(Temp_NOTESMALLPFONT);
     if(Accidental) Blit_note(x, y, note, y1, y2, 6, Accidental_Table_b[note]);
     else Blit_note(x, y, note, y1, y2, 6, Accidental_Table[note]);
+    Letter_Function = Note_Small_Letter;
 }
 
 void Blit_note(int x, int y, int note, int y1, int y2, int size, int acc)
@@ -3153,59 +3153,59 @@ void Set_Pictures_And_Palettes(int LogoPalette)
 #if defined(__USE_OPENGL__)
 void Destroy_Textures()
 {
-    if(FONT_GL)
+    if(FONT_GL != -1)
     {
         Destroy_Texture(&FONT_GL);
     }
-    FONT_GL = 0;
+    FONT_GL = -1;
 
-    if(FONT_LOW_GL)
+    if(FONT_LOW_GL != -1)
     {
         Destroy_Texture(&FONT_LOW_GL);
     }
-    FONT_LOW_GL = 0;
+    FONT_LOW_GL = -1;
 
-    if(SKIN303_GL)
+    if(SKIN303_GL != -1)
     {
         Destroy_Texture(&SKIN303_GL);
     }
-    SKIN303_GL = 0;
+    SKIN303_GL = -1;
 
-    if(Temp_PFONT_GL)
+    if(Temp_PFONT_GL != -1)
     {
         Destroy_Texture(&Temp_PFONT_GL);
     }
-    Temp_PFONT_GL = 0;
+    Temp_PFONT_GL = -1;
     
-    if(Temp_LARGEPFONT_GL)
+    if(Temp_LARGEPFONT_GL != -1)
     {
         Destroy_Texture(&Temp_LARGEPFONT_GL);
     }
-    Temp_LARGEPFONT_GL = 0;
+    Temp_LARGEPFONT_GL = -1;
     
-    if(Temp_SMALLPFONT_GL)
+    if(Temp_SMALLPFONT_GL != -1)
     {
         Destroy_Texture(&Temp_SMALLPFONT_GL);
     }
-    Temp_SMALLPFONT_GL = 0;
+    Temp_SMALLPFONT_GL = -1;
     
-    if(Temp_NOTEPFONT_GL)
+    if(Temp_NOTEPFONT_GL != -1)
     {
         Destroy_Texture(&Temp_NOTEPFONT_GL);
     }
-    Temp_NOTEPFONT_GL = 0;
+    Temp_NOTEPFONT_GL = -1;
     
-    if(Temp_NOTELARGEPFONT_GL)
+    if(Temp_NOTELARGEPFONT_GL != -1)
     {
         Destroy_Texture(&Temp_NOTELARGEPFONT_GL);
     }
-    Temp_NOTELARGEPFONT_GL = 0;
+    Temp_NOTELARGEPFONT_GL = -1;
 
-    if(Temp_NOTESMALLPFONT_GL)
+    if(Temp_NOTESMALLPFONT_GL != -1)
     {
         Destroy_Texture(&Temp_NOTESMALLPFONT_GL);
     }
-    Temp_NOTESMALLPFONT_GL = 0;
+    Temp_NOTESMALLPFONT_GL = -1;
 }
 #endif
 

@@ -433,7 +433,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
     }
 
 #if defined(__USE_OPENGL__)
-    strcat(Window_Title, " - (OpenGL version)");
+    strcat(Window_Title, " - (OpenGL)");
 #endif
 
     SDL_WM_SetCaption(Window_Title, NULL);
