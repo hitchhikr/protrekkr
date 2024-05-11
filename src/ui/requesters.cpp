@@ -411,8 +411,6 @@ void Kill_Requester(void)
         Req_Txt_Lines[Nbr_Lines] = NULL;
     }
 
-    Set_Pictures_And_Palettes(FALSE);
-
 #if !defined(__USE_OPENGL__)
     if(Req_Back)
     {
@@ -423,12 +421,17 @@ void Kill_Requester(void)
              Pos_Y + Size_Y + 1);
         SDL_FreeSurface(Req_Back);
         Req_Back = NULL;
+        if(Req_Picture)
+        {
+            Set_Pictures_And_Palettes(FALSE);
+        }
     }
 #else
     if(Req_Picture_GL != -1)
     {
         Destroy_Texture(&Req_Picture_GL);
         Req_Picture_GL = -1;
+        Set_Pictures_And_Palettes(FALSE);
     }
 #endif
 

@@ -99,6 +99,8 @@ REQUESTER Title_Requester =
 const SDL_VideoInfo *Screen_Info;
 int Startup_Width;
 int Startup_Height;
+int Resize_Width;
+int Resize_Height;
 int Burn_Title = FALSE;
 SDL_Surface *Main_Screen;
 #if defined(__WIN32__)
@@ -123,6 +125,7 @@ int Cur_Width = SCREEN_WIDTH;
 int Cur_Height = SCREEN_HEIGHT;
 int Save_Cur_Width = -1;
 int Save_Cur_Height = -1;
+int do_resize = FALSE;
 char AutoSave;
 char Window_Title[256];
 extern int gui_pushed;
@@ -681,6 +684,10 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
         }
     }
 
+    Resize_Width = Cur_Width;
+    Resize_Height = Cur_Height;
+    do_resize = TRUE;
+
     while(1)
     {
         Mouse.wheel = 0;
@@ -900,17 +907,26 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
                         SDL_putenv(Win_Coords);
                     }
 #endif
+                    Resize_Width = Events[i].resize.w;
+                    Resize_Height = Events[i].resize.h;
+                    do_resize = TRUE;
+                    break;
 
-                    Switch_FullScreen(Events[i].resize.w, Events[i].resize.h, TRUE);
+                case SDL_VIDEOEXPOSE:
+                    if(!FullScreen)
+                    {
+                        if(!do_resize)
+                        {
+                            Resize_Width = Cur_Width;
+                            Resize_Height = Cur_Height;
+                            do_resize = TRUE;
+                        }
+                    }
                     break;
 
                 case SDL_ACTIVEEVENT:
                     if(Events[i].active.gain)
                     {
-                        if(FullScreen)
-                        {
-                            Set_Pictures_And_Palettes(FALSE);
-                        }
                         memset(Keys, 0, sizeof(Keys));
                         memset(Keys_Sym, 0, sizeof(Keys_Sym));
                         memset(Keys_Unicode, 0, sizeof(Keys_Raw));
@@ -928,6 +944,12 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
                 default:
                     break;
             }
+        }
+
+        if(do_resize)
+        {
+            Switch_FullScreen(Resize_Width, Resize_Height, TRUE);
+            do_resize = FALSE;
         }
 
 #if defined(__USE_OPENGL__)
@@ -1032,12 +1054,13 @@ int Switch_FullScreen(int Width, int Height, int Refresh)
 #endif
 
 #if defined(__USE_OPENGL__)
-#if !defined(__LINUX__)
+/*#if !defined(__LINUX__)
     SDL_GL_SetAttribute(SDL_GL_ACCUM_RED_SIZE, 8);
     SDL_GL_SetAttribute(SDL_GL_ACCUM_GREEN_SIZE, 8);
     SDL_GL_SetAttribute(SDL_GL_ACCUM_BLUE_SIZE, 8);
     SDL_GL_SetAttribute(SDL_GL_ACCUM_ALPHA_SIZE, 8);
-#endif
+#endif*/
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1);
     SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, TRUE);

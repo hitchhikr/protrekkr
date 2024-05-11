@@ -2952,13 +2952,6 @@ void Set_Pictures_And_Palettes(int LogoPalette)
     unsigned char *Pix;
     int was_locked;
 
-//#if defined(__USE_OPENGL__)
-/*    if(!Burn_Title && LogoPalette == FALSE)
-    {
-        return;
-    }*/
-//#endif
-
     SDL_Palette *Pic_Palette;
     int min_idx = sizeof(Default_Palette2) / sizeof(SDL_Color);
 
@@ -3100,7 +3093,7 @@ void Set_Pictures_And_Palettes(int LogoPalette)
         Temp_NOTESMALLPFONT = SDL_AllocSurface(SDL_SWSURFACE, 320, 87 * 2, 8, 0, 0, 0, 0xff);
     }
 
-    if(LogoPalette)
+    if(!Burn_Title)
     {
         Set_Logo_Palette();
     }
@@ -3113,7 +3106,6 @@ void Set_Pictures_And_Palettes(int LogoPalette)
     Ptk_Palette[0].r = 0;
     Ptk_Palette[0].g = 0;
     Ptk_Palette[0].b = 0;
-
     UISetPalette(Ptk_Palette, 256);
 
     Env_Change = TRUE;

@@ -582,8 +582,6 @@ int Init_Context(void)
     SDL_SetColorKey(FONT, SDL_SRCCOLORKEY, 0);
     SDL_SetColorKey(FONT_LOW, SDL_SRCCOLORKEY, 0);
 
-    Set_Pictures_And_Palettes(TRUE);
-
     // Player initialization
 #if defined(__WIN32__)
     if(!Ptk_InitDriver(Main_Window, AUDIO_Milliseconds))
