@@ -50,6 +50,7 @@ extern int Font_Pos[256];
 extern int Font_Size[256];
 int FgColor;
 #if defined(__USE_OPENGL__)
+unsigned int *RGBTexture;
 SDL_Color GLPalette[256];
 extern GLuint FONT_GL;
 extern GLuint FONT_LOW_GL;
@@ -168,10 +169,9 @@ void Draw_Flat_Rectangle(float x, float y,
 
 // ------------------------------------------------------
 // Create a texture
-GLuint Create_Texture(SDL_Surface *Source, int Width)
+GLuint Create_Texture(SDL_Surface *Source)
 {
     GLuint txId = 0;
-    unsigned int *RGBTexture;
     unsigned char *SrcPic;
     int was_locked = FALSE;
     int i;
@@ -183,44 +183,38 @@ GLuint Create_Texture(SDL_Surface *Source, int Width)
         if(!SDL_LockSurface(Source)) was_locked = TRUE;
     }
 
-    RGBTexture = (unsigned int *) malloc(Width * Width * sizeof(unsigned int));
-    if(RGBTexture)
+    memset(RGBTexture, 0, TEXTURES_SIZE * TEXTURES_SIZE * sizeof(unsigned int));
+    SrcPic = (unsigned char *) Source->pixels;
+    for(j = 0; j < Source->h; j++)
     {
-        memset(RGBTexture, 0, Width * Width * sizeof(unsigned int));
-        SrcPic = (unsigned char *) Source->pixels;
-        for(j = 0; j < Source->h; j++)
+        for(i = 0; i < Source->w; i++)
         {
-            for(i = 0; i < Source->w; i++)
-            {
-                index = SrcPic[(j * Source->pitch) + i];
+            index = SrcPic[(j * Source->pitch) + i];
 #if defined(__BIG_ENDIAN__)
-                RGBTexture[(j * Width) + i] = (GLPalette[index].r << 24) | (GLPalette[index].g << 16) | (GLPalette[index].b << 8);
-                if(index)
-                {
-                    RGBTexture[(j * Width) + i] |= 0xff;
-                }
-#else
-                RGBTexture[(j * Width) + i] = (GLPalette[index].r) | (GLPalette[index].g << 8) | (GLPalette[index].b << 16);
-                if(index)
-                {
-                    RGBTexture[(j * Width) + i] |= 0xff000000;
-                }
-#endif
+            RGBTexture[(j * TEXTURES_SIZE) + i] = (GLPalette[index].r << 24) | (GLPalette[index].g << 16) | (GLPalette[index].b << 8);
+            if(index)
+            {
+                RGBTexture[(j * TEXTURES_SIZE) + i] |= 0xff;
             }
+#else
+            RGBTexture[(j * TEXTURES_SIZE) + i] = (GLPalette[index].r) | (GLPalette[index].g << 8) | (GLPalette[index].b << 16);
+            if(index)
+            {
+                RGBTexture[(j * TEXTURES_SIZE) + i] |= 0xff000000;
+            }
+#endif
         }
-        glGenTextures(1, &txId);
-        if(txId)
-        {
-            glDisable(GL_TEXTURE_2D);
-            glBindTexture(GL_TEXTURE_2D, txId);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, Width, Width, 0,
-                         GL_RGBA, GL_UNSIGNED_BYTE, RGBTexture);
-        }
-        free(RGBTexture);
+    }
+    glGenTextures(1, &txId);
+    if(txId)
+    {
+        glDisable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, txId);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, TEXTURES_SIZE, TEXTURES_SIZE, 0, GL_RGBA, GL_UNSIGNED_BYTE, RGBTexture);
     }
     if(was_locked)
     {
@@ -241,30 +235,33 @@ void Destroy_Texture(GLuint *txId)
 // Draw bitmap
 void Draw_Tx_Quad(float x, float y, float x1, float y1, float Width, float Height, GLuint TexID, int Blend)
 {
-    glPushMatrix();
-        glTranslatef(x, y, 0.0f);
-        glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-        if(Blend)
-        {
-            glEnable(GL_BLEND);
-		    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        }
-        glBindTexture(GL_TEXTURE_2D, TexID);
-        glEnable(GL_TEXTURE_2D);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glBegin(GL_QUADS);
-            glTexCoord2f((x1 / (float) TEXTURES_SIZE), (y1 / (float) TEXTURES_SIZE)); glVertex2f(0.0f, 0.0f);
-            glTexCoord2f((x1 / (float) TEXTURES_SIZE), (Height / (float) TEXTURES_SIZE) + (y1 / (float) TEXTURES_SIZE)); glVertex2f(0.0f, Height);
-            glTexCoord2f((Width / (float) TEXTURES_SIZE) + (x1 / (float) TEXTURES_SIZE), (Height / (float) TEXTURES_SIZE) + (y1 / (float) TEXTURES_SIZE)); glVertex2f(Width, Height);
-            glTexCoord2f((Width / (float) TEXTURES_SIZE) + (x1 / (float) TEXTURES_SIZE), y1 / (float) TEXTURES_SIZE); glVertex2f(Width, 0.0f);
-        glEnd();
-        if(Blend)
-        {
-		    glDisable(GL_BLEND);
-        }
-        glDisable(GL_TEXTURE_2D);
-    glPopMatrix();
+    if(TexID != -1)
+    {
+        glPushMatrix();
+            glTranslatef(x, y, 0.0f);
+            glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+            if(Blend)
+            {
+                glEnable(GL_BLEND);
+                glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            }
+            glBindTexture(GL_TEXTURE_2D, TexID);
+            glEnable(GL_TEXTURE_2D);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            glBegin(GL_QUADS);
+                glTexCoord2f((x1 / (float) TEXTURES_SIZE), (y1 / (float) TEXTURES_SIZE)); glVertex2f(0.0f, 0.0f);
+                glTexCoord2f((x1 / (float) TEXTURES_SIZE), (Height / (float) TEXTURES_SIZE) + (y1 / (float) TEXTURES_SIZE)); glVertex2f(0.0f, Height);
+                glTexCoord2f((Width / (float) TEXTURES_SIZE) + (x1 / (float) TEXTURES_SIZE), (Height / (float) TEXTURES_SIZE) + (y1 / (float) TEXTURES_SIZE)); glVertex2f(Width, Height);
+                glTexCoord2f((Width / (float) TEXTURES_SIZE) + (x1 / (float) TEXTURES_SIZE), y1 / (float) TEXTURES_SIZE); glVertex2f(Width, 0.0f);
+            glEnd();
+            if(Blend)
+            {
+                glDisable(GL_BLEND);
+            }
+            glDisable(GL_TEXTURE_2D);
+        glPopMatrix();
+    }
 }
 #endif
 

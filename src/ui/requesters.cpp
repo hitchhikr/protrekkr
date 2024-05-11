@@ -61,7 +61,7 @@ static int Cancel_Button;
 SDL_Surface *Req_Picture;
 SDL_Surface *Req_Back;
 #if defined(__USE_OPENGL__)
-GLuint Req_Picture_GL;
+GLuint Req_Picture_GL = -1;
 #endif
 int Req_TimeOut;
 int Req_Timer;
@@ -108,7 +108,7 @@ int Display_Requester(LPREQUESTER Requester, int Action, char *Text, int Center)
     Req_Picture = NULL;
 
 #if defined(__USE_OPENGL__)
-    Req_Picture_GL = 0;
+    Req_Picture_GL = -1;
 #endif
 
     if(Requester->Picture)
@@ -116,7 +116,7 @@ int Display_Requester(LPREQUESTER Requester, int Action, char *Text, int Center)
         Req_Picture = *Requester->Picture;
 
 #if defined(__USE_OPENGL__)
-        Req_Picture_GL = Create_Texture(Req_Picture, TEXTURES_SIZE);
+        Req_Picture_GL = Create_Texture(Req_Picture);
 #endif
 
     }
@@ -252,13 +252,13 @@ int Display_Requester(LPREQUESTER Requester, int Action, char *Text, int Center)
     Req_Back = SDL_AllocSurface(SDL_SWSURFACE, Size_X + 1, Size_Y + 1, 8, 0, 0, 0, 0xff);
     if(Req_Back)
     {
-
         Copy_To_Surface(Main_Screen, Req_Back, 0, 0,
                         Pos_X, Pos_Y,
                         Pos_X + Size_X + 1,
                         Pos_Y + Size_Y + 1);
     }
 #endif
+
     return(0);
 }
 
@@ -425,10 +425,10 @@ void Kill_Requester(void)
         Req_Back = NULL;
     }
 #else
-    if(Req_Picture_GL)
+    if(Req_Picture_GL != -1)
     {
         Destroy_Texture(&Req_Picture_GL);
-        Req_Picture_GL = 0;
+        Req_Picture_GL = -1;
     }
 #endif
 
@@ -437,7 +437,4 @@ void Kill_Requester(void)
     Env_Change = TRUE;
     Mouse.button = 0;
     Mouse.button_oneshot = 0;
-    SDL_Event event;
-    while(SDL_PollEvent(&event));
-    memset(Events, 0, sizeof(Events));
 }

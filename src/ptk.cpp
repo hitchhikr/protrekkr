@@ -79,6 +79,10 @@ unsigned char sl3 = 0;
 extern int pos_scope;
 extern int pos_scope_latency;
 
+#if defined(__USE_OPENGL__)
+extern unsigned int *RGBTexture;
+#endif
+
 extern float sp_Tvol_Mod[MAX_TRACKS];
 
 int CONSOLE_WIDTH;
@@ -567,6 +571,14 @@ int Init_Context(void)
         return(FALSE);
     }
 
+#if defined(__USE_OPENGL__)
+    RGBTexture = (unsigned int *) malloc(TEXTURES_SIZE * TEXTURES_SIZE * sizeof(unsigned int));
+    if(!RGBTexture)
+    {
+        return(FALSE);
+    }
+#endif
+
     SDL_SetColorKey(FONT, SDL_SRCCOLORKEY, 0);
     SDL_SetColorKey(FONT_LOW, SDL_SRCCOLORKEY, 0);
 
@@ -634,6 +646,13 @@ void Destroy_Context(void)
 #if defined(__USE_OPENGL__)
     glFlush();
     SDL_GL_SwapBuffers();
+#endif
+
+#if defined(__USE_OPENGL__)
+    if(RGBTexture)
+    {
+        free(RGBTexture);
+    }
 #endif
 
     SDL_Quit();
@@ -1851,6 +1870,7 @@ int Screen_Update(void)
 
         Draw_Pattern_Right_Stuff();
         Actupated(0);
+        redraw_everything = FALSE;
     }
 
     if(gui_thread_action && gui_thread_can_act)

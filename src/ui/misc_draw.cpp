@@ -95,32 +95,32 @@ char Accidental = FALSE;
 
 int Accidental_Table[] =
 {
-     12,  12,  13,  13,  14,  15,  15,  16,  16,  10,  10,  11,
-     12,  12,  13,  13,  14,  15,  15,  16,  16,  10,  10,  11,
-     12,  12,  13,  13,  14,  15,  15,  16,  16,  10,  10,  11,
-     12,  12,  13,  13,  14,  15,  15,  16,  16,  10,  10,  11,
-     12,  12,  13,  13,  14,  15,  15,  16,  16,  10,  10,  11,
-     12,  12,  13,  13,  14,  15,  15,  16,  16,  10,  10,  11,
-     12,  12,  13,  13,  14,  15,  15,  16,  16,  10,  10,  11,
-     12,  12,  13,  13,  14,  15,  15,  16,  16,  10,  10,  11,
-     12,  12,  13,  13,  14,  15,  15,  16,  16,  10,  10,  11,
-     12,  12,  13,  13,  14,  15,  15,  16,  16,  10,  10,  11,
-      0,   0
+    12,  12,  13,  13,  14,  15,  15,  16,  16,  10,  10,  11,
+    12,  12,  13,  13,  14,  15,  15,  16,  16,  10,  10,  11,
+    12,  12,  13,  13,  14,  15,  15,  16,  16,  10,  10,  11,
+    12,  12,  13,  13,  14,  15,  15,  16,  16,  10,  10,  11,
+    12,  12,  13,  13,  14,  15,  15,  16,  16,  10,  10,  11,
+    12,  12,  13,  13,  14,  15,  15,  16,  16,  10,  10,  11,
+    12,  12,  13,  13,  14,  15,  15,  16,  16,  10,  10,  11,
+    12,  12,  13,  13,  14,  15,  15,  16,  16,  10,  10,  11,
+    12,  12,  13,  13,  14,  15,  15,  16,  16,  10,  10,  11,
+    12,  12,  13,  13,  14,  15,  15,  16,  16,  10,  10,  11,
+     0,   0
 };
 
 int Accidental_Table_b[] =
 {
-     12,  13,  13,  14,  14,  15,  16,  16,  10,  10,  11,  11,
-     12,  13,  13,  14,  14,  15,  16,  16,  10,  10,  11,  11,
-     12,  13,  13,  14,  14,  15,  16,  16,  10,  10,  11,  11,
-     12,  13,  13,  14,  14,  15,  16,  16,  10,  10,  11,  11,
-     12,  13,  13,  14,  14,  15,  16,  16,  10,  10,  11,  11,
-     12,  13,  13,  14,  14,  15,  16,  16,  10,  10,  11,  11,
-     12,  13,  13,  14,  14,  15,  16,  16,  10,  10,  11,  11,
-     12,  13,  13,  14,  14,  15,  16,  16,  10,  10,  11,  11,
-     12,  13,  13,  14,  14,  15,  16,  16,  10,  10,  11,  11,
-     12,  13,  13,  14,  14,  15,  16,  16,  10,  10,  11,  11,
-      0,   0
+    12,  13,  13,  14,  14,  15,  16,  16,  10,  10,  11,  11,
+    12,  13,  13,  14,  14,  15,  16,  16,  10,  10,  11,  11,
+    12,  13,  13,  14,  14,  15,  16,  16,  10,  10,  11,  11,
+    12,  13,  13,  14,  14,  15,  16,  16,  10,  10,  11,  11,
+    12,  13,  13,  14,  14,  15,  16,  16,  10,  10,  11,  11,
+    12,  13,  13,  14,  14,  15,  16,  16,  10,  10,  11,  11,
+    12,  13,  13,  14,  14,  15,  16,  16,  10,  10,  11,  11,
+    12,  13,  13,  14,  14,  15,  16,  16,  10,  10,  11,  11,
+    12,  13,  13,  14,  14,  15,  16,  16,  10,  10,  11,  11,
+    12,  13,  13,  14,  14,  15,  16,  16,  10,  10,  11,  11,
+     0,   0
 };
 
 char *Notes[] =
@@ -415,7 +415,7 @@ SDL_Color Default_Palette2[] =
     { 0xff, 0xf4, 0xde, 0x00 },
 
     { 0x00, 0x00, 0x00, 0x00 },      // 2 static highlight (calculated)
-	{ 0xff, 0xce, 0x9c, 0x00 },
+    { 0xff, 0xce, 0x9c, 0x00 },
     { 0x00, 0x00, 0x00, 0x00 },      // 4 (calculated)
 
     { 0x00, 0x00, 0x00, 0x00 },      // 5 interactive parts highlight (calculated)
@@ -453,7 +453,7 @@ SDL_Color Default_Palette2[] =
     { 0x7e, 0x2e, 0x56, 0x00 },
 
     { 0x00, 0x00, 0x00, 0x00 },      // 29 Note sel background (calculated)
-	{ 0x00, 0x1c, 0x40, 0x00 },
+    { 0x00, 0x1c, 0x40, 0x00 },
 
     { 0xff, 0x54, 0x28, 0x00 },
     { 0x5c, 0x9e, 0xff, 0x00 },
@@ -503,7 +503,7 @@ SDL_Color Default_Palette3[] =
     { 0x00, 0x00, 0x00, 0x00 },
 
     { 0x00, 0x00, 0x00, 0x00 },      // 2 static highlight (calculated)
-	{ 0x00, 0x00, 0x00, 0x00 },
+    { 0x00, 0x00, 0x00, 0x00 },
     { 0x00, 0x00, 0x00, 0x00 },      // 4 (calculated)
 
     { 0x00, 0x00, 0x00, 0x00 },      // 5 interactive parts highlight (calculated)
@@ -541,7 +541,7 @@ SDL_Color Default_Palette3[] =
     { 0xc4, 0xff, 0x88, 0x00 },
 
     { 0x00, 0x00, 0x00, 0x00 },      // 29 Note sel background (calculated)
-	{ 0xce, 0xff, 0x9a, 0x00 },
+    { 0xce, 0xff, 0x9a, 0x00 },
 
     { 0x16, 0x4e, 0x00, 0x00 },
     { 0x46, 0xaa, 0x00, 0x00 },
@@ -590,7 +590,7 @@ SDL_Color Default_Palette4[] =
     { 0x34, 0x2e, 0x4c, 0x00 },
 
     { 0x00, 0x00, 0x00, 0x00 },      // 2 static highlight (calculated)
-	{ 0x56, 0x5e, 0x62, 0x00 },
+    { 0x56, 0x5e, 0x62, 0x00 },
     { 0x00, 0x00, 0x00, 0x00 },      // 4 (calculated)
 
     { 0x00, 0x00, 0x00, 0x00 },      // 5 interactive parts highlight (calculated)
@@ -628,7 +628,7 @@ SDL_Color Default_Palette4[] =
     { 0xff, 0xe6, 0xa6, 0x00 },
 
     { 0x00, 0x00, 0x00, 0x00 },      // 29 Note sel background (calculated)
-	{ 0xff, 0x8c, 0x5e, 0x00 },
+    { 0xff, 0x8c, 0x5e, 0x00 },
 
     { 0x00, 0x00, 0x00, 0x00 },
     { 0x92, 0x9e, 0xa4, 0x00 },
@@ -766,7 +766,7 @@ SDL_Color Default_Palette6[] =
     { 0x1c, 0x00, 0x00, 0x00 },
 
     { 0x00, 0x00, 0x00, 0x00 },      // 2 static highlight (calculated)
-	{ 0x24, 0x06, 0x00, 0x00 },
+    { 0x24, 0x06, 0x00, 0x00 },
     { 0x00, 0x00, 0x00, 0x00 },      // 4 (calculated)
 
     { 0x00, 0x00, 0x00, 0x00 },      // 5 interactive parts highlight (calculated)
@@ -804,7 +804,7 @@ SDL_Color Default_Palette6[] =
     { 0xff, 0x7a, 0x2a, 0x00 },
 
     { 0x00, 0x00, 0x00, 0x00 },      // 29 Note sel background (calculated)
-	{ 0xff, 0xe8, 0x9a, 0x00 },
+    { 0xff, 0xe8, 0x9a, 0x00 },
 
     { 0xce, 0x00, 0x00, 0x00 },
     { 0xff, 0x74, 0x00, 0x00 },
@@ -854,7 +854,7 @@ SDL_Color Default_Palette7[] =
     { 0x96, 0xa6, 0xb6, 0x00 },
 
     { 0x00, 0x00, 0x00, 0x00 },      // 2 static highlight (calculated)
-	{ 0x96, 0xa6, 0xb6, 0x00 },
+    { 0x96, 0xa6, 0xb6, 0x00 },
     { 0x00, 0x00, 0x00, 0x00 },      // 4 (calculated)
 
     { 0x00, 0x00, 0x00, 0x00 },      // 5 interactive parts highlight (calculated)
@@ -892,7 +892,7 @@ SDL_Color Default_Palette7[] =
     { 0x20, 0x10, 0x32, 0x00 },
 
     { 0x00, 0x00, 0x00, 0x00 },      // 29 Note sel background (calculated)
-	{ 0xda, 0xf0, 0xff, 0x00 },
+    { 0xda, 0xf0, 0xff, 0x00 },
 
     { 0x22, 0x86, 0x50, 0x00 },
     { 0x7a, 0xca, 0x9c, 0x00 },
@@ -942,7 +942,7 @@ SDL_Color Default_Palette8[] =
     { 0x46, 0xaa, 0xc0, 0x00 },
 
     { 0x00, 0x00, 0x00, 0x00 },      // 2 static highlight (calculated)
-	{ 0x32, 0x96, 0xac, 0x00 },
+    { 0x32, 0x96, 0xac, 0x00 },
     { 0x00, 0x00, 0x00, 0x00 },      // 4 (calculated)
 
     { 0x00, 0x00, 0x00, 0x00 },      // 5 interactive parts highlight (calculated)
@@ -980,7 +980,7 @@ SDL_Color Default_Palette8[] =
     { 0x5e, 0x10, 0x32, 0x00 },
 
     { 0x00, 0x00, 0x00, 0x00 },      // 29 Note sel background (calculated)
-	{ 0xcc, 0xfe, 0xff, 0x00 },
+    { 0xcc, 0xfe, 0xff, 0x00 },
 
     { 0x1c, 0x68, 0x80, 0x00 },
     { 0x6a, 0xde, 0xe6, 0x00 },
@@ -1030,7 +1030,7 @@ SDL_Color Default_Palette9[] =
     { 0x00, 0x00, 0x00, 0x00 },
 
     { 0x00, 0x00, 0x00, 0x00 },      // 2 static highlight (calculated)
-	{ 0x00, 0x00, 0x00, 0x00 },
+    { 0x00, 0x00, 0x00, 0x00 },
     { 0x00, 0x00, 0x00, 0x00 },      // 4 (calculated)
 
     { 0x00, 0x00, 0x00, 0x00 },      // 5 interactive parts highlight (calculated)
@@ -1068,7 +1068,7 @@ SDL_Color Default_Palette9[] =
     { 0xc0, 0xac, 0x1e, 0x00 },
 
     { 0x00, 0x00, 0x00, 0x00 },      // 29 Note sel background (calculated)
-	{ 0xff, 0xff, 0xc4, 0x00 },
+    { 0xff, 0xff, 0xc4, 0x00 },
 
     { 0x6a, 0x3a, 0x00, 0x00 },
     { 0xa2, 0x8a, 0x54, 0x00 },
@@ -1881,7 +1881,7 @@ void Status_Box(char const *str)
 // ------------------------------------------------------
 // Display a horizontal slider
 void Realslider_Size(int x, int y, int size, int val, int Enabled)
-{   
+{
     y--;
     if(Enabled)
     {
@@ -3011,9 +3011,11 @@ void Set_Pictures_And_Palettes(int LogoPalette)
         for(i = 0; i < SKIN303->w * SKIN303->h; i++)
         {
             if(Pix[i] > max_colors_303) max_colors_303 = Pix[i];
+
 #if defined(__USE_OPENGL__)
             Pix[i] += min_idx;
 #endif
+
         }
         max_colors_303++;
 
@@ -3037,9 +3039,11 @@ void Set_Pictures_And_Palettes(int LogoPalette)
         for(i = 0; i < LOGOPIC->w * LOGOPIC->h; i++)
         {
             if(Pix[i] > max_colors_logo) max_colors_logo = Pix[i];
+
 #if defined(__USE_OPENGL__)
             Pix[i] += min_idx;
 #endif
+
         }
         max_colors_logo++;
 
@@ -3137,15 +3141,15 @@ void Set_Pictures_And_Palettes(int LogoPalette)
 
 #if defined(__USE_OPENGL__)
     Destroy_Textures();
-    FONT_GL = Create_Texture(FONT, TEXTURES_SIZE);
-    FONT_LOW_GL = Create_Texture(FONT_LOW, TEXTURES_SIZE);
-    SKIN303_GL = Create_Texture(SKIN303, TEXTURES_SIZE);
-    Temp_PFONT_GL = Create_Texture(Temp_PFONT, TEXTURES_SIZE);
-    Temp_LARGEPFONT_GL = Create_Texture(Temp_LARGEPFONT, TEXTURES_SIZE);
-    Temp_SMALLPFONT_GL = Create_Texture(Temp_SMALLPFONT, TEXTURES_SIZE);
-    Temp_NOTEPFONT_GL = Create_Texture(Temp_NOTEPFONT, TEXTURES_SIZE);
-    Temp_NOTELARGEPFONT_GL = Create_Texture(Temp_NOTELARGEPFONT, TEXTURES_SIZE);
-    Temp_NOTESMALLPFONT_GL = Create_Texture(Temp_NOTESMALLPFONT, TEXTURES_SIZE);
+    FONT_GL = Create_Texture(FONT);
+    FONT_LOW_GL = Create_Texture(FONT_LOW);
+    SKIN303_GL = Create_Texture(SKIN303);
+    Temp_PFONT_GL = Create_Texture(Temp_PFONT);
+    Temp_LARGEPFONT_GL = Create_Texture(Temp_LARGEPFONT);
+    Temp_SMALLPFONT_GL = Create_Texture(Temp_SMALLPFONT);
+    Temp_NOTEPFONT_GL = Create_Texture(Temp_NOTEPFONT);
+    Temp_NOTELARGEPFONT_GL = Create_Texture(Temp_NOTELARGEPFONT);
+    Temp_NOTESMALLPFONT_GL = Create_Texture(Temp_NOTESMALLPFONT);
 #endif
 
 }
