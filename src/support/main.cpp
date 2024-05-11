@@ -126,7 +126,6 @@ int Cur_Height = SCREEN_HEIGHT;
 int Save_Cur_Width = -1;
 int Save_Cur_Height = -1;
 int do_resize = FALSE;
-int done_expose = FALSE;
 char AutoSave;
 char Window_Title[256];
 extern int gui_pushed;
@@ -688,7 +687,6 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
     Resize_Width = Cur_Width;
     Resize_Height = Cur_Height;
     do_resize = TRUE;
-    done_expose = FALSE;
     
     while(1)
     {
@@ -912,7 +910,6 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
                     Resize_Width = Events[i].resize.w;
                     Resize_Height = Events[i].resize.h;
                     do_resize = TRUE;
-                    done_expose = TRUE;
                     break;
 
                 case SDL_ACTIVEEVENT:
