@@ -234,6 +234,7 @@ GLuint Create_Texture(SDL_Surface *Source, int Width)
 void Destroy_Texture(GLuint *txId)
 {
     glDeleteTextures(1, txId);
+    glFlush();
 }
 
 // ------------------------------------------------------

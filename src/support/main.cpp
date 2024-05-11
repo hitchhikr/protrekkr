@@ -963,25 +963,20 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
 #if defined(__USE_OPENGL__)
         Leave_2d_Mode();
 #if !defined(__WIN32__)
-        glFinish();
+        glFlush();
         glDrawBuffer(GL_FRONT);
         glRasterPos2f(-1.0f, -1.0f);
         glCopyPixels(0, 0, Cur_Width, Cur_Height, GL_COLOR);
-        glFinish();
+        glFlush();
         glDrawBuffer(GL_BACK);
-        glFinish();
+        glFlush();
+#else
 /*        glReadBuffer(GL_BACK);
         glAccum(GL_LOAD, 1.0f);
-        glFlush();
-        glFinish();
         glDrawBuffer(GL_FRONT);
-        glAccum(GL_RETURN, 2.0f);
-        glFlush();
-        glFinish();
-        glDrawBuffer(GL_BACK);
-        glFlush();
-        glFinish();*/
-#else
+        glAccum(GL_RETURN, 1.0f);
+        glDrawBuffer(GL_BACK);*/
+    //    glReadBuffer(GL_FRONT);
         SDL_GL_SwapBuffers();
 #endif
 #endif
@@ -996,7 +991,6 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
 
 #if defined(__USE_OPENGL__)
     glFlush();
-    glFinish();
 #endif
         
     Save_Config();
@@ -1038,6 +1032,10 @@ int Switch_FullScreen(int Width, int Height, int Refresh)
 #endif
 
 #if defined(__USE_OPENGL__)
+    SDL_GL_SetAttribute(SDL_GL_ACCUM_RED_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_ACCUM_GREEN_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_ACCUM_BLUE_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_ACCUM_ALPHA_SIZE, 8);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1);
     SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, TRUE);

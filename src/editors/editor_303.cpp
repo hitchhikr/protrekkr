@@ -39,7 +39,7 @@
 // Variables
 SDL_Surface *SKIN303;
 #if defined(__USE_OPENGL__)
-GLuint SKIN303_GL;
+GLuint SKIN303_GL = 0;
 #endif
 
 int Current_copy_buffer;

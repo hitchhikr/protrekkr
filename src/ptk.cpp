@@ -633,7 +633,6 @@ void Destroy_Context(void)
 
 #if defined(__USE_OPENGL__)
     glFlush();
-    glFinish();
     SDL_GL_SwapBuffers();
 #endif
 

@@ -51,16 +51,16 @@ SDL_Surface *Temp_NOTESMALLPFONT;
 SDL_Surface *Note_Surface;
 SDL_Surface *Note_Alt_Surface;
 #if defined(__USE_OPENGL__)
-GLuint Temp_PFONT_GL;
-GLuint Temp_LARGEPFONT_GL;
-GLuint Temp_SMALLPFONT_GL;
-GLuint Temp_NOTEPFONT_GL;
-GLuint Temp_NOTELARGEPFONT_GL;
-GLuint Temp_NOTESMALLPFONT_GL;
-GLuint Note_Surface_GL;
-GLuint Note_Alt_Surface_GL;
-GLuint FONT_GL;
-GLuint FONT_LOW_GL;
+GLuint Temp_PFONT_GL = 0;
+GLuint Temp_LARGEPFONT_GL = 0;
+GLuint Temp_SMALLPFONT_GL = 0;
+GLuint Temp_NOTEPFONT_GL = 0;
+GLuint Temp_NOTELARGEPFONT_GL = 0;
+GLuint Temp_NOTESMALLPFONT_GL = 0;
+GLuint Note_Surface_GL = 0;
+GLuint Note_Alt_Surface_GL = 0;
+GLuint FONT_GL = 0;
+GLuint FONT_LOW_GL = 0;
 extern GLuint SKIN303_GL;
 #endif
 int Beveled = 1;
