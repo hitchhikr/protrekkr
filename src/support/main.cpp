@@ -904,7 +904,6 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
                     break;
 
                 case SDL_GO_FULLSCREEN:
-                    printf("FUCK YOU!!!\n");
                     if(Events[i].user.code)
                     {
                         FullScreen = TRUE;

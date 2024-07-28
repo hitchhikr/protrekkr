@@ -171,7 +171,7 @@ int AUDIO_Init_Driver(void (*Mixer)(Uint8 *, Uint32))
         return(FALSE);
     }
     AHIio->ahir_Version = 4;
-    if (IExec->OpenDevice("ahi.device", AHI_DEFAULT_UNIT, (struct IORequest *) AHIio, 0))
+    if (IExec->OpenDevice(AHINAME, AHI_NO_UNIT, (struct IORequest *) AHIio, 0))
     {
         AHIio->ahir_Std.io_Device = NULL;
 
