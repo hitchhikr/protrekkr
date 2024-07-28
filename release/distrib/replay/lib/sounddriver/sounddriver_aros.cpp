@@ -93,10 +93,10 @@ void *AUDIO_Thread(void *arg)
             struct AHIRequest *io = AHIio;
             short *buf = AHIbuf;
         
-            AUDIO_Acknowledge = FALSE;
             if(AUDIO_Play_Flag)
             {
                 AUDIO_Mixer((Uint8 *) buf, AUDIO_SoundBuffer_Size);
+                AUDIO_Acknowledge = FALSE;
             }
             else
             {
@@ -197,13 +197,11 @@ int AUDIO_Init_Driver(void (*Mixer)(Uint8 *, Uint32))
 // Desc: Create an audio buffer of given milliseconds
 int AUDIO_Create_Sound_Buffer(int milliseconds)
 {
-    int num_fragments;
     int frag_size;
 
     if(milliseconds < 10) milliseconds = 10;
     if(milliseconds > 250) milliseconds = 250;
 
-    num_fragments = 6;
     frag_size = (int) (AUDIO_PCM_FREQ * (milliseconds / 1000.0f));
 
 	AUDIO_SoundBuffer_Size = frag_size << 2;
@@ -233,7 +231,11 @@ int AUDIO_Create_Sound_Buffer(int milliseconds)
     }
 
 #if !defined(__STAND_ALONE__) && !defined(__WINAMP__)
+#if defined(USE_SDL_THREADS)
+    Message_Error("Error while calling SDL_CreateThread()");
+#else
     Message_Error("Error while calling pthread_create()");
+#endif
 #endif
 
     Thread_Running = 0;

@@ -636,15 +636,13 @@ void Destroy_Context(void)
     Free_Samples();
 
     // Freeing Allocated Patterns
-    if(RawPatterns) free(RawPatterns);
+    if(RawPatterns)
+    {
+        free(RawPatterns);
+    }
     RawPatterns = NULL;
 
     Destroy_UI();
-
-#if defined(__USE_OPENGL__)
-    glFlush();
-    SDL_GL_SwapBuffers();
-#endif
 
 #if defined(__USE_OPENGL__)
     if(RGBTexture)

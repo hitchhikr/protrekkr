@@ -540,7 +540,10 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
     Restore_Default_Palette(Default_Palette1, Default_Beveled1);
     Load_Config();
 
-    if(!strlen(Keyboard_Name)) sprintf(Keyboard_Name, "%s", "kben.txt");
+    if(!strlen(Keyboard_Name))
+    {
+        sprintf(Keyboard_Name, "%s", "kben.txt");
+    }
 
     // All keyboards name
 #if defined(__WIN32__)
