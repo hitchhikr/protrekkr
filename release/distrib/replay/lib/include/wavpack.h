@@ -38,8 +38,10 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#if !defined(__PSP__)
+#if !defined(__PSP__)  
+#if !defined(__AMIGAOS4__)
 #include <memory.h>
+#endif
 #endif
 #if defined(__GCC__)
 #if !defined(__LINUX__)
@@ -55,7 +57,7 @@ typedef int int32_t;
 #include <sys/types.h>
 typedef unsigned int uint32_t;
 #endif
-#if defined(__AROS__) || defined(__PSP__)
+#if defined(__AROS__) || defined(__AMIGAOS4__) || defined(__PSP__)
 typedef unsigned int uint32_t;
 typedef int int32_t;
 #include <string.h>

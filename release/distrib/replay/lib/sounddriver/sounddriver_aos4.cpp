@@ -106,10 +106,15 @@ void *AUDIO_Thread(void *arg)
             io->ahir_Position = 0x8000;
             io->ahir_Link = join;
             IExec->SendIO((struct IORequest *) io);
-            if (join) IExec->WaitIO((struct IORequest *) join);
+            if (join)
+            {
+                IExec->WaitIO((struct IORequest *) join);
+            }
             join = io;
-            AHIio = AHIio2; AHIio2 = io;
-            AHIbuf = AHIbuf2; AHIbuf2 = buf;
+            AHIio = AHIio2;
+            AHIio2 = io;
+            AHIbuf = AHIbuf2;
+            AHIbuf2 = buf;
 
             AUDIO_Samples += AUDIO_SoundBuffer_Size;
             AUDIO_Timer = ((((float) AUDIO_Samples) * (1.0f / (float) AUDIO_Latency)) * 1000.0f);
@@ -166,7 +171,7 @@ int AUDIO_Init_Driver(void (*Mixer)(Uint8 *, Uint32))
         return(FALSE);
     }
     AHIio->ahir_Version = 4;
-    if (IExec->OpenDevice("ahi.device", 0, (struct IORequest *) AHIio, 0))
+    if (IExec->OpenDevice("ahi.device", AHI_DEFAULT_UNIT, (struct IORequest *) AHIio, 0))
     {
         AHIio->ahir_Std.io_Device = NULL;
 
@@ -233,7 +238,7 @@ int AUDIO_Create_Sound_Buffer(int milliseconds)
 // Desc: Wait for a command acknowledgment from the thread
 void AUDIO_Wait_For_Thread(void)
 {
-    if(AUDIO_Sound_Buffer)
+    if(Thread_Running)
     {
         if(AUDIO_Play_Flag)
         {

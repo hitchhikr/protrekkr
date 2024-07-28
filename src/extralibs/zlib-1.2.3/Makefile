@@ -36,7 +36,7 @@ SHAREDLIBM=libz.so.1
 AR=ar rc
 RANLIB=ranlib
 TAR=tar
-SHELL=/bin/sh
+#SHELL=/bin/sh
 EXE=
 
 prefix =/usr/local
@@ -69,7 +69,7 @@ test: all
 
 libz.a: $(OBJS) $(OBJA)
 	$(AR) $@ $(OBJS) $(OBJA)
-	-@ ($(RANLIB) $@ || true) >/dev/null 2>&1
+	-@ ($(RANLIB) $@)
 
 match.o: match.S
 	$(CPP) match.S > _match.s

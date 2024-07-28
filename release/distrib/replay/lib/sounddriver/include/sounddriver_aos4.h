@@ -43,7 +43,6 @@
 #include <sys/ioctl.h>
 #include <pthread.h>
 #include <float.h>
-#include <memory.h>
 #include <math.h>
 
 #define STDCALL

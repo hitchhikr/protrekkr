@@ -97,6 +97,8 @@ REQUESTER Title_Requester =
 };
 
 const SDL_VideoInfo *Screen_Info;
+int Orig_Screen_Width;
+int Orig_Screen_Height;
 int Startup_Width;
 int Startup_Height;
 int Resize_Width;
@@ -125,6 +127,7 @@ int Cur_Width = SCREEN_WIDTH;
 int Cur_Height = SCREEN_HEIGHT;
 int Save_Cur_Width = -1;
 int Save_Cur_Height = -1;
+int First_Time;
 int do_resize = FALSE;
 char AutoSave;
 char Window_Title[256];
@@ -450,6 +453,8 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
     memset(ExePath, 0, ExePath_Size + 1);
 
     Screen_Info = SDL_GetVideoInfo();
+    Orig_Screen_Width = Screen_Info->current_w;
+    Orig_Screen_Height = Screen_Info->current_h;
     Startup_Width = Screen_Info->current_w;
     Startup_Height = Screen_Info->current_h;
     if(Startup_Width < SCREEN_WIDTH) Startup_Width = SCREEN_WIDTH;
@@ -622,7 +627,8 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
     Ptk_Palette[0].g = 0;
     Ptk_Palette[0].b = 0;
 
-    if(!Switch_FullScreen(Cur_Width, Cur_Height, FALSE))
+    First_Time = TRUE;
+    if(!Switch_FullScreen(Cur_Width, Cur_Height, FALSE, FALSE))
     {
         Message_Error(SDL_GetError());
         exit(0);
@@ -783,7 +789,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
                         if(Keys[SDLK_RETURN])
                         {
                             FullScreen ^= TRUE;
-                            Switch_FullScreen(Cur_Width, Cur_Height, TRUE);
+                            Switch_FullScreen(Cur_Width, Cur_Height, TRUE, FullScreen ? FALSE : TRUE);
                         }
                     }
                     break;
@@ -897,6 +903,19 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
                     }
                     break;
 
+                case SDL_GO_FULLSCREEN:
+                    printf("FUCK YOU!!!\n");
+                    if(Events[i].user.code)
+                    {
+                        FullScreen = TRUE;
+                    }
+                    else
+                    {
+                        FullScreen = FALSE;
+                    }
+                    Switch_FullScreen(Cur_Width, Cur_Height, TRUE, FullScreen ? FALSE : TRUE);
+                    break;
+
                 case SDL_VIDEORESIZE:
                     // Nullify it
 
@@ -936,7 +955,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
 
         if(do_resize)
         {
-            Switch_FullScreen(Resize_Width, Resize_Height, TRUE);
+            Switch_FullScreen(Resize_Width, Resize_Height, TRUE, FALSE);
             do_resize = FALSE;
         }
 
@@ -1011,10 +1030,28 @@ void Message_Error(char *Message)
 
 // ------------------------------------------------------
 // Swap window/fullscreen mode
-int Switch_FullScreen(int Width, int Height, int Refresh)
+int Switch_FullScreen(int Width, int Height, int Refresh, int Force_Window_Mode)
 {
     int Real_FullScreen = 0;
-    
+
+    if(!Force_Window_Mode)
+    {
+        if(Width >= Orig_Screen_Width)
+        {
+            Width = Orig_Screen_Width;
+            Height = Orig_Screen_Height;
+            FullScreen = TRUE;
+        }
+        else
+        {
+            if(Height >= Orig_Screen_Height)
+            {
+                Width = Orig_Screen_Width;
+                Height = Orig_Screen_Height;
+                FullScreen = TRUE;
+            }
+        }
+    }
     gui_thread_can_act = FALSE;
     gui_thread_action = FALSE;
     Env_Change = TRUE;
@@ -1068,8 +1105,11 @@ int Switch_FullScreen(int Width, int Height, int Refresh)
         }
         Width = Startup_Width;
         Height = Startup_Height;
-        Save_Cur_Width = Cur_Width;
-        Save_Cur_Height = Cur_Height;
+        if(!First_Time)
+        {
+            Save_Cur_Width = Cur_Width;
+            Save_Cur_Height = Cur_Height;
+        }
     }
     else
     {
@@ -1092,12 +1132,29 @@ int Switch_FullScreen(int Width, int Height, int Refresh)
         }
         Save_Cur_Width = -1;
         Save_Cur_Height = -1;
+        First_Time = FALSE;
     }
 
     Cur_Width = Width;
     Cur_Height = Height;
 
 #if defined(__USE_OPENGL__)
+    glDrawBuffer(GL_FRONT);
+    glViewport(0, 0, Cur_Width, Cur_Height);
+    glDisable(GL_DEPTH_TEST);
+    glDisable(GL_LIGHTING);
+    glDisable(GL_LINE_SMOOTH);
+    glDisable(GL_POINT_SMOOTH);
+    glDisable(GL_POLYGON_SMOOTH);
+    glDisable(GL_BLEND);
+    glDisable(GL_CULL_FACE);
+    glHint(GL_POINT_SMOOTH_HINT, GL_FASTEST);
+    glHint(GL_LINE_SMOOTH_HINT, GL_FASTEST);
+    glHint(GL_POLYGON_SMOOTH_HINT, GL_FASTEST);
+    glShadeModel(GL_FLAT);
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_ACCUM_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+    glDrawBuffer(GL_BACK);
     glViewport(0, 0, Cur_Width, Cur_Height);
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_LIGHTING);
@@ -1126,6 +1183,7 @@ int Switch_FullScreen(int Width, int Height, int Refresh)
     CONSOLE_HEIGHT2 = CONSOLE_HEIGHT - 42;
     fsize = 638 + restx;
     Visible_Columns = CONSOLE_WIDTH / 128;
+
 
     // Flush any pending rects
     Nbr_Update_Rects = 0;
