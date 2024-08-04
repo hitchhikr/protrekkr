@@ -151,8 +151,6 @@ int AUDIO_Init_Driver(void (*Mixer)(Uint8 *, Uint32))
     }
 #endif
 
-    AHIio = (struct AHIRequest *) IExec->CreateIORequest(AHImp, sizeof(struct AHIRequest));
-    AHIio2 = (struct AHIRequest *) IExec->CreateIORequest(AHImp, sizeof(struct AHIRequest));
     AHIio = (struct AHIRequest *) IExec->AllocSysObjectTags(ASOT_IOREQUEST,
                                                             ASOIOR_ReplyPort, AHImp,
                                                             ASOIOR_Size, sizeof(struct AHIRequest),
