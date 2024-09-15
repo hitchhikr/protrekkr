@@ -218,7 +218,7 @@ void Save_Inst(void)
     char synth_prg;
     int synth_save;
 
-    sprintf(extension, "TWNNINSA");
+    sprintf(extension, "PROTINSA");
 
     if(!strlen(nameins[Current_Instrument])) sprintf(nameins[Current_Instrument], "Untitled");
     sprintf (Temph, "Saving '%s.pti' Instrument In Instruments Directory...", nameins[Current_Instrument]);
