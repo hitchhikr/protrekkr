@@ -49,7 +49,7 @@
         Status_Box("Configuration File Directory Failed."); \
 		return; \
     } \
-	strcat(FileName, "/ptk.cfg")
+	strcat(FileName, "/protrekkr")
 #else
 #define SET_FILENAME sprintf(FileName, "%s" SLASH "ptk.cfg", ExePath)
 #endif
