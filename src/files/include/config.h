@@ -39,6 +39,14 @@
 #include "../../editors/include/editor_pattern.h"
 #include "../../include/ptk.h"
 
+#ifdef __HAIKU__
+#include <FindDirectory.h>
+#include <fs_info.h>
+#define SET_FILENAME dev_t volume = dev_for_path("/boot"); \
+    status_t result = find_directory(B_USER_SETTINGS_DIRECTORY, volume, false, FileName, MAX_PATH)
+#else
+#define SET_FILENAME sprintf(FileName, "%s" SLASH "ptk.cfg", ExePath)
+#endif
 // ------------------------------------------------------
 // Functions
 void Load_Config(void);

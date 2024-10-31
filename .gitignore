@@ -9,3 +9,7 @@
 *.chw
 *.exp
 *.sdf
+.genio
+*.o
+*.a
+release/distrib/ptk_*

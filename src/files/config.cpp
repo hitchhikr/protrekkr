@@ -72,7 +72,7 @@ void Save_Config(void)
     sprintf(extension, "PROTCFGH");
     Status_Box("Saving 'ptk.cfg'...");
 
-    sprintf(FileName, "%s" SLASH "ptk.cfg", ExePath);
+    SET_FILENAME;
 
     memset(KeyboardName, 0, sizeof(KeyboardName));
     sprintf(KeyboardName, "%s", Keyboard_Name);
@@ -184,7 +184,7 @@ void Load_Config(void)
     char Win_Coords[64];
     SDL_Surface *Desktop = NULL;
 
-    sprintf(FileName, "%s" SLASH "ptk.cfg", ExePath);
+    SET_FILENAME;
 
     memset(KeyboardName, 0, sizeof(KeyboardName));
 
