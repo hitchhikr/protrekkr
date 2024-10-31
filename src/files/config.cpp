@@ -78,95 +78,94 @@ void Save_Config(void)
     sprintf(KeyboardName, "%s", Keyboard_Name);
 
     out = fopen(FileName, "wb");
-    if(out != NULL)
-    {
-        Write_Data(extension, sizeof(char), 9, out);
-        Write_Data_Swap(&Current_Edit_Steps, sizeof(Current_Edit_Steps), 1, out);
-        Write_Data_Swap(&patt_highlight, sizeof(patt_highlight), 1, out);
-        Write_Data_Swap(&AUDIO_Milliseconds, sizeof(AUDIO_Milliseconds), 1, out);
-
-#if defined(__NO_MIDI__)
-        Write_Data(&phony, sizeof(phony), 1, out);
-#else
-        Write_Data(&c_midiin, sizeof(c_midiin), 1, out);
-#endif
-
-#if defined(__NO_MIDI__)
-        Write_Data(&phony, sizeof(phony), 1, out);
-#else
-        Write_Data(&c_midiout, sizeof(c_midiout), 1, out);
-#endif
-
-        Write_Data_Swap(&MouseWheel_Multiplier, sizeof(MouseWheel_Multiplier), 1, out);
-        Write_Data(&Rows_Decimal, sizeof(Rows_Decimal), 1, out);
-        Write_Data(&FullScreen, sizeof(FullScreen), 1, out);
-
-        for(i = 0; i < NUMBER_COLORS; i++)
-        {
-            Real_Palette_Idx = Idx_Palette[i];
-            Write_Data(&Ptk_Palette[Real_Palette_Idx].r, sizeof(char), 1, out);
-            Write_Data(&Ptk_Palette[Real_Palette_Idx].g, sizeof(char), 1, out);
-            Write_Data(&Ptk_Palette[Real_Palette_Idx].b, sizeof(char), 1, out);
-        }
-        Write_Data(&See_Prev_Next_Pattern, sizeof(See_Prev_Next_Pattern), 1, out);
-        Write_Data_Swap(&Beveled, sizeof(Beveled), 1, out);
-        Write_Data_Swap(&Continuous_Scroll, sizeof(Continuous_Scroll), 1, out);
-        Write_Data(&AutoSave, sizeof(AutoSave), 1, out);
-        Write_Data(&AutoBackup, sizeof(AutoBackup), 1, out);
-        Write_Data(&AutoReload, sizeof(AutoReload), 1, out);
-        Write_Data(&SplashScreen, sizeof(SplashScreen), 1, out);
-
-        Write_Data(&Dir_Mods, sizeof(Dir_Mods), 1, out);
-        Write_Data(&Dir_Instrs, sizeof(Dir_Instrs), 1, out);
-        Write_Data(&Dir_Presets, sizeof(Dir_Presets), 1, out);
-        Write_Data(&Dir_Reverbs, sizeof(Dir_Reverbs), 1, out);
-        Write_Data(&Dir_MidiCfg, sizeof(Dir_MidiCfg), 1, out);
-        Write_Data(&Dir_Patterns, sizeof(Dir_Patterns), 1, out);
-        Write_Data(&Dir_Samples, sizeof(Dir_Samples), 1, out);
-
-        memset(Temph, 0, MAX_PATH);
-        sprintf(Temph, "%s" SLASH "%s.ptk", Dir_Mods, name);
-        Write_Data(Temph, MAX_PATH, 1, out);
-
-        Write_Data(KeyboardName, MAX_PATH, 1, out);
-
-        Write_Data(&rawrender_32float, sizeof(char), 1, out);
-        Write_Data(&rawrender_multi, sizeof(char), 1, out);
-        Write_Data(&rawrender_target, sizeof(char), 1, out);
-        Write_Data(&Large_Patterns, sizeof(char), 1, out);
-        Write_Data(&Scopish_LeftRight, sizeof(char), 1, out);
- 
-        Write_Data(&Paste_Across, sizeof(char), 1, out);
-        Write_Data(&Jazz_Edit, sizeof(char), 1, out);
-        Write_Data(&Accidental, sizeof(char), 1, out);
-
-        Write_Data(&Use_Shadows, sizeof(char), 1, out);
-        Write_Data(&Global_Patterns_Font, sizeof(char), 1, out);
-
-        Write_Data(&metronome_magnify, sizeof(int), 1, out);
-
-        // Save the compelte midi automation config
-        Save_Midi_Cfg_Data(Write_Data, Write_Data_Swap, out);
-
-        Write_Data_Swap(&Cur_Width, sizeof(int), 1, out);
-        Write_Data_Swap(&Cur_Height, sizeof(int), 1, out);
-
-        if(Cur_Left < 0) Cur_Left = 0;
-        if(Cur_Top < 0) Cur_Top = 0;
-        Write_Data_Swap(&Cur_Left, sizeof(int), 1, out);
-        Write_Data_Swap(&Cur_Top, sizeof(int), 1, out);
-
-        fclose(out);
-
-        Read_SMPT();
-        last_index = -1;
-        Actualize_Files_List(0);
-        Status_Box("Configuration File Saved Successfully.");  
-    }
-    else
+    if(out == NULL)
     {
         Status_Box("Configuration File Saving Failed.");
+		return;
     }
+
+	Write_Data(extension, sizeof(char), 9, out);
+	Write_Data_Swap(&Current_Edit_Steps, sizeof(Current_Edit_Steps), 1, out);
+	Write_Data_Swap(&patt_highlight, sizeof(patt_highlight), 1, out);
+	Write_Data_Swap(&AUDIO_Milliseconds, sizeof(AUDIO_Milliseconds), 1, out);
+
+#if defined(__NO_MIDI__)
+	Write_Data(&phony, sizeof(phony), 1, out);
+#else
+	Write_Data(&c_midiin, sizeof(c_midiin), 1, out);
+#endif
+
+#if defined(__NO_MIDI__)
+	Write_Data(&phony, sizeof(phony), 1, out);
+#else
+	Write_Data(&c_midiout, sizeof(c_midiout), 1, out);
+#endif
+
+	Write_Data_Swap(&MouseWheel_Multiplier, sizeof(MouseWheel_Multiplier), 1, out);
+	Write_Data(&Rows_Decimal, sizeof(Rows_Decimal), 1, out);
+	Write_Data(&FullScreen, sizeof(FullScreen), 1, out);
+
+	for(i = 0; i < NUMBER_COLORS; i++)
+	{
+		Real_Palette_Idx = Idx_Palette[i];
+		Write_Data(&Ptk_Palette[Real_Palette_Idx].r, sizeof(char), 1, out);
+		Write_Data(&Ptk_Palette[Real_Palette_Idx].g, sizeof(char), 1, out);
+		Write_Data(&Ptk_Palette[Real_Palette_Idx].b, sizeof(char), 1, out);
+	}
+	Write_Data(&See_Prev_Next_Pattern, sizeof(See_Prev_Next_Pattern), 1, out);
+	Write_Data_Swap(&Beveled, sizeof(Beveled), 1, out);
+	Write_Data_Swap(&Continuous_Scroll, sizeof(Continuous_Scroll), 1, out);
+	Write_Data(&AutoSave, sizeof(AutoSave), 1, out);
+	Write_Data(&AutoBackup, sizeof(AutoBackup), 1, out);
+	Write_Data(&AutoReload, sizeof(AutoReload), 1, out);
+	Write_Data(&SplashScreen, sizeof(SplashScreen), 1, out);
+
+	Write_Data(&Dir_Mods, sizeof(Dir_Mods), 1, out);
+	Write_Data(&Dir_Instrs, sizeof(Dir_Instrs), 1, out);
+	Write_Data(&Dir_Presets, sizeof(Dir_Presets), 1, out);
+	Write_Data(&Dir_Reverbs, sizeof(Dir_Reverbs), 1, out);
+	Write_Data(&Dir_MidiCfg, sizeof(Dir_MidiCfg), 1, out);
+	Write_Data(&Dir_Patterns, sizeof(Dir_Patterns), 1, out);
+	Write_Data(&Dir_Samples, sizeof(Dir_Samples), 1, out);
+
+	memset(Temph, 0, MAX_PATH);
+	sprintf(Temph, "%s" SLASH "%s.ptk", Dir_Mods, name);
+	Write_Data(Temph, MAX_PATH, 1, out);
+
+	Write_Data(KeyboardName, MAX_PATH, 1, out);
+
+	Write_Data(&rawrender_32float, sizeof(char), 1, out);
+	Write_Data(&rawrender_multi, sizeof(char), 1, out);
+	Write_Data(&rawrender_target, sizeof(char), 1, out);
+	Write_Data(&Large_Patterns, sizeof(char), 1, out);
+	Write_Data(&Scopish_LeftRight, sizeof(char), 1, out);
+
+	Write_Data(&Paste_Across, sizeof(char), 1, out);
+	Write_Data(&Jazz_Edit, sizeof(char), 1, out);
+	Write_Data(&Accidental, sizeof(char), 1, out);
+
+	Write_Data(&Use_Shadows, sizeof(char), 1, out);
+	Write_Data(&Global_Patterns_Font, sizeof(char), 1, out);
+
+	Write_Data(&metronome_magnify, sizeof(int), 1, out);
+
+	// Save the compelte midi automation config
+	Save_Midi_Cfg_Data(Write_Data, Write_Data_Swap, out);
+
+	Write_Data_Swap(&Cur_Width, sizeof(int), 1, out);
+	Write_Data_Swap(&Cur_Height, sizeof(int), 1, out);
+
+	if(Cur_Left < 0) Cur_Left = 0;
+	if(Cur_Top < 0) Cur_Top = 0;
+	Write_Data_Swap(&Cur_Left, sizeof(int), 1, out);
+	Write_Data_Swap(&Cur_Top, sizeof(int), 1, out);
+
+	fclose(out);
+
+	Read_SMPT();
+	last_index = -1;
+	Actualize_Files_List(0);
+	Status_Box("Configuration File Saved Successfully.");
 }
 
 // ------------------------------------------------------
