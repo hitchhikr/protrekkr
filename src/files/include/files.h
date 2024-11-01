@@ -37,12 +37,10 @@
 #include <stdio.h>
 #include "../../include/variables.h"
 
-#if defined(__AROS__) || defined(__MORPHOS__)
+#if defined(__AROS__) || defined(__MORPHOS__) || defined(__HAIKU__)
 #include <stdint.h>
 #include <string.h>
 #define int32 int32_t
-#elif defined(__HAIKU__)
-#include <stdint.h>
 #define int64 int64_t
 #endif
 
