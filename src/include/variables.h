@@ -352,6 +352,7 @@ typedef struct
 #if defined(__HAIKU__)
 #include <stdint.h>
 typedef int32_t int32;
+#define int64 int64_t
 #endif
 
 // ------------------------------------------------------

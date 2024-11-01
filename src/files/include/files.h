@@ -37,7 +37,7 @@
 #include <stdio.h>
 #include "../../include/variables.h"
 
-#if defined(__AROS__) || defined(__MORPHOS__) || defined(__HAIKU__)
+#if defined(__AROS__) || defined(__MORPHOS__)
 #include <stdint.h>
 #include <string.h>
 #define int32 int32_t
