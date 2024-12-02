@@ -8,6 +8,8 @@ v2.7.0
 - Added OpenGL support (especially for slower systems).
 - Fixed a nasty regression bug in log & pow functions.
 - Various bugs fixed here and there.
+- Added a function to only save the selected part of a sample as a .wav.
+- Added a function to only save the loop part of a sample as a .wav.
 
 v2.6.7
 

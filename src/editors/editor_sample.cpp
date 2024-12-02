@@ -81,6 +81,9 @@ int32 sed_display_start = 0;
 int32 sed_display_length = 0;
 int32 sed_range_start = 0;
 int32 sed_range_end = 0;
+int32 sed_real_range_start = 0;
+int32 sed_real_range_end = 0;
+
 char sed_range_mode = FALSE;
 
 int cur_smp_buffer[] =
@@ -94,7 +97,7 @@ int cur_smp_buffer[] =
 // ------------------------------------------------------
 // Functions
 void Draw_Wave_PlayBack_Pos(void);
-void Draw_Wave_Data3(void);
+void Draw_Wave_Data(void);
 void Refresh_Sample(int clear_sel);
 void Display_Sample_Buffers(int Allow);
 void Zoom_In_Sel();
@@ -116,8 +119,6 @@ void Draw_Sample_Ed(void)
 
 void Draw_Wave_Data(void)
 {
-    int32 sed_real_range_start;
-    int32 sed_real_range_end;
     int32 s_offset;
     int32 s_ex;
     int start_rect;

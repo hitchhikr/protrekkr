@@ -169,9 +169,12 @@ void Actualize_Instrument_Ed(int typex, char gode)
         switch(seditor)
         {
             case 0:
-                Gui_Draw_Button_Box(268, (Cur_Height - 134), 88, 16, "Fine Loop Editor", Allow_Buttons | BUTTON_TEXT_CENTERED);
-                Gui_Draw_Button_Box(268, (Cur_Height - 108), 88, 16, "Save Instrument", Allow_Global | BUTTON_TEXT_CENTERED);
-                Gui_Draw_Button_Box(268, (Cur_Height - 90), 88, 16, "Export .Wav File", Allow_Buttons | BUTTON_TEXT_CENTERED);
+                Gui_Draw_Button_Box(268, (Cur_Height - 134), 106, 16, "Fine Loop Editor", Allow_Buttons | BUTTON_TEXT_CENTERED);
+                Gui_Draw_Button_Box(268, (Cur_Height - 108), 106, 16, "Save Instrument", Allow_Global | BUTTON_TEXT_CENTERED);
+
+                Gui_Draw_Button_Box(268, (Cur_Height - 80), 106, 16, "Export All To .Wav", Allow_Buttons | BUTTON_TEXT_CENTERED);
+                Gui_Draw_Button_Box(268, (Cur_Height - 62), 106, 16, "Export Sel. To .Wav", Allow_Buttons | BUTTON_TEXT_CENTERED);
+                Gui_Draw_Button_Box(268, (Cur_Height - 44), 106, 16, "Export Loop To .Wav", Allow_Buttons | BUTTON_TEXT_CENTERED);
 
                 // Instrument editor mode
                 if(gode == 0 || gode == 1)
@@ -654,7 +657,7 @@ void Mouse_Left_Instrument_Ed(void)
         }
 
         // Go to loop editor
-        if(zcheckMouse(268, (Cur_Height - 134), 88, 16) && SampleType[Current_Instrument][Current_Instrument_Split])
+        if(zcheckMouse(268, (Cur_Height - 134), 106, 16) && SampleType[Current_Instrument][Current_Instrument_Split])
         {
             seditor = 1;
             gui_action = GUI_CMD_SELECT_INSTRUMENT_EDIT;
@@ -662,7 +665,7 @@ void Mouse_Left_Instrument_Ed(void)
 
         if(Allow_Global_Sliders)
         {
-            if(zcheckMouse(268, (Cur_Height - 108), 88, 16))
+            if(zcheckMouse(268, (Cur_Height - 108), 106, 16))
             {
                 if(File_Exist_Req("%s" SLASH "%s.pti", Dir_Instrs, nameins[Current_Instrument]))
                 {
@@ -675,8 +678,8 @@ void Mouse_Left_Instrument_Ed(void)
             }
         }
 
-        // Export .wav
-        if(zcheckMouse(268, (Cur_Height - 90), 88, 16) && SampleType[Current_Instrument][Current_Instrument_Split])
+        // Export whole sample to .wav
+        if(zcheckMouse(268, (Cur_Height - 80), 106, 16) && SampleType[Current_Instrument][Current_Instrument_Split])
         {
             char Name[MAX_PATH];
             if(strlen(SampleName[Current_Instrument][Current_Instrument_Split]))
@@ -689,11 +692,55 @@ void Mouse_Left_Instrument_Ed(void)
             }
             if(File_Exist_Req("%s" SLASH "%s", Dir_Samples, Name))
             {
-                Display_Requester(&Overwrite_Requester, GUI_CMD_EXPORT_WAV, NULL, TRUE);
+                Display_Requester(&Overwrite_Requester, GUI_CMD_EXPORT_WHOLE_WAV, NULL, TRUE);
             }
             else
             {
-                gui_action = GUI_CMD_EXPORT_WAV;
+                gui_action = GUI_CMD_EXPORT_WHOLE_WAV;
+            }
+        }
+
+        // Export selected part of the sample to .wav
+        if(zcheckMouse(268, (Cur_Height - 62), 106, 16) && SampleType[Current_Instrument][Current_Instrument_Split])
+        {
+            char Name[MAX_PATH];
+            if(strlen(SampleName[Current_Instrument][Current_Instrument_Split]))
+            {
+                sprintf(Name, "%s", SampleName[Current_Instrument][Current_Instrument_Split]);
+            }
+            else
+            {
+                sprintf(Name, "Untitled.wav");
+            }
+            if(File_Exist_Req("%s" SLASH "%s", Dir_Samples, Name))
+            {
+                Display_Requester(&Overwrite_Requester, GUI_CMD_EXPORT_SEL_WAV, NULL, TRUE);
+            }
+            else
+            {
+                gui_action = GUI_CMD_EXPORT_SEL_WAV;
+            }
+        }
+
+        // Export loop part of the sample to .wav
+        if(zcheckMouse(268, (Cur_Height - 44), 106, 16) && SampleType[Current_Instrument][Current_Instrument_Split])
+        {
+            char Name[MAX_PATH];
+            if(strlen(SampleName[Current_Instrument][Current_Instrument_Split]))
+            {
+                sprintf(Name, "%s", SampleName[Current_Instrument][Current_Instrument_Split]);
+            }
+            else
+            {
+                sprintf(Name, "Untitled.wav");
+            }
+            if(File_Exist_Req("%s" SLASH "%s", Dir_Samples, Name))
+            {
+                Display_Requester(&Overwrite_Requester, GUI_CMD_EXPORT_LOOP_WAV, NULL, TRUE);
+            }
+            else
+            {
+                gui_action = GUI_CMD_EXPORT_LOOP_WAV;
             }
         }
 
