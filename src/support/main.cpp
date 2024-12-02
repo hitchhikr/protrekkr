@@ -675,8 +675,14 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
     {
         delay_ms = 10;
     }
-    if(delay_ms < 10) delay_ms = 10;
-    if(delay_ms > 1000) delay_ms = 1000;
+    if(delay_ms < 10)
+    {
+        delay_ms = 10;
+    }
+    if(delay_ms > 1000)
+    {
+        delay_ms = 1000;
+    }
 #endif
 
     // Check if there's an argument
@@ -1068,7 +1074,7 @@ int Switch_FullScreen(int Width, int Height, int Refresh, int Force_Window_Mode)
     }
 #endif
 
-#if defined(__LINUX__) || defined(__MACOSX_PPC__) || defined(__MACOSX_X86__)
+#if defined(__LINUX__) || defined(__MACOSX_PPC__) || defined(__MACOSX_X86__) || defined(__WIN32__)
     Real_FullScreen = SDL_FULLSCREEN;
 #endif
 

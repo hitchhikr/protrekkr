@@ -6607,8 +6607,8 @@ void Reverb_work(void)
 
     if(compressor)
     {
-        float l_rout = 0;
-        float r_rout = 0;
+        float l_rout = 0.0f;
+        float r_rout = 0.0f;
 
         // Comb filter
         for(i = 0; i < num_echoes; i++)
