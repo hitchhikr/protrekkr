@@ -70,6 +70,7 @@
 #define SMPED_ZEROIZE (SMPED_ROTATE_RIGHT_X + 1)
 #define SMPED_DUPLICATE (SMPED_ZEROIZE + 1)
 #define SMPED_INSERTZERO (SMPED_DUPLICATE + 1)
+#define SMPED_DRAW (SMPED_INSERTZERO + 1)
 
 // ------------------------------------------------------
 // Variables
@@ -83,8 +84,9 @@ int32 sed_range_start = 0;
 int32 sed_range_end = 0;
 int32 sed_real_range_start = 0;
 int32 sed_real_range_end = 0;
-
+int cur_sample_color = COL_SCOPESSAMPLES;
 char sed_range_mode = FALSE;
+int smp_draw_mode = FALSE;
 
 int cur_smp_buffer[] =
 {
@@ -143,7 +145,10 @@ void Draw_Wave_Data(void)
         {
             // Redraw the bottom slider
             Allow = FALSE;
-            if(SampleType[Current_Instrument][Current_Instrument_Split]) Allow = TRUE;
+            if(SampleType[Current_Instrument][Current_Instrument_Split])
+            {
+                Allow = TRUE;
+            }
             Realslider_Horiz(WAVE_LEFT + 18, (Cur_Height - 41), sed_display_start, sed_display_length,
                              Sample_Length[Current_Instrument][Current_Instrument_Split],
                              LARGE_SMP_VIEW + 2 - (18 * 2), Allow);
@@ -207,8 +212,11 @@ void Draw_Wave_Data(void)
                 }
                 if(set_start_rect)
                 {
-                    SetColor(COL_SCOPESSAMPLES);
-                    if(end_rect == start_rect) end_rect++;
+                    SetColor(cur_sample_color);
+                    if(end_rect == start_rect)
+                    {
+                        end_rect++;
+                    }
                     Fillrect(start_rect + WAVE_LEFT + 1, (Cur_Height - 150) + 1, end_rect + WAVE_LEFT + 1, (Cur_Height - 150) + SAMPLE_HEIGHT - 1);
                 }
 
@@ -233,15 +241,14 @@ void Draw_Wave_Data(void)
                                s_offset >= sed_real_range_start &&
                                s_offset < sed_real_range_end)
                             {
-
                                 // Sample datas
                                 DrawVLine(s_ex + WAVE_LEFT + 1, s_ey, s_y, COL_BACKGROUND);
                                 DrawPixel(s_ex + WAVE_LEFT + 1, s_ey, COL_BACKGROUND);
                             }
                             else
                             {
-                                DrawVLine(s_ex + WAVE_LEFT + 1, s_ey, s_y, COL_SCOPESSAMPLES);
-                                DrawPixel(s_ex + WAVE_LEFT + 1, s_ey, COL_SCOPESSAMPLES);
+                                DrawVLine(s_ex + WAVE_LEFT + 1, s_ey, s_y, cur_sample_color);
+                                DrawPixel(s_ex + WAVE_LEFT + 1, s_ey, cur_sample_color);
                             }
                         }
                         break;
@@ -276,10 +283,10 @@ void Draw_Wave_Data(void)
                             }
                             else
                             {
-                                DrawVLine(s_ex + WAVE_LEFT + 1, s_ey, s_y, COL_SCOPESSAMPLES);
-                                DrawVLine(s_ex + WAVE_LEFT + 1, s_ey2, s_y2, COL_SCOPESSAMPLES);
-                                DrawPixel(s_ex + WAVE_LEFT + 1, s_ey, COL_SCOPESSAMPLES);
-                                DrawPixel(s_ex + WAVE_LEFT + 1, s_ey2, COL_SCOPESSAMPLES);
+                                DrawVLine(s_ex + WAVE_LEFT + 1, s_ey, s_y, cur_sample_color);
+                                DrawVLine(s_ex + WAVE_LEFT + 1, s_ey2, s_y2, cur_sample_color);
+                                DrawPixel(s_ex + WAVE_LEFT + 1, s_ey, cur_sample_color);
+                                DrawPixel(s_ex + WAVE_LEFT + 1, s_ey2, cur_sample_color);
                             }
                         }
                         break;
@@ -403,7 +410,7 @@ void Draw_Wave_PlayBack_Pos(void)
                         }
                         else
                         {
-                            rcolor3 = COL_SCOPESSAMPLES;
+                            rcolor3 = cur_sample_color;
                         }
                     }
                     DrawVLine(s_ex + WAVE_LEFT + 1, s_ey, s_ey, rcolor3);
@@ -434,8 +441,8 @@ void Draw_Wave_PlayBack_Pos(void)
                         }
                         else
                         {
-                            rcolor3 = COL_SCOPESSAMPLES;
-                            rcolor4 = COL_SCOPESSAMPLES;
+                            rcolor3 = cur_sample_color;
+                            rcolor4 = cur_sample_color;
                         }
                     }
 
@@ -458,66 +465,93 @@ void Actualize_Sample_Ed(char gode)
 {
     int32 sed_real_range_start;
     int32 sed_real_range_end;
-    int ReadOnly;
+    int read_only;
     int Allow;
+    int allow_draw_mode;
 
     if(userscreen == USER_SCREEN_SAMPLE_EDIT)
     {
         Allow = 0;
-        if(!SampleType[Current_Instrument][Current_Instrument_Split]) Allow = BUTTON_DISABLED;
-
-        if(SamplesSwap[Current_Instrument]) ReadOnly = BUTTON_DISABLED;
-        else
+        if(!SampleType[Current_Instrument][Current_Instrument_Split])
         {
-            ReadOnly = 0;
+            Allow = BUTTON_DISABLED;
         }
 
-        if(gode == 0)
+        if(SamplesSwap[Current_Instrument])
         {
+            read_only = BUTTON_DISABLED;
+        }
+        else
+        {
+            read_only = 0;
+        }
 
+        if(smp_draw_mode)
+        {
+            allow_draw_mode = BUTTON_DISABLED;
+        }
+        else
+        {
+            allow_draw_mode = 0;
+        }
+
+        if(gode == 0 || gode == SMPED_DRAW)
+        {
             // Those commands aren't available when viewing packed samples (which are read only)
-            Gui_Draw_Button_Box(520, (Cur_Height - 150), 29, 16, "Cut", BUTTON_NORMAL | Allow | ReadOnly | BUTTON_TEXT_CENTERED);
-            Gui_Draw_Button_Box(551, (Cur_Height - 150), 29, 16, "Copy", BUTTON_NORMAL | Allow | ReadOnly | BUTTON_TEXT_CENTERED);
-            Gui_Draw_Button_Box(582, (Cur_Height - 150), 29, 16, "Paste", BUTTON_NORMAL | Allow | ReadOnly | BUTTON_TEXT_CENTERED);
-            Gui_Draw_Button_Box(613, (Cur_Height - 150), 29, 16, "Crop", BUTTON_NORMAL | Allow | ReadOnly | BUTTON_TEXT_CENTERED);
-            Gui_Draw_Button_Box(551, (Cur_Height - 132), 29, 16, "Half", BUTTON_NORMAL | Allow | ReadOnly | BUTTON_TEXT_CENTERED);
+            // or in drawing mode
+            Gui_Draw_Button_Box(520, (Cur_Height - 150), 29, 16, "Cut", BUTTON_NORMAL | Allow | read_only | allow_draw_mode | BUTTON_TEXT_CENTERED);
+            Gui_Draw_Button_Box(551, (Cur_Height - 150), 29, 16, "Copy", BUTTON_NORMAL | Allow | read_only | allow_draw_mode | BUTTON_TEXT_CENTERED);
+            Gui_Draw_Button_Box(582, (Cur_Height - 150), 29, 16, "Paste", BUTTON_NORMAL | Allow | read_only | allow_draw_mode | BUTTON_TEXT_CENTERED);
+            Gui_Draw_Button_Box(613, (Cur_Height - 150), 29, 16, "Crop", BUTTON_NORMAL | Allow | read_only | allow_draw_mode | BUTTON_TEXT_CENTERED);
+            Gui_Draw_Button_Box(551, (Cur_Height - 132), 29, 16, "Half", BUTTON_NORMAL | Allow | read_only | allow_draw_mode | BUTTON_TEXT_CENTERED);
 
-            Gui_Draw_Button_Box(650, (Cur_Height - 132), 16, 16, "\05", BUTTON_NORMAL | Allow | ReadOnly | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
-            Gui_Draw_Button_Box(668, (Cur_Height - 132), 16, 16, "\03", BUTTON_NORMAL | Allow | ReadOnly | BUTTON_TEXT_CENTERED);
-            Gui_Draw_Button_Box(686, (Cur_Height - 132), 16, 16, "\04", BUTTON_NORMAL | Allow | ReadOnly | BUTTON_TEXT_CENTERED);
-            Gui_Draw_Button_Box(704, (Cur_Height - 132), 16, 16, "\06", BUTTON_NORMAL | Allow | ReadOnly | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
-            Gui_Draw_Button_Box(722, (Cur_Height - 132), 50, 16, "Reverse", BUTTON_NORMAL | Allow | ReadOnly | BUTTON_TEXT_CENTERED);
+            Gui_Draw_Button_Box(650, (Cur_Height - 132), 16, 16, "\05", BUTTON_NORMAL | Allow | read_only | allow_draw_mode | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
+            Gui_Draw_Button_Box(668, (Cur_Height - 132), 16, 16, "\03", BUTTON_NORMAL | Allow | read_only | allow_draw_mode | BUTTON_TEXT_CENTERED);
+            Gui_Draw_Button_Box(686, (Cur_Height - 132), 16, 16, "\04", BUTTON_NORMAL | Allow | read_only | allow_draw_mode | BUTTON_TEXT_CENTERED);
+            Gui_Draw_Button_Box(704, (Cur_Height - 132), 16, 16, "\06", BUTTON_NORMAL | Allow | read_only | allow_draw_mode | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
+            Gui_Draw_Button_Box(722, (Cur_Height - 132), 50, 16, "Reverse", BUTTON_NORMAL | Allow | read_only | allow_draw_mode | BUTTON_TEXT_CENTERED);
             
-            Gui_Draw_Button_Box(520, (Cur_Height - 132), 29, 16, "Zap", BUTTON_NORMAL | Allow | ReadOnly | BUTTON_TEXT_CENTERED);
+            Gui_Draw_Button_Box(520, (Cur_Height - 132), 29, 16, "Zap", BUTTON_NORMAL | Allow | read_only | allow_draw_mode | BUTTON_TEXT_CENTERED);
 
-            Gui_Draw_Button_Box(520, (Cur_Height - 114), 29, 16, "Max.", BUTTON_NORMAL | Allow | ReadOnly | BUTTON_TEXT_CENTERED);
-            Gui_Draw_Button_Box(551, (Cur_Height - 114), 29, 16, "Zero", BUTTON_NORMAL | Allow | ReadOnly | BUTTON_TEXT_CENTERED);
-            Gui_Draw_Button_Box(520, (Cur_Height - 96), 29, 16, "Dup.", BUTTON_NORMAL | Allow | ReadOnly | BUTTON_TEXT_CENTERED);
-            Gui_Draw_Button_Box(551, (Cur_Height - 96), 29, 16, "Ins.", BUTTON_NORMAL | Allow | ReadOnly | BUTTON_TEXT_CENTERED);
-            Gui_Draw_Button_Box(520, (Cur_Height - 78), 60, 16, "DC Adjust", BUTTON_NORMAL | Allow | ReadOnly | BUTTON_TEXT_CENTERED);
-            Gui_Draw_Button_Box(520, (Cur_Height - 60), 29, 16, "F. In", BUTTON_NORMAL | Allow | ReadOnly | BUTTON_TEXT_CENTERED);
-            Gui_Draw_Button_Box(551, (Cur_Height - 60), 29, 16, "F. Out", BUTTON_NORMAL | Allow | ReadOnly | BUTTON_TEXT_CENTERED);
+            Gui_Draw_Button_Box(520, (Cur_Height - 114), 29, 16, "Max.", BUTTON_NORMAL | Allow | read_only | allow_draw_mode | BUTTON_TEXT_CENTERED);
+            Gui_Draw_Button_Box(551, (Cur_Height - 114), 29, 16, "Zero", BUTTON_NORMAL | Allow | read_only | allow_draw_mode | BUTTON_TEXT_CENTERED);
+            Gui_Draw_Button_Box(520, (Cur_Height - 96), 29, 16, "Dup.", BUTTON_NORMAL | Allow | read_only | allow_draw_mode | BUTTON_TEXT_CENTERED);
+            Gui_Draw_Button_Box(551, (Cur_Height - 96), 29, 16, "Ins.", BUTTON_NORMAL | Allow | read_only | allow_draw_mode | BUTTON_TEXT_CENTERED);
+            Gui_Draw_Button_Box(520, (Cur_Height - 78), 60, 16, "DC Adjust", BUTTON_NORMAL | Allow | read_only | allow_draw_mode | BUTTON_TEXT_CENTERED);
+            Gui_Draw_Button_Box(520, (Cur_Height - 60), 29, 16, "F. In", BUTTON_NORMAL | Allow | read_only | allow_draw_mode | BUTTON_TEXT_CENTERED);
+            Gui_Draw_Button_Box(551, (Cur_Height - 60), 29, 16, "F. Out", BUTTON_NORMAL | Allow | read_only | allow_draw_mode | BUTTON_TEXT_CENTERED);
 
             // Non-modifying operations are allowed
-            Gui_Draw_Button_Box(582, (Cur_Height - 132), 60, 16, "Sel. View", BUTTON_NORMAL | Allow | BUTTON_TEXT_CENTERED);
-            Gui_Draw_Button_Box(582, (Cur_Height - 114), 60, 16, "Unselect", BUTTON_NORMAL | Allow | BUTTON_TEXT_CENTERED);
+            Gui_Draw_Button_Box(582, (Cur_Height - 132), 60, 16, "Sel. View", BUTTON_NORMAL | Allow | allow_draw_mode | BUTTON_TEXT_CENTERED);
+            Gui_Draw_Button_Box(582, (Cur_Height - 114), 60, 16, "Unselect", BUTTON_NORMAL | Allow | allow_draw_mode | BUTTON_TEXT_CENTERED);
 
-            Gui_Draw_Button_Box(582, (Cur_Height - 96), 60, 16, "View All", BUTTON_NORMAL | Allow | BUTTON_TEXT_CENTERED);
-            Gui_Draw_Button_Box(582, (Cur_Height - 78), 60, 16, "VZoom In", BUTTON_NORMAL | Allow | BUTTON_TEXT_CENTERED);
-            Gui_Draw_Button_Box(582, (Cur_Height - 60), 60, 16, "VZoom Out", BUTTON_NORMAL | Allow | BUTTON_TEXT_CENTERED);
+            Gui_Draw_Button_Box(582, (Cur_Height - 96), 60, 16, "View All", BUTTON_NORMAL | Allow | allow_draw_mode | BUTTON_TEXT_CENTERED);
+            Gui_Draw_Button_Box(582, (Cur_Height - 78), 60, 16, "VZoom In", BUTTON_NORMAL | Allow | allow_draw_mode | BUTTON_TEXT_CENTERED);
+            Gui_Draw_Button_Box(582, (Cur_Height - 60), 60, 16, "VZoom Out", BUTTON_NORMAL | Allow | allow_draw_mode | BUTTON_TEXT_CENTERED);
 
-            Gui_Draw_Button_Box(650, (Cur_Height - 114), 60, 16, "Zoom In", BUTTON_NORMAL | Allow | BUTTON_TEXT_CENTERED);
-            Gui_Draw_Button_Box(650, (Cur_Height - 96), 60, 16, "Zoom Out", BUTTON_NORMAL | Allow | BUTTON_TEXT_CENTERED);
+            Gui_Draw_Button_Box(650, (Cur_Height - 114), 60, 16, "Zoom In", BUTTON_NORMAL | Allow | allow_draw_mode | BUTTON_TEXT_CENTERED);
+            Gui_Draw_Button_Box(650, (Cur_Height - 96), 60, 16, "Zoom Out", BUTTON_NORMAL | Allow | allow_draw_mode | BUTTON_TEXT_CENTERED);
 
-            Gui_Draw_Button_Box(712, (Cur_Height - 114), 60, 16, "Loop Start", BUTTON_NORMAL | Allow | BUTTON_TEXT_CENTERED);
-            Gui_Draw_Button_Box(712, (Cur_Height - 96), 60, 16, "Loop End", BUTTON_NORMAL | Allow | BUTTON_TEXT_CENTERED);
+            Gui_Draw_Button_Box(712, (Cur_Height - 114), 60, 16, "Loop Start", BUTTON_NORMAL | Allow | allow_draw_mode | BUTTON_TEXT_CENTERED);
+            Gui_Draw_Button_Box(712, (Cur_Height - 96), 60, 16, "Loop End", BUTTON_NORMAL | Allow | allow_draw_mode | BUTTON_TEXT_CENTERED);
 
+            // Arrows under sample
             Gui_Draw_Button_Box(WAVE_LEFT, (Cur_Height - 41), 16, 16, "\03", BUTTON_NORMAL | Allow | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
             Gui_Draw_Button_Box(WAVE_LEFT + LARGE_SMP_VIEW - (18 * 1) + 3, (Cur_Height - 41), 16, 16, "\04", BUTTON_NORMAL | Allow | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
 
-            Gui_Draw_Button_Box(722, (Cur_Height - 150), 50, 16, "Sel. All", BUTTON_NORMAL | Allow | BUTTON_TEXT_CENTERED);
+            Gui_Draw_Button_Box(722, (Cur_Height - 150), 50, 16, "Sel. All", BUTTON_NORMAL | Allow | allow_draw_mode | BUTTON_TEXT_CENTERED);
 
-            Display_Sample_Buffers(Allow | ReadOnly);
+            // Draw mode
+            if(smp_draw_mode)
+            {
+                Gui_Draw_Button_Box(776, (Cur_Height - 150), 16, 16, "\255", BUTTON_PUSHED | Allow | read_only | BUTTON_TEXT_CENTERED);
+            }
+            else
+            {
+                Gui_Draw_Button_Box(776, (Cur_Height - 150), 16, 16, "\255", BUTTON_NORMAL | Allow | read_only | BUTTON_TEXT_CENTERED);
+            }
+
+            Display_Sample_Buffers(Allow | read_only);
         }
 
         sed_real_range_start = sed_range_start;
@@ -612,7 +646,7 @@ void Actualize_Sample_Ed(char gode)
             {
                 if(Sample_Copy(sed_real_range_start, sed_real_range_end))
                 {
-                    Display_Sample_Buffers(Allow | ReadOnly);
+                    Display_Sample_Buffers(Allow | read_only);
                 }
             }
 
@@ -647,28 +681,28 @@ void Actualize_Sample_Ed(char gode)
             if(gode == SMPED_BUF1)
             {
                 cur_sample_buffer = 0;
-                Display_Sample_Buffers(Allow | ReadOnly);
+                Display_Sample_Buffers(Allow | read_only);
             }
 
             // Select buffer 2
             if(gode == SMPED_BUF2)
             {
                 cur_sample_buffer = 1;
-                Display_Sample_Buffers(Allow | ReadOnly);
+                Display_Sample_Buffers(Allow | read_only);
             }
 
             // Select buffer 3
             if(gode == SMPED_BUF3)
             {
                 cur_sample_buffer = 2;
-                Display_Sample_Buffers(Allow | ReadOnly);
+                Display_Sample_Buffers(Allow | read_only);
             }
 
             // Select buffer 4
             if(gode == SMPED_BUF4)
             {
                 cur_sample_buffer = 3;
-                Display_Sample_Buffers(Allow | ReadOnly);
+                Display_Sample_Buffers(Allow | read_only);
             }
 
             // Zap
@@ -734,6 +768,24 @@ void Actualize_Sample_Ed(char gode)
                 }
             }
 
+            // Draw mode
+            if(gode == SMPED_DRAW)
+            {
+                if(smp_draw_mode == TRUE)
+                {
+                    cur_sample_color = COL_VUMETER;
+                    rs_coef = 32768;
+                    Status_Box("Sample Drawing Mode Turned On.");
+                }
+                else
+                {
+                    cur_sample_color = COL_SCOPESSAMPLES;
+                    rs_coef = 32768;
+                    Status_Box("Sample Drawing Mode Turned Off.");
+                }
+                Refresh_Sample(TRUE);
+            }
+
         }
         else
         {
@@ -748,7 +800,14 @@ void Mouse_Right_Sample_Ed(void)
 {
     int Allow = TRUE;
 
-    if(SamplesSwap[Current_Instrument]) Allow = FALSE;
+    if(SamplesSwap[Current_Instrument])
+    {
+        Allow = FALSE;
+    }
+    if(smp_draw_mode == TRUE)
+    {
+        Allow = FALSE;
+    }
 
     if(userscreen == USER_SCREEN_SAMPLE_EDIT)
     {
@@ -796,7 +855,10 @@ void Mouse_Right_Sample_Ed(void)
             if(Sample_Length[Current_Instrument][Current_Instrument_Split])
             {
                 sed_display_start -= sed_display_length;
-                if((int) sed_display_start < 0) sed_display_start = 0;
+                if((int) sed_display_start < 0)
+                {
+                    sed_display_start = 0;
+                }
                 gui_action = GUI_CMD_REFRESH_SAMPLE_ED;
                 draw_sampled_wave = TRUE;
             }
@@ -809,7 +871,10 @@ void Mouse_Right_Sample_Ed(void)
             {
                 int max_length = Sample_Length[Current_Instrument][Current_Instrument_Split] - sed_display_length;
                 sed_display_start += sed_display_length;
-                if((int) sed_display_start > max_length) sed_display_start = max_length;
+                if((int) sed_display_start > max_length)
+                {
+                    sed_display_start = max_length;
+                }
                 gui_action = GUI_CMD_REFRESH_SAMPLE_ED;
                 draw_sampled_wave = TRUE;
             }
@@ -825,8 +890,14 @@ void Mouse_Middle_Sample_Ed(void)
     {
         if(zcheckMouse(WAVE_LEFT + 1, (Cur_Height - 150), LARGE_SMP_VIEW, SAMPLE_LINES_HEIGHT))
         {
-            if(sed_range_mode && sed_range_start != sed_range_end) Zoom_In_Sel();
-            else Zoom_Out_Sel();
+            if(sed_range_mode && sed_range_start != sed_range_end)
+            {
+                Zoom_In_Sel();
+            }
+            else
+            {
+                Zoom_Out_Sel();
+            }
         }
     }
 }
@@ -837,14 +908,22 @@ void Mouse_Left_Sample_Ed(void)
 {
     int Allow = TRUE;
 
-    if(SamplesSwap[Current_Instrument]) Allow = FALSE;
+    if(SamplesSwap[Current_Instrument])
+    {
+        Allow = FALSE;
+    }
+
+    if(smp_draw_mode == TRUE)
+    {
+        Allow = FALSE;
+    }
 
     if(userscreen == USER_SCREEN_SAMPLE_EDIT)
     {
         if(SampleType[Current_Instrument][Current_Instrument_Split])
         {
             // Set Loop Start
-            if(zcheckMouse(712, (Cur_Height - 114), 60, 16) && sed_range_mode)
+            if(zcheckMouse(712, (Cur_Height - 114), 60, 16) && sed_range_mode && !smp_draw_mode)
             {
                 if(sed_range_start > sed_range_end)
                 {
@@ -883,7 +962,7 @@ void Mouse_Left_Sample_Ed(void)
             }
 
             // Set Loop End
-            if(zcheckMouse(712, (Cur_Height - 96), 60, 16) && sed_range_mode)
+            if(zcheckMouse(712, (Cur_Height - 96), 60, 16) && sed_range_mode && !smp_draw_mode)
             {
                 if(sed_range_start > sed_range_end)
                 {
@@ -1068,8 +1147,23 @@ void Mouse_Left_Sample_Ed(void)
                 gui_action = GUI_CMD_REFRESH_SAMPLE_ED;
             }
 
+            // Draw mode
+            if(zcheckMouse(776, (Cur_Height - 150), 16, 16) && !SamplesSwap[Current_Instrument])
+            {
+                if(smp_draw_mode == TRUE)
+                {
+                    smp_draw_mode = FALSE;
+                }
+                else
+                {
+                    smp_draw_mode = TRUE;
+                }
+                teac = SMPED_DRAW;
+                gui_action = GUI_CMD_REFRESH_SAMPLE_ED;
+            }
+
             // View All
-            if(zcheckMouse(582, (Cur_Height - 96), 60, 16))
+            if(zcheckMouse(582, (Cur_Height - 96), 60, 16) && !smp_draw_mode)
             {
                 rs_coef = 32768;
                 sed_display_start = 0;
@@ -1080,21 +1174,21 @@ void Mouse_Left_Sample_Ed(void)
             }
 
             // VZoom In
-            if(zcheckMouse(582, (Cur_Height - 78), 60, 16))
+            if(zcheckMouse(582, (Cur_Height - 78), 60, 16) && !smp_draw_mode)
             {
                 rs_coef /= 2;
                 draw_sampled_wave = TRUE;
             }
 
             // VZoom Out
-            if(zcheckMouse(582, (Cur_Height - 60), 60, 16))
+            if(zcheckMouse(582, (Cur_Height - 60), 60, 16) && !smp_draw_mode)
             {
                 rs_coef *= 2;
                 draw_sampled_wave = TRUE;
             }
 
             // Unselect
-            if(zcheckMouse(582, (Cur_Height - 114), 60, 16))
+            if(zcheckMouse(582, (Cur_Height - 114), 60, 16) && !smp_draw_mode)
             {
                 sed_range_mode = FALSE;
                 sed_range_start = 0;
@@ -1105,7 +1199,7 @@ void Mouse_Left_Sample_Ed(void)
             }
 
             // Select all
-            if(zcheckMouse(722, (Cur_Height - 150), 50, 16))
+            if(zcheckMouse(722, (Cur_Height - 150), 50, 16) && !smp_draw_mode)
             {
                 sed_range_mode = TRUE;
                 sed_range_start = 0;
@@ -1116,7 +1210,7 @@ void Mouse_Left_Sample_Ed(void)
             }
 
             // Select view
-            if(zcheckMouse(582, (Cur_Height - 132), 60, 16))
+            if(zcheckMouse(582, (Cur_Height - 132), 60, 16) && !smp_draw_mode)
             {
                 sed_range_mode = TRUE;
                 sed_range_start = sed_display_start;
@@ -1127,13 +1221,13 @@ void Mouse_Left_Sample_Ed(void)
             }
 
             // Zoom in
-            if(zcheckMouse(650, (Cur_Height - 114), 60, 16) && sed_range_mode)
+            if(zcheckMouse(650, (Cur_Height - 114), 60, 16) && sed_range_mode && !smp_draw_mode)
             {
                 Zoom_In_Sel();
             }
 
             // Zoom out
-            if(zcheckMouse(650, (Cur_Height - 96), 60, 16))
+            if(zcheckMouse(650, (Cur_Height - 96), 60, 16) && !smp_draw_mode)
             {
                 Zoom_Out_Sel();
             }
@@ -1196,8 +1290,15 @@ void Mouse_Sliders_Sample_Ed(void)
     int Mouse_Pos;
     double test;
     int Allow = TRUE;
+    int32 sed_draw_pos;
+    short *smp_data;
+    int mouse_y_pos;
+    float smp_y_pos;
 
-    if(SamplesSwap[Current_Instrument]) Allow = FALSE;
+    if(SamplesSwap[Current_Instrument])
+    {
+        Allow = FALSE;
+    }
 
     if(userscreen == USER_SCREEN_SAMPLE_EDIT)
     {
@@ -1207,40 +1308,73 @@ void Mouse_Sliders_Sample_Ed(void)
             if(SampleType[Current_Instrument][Current_Instrument_Split])
             {
                 Mouse_Pos = (Mouse.x - WAVE_LEFT) - 1;
-                if(Mouse_Pos < 0) Mouse_Pos = 0;
-                if(Mouse_Pos > LARGE_SMP_VIEW) Mouse_Pos = LARGE_SMP_VIEW;
-                axswave = Sample_Length[Current_Instrument][Current_Instrument_Split];
-                sed_range_mode = TRUE;
-                test = (double) (((int64) Mouse_Pos * (int64) sed_display_length)) / LARGE_SMP_VIEW;
-                sed_range_end = sed_display_start + (int32) test;
-                teac = 4;
-
-                if(!sas)
+                if(Mouse_Pos < 0)
                 {
-                    // Selection start
-                    sed_range_start = sed_range_end;
-                    teac = 5;
+                    Mouse_Pos = 0;
                 }
-
-                if(sed_range_start < sed_display_start)
+                if(Mouse_Pos > LARGE_SMP_VIEW)
                 {
-                    sed_range_start = sed_display_start;
-                    teac = 5;
+                    Mouse_Pos = LARGE_SMP_VIEW;
                 }
-                if(sed_range_end < sed_display_start)
+                if(smp_draw_mode)
                 {
-                    sed_range_end = sed_display_start;
-                    teac = 5;
+                    test = (double) (((int64) Mouse_Pos * (int64) sed_display_length)) / LARGE_SMP_VIEW;
+                    sed_draw_pos = sed_display_start + (int32) test;
+                    teac = 0;
+                    smp_data = (RawSamples[Current_Instrument][0][Current_Instrument_Split] + sed_draw_pos);
+                    mouse_y_pos = Mouse.y - (Cur_Height - 150);
+                    smp_y_pos = (float) mouse_y_pos;
+                    // [0.0..1.0]
+                    smp_y_pos = smp_y_pos / 110.0f;
+                    // [-0.5..0.5]
+                    smp_y_pos = smp_y_pos - 0.5f;
+                    // [-1.0..1.0]
+                    smp_y_pos = smp_y_pos * 2.0f;
+                    smp_y_pos = -(smp_y_pos * 32767.0f);
+                    if(smp_y_pos < -32767.0f)
+                    {
+                        smp_y_pos = -32767.0f;
+                    }
+                    if(smp_y_pos > 32767.0f)
+                    {
+                        smp_y_pos = 32767.0f;
+                    }
+                    *smp_data = (short) smp_y_pos;
                 }
-
-                if(sed_range_end > axswave)
+                else
                 {
-                    sed_range_end = axswave;
-                }
+                    axswave = Sample_Length[Current_Instrument][Current_Instrument_Split];
+                    sed_range_mode = TRUE;
+                    test = (double) (((int64) Mouse_Pos * (int64) sed_display_length)) / LARGE_SMP_VIEW;
+                    sed_range_end = sed_display_start + (int32) test;
+                    teac = 4;
 
+                    if(!sas)
+                    {
+                        // Selection start
+                        sed_range_start = sed_range_end;
+                        teac = 5;
+                    }
+
+                    if(sed_range_start < sed_display_start)
+                    {
+                        sed_range_start = sed_display_start;
+                        teac = 5;
+                    }
+                    if(sed_range_end < sed_display_start)
+                    {
+                        sed_range_end = sed_display_start;
+                        teac = 5;
+                    }
+
+                    if(sed_range_end > axswave)
+                    {
+                        sed_range_end = axswave;
+                    }
+                    sas = TRUE;
+                }
                 gui_action = GUI_CMD_REFRESH_SAMPLE_ED;
                 draw_sampled_wave = TRUE;
-                sas = TRUE;
             } // SAMPLETYPE
         } // MOUSEBOX
 
@@ -1287,12 +1421,18 @@ void Mouse_Sliders_Sample_Ed(void)
 // Make sure the loop infos are sane
 void Check_Loops(void)
 {
-    if(LoopStart[Current_Instrument][Current_Instrument_Split] < 0) LoopStart[Current_Instrument][Current_Instrument_Split] = 0;
+    if(LoopStart[Current_Instrument][Current_Instrument_Split] < 0)
+    {
+        LoopStart[Current_Instrument][Current_Instrument_Split] = 0;
+    }
     if(LoopStart[Current_Instrument][Current_Instrument_Split] > Sample_Length[Current_Instrument][Current_Instrument_Split])
     {
         LoopStart[Current_Instrument][Current_Instrument_Split] = Sample_Length[Current_Instrument][Current_Instrument_Split];
     }
-    if(LoopEnd[Current_Instrument][Current_Instrument_Split] < 0) LoopEnd[Current_Instrument][Current_Instrument_Split] = 0;
+    if(LoopEnd[Current_Instrument][Current_Instrument_Split] < 0)
+    {
+        LoopEnd[Current_Instrument][Current_Instrument_Split] = 0;
+    }
     if(LoopEnd[Current_Instrument][Current_Instrument_Split] > Sample_Length[Current_Instrument][Current_Instrument_Split])
     {
         LoopEnd[Current_Instrument][Current_Instrument_Split] = Sample_Length[Current_Instrument][Current_Instrument_Split];
@@ -1308,14 +1448,20 @@ void Check_Loops(void)
 // Bring the sample editor up to date
 void Refresh_Sample(int clear_sel)
 {
-    int ReadOnly;
+    int read_only;
     int Allow = 0;
-    if(!SampleType[Current_Instrument][Current_Instrument_Split]) Allow = BUTTON_DISABLED;
 
-    if(SamplesSwap[Current_Instrument]) ReadOnly = BUTTON_DISABLED;
+    if(!SampleType[Current_Instrument][Current_Instrument_Split])
+    {
+        Allow = BUTTON_DISABLED;
+    }
+    if(SamplesSwap[Current_Instrument])
+    {
+        read_only = BUTTON_DISABLED;
+    }
     else
     {
-        ReadOnly = 0;
+        read_only = 0;
     }
 
     // Adjust after the cut
@@ -1339,14 +1485,24 @@ void Refresh_Sample(int clear_sel)
     outlong(650, (Cur_Height - 60), sed_range_start, 10);
     outlong(650, (Cur_Height - 42), sed_range_end, 11);
     Check_Loops();
-    if(userscreen == USER_SCREEN_INSTRUMENT_EDIT) Actualize_Instrument_Ed(0, 4);
-    Display_Sample_Buffers(Allow | ReadOnly);
+    if(userscreen == USER_SCREEN_INSTRUMENT_EDIT)
+    {
+        Actualize_Instrument_Ed(0, 4);
+    }
+    Display_Sample_Buffers(Allow | read_only);
 }
 
 // ------------------------------------------------------
 // Notify the user selected buffer visually
 void Display_Sample_Buffers(int Allow)
 {
+    int disabled = 0;
+
+    if(smp_draw_mode == TRUE)
+    {
+        disabled = BUTTON_DISABLED;
+    }
+    
     switch(cur_sample_buffer)
     {
         case 0:
@@ -1375,31 +1531,34 @@ void Display_Sample_Buffers(int Allow)
             break;
     }
 
-    Gui_Draw_Button_Box(650, (Cur_Height - 150), 16, 16, "1", Allow | cur_smp_buffer[0] | BUTTON_TEXT_CENTERED | (Sample_Back_Size[0] ? 0 : BUTTON_LOW_FONT));
-    Gui_Draw_Button_Box(668, (Cur_Height - 150), 16, 16, "2", Allow | cur_smp_buffer[1] | BUTTON_TEXT_CENTERED | (Sample_Back_Size[1] ? 0 : BUTTON_LOW_FONT));
-    Gui_Draw_Button_Box(686, (Cur_Height - 150), 16, 16, "3", Allow | cur_smp_buffer[2] | BUTTON_TEXT_CENTERED | (Sample_Back_Size[2] ? 0 : BUTTON_LOW_FONT));
-    Gui_Draw_Button_Box(704, (Cur_Height - 150), 16, 16, "4", Allow | cur_smp_buffer[3] | BUTTON_TEXT_CENTERED | (Sample_Back_Size[3] ? 0 : BUTTON_LOW_FONT));
+    Gui_Draw_Button_Box(650, (Cur_Height - 150), 16, 16, "1", Allow | disabled | cur_smp_buffer[0] | BUTTON_TEXT_CENTERED | (Sample_Back_Size[0] ? 0 : BUTTON_LOW_FONT));
+    Gui_Draw_Button_Box(668, (Cur_Height - 150), 16, 16, "2", Allow | disabled | cur_smp_buffer[1] | BUTTON_TEXT_CENTERED | (Sample_Back_Size[1] ? 0 : BUTTON_LOW_FONT));
+    Gui_Draw_Button_Box(686, (Cur_Height - 150), 16, 16, "3", Allow | disabled | cur_smp_buffer[2] | BUTTON_TEXT_CENTERED | (Sample_Back_Size[2] ? 0 : BUTTON_LOW_FONT));
+    Gui_Draw_Button_Box(704, (Cur_Height - 150), 16, 16, "4", Allow | disabled | cur_smp_buffer[3] | BUTTON_TEXT_CENTERED | (Sample_Back_Size[3] ? 0 : BUTTON_LOW_FONT));
 }
 
 // ------------------------------------------------------
 // Display a selection
 void Zoom_In_Sel()
 {
-    int max_length;
+    int32 max_length;
+
     sed_range_mode = FALSE;
     if(sed_range_end != sed_range_start)
     {
-        if((int) sed_range_end < (int) sed_range_start)
+        if((int32) sed_range_end < (int32) sed_range_start)
         {
-            int swap_range = sed_range_start;
+            int32 swap_range = sed_range_start;
             sed_range_start = sed_range_end;
             sed_range_end = swap_range;
         }
         sed_display_length = (sed_range_end - sed_range_start);
         sed_display_start = sed_range_start;
         max_length = Sample_Length[Current_Instrument][Current_Instrument_Split] - sed_display_length;
-        if((int) sed_display_start > max_length) sed_display_start = max_length;
-
+        if((int32) sed_display_start > max_length)
+        {
+            sed_display_start = max_length;
+        }
         draw_sampled_wave = TRUE;
         teac = 3;
         gui_action = GUI_CMD_REFRESH_SAMPLE_ED;
@@ -1410,10 +1569,14 @@ void Zoom_In_Sel()
 // Move from a selection
 void Zoom_Out_Sel()
 {
-    int start_test;
+    int32 start_test;
+
     sed_display_start -= sed_display_length;
     start_test = sed_display_start;
-    if(start_test < 0) sed_display_start = 0;
+    if(start_test < 0)
+    {
+        sed_display_start = 0;
+    }
     sed_display_length *= 3;
 
     if(sed_display_length > (int32) Sample_Length[Current_Instrument][Current_Instrument_Split])
@@ -1424,8 +1587,6 @@ void Zoom_Out_Sel()
     {
         sed_display_start = Sample_Length[Current_Instrument][Current_Instrument_Split] - sed_display_length;
     }
-    sed_range_start = sed_display_start;
-    sed_range_end = sed_display_start + sed_display_length;
     draw_sampled_wave = TRUE;
     teac = 3;
     gui_action = GUI_CMD_REFRESH_SAMPLE_ED;
