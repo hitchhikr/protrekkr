@@ -1444,121 +1444,123 @@ int Screen_Update(void)
            gui_action == GUI_CMD_EXPORT_SEL_WAV ||
            gui_action == GUI_CMD_EXPORT_LOOP_WAV)
         {
-            if(!LoopType[Current_Instrument][Current_Instrument_Split] && GUI_CMD_EXPORT_LOOP_WAV)
+            char buffer[64];
+            char wav_filename[MAX_PATH];
+
+            switch(gui_action)
             {
-                Status_Box("This Sample Doesn't Have Any Loop Section To Export.");
+                case GUI_CMD_EXPORT_SEL_WAV:
+                    Status_Box("Writing Wav Header And Selected Sample Data Range...");
+                    break;
+
+                case GUI_CMD_EXPORT_WHOLE_WAV:
+                    Status_Box("Writing Wav Header And Whole Sample Data...");
+                    break;
+
+                case GUI_CMD_EXPORT_LOOP_WAV:
+                    Status_Box("Writing Wav Header And Sample Data Loop...");
+                    break;
+            }
+
+            WaveFile RF;
+
+            if(strlen(SampleName[Current_Instrument][Current_Instrument_Split]))
+            {
+                sprintf(wav_filename, "%s" SLASH "%s", Dir_Samples, SampleName[Current_Instrument][Current_Instrument_Split]);
             }
             else
             {
-                char buffer[64];
-                char wav_filename[MAX_PATH];
+                sprintf(wav_filename, "%s" SLASH "Untitled.wav", Dir_Samples);
+            }
 
-                switch(gui_action)
+            RF.OpenForWrite(wav_filename,
+                            44100,
+                            16,
+                            Sample_Channels[Current_Instrument][Current_Instrument_Split]);
+
+            char t_stereo;
+
+            if(Sample_Channels[Current_Instrument][Current_Instrument_Split] == 1) t_stereo = FALSE;
+            else t_stereo = TRUE;
+
+            Uint32 woff = 0;
+            Uint32 wend = 0;
+
+            short *eSamples = RawSamples[Current_Instrument][0][Current_Instrument_Split];
+            short *erSamples = RawSamples[Current_Instrument][1][Current_Instrument_Split];
+
+            switch(gui_action)
+            {
+                case GUI_CMD_EXPORT_SEL_WAV:
+                    woff = sed_real_range_start;
+                    wend = sed_real_range_end;
+                    eSamples += woff;
+                    erSamples += woff;
+                    break;
+
+                case GUI_CMD_EXPORT_WHOLE_WAV:
+                    woff = 0;
+                    wend = Sample_Length[Current_Instrument][Current_Instrument_Split];
+                    break;
+
+                case GUI_CMD_EXPORT_LOOP_WAV:
+                    woff = LoopStart[Current_Instrument][Current_Instrument_Split];
+                    wend = LoopEnd[Current_Instrument][Current_Instrument_Split];
+                    eSamples += woff;
+                    erSamples += woff;
+                    break;
+            }
+
+            while(woff < wend)
+            {
+                if(t_stereo) RF.WriteStereoSample(*eSamples++, *erSamples++);
+                else RF.WriteMonoSample(*eSamples++);
+                woff++;
+            }
+
+            // Write the looping info
+            if(gui_action != GUI_CMD_EXPORT_SEL_WAV)
+            {
+                if(LoopType[Current_Instrument][Current_Instrument_Split])
                 {
-                    case GUI_CMD_EXPORT_SEL_WAV:
-                        Status_Box("Writing Wav Header And Selected Sample Data Range...");
-                        break;
+                    RiffChunkHeader header;
+                    WaveSmpl_ChunkData datas;
 
-                    case GUI_CMD_EXPORT_WHOLE_WAV:
-                        Status_Box("Writing Wav Header And Whole Sample Data...");
-                        break;
+                    header.ckID = FourCC("smpl");
+                    header.ckSize = 0x3c;
 
-                    case GUI_CMD_EXPORT_LOOP_WAV:
-                        Status_Box("Writing Wav Header And Sample Data Loop...");
-                        break;
-                }
-
-                WaveFile RF;
-
-                if(strlen(SampleName[Current_Instrument][Current_Instrument_Split]))
-                {
-                    sprintf(wav_filename, "%s" SLASH "%s", Dir_Samples, SampleName[Current_Instrument][Current_Instrument_Split]);
-                }
-                else
-                {
-                    sprintf(wav_filename, "%s" SLASH "Untitled.wav", Dir_Samples);
-                }
-
-                RF.OpenForWrite(wav_filename,
-                                44100,
-                                16,
-                                Sample_Channels[Current_Instrument][Current_Instrument_Split]);
-
-                char t_stereo;
-
-                if(Sample_Channels[Current_Instrument][Current_Instrument_Split] == 1) t_stereo = FALSE;
-                else t_stereo = TRUE;
-
-                Uint32 woff = 0;
-                Uint32 wend = 0;
-
-                short *eSamples = RawSamples[Current_Instrument][0][Current_Instrument_Split];
-                short *erSamples = RawSamples[Current_Instrument][1][Current_Instrument_Split];
-
-                switch(gui_action)
-                {
-                    case GUI_CMD_EXPORT_SEL_WAV:
-                        woff = sed_real_range_start;
-                        wend = sed_real_range_end;
-                        eSamples += woff;
-                        erSamples += woff;
-                        break;
-
-                    case GUI_CMD_EXPORT_WHOLE_WAV:
-                        woff = 0;
-                        wend = Sample_Length[Current_Instrument][Current_Instrument_Split];
-                        break;
-
-                    case GUI_CMD_EXPORT_LOOP_WAV:
-                        woff = LoopStart[Current_Instrument][Current_Instrument_Split];
-                        wend = LoopEnd[Current_Instrument][Current_Instrument_Split];
-                        eSamples += woff;
-                        erSamples += woff;
-                        break;
-                }
-
-                while(woff < wend)
-                {
-                    if(t_stereo) RF.WriteStereoSample(*eSamples++, *erSamples++);
-                    else RF.WriteMonoSample(*eSamples++);
-                    woff++;
-                }
-
-                // Write the looping info
-                if(gui_action != GUI_CMD_EXPORT_SEL_WAV)
-                {
-                    if(LoopType[Current_Instrument][Current_Instrument_Split])
+                    memset(&datas, 0, sizeof(datas));
+                    datas.Num_Sample_Loops = 1;
+                    if(gui_action == GUI_CMD_EXPORT_LOOP_WAV)
                     {
-                        RiffChunkHeader header;
-                        WaveSmpl_ChunkData datas;
-
-                        header.ckID = FourCC("smpl");
-                        header.ckSize = 0x3c;
-
-                        memset(&datas, 0, sizeof(datas));
-                        datas.Num_Sample_Loops = 1;
+                        // Whole sample is the loop
+                        datas.Start = 0;
+                        datas.End = wend;
+                    }
+                    else
+                    {
                         datas.Start = LoopStart[Current_Instrument][Current_Instrument_Split];
                         datas.End = LoopEnd[Current_Instrument][Current_Instrument_Split];
-
-                        header.ckSize = Swap_32(header.ckSize);
-
-                        datas.Num_Sample_Loops = Swap_32(datas.Num_Sample_Loops);
-                        datas.Start = Swap_32(datas.Start);
-                        datas.End = Swap_32(datas.End);
-
-                        RF.WriteData((void *) &header, sizeof(header));
-                        RF.WriteData((void *) &datas, sizeof(datas));
                     }
-                }
-                RF.Close();
-                if(strlen(SampleName[Current_Instrument][Current_Instrument_Split])) sprintf(buffer, "File '%s' Saved.", SampleName[Current_Instrument][Current_Instrument_Split]);
-                else sprintf(buffer, "File 'Untitled.wav' Saved.");
-                Status_Box(buffer);
 
-                Read_SMPT();
-                last_index = -1;
-                Actualize_Files_List(0);
+                    header.ckSize = Swap_32(header.ckSize);
+
+                    datas.Num_Sample_Loops = Swap_32(datas.Num_Sample_Loops);
+                    datas.Start = Swap_32(datas.Start);
+                    datas.End = Swap_32(datas.End);
+
+                    RF.WriteData((void *) &header, sizeof(header));
+                    RF.WriteData((void *) &datas, sizeof(datas));
+                }
             }
+            RF.Close();
+            if(strlen(SampleName[Current_Instrument][Current_Instrument_Split])) sprintf(buffer, "File '%s' Saved.", SampleName[Current_Instrument][Current_Instrument_Split]);
+            else sprintf(buffer, "File 'Untitled.wav' Saved.");
+            Status_Box(buffer);
+
+            Read_SMPT();
+            last_index = -1;
+            Actualize_Files_List(0);
         }
 
         if(gui_action == GUI_CMD_SAVE_INSTRUMENT)

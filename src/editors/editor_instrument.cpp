@@ -64,6 +64,8 @@ extern char Mp3_BitRate[MAX_INSTRS];
 extern int Type_Mp3_BitRate[];
 extern char At3_BitRate[MAX_INSTRS];
 extern int Type_At3_BitRate[];
+extern int32 sed_real_range_start;
+extern int32 sed_real_range_end;
 
 void Lock_Sample(int instr_nbr, int split);
 
@@ -703,44 +705,58 @@ void Mouse_Left_Instrument_Ed(void)
         // Export selected part of the sample to .wav
         if(zcheckMouse(268, (Cur_Height - 62), 106, 16) && SampleType[Current_Instrument][Current_Instrument_Split])
         {
-            char Name[MAX_PATH];
-            if(strlen(SampleName[Current_Instrument][Current_Instrument_Split]))
+            if(!(sed_real_range_end - sed_real_range_start))
             {
-                sprintf(Name, "%s", SampleName[Current_Instrument][Current_Instrument_Split]);
+                Status_Box("This Sample Doesn't Have Any Selected Section To Export.");
             }
             else
             {
-                sprintf(Name, "Untitled.wav");
-            }
-            if(File_Exist_Req("%s" SLASH "%s", Dir_Samples, Name))
-            {
-                Display_Requester(&Overwrite_Requester, GUI_CMD_EXPORT_SEL_WAV, NULL, TRUE);
-            }
-            else
-            {
-                gui_action = GUI_CMD_EXPORT_SEL_WAV;
+                char Name[MAX_PATH];
+                if(strlen(SampleName[Current_Instrument][Current_Instrument_Split]))
+                {
+                    sprintf(Name, "%s", SampleName[Current_Instrument][Current_Instrument_Split]);
+                }
+                else
+                {
+                    sprintf(Name, "Untitled.wav");
+                }
+                if(File_Exist_Req("%s" SLASH "%s", Dir_Samples, Name))
+                {
+                    Display_Requester(&Overwrite_Requester, GUI_CMD_EXPORT_SEL_WAV, NULL, TRUE);
+                }
+                else
+                {
+                    gui_action = GUI_CMD_EXPORT_SEL_WAV;
+                }
             }
         }
 
         // Export loop part of the sample to .wav
         if(zcheckMouse(268, (Cur_Height - 44), 106, 16) && SampleType[Current_Instrument][Current_Instrument_Split])
         {
-            char Name[MAX_PATH];
-            if(strlen(SampleName[Current_Instrument][Current_Instrument_Split]))
+            if(!LoopType[Current_Instrument][Current_Instrument_Split])
             {
-                sprintf(Name, "%s", SampleName[Current_Instrument][Current_Instrument_Split]);
+                Status_Box("This Sample Doesn't Have Any Loop Section To Export.");
             }
             else
             {
-                sprintf(Name, "Untitled.wav");
-            }
-            if(File_Exist_Req("%s" SLASH "%s", Dir_Samples, Name))
-            {
-                Display_Requester(&Overwrite_Requester, GUI_CMD_EXPORT_LOOP_WAV, NULL, TRUE);
-            }
-            else
-            {
-                gui_action = GUI_CMD_EXPORT_LOOP_WAV;
+                char Name[MAX_PATH];
+                if(strlen(SampleName[Current_Instrument][Current_Instrument_Split]))
+                {
+                    sprintf(Name, "%s", SampleName[Current_Instrument][Current_Instrument_Split]);
+                }
+                else
+                {
+                    sprintf(Name, "Untitled.wav");
+                }
+                if(File_Exist_Req("%s" SLASH "%s", Dir_Samples, Name))
+                {
+                    Display_Requester(&Overwrite_Requester, GUI_CMD_EXPORT_LOOP_WAV, NULL, TRUE);
+                }
+                else
+                {
+                    gui_action = GUI_CMD_EXPORT_LOOP_WAV;
+                }
             }
         }
 

@@ -2,7 +2,7 @@
 ProTrekkr releases history
 ===============================================================================
 
-v2.7.0
+v2.7.1
 
 - Copy buffers icons weren't updated properly when selected with keyboard.
 - Added OpenGL support (especially for slower systems).
@@ -13,6 +13,7 @@ v2.7.0
 - Sample selection isn't maximized when zooming out anymore.
 - Added a sample drawing mode.
 - Fixed HAIKU OS config file handling (SamuraiCrow).
+- Fixed a bug in sample export functions.
 
 v2.6.7
 
