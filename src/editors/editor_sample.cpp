@@ -1291,7 +1291,8 @@ void Mouse_Sliders_Sample_Ed(void)
     double test;
     int Allow = TRUE;
     int32 sed_draw_pos;
-    short *smp_data;
+    short *smp_dataL;
+    short *smp_dataR;
     int mouse_y_pos;
     float smp_y_pos;
 
@@ -1321,25 +1322,75 @@ void Mouse_Sliders_Sample_Ed(void)
                     test = (double) (((int64) Mouse_Pos * (int64) sed_display_length)) / LARGE_SMP_VIEW;
                     sed_draw_pos = sed_display_start + (int32) test;
                     teac = 0;
-                    smp_data = (RawSamples[Current_Instrument][0][Current_Instrument_Split] + sed_draw_pos);
+                    smp_dataL = (RawSamples[Current_Instrument][0][Current_Instrument_Split] + sed_draw_pos);
+                    smp_dataR = (RawSamples[Current_Instrument][1][Current_Instrument_Split] + sed_draw_pos);
                     mouse_y_pos = Mouse.y - (Cur_Height - 150);
-                    smp_y_pos = (float) mouse_y_pos;
-                    // [0.0..1.0]
-                    smp_y_pos = smp_y_pos / 110.0f;
-                    // [-0.5..0.5]
-                    smp_y_pos = smp_y_pos - 0.5f;
-                    // [-1.0..1.0]
-                    smp_y_pos = smp_y_pos * 2.0f;
-                    smp_y_pos = -(smp_y_pos * 32767.0f);
-                    if(smp_y_pos < -32767.0f)
+
+                    switch(Sample_Channels[Current_Instrument][Current_Instrument_Split])
                     {
-                        smp_y_pos = -32767.0f;
+                        case 1:
+                            smp_y_pos = (float) mouse_y_pos;
+                            // [0.0..1.0]
+                            smp_y_pos = smp_y_pos / 110.0f;
+                            // [-0.5..0.5]
+                            smp_y_pos = smp_y_pos - 0.5f;
+                            // [-1.0..1.0]
+                            smp_y_pos = smp_y_pos * 2.0f;
+                            smp_y_pos = -(smp_y_pos * 32767.0f);
+                            if(smp_y_pos < -32767.0f)
+                            {
+                                smp_y_pos = -32767.0f;
+                            }
+                            if(smp_y_pos > 32767.0f)
+                            {
+                                smp_y_pos = 32767.0f;
+                            }
+                            *smp_dataL = (short) smp_y_pos;
+                            break;
+
+                        case 2:
+                            if(mouse_y_pos < 55)
+                            {
+                                smp_y_pos = (float) mouse_y_pos;
+                                // [0.0..1.0]
+                                smp_y_pos = smp_y_pos / 55.0f;
+                                // [-0.5..0.5]
+                                smp_y_pos = smp_y_pos - 0.5f;
+                                // [-1.0..1.0]
+                                smp_y_pos = smp_y_pos * 2.0f;
+                                smp_y_pos = -(smp_y_pos * 32767.0f);
+                                if(smp_y_pos < -32767.0f)
+                                {
+                                    smp_y_pos = -32767.0f;
+                                }
+                                if(smp_y_pos > 32767.0f)
+                                {
+                                    smp_y_pos = 32767.0f;
+                                }
+                                *smp_dataL = (short) smp_y_pos;
+                            }
+                            else
+                            {
+                                smp_y_pos = (float) mouse_y_pos - 55;
+                                // [0.0..1.0]
+                                smp_y_pos = smp_y_pos / 55.0f;
+                                // [-0.5..0.5]
+                                smp_y_pos = smp_y_pos - 0.5f;
+                                // [-1.0..1.0]
+                                smp_y_pos = smp_y_pos * 2.0f;
+                                smp_y_pos = -(smp_y_pos * 32767.0f);
+                                if(smp_y_pos < -32767.0f)
+                                {
+                                    smp_y_pos = -32767.0f;
+                                }
+                                if(smp_y_pos > 32767.0f)
+                                {
+                                    smp_y_pos = 32767.0f;
+                                }
+                                *smp_dataR = (short) smp_y_pos;
+                            }
+                            break;
                     }
-                    if(smp_y_pos > 32767.0f)
-                    {
-                        smp_y_pos = 32767.0f;
-                    }
-                    *smp_data = (short) smp_y_pos;
                 }
                 else
                 {
