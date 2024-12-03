@@ -5,7 +5,7 @@ LIBS_ARM64 = -lsdldraw_arm64 -lz -framework CoreAudio -framework CoreMidi -frame
 DEBUG = 
 
 FLAGS_ARM64 = $(DEBUG) -O3 -arch arm64 -ffast-math -fomit-frame-pointer -fno-rtti -I/usr/local/include \
-            -fno-strict-aliasing -w -D __MACOSX_X86__ -D __GCC__ -D __MACOSX_CORE__ -D __MOT_SWAP__ -D __AIFF__ -D __USE_OPENGL__
+            -fno-strict-aliasing -w -D __MACOSX_X86__ -D __GCC__ -D __MACOSX_CORE__ -D __MOT_SWAP__ -D __AIFF__
 
 EXEOBJS_ARM64 = ptk_arm64.o \
               editor_303_arm64.o editor_pattern_arm64.o editor_sequencer_arm64.o editor_track_arm64.o editor_track_fx_arm64.o \
