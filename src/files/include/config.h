@@ -53,6 +53,7 @@
 #else
 #define SET_FILENAME sprintf(FileName, "%s" SLASH "ptk.cfg", ExePath)
 #endif
+
 // ------------------------------------------------------
 // Functions
 void Load_Config(void);

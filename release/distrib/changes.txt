@@ -12,6 +12,7 @@ v2.7.0
 - Added a function to only save the loop part of a sample as a .wav.
 - Sample selection isn't maximized when zooming out anymore.
 - Added a sample drawing mode.
+- Fixed HAIKU OS config file handling (SamuraiCrow).
 
 v2.6.7
 
