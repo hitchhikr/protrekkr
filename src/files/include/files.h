@@ -41,6 +41,7 @@
 #include <stdint.h>
 #include <string.h>
 #define int32 int32_t
+#define int64 int64_t
 #endif
 
 // ------------------------------------------------------
