@@ -314,7 +314,7 @@ void Draw_Pattern(int track, int line, int petrack, int row)
 
     // Clear headers line
     SetColor(COL_PATTERN_LO_BACK);
-    bjbox(1, y, CONSOLE_WIDTH - 20, 15 + chars_height);
+    bjbox(1, y, CONSOLE_WIDTH - 20, 16 + chars_height);
 
     dover = PAT_COL_NOTE;
 

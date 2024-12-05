@@ -51,7 +51,7 @@
 SystemSoundActionID WavActionID;
 #endif
 
-extern SDL_sem *thread_sem;
+extern SDL_sem *thread_sema;
 
 extern char SplashScreen;
 
@@ -7349,16 +7349,16 @@ void Note_Jazz_Off(int note)
 
 void Lock_Audio_Thread(void)
 {
-    if(thread_sem)
+    if(thread_sema)
     {
-        SDL_SemWait(thread_sem);
+        SDL_SemWait(thread_sema);
     }
 }
 
 void Unlock_Audio_Thread(void)
 {
-    if(thread_sem)
+    if(thread_sema)
     {
-        SDL_SemPost(thread_sem);
+        SDL_SemPost(thread_sema);
     }
 }

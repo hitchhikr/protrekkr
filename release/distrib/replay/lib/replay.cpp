@@ -52,7 +52,7 @@
 // ------------------------------------------------------
 // Variables
 #if !defined(__STAND_ALONE__) && !defined(__WINAMP__)
-    extern SDL_sem *thread_sem;
+    extern SDL_sem *thread_sema;
 #endif
 
 int SamplesPerTick;
@@ -966,9 +966,9 @@ void STDCALL Mixer(Uint8 *Buffer, Uint32 Len)
 #endif
 
 #if !defined(__STAND_ALONE__) && !defined(__WINAMP__)
-    if(thread_sem)
+    if(thread_sema)
     {
-        SDL_SemWait(thread_sem);
+        SDL_SemWait(thread_sema);
     }
 #endif
 
@@ -1067,9 +1067,9 @@ void STDCALL Mixer(Uint8 *Buffer, Uint32 Len)
 #endif
 
 #if !defined(__STAND_ALONE__) && !defined(__WINAMP__)
-    if(thread_sem)
+    if(thread_sema)
     {
-        SDL_SemPost(thread_sem);
+        SDL_SemPost(thread_sema);
     }
 #endif
 

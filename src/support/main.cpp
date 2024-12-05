@@ -105,7 +105,7 @@ int Resize_Width;
 int Resize_Height;
 int Burn_Title = FALSE;
 
-SDL_sem *thread_sem;
+SDL_sem *thread_sema;
 SDL_Surface *Main_Screen;
 
 #if defined(__WIN32__)
@@ -653,7 +653,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
 
     SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
     SDL_EnableUNICODE(TRUE);
-    thread_sem = SDL_CreateSemaphore(1);
+    thread_sema = SDL_CreateSemaphore(1);
 
 #if !defined(__NO_MIDI__)
     // Load midi devices infos
@@ -1033,9 +1033,9 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
     {
         free(ExePath);
     }
-    if(thread_sem)
+    if(thread_sema)
     {
-        SDL_DestroySemaphore(thread_sem);
+        SDL_DestroySemaphore(thread_sema);
     }
     exit(0);
 }

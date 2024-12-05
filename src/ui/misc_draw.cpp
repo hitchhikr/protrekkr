@@ -2515,7 +2515,7 @@ void Set_Font_Double(void)
     chars_height = 16;
     pattern_double = TRUE;
     header_y = 64 * 2;
-    header_size = (64 * 2) + 13;
+    header_size = (64 * 2) + 6 + 1;
 }
 
 void blitnote(int x, int y, int note, int y1, int y2)
@@ -2826,7 +2826,7 @@ void Set_Channel_State_Pic(int x, int color, int inv_color)
     Pix = (unsigned char *) Temp_PFONT_DOUBLE->pixels;
 
     Pix += ((16 * 16) * Temp_PFONT_DOUBLE->pitch) + x;
-    for(j = 0; j < 14; j++)
+    for(j = 0; j < 15; j++)
     {
         for(i = 0; i < 27; i++)
         {
@@ -2873,7 +2873,6 @@ void Create_Pattern_font(SDL_Surface *Source, SDL_Surface *Dest, int offset,
     Copy_To_Surface(Source, Dest, 0, 0, 0, offset, 320, offset + Height);
 
     // Set the base colors
-
     if(SDL_MUSTLOCK(Dest))
     {
         if(!SDL_LockSurface(Dest)) was_locked = TRUE;
@@ -3333,8 +3332,6 @@ void Set_Pictures_And_Palettes(int LogoPalette)
     {
         Set_Pattern_Size();
     }
-
-
 }
 
 #if defined(__USE_OPENGL__)
