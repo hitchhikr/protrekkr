@@ -73,7 +73,7 @@ void Load_Pattern_Data(int (*Read_Function)(void *, int ,int, FILE *),
         free(Pack_Mem);
     }
     Curr_Buff_Block = Old_Curr_Buff_Block;
-    Actupated(0);
+    Update_Pattern(0);
 }
 
 // ------------------------------------------------------
@@ -107,7 +107,7 @@ void Save_Pattern_Data(int (*Write_Function)(void *, int ,int, FILE *),
         free(Final_Mem_Out);
     }
     Curr_Buff_Block = Old_Curr_Buff_Block;
-    Actupated(0);
+    Update_Pattern(0);
 }
 
 // ------------------------------------------------------
@@ -140,7 +140,7 @@ void Load_Pattern(char *FileName)
 
             Read_Data(Selection_Name, sizeof(char), 20, in);
             Load_Pattern_Data(Read_Data, Read_Data_Swap, in, version);
-            Actupated(0);
+            Update_Pattern(0);
 
             Status_Box("Pattern Data Loaded Successfully.");
         }

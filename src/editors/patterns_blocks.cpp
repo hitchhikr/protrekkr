@@ -207,7 +207,7 @@ void Mark_Block_Start(int start_nibble, int start_track, int start_line)
     block_start[Curr_Buff_Block] = swap_block_start[Curr_Buff_Block];
     block_end[Curr_Buff_Block] = swap_block_end[Curr_Buff_Block];
     block_in_selection[Curr_Buff_Block] = TRUE;
-    Actupated(0);
+    Update_Pattern(0);
 }
 
 // ------------------------------------------------------
@@ -249,7 +249,7 @@ void Mark_Block_End(int end_nibble, int start_track, int start_line, int Modif)
             block_start[Curr_Buff_Block] = swap_block_start[Curr_Buff_Block];
         }
     }
-    Actupated(0);
+    Update_Pattern(0);
 }
 
 // ------------------------------------------------------
@@ -677,7 +677,7 @@ void Insert_Selection(int Cur_Track, int Position)
                 }
             }
         }
-        Actupated(0);
+        Update_Pattern(0);
     }
     else
     {
@@ -772,7 +772,7 @@ void Remove_Selection(int Cur_Track, int Position)
                     }
                 }
             }
-            Actupated(0);
+            Update_Pattern(0);
         }
     }
     else
@@ -996,7 +996,7 @@ void Cut_Selection(int Position)
     if(is_editing) Delete_Selection(Position);
     Calc_selection();
     Unselect_Selection();
-    Actupated(0);
+    Update_Pattern(0);
     Draw_Blocks_Buffers_Status();
 }
 
@@ -1006,7 +1006,7 @@ void Copy_Selection(int Position)
 {
     Copy_Selection_To_Buffer(Position);
     Calc_selection();
-    Actupated(0);
+    Update_Pattern(0);
     Draw_Blocks_Buffers_Status();
 }
 
@@ -1015,7 +1015,10 @@ void Copy_Selection(int Position)
 void Paste_Block(int Position, int Go_Across, int Refresh)
 {
     Paste_Selection_From_Buffer(Position, Go_Across);
-    if(Refresh) Actupated(0);
+    if(Refresh)
+    {
+        Update_Pattern(0);
+    }
 }
 
 // ------------------------------------------------------
@@ -1242,9 +1245,8 @@ void Interpolate_Block(int Position)
                 }
             }
         }
-
     }
-    Actupated(0);
+    Update_Pattern(0);
 }
 
 // ------------------------------------------------------
@@ -1328,7 +1330,7 @@ void Randomize_Block(int Position, int step)
                 }
             }
         }
-        Actupated(0);
+        Update_Pattern(0);
     }
 }
 
@@ -1396,7 +1398,7 @@ void Fill_Block(int Position, int step)
             }
         }
     }
-    Actupated(0);
+    Update_Pattern(0);
 }
 
 // ------------------------------------------------------
@@ -1428,7 +1430,7 @@ void Semitone_Up_Block(int Position)
             }
         }
     }
-    Actupated(0);
+    Update_Pattern(0);
 }
 
 // ------------------------------------------------------
@@ -1460,7 +1462,7 @@ void Semitone_Down_Block(int Position)
             }
         }
     }
-    Actupated(0);
+    Update_Pattern(0);
 }
 
 // ------------------------------------------------------
@@ -1492,7 +1494,7 @@ void Octave_Up_Block(int Position)
             }
         }
     }
-    Actupated(0);
+    Update_Pattern(0);
 }
 
 // ------------------------------------------------------
@@ -1524,7 +1526,7 @@ void Octave_Down_Block(int Position)
             }
         }
     }
-    Actupated(0);
+    Update_Pattern(0);
 }
 
 // ------------------------------------------------------
@@ -1532,7 +1534,7 @@ void Octave_Down_Block(int Position)
 void Instrument_Semitone_Up_Block(int Position)
 {
     Instrument_Semitone_Up_Sel(Position, Get_Real_Selection(TRUE), 1, Current_Instrument);
-    Actupated(0);
+    Update_Pattern(0);
 }
 
 // ------------------------------------------------------
@@ -1576,7 +1578,7 @@ void Instrument_Semitone_Up_Sel(int Position, SELECTION Sel, int Amount, int Ins
 void Instrument_Semitone_Down_Block(int Position)
 {
     Instrument_Semitone_Down_Sel(Position, Get_Real_Selection(TRUE), 1, Current_Instrument);
-    Actupated(0);
+    Update_Pattern(0);
 }
 
 // ------------------------------------------------------
@@ -1650,7 +1652,7 @@ void Instrument_Octave_Up_Block(int Position)
             }
         }
     }
-    Actupated(0);
+    Update_Pattern(0);
 }
 
 // ------------------------------------------------------
@@ -1688,7 +1690,7 @@ void Instrument_Octave_Down_Block(int Position)
             }
         }
     }
-    Actupated(0);
+    Update_Pattern(0);
 }
 
 // ------------------------------------------------------
@@ -1831,7 +1833,7 @@ void Instrument_Remap_Sel(int Position, SELECTION Sel, int From, int To, int Swa
             }
         }
     }
-    Actupated(0);
+    Update_Pattern(0);
 }
 
 // ------------------------------------------------------
@@ -2012,7 +2014,7 @@ void Insert_Track_Line(int track, int Position)
     xoffseted = Get_Pattern_Offset(pSequence[Position], track, Pattern_Line);
  
     Clear_Track_Data(xoffseted);
-    Actupated(0);
+    Update_Pattern(0);
 }
 
 // ------------------------------------------------------
@@ -2060,7 +2062,7 @@ void Remove_Track_Line(int track, int Position)
 
     Clear_Track_Data(xoffseted);
 
-    Actupated(0);
+    Update_Pattern(0);
 }
 #endif // __WINAMP__
 
@@ -2399,15 +2401,15 @@ void Reset_Track(int Position, int Track)
     FLANGER_OFFSET2[Track] = float(FLANGER_OFFSET[Track] - FLANGER_DELAY[Track]);
     FLANGER_OFFSET1[Track] = float(FLANGER_OFFSET[Track] - FLANGER_DELAY[Track]);
 
-    init_eq(&EqDat[Track]);
+    Init_Equ(&EqDat[Track]);
 
     Chan_Mute_State[Track] = FALSE;
     for(i = 0; i < Song_Length; i++)
     {
         Chan_Active_State[i][Track] = TRUE;
     }
-    ComputeStereo(Track);
-    FixStereo(Track);
+    Compute_Stereo(Track);
+    Fix_Stereo(Track);
 
     Set_Track_Zoom(Track, (TRACK_TYPE) Global_Patterns_Font);
 }
@@ -2500,8 +2502,8 @@ void Copy_Track(int Position, int Track_Src, int Track_Dst)
     {
         Chan_Active_State[i][Track_Dst] = Chan_Active_State[i][Track_Src];
     }
-    ComputeStereo(Track_Dst);
-    FixStereo(Track_Dst);
+    Compute_Stereo(Track_Dst);
+    Fix_Stereo(Track_Dst);
 
     /* Make sure the track still look the same */
     Set_Track_Zoom(Track_Dst, Get_Track_Zoom(Track_Src));

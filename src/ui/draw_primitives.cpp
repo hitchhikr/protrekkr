@@ -44,10 +44,19 @@ extern SDL_Surface *Temp_SMALLPFONT;
 extern SDL_Surface *Temp_NOTEPFONT;
 extern SDL_Surface *Temp_NOTELARGEPFONT;
 extern SDL_Surface *Temp_NOTESMALLPFONT;
+// ---
+extern SDL_Surface *Temp_PFONT_DOUBLE;
+extern SDL_Surface *Temp_LARGEPFONT_DOUBLE;
+extern SDL_Surface *Temp_SMALLPFONT_DOUBLE;
+extern SDL_Surface *Temp_NOTEPFONT_DOUBLE;
+extern SDL_Surface *Temp_NOTELARGEPFONT_DOUBLE;
+extern SDL_Surface *Temp_NOTESMALLPFONT_DOUBLE;
+// ---
 extern char *Font_Ascii;
 extern int Nbr_Letters;
 extern int Font_Pos[256];
 extern int Font_Size[256];
+extern int pattern_double;
 int FgColor;
 #if defined(__USE_OPENGL__)
 unsigned int *RGBTexture;
@@ -344,6 +353,8 @@ void UISetPalette(SDL_Color *Palette, int Amount)
     {
         SDL_SetPalette(FONT, SDL_LOGPAL, Palette, 0, Amount);
     }
+
+    // ---
     if(Temp_PFONT)
     {
         SDL_SetPalette(Temp_PFONT, SDL_LOGPAL, Palette, 0, Amount);
@@ -368,6 +379,33 @@ void UISetPalette(SDL_Color *Palette, int Amount)
     {
         SDL_SetPalette(Temp_NOTESMALLPFONT, SDL_LOGPAL, Palette, 0, Amount);
     }
+
+    // ---
+    if(Temp_PFONT_DOUBLE)
+    {
+        SDL_SetPalette(Temp_PFONT_DOUBLE, SDL_LOGPAL, Palette, 0, Amount);
+    }
+    if(Temp_LARGEPFONT_DOUBLE)
+    {
+        SDL_SetPalette(Temp_LARGEPFONT_DOUBLE, SDL_LOGPAL, Palette, 0, Amount);
+    }
+    if(Temp_SMALLPFONT_DOUBLE)
+    {
+        SDL_SetPalette(Temp_SMALLPFONT_DOUBLE, SDL_LOGPAL, Palette, 0, Amount);
+    }
+    if(Temp_NOTEPFONT_DOUBLE)
+    {
+        SDL_SetPalette(Temp_NOTEPFONT_DOUBLE, SDL_LOGPAL, Palette, 0, Amount);
+    }
+    if(Temp_NOTELARGEPFONT_DOUBLE)
+    {
+        SDL_SetPalette(Temp_NOTELARGEPFONT_DOUBLE, SDL_LOGPAL, Palette, 0, Amount);
+    }
+    if(Temp_NOTESMALLPFONT_DOUBLE)
+    {
+        SDL_SetPalette(Temp_NOTESMALLPFONT_DOUBLE, SDL_LOGPAL, Palette, 0, Amount);
+    }
+    // ---
 
 #if !defined(__USE_OPENGL__)
     SDL_SetPalette(Main_Screen, SDL_PHYSPAL, Palette, 0, Amount);
@@ -436,6 +474,12 @@ void Copy_No_Refresh(SDL_Surface *Source,
     SDL_Rect Src_Rect;
     SDL_Rect Dst_Rect;
 
+    if(pattern_double)
+    {
+        y1 <<= 1;
+        y2 <<= 1;
+    }
+
     Dst_Rect.x = x;
     Dst_Rect.y = y;
     Dst_Rect.w = (x2 - x1) + 1;
@@ -460,23 +504,23 @@ void Copy_No_Refresh(SDL_Surface *Source,
 // ------------------------------------------------------
 // Copy a rectangle onto a given surface
 void Copy_To_Surface(SDL_Surface *Source, SDL_Surface *dest,
-                     int x, int y, int x1, int y1, int x2, int y2)
+                     int dest_x, int dest_y, int src_start_x, int src_start_y, int src_end_x, int src_end_y)
 {
     SDL_Rect Src_Rect;
     SDL_Rect Dst_Rect;
 
-    Src_Rect.x = x1;
-    Src_Rect.y = y1;
-    Src_Rect.w = (x2 - x1);
-    Src_Rect.h = (y2 - y1);
+    Src_Rect.x = src_start_x;
+    Src_Rect.y = src_start_y;
+    Src_Rect.w = (src_end_x - src_start_x);
+    Src_Rect.h = (src_end_y - src_start_y);
 
-    Dst_Rect.x = x;
-    Dst_Rect.y = y;
-    Dst_Rect.w = (x2 - x1);
-    Dst_Rect.h = (y2 - y1);
+    Dst_Rect.x = dest_x;
+    Dst_Rect.y = dest_y;
+    Dst_Rect.w = (src_end_x - src_start_x);
+    Dst_Rect.h = (src_end_y - src_start_y);
 
     SDL_BlitSurface(Source, &Src_Rect, dest, &Dst_Rect);
-    Push_Update_Rect(x, y, x2 - x1, y2 - y1);
+    Push_Update_Rect(dest_x, dest_y, src_end_x - src_start_x, src_end_y - src_start_y);
 }
 
 // ------------------------------------------------------

@@ -57,7 +57,7 @@ void Actualize_Seq_Ed(char gode);
 void Mouse_Left_Sequencer_Ed(void);
 void Mouse_Right_Sequencer_Ed(void);
 void Actualize_Sequencer(void);
-void Anat(int posil);
+void Seq_Bound_Pattern(int posil);
 void Toggle_Track_On_Off_Status(int posindex, int seqindex);
 void Solo_Track_On_Off(int posindex, int seqindex);
 

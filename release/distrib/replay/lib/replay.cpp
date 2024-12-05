@@ -51,6 +51,10 @@
 
 // ------------------------------------------------------
 // Variables
+#if !defined(__STAND_ALONE__) && !defined(__WINAMP__)
+    extern SDL_sem *thread_sem;
+#endif
+
 int SamplesPerTick;
 
 #if !defined(__STAND_ALONE__) || defined(__WINAMP__)
@@ -150,11 +154,11 @@ int old_note[MAX_TRACKS][MAX_POLYPHONY];
 s_access sp_Position[MAX_TRACKS][MAX_POLYPHONY];
 
 #if defined(PTK_SYNTH)
-s_access sp_Position_osc1[MAX_TRACKS][MAX_POLYPHONY];
-s_access sp_Position_osc2[MAX_TRACKS][MAX_POLYPHONY];
+s_access sp_Position_osc_1[MAX_TRACKS][MAX_POLYPHONY];
+s_access sp_Position_osc_2[MAX_TRACKS][MAX_POLYPHONY];
 
-#if defined(PTK_SYNTH_OSC3)
-    s_access sp_Position_osc3[MAX_TRACKS][MAX_POLYPHONY];
+#if defined(PTK_SYNTH_OSC_3)
+    s_access sp_Position_osc_3[MAX_TRACKS][MAX_POLYPHONY];
 #endif
 #endif
 
@@ -726,7 +730,7 @@ unsigned char Synthprg[128];
 
 #if defined(PTK_SYNTH)
 #if !defined(__STAND_ALONE__) || defined(__WINAMP__)
-SynthParameters PARASynth[128];
+Synth_Parameters PARASynth[128];
 #else
 SYNTH_DATA PARASynth[128];
 #endif
@@ -897,7 +901,7 @@ void Clear_Midi_Channels_Pool(void);
 
 // ------------------------------------------------------
 // Functions
-float ApplyLfo(float cy, int trcy);
+float Apply_Lfo(float cy, int trcy);
 void ComputeCoefs(int freq, int r, int t);
 void Record_Delay_Event();
 
@@ -959,6 +963,13 @@ void STDCALL Mixer(Uint8 *Buffer, Uint32 Len)
 #if !defined(__STAND_ALONE__)
     float clamp_left_value;
     float clamp_right_value;
+#endif
+
+#if !defined(__STAND_ALONE__) && !defined(__WINAMP__)
+    if(thread_sem)
+    {
+        SDL_SemWait(thread_sem);
+    }
 #endif
 
 #if !defined(__STAND_ALONE__)
@@ -1054,6 +1065,14 @@ void STDCALL Mixer(Uint8 *Buffer, Uint32 Len)
 #if !defined(__STAND_ALONE__)
     } //RawRender
 #endif
+
+#if !defined(__STAND_ALONE__) && !defined(__WINAMP__)
+    if(thread_sem)
+    {
+        SDL_SemPost(thread_sem);
+    }
+#endif
+
 }
 
 // ------------------------------------------------------
@@ -1274,38 +1293,38 @@ short *Unpack_Sample(int Dest_Length, char Pack_Type, int BitRate)
 #if defined(__PSP__)
 #if defined(PTK_AT3)
             case SMP_PACK_AT3:
-                UnpackAT3(Packed_Read_Buffer, Dest_Buffer, Packed_Length, Dest_Length, BitRate);
+                Unpack_AT3(Packed_Read_Buffer, Dest_Buffer, Packed_Length, Dest_Length, BitRate);
                 break;
 #endif
 #endif
 
 #if defined(PTK_GSM)
             case SMP_PACK_GSM:
-                UnpackGSM(Packed_Read_Buffer, Dest_Buffer, Packed_Length, Dest_Length);
+                Unpack_GSM(Packed_Read_Buffer, Dest_Buffer, Packed_Length, Dest_Length);
                 break;
 #endif
 
 #if defined(PTK_MP3)
             case SMP_PACK_MP3:
-                UnpackMP3(Packed_Read_Buffer, Dest_Buffer, Packed_Length, Dest_Length, BitRate);
+                Unpack_MP3(Packed_Read_Buffer, Dest_Buffer, Packed_Length, Dest_Length, BitRate);
                 break;
 #endif
 
 #if defined(PTK_ADPCM)
             case SMP_PACK_ADPCM:
-                UnpackADPCM(Packed_Read_Buffer, Dest_Buffer, Packed_Length, Dest_Length);
+                Unpack_ADPCM(Packed_Read_Buffer, Dest_Buffer, Packed_Length, Dest_Length);
                 break;
 #endif
 
 #if defined(PTK_8BIT)
             case SMP_PACK_8BIT:
-                Unpack8Bit(Packed_Read_Buffer, Dest_Buffer, Packed_Length, Dest_Length);
+                Unpack_8Bit(Packed_Read_Buffer, Dest_Buffer, Packed_Length, Dest_Length);
                 break;
 #endif
 
 #if defined(PTK_WAVPACK)
             case SMP_PACK_WAVPACK:
-                UnpackWavPack(Packed_Read_Buffer, Dest_Buffer, Packed_Length, Dest_Length);
+                Unpack_WavPack(Packed_Read_Buffer, Dest_Buffer, Packed_Length, Dest_Length);
                 break;
 #endif
 
@@ -1644,8 +1663,8 @@ int PTKEXPORT Ptk_InitModule(Uint8 *Module, int start_position)
             Mod_Dat_Read(&TCut[twrite], sizeof(float));
             Mod_Dat_Read(&ICut[twrite], sizeof(float));
             Mod_Dat_Read(&TPan[twrite], sizeof(float));
-            ComputeStereo(twrite);
-            FixStereo(twrite);
+            Compute_Stereo(twrite);
+            Fix_Stereo(twrite);
 
             Mod_Dat_Read(&FType[twrite], sizeof(int));
             Mod_Dat_Read(&FRez[twrite], sizeof(int));
@@ -1894,7 +1913,7 @@ void Reset_Values(void)
 
         for(i = 0; i < MAX_TRACKS; i++)
         {
-            ResetFilters(i);
+            Reset_Filters(i);
 
 #if defined(PTK_TRACKFILTERS)
             CCut[i] = 0.0f;
@@ -2045,18 +2064,20 @@ extern int AUDIO_Play_Flag;
 
 void PTKEXPORT Ptk_Stop(void)
 {
+
 #if defined(__PSP__)
     // Thanks to MIPS, that machine really sucks
     volatile int *ptr_Done_Reset = (int *) (((int) &Done_Reset));
     *ptr_Done_Reset = FALSE;
     volatile float *ptr_local_ramp_vol = (float *) (((int) &local_ramp_vol));
     volatile float *ptr_local_curr_ramp_vol = (float *) (((int) &local_curr_ramp_vol));
-    sceKernelDcacheWritebackInvalidateAll();	
+    sceKernelDcacheWritebackInvalidateAll();
     while(*ptr_Done_Reset == FALSE && AUDIO_Play_Flag && *ptr_local_curr_ramp_vol != 0.0f)
     {
         *ptr_local_ramp_vol = 0.0f;
     }
 #else
+
     Done_Reset = FALSE;
     while(Done_Reset == FALSE && AUDIO_Play_Flag && local_curr_ramp_vol != 0.0f)
     {
@@ -2124,14 +2145,14 @@ void Pre_Song_Init(void)
         Track_Surround[ini] = FALSE;
 
 #if defined(PTK_TRACK_EQ)
-        init_eq(&EqDat[ini]);
+        Init_Equ(&EqDat[ini]);
 #endif
 
         Channels_Polyphony[ini] = 1;
         Channels_MultiNotes[ini] = 1;
         Channels_Effects[ini] = 1;
 
-        ResetFilters(ini);
+        Reset_Filters(ini);
 
 #if !defined(__STAND_ALONE__)
         Chan_Midi_Prg[ini] = ini;
@@ -2291,11 +2312,11 @@ void Post_Song_Init(void)
             sp_Position[i][j].absolu = 0;
 
 #if defined(PTK_SYNTH)
-            sp_Position_osc1[i][j].absolu = 0;
-            sp_Position_osc2[i][j].absolu = 0;
+            sp_Position_osc_1[i][j].absolu = 0;
+            sp_Position_osc_2[i][j].absolu = 0;
 
-#if defined(PTK_SYNTH_OSC3)
-            sp_Position_osc3[i][j].absolu = 0;
+#if defined(PTK_SYNTH_OSC_3)
+            sp_Position_osc_3[i][j].absolu = 0;
 #endif
 #endif
 
@@ -2465,8 +2486,8 @@ void Post_Song_Init(void)
     for(int spl = 0; spl < MAX_TRACKS; spl++)
     {
         CCoef[spl] = float((float) CSend[spl] / 127.0f);
-        ComputeStereo(spl);
-        FixStereo(spl);
+        Compute_Stereo(spl);
+        Fix_Stereo(spl);
     }
 
     Song_Playing_Pattern = 0;
@@ -2651,7 +2672,7 @@ void Sp_Player(void)
                 // see if a 303 is running on that track
                 if(trigger_note_off && (!fired_303_1 || !fired_303_2))
                 {
-                    noteoff303(ct);
+                    Note_Off_303(ct);
                 }
 #endif
 
@@ -2718,7 +2739,7 @@ void Sp_Player(void)
                 if(pl_pan_row <= 128)
                 {
                     TPan[ct] = (float) pl_pan_row * 0.0078125f; 
-                    ComputeStereo(ct);
+                    Compute_Stereo(ct);
 
 #if !defined(__STAND_ALONE__)
                     if(userscreen == USER_SCREEN_TRACK_EDIT)
@@ -3224,8 +3245,8 @@ void Sp_Player(void)
                 // Synth bypassing
                 if(!Synth_Was[c][i]) goto ByPass_Wav;
 
-                if((Synthesizer[c][i].Data.OSC1_WAVEFORM != WAVEFORM_WAV &&
-                    Synthesizer[c][i].Data.OSC2_WAVEFORM != WAVEFORM_WAV))
+                if((Synthesizer[c][i].Data.OSC_1_WAVEFORM != WAVEFORM_WAV &&
+                    Synthesizer[c][i].Data.OSC_2_WAVEFORM != WAVEFORM_WAV))
                 {
 ByPass_Wav:
 #endif
@@ -3377,8 +3398,8 @@ ByPass_Wav:
 #if defined(PTK_SYNTH)
             // --------------------------------------
             // Handle the synth part
-            if(Synthesizer[c][i].ENV1_STAGE ||
-               Synthesizer[c][i].ENV2_STAGE ||
+            if(Synthesizer[c][i].ENV_1_STAGE ||
+               Synthesizer[c][i].ENV_2_STAGE ||
                Cut_Stage[c][i])
             {
                 if(Cut_Stage[c][i])
@@ -3421,17 +3442,17 @@ ByPass_Wav:
                                                                 sp_Cvol_Synth[c][i],
                                                                 &sp_Stage2[c][i],
                                                                 &sp_Stage3[c][i],
-                                                                (Uint64 *) &sp_Position_osc1[c][i],
-                                                                (Uint64 *) &sp_Position_osc2[c][i],
-#if defined(PTK_SYNTH_OSC3)
-                                                                (Uint64 *) &sp_Position_osc3[c][i],
+                                                                (Uint64 *) &sp_Position_osc_1[c][i],
+                                                                (Uint64 *) &sp_Position_osc_2[c][i],
+#if defined(PTK_SYNTH_OSC_3)
+                                                                (Uint64 *) &sp_Position_osc_3[c][i],
 #endif
                                                                 Vstep1[c][i],
                                                                 Player_Ampli[c][i]
                                                                );
 
-                if((Synthesizer[c][i].Data.OSC1_WAVEFORM == WAVEFORM_WAV ||
-                    Synthesizer[c][i].Data.OSC2_WAVEFORM == WAVEFORM_WAV))
+                if((Synthesizer[c][i].Data.OSC_1_WAVEFORM == WAVEFORM_WAV ||
+                    Synthesizer[c][i].Data.OSC_2_WAVEFORM == WAVEFORM_WAV))
                 {
                     // It was a stereo signal
                     if(Player_SC[c][i] == 2) grown = TRUE;
@@ -3494,7 +3515,7 @@ ByPass_Wav:
             }
 
 #if defined(PTK_303)
-            noteoff303(c);
+            Note_Off_303(c);
 #endif
 
 #if !defined(__STAND_ALONE__)
@@ -3534,7 +3555,7 @@ ByPass_Wav:
 
             if(dfi < -1.0f || dfi > 1.0f) CCut[c] += dfi * ICut[c];
 
-            realcut = ApplyLfo(CCut[c] - ramper[c], c);
+            realcut = Apply_Lfo(CCut[c] - ramper[c], c);
 
             ramper[c] += Player_FD[c] * realcut * 0.015625f;
             gco = (int) realcut;
@@ -3835,8 +3856,8 @@ ByPass_Wav:
            EqDat[c].mg != 1.0f ||
            EqDat[c].hg != 1.0f)
         {
-            All_Signal_L = do_eq(&EqDat[c], All_Signal_L, 0);
-            All_Signal_R = do_eq(&EqDat[c], All_Signal_R, 1);
+            All_Signal_L = Do_Equ(&EqDat[c], All_Signal_L, 0);
+            All_Signal_R = Do_Equ(&EqDat[c], All_Signal_R, 1);
         }
 #endif
 
@@ -4115,25 +4136,25 @@ void Play_Instrument(int channel, int sub_channel)
 #if defined(PTK_SYNTH)
             if(!no_retrig_note)
             {
-                if(Synthesizer[channel][sub_channel].Data.OSC1_WAVEFORM == WAVEFORM_WAV)
+                if(Synthesizer[channel][sub_channel].Data.OSC_1_WAVEFORM == WAVEFORM_WAV)
                 {
                     if(!glide)
                     {
                         sp_Position[channel][sub_channel].absolu = 0;
-                        sp_Position_osc1[channel][sub_channel].absolu = 0;
+                        sp_Position_osc_1[channel][sub_channel].absolu = 0;
 
-#if defined(PTK_SYNTH_OSC3)
-                        sp_Position_osc3[channel][sub_channel].absolu = 0;
+#if defined(PTK_SYNTH_OSC_3)
+                        sp_Position_osc_3[channel][sub_channel].absolu = 0;
 #endif
                     }
 
                 }
-                if(Synthesizer[channel][sub_channel].Data.OSC2_WAVEFORM == WAVEFORM_WAV)
+                if(Synthesizer[channel][sub_channel].Data.OSC_2_WAVEFORM == WAVEFORM_WAV)
                 {
                     if(!glide)
                     {
                         sp_Position[channel][sub_channel].absolu = 0;
-                        sp_Position_osc2[channel][sub_channel].absolu = 0;
+                        sp_Position_osc_2[channel][sub_channel].absolu = 0;
                     }
                 }
             }
@@ -4163,8 +4184,8 @@ void Play_Instrument(int channel, int sub_channel)
             {
                 if(!glide)
                 {
-                    Synthesizer[channel][sub_channel].Data.OSC1_WAVEFORM = WAVEFORM_NONE;
-                    Synthesizer[channel][sub_channel].Data.OSC2_WAVEFORM = WAVEFORM_NONE;
+                    Synthesizer[channel][sub_channel].Data.OSC_1_WAVEFORM = WAVEFORM_NONE;
+                    Synthesizer[channel][sub_channel].Data.OSC_2_WAVEFORM = WAVEFORM_NONE;
                 }
                 if(Synthprg[sample])
                 {
@@ -4248,8 +4269,8 @@ void Play_Instrument(int channel, int sub_channel)
                 if(Synthprg[sample])
                 {
                     // Synth + sample if both are != wav
-                    if(Synthesizer[channel][sub_channel].Data.OSC1_WAVEFORM != WAVEFORM_WAV &&
-                       Synthesizer[channel][sub_channel].Data.OSC2_WAVEFORM != WAVEFORM_WAV)
+                    if(Synthesizer[channel][sub_channel].Data.OSC_1_WAVEFORM != WAVEFORM_WAV &&
+                       Synthesizer[channel][sub_channel].Data.OSC_2_WAVEFORM != WAVEFORM_WAV)
                     {
                         sp_Stage[channel][sub_channel] = PLAYING_SAMPLE;
                     }
@@ -4391,7 +4412,10 @@ void Play_Instrument(int channel, int sub_channel)
                 {
                     Player_WR[channel][sub_channel] = RawSamples[associated_sample][1][split];
                 }
-                if(!glide) ramper[channel] = 0;
+                if(!glide)
+                {
+                    ramper[channel] = 0;
+                }
             }
             else
 #endif // PTK_INSTRUMENTS
@@ -4438,11 +4462,11 @@ void Play_Instrument(int channel, int sub_channel)
 #if defined(PTK_SYNTH)
             if(!no_retrig_adsr && !no_retrig_note && !glide)
             {
-                sp_Position_osc1[channel][sub_channel] = sp_Position[channel][sub_channel];
-                sp_Position_osc2[channel][sub_channel] = sp_Position[channel][sub_channel];
+                sp_Position_osc_1[channel][sub_channel] = sp_Position[channel][sub_channel];
+                sp_Position_osc_2[channel][sub_channel] = sp_Position[channel][sub_channel];
 
-#if defined(PTK_SYNTH_OSC3)
-                sp_Position_osc3[channel][sub_channel] = sp_Position[channel][sub_channel];
+#if defined(PTK_SYNTH_OSC_3)
+                sp_Position_osc_3[channel][sub_channel] = sp_Position[channel][sub_channel];
 #endif
             }
 #endif
@@ -4455,9 +4479,9 @@ void Play_Instrument(int channel, int sub_channel)
             if(!glide)
             {
 #if defined(PTK_SYNTH)
-                Synthesizer[channel][sub_channel].ENV1_LOOP_BACKWARD = FALSE;
-                Synthesizer[channel][sub_channel].ENV3_LOOP_BACKWARD = FALSE;
-                Synthesizer[channel][sub_channel].ENV2_LOOP_BACKWARD = FALSE;
+                Synthesizer[channel][sub_channel].ENV_1_LOOP_BACKWARD = FALSE;
+                Synthesizer[channel][sub_channel].ENV_3_LOOP_BACKWARD = FALSE;
+                Synthesizer[channel][sub_channel].ENV_2_LOOP_BACKWARD = FALSE;
 #endif
                 Player_LW[channel][sub_channel] = SMP_LOOPING_FORWARD;
             }
@@ -4466,9 +4490,9 @@ void Play_Instrument(int channel, int sub_channel)
                 if(!glide)
                 {
 #if defined(PTK_SYNTH)
-                    Synthesizer[channel][sub_channel].ENV1_LOOP_BACKWARD = TRUE;
-                    Synthesizer[channel][sub_channel].ENV3_LOOP_BACKWARD = TRUE;
-                    Synthesizer[channel][sub_channel].ENV2_LOOP_BACKWARD = TRUE;
+                    Synthesizer[channel][sub_channel].ENV_1_LOOP_BACKWARD = TRUE;
+                    Synthesizer[channel][sub_channel].ENV_3_LOOP_BACKWARD = TRUE;
+                    Synthesizer[channel][sub_channel].ENV_2_LOOP_BACKWARD = TRUE;
 #endif
                     Player_LW[channel][sub_channel] = SMP_LOOPING_BACKWARD;
                 }
@@ -4478,16 +4502,16 @@ void Play_Instrument(int channel, int sub_channel)
                 if((int) Player_LE[channel][sub_channel] < Max_Loop) Max_Loop = Player_LE[channel][sub_channel];
                 sp_Position[channel][sub_channel].half.first = Max_Loop;
 #if defined(PTK_SYNTH)
-                if(Synthesizer[channel][sub_channel].Data.OSC1_WAVEFORM == WAVEFORM_WAV)
+                if(Synthesizer[channel][sub_channel].Data.OSC_1_WAVEFORM == WAVEFORM_WAV)
                 {
-                    sp_Position_osc1[channel][sub_channel].half.first = Max_Loop;
-#if defined(PTK_SYNTH_OSC3)
-                    sp_Position_osc3[channel][sub_channel].half.first = Max_Loop;
+                    sp_Position_osc_1[channel][sub_channel].half.first = Max_Loop;
+#if defined(PTK_SYNTH_OSC_3)
+                    sp_Position_osc_3[channel][sub_channel].half.first = Max_Loop;
 #endif
                 }
-                if(Synthesizer[channel][sub_channel].Data.OSC2_WAVEFORM == WAVEFORM_WAV)
+                if(Synthesizer[channel][sub_channel].Data.OSC_2_WAVEFORM == WAVEFORM_WAV)
                 {
-                    sp_Position_osc2[channel][sub_channel].half.first = Max_Loop;
+                    sp_Position_osc_2[channel][sub_channel].half.first = Max_Loop;
                 }
 #endif
             }
@@ -5433,12 +5457,12 @@ void Do_Effects_Ticks_X(void)
                     }
                     if(sp_Stage2[trackef][i] != PLAYING_NOSAMPLE || Cut_Stage[trackef][i])
                     {
-                        Synthesizer[trackef][i].ENV1_LOOP_BACKWARD = TRUE;
-                        Synthesizer[trackef][i].ENV3_LOOP_BACKWARD = TRUE;
+                        Synthesizer[trackef][i].ENV_1_LOOP_BACKWARD = TRUE;
+                        Synthesizer[trackef][i].ENV_3_LOOP_BACKWARD = TRUE;
                     }
                     if(sp_Stage3[trackef][i] != PLAYING_NOSAMPLE || Cut_Stage[trackef][i])
                     {
-                        Synthesizer[trackef][i].ENV2_LOOP_BACKWARD = TRUE;
+                        Synthesizer[trackef][i].ENV_2_LOOP_BACKWARD = TRUE;
                     }
                 }
             }
@@ -5453,12 +5477,12 @@ void Do_Effects_Ticks_X(void)
                     }
                     if(sp_Stage2[trackef][i] != PLAYING_NOSAMPLE || Cut_Stage[trackef][i]) 
                     {
-                        Synthesizer[trackef][i].ENV1_LOOP_BACKWARD = FALSE;
-                        Synthesizer[trackef][i].ENV3_LOOP_BACKWARD = FALSE;
+                        Synthesizer[trackef][i].ENV_1_LOOP_BACKWARD = FALSE;
+                        Synthesizer[trackef][i].ENV_3_LOOP_BACKWARD = FALSE;
                     }
                     if(sp_Stage3[trackef][i] != PLAYING_NOSAMPLE || Cut_Stage[trackef][i]) 
                     {
-                        Synthesizer[trackef][i].ENV2_LOOP_BACKWARD = FALSE;
+                        Synthesizer[trackef][i].ENV_2_LOOP_BACKWARD = FALSE;
                     }
                 }
             }
@@ -5470,7 +5494,7 @@ void Do_Effects_Ticks_X(void)
 
 // ------------------------------------------------------
 // Reset the tracks filters
-void ResetFilters(int tr)
+void Reset_Filters(int tr)
 {
     buf024[0][tr] = 0.0f;
     buf124[0][tr] = 0.0f;
@@ -5498,7 +5522,7 @@ void ResetFilters(int tr)
 
 // ------------------------------------------------------
 // Process track filter LFO
-float ApplyLfo(float cy, int trcy)
+float Apply_Lfo(float cy, int trcy)
 {
 
 #if defined(PTK_LFO)
@@ -5517,7 +5541,7 @@ float ApplyLfo(float cy, int trcy)
 
 // ------------------------------------------------------
 // Set stereo panning
-void ComputeStereo(int channel)
+void Compute_Stereo(int channel)
 {
     Old_LVol[channel] = sqrtf(1.0f - TPan[channel]);
     Old_RVol[channel] = sqrtf(TPan[channel]);
@@ -5525,7 +5549,7 @@ void ComputeStereo(int channel)
 
 // ------------------------------------------------------
 // Bring stereo panning up to date
-void FixStereo(int channel)
+void Fix_Stereo(int channel)
 {
     LVol[channel] = Old_LVol[channel];
     RVol[channel] = Old_RVol[channel];
@@ -6248,7 +6272,7 @@ void Fire303(unsigned char number, int unit)
     }
 }
 
-void noteoff303(char strack)
+void Note_Off_303(char strack)
 {
     if(strack == track3031)
     {
@@ -6300,7 +6324,7 @@ void Go303()
 // ------------------------------------------------------
 // Bank initializer
 #if !defined(__STAND_ALONE__) || defined(__WINAMP__)
-void init_sample_bank(void)
+void Init_Sample_Bank(void)
 {
     Reset_303_Parameters(&tb303[0]);
     Reset_303_Parameters(&tb303[1]);
@@ -6323,14 +6347,14 @@ void init_sample_bank(void)
 #if !defined(__WINAMP__)
             sprintf(nameins[inico], "Untitled");
 #endif
-            ResetSynthParameters(&PARASynth[inico]);
 
-            KillInst(inico, TRUE);
+            Reset_Synth_Parameters(&PARASynth[inico]);
+            Kill_Instrument(inico, TRUE);
         }
     }
 }
 
-void KillInst(int inst_nbr, int all_splits)
+void Kill_Instrument(int inst_nbr, int all_splits)
 {
     int first_split = 0;
     int last_split = MAX_INSTRS_SPLITS;
@@ -6411,81 +6435,81 @@ void KillInst(int inst_nbr, int all_splits)
 }
 
 // ------------------------------------------------------
-// Next Function: used to reset synthparameters Structure
+// Next Function: used to reset Synth_Parameters Structure
 // Well, I think the default preset is not very cool, but nah!
 #if defined(PTK_SYNTH)
-void ResetSynthParameters(SynthParameters *TSP)
+void Reset_Synth_Parameters(Synth_Parameters *TSP)
 {
 
 #if !defined(__WINAMP__)
-    sprintf(TSP->presetname, "Untitled");
+    sprintf(TSP->Preset_Name, "Untitled");
 #endif
 
-    TSP->osc1_waveform = WAVEFORM_SAW;
-    TSP->osc2_waveform = WAVEFORM_PULSE;
+    TSP->osc_1_waveform = WAVEFORM_SAW;
+    TSP->osc_2_waveform = WAVEFORM_PULSE;
     TSP->osc_combine = COMBINE_ADD;
-    TSP->osc1_pw = 256;
-    TSP->osc2_pw = 256;
-    TSP->osc2_detune = 65;
-    TSP->osc2_finetune = 0;
+    TSP->osc_1_pw = 256;
+    TSP->osc_2_pw = 256;
+    TSP->osc_2_detune = 65;
+    TSP->osc_2_finetune = 0;
     TSP->vcf_cutoff = 64;
     TSP->vcf_resonance = 64;
     TSP->vcf_type = 0;
-    TSP->env1_attack = 0;
-    TSP->env1_decay = 2560;
-    TSP->env1_sustain = 20;
-    TSP->env1_release = 16384;
-    TSP->env2_attack = 0;
-    TSP->env2_decay = 2560;
-    TSP->env2_sustain = 20;
-    TSP->env2_release = 16384;
-    TSP->lfo1_period = 16;
-    TSP->lfo2_period = 16;
-    TSP->lfo1_osc1_pw = 64;
-    TSP->lfo1_osc2_pw = 64;
-    TSP->lfo1_osc1_pitch = 64;
-    TSP->lfo1_osc2_pitch = 64;
-    TSP->lfo1_osc1_volume = 64;
-    TSP->lfo1_osc2_volume = 64;   
-    TSP->lfo1_vcf_cutoff = 64;
-    TSP->lfo1_vcf_resonance = 64; 
-    TSP->lfo2_osc1_pw = 64;
-    TSP->lfo2_osc2_pw = 64;
-    TSP->lfo2_osc1_pitch = 64;
-    TSP->lfo2_osc2_pitch = 64;
-    TSP->lfo2_osc1_volume = 64;
-    TSP->lfo2_osc2_volume = 64;   
-    TSP->lfo2_vcf_cutoff = 64;
-    TSP->lfo2_vcf_resonance = 64; 
-    TSP->env1_osc1_pw = 64;
-    TSP->env1_osc2_pw = 64;
-    TSP->env1_osc1_pitch = 64;
-    TSP->env1_osc2_pitch = 64;
-    TSP->env1_osc1_volume = 127;
-    TSP->env1_osc2_volume = 127;   
-    TSP->env1_vcf_cutoff = 64;
-    TSP->env1_vcf_resonance = 64; 
-    TSP->env2_osc1_pw = 64;
-    TSP->env2_osc2_pw = 64;
-    TSP->env2_osc1_pitch = 64;
-    TSP->env2_osc2_pitch = 64;
-    TSP->env2_osc1_volume = 127;
-    TSP->env2_osc2_volume = 127;
-    TSP->env2_vcf_cutoff = 64;
-    TSP->env2_vcf_resonance = 64; 
-    TSP->osc3_volume = 128;
-    TSP->osc3_switch = FALSE;
+    TSP->env_1_attack = 0;
+    TSP->env_1_decay = 2560;
+    TSP->env_1_sustain = 20;
+    TSP->env_1_release = 16384;
+    TSP->env_2_attack = 0;
+    TSP->env_2_decay = 2560;
+    TSP->env_2_sustain = 20;
+    TSP->env_2_release = 16384;
+    TSP->lfo_1_period = 16;
+    TSP->lfo_2_period = 16;
+    TSP->lfo_1_osc_1_pw = 64;
+    TSP->lfo_1_osc_2_pw = 64;
+    TSP->lfo_1_osc_1_pitch = 64;
+    TSP->lfo_1_osc_2_pitch = 64;
+    TSP->lfo_1_osc_1_volume = 64;
+    TSP->lfo_1_osc_2_volume = 64;   
+    TSP->lfo_1_vcf_cutoff = 64;
+    TSP->lfo_1_vcf_resonance = 64; 
+    TSP->lfo_2_osc_1_pw = 64;
+    TSP->lfo_2_osc_2_pw = 64;
+    TSP->lfo_2_osc_1_pitch = 64;
+    TSP->lfo_2_osc_2_pitch = 64;
+    TSP->lfo_2_osc_1_volume = 64;
+    TSP->lfo_2_osc_2_volume = 64;   
+    TSP->lfo_2_vcf_cutoff = 64;
+    TSP->lfo_2_vcf_resonance = 64; 
+    TSP->env_1_osc_1_pw = 64;
+    TSP->env_1_osc_2_pw = 64;
+    TSP->env_1_osc_1_pitch = 64;
+    TSP->env_1_osc_2_pitch = 64;
+    TSP->env_1_osc_1_volume = 127;
+    TSP->env_1_osc_2_volume = 127;   
+    TSP->env_1_vcf_cutoff = 64;
+    TSP->env_1_vcf_resonance = 64; 
+    TSP->env_2_osc_1_pw = 64;
+    TSP->env_2_osc_2_pw = 64;
+    TSP->env_2_osc_1_pitch = 64;
+    TSP->env_2_osc_2_pitch = 64;
+    TSP->env_2_osc_1_volume = 127;
+    TSP->env_2_osc_2_volume = 127;
+    TSP->env_2_vcf_cutoff = 64;
+    TSP->env_2_vcf_resonance = 64; 
+    TSP->osc_3_volume = 128;
+    TSP->osc_3_switch = FALSE;
     TSP->ptc_glide = 0;
     TSP->glb_volume = 128;
     TSP->disto = 0;
-    TSP->lfo1_attack = 2560;
-    TSP->lfo1_decay = 2560;
-    TSP->lfo1_sustain = 16;
-    TSP->lfo1_release = 16384;
-    TSP->lfo2_attack = 2560;
-    TSP->lfo2_decay = 2560;
-    TSP->lfo2_sustain = 16;
-    TSP->lfo2_release = 16384;
+    TSP->lfo_1_attack = 2560;
+    TSP->lfo_1_decay = 2560;
+    TSP->lfo_1_sustain = 16;
+    TSP->lfo_1_release = 16384;
+    TSP->lfo_2_attack = 2560;
+    TSP->lfo_2_decay = 2560;
+    TSP->lfo_2_sustain = 16;
+    TSP->lfo_2_release = 16384;
 }
 #endif // PTK_SYNTH
 #endif // !__STAND_ALONE__ || __WINAMP__
@@ -6569,7 +6593,7 @@ void Initreverb(void)
         counters_R[i] = mlrw;
     }
 
-    InitRevervbFilter();
+    Init_Reverb_Filter();
 
     LFP_L.Reset();
     LFP_R.Reset();
@@ -6577,7 +6601,7 @@ void Initreverb(void)
     rev_counter = 99999;
 }
 
-void InitRevervbFilter(void)
+void Init_Reverb_Filter(void)
 {
     int i;
 
@@ -6990,7 +7014,7 @@ float FastPow(float a, float b)
 // Public domain stuff from Neil C. / Etanza Systems
 static float vsa = (float) (1.0 / 4294967295.0);
 
-void init_eq(LPEQSTATE es)
+void Init_Equ(LPEQSTATE es)
 {
     memset(es, 0, sizeof(EQSTATE));
     es->lg = 1.0f;
@@ -7000,7 +7024,7 @@ void init_eq(LPEQSTATE es)
     es->hf = 2.0f * sinf(PIf * (5000.0f / fMIX_RATE));
 }
 
-float do_eq(LPEQSTATE es, float sample, int Left)
+float Do_Equ(LPEQSTATE es, float sample, int Left)
 {
     float l;
     float m;

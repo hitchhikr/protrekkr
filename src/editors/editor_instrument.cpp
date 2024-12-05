@@ -183,8 +183,8 @@ void Actualize_Instrument_Ed(int typex, char gode)
                 {
                     if(Sample_Amplify[Current_Instrument][Current_Instrument_Split] > 4.0f) Sample_Amplify[Current_Instrument][Current_Instrument_Split] = 4.0f;
                     if(Sample_Amplify[Current_Instrument][Current_Instrument_Split] < 0) Sample_Amplify[Current_Instrument][Current_Instrument_Split] = 0;
-                    Realslider(426, (Cur_Height - 62), (int) (Sample_Amplify[Current_Instrument][Current_Instrument_Split] * 32.0f), Allow_Sliders);
-                    outlong_small(575, (Cur_Height - 62), (int) (Sample_Amplify[Current_Instrument][Current_Instrument_Split] * 100.0f), 1, 56, BUTTON_NORMAL | BUTTON_DISABLED);
+                    Real_Slider(426, (Cur_Height - 62), (int) (Sample_Amplify[Current_Instrument][Current_Instrument_Split] * 32.0f), Allow_Sliders);
+                    Print_Long_Small(575, (Cur_Height - 62), (int) (Sample_Amplify[Current_Instrument][Current_Instrument_Split] * 100.0f), 1, 56, BUTTON_NORMAL | BUTTON_DISABLED);
                 }
 
                 if(gode == 0 || gode == 2)
@@ -198,16 +198,16 @@ void Actualize_Instrument_Ed(int typex, char gode)
                     {
                         Finetune[Current_Instrument][Current_Instrument_Split] = -127;
                     }
-                    Realslider(426, (Cur_Height - 44), 64 + (Finetune[Current_Instrument][Current_Instrument_Split] / 2), Allow_Sliders);
-                    outlong_small(575, (Cur_Height - 44), (long) Finetune[Current_Instrument][Current_Instrument_Split], 0, 56, BUTTON_NORMAL | BUTTON_DISABLED);
+                    Real_Slider(426, (Cur_Height - 44), 64 + (Finetune[Current_Instrument][Current_Instrument_Split] / 2), Allow_Sliders);
+                    Print_Long_Small(575, (Cur_Height - 44), (long) Finetune[Current_Instrument][Current_Instrument_Split], 0, 56, BUTTON_NORMAL | BUTTON_DISABLED);
                 }
 
                 if(gode == 0 || gode == 3)
                 {
                     if(FDecay[Current_Instrument][Current_Instrument_Split] > 0.015625f) FDecay[Current_Instrument][Current_Instrument_Split] = 0.015625f;
                     if(FDecay[Current_Instrument][Current_Instrument_Split] < 0.0f) FDecay[Current_Instrument][Current_Instrument_Split] = 0.0f;
-                    Realslider(52, (Cur_Height - 72), (int) (FDecay[Current_Instrument][Current_Instrument_Split] * 8192.0f), Allow_Sliders);
-                    outlong(201, (Cur_Height - 72), (int) (FDecay[Current_Instrument][Current_Instrument_Split] * 8192.0f), 0);
+                    Real_Slider(52, (Cur_Height - 72), (int) (FDecay[Current_Instrument][Current_Instrument_Split] * 8192.0f), Allow_Sliders);
+                    Print_Long(201, (Cur_Height - 72), (int) (FDecay[Current_Instrument][Current_Instrument_Split] * 8192.0f), 0);
                 }
 
                 char temprout[256];
@@ -236,13 +236,13 @@ void Actualize_Instrument_Ed(int typex, char gode)
 
                 if(gode == 0 || gode == 4)
                 {
-                    outlong(448, (Cur_Height - 134), Sample_Length[Current_Instrument][Current_Instrument_Split], 0);
+                    Print_Long(448, (Cur_Height - 134), Sample_Length[Current_Instrument][Current_Instrument_Split], 0);
                 }
 
                 if(gode == 0 || gode == 5)
                 {
-                    outlong(448, (Cur_Height - 116), LoopStart[Current_Instrument][Current_Instrument_Split], 0);
-                    outlong(448, (Cur_Height - 98), LoopEnd[Current_Instrument][Current_Instrument_Split], 0);
+                    Print_Long(448, (Cur_Height - 116), LoopStart[Current_Instrument][Current_Instrument_Split], 0);
+                    Print_Long(448, (Cur_Height - 98), LoopEnd[Current_Instrument][Current_Instrument_Split], 0);
 
                     switch(LoopType[Current_Instrument][Current_Instrument_Split])
                     {
@@ -324,8 +324,8 @@ void Actualize_Instrument_Ed(int typex, char gode)
                 {
                     if(Sample_Vol[Current_Instrument] > 1.0f) Sample_Vol[Current_Instrument] = 1.0f;
                     if(Sample_Vol[Current_Instrument] < 0.0f) Sample_Vol[Current_Instrument] = 0.0f;
-                    Realslider(52, (Cur_Height - 54), (int) (Sample_Vol[Current_Instrument] * 128.0f), TRUE);
-                    outlong(201, (Cur_Height - 54), (int) (Sample_Vol[Current_Instrument] * 100.0f), 1);
+                    Real_Slider(52, (Cur_Height - 54), (int) (Sample_Vol[Current_Instrument] * 128.0f), TRUE);
+                    Print_Long(201, (Cur_Height - 54), (int) (Sample_Vol[Current_Instrument] * 100.0f), 1);
                 }
 
                 if(gode == 0 || gode == 16)
@@ -465,11 +465,11 @@ void Actualize_Instrument_Ed(int typex, char gode)
                     }
                     if(SamplesSwap[Current_Instrument])
                     {
-                        outlong(729, (Cur_Height - 134) + (18 * 4), Sample_Length_Packed[Current_Instrument][Current_Instrument_Split], 0);
+                        Print_Long(729, (Cur_Height - 134) + (18 * 4), Sample_Length_Packed[Current_Instrument][Current_Instrument_Split], 0);
                     }
                     else
                     {
-                        outlong(729, (Cur_Height - 134) + (18 * 4), Sample_Length[Current_Instrument][Current_Instrument_Split], 0);
+                        Print_Long(729, (Cur_Height - 134) + (18 * 4), Sample_Length[Current_Instrument][Current_Instrument_Split], 0);
                     }
                 }
 
@@ -497,22 +497,22 @@ void Actualize_Instrument_Ed(int typex, char gode)
                 switch(typex)
                 {
                     case 0:
-                        outlong(487, (Cur_Height - 130), *(RawSamples[Current_Instrument][0][Current_Instrument_Split] + LoopStart[Current_Instrument][Current_Instrument_Split]), 0);
-                        outlong(114, (Cur_Height - 130), LoopStart[Current_Instrument][Current_Instrument_Split], 0);
+                        Print_Long(487, (Cur_Height - 130), *(RawSamples[Current_Instrument][0][Current_Instrument_Split] + LoopStart[Current_Instrument][Current_Instrument_Split]), 0);
+                        Print_Long(114, (Cur_Height - 130), LoopStart[Current_Instrument][Current_Instrument_Split], 0);
                         actuloop = 1;
                         break;
 
                     case 1:
-                        outlong(487, (Cur_Height - 112), *(RawSamples[Current_Instrument][0][Current_Instrument_Split] + LoopEnd[Current_Instrument][Current_Instrument_Split]), 0);
-                        outlong(314, (Cur_Height - 130), LoopEnd[Current_Instrument][Current_Instrument_Split], 0);
+                        Print_Long(487, (Cur_Height - 112), *(RawSamples[Current_Instrument][0][Current_Instrument_Split] + LoopEnd[Current_Instrument][Current_Instrument_Split]), 0);
+                        Print_Long(314, (Cur_Height - 130), LoopEnd[Current_Instrument][Current_Instrument_Split], 0);
                         actuloop = 2;
                         break;
 
                     case 2:
-                        outlong(487, (Cur_Height - 130), *(RawSamples[Current_Instrument][0][Current_Instrument_Split] + LoopStart[Current_Instrument][Current_Instrument_Split]), 0);
-                        outlong(487, (Cur_Height - 112), *(RawSamples[Current_Instrument][0][Current_Instrument_Split] + LoopEnd[Current_Instrument][Current_Instrument_Split]), 0);
-                        outlong(114, (Cur_Height - 130), LoopStart[Current_Instrument][Current_Instrument_Split], 0);
-                        outlong(314, (Cur_Height - 130), LoopEnd[Current_Instrument][Current_Instrument_Split], 0);
+                        Print_Long(487, (Cur_Height - 130), *(RawSamples[Current_Instrument][0][Current_Instrument_Split] + LoopStart[Current_Instrument][Current_Instrument_Split]), 0);
+                        Print_Long(487, (Cur_Height - 112), *(RawSamples[Current_Instrument][0][Current_Instrument_Split] + LoopEnd[Current_Instrument][Current_Instrument_Split]), 0);
+                        Print_Long(114, (Cur_Height - 130), LoopStart[Current_Instrument][Current_Instrument_Split], 0);
+                        Print_Long(314, (Cur_Height - 130), LoopEnd[Current_Instrument][Current_Instrument_Split], 0);
                         actuloop = 3;
                         break;
                 }
@@ -528,20 +528,20 @@ void Mouse_Sliders_Instrument_Ed(void)
     {
         if(SampleType[Current_Instrument][Current_Instrument_Split])
         {
-            if(zcheckMouse(426, (Cur_Height - 62), 148, 16))
+            if(Check_Mouse(426, (Cur_Height - 62), 148, 16))
             {
                 gui_action = GUI_CMD_SET_INSTRUMENT_AMPLI;
             }
-            if(zcheckMouse(436, (Cur_Height - 44), 128, 16))
+            if(Check_Mouse(436, (Cur_Height - 44), 128, 16))
             {
                 gui_action = GUI_CMD_SET_INSTRUMENT_FINETUNE;
             }
-            if(zcheckMouse(52, (Cur_Height - 72), 148, 16))
+            if(Check_Mouse(52, (Cur_Height - 72), 148, 16))
             {
                 gui_action = GUI_CMD_SET_INSTRUMENT_DECAY;
             }
         }
-        if(zcheckMouse(52, (Cur_Height - 54), 148, 16))
+        if(Check_Mouse(52, (Cur_Height - 54), 148, 16))
         {
             Sample_Vol[Current_Instrument] = float(Mouse.x - 62) * 0.0078125f;
             gui_action = GUI_CMD_UPDATE_INSTRUMENT_ED;
@@ -554,7 +554,7 @@ void Mouse_Left_Instrument_Ed(void)
 {
     if(userscreen == USER_SCREEN_INSTRUMENT_EDIT && seditor == 1)
     {
-        if(zcheckMouse(96, (Cur_Height - 130), 16, 16) &&
+        if(Check_Mouse(96, (Cur_Height - 130), 16, 16) &&
            LoopStart[Current_Instrument][Current_Instrument_Split] > 0 &&
            SampleType[Current_Instrument][Current_Instrument_Split])
         {
@@ -562,7 +562,7 @@ void Mouse_Left_Instrument_Ed(void)
             gui_action = GUI_CMD_UPDATE_INSTRUMENT_ED;
             teac = 5;
         }
-        if(zcheckMouse(176, (Cur_Height - 130), 16, 16) &&
+        if(Check_Mouse(176, (Cur_Height - 130), 16, 16) &&
            LoopStart[Current_Instrument][Current_Instrument_Split] < LoopEnd[Current_Instrument][Current_Instrument_Split] &&
            SampleType[Current_Instrument][Current_Instrument_Split])
         {
@@ -570,7 +570,7 @@ void Mouse_Left_Instrument_Ed(void)
             gui_action = GUI_CMD_UPDATE_INSTRUMENT_ED;
             teac = 5;
         }
-        if(zcheckMouse(296, (Cur_Height - 130), 16, 16) &&
+        if(Check_Mouse(296, (Cur_Height - 130), 16, 16) &&
            LoopEnd[Current_Instrument][Current_Instrument_Split] > LoopStart[Current_Instrument][Current_Instrument_Split] &&
            SampleType[Current_Instrument][Current_Instrument_Split])
         {
@@ -578,7 +578,7 @@ void Mouse_Left_Instrument_Ed(void)
             gui_action = GUI_CMD_UPDATE_LOOP_EDITOR_ED;
             teac = 5;
         }
-        if(zcheckMouse(376, (Cur_Height - 130), 16, 16) &&
+        if(Check_Mouse(376, (Cur_Height - 130), 16, 16) &&
            LoopEnd[Current_Instrument][Current_Instrument_Split] < Sample_Length[Current_Instrument][Current_Instrument_Split] &&
            SampleType[Current_Instrument][Current_Instrument_Split])
         {
@@ -587,7 +587,7 @@ void Mouse_Left_Instrument_Ed(void)
             teac = 5;
         }
         // Return to instrument editor
-        if(zcheckMouse(427, (Cur_Height - 94), 58, 16))
+        if(Check_Mouse(427, (Cur_Height - 94), 58, 16))
         {
             seditor = 0;
             gui_action = GUI_CMD_SELECT_INSTRUMENT_EDIT;
@@ -596,14 +596,14 @@ void Mouse_Left_Instrument_Ed(void)
 
     if(userscreen == USER_SCREEN_INSTRUMENT_EDIT && seditor == 0)
     {
-        if(zcheckMouse(570, (Cur_Height - 134), 16, 16) && Current_Instrument_Split > 0)
+        if(Check_Mouse(570, (Cur_Height - 134), 16, 16) && Current_Instrument_Split > 0)
         {
             Current_Instrument_Split--;
             gui_action = GUI_CMD_UPDATE_LOOP_EDITOR_ED;
             teac = 0;
             Renew_Sample_Ed();
         }
-        if(zcheckMouse(614, (Cur_Height - 134), 16, 16) && Current_Instrument_Split < 15)
+        if(Check_Mouse(614, (Cur_Height - 134), 16, 16) && Current_Instrument_Split < 15)
         {
             Current_Instrument_Split++;
             gui_action = GUI_CMD_UPDATE_LOOP_EDITOR_ED;
@@ -612,13 +612,13 @@ void Mouse_Left_Instrument_Ed(void)
         }
 
 #if !defined(__NO_MIDI__)
-        if(zcheckMouse(570, (Cur_Height - 98), 16, 16) && Midiprg[Current_Instrument] > -1)
+        if(Check_Mouse(570, (Cur_Height - 98), 16, 16) && Midiprg[Current_Instrument] > -1)
         {
             Midiprg[Current_Instrument]--;
             gui_action = GUI_CMD_UPDATE_INSTRUMENT_ED;
             teac = 10;
         }
-        if(zcheckMouse(614, (Cur_Height - 98), 16, 16) && Midiprg[Current_Instrument] < 511)
+        if(Check_Mouse(614, (Cur_Height - 98), 16, 16) && Midiprg[Current_Instrument] < 511)
         {
             Midiprg[Current_Instrument]++;
             gui_action = GUI_CMD_UPDATE_INSTRUMENT_ED;
@@ -628,13 +628,13 @@ void Mouse_Left_Instrument_Ed(void)
 
         if(Allow_Global_Sliders)
         {
-            if(zcheckMouse(144, (Cur_Height - 108), 28, 16))
+            if(Check_Mouse(144, (Cur_Height - 108), 28, 16))
             {
                 Beat_Sync[Current_Instrument] = FALSE;
                 gui_action = GUI_CMD_UPDATE_INSTRUMENT_ED;
                 teac = 12;
             }
-            if(zcheckMouse(176, (Cur_Height - 108), 28, 16))
+            if(Check_Mouse(176, (Cur_Height - 108), 28, 16))
             {
                 Beat_Sync[Current_Instrument] = TRUE;
                 gui_action = GUI_CMD_UPDATE_INSTRUMENT_ED;
@@ -644,13 +644,13 @@ void Mouse_Left_Instrument_Ed(void)
 
         if(Allow_Global_Sliders)
         {
-            if(zcheckMouse(144, (Cur_Height - 90), 16, 16) && Beat_Lines[Current_Instrument] > 1)
+            if(Check_Mouse(144, (Cur_Height - 90), 16, 16) && Beat_Lines[Current_Instrument] > 1)
             {
                 Beat_Lines[Current_Instrument]--;
                 gui_action = GUI_CMD_UPDATE_INSTRUMENT_ED;
                 teac = 13;
             }
-            if(zcheckMouse(188, (Cur_Height - 90), 16, 16) && Beat_Lines[Current_Instrument] < 128)
+            if(Check_Mouse(188, (Cur_Height - 90), 16, 16) && Beat_Lines[Current_Instrument] < 128)
             {
                 Beat_Lines[Current_Instrument]++;
                 gui_action = GUI_CMD_UPDATE_INSTRUMENT_ED;
@@ -659,7 +659,7 @@ void Mouse_Left_Instrument_Ed(void)
         }
 
         // Go to loop editor
-        if(zcheckMouse(268, (Cur_Height - 134), 106, 16) && SampleType[Current_Instrument][Current_Instrument_Split])
+        if(Check_Mouse(268, (Cur_Height - 134), 106, 16) && SampleType[Current_Instrument][Current_Instrument_Split])
         {
             seditor = 1;
             gui_action = GUI_CMD_SELECT_INSTRUMENT_EDIT;
@@ -667,7 +667,7 @@ void Mouse_Left_Instrument_Ed(void)
 
         if(Allow_Global_Sliders)
         {
-            if(zcheckMouse(268, (Cur_Height - 108), 106, 16))
+            if(Check_Mouse(268, (Cur_Height - 108), 106, 16))
             {
                 if(File_Exist_Req("%s" SLASH "%s.pti", Dir_Instrs, nameins[Current_Instrument]))
                 {
@@ -681,7 +681,7 @@ void Mouse_Left_Instrument_Ed(void)
         }
 
         // Export whole sample to .wav
-        if(zcheckMouse(268, (Cur_Height - 80), 106, 16) && SampleType[Current_Instrument][Current_Instrument_Split])
+        if(Check_Mouse(268, (Cur_Height - 80), 106, 16) && SampleType[Current_Instrument][Current_Instrument_Split])
         {
             char Name[MAX_PATH];
             if(strlen(SampleName[Current_Instrument][Current_Instrument_Split]))
@@ -703,7 +703,7 @@ void Mouse_Left_Instrument_Ed(void)
         }
 
         // Export selected part of the sample to .wav
-        if(zcheckMouse(268, (Cur_Height - 62), 106, 16) && SampleType[Current_Instrument][Current_Instrument_Split])
+        if(Check_Mouse(268, (Cur_Height - 62), 106, 16) && SampleType[Current_Instrument][Current_Instrument_Split])
         {
             if(!(sed_real_range_end - sed_real_range_start))
             {
@@ -732,7 +732,7 @@ void Mouse_Left_Instrument_Ed(void)
         }
 
         // Export loop part of the sample to .wav
-        if(zcheckMouse(268, (Cur_Height - 44), 106, 16) && SampleType[Current_Instrument][Current_Instrument_Split])
+        if(Check_Mouse(268, (Cur_Height - 44), 106, 16) && SampleType[Current_Instrument][Current_Instrument_Split])
         {
             if(!LoopType[Current_Instrument][Current_Instrument_Split])
             {
@@ -760,7 +760,7 @@ void Mouse_Left_Instrument_Ed(void)
             }
         }
 
-        if(zcheckMouse(570, (Cur_Height - 116), 16, 16) &&
+        if(Check_Mouse(570, (Cur_Height - 116), 16, 16) &&
            Basenote[Current_Instrument][Current_Instrument_Split] > 0 &&
            SampleType[Current_Instrument][Current_Instrument_Split])
         {
@@ -769,7 +769,7 @@ void Mouse_Left_Instrument_Ed(void)
             gui_action = GUI_CMD_UPDATE_INSTRUMENT_ED;
         }
 
-        if(zcheckMouse(614, (Cur_Height - 116), 16, 16) &&
+        if(Check_Mouse(614, (Cur_Height - 116), 16, 16) &&
            Basenote[Current_Instrument][Current_Instrument_Split] < 119 &&
            SampleType[Current_Instrument][Current_Instrument_Split])
         {
@@ -781,7 +781,7 @@ void Mouse_Left_Instrument_Ed(void)
         if(Allow_Global_Sliders)
         {
             // Select WavPack
-            if(zcheckMouse(681, (Cur_Height - 134), 39, 16))
+            if(Check_Mouse(681, (Cur_Height - 134), 39, 16))
             {
                 if(SampleCompression[Current_Instrument] != SMP_PACK_WAVPACK)
                 {
@@ -794,7 +794,7 @@ void Mouse_Left_Instrument_Ed(void)
 
 #if defined(__GSM_CODEC__)
             // Select GSM
-            if(zcheckMouse(640, (Cur_Height - 116), 39, 16))
+            if(Check_Mouse(640, (Cur_Height - 116), 39, 16))
             {
                 if(SampleCompression[Current_Instrument] != SMP_PACK_GSM)
                 {
@@ -808,7 +808,7 @@ void Mouse_Left_Instrument_Ed(void)
 
 #if defined(__MP3_CODEC__)
             // Select MP3
-            if(zcheckMouse(681, (Cur_Height - 116), 39, 16))
+            if(Check_Mouse(681, (Cur_Height - 116), 39, 16))
             {
                 if(SampleCompression[Current_Instrument] != SMP_PACK_MP3)
                 {
@@ -821,7 +821,7 @@ void Mouse_Left_Instrument_Ed(void)
 #endif
 
             // Select ADPCM
-            if(zcheckMouse(640, (Cur_Height - 116) + (18 * 1), 80, 16))
+            if(Check_Mouse(640, (Cur_Height - 116) + (18 * 1), 80, 16))
             {
                 if(SampleCompression[Current_Instrument] != SMP_PACK_ADPCM)
                 {
@@ -834,7 +834,7 @@ void Mouse_Left_Instrument_Ed(void)
 
 #if defined(__AT3_CODEC__)
             // Select AT3
-            if(zcheckMouse(640, (Cur_Height - 116) + (18 * 2), 80, 16))
+            if(Check_Mouse(640, (Cur_Height - 116) + (18 * 2), 80, 16))
             {
                 if(SampleCompression[Current_Instrument] != SMP_PACK_AT3)
                 {
@@ -847,7 +847,7 @@ void Mouse_Left_Instrument_Ed(void)
 #endif
 
             // Select 8BIT
-            if(zcheckMouse(640, (Cur_Height - 116) + (18 * 3), 39, 16))
+            if(Check_Mouse(640, (Cur_Height - 116) + (18 * 3), 39, 16))
             {
                 if(SampleCompression[Current_Instrument] != SMP_PACK_8BIT)
                 {
@@ -859,7 +859,7 @@ void Mouse_Left_Instrument_Ed(void)
             }
 
             // Select NONE
-            if(zcheckMouse(681, (Cur_Height - 116) + (18 * 3), 39, 16))
+            if(Check_Mouse(681, (Cur_Height - 116) + (18 * 3), 39, 16))
             {
                 if(SampleCompression[Current_Instrument] != SMP_PACK_NONE)
                 {
@@ -872,7 +872,7 @@ void Mouse_Left_Instrument_Ed(void)
 
 #if defined(__MP3_CODEC__)
             // Mp3 BitRate
-            if(zcheckMouse(729, (Cur_Height - 116), 16, 16))
+            if(Check_Mouse(729, (Cur_Height - 116), 16, 16))
             {
                 if(SampleCompression[Current_Instrument] == SMP_PACK_MP3)
                 {
@@ -885,7 +885,7 @@ void Mouse_Left_Instrument_Ed(void)
             }
 
             // Mp3 BitRate
-            if(zcheckMouse(729 + 44, (Cur_Height - 116), 16, 16))
+            if(Check_Mouse(729 + 44, (Cur_Height - 116), 16, 16))
             {
                 if(SampleCompression[Current_Instrument] == SMP_PACK_MP3)
                 {
@@ -900,7 +900,7 @@ void Mouse_Left_Instrument_Ed(void)
 
 #if defined(__AT3_CODEC__)
             // At3 BitRate
-            if(zcheckMouse(729, (Cur_Height - 80), 16, 16))
+            if(Check_Mouse(729, (Cur_Height - 80), 16, 16))
             {
                 if(SampleCompression[Current_Instrument] == SMP_PACK_AT3)
                 {
@@ -913,7 +913,7 @@ void Mouse_Left_Instrument_Ed(void)
             }
 
             // At3 BitRate
-            if(zcheckMouse(729 + 44, (Cur_Height - 80), 16, 16))
+            if(Check_Mouse(729 + 44, (Cur_Height - 80), 16, 16))
             {
                 if(SampleCompression[Current_Instrument] == SMP_PACK_AT3)
                 {
@@ -927,7 +927,7 @@ void Mouse_Left_Instrument_Ed(void)
 #endif
 
             // Lock sample
-            if(zcheckMouse(729, (Cur_Height - 116) + (18 * 4), 60, 16))
+            if(Check_Mouse(729, (Cur_Height - 116) + (18 * 4), 60, 16))
             {
                 SamplesSwap[Current_Instrument] = !SamplesSwap[Current_Instrument];
                 gui_action = GUI_CMD_UPDATE_INSTRUMENT_ED;
@@ -937,21 +937,21 @@ void Mouse_Left_Instrument_Ed(void)
 
         if(SampleType[Current_Instrument][Current_Instrument_Split])
         {
-            if(zcheckMouse(448, (Cur_Height - 80), 60, 16))
+            if(Check_Mouse(448, (Cur_Height - 80), 60, 16))
             {
                 LoopType[Current_Instrument][Current_Instrument_Split] = SMP_LOOP_FORWARD;
                 teac = 5;
                 gui_action = GUI_CMD_UPDATE_INSTRUMENT_ED;
                 draw_sampled_wave = TRUE;
             }
-            if(zcheckMouse(448 + 62, (Cur_Height - 80), 58, 16))
+            if(Check_Mouse(448 + 62, (Cur_Height - 80), 58, 16))
             {
                 LoopType[Current_Instrument][Current_Instrument_Split] = SMP_LOOP_PINGPONG;
                 teac = 5;
                 gui_action = GUI_CMD_UPDATE_INSTRUMENT_ED;
                 draw_sampled_wave = TRUE;
             }
-            if(zcheckMouse(448 + 62 * 2 - 2, (Cur_Height - 80), 60, 16))
+            if(Check_Mouse(448 + 62 * 2 - 2, (Cur_Height - 80), 60, 16))
             {
                 LoopType[Current_Instrument][Current_Instrument_Split] = SMP_LOOP_NONE;
                 teac = 5;
@@ -968,7 +968,7 @@ void Mouse_Right_Instrument_Ed(void)
     {
         if(Allow_Global_Sliders)
         {
-            if(zcheckMouse(144, (Cur_Height - 90), 16, 16) && Beat_Lines[Current_Instrument] > 1)
+            if(Check_Mouse(144, (Cur_Height - 90), 16, 16) && Beat_Lines[Current_Instrument] > 1)
             {
                 Beat_Lines[Current_Instrument] -= 16;
                 if(Beat_Lines[Current_Instrument] < 1) Beat_Lines[Current_Instrument] = 1;
@@ -976,7 +976,7 @@ void Mouse_Right_Instrument_Ed(void)
                 teac = 13;
             }
 
-            if(zcheckMouse(188, (Cur_Height - 90), 16, 16) && Beat_Lines[Current_Instrument] < 128)
+            if(Check_Mouse(188, (Cur_Height - 90), 16, 16) && Beat_Lines[Current_Instrument] < 128)
             {
                 Beat_Lines[Current_Instrument] += 16;
                 if(Beat_Lines[Current_Instrument] > 128) Beat_Lines[Current_Instrument] = 128;
@@ -986,7 +986,7 @@ void Mouse_Right_Instrument_Ed(void)
         }
 
 #if !defined(__NO_MIDI__)
-        if(zcheckMouse(570, (Cur_Height - 98), 16, 16) && Midiprg[Current_Instrument] > -1)
+        if(Check_Mouse(570, (Cur_Height - 98), 16, 16) && Midiprg[Current_Instrument] > -1)
         {
             if(Midiprg[Current_Instrument] > 14) Midiprg[Current_Instrument] -= 16;
             else Midiprg[Current_Instrument] = -1;
@@ -994,7 +994,7 @@ void Mouse_Right_Instrument_Ed(void)
             teac = 10;
         }
 
-        if(zcheckMouse(614, (Cur_Height - 98), 16, 16) && Midiprg[Current_Instrument] < 511)
+        if(Check_Mouse(614, (Cur_Height - 98), 16, 16) && Midiprg[Current_Instrument] < 511)
         {
             if(Midiprg[Current_Instrument] < (511 - 16)) Midiprg[Current_Instrument] += 16;
             else Midiprg[Current_Instrument] = 511;
@@ -1006,7 +1006,7 @@ void Mouse_Right_Instrument_Ed(void)
         if(Allow_Global_Sliders)
         {
             // Lock all samples
-            if(zcheckMouse(729, (Cur_Height - 116) + (18 * 4), 60, 16))
+            if(Check_Mouse(729, (Cur_Height - 116) + (18 * 4), 60, 16))
             {
                 int i;
                 int j;
@@ -1056,12 +1056,12 @@ void Mouse_Right_Instrument_Ed(void)
                 if(SamplesSwap[Current_Instrument])
                 {
                     Gui_Draw_Button_Box(729, (Cur_Height - 116) + (18 * 4), 60, 16, "Lock / All", Allow_Global_Pushed | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
-                    outlong(729, (Cur_Height - 134) + (18 * 4), Sample_Length_Packed[Current_Instrument][Current_Instrument_Split], 0);
+                    Print_Long(729, (Cur_Height - 134) + (18 * 4), Sample_Length_Packed[Current_Instrument][Current_Instrument_Split], 0);
                 }
                 else
                 {
                     Gui_Draw_Button_Box(729, (Cur_Height - 116) + (18 * 4), 60, 16, "Lock / All", Allow_Global | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
-                    outlong(729, (Cur_Height - 134) + (18 * 4), Sample_Length[Current_Instrument][Current_Instrument_Split], 0);
+                    Print_Long(729, (Cur_Height - 134) + (18 * 4), Sample_Length[Current_Instrument][Current_Instrument_Split], 0);
                 }
                 Actualize_Instruments_Synths_List(1);
             }
@@ -1069,7 +1069,7 @@ void Mouse_Right_Instrument_Ed(void)
 
         if(SampleType[Current_Instrument][Current_Instrument_Split])
         {
-            if(zcheckMouse(570, (Cur_Height - 116), 16, 16) && Basenote[Current_Instrument][Current_Instrument_Split] > 0)
+            if(Check_Mouse(570, (Cur_Height - 116), 16, 16) && Basenote[Current_Instrument][Current_Instrument_Split] > 0)
             {
                 if(Basenote[Current_Instrument][Current_Instrument_Split] > 11) Basenote[Current_Instrument][Current_Instrument_Split] -= 12;
                 else Basenote[Current_Instrument][Current_Instrument_Split] = 0;
@@ -1077,7 +1077,7 @@ void Mouse_Right_Instrument_Ed(void)
                 teac = 9;
             }
 
-            if(zcheckMouse(614, (Cur_Height - 116), 16, 16) && Basenote[Current_Instrument][Current_Instrument_Split] < 119)
+            if(Check_Mouse(614, (Cur_Height - 116), 16, 16) && Basenote[Current_Instrument][Current_Instrument_Split] < 119)
             {
                 if(Basenote[Current_Instrument][Current_Instrument_Split] < 107) Basenote[Current_Instrument][Current_Instrument_Split] += 12;
                 else Basenote[Current_Instrument][Current_Instrument_Split] = 119;
@@ -1088,7 +1088,7 @@ void Mouse_Right_Instrument_Ed(void)
     }
 }
 
-void Afloop(void)
+void Display_Fine_Loop_Data(void)
 {
     int iose;
     if(actuloop == 1 || actuloop == 3)
@@ -1147,25 +1147,25 @@ void Mouse_Left_Repeat_Instrument_Ed(void)
     {
         gui_action = GUI_CMD_NOP;
 
-        if(zcheckMouse(78, (Cur_Height - 130), 16, 16) && *Cur_Loop_Start > 0)
+        if(Check_Mouse(78, (Cur_Height - 130), 16, 16) && *Cur_Loop_Start > 0)
         {
             *Cur_Loop_Start -= 1;
             gui_action = GUI_CMD_UPDATE_INSTRUMENT_ED;
             teac = 5;
         }
-        if(zcheckMouse(194, (Cur_Height - 130), 16, 16) && *Cur_Loop_Start < *Cur_Loop_End)
+        if(Check_Mouse(194, (Cur_Height - 130), 16, 16) && *Cur_Loop_Start < *Cur_Loop_End)
         {
             *Cur_Loop_Start += 1;
             gui_action = GUI_CMD_UPDATE_INSTRUMENT_ED;
             teac = 5;
         }
-        if(zcheckMouse(278, (Cur_Height - 130), 16, 16) && *Cur_Loop_End > *Cur_Loop_Start)
+        if(Check_Mouse(278, (Cur_Height - 130), 16, 16) && *Cur_Loop_End > *Cur_Loop_Start)
         {
             *Cur_Loop_End -= 1;
             gui_action = GUI_CMD_UPDATE_LOOP_EDITOR_ED;
             teac = 5;
         }
-        if(zcheckMouse(394, (Cur_Height - 130), 16, 16) && *Cur_Loop_End < (int32) Sample_Length[Current_Instrument][Current_Instrument_Split])
+        if(Check_Mouse(394, (Cur_Height - 130), 16, 16) && *Cur_Loop_End < (int32) Sample_Length[Current_Instrument][Current_Instrument_Split])
         {
             *Cur_Loop_End += 1;
             gui_action = GUI_CMD_UPDATE_LOOP_EDITOR_ED;
@@ -1183,21 +1183,21 @@ void Mouse_Sliders_Right_Instrument_Ed(void)
     {
         gui_action = GUI_CMD_NOP;
 
-        if(zcheckMouse(78, (Cur_Height - 130), 16, 16) && *Cur_Loop_Start > 0)
+        if(Check_Mouse(78, (Cur_Height - 130), 16, 16) && *Cur_Loop_Start > 0)
         {
             *Cur_Loop_Start -= 10;
             if(*Cur_Loop_Start < 0) *Cur_Loop_Start = 0;
             gui_action = GUI_CMD_UPDATE_INSTRUMENT_ED;
             teac = 5;
         }
-        if(zcheckMouse(194, (Cur_Height - 130), 16, 16) && *Cur_Loop_Start < *Cur_Loop_End)
+        if(Check_Mouse(194, (Cur_Height - 130), 16, 16) && *Cur_Loop_Start < *Cur_Loop_End)
         {
             *Cur_Loop_Start += 10;
             if(*Cur_Loop_Start > *Cur_Loop_End) *Cur_Loop_Start = *Cur_Loop_End;
             gui_action = GUI_CMD_UPDATE_INSTRUMENT_ED;
             teac = 5;
         }
-        if(zcheckMouse(278, (Cur_Height - 130), 16, 16) && *Cur_Loop_End > *Cur_Loop_Start)
+        if(Check_Mouse(278, (Cur_Height - 130), 16, 16) && *Cur_Loop_End > *Cur_Loop_Start)
         {
             *Cur_Loop_End -= 10;
             if(*Cur_Loop_End < *Cur_Loop_Start)
@@ -1207,7 +1207,7 @@ void Mouse_Sliders_Right_Instrument_Ed(void)
             gui_action = GUI_CMD_UPDATE_LOOP_EDITOR_ED;
             teac = 5;
         }
-        if(zcheckMouse(394, (Cur_Height - 130), 16, 16) && *Cur_Loop_End <
+        if(Check_Mouse(394, (Cur_Height - 130), 16, 16) && *Cur_Loop_End <
            (int32) Sample_Length[Current_Instrument][Current_Instrument_Split])
         {
             *Cur_Loop_End += 10;
@@ -1372,7 +1372,7 @@ void Dump_Instruments_Synths_List(int xr, int yr)
                             sprintf(Line, "%.2x:", rel_val);
                             PrintString(xr, yr + (counter * 12), Font, Line);
 
-                            sprintf(Line, "%s", PARASynth[rel_val].presetname);
+                            sprintf(Line, "%s", PARASynth[rel_val].Preset_Name);
                             PrintString(xr + 18, yr + (counter * 12), Font, Line);
 
                             int instr_to_search = Synthprg[rel_val];
@@ -1638,29 +1638,29 @@ void Lock_Sample(int instr_nbr, int split)
             {
 #if defined(__AT3_CODEC__)
                 case SMP_PACK_AT3:
-                    UnpackAT3((Uint8 *) PackedSample, Dest_Buffer, PackedLen, Size, BitRate);
+                    Unpack_AT3((Uint8 *) PackedSample, Dest_Buffer, PackedLen, Size, BitRate);
                     break;
 #endif
 #if defined(__GSM_CODEC__)
                 case SMP_PACK_GSM:
-                    UnpackGSM((Uint8 *) PackedSample, Dest_Buffer, PackedLen, Size);
+                    Unpack_GSM((Uint8 *) PackedSample, Dest_Buffer, PackedLen, Size);
                     break;
 #endif
 #if defined(__MP3_CODEC__)
                 case SMP_PACK_MP3:
-                    UnpackMP3((Uint8 *) PackedSample, Dest_Buffer, PackedLen, Size, BitRate);
+                    Unpack_MP3((Uint8 *) PackedSample, Dest_Buffer, PackedLen, Size, BitRate);
                     break;
 #endif
                 case SMP_PACK_ADPCM:
-                    UnpackADPCM((Uint8 *) PackedSample, Dest_Buffer, PackedLen, Size);
+                    Unpack_ADPCM((Uint8 *) PackedSample, Dest_Buffer, PackedLen, Size);
                     break;
 
                 case SMP_PACK_8BIT:
-                    Unpack8Bit((Uint8 *) PackedSample, Dest_Buffer, PackedLen, Size);
+                    Unpack_8Bit((Uint8 *) PackedSample, Dest_Buffer, PackedLen, Size);
                     break;
 
                 case SMP_PACK_WAVPACK:
-                    UnpackWavPack((Uint8 *) PackedSample, Dest_Buffer, PackedLen, Size);
+                    Unpack_WavPack((Uint8 *) PackedSample, Dest_Buffer, PackedLen, Size);
                     break;
             }
         }

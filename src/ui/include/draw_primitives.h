@@ -70,7 +70,8 @@ void Copy_No_Refresh(GLuint Source, int x, int y, int x1, int y1, int x2, int y2
 void Copy(SDL_Surface *Source, int x, int y, int x1, int y1, int x2, int y2);
 void Copy_No_Refresh(SDL_Surface *Source, int x, int y, int x1, int y1, int x2, int y2);
 #endif
-void Copy_To_Surface(SDL_Surface *Source, SDL_Surface *dest, int x, int y, int x1, int y1, int x2, int y2);
+void Copy_To_Surface(SDL_Surface *Source, SDL_Surface *dest,
+                     int dest_x, int dest_y, int src_start_x, int src_start_y, int src_end_x, int src_end_y);
 void PrintString(int x, int y, int Font_Type, char *String, int max_x = -1);
 void Push_Update_Rect(int x, int y, int width, int height);
 #if defined(__USE_OPENGL__)

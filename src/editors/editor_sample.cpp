@@ -149,9 +149,9 @@ void Draw_Wave_Data(void)
             {
                 Allow = TRUE;
             }
-            Realslider_Horiz(WAVE_LEFT + 18, (Cur_Height - 41), sed_display_start, sed_display_length,
-                             Sample_Length[Current_Instrument][Current_Instrument_Split],
-                             LARGE_SMP_VIEW + 2 - (18 * 2), Allow);
+            Real_Slider_Horiz(WAVE_LEFT + 18, (Cur_Height - 41), sed_display_start, sed_display_length,
+                              Sample_Length[Current_Instrument][Current_Instrument_Split],
+                              LARGE_SMP_VIEW + 2 - (18 * 2), Allow);
 
             // Layout around the waveform
             SetColor(COL_BACKGROUND);
@@ -573,8 +573,8 @@ void Actualize_Sample_Ed(char gode)
             }
             else
             {
-                outlong(520, (Cur_Height - 42), LoopStart[Current_Instrument][Current_Instrument_Split], 11);
-                outlong(582, (Cur_Height - 42), LoopEnd[Current_Instrument][Current_Instrument_Split], 12);
+                Print_Long(520, (Cur_Height - 42), LoopStart[Current_Instrument][Current_Instrument_Split], 11);
+                Print_Long(582, (Cur_Height - 42), LoopEnd[Current_Instrument][Current_Instrument_Split], 12);
             }
         }
 
@@ -582,18 +582,18 @@ void Actualize_Sample_Ed(char gode)
         {
             if(gode == 3 || gode == 0)
             {
-                outlong(712, (Cur_Height - 60), sed_display_start, 10);
-                outlong(712, (Cur_Height - 42), sed_display_length, 12);
+                Print_Long(712, (Cur_Height - 60), sed_display_start, 10);
+                Print_Long(712, (Cur_Height - 42), sed_display_length, 12);
             }
 
             if(gode == 4 || gode == 5 || gode == 0)
             {
-                outlong(650, (Cur_Height - 60), sed_real_range_start, 10);
+                Print_Long(650, (Cur_Height - 60), sed_real_range_start, 10);
             }
 
             if(gode == 4 || gode == 5 || gode == 0)
             {
-                outlong(650, (Cur_Height - 42), sed_real_range_end, 11);
+                Print_Long(650, (Cur_Height - 42), sed_real_range_end, 11);
             }
 
             // Rotate 1 sample left
@@ -605,7 +605,7 @@ void Actualize_Sample_Ed(char gode)
                 }
             }
 
-            // Rotate 1 sample left
+            // Rotate 1 sample right
             if(gode == SMPED_ROTATE_RIGHT_1)
             {
                 if(Sample_Rotate_Right(sed_real_range_start, sed_real_range_end, 1))
@@ -635,10 +635,12 @@ void Actualize_Sample_Ed(char gode)
             // Cut Sample
             if(gode == SMPED_CUT)
             {
+                Lock_Audio_Thread();
                 if(Sample_Cut(sed_real_range_start, sed_real_range_end, TRUE))
                 {
                     Refresh_Sample(TRUE);
                 }
+                Unlock_Audio_Thread();
             }
 
             // Copy Sample
@@ -653,19 +655,23 @@ void Actualize_Sample_Ed(char gode)
             // Paste Sample
             if(gode == SMPED_PASTE)
             {
+                Lock_Audio_Thread();
                 if(Sample_Paste(sed_real_range_start))
                 {
                     Refresh_Sample(TRUE);
                 }
+                Unlock_Audio_Thread();
             }
 
             // Crop Sample
             if(gode == SMPED_CROP)
             {
+                Lock_Audio_Thread();
                 if(Sample_Crop(sed_real_range_start, sed_real_range_end))
                 {
                     Refresh_Sample(TRUE);
                 }
+                Unlock_Audio_Thread();
             }
 
             // Reverse Sample
@@ -708,10 +714,12 @@ void Actualize_Sample_Ed(char gode)
             // Zap
             if(gode == SMPED_ZAP)
             {
+                Lock_Audio_Thread();
                 if(Sample_Cut(sed_real_range_start, sed_real_range_end, FALSE))
                 {
                     Refresh_Sample(TRUE);
                 }
+                Unlock_Audio_Thread();
             }
 
             // DC adjust
@@ -753,19 +761,23 @@ void Actualize_Sample_Ed(char gode)
             // Duplicate
             if(gode == SMPED_DUPLICATE)
             {
+                Lock_Audio_Thread();
                 if(Sample_Duplicate(sed_real_range_start, sed_real_range_end))
                 {
                     Refresh_Sample(TRUE);
                 }
+                Unlock_Audio_Thread();
             }
 
             // Insert zero
             if(gode == SMPED_INSERTZERO)
             {
+                Lock_Audio_Thread();
                 if(Sample_InsertZero(sed_real_range_start, sed_real_range_end))
                 {
                     Refresh_Sample(TRUE);
                 }
+                Unlock_Audio_Thread();
             }
 
             // Draw mode
@@ -811,7 +823,7 @@ void Mouse_Right_Sample_Ed(void)
 
     if(userscreen == USER_SCREEN_SAMPLE_EDIT)
     {
-        if(zcheckMouse(WAVE_LEFT + 1, (Cur_Height - 150), LARGE_SMP_VIEW, SAMPLE_LINES_HEIGHT))
+        if(Check_Mouse(WAVE_LEFT + 1, (Cur_Height - 150), LARGE_SMP_VIEW, SAMPLE_LINES_HEIGHT))
         {
             if(sed_range_mode)
             {
@@ -836,21 +848,21 @@ void Mouse_Right_Sample_Ed(void)
         }
 
         // Rotate left x
-        if(zcheckMouse(650, (Cur_Height - 132), 16, 16) && sed_range_mode && Allow)
+        if(Check_Mouse(650, (Cur_Height - 132), 16, 16) && sed_range_mode && Allow)
         {
             teac = SMPED_ROTATE_LEFT_X;
             gui_action = GUI_CMD_REFRESH_SAMPLE_ED;
         }
 
         // Rotate right x
-        if(zcheckMouse(704, (Cur_Height - 132), 16, 16) && sed_range_mode && Allow)
+        if(Check_Mouse(704, (Cur_Height - 132), 16, 16) && sed_range_mode && Allow)
         {
             teac = SMPED_ROTATE_RIGHT_X;
             gui_action = GUI_CMD_REFRESH_SAMPLE_ED;
         }
 
         // Bottom arrow left
-        if(zcheckMouse(WAVE_LEFT, (Cur_Height - 41), 16, 16))
+        if(Check_Mouse(WAVE_LEFT, (Cur_Height - 41), 16, 16))
         {
             if(Sample_Length[Current_Instrument][Current_Instrument_Split])
             {
@@ -865,7 +877,7 @@ void Mouse_Right_Sample_Ed(void)
         }
 
         // Bottom arrow right
-        if(zcheckMouse(WAVE_LEFT + LARGE_SMP_VIEW - (18 * 1) + 3, (Cur_Height - 41), 16, 16))
+        if(Check_Mouse(WAVE_LEFT + LARGE_SMP_VIEW - (18 * 1) + 3, (Cur_Height - 41), 16, 16))
         {
             if(Sample_Length[Current_Instrument][Current_Instrument_Split])
             {
@@ -888,7 +900,7 @@ void Mouse_Middle_Sample_Ed(void)
 {
     if(userscreen == USER_SCREEN_SAMPLE_EDIT)
     {
-        if(zcheckMouse(WAVE_LEFT + 1, (Cur_Height - 150), LARGE_SMP_VIEW, SAMPLE_LINES_HEIGHT))
+        if(Check_Mouse(WAVE_LEFT + 1, (Cur_Height - 150), LARGE_SMP_VIEW, SAMPLE_LINES_HEIGHT))
         {
             if(sed_range_mode && sed_range_start != sed_range_end)
             {
@@ -923,7 +935,7 @@ void Mouse_Left_Sample_Ed(void)
         if(SampleType[Current_Instrument][Current_Instrument_Split])
         {
             // Set Loop Start
-            if(zcheckMouse(712, (Cur_Height - 114), 60, 16) && sed_range_mode && !smp_draw_mode)
+            if(Check_Mouse(712, (Cur_Height - 114), 60, 16) && sed_range_mode && !smp_draw_mode)
             {
                 if(sed_range_start > sed_range_end)
                 {
@@ -962,7 +974,7 @@ void Mouse_Left_Sample_Ed(void)
             }
 
             // Set Loop End
-            if(zcheckMouse(712, (Cur_Height - 96), 60, 16) && sed_range_mode && !smp_draw_mode)
+            if(Check_Mouse(712, (Cur_Height - 96), 60, 16) && sed_range_mode && !smp_draw_mode)
             {
                 if(sed_range_start > sed_range_end)
                 {
@@ -1008,147 +1020,147 @@ void Mouse_Left_Sample_Ed(void)
             }
 
             // Rotate left 1
-            if(zcheckMouse(668, (Cur_Height - 132), 16, 16) && sed_range_mode && Allow)
+            if(Check_Mouse(668, (Cur_Height - 132), 16, 16) && sed_range_mode && Allow)
             {
                 teac = SMPED_ROTATE_LEFT_1;
                 gui_action = GUI_CMD_REFRESH_SAMPLE_ED;
             }
 
             // Rotate right 1
-            if(zcheckMouse(686, (Cur_Height - 132), 16, 16) && sed_range_mode && Allow)
+            if(Check_Mouse(686, (Cur_Height - 132), 16, 16) && sed_range_mode && Allow)
             {
                 teac = SMPED_ROTATE_RIGHT_1;
                 gui_action = GUI_CMD_REFRESH_SAMPLE_ED;
             }
 
             // Cut
-            if(zcheckMouse(520, (Cur_Height - 150), 29, 16) && sed_range_mode && Allow)
+            if(Check_Mouse(520, (Cur_Height - 150), 29, 16) && sed_range_mode && Allow)
             {
                 teac = SMPED_CUT;
                 gui_action = GUI_CMD_REFRESH_SAMPLE_ED;
             }
 
             // Copy
-            if(zcheckMouse(551, (Cur_Height - 150), 29, 16) && sed_range_mode && Allow)
+            if(Check_Mouse(551, (Cur_Height - 150), 29, 16) && sed_range_mode && Allow)
             {
                 teac = SMPED_COPY;
                 gui_action = GUI_CMD_REFRESH_SAMPLE_ED;
             }
 
             // Paste
-            if(zcheckMouse(582, (Cur_Height - 150), 29, 16) && sed_range_mode && Allow)
+            if(Check_Mouse(582, (Cur_Height - 150), 29, 16) && sed_range_mode && Allow)
             {
                 teac = SMPED_PASTE;
                 gui_action = GUI_CMD_REFRESH_SAMPLE_ED;
             }
 
             // Crop
-            if(zcheckMouse(613, (Cur_Height - 150), 29, 16) && sed_range_mode && Allow)
+            if(Check_Mouse(613, (Cur_Height - 150), 29, 16) && sed_range_mode && Allow)
             {
                 teac = SMPED_CROP;
                 gui_action = GUI_CMD_REFRESH_SAMPLE_ED;
             }
 
             // Reverse
-            if(zcheckMouse(722, (Cur_Height - 132), 50, 16) && sed_range_mode && Allow)
+            if(Check_Mouse(722, (Cur_Height - 132), 50, 16) && sed_range_mode && Allow)
             {
                 teac = SMPED_REVERSE;
                 gui_action = GUI_CMD_REFRESH_SAMPLE_ED;
             }
 
             // Select buffer 1
-            if(zcheckMouse(650, (Cur_Height - 150), 16, 16) && Allow)
+            if(Check_Mouse(650, (Cur_Height - 150), 16, 16) && Allow)
             {
                 teac = SMPED_BUF1;
                 gui_action = GUI_CMD_REFRESH_SAMPLE_ED;
             }
 
             // Select buffer 2
-            if(zcheckMouse(668, (Cur_Height - 150), 16, 16) && Allow)
+            if(Check_Mouse(668, (Cur_Height - 150), 16, 16) && Allow)
             {
                 teac = SMPED_BUF2;
                 gui_action = GUI_CMD_REFRESH_SAMPLE_ED;
             }
 
             // Select buffer 3
-            if(zcheckMouse(686, (Cur_Height - 150), 16, 16) && Allow)
+            if(Check_Mouse(686, (Cur_Height - 150), 16, 16) && Allow)
             {
                 teac = SMPED_BUF3;
                 gui_action = GUI_CMD_REFRESH_SAMPLE_ED;
             }
 
             // Select buffer 4
-            if(zcheckMouse(704, (Cur_Height - 150), 16, 16) && Allow)
+            if(Check_Mouse(704, (Cur_Height - 150), 16, 16) && Allow)
             {
                 teac = SMPED_BUF4;
                 gui_action = GUI_CMD_REFRESH_SAMPLE_ED;
             }
 
             // Select buffer 4
-            if(zcheckMouse(520, (Cur_Height - 132), 16, 16) && Allow)
+            if(Check_Mouse(520, (Cur_Height - 132), 16, 16) && Allow)
             {
                 teac = SMPED_ZAP;
                 gui_action = GUI_CMD_REFRESH_SAMPLE_ED;
             }
 
             // Half
-            if(zcheckMouse(551, (Cur_Height - 132), 29, 16) && sed_range_mode && Allow)
+            if(Check_Mouse(551, (Cur_Height - 132), 29, 16) && sed_range_mode && Allow)
             {
                 teac = SMPED_HALF;
                 gui_action = GUI_CMD_REFRESH_SAMPLE_ED;
             }
 
             // Maximize
-            if(zcheckMouse(520, (Cur_Height - 114), 29, 16) && sed_range_mode && Allow)
+            if(Check_Mouse(520, (Cur_Height - 114), 29, 16) && sed_range_mode && Allow)
             {
                 teac = SMPED_MAXIMIZE;
                 gui_action = GUI_CMD_REFRESH_SAMPLE_ED;
             }
 
             // Zeroize
-            if(zcheckMouse(551, (Cur_Height - 114), 29, 16) && sed_range_mode && Allow)
+            if(Check_Mouse(551, (Cur_Height - 114), 29, 16) && sed_range_mode && Allow)
             {
                 teac = SMPED_ZEROIZE;
                 gui_action = GUI_CMD_REFRESH_SAMPLE_ED;
             }
 
             // Duplicate
-            if(zcheckMouse(520, (Cur_Height - 96), 29, 16) && sed_range_mode && Allow)
+            if(Check_Mouse(520, (Cur_Height - 96), 29, 16) && sed_range_mode && Allow)
             {
                 teac = SMPED_DUPLICATE;
                 gui_action = GUI_CMD_REFRESH_SAMPLE_ED;
             }
 
             // Insert zeroes
-            if(zcheckMouse(551, (Cur_Height - 96), 29, 16) && sed_range_mode && Allow)
+            if(Check_Mouse(551, (Cur_Height - 96), 29, 16) && sed_range_mode && Allow)
             {
                 teac = SMPED_INSERTZERO;
                 gui_action = GUI_CMD_REFRESH_SAMPLE_ED;
             }
 
             // DC Adjust
-            if(zcheckMouse(520, (Cur_Height - 78), 60, 16) && sed_range_mode && Allow)
+            if(Check_Mouse(520, (Cur_Height - 78), 60, 16) && sed_range_mode && Allow)
             {
                 teac = SMPED_DC_ADJUST;
                 gui_action = GUI_CMD_REFRESH_SAMPLE_ED;
             }
 
             // Fade in
-            if(zcheckMouse(520, (Cur_Height - 60), 29, 16) && sed_range_mode && Allow)
+            if(Check_Mouse(520, (Cur_Height - 60), 29, 16) && sed_range_mode && Allow)
             {
                 teac = SMPED_FADEIN;
                 gui_action = GUI_CMD_REFRESH_SAMPLE_ED;
             }
 
             // Fade out
-            if(zcheckMouse(551, (Cur_Height - 60), 29, 16) && sed_range_mode && Allow)
+            if(Check_Mouse(551, (Cur_Height - 60), 29, 16) && sed_range_mode && Allow)
             {
                 teac = SMPED_FADEOUT;
                 gui_action = GUI_CMD_REFRESH_SAMPLE_ED;
             }
 
             // Draw mode
-            if(zcheckMouse(776, (Cur_Height - 150), 16, 16) && !SamplesSwap[Current_Instrument])
+            if(Check_Mouse(776, (Cur_Height - 150), 16, 16) && !SamplesSwap[Current_Instrument])
             {
                 if(smp_draw_mode == TRUE)
                 {
@@ -1163,7 +1175,7 @@ void Mouse_Left_Sample_Ed(void)
             }
 
             // View All
-            if(zcheckMouse(582, (Cur_Height - 96), 60, 16) && !smp_draw_mode)
+            if(Check_Mouse(582, (Cur_Height - 96), 60, 16) && !smp_draw_mode)
             {
                 rs_coef = 32768;
                 sed_display_start = 0;
@@ -1174,21 +1186,21 @@ void Mouse_Left_Sample_Ed(void)
             }
 
             // VZoom In
-            if(zcheckMouse(582, (Cur_Height - 78), 60, 16) && !smp_draw_mode)
+            if(Check_Mouse(582, (Cur_Height - 78), 60, 16) && !smp_draw_mode)
             {
                 rs_coef /= 2;
                 draw_sampled_wave = TRUE;
             }
 
             // VZoom Out
-            if(zcheckMouse(582, (Cur_Height - 60), 60, 16) && !smp_draw_mode)
+            if(Check_Mouse(582, (Cur_Height - 60), 60, 16) && !smp_draw_mode)
             {
                 rs_coef *= 2;
                 draw_sampled_wave = TRUE;
             }
 
             // Unselect
-            if(zcheckMouse(582, (Cur_Height - 114), 60, 16) && !smp_draw_mode)
+            if(Check_Mouse(582, (Cur_Height - 114), 60, 16) && !smp_draw_mode)
             {
                 sed_range_mode = FALSE;
                 sed_range_start = 0;
@@ -1199,7 +1211,7 @@ void Mouse_Left_Sample_Ed(void)
             }
 
             // Select all
-            if(zcheckMouse(722, (Cur_Height - 150), 50, 16) && !smp_draw_mode)
+            if(Check_Mouse(722, (Cur_Height - 150), 50, 16) && !smp_draw_mode)
             {
                 sed_range_mode = TRUE;
                 sed_range_start = 0;
@@ -1210,7 +1222,7 @@ void Mouse_Left_Sample_Ed(void)
             }
 
             // Select view
-            if(zcheckMouse(582, (Cur_Height - 132), 60, 16) && !smp_draw_mode)
+            if(Check_Mouse(582, (Cur_Height - 132), 60, 16) && !smp_draw_mode)
             {
                 sed_range_mode = TRUE;
                 sed_range_start = sed_display_start;
@@ -1221,19 +1233,19 @@ void Mouse_Left_Sample_Ed(void)
             }
 
             // Zoom in
-            if(zcheckMouse(650, (Cur_Height - 114), 60, 16) && sed_range_mode && !smp_draw_mode)
+            if(Check_Mouse(650, (Cur_Height - 114), 60, 16) && sed_range_mode && !smp_draw_mode)
             {
                 Zoom_In_Sel();
             }
 
             // Zoom out
-            if(zcheckMouse(650, (Cur_Height - 96), 60, 16) && !smp_draw_mode)
+            if(Check_Mouse(650, (Cur_Height - 96), 60, 16) && !smp_draw_mode)
             {
                 Zoom_Out_Sel();
             }
 
             // Bottom arrow left
-            if(zcheckMouse(WAVE_LEFT, (Cur_Height - 41), 16, 16))
+            if(Check_Mouse(WAVE_LEFT, (Cur_Height - 41), 16, 16))
             {
                 if(Sample_Length[Current_Instrument][Current_Instrument_Split])
                 {
@@ -1245,7 +1257,7 @@ void Mouse_Left_Sample_Ed(void)
             }
 
             // Bottom arrow right
-            if(zcheckMouse(WAVE_LEFT + LARGE_SMP_VIEW - (18 * 1) + 3, (Cur_Height - 41), 16, 16))
+            if(Check_Mouse(WAVE_LEFT + LARGE_SMP_VIEW - (18 * 1) + 3, (Cur_Height - 41), 16, 16))
             {
                 if(Sample_Length[Current_Instrument][Current_Instrument_Split])
                 {
@@ -1267,7 +1279,7 @@ void Mouse_Wheel_Sample_Ed(int roll_amount)
 {
     if(userscreen == USER_SCREEN_SAMPLE_EDIT)
     {
-        if(zcheckMouse(WAVE_LEFT + 1, (Cur_Height - 150), LARGE_SMP_VIEW, 109 + 16))
+        if(Check_Mouse(WAVE_LEFT + 1, (Cur_Height - 150), LARGE_SMP_VIEW, 109 + 16))
         {
             int max_length = Sample_Length[Current_Instrument][Current_Instrument_Split];
             sed_display_start += roll_amount * (sed_display_length / 16);
@@ -1303,7 +1315,7 @@ void Mouse_Sliders_Sample_Ed(void)
 
     if(userscreen == USER_SCREEN_SAMPLE_EDIT)
     {
-        if(zcheckMouse(WAVE_LEFT, (Cur_Height - 150), LARGE_SMP_VIEW + 1, 109))
+        if(Check_Mouse(WAVE_LEFT, (Cur_Height - 150), LARGE_SMP_VIEW + 1, 109))
         {
             // Move within the sample
             if(SampleType[Current_Instrument][Current_Instrument_Split])
@@ -1430,7 +1442,7 @@ void Mouse_Sliders_Sample_Ed(void)
         } // MOUSEBOX
 
         // Bottom slider
-        if(zcheckMouse(WAVE_LEFT + 18, (Cur_Height - 41), LARGE_SMP_VIEW + 2 - (18 * 2), 16))
+        if(Check_Mouse(WAVE_LEFT + 18, (Cur_Height - 41), LARGE_SMP_VIEW + 2 - (18 * 2), 16))
         {
             if(Sample_Length[Current_Instrument][Current_Instrument_Split])
             {
@@ -1452,14 +1464,14 @@ void Mouse_Sliders_Sample_Ed(void)
         }
 
         // Rotate left 1
-        if(zcheckMouse(650, (Cur_Height - 132), 16, 16) && sed_range_mode && Allow)
+        if(Check_Mouse(650, (Cur_Height - 132), 16, 16) && sed_range_mode && Allow)
         {
             teac = SMPED_ROTATE_LEFT_1;
             gui_action = GUI_CMD_REFRESH_SAMPLE_ED;
         }
 
         // Rotate right 1
-        if(zcheckMouse(704, (Cur_Height - 132), 16, 16) && sed_range_mode && Allow)
+        if(Check_Mouse(704, (Cur_Height - 132), 16, 16) && sed_range_mode && Allow)
         {
             teac = SMPED_ROTATE_RIGHT_1;
             gui_action = GUI_CMD_REFRESH_SAMPLE_ED;
@@ -1531,10 +1543,10 @@ void Refresh_Sample(int clear_sel)
         sed_range_end = 0;
     }
     draw_sampled_wave = TRUE;
-    outlong(712, (Cur_Height - 60), sed_display_start, 10);
-    outlong(712, (Cur_Height - 42), sed_display_length, 12);
-    outlong(650, (Cur_Height - 60), sed_range_start, 10);
-    outlong(650, (Cur_Height - 42), sed_range_end, 11);
+    Print_Long(712, (Cur_Height - 60), sed_display_start, 10);
+    Print_Long(712, (Cur_Height - 42), sed_display_length, 12);
+    Print_Long(650, (Cur_Height - 60), sed_range_start, 10);
+    Print_Long(650, (Cur_Height - 42), sed_range_end, 11);
     Check_Loops();
     if(userscreen == USER_SCREEN_INSTRUMENT_EDIT)
     {

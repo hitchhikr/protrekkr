@@ -42,21 +42,46 @@
 // Variables
 int max_colors_logo;
 int max_colors_303;
+// ---
+SDL_Surface *Ptr_Temp_PFONT;
+SDL_Surface *Ptr_Temp_LARGEPFONT;
+SDL_Surface *Ptr_Temp_SMALLPFONT;
+SDL_Surface *Ptr_Temp_NOTEPFONT;
+SDL_Surface *Ptr_Temp_NOTELARGEPFONT;
+SDL_Surface *Ptr_Temp_NOTESMALLPFONT;
+// ---
 SDL_Surface *Temp_PFONT;
 SDL_Surface *Temp_LARGEPFONT;
 SDL_Surface *Temp_SMALLPFONT;
 SDL_Surface *Temp_NOTEPFONT;
 SDL_Surface *Temp_NOTELARGEPFONT;
 SDL_Surface *Temp_NOTESMALLPFONT;
+// ---
+SDL_Surface *Temp_PFONT_DOUBLE;
+SDL_Surface *Temp_LARGEPFONT_DOUBLE;
+SDL_Surface *Temp_SMALLPFONT_DOUBLE;
+SDL_Surface *Temp_NOTEPFONT_DOUBLE;
+SDL_Surface *Temp_NOTELARGEPFONT_DOUBLE;
+SDL_Surface *Temp_NOTESMALLPFONT_DOUBLE;
+// ---
 SDL_Surface *Note_Surface;
 SDL_Surface *Note_Alt_Surface;
 #if defined(__USE_OPENGL__)
+// ---
 GLuint Temp_PFONT_GL = -1;
 GLuint Temp_LARGEPFONT_GL = -1;
 GLuint Temp_SMALLPFONT_GL = -1;
 GLuint Temp_NOTEPFONT_GL = -1;
 GLuint Temp_NOTELARGEPFONT_GL = -1;
 GLuint Temp_NOTESMALLPFONT_GL = -1;
+// ---
+GLuint Temp_PFONT_GL_DOUBLE = -1;
+GLuint Temp_LARGEPFONT_GL_DOUBLE = -1;
+GLuint Temp_SMALLPFONT_GL_DOUBLE = -1;
+GLuint Temp_NOTEPFONT_GL_DOUBLE = -1;
+GLuint Temp_NOTELARGEPFONT_GL_DOUBLE = -1;
+GLuint Temp_NOTESMALLPFONT_GL_DOUBLE = -1;
+// ---
 GLuint Note_Surface_GL = -1;
 GLuint Note_Alt_Surface_GL = -1;
 GLuint FONT_GL = -1;
@@ -69,7 +94,11 @@ char Use_Shadows = TRUE;
 int done_303_palette = FALSE;
 int done_logo_palette = FALSE;
 extern int Burn_Title;
-int curr_tab_highlight;
+extern int chars_height;
+extern int pattern_double;
+int header_y;
+int header_size;
+int curr_tab_highlight = USER_SCREEN_DISKIO_EDIT;
 
 int Nbr_Letters;
 int Font_Height = 11;
@@ -85,8 +114,8 @@ char *Font_Ascii =
     "\360\361\362\363\364\365\366\367\370\372"
     ///   (   )   :
     "\373\374\375\376"
-    //.   -   |>  ||  Wave
-    "\250\251\253\254\255"
+    //.   -   |>  ||  Wave Y expand shrink
+    "\250\251\253\254\255\016\017"
     " ";
 int Font_Pos[256];
 int Font_Size[256];
@@ -1507,7 +1536,7 @@ void value_box3(int x, int y, char val, int flags)
     }
 }
 
-void outlong_small(int x, int y, int value, int mode, int size, int flags)
+void Print_Long_Small(int x, int y, int value, int mode, int size, int flags)
 {
     char xstr[40];
 
@@ -1526,7 +1555,7 @@ void outlong_small(int x, int y, int value, int mode, int size, int flags)
     Gui_Draw_Button_Box(x, y, size - 1, 16, xstr, flags);
 }
 
-void outlong(int x, int y, int cant, int mode)
+void Print_Long(int x, int y, int cant, int mode)
 {
     char xstr[40];
 
@@ -1619,7 +1648,7 @@ void Draw_Editors_Bar(int Highlight)
         Large_Patterns = FALSE;
         Set_Pattern_Size();
         Draw_Pattern_Right_Stuff();
-        Actupated(0);
+        Update_Pattern(0);
     }
     else
     {
@@ -1628,7 +1657,7 @@ void Draw_Editors_Bar(int Highlight)
         bjbox(0, (Cur_Height - 172) + Patterns_Lines_Offset, Cur_Width, 19);
         Highlight_Tab[USER_SCREEN_LARGE_PATTERN] = BUTTON_PUSHED;
         Draw_Pattern_Right_Stuff();
-        Actupated(0);
+        Update_Pattern(0);
     }
     
     if(Patterns_Lines_Offset == 0)
@@ -1725,7 +1754,7 @@ void Refresh_UI_Context(void)
     Actualize_Sample_Ed(0);
     Actualize_Fx_Ed(0);
     Actualize_Track_Fx_Ed(0);
-    Actualize_Patterned();
+    Actualize_Pattern_Ed();
     Actualize_Instruments_Synths_List(0);
     Display_Beat_Time();
 }
@@ -1880,7 +1909,7 @@ void Status_Box(char const *str)
       
 // ------------------------------------------------------
 // Display a horizontal slider
-void Realslider_Size(int x, int y, int size, int val, int Enabled)
+void Real_Slider_Size(int x, int y, int size, int val, int Enabled)
 {
     y--;
     if(Enabled)
@@ -1913,14 +1942,14 @@ void Realslider_Size(int x, int y, int size, int val, int Enabled)
     }
 }
 
-void Realslider(int x, int y, int val, int Enabled)
+void Real_Slider(int x, int y, int val, int Enabled)
 {
-    Realslider_Size(x, y, 128, val, Enabled);
+    Real_Slider_Size(x, y, 128, val, Enabled);
 }
 
-void Realslider2(int x, int y, int val, int Enabled)
+void Real_Slider_2(int x, int y, int val, int Enabled)
 {
-    Realslider_Size(x, y, 64, val, Enabled);
+    Real_Slider_Size(x, y, 64, val, Enabled);
 }
 
 // ------------------------------------------------------
@@ -1963,7 +1992,7 @@ float Slider_Calc_Pos(int displayed, int maximum, int size, int value)
 
 // ------------------------------------------------------
 // Display a horizontal slider
-void Realslider_Horiz(int x, int y, int value, int displayed, int maximum, int size, int enable)
+void Real_Slider_Horiz(int x, int y, int value, int displayed, int maximum, int size, int enable)
 {
     float caret_size;
     float Pos_slider;
@@ -2015,14 +2044,14 @@ void Realslider_Horiz(int x, int y, int value, int displayed, int maximum, int s
 
 // ------------------------------------------------------
 // Display a vertical slider
-void Realslider_Vert(int x,
-                     int y,
-                     int value,
-                     int displayed,
-                     int maximum,
-                     int size,
-                     int enable,
-                     int invert_color)
+void Real_Slider_Vert(int x,
+                      int y,
+                      int value,
+                      int displayed,
+                      int maximum,
+                      int size,
+                      int enable,
+                      int invert_color)
 {
     float caret_size;
     float Pos_slider;
@@ -2075,6 +2104,9 @@ void Realslider_Vert(int x,
 }
 
 // ------------------------------------------------------
+// Patterns letters & digits
+// ------------------------------------------------------
+// Normal letters & digits
 // dest x
 // dest y
 // letter
@@ -2084,54 +2116,55 @@ void Letter(int x, int y, char ltr, int ys, int y2)
 {
     switch(ltr)
     {
-        case 0: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 72, ys, 79, y2); break;
-        case 1: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 80, ys, 87, y2); break;
-        case 2: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 88, ys, 95, y2); break;
-        case 3: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 96, ys, 103, y2); break;
-        case 4: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 104, ys, 111, y2); break;
-        case 5: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 112, ys, 119, y2); break;
-        case 6: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 120, ys, 127, y2); break;
-        case 7: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 128, ys, 135, y2); break;
-        case 8: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 136, ys, 143, y2); break;
-        case 9: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 144, ys, 151, y2); break;
-        case 10: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 0, ys, 7, y2); break; // A
-        case 11: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 8, ys, 15, y2); break;// B
-        case 12: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 16, ys, 23, y2); break;// C
-        case 13: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 24, ys, 31, y2); break;// D
-        case 14: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 32, ys, 39, y2); break;// E
-        case 15: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 40, ys, 47, y2); break;// F
-        case 16: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 48, ys, 55, y2); break;// G
-        case 17: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 64, ys, 71, y2); break; // #
-        case 18: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 176, ys, 183, y2); break; // -
-        case 19: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 152, ys, 175, y2); break; // Off
-        case 20: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 56, ys, 63, y2); break; // Blank
-        case 21: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 184, ys, 191, y2); break; // .
+        case 0: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 72, ys, 79, y2); break;
+        case 1: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 80, ys, 87, y2); break;
+        case 2: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 88, ys, 95, y2); break;
+        case 3: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 96, ys, 103, y2); break;
+        case 4: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 104, ys, 111, y2); break;
+        case 5: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 112, ys, 119, y2); break;
+        case 6: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 120, ys, 127, y2); break;
+        case 7: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 128, ys, 135, y2); break;
+        case 8: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 136, ys, 143, y2); break;
+        case 9: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 144, ys, 151, y2); break;
+        case 10: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 0, ys, 7, y2); break; // A
+        case 11: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 8, ys, 15, y2); break;// B
+        case 12: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 16, ys, 23, y2); break;// C
+        case 13: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 24, ys, 31, y2); break;// D
+        case 14: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 32, ys, 39, y2); break;// E
+        case 15: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 40, ys, 47, y2); break;// F
+        case 16: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 48, ys, 55, y2); break;// G
+        case 17: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 64, ys, 71, y2); break; // #
+        case 18: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 176, ys, 183, y2); break; // -
+        case 19: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 152, ys, 175, y2); break; // Off
+        case 20: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 56, ys, 63, y2); break; // Blank
+        case 21: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 184, ys, 191, y2); break; // .
 
-        case 23: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 56, 64, 56 + 26, 64 + 6); break; // ON
-        case 24: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 84, 64, 84 + 26, 64 + 6); break; // OFF
-        case 25: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y,  0, 64,  0 + 26, 64 + 6); break; // MUTE
-        case 26: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 28, 64, 28 + 26, 64 + 6); break; // PLAY
+        case 23: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 56, header_y, 56 + 26, header_size); break; // ON
+        case 24: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 84, header_y, 84 + 26, header_size); break; // OFF
+        case 25: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y,  0, header_y,  0 + 26, header_size); break; // MUTE
+        case 26: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 28, header_y, 28 + 26, header_size); break; // PLAY
 
-        case 27: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 193, 64, 193 + 14, 64 + 6); break; // ZOOM ON
-        case 28: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 221, 64, 221 + 14, 64 + 6); break; // ZOOM OFF
+        case 27: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 193, header_y, 193 + 14, header_size); break; // ZOOM ON
+        case 28: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 221, header_y, 221 + 14, header_size); break; // ZOOM OFF
 
-        case 29: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 56, ys, 59, y2); break; // Blank (4 pixels)
-        case 30: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 56, ys, 57, y2); break; // Blank (2 pixels)
+        case 29: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 56, ys, 59, y2); break; // Blank (4 pixels)
+        case 30: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 56, ys, 57, y2); break; // Blank (2 pixels)
 
-        case 31: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 111, 64, 111 + 4, 64 + 6); break; // FX ARROW LO BACK
-        case 32: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 138, 64, 138 + 4, 64 + 6); break; // FX ARROW HI BACK
-        case 33: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 165, 64, 165 + 4, 64 + 6); break; // FX ARROW SEL BACK
+        case 31: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 111, header_y, 111 + 4, header_size); break; // FX ARROW LO BACK
+        case 32: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 138, header_y, 138 + 4, header_size); break; // FX ARROW HI BACK
+        case 33: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 165, header_y, 165 + 4, header_size); break; // FX ARROW SEL BACK
 
-        case 34: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 56, ys, 56, y2); break; // Blank (1 pixels)
+        case 34: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 56, ys, 56, y2); break; // Blank (1 pixels)
 
-        case 35: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 249, 64, 249 + 6, 64 + 6); break; // REDUCE NOTES ON
-        case 36: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 257, 64, 257 + 6, 64 + 6); break; // EXPAND NOTES ON
-        case 37: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 277, 64, 277 + 6, 64 + 6); break; // REDUCE NOTES OFF
-        case 38: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 285, 64, 285 + 6, 64 + 6); break; // EXPAND NOTES OFF
+        case 35: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 249, header_y, 249 + 6, header_size); break; // REDUCE NOTES ON
+        case 36: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 257, header_y, 257 + 6, header_size); break; // EXPAND NOTES ON
+        case 37: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 277, header_y, 277 + 6, header_size); break; // REDUCE NOTES OFF
+        case 38: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 285, header_y, 285 + 6, header_size); break; // EXPAND NOTES OFF
     }
 }
 
 // ------------------------------------------------------
+// Normal notes
 // dest x
 // dest y
 // letter
@@ -2174,81 +2207,83 @@ void Note_Letter(int x, int y, char ltr, int ys, int y2)
         case 20: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 56, ys, 63, y2); break; // Blank
         case 21: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 184, ys, 191, y2); break; // .
 
-        case 23: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 56, 64, 56 + 26, 64 + 6); break; // ON
-        case 24: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 84, 64, 84 + 26, 64 + 6); break; // OFF
-        case 25: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y,  0, 64,  0 + 26, 64 + 6); break; // MUTE
-        case 26: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 28, 64, 28 + 26, 64 + 6); break; // PLAY
+        case 23: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 56, header_y, 56 + 26, header_size); break; // ON
+        case 24: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 84, header_y, 84 + 26, header_size); break; // OFF
+        case 25: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y,  0, header_y,  0 + 26, header_size); break; // MUTE
+        case 26: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 28, header_y, 28 + 26, header_size); break; // PLAY
 
-        case 27: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 193, 64, 193 + 14, 64 + 6); break; // ZOOM ON
-        case 28: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 221, 64, 221 + 14, 64 + 6); break; // ZOOM OFF
+        case 27: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 193, header_y, 193 + 14, header_size); break; // ZOOM ON
+        case 28: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 221, header_y, 221 + 14, header_size); break; // ZOOM OFF
 
-        case 29: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 56, ys, 59, y2); break; // Blank (4 pixels)
-        case 30: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 56, ys, 57, y2); break; // Blank (2 pixels)
+        case 29: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 56, ys, 59, y2); break; // Blank (4 pixels)
+        case 30: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 56, ys, 57, y2); break; // Blank (2 pixels)
 
-        case 31: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 111, 64, 111 + 4, 64 + 6); break; // FX ARROW LO BACK
-        case 32: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 138, 64, 138 + 4, 64 + 6); break; // FX ARROW HI BACK
-        case 33: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 165, 64, 165 + 4, 64 + 6); break; // FX ARROW SEL BACK
+        case 31: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 111, header_y, 111 + 4, header_size); break; // FX ARROW LO BACK
+        case 32: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 138, header_y, 138 + 4, header_size); break; // FX ARROW HI BACK
+        case 33: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 165, header_y, 165 + 4, header_size); break; // FX ARROW SEL BACK
 
-        case 35: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 249, 64, 249 + 6, 64 + 6); break; // REDUCE NOTES ON
-        case 36: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 257, 64, 257 + 6, 64 + 6); break; // EXPAND NOTES ON
-        case 37: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 277, 64, 277 + 6, 64 + 6); break; // REDUCE NOTES OFF
-        case 38: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 285, 64, 285 + 6, 64 + 6); break; // EXPAND NOTES OFF
+        case 35: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 249, header_y, 249 + 6, header_size); break; // REDUCE NOTES ON
+        case 36: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 257, header_y, 257 + 6, header_size); break; // EXPAND NOTES ON
+        case 37: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 277, header_y, 277 + 6, header_size); break; // REDUCE NOTES OFF
+        case 38: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 285, header_y, 285 + 6, header_size); break; // EXPAND NOTES OFF
     }
 }
 
 // ------------------------------------------------------
+// Large letters & digits
 void Large_Letter(int x, int y, char ltr, int ys, int y2)
 {
     switch(ltr)
     {
-        case 0: Copy_No_Refresh(GET_SURFACE(Temp_LARGEPFONT), x, y, 100, ys, 100 + 11, y2); break;
-        case 1: Copy_No_Refresh(GET_SURFACE(Temp_LARGEPFONT), x, y, 111, ys, 111 + 11, y2); break;
-        case 2: Copy_No_Refresh(GET_SURFACE(Temp_LARGEPFONT), x, y, 122, ys, 122 + 11, y2); break;
-        case 3: Copy_No_Refresh(GET_SURFACE(Temp_LARGEPFONT), x, y, 133, ys, 133 + 11, y2); break;
-        case 4: Copy_No_Refresh(GET_SURFACE(Temp_LARGEPFONT), x, y, 144, ys, 144 + 11, y2); break;
-        case 5: Copy_No_Refresh(GET_SURFACE(Temp_LARGEPFONT), x, y, 155, ys, 155 + 11, y2); break;
-        case 6: Copy_No_Refresh(GET_SURFACE(Temp_LARGEPFONT), x, y, 166, ys, 166 + 11, y2); break;
-        case 7: Copy_No_Refresh(GET_SURFACE(Temp_LARGEPFONT), x, y, 177, ys, 177 + 11, y2); break;
-        case 8: Copy_No_Refresh(GET_SURFACE(Temp_LARGEPFONT), x, y, 188, ys, 188 + 11, y2); break;
-        case 9: Copy_No_Refresh(GET_SURFACE(Temp_LARGEPFONT), x, y, 199, ys, 199 + 11, y2); break;
+        case 0: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 100, ys, 100 + 11, y2); break;
+        case 1: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 111, ys, 111 + 11, y2); break;
+        case 2: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 122, ys, 122 + 11, y2); break;
+        case 3: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 133, ys, 133 + 11, y2); break;
+        case 4: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 144, ys, 144 + 11, y2); break;
+        case 5: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 155, ys, 155 + 11, y2); break;
+        case 6: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 166, ys, 166 + 11, y2); break;
+        case 7: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 177, ys, 177 + 11, y2); break;
+        case 8: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 188, ys, 188 + 11, y2); break;
+        case 9: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 199, ys, 199 + 11, y2); break;
 
-        case 10: Copy_No_Refresh(GET_SURFACE(Temp_LARGEPFONT), x, y, 0, ys, 11, y2); break; // A
-        case 11: Copy_No_Refresh(GET_SURFACE(Temp_LARGEPFONT), x, y, 11, ys, 11 + 11, y2); break;// B
-        case 12: Copy_No_Refresh(GET_SURFACE(Temp_LARGEPFONT), x, y, 22, ys, 22 + 11, y2); break;// C
-        case 13: Copy_No_Refresh(GET_SURFACE(Temp_LARGEPFONT), x, y, 33, ys, 33 + 11, y2); break;// D
-        case 14: Copy_No_Refresh(GET_SURFACE(Temp_LARGEPFONT), x, y, 44, ys, 44 + 11, y2); break;// E
-        case 15: Copy_No_Refresh(GET_SURFACE(Temp_LARGEPFONT), x, y, 55, ys, 55 + 11, y2); break;// F
-        case 16: Copy_No_Refresh(GET_SURFACE(Temp_LARGEPFONT), x, y, 66, ys, 66 + 11, y2); break;// G
+        case 10: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 0, ys, 11, y2); break; // A
+        case 11: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 11, ys, 11 + 11, y2); break;// B
+        case 12: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 22, ys, 22 + 11, y2); break;// C
+        case 13: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 33, ys, 33 + 11, y2); break;// D
+        case 14: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 44, ys, 44 + 11, y2); break;// E
+        case 15: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 55, ys, 55 + 11, y2); break;// F
+        case 16: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 66, ys, 66 + 11, y2); break;// G
         
-        case 17: Copy_No_Refresh(GET_SURFACE(Temp_LARGEPFONT), x, y, 88, ys, 88 + 11, y2); break; // #
-        case 18: Copy_No_Refresh(GET_SURFACE(Temp_LARGEPFONT), x, y, 243, ys, 243 + 11, y2); break; // -
-        case 19: Copy_No_Refresh(GET_SURFACE(Temp_LARGEPFONT), x, y, 210, ys, 210 + 34, y2); break; // Off
-        case 20: Copy_No_Refresh(GET_SURFACE(Temp_LARGEPFONT), x, y, 77, ys, 77 + 11, y2); break; // Blank
-        case 21: Copy_No_Refresh(GET_SURFACE(Temp_LARGEPFONT), x, y, 254, ys, 254 + 11, y2); break; // .
+        case 17: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 88, ys, 88 + 11, y2); break; // #
+        case 18: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 243, ys, 243 + 11, y2); break; // -
+        case 19: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 210, ys, 210 + 34, y2); break; // Off
+        case 20: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 77, ys, 77 + 11, y2); break; // Blank
+        case 21: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 254, ys, 254 + 11, y2); break; // .
 
-        case 23: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 56, 64, 56 + 26, 64 + 6); break; // ON
-        case 24: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 84, 64, 84 + 26, 64 + 6); break; // OFF
-        case 25: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y,  0, 64,  0 + 26, 64 + 6); break; // MUTE
-        case 26: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 28, 64, 28 + 26, 64 + 6); break; // PLAY
+        case 23: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 56, header_y, 56 + 26, header_size); break; // ON
+        case 24: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 84, header_y, 84 + 26, header_size); break; // OFF
+        case 25: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y,  0, header_y,  0 + 26, header_size); break; // MUTE
+        case 26: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 28, header_y, 28 + 26, header_size); break; // PLAY
 
-        case 27: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 193, 64, 193 + 14, 64 + 6); break; // ZOOM ON
-        case 28: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 221, 64, 221 + 14, 64 + 6); break; // ZOOM OFF
+        case 27: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 193, header_y, 193 + 14, header_size); break; // ZOOM ON
+        case 28: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 221, header_y, 221 + 14, header_size); break; // ZOOM OFF
 
-        case 29: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 56, ys, 59, y2); break; // Blank (4 pixels)
-        case 30: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 56, ys, 57, y2); break; // Blank (2 pixels)
+        case 29: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 56, ys, 59, y2); break; // Blank (4 pixels)
+        case 30: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 56, ys, 57, y2); break; // Blank (2 pixels)
 
-        case 31: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 111, 64, 111 + 4, 64 + 6); break; // FX ARROW LO BACK
-        case 32: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 138, 64, 138 + 4, 64 + 6); break; // FX ARROW HI BACK
-        case 33: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 165, 64, 165 + 4, 64 + 6); break; // FX ARROW SEL BACK
+        case 31: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 111, header_y, 111 + 4, header_size); break; // FX ARROW LO BACK
+        case 32: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 138, header_y, 138 + 4, header_size); break; // FX ARROW HI BACK
+        case 33: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 165, header_y, 165 + 4, header_size); break; // FX ARROW SEL BACK
 
-        case 35: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 249, 64, 249 + 6, 64 + 6); break; // REDUCE NOTES ON
-        case 36: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 257, 64, 257 + 6, 64 + 6); break; // EXPAND NOTES ON
-        case 37: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 277, 64, 277 + 6, 64 + 6); break; // REDUCE NOTES OFF
-        case 38: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 285, 64, 285 + 6, 64 + 6); break; // EXPAND NOTES OFF
+        case 35: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 249, header_y, 249 + 6, header_size); break; // REDUCE NOTES ON
+        case 36: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 257, header_y, 257 + 6, header_size); break; // EXPAND NOTES ON
+        case 37: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 277, header_y, 277 + 6, header_size); break; // REDUCE NOTES OFF
+        case 38: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 285, header_y, 285 + 6, header_size); break; // EXPAND NOTES OFF
     }
 }
 
 // ------------------------------------------------------
+// Large notes
 void Note_Large_Letter(int x, int y, char ltr, int ys, int y2)
 {
     switch(ltr)
@@ -2288,81 +2323,83 @@ void Note_Large_Letter(int x, int y, char ltr, int ys, int y2)
         case 20: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 77, ys, 77 + 11, y2); break; // Blank
         case 21: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 254, ys, 254 + 11, y2); break; // .
 
-        case 23: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 56, 64, 56 + 26, 64 + 6); break; // ON
-        case 24: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 84, 64, 84 + 26, 64 + 6); break; // OFF
-        case 25: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y,  0, 64,  0 + 26, 64 + 6); break; // MUTE
-        case 26: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 28, 64, 28 + 26, 64 + 6); break; // PLAY
+        case 23: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 56, header_y, 56 + 26, header_size); break; // ON
+        case 24: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 84, header_y, 84 + 26, header_size); break; // OFF
+        case 25: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y,  0, header_y,  0 + 26, header_size); break; // MUTE
+        case 26: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 28, header_y, 28 + 26, header_size); break; // PLAY
 
-        case 27: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 193, 64, 193 + 14, 64 + 6); break; // ZOOM ON
-        case 28: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 221, 64, 221 + 14, 64 + 6); break; // ZOOM OFF
+        case 27: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 193, header_y, 193 + 14, header_size); break; // ZOOM ON
+        case 28: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 221, header_y, 221 + 14, header_size); break; // ZOOM OFF
 
-        case 29: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 56, ys, 59, y2); break; // Blank (4 pixels)
-        case 30: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 56, ys, 57, y2); break; // Blank (2 pixels)
+        case 29: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 56, ys, 59, y2); break; // Blank (4 pixels)
+        case 30: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 56, ys, 57, y2); break; // Blank (2 pixels)
 
-        case 31: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 111, 64, 111 + 4, 64 + 6); break; // FX ARROW LO BACK
-        case 32: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 138, 64, 138 + 4, 64 + 6); break; // FX ARROW HI BACK
-        case 33: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 165, 64, 165 + 4, 64 + 6); break; // FX ARROW SEL BACK
+        case 31: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 111, header_y, 111 + 4, header_size); break; // FX ARROW LO BACK
+        case 32: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 138, header_y, 138 + 4, header_size); break; // FX ARROW HI BACK
+        case 33: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 165, header_y, 165 + 4, header_size); break; // FX ARROW SEL BACK
 
-        case 35: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 249, 56, 249 + 6, 56 + 6); break; // REDUCE NOTES ON
-        case 36: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 257, 64, 257 + 6, 64 + 6); break; // EXPAND NOTES ON
-        case 37: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 277, 64, 277 + 6, 64 + 6); break; // REDUCE NOTES OFF
-        case 38: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 285, 64, 285 + 6, 64 + 6); break; // EXPAND NOTES OFF
+        case 35: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 249, header_y, 249 + 6, header_size); break; // REDUCE NOTES ON
+        case 36: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 257, header_y, 257 + 6, header_size); break; // EXPAND NOTES ON
+        case 37: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 277, header_y, 277 + 6, header_size); break; // REDUCE NOTES OFF
+        case 38: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 285, header_y, 285 + 6, header_size); break; // EXPAND NOTES OFF
     }
 }
 
 // ------------------------------------------------------
+// Small letters & digits
 void Small_Letter(int x, int y, char ltr, int ys, int y2)
 {
     switch(ltr)
     {
-        case 0: Copy_No_Refresh(GET_SURFACE(Temp_SMALLPFONT), x, y, 54, ys, 54 + 5, y2); break; // 0
-        case 1: Copy_No_Refresh(GET_SURFACE(Temp_SMALLPFONT), x, y, 60, ys, 60 + 5, y2); break; // 1
-        case 2: Copy_No_Refresh(GET_SURFACE(Temp_SMALLPFONT), x, y, 66, ys, 66 + 5, y2); break; // 2
-        case 3: Copy_No_Refresh(GET_SURFACE(Temp_SMALLPFONT), x, y, 72, ys, 72 + 5, y2); break; // 3
-        case 4: Copy_No_Refresh(GET_SURFACE(Temp_SMALLPFONT), x, y, 78, ys, 78 + 5, y2); break; // 4
-        case 5: Copy_No_Refresh(GET_SURFACE(Temp_SMALLPFONT), x, y, 84, ys, 84 + 5, y2); break; // 5
-        case 6: Copy_No_Refresh(GET_SURFACE(Temp_SMALLPFONT), x, y, 90, ys, 90 + 5, y2); break; // 6
-        case 7: Copy_No_Refresh(GET_SURFACE(Temp_SMALLPFONT), x, y, 96, ys, 96 + 5, y2); break; // 7
-        case 8: Copy_No_Refresh(GET_SURFACE(Temp_SMALLPFONT), x, y, 102, ys, 102 + 5, y2); break; // 8
-        case 9: Copy_No_Refresh(GET_SURFACE(Temp_SMALLPFONT), x, y, 108, ys, 108 + 5, y2); break; // 9
+        case 0: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 54, ys, 54 + 5, y2); break; // 0
+        case 1: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 60, ys, 60 + 5, y2); break; // 1
+        case 2: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 66, ys, 66 + 5, y2); break; // 2
+        case 3: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 72, ys, 72 + 5, y2); break; // 3
+        case 4: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 78, ys, 78 + 5, y2); break; // 4
+        case 5: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 84, ys, 84 + 5, y2); break; // 5
+        case 6: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 90, ys, 90 + 5, y2); break; // 6
+        case 7: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 96, ys, 96 + 5, y2); break; // 7
+        case 8: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 102, ys, 102 + 5, y2); break; // 8
+        case 9: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 108, ys, 108 + 5, y2); break; // 9
         
-        case 10: Copy_No_Refresh(GET_SURFACE(Temp_SMALLPFONT), x, y, 0, ys, 5, y2); break; // A
-        case 11: Copy_No_Refresh(GET_SURFACE(Temp_SMALLPFONT), x, y, 6, ys, 6 + 5, y2); break;// B
-        case 12: Copy_No_Refresh(GET_SURFACE(Temp_SMALLPFONT), x, y, 12, ys, 12 + 5, y2); break;// C
-        case 13: Copy_No_Refresh(GET_SURFACE(Temp_SMALLPFONT), x, y, 18, ys, 18 + 5, y2); break;// D
-        case 14: Copy_No_Refresh(GET_SURFACE(Temp_SMALLPFONT), x, y, 24, ys, 24 + 5, y2); break;// E
-        case 15: Copy_No_Refresh(GET_SURFACE(Temp_SMALLPFONT), x, y, 30, ys, 30 + 5, y2); break;// F
-        case 16: Copy_No_Refresh(GET_SURFACE(Temp_SMALLPFONT), x, y, 36, ys, 36 + 5, y2); break;// G
+        case 10: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 0, ys, 5, y2); break; // A
+        case 11: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 6, ys, 6 + 5, y2); break;// B
+        case 12: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 12, ys, 12 + 5, y2); break;// C
+        case 13: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 18, ys, 18 + 5, y2); break;// D
+        case 14: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 24, ys, 24 + 5, y2); break;// E
+        case 15: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 30, ys, 30 + 5, y2); break;// F
+        case 16: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 36, ys, 36 + 5, y2); break;// G
         
-        case 17: Copy_No_Refresh(GET_SURFACE(Temp_SMALLPFONT), x, y, 48, ys, 48 + 5, y2); break; // #
-        case 18: Copy_No_Refresh(GET_SURFACE(Temp_SMALLPFONT), x, y, 132, ys, 132 + 5, y2); break; // -
-        case 19: Copy_No_Refresh(GET_SURFACE(Temp_SMALLPFONT), x, y, 114, ys, 114 + 17, y2); break; // Off
-        case 20: Copy_No_Refresh(GET_SURFACE(Temp_SMALLPFONT), x, y, 42, ys, 42 + 5, y2); break; // Blank
-        case 21: Copy_No_Refresh(GET_SURFACE(Temp_SMALLPFONT), x, y, 138, ys, 138 + 5, y2); break; // .
+        case 17: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 48, ys, 48 + 5, y2); break; // #
+        case 18: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 132, ys, 132 + 5, y2); break; // -
+        case 19: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 114, ys, 114 + 17, y2); break; // Off
+        case 20: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 42, ys, 42 + 5, y2); break; // Blank
+        case 21: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 138, ys, 138 + 5, y2); break; // .
 
-        case 23: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 56, 64, 56 + 26, 64 + 6); break; // ON
-        case 24: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 84, 64, 84 + 26, 64 + 6); break; // OFF
-        case 25: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y,  0, 64,  0 + 26, 64 + 6); break; // MUTE
-        case 26: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 28, 64, 28 + 26, 64 + 6); break; // PLAY
+        case 23: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 56, header_y, 56 + 26, header_size); break; // ON
+        case 24: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 84, header_y, 84 + 26, header_size); break; // OFF
+        case 25: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y,  0, header_y,  0 + 26, header_size); break; // MUTE
+        case 26: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 28, header_y, 28 + 26, header_size); break; // PLAY
 
-        case 27: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 193, 64, 193 + 14, 64 + 6); break; // ZOOM ON
-        case 28: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 221, 64, 221 + 14, 64 + 6); break; // ZOOM OFF
+        case 27: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 193, header_y, 193 + 14, header_size); break; // ZOOM ON
+        case 28: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 221, header_y, 221 + 14, header_size); break; // ZOOM OFF
 
-        case 29: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 56, ys, 59, y2); break; // Blank (4 pixels)
-        case 30: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 56, ys, 57, y2); break; // Blank (2 pixels)
+        case 29: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 56, ys, 59, y2); break; // Blank (4 pixels)
+        case 30: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 56, ys, 57, y2); break; // Blank (2 pixels)
 
-        case 31: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 111, 64, 111 + 4, 64 + 6); break; // FX ARROW LO BACK
-        case 32: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 138, 64, 138 + 4, 64 + 6); break; // FX ARROW HI BACK
-        case 33: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 165, 64, 165 + 4, 64 + 6); break; // FX ARROW SEL BACK
+        case 31: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 111, header_y, 111 + 4, header_size); break; // FX ARROW LO BACK
+        case 32: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 138, header_y, 138 + 4, header_size); break; // FX ARROW HI BACK
+        case 33: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 165, header_y, 165 + 4, header_size); break; // FX ARROW SEL BACK
 
-        case 35: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 249, 64, 249 + 6, 64 + 6); break; // REDUCE NOTES ON
-        case 36: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 257, 64, 257 + 6, 64 + 6); break; // EXPAND NOTES ON
-        case 37: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 277, 64, 277 + 6, 64 + 6); break; // REDUCE NOTES OFF
-        case 38: Copy_No_Refresh(GET_SURFACE(Temp_PFONT), x, y, 285, 64, 285 + 6, 64 + 6); break; // EXPAND NOTES OFF
+        case 35: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 249, header_y, 249 + 6, header_size); break; // REDUCE NOTES ON
+        case 36: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 257, header_y, 257 + 6, header_size); break; // EXPAND NOTES ON
+        case 37: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 277, header_y, 277 + 6, header_size); break; // REDUCE NOTES OFF
+        case 38: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 285, header_y, 285 + 6, header_size); break; // EXPAND NOTES OFF
     }
 }
 
 // ------------------------------------------------------
+// Small notes
 void Note_Small_Letter(int x, int y, char ltr, int ys, int y2)
 {
     switch(ltr)
@@ -2403,53 +2440,81 @@ void Note_Small_Letter(int x, int y, char ltr, int ys, int y2)
         case 20: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 42, ys, 42 + 5, y2); break; // Blank
         case 21: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 138, ys, 138 + 5, y2); break; // .
 
-        case 23: Copy_No_Refresh(GET_SURFACE(Temp_NOTEPFONT), x, y,  56, 64, 56 + 26, 64 + 6); break; // ON
-        case 24: Copy_No_Refresh(GET_SURFACE(Temp_NOTEPFONT), x, y,  84, 64, 84 + 26, 64 + 6); break; // OFF
-        case 25: Copy_No_Refresh(GET_SURFACE(Temp_NOTEPFONT), x, y,   0, 64,  0 + 26, 64 + 6); break; // MUTE
-        case 26: Copy_No_Refresh(GET_SURFACE(Temp_NOTEPFONT), x, y,  28, 64, 28 + 26, 64 + 6); break; // PLAY
+        case 23: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_NOTEPFONT), x, y,  56, header_y, 56 + 26, header_size); break; // ON
+        case 24: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_NOTEPFONT), x, y,  84, header_y, 84 + 26, header_size); break; // OFF
+        case 25: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_NOTEPFONT), x, y,   0, header_y,  0 + 26, header_size); break; // MUTE
+        case 26: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_NOTEPFONT), x, y,  28, header_y, 28 + 26, header_size); break; // PLAY
 
-        case 27: Copy_No_Refresh(GET_SURFACE(Temp_NOTEPFONT), x, y,  193, 64, 193 + 14, 64 + 6); break; // ZOOM ON
-        case 28: Copy_No_Refresh(GET_SURFACE(Temp_NOTEPFONT), x, y,  221, 64, 221 + 14, 64 + 6); break; // ZOOM OFF
+        case 27: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_NOTEPFONT), x, y,  193, header_y, 193 + 14, header_size); break; // ZOOM ON
+        case 28: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_NOTEPFONT), x, y,  221, header_y, 221 + 14, header_size); break; // ZOOM OFF
 
-        case 29: Copy_No_Refresh(GET_SURFACE(Temp_NOTEPFONT), x, y, 56, ys, 59, y2); break; // Blank (4 pixels)
-        case 30: Copy_No_Refresh(GET_SURFACE(Temp_NOTEPFONT), x, y, 56, ys, 57, y2); break; // Blank (2 pixels)
+        case 29: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_NOTEPFONT), x, y, 56, ys, 59, y2); break; // Blank (4 pixels)
+        case 30: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_NOTEPFONT), x, y, 56, ys, 57, y2); break; // Blank (2 pixels)
 
-        case 31: Copy_No_Refresh(GET_SURFACE(Temp_NOTEPFONT), x, y, 111, 64, 111 + 4, 64 + 6); break; // FX ARROW LO BACK
-        case 32: Copy_No_Refresh(GET_SURFACE(Temp_NOTEPFONT), x, y, 138, 64, 138 + 4, 64 + 6); break; // FX ARROW HI BACK
-        case 33: Copy_No_Refresh(GET_SURFACE(Temp_NOTEPFONT), x, y, 165, 64, 165 + 4, 64 + 6); break; // FX ARROW SEL BACK
+        case 31: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_NOTEPFONT), x, y, 111, header_y, 111 + 4, header_size); break; // FX ARROW LO BACK
+        case 32: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_NOTEPFONT), x, y, 138, header_y, 138 + 4, header_size); break; // FX ARROW HI BACK
+        case 33: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_NOTEPFONT), x, y, 165, header_y, 165 + 4, header_size); break; // FX ARROW SEL BACK
 
-        case 35: Copy_No_Refresh(GET_SURFACE(Temp_NOTEPFONT), x, y, 249, 64, 249 + 6, 64 + 6); break; // REDUCE NOTES ON
-        case 36: Copy_No_Refresh(GET_SURFACE(Temp_NOTEPFONT), x, y, 257, 64, 257 + 6, 64 + 6); break; // EXPAND NOTES ON
-        case 37: Copy_No_Refresh(GET_SURFACE(Temp_NOTEPFONT), x, y, 277, 64, 277 + 6, 64 + 6); break; // REDUCE NOTES OFF
-        case 38: Copy_No_Refresh(GET_SURFACE(Temp_NOTEPFONT), x, y, 285, 64, 285 + 6, 64 + 6); break; // EXPAND NOTES OFF
+        case 35: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_NOTEPFONT), x, y, 249, header_y, 249 + 6, header_size); break; // REDUCE NOTES ON
+        case 36: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_NOTEPFONT), x, y, 257, header_y, 257 + 6, header_size); break; // EXPAND NOTES ON
+        case 37: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_NOTEPFONT), x, y, 277, header_y, 277 + 6, header_size); break; // REDUCE NOTES OFF
+        case 38: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_NOTEPFONT), x, y, 285, header_y, 285 + 6, header_size); break; // EXPAND NOTES OFF
     }
+}
+
+void Set_Font_Normal(void)
+{
+    Ptr_Temp_PFONT = Temp_PFONT;
+    Ptr_Temp_LARGEPFONT = Temp_LARGEPFONT;
+    Ptr_Temp_SMALLPFONT = Temp_SMALLPFONT;
+    Ptr_Temp_NOTEPFONT = Temp_NOTEPFONT;
+    Ptr_Temp_NOTELARGEPFONT = Temp_NOTELARGEPFONT;
+    Ptr_Temp_NOTESMALLPFONT = Temp_NOTESMALLPFONT;
+    chars_height = 8;
+    pattern_double = FALSE;
+    header_y = 64;
+    header_size = 64 + 6;
+}
+
+void Set_Font_Double(void)
+{
+    Ptr_Temp_PFONT = Temp_PFONT_DOUBLE;
+    Ptr_Temp_LARGEPFONT = Temp_LARGEPFONT_DOUBLE;
+    Ptr_Temp_SMALLPFONT = Temp_SMALLPFONT_DOUBLE;
+    Ptr_Temp_NOTEPFONT = Temp_NOTEPFONT_DOUBLE;
+    Ptr_Temp_NOTELARGEPFONT = Temp_NOTELARGEPFONT_DOUBLE;
+    Ptr_Temp_NOTESMALLPFONT = Temp_NOTESMALLPFONT_DOUBLE;
+    chars_height = 16;
+    pattern_double = TRUE;
+    header_y = 64 * 2;
+    header_size = (64 * 2) + 13;
 }
 
 void blitnote(int x, int y, int note, int y1, int y2)
 {
-    GET_SURFACE(Note_Surface) = GET_SURFACE(Temp_NOTEPFONT);
-    GET_SURFACE(Note_Alt_Surface) = GET_SURFACE(Temp_PFONT);
+    Letter_Function = Note_Letter;
+    GET_SURFACE(Note_Surface) = GET_SURFACE(Ptr_Temp_NOTEPFONT);
+    GET_SURFACE(Note_Alt_Surface) = GET_SURFACE(Ptr_Temp_PFONT);
     if(Accidental) Blit_note(x, y, note, y1, y2, 8, Accidental_Table_b[note]);
     else Blit_note(x, y, note, y1, y2, 8, Accidental_Table[note]);
-    Letter_Function = Note_Letter;
 }
 
 void blitlargenote(int x, int y, int note, int y1, int y2)
 {
-    GET_SURFACE(Note_Surface) = GET_SURFACE(Temp_NOTELARGEPFONT);
-    GET_SURFACE(Note_Alt_Surface) = GET_SURFACE(Temp_LARGEPFONT);
+    Letter_Function = Note_Large_Letter;
+    GET_SURFACE(Note_Surface) = GET_SURFACE(Ptr_Temp_NOTELARGEPFONT);
+    GET_SURFACE(Note_Alt_Surface) = GET_SURFACE(Ptr_Temp_LARGEPFONT);
     if(Accidental) Blit_note(x, y, note, y1, y2, 11, Accidental_Table_b[note]);
     else Blit_note(x, y, note, y1, y2, 11, Accidental_Table[note]);
-    Letter_Function = Note_Large_Letter;
 }
 
 void blitsmallnote(int x, int y, int note, int y1, int y2)
 {
-    GET_SURFACE(Note_Alt_Surface) = GET_SURFACE(Temp_SMALLPFONT);
-    GET_SURFACE(Note_Surface) = GET_SURFACE(Temp_NOTESMALLPFONT);
+    Letter_Function = Note_Small_Letter;
+    GET_SURFACE(Note_Alt_Surface) = GET_SURFACE(Ptr_Temp_SMALLPFONT);
+    GET_SURFACE(Note_Surface) = GET_SURFACE(Ptr_Temp_NOTESMALLPFONT);
     if(Accidental) Blit_note(x, y, note, y1, y2, 6, Accidental_Table_b[note]);
     else Blit_note(x, y, note, y1, y2, 6, Accidental_Table[note]);
-    Letter_Function = Note_Small_Letter;
 }
 
 void Blit_note(int x, int y, int note, int y1, int y2, int size, int acc)
@@ -2701,7 +2766,7 @@ void Set_Channel_State_Pic(int x, int color, int inv_color)
 
     Pix = (unsigned char *) Temp_PFONT->pixels;
 
-    Pix += (64 * Temp_PFONT->pitch) + x;
+    Pix += ((8 * 8) * Temp_PFONT->pitch) + x;
     for(j = 0; j < 7; j++)
     {
         for(i = 0; i < 27; i++)
@@ -2722,14 +2787,46 @@ void Set_Channel_State_Pic(int x, int color, int inv_color)
     {
         SDL_UnlockSurface(Temp_PFONT);
     }
+
+    // ---
+    was_locked = FALSE;
+    if(SDL_MUSTLOCK(Temp_PFONT_DOUBLE))
+    {
+        if(!SDL_LockSurface(Temp_PFONT_DOUBLE)) was_locked = TRUE;
+    }
+
+    Pix = (unsigned char *) Temp_PFONT_DOUBLE->pixels;
+
+    Pix += ((16 * 16) * Temp_PFONT_DOUBLE->pitch) + x;
+    for(j = 0; j < 14; j++)
+    {
+        for(i = 0; i < 27; i++)
+        {
+            Surface_offset = (j * Temp_PFONT_DOUBLE->pitch) + i;
+            if(Pix[Surface_offset])
+            {
+                Pix[Surface_offset] = color;
+            }
+            else
+            {
+                Pix[Surface_offset] = inv_color;
+            }
+        }
+    }
+
+    if(was_locked)
+    {
+        SDL_UnlockSurface(Temp_PFONT_DOUBLE);
+    }
 }
 
 // ------------------------------------------------------
 // Create the complete font set to display the patterns
-void Create_Pattern_font(SDL_Surface *Dest, int offset,
+void Create_Pattern_font(SDL_Surface *Source, SDL_Surface *Dest, int offset,
                          int Lo_Fore,
                          int Sel_Fore,
-                         int Hi_Fore)
+                         int Hi_Fore,
+                         int Height)
 {
     unsigned char *Pix;
     unsigned char *Pix3;
@@ -2739,9 +2836,13 @@ void Create_Pattern_font(SDL_Surface *Dest, int offset,
     int i;
     int j;
     int was_locked = FALSE;
+    int Whole_Height; 
+
+    Whole_Height = Height * 11;
+    Whole_Height -= (Height == 16 ? 2 : 1);
 
     // Create the pattern font
-    Copy_To_Surface(PFONT, Dest, 0, 0, 0, offset, 320, offset + 8);
+    Copy_To_Surface(Source, Dest, 0, 0, 0, offset, 320, offset + Height);
 
     // Set the base colors
 
@@ -2751,9 +2852,10 @@ void Create_Pattern_font(SDL_Surface *Dest, int offset,
     }
 
     Pix = (unsigned char *) Dest->pixels;
-    Pix3 = Pix + (87 * Dest->pitch);
+    // Shadows
+    Pix3 = Pix + (Whole_Height * Dest->pitch);
 
-    for(j = 0; j < 8; j++)
+    for(j = 0; j < Height; j++)
     {
         for(i = 0; i < Dest->w; i++)
         {
@@ -2773,9 +2875,9 @@ void Create_Pattern_font(SDL_Surface *Dest, int offset,
 
     // Invert
     Pix2 = Pix;
-    Pix2 += (8 * Dest->pitch);
-    Pix3 = Pix2 + (87 * Dest->pitch);
-    for(j = 0; j < 8; j++)
+    Pix2 += (Height * Dest->pitch);
+    Pix3 = Pix2 + (Whole_Height * Dest->pitch);
+    for(j = 0; j < Height; j++)
     {
         for(i = 0; i < Dest->w; i++)
         {
@@ -2799,7 +2901,7 @@ void Create_Pattern_font(SDL_Surface *Dest, int offset,
     }
 
     // Blank line
-    Copy_To_Surface(PFONT, Dest, 0, 16, 0, 7, 320, 7 + 1);
+    Copy_To_Surface(Source, Dest, 0, (Height * 2), 0, (Height - 1), 320, Height);
 
     was_locked = FALSE;
     if(SDL_MUSTLOCK(Dest))
@@ -2807,12 +2909,11 @@ void Create_Pattern_font(SDL_Surface *Dest, int offset,
         if(!SDL_LockSurface(Dest)) was_locked = TRUE;
     }
 
+    // Big one
     Pix = (unsigned char *) Dest->pixels;
     Pix2 = Pix;
-    Pix2 += (16 * Dest->pitch);
-
-    // Big one
-    for(j = 0; j < 8; j++)
+    Pix2 += ((Height * 2) * Dest->pitch);
+    for(j = 0; j < Height; j++)
     {
         for(i = 0; i < Dest->w; i++)
         {
@@ -2825,10 +2926,10 @@ void Create_Pattern_font(SDL_Surface *Dest, int offset,
 
     // Big one inverted
     Pix2 = (unsigned char *) Dest->pixels;
-    Pix2 += (32 * Dest->pitch);
+    Pix2 += ((Height * 4) * Dest->pitch);
     Pix = (unsigned char *) Dest->pixels;
-    Pix += (16 * Dest->pitch);
-    for(j = 0; j < 16; j++)
+    Pix += ((Height * 2) * Dest->pitch);
+    for(j = 0; j < (Height * 2); j++)
     {
         for(i = 0; i < Dest->w; i++)
         {
@@ -2846,10 +2947,10 @@ void Create_Pattern_font(SDL_Surface *Dest, int offset,
 
     // Big one under the caret
     Pix2 = (unsigned char *) Dest->pixels;
-    Pix2 += (48 * Dest->pitch);
+    Pix2 += ((Height * 6) * Dest->pitch);
     Pix = (unsigned char *) Dest->pixels;
-    Pix += (16 * Dest->pitch);
-    for(j = 0; j < 16; j++)
+    Pix += ((Height * 2) * Dest->pitch);
+    for(j = 0; j < (Height * 2); j++)
     {
         for(i = 0; i < Dest->w; i++)
         {
@@ -2865,13 +2966,13 @@ void Create_Pattern_font(SDL_Surface *Dest, int offset,
         }
     }
 
-    // Highlight inverted
+    // Highlight
     Pix = (unsigned char *) Dest->pixels;
     Pix2 = Pix;
-    Pix2 += (71 * Dest->pitch);
-    Pix3 = Pix2 + (87 * Dest->pitch);
+    Pix2 += (((Height * 9) - (Height == 16 ? 2 : 1)) * Dest->pitch);
+    Pix3 = Pix2 + (Whole_Height * Dest->pitch);
 
-    for(j = 0; j < 8; j++)
+    for(j = 0; j < Height; j++)
     {
         for(i = 0; i < Dest->w; i++)
         {
@@ -2881,12 +2982,12 @@ void Create_Pattern_font(SDL_Surface *Dest, int offset,
         }
     }
 
-    // (invert the previous one)
+    // Highlight inverted (invert the previous one)
     Pix = (unsigned char *) Dest->pixels;
-    Pix += (71 * Dest->pitch);
-    Pix2 = Pix + (8 * Dest->pitch);
-    Pix3 = Pix2 + (87 * Dest->pitch);
-    for(j = 0; j < 8; j++)
+    Pix += (((Height * 9) - (Height == 16 ? 2 : 1)) * Dest->pitch);
+    Pix2 = Pix + (Height * Dest->pitch);
+    Pix3 = Pix2 + (Whole_Height * Dest->pitch);
+    for(j = 0; j < Height; j++)
     {
         for(i = 0; i < Dest->w; i++)
         {
@@ -2904,13 +3005,13 @@ void Create_Pattern_font(SDL_Surface *Dest, int offset,
         }
     }
 
-    // Highlight
+    // Highlight shadows
     Pix = (unsigned char *) Dest->pixels;
     Pix2 = Pix;
-    Pix2 += (71 * Dest->pitch);
-    Pix3 = Pix2 + (87 * Dest->pitch);
+    Pix2 += (((Height * 9) - (Height == 16 ? 2 : 1)) * Dest->pitch);
+    Pix3 = Pix2 + (Whole_Height * Dest->pitch);
 
-    for(j = 0; j < 8; j++)
+    for(j = 0; j < Height; j++)
     {
         for(i = 0; i < Dest->w; i++)
         {
@@ -2926,7 +3027,7 @@ void Create_Pattern_font(SDL_Surface *Dest, int offset,
     }
 
     // Markers arrows
-    Copy_To_Surface(PFONT, Dest, 0, 64, 0, 8, 320, 8 + 7);
+    Copy_To_Surface(Source, Dest, 0, Height * Height, 0, Height, 320, Height + (Height - (Height == 16 ? 2 : 1)));
 }
 
 // ------------------------------------------------------
@@ -3068,6 +3169,7 @@ void Set_Pictures_And_Palettes(int LogoPalette)
         Palette_Logo[i].unused = Pic_Palette->colors[i].unused;
     }
 
+    // ---
     if(!Temp_PFONT)
     {
         Temp_PFONT = SDL_AllocSurface(SDL_SWSURFACE, 320, 87 * 2, 8, 0, 0, 0, 0xff);
@@ -3092,6 +3194,32 @@ void Set_Pictures_And_Palettes(int LogoPalette)
     {
         Temp_NOTESMALLPFONT = SDL_AllocSurface(SDL_SWSURFACE, 320, 87 * 2, 8, 0, 0, 0, 0xff);
     }
+    // ---
+    if(!Temp_PFONT_DOUBLE)
+    {
+        Temp_PFONT_DOUBLE = SDL_AllocSurface(SDL_SWSURFACE, 320, 87 * 8, 8, 0, 0, 0, 0xff);
+    }
+    if(!Temp_LARGEPFONT_DOUBLE)
+    {
+        Temp_LARGEPFONT_DOUBLE = SDL_AllocSurface(SDL_SWSURFACE, 320, 87 * 8, 8, 0, 0, 0, 0xff);
+    }
+    if(!Temp_SMALLPFONT_DOUBLE)
+    {
+        Temp_SMALLPFONT_DOUBLE = SDL_AllocSurface(SDL_SWSURFACE, 320, 87 * 8, 8, 0, 0, 0, 0xff);
+    }
+    if(!Temp_NOTEPFONT_DOUBLE)
+    {
+        Temp_NOTEPFONT_DOUBLE = SDL_AllocSurface(SDL_SWSURFACE, 320, 87 * 8, 8, 0, 0, 0, 0xff);
+    }
+    if(!Temp_NOTELARGEPFONT_DOUBLE)
+    {
+        Temp_NOTELARGEPFONT_DOUBLE = SDL_AllocSurface(SDL_SWSURFACE, 320, 87 * 8, 8, 0, 0, 0, 0xff);
+    }
+    if(!Temp_NOTESMALLPFONT_DOUBLE)
+    {
+        Temp_NOTESMALLPFONT_DOUBLE = SDL_AllocSurface(SDL_SWSURFACE, 320, 87 * 8, 8, 0, 0, 0, 0xff);
+    }
+    // ---
 
     if(!Burn_Title)
     {
@@ -3111,12 +3239,19 @@ void Set_Pictures_And_Palettes(int LogoPalette)
     Env_Change = TRUE;
 
     // Fill the surfaces
-    Create_Pattern_font(Temp_PFONT, 0, COL_PATTERN_LO_FORE, COL_PATTERN_SEL_FORE, COL_PATTERN_HI_FORE);
-    Create_Pattern_font(Temp_LARGEPFONT, 15, COL_PATTERN_LO_FORE, COL_PATTERN_SEL_FORE, COL_PATTERN_HI_FORE);
-    Create_Pattern_font(Temp_SMALLPFONT, 23, COL_PATTERN_LO_FORE, COL_PATTERN_SEL_FORE, COL_PATTERN_HI_FORE);
-    Create_Pattern_font(Temp_NOTEPFONT, 0, COL_NOTE_LO_FORE, COL_NOTE_SEL_FORE, COL_NOTE_HI_FORE);
-    Create_Pattern_font(Temp_NOTELARGEPFONT, 15, COL_NOTE_LO_FORE, COL_NOTE_SEL_FORE, COL_NOTE_HI_FORE);
-    Create_Pattern_font(Temp_NOTESMALLPFONT, 23, COL_NOTE_LO_FORE, COL_NOTE_SEL_FORE, COL_NOTE_HI_FORE);
+    Create_Pattern_font(PFONT, Temp_PFONT, 0, COL_PATTERN_LO_FORE, COL_PATTERN_SEL_FORE, COL_PATTERN_HI_FORE, 8);
+    Create_Pattern_font(PFONT, Temp_LARGEPFONT, 15, COL_PATTERN_LO_FORE, COL_PATTERN_SEL_FORE, COL_PATTERN_HI_FORE, 8);
+    Create_Pattern_font(PFONT, Temp_SMALLPFONT, 23, COL_PATTERN_LO_FORE, COL_PATTERN_SEL_FORE, COL_PATTERN_HI_FORE, 8);
+    Create_Pattern_font(PFONT, Temp_NOTEPFONT, 0, COL_NOTE_LO_FORE, COL_NOTE_SEL_FORE, COL_NOTE_HI_FORE, 8);
+    Create_Pattern_font(PFONT, Temp_NOTELARGEPFONT, 15, COL_NOTE_LO_FORE, COL_NOTE_SEL_FORE, COL_NOTE_HI_FORE, 8);
+    Create_Pattern_font(PFONT, Temp_NOTESMALLPFONT, 23, COL_NOTE_LO_FORE, COL_NOTE_SEL_FORE, COL_NOTE_HI_FORE, 8);
+
+    Create_Pattern_font(PFONT_DOUBLE, Temp_PFONT_DOUBLE, 0, COL_PATTERN_LO_FORE, COL_PATTERN_SEL_FORE, COL_PATTERN_HI_FORE, 16);
+    Create_Pattern_font(PFONT_DOUBLE, Temp_LARGEPFONT_DOUBLE, 15 * 2, COL_PATTERN_LO_FORE, COL_PATTERN_SEL_FORE, COL_PATTERN_HI_FORE, 16);
+    Create_Pattern_font(PFONT_DOUBLE, Temp_SMALLPFONT_DOUBLE, 23 * 2, COL_PATTERN_LO_FORE, COL_PATTERN_SEL_FORE, COL_PATTERN_HI_FORE, 16);
+    Create_Pattern_font(PFONT_DOUBLE, Temp_NOTEPFONT_DOUBLE, 0, COL_NOTE_LO_FORE, COL_NOTE_SEL_FORE, COL_NOTE_HI_FORE, 16);
+    Create_Pattern_font(PFONT_DOUBLE, Temp_NOTELARGEPFONT_DOUBLE, 15 * 2, COL_NOTE_LO_FORE, COL_NOTE_SEL_FORE, COL_NOTE_HI_FORE, 16);
+    Create_Pattern_font(PFONT_DOUBLE, Temp_NOTESMALLPFONT_DOUBLE, 23 * 2, COL_NOTE_LO_FORE, COL_NOTE_SEL_FORE, COL_NOTE_HI_FORE, 16);
 
     // Create the channels status
     Set_Channel_State_Pic(0, COL_MUTE, COL_MUTE_PLAY_INVERT);
@@ -3136,13 +3271,41 @@ void Set_Pictures_And_Palettes(int LogoPalette)
     FONT_GL = Create_Texture(FONT);
     FONT_LOW_GL = Create_Texture(FONT_LOW);
     SKIN303_GL = Create_Texture(SKIN303);
+
     Temp_PFONT_GL = Create_Texture(Temp_PFONT);
     Temp_LARGEPFONT_GL = Create_Texture(Temp_LARGEPFONT);
     Temp_SMALLPFONT_GL = Create_Texture(Temp_SMALLPFONT);
     Temp_NOTEPFONT_GL = Create_Texture(Temp_NOTEPFONT);
     Temp_NOTELARGEPFONT_GL = Create_Texture(Temp_NOTELARGEPFONT);
     Temp_NOTESMALLPFONT_GL = Create_Texture(Temp_NOTESMALLPFONT);
+
+    Temp_PFONT_GL_DOUBLE = Create_Texture(Temp_PFONT_DOUBLE);
+    Temp_LARGEPFONT_GL_DOUBLE = Create_Texture(Temp_LARGEPFONT_DOUBLE);
+    Temp_SMALLPFONT_GL_DOUBLE = Create_Texture(Temp_SMALLPFONT_DOUBLE);
+    Temp_NOTEPFONT_GL_DOUBLE = Create_Texture(Temp_NOTEPFONT_DOUBLE);
+    Temp_NOTELARGEPFONT_GL_DOUBLE = Create_Texture(Temp_NOTELARGEPFONT_DOUBLE);
+    Temp_NOTESMALLPFONT_GL_DOUBLE = Create_Texture(Temp_NOTESMALLPFONT_DOUBLE);
 #endif
+
+    // starting setup
+    if(pattern_double)
+    {
+        Set_Font_Double();
+    }
+    else
+    {
+        Set_Font_Normal();
+    }
+
+    if(Large_Patterns)
+    {
+        Set_Pattern_Size();
+    }
+    else
+    {
+        Set_Pattern_Size();
+    }
+
 
 }
 
@@ -3167,6 +3330,44 @@ void Destroy_Textures()
     }
     SKIN303_GL = -1;
 
+    // ---
+    if(Temp_PFONT_GL_DOUBLE != -1)
+    {
+        Destroy_Texture(&Temp_PFONT_GL_DOUBLE);
+    }
+    Temp_PFONT_GL_DOUBLE = -1;
+    
+    if(Temp_LARGEPFONT_GL_DOUBLE != -1)
+    {
+        Destroy_Texture(&Temp_LARGEPFONT_GL_DOUBLE);
+    }
+    Temp_LARGEPFONT_GL_DOUBLE = -1;
+    
+    if(Temp_SMALLPFONT_GL_DOUBLE != -1)
+    {
+        Destroy_Texture(&Temp_SMALLPFONT_GL_DOUBLE);
+    }
+    Temp_SMALLPFONT_GL_DOUBLE = -1;
+    
+    if(Temp_NOTEPFONT_GL_DOUBLE != -1)
+    {
+        Destroy_Texture(&Temp_NOTEPFONT_GL_DOUBLE);
+    }
+    Temp_NOTEPFONT_GL_DOUBLE = -1;
+    
+    if(Temp_NOTELARGEPFONT_GL_DOUBLE != -1)
+    {
+        Destroy_Texture(&Temp_NOTELARGEPFONT_GL_DOUBLE);
+    }
+    Temp_NOTELARGEPFONT_GL_DOUBLE = -1;
+
+    if(Temp_NOTESMALLPFONT_GL_DOUBLE != -1)
+    {
+        Destroy_Texture(&Temp_NOTESMALLPFONT_GL_DOUBLE);
+    }
+    Temp_NOTESMALLPFONT_GL_DOUBLE = -1;
+
+    // ---
     if(Temp_PFONT_GL != -1)
     {
         Destroy_Texture(&Temp_PFONT_GL);
@@ -3240,6 +3441,39 @@ void Destroy_UI(void)
     Destroy_Textures();
 #endif
 
+    // ---
+    if(Temp_PFONT_DOUBLE)
+    {
+        SDL_FreeSurface(Temp_PFONT_DOUBLE);
+        Temp_PFONT_DOUBLE = NULL;
+    }
+    if(Temp_LARGEPFONT_DOUBLE)
+    {
+        SDL_FreeSurface(Temp_LARGEPFONT_DOUBLE);
+        Temp_LARGEPFONT_DOUBLE = NULL;
+    }
+    if(Temp_SMALLPFONT_DOUBLE)
+    {
+        SDL_FreeSurface(Temp_SMALLPFONT_DOUBLE);
+        Temp_SMALLPFONT_DOUBLE = NULL;
+    }
+    if(Temp_NOTEPFONT_DOUBLE)
+    {
+        SDL_FreeSurface(Temp_NOTEPFONT_DOUBLE);
+        Temp_NOTEPFONT_DOUBLE = NULL;
+    }
+    if(Temp_NOTELARGEPFONT_DOUBLE)
+    {
+        SDL_FreeSurface(Temp_NOTELARGEPFONT_DOUBLE);
+        Temp_NOTELARGEPFONT_DOUBLE = NULL;
+    }
+    if(Temp_NOTESMALLPFONT_DOUBLE)
+    {
+        SDL_FreeSurface(Temp_NOTESMALLPFONT_DOUBLE);
+        Temp_NOTESMALLPFONT_DOUBLE = NULL;
+    }
+
+    // ---
     if(Temp_PFONT)
     {
         SDL_FreeSurface(Temp_PFONT);
@@ -3270,6 +3504,8 @@ void Destroy_UI(void)
         SDL_FreeSurface(Temp_NOTESMALLPFONT);
         Temp_NOTESMALLPFONT = NULL;
     }
+
+    // ---
     if(LOGOPIC)
     {
         SDL_FreeSurface(LOGOPIC);
@@ -3279,6 +3515,11 @@ void Destroy_UI(void)
     {
         SDL_FreeSurface(SKIN303);
         SKIN303 = NULL;
+    }
+    if(PFONT_DOUBLE)
+    {
+        SDL_FreeSurface(PFONT_DOUBLE);
+        PFONT_DOUBLE = NULL;
     }
     if(PFONT)
     {

@@ -183,24 +183,24 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
     int Store_Flanger = FALSE;
     int Store_Disclap = FALSE;
     int Store_LFO = FALSE;
-    int Store_Instr_Waveform_Osc1 = FALSE; 
-    int Store_Instr_Waveform_Osc2 = FALSE;
+    int Store_Instr_Waveform_Osc_1 = FALSE; 
+    int Store_Instr_Waveform_Osc_2 = FALSE;
     int Store_Synth_Disto = FALSE;
-    int Store_Synth_Osc2 = FALSE;
-    int Store_Synth_Osc3 = FALSE;
+    int Store_Synth_Osc_2 = FALSE;
+    int Store_Synth_Osc_3 = FALSE;
 
-    int Store_Synth_Phase_Osc1 = FALSE;
-    int Store_Synth_Phase_Osc2 = FALSE;
+    int Store_Synth_Phase_Osc_1 = FALSE;
+    int Store_Synth_Phase_Osc_2 = FALSE;
 
-    int Store_Synth_Lfo1 = FALSE;
-    int Store_Synth_Lfo2 = FALSE;
-    int Store_Synth_Lfo1_Pitch = FALSE;
-    int Store_Synth_Lfo2_Pitch = FALSE;
+    int Store_Synth_Lfo_1 = FALSE;
+    int Store_Synth_Lfo_2 = FALSE;
+    int Store_Synth_Lfo_1_Pitch = FALSE;
+    int Store_Synth_Lfo_2_Pitch = FALSE;
     
-    int Store_Synth_Env1 = FALSE;
-    int Store_Synth_Env2 = FALSE;
-    int Store_Synth_Env1_Pitch = FALSE;
-    int Store_Synth_Env2_Pitch = FALSE;
+    int Store_Synth_Env_1 = FALSE;
+    int Store_Synth_Env_2 = FALSE;
+    int Store_Synth_Env_1_Pitch = FALSE;
+    int Store_Synth_Env_2_Pitch = FALSE;
     
     int Store_Instruments = FALSE;
     int Store_Loop_Forward = FALSE;
@@ -1140,40 +1140,40 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                 // Forward as least for synths
                 Store_Loop_Forward = TRUE;
 
-                Write_Mod_Data(&PARASynth[swrite].osc1_waveform, sizeof(char), 1, in);
-                Write_Mod_Data(&PARASynth[swrite].osc2_waveform, sizeof(char), 1, in);
-                if(PARASynth[swrite].osc1_waveform == WAVEFORM_WAV) Store_Instr_Waveform_Osc1 = TRUE;
-                if(PARASynth[swrite].osc2_waveform == WAVEFORM_WAV) Store_Instr_Waveform_Osc2 = TRUE;
+                Write_Mod_Data(&PARASynth[swrite].osc_1_waveform, sizeof(char), 1, in);
+                Write_Mod_Data(&PARASynth[swrite].osc_2_waveform, sizeof(char), 1, in);
+                if(PARASynth[swrite].osc_1_waveform == WAVEFORM_WAV) Store_Instr_Waveform_Osc_1 = TRUE;
+                if(PARASynth[swrite].osc_2_waveform == WAVEFORM_WAV) Store_Instr_Waveform_Osc_2 = TRUE;
 
-                if(PARASynth[swrite].osc1_waveform == WAVEFORM_SIN) Store_Synth_Sin = TRUE;
-                if(PARASynth[swrite].osc2_waveform == WAVEFORM_SIN) Store_Synth_Sin = TRUE;
-                if(PARASynth[swrite].osc1_waveform == WAVEFORM_SAW) Store_Synth_Saw = TRUE;
-                if(PARASynth[swrite].osc2_waveform == WAVEFORM_SAW) Store_Synth_Saw = TRUE;
-                if(PARASynth[swrite].osc1_waveform == WAVEFORM_PULSE) Store_Synth_Pulse = TRUE;
-                if(PARASynth[swrite].osc2_waveform == WAVEFORM_PULSE) Store_Synth_Pulse = TRUE;
-                if(PARASynth[swrite].osc1_waveform == WAVEFORM_WHITE) Store_Synth_WhiteNoise = TRUE;
-                if(PARASynth[swrite].osc2_waveform == WAVEFORM_WHITE) Store_Synth_WhiteNoise = TRUE;
-                if(PARASynth[swrite].osc1_waveform == WAVEFORM_PINK) Store_Synth_PinkNoise = TRUE;
-                if(PARASynth[swrite].osc2_waveform == WAVEFORM_PINK) Store_Synth_PinkNoise = TRUE;
+                if(PARASynth[swrite].osc_1_waveform == WAVEFORM_SIN) Store_Synth_Sin = TRUE;
+                if(PARASynth[swrite].osc_2_waveform == WAVEFORM_SIN) Store_Synth_Sin = TRUE;
+                if(PARASynth[swrite].osc_1_waveform == WAVEFORM_SAW) Store_Synth_Saw = TRUE;
+                if(PARASynth[swrite].osc_2_waveform == WAVEFORM_SAW) Store_Synth_Saw = TRUE;
+                if(PARASynth[swrite].osc_1_waveform == WAVEFORM_PULSE) Store_Synth_Pulse = TRUE;
+                if(PARASynth[swrite].osc_2_waveform == WAVEFORM_PULSE) Store_Synth_Pulse = TRUE;
+                if(PARASynth[swrite].osc_1_waveform == WAVEFORM_WHITE) Store_Synth_WhiteNoise = TRUE;
+                if(PARASynth[swrite].osc_2_waveform == WAVEFORM_WHITE) Store_Synth_WhiteNoise = TRUE;
+                if(PARASynth[swrite].osc_1_waveform == WAVEFORM_PINK) Store_Synth_PinkNoise = TRUE;
+                if(PARASynth[swrite].osc_2_waveform == WAVEFORM_PINK) Store_Synth_PinkNoise = TRUE;
 
-                if(PARASynth[swrite].osc2_waveform != WAVEFORM_NONE) Store_Synth_Osc2 = TRUE;
+                if(PARASynth[swrite].osc_2_waveform != WAVEFORM_NONE) Store_Synth_Osc_2 = TRUE;
 
-                if(PARASynth[swrite].osc1_pw != 256) Store_Synth_Phase_Osc1 = TRUE;
-                if(PARASynth[swrite].osc2_pw != 256) Store_Synth_Phase_Osc2 = TRUE;
+                if(PARASynth[swrite].osc_1_pw != 256) Store_Synth_Phase_Osc_1 = TRUE;
+                if(PARASynth[swrite].osc_2_pw != 256) Store_Synth_Phase_Osc_2 = TRUE;
 
                 float fvalue;
                 int ivalue;
                 int64 i64value;
 
-                fvalue = (float) (PARASynth[swrite].osc1_pw - 256) / 256.0f;
+                fvalue = (float) (PARASynth[swrite].osc_1_pw - 256) / 256.0f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
-                fvalue = (float) (PARASynth[swrite].osc2_pw - 256) / 256.0f;
+                fvalue = (float) (PARASynth[swrite].osc_2_pw - 256) / 256.0f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
 
-                fvalue = (float) (PARASynth[swrite].osc2_detune - 64.0f) * 0.0625f;
+                fvalue = (float) (PARASynth[swrite].osc_2_detune - 64.0f) * 0.0625f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
     
-                fvalue = (float) PARASynth[swrite].osc2_finetune * 0.0078125f;
+                fvalue = (float) PARASynth[swrite].osc_2_finetune * 0.0078125f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
 
                 fvalue = (float) PARASynth[swrite].vcf_cutoff * 0.0078125f;
@@ -1189,188 +1189,188 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                 if(PARASynth[swrite].vcf_type == 3) Store_Synth_Filter_Moog_Lo = TRUE;
                 if(PARASynth[swrite].vcf_type == 4) Store_Synth_Filter_Moog_Band = TRUE;
 
-                fvalue = ((float) (PARASynth[swrite].env1_attack + 1)) / 512.0f;
+                fvalue = ((float) (PARASynth[swrite].env_1_attack + 1)) / 512.0f;
                 if(fvalue < 0.1f) fvalue = 0.1f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
                 
-                fvalue = ((float) (PARASynth[swrite].env1_decay + 1)) / 512.0f;
+                fvalue = ((float) (PARASynth[swrite].env_1_decay + 1)) / 512.0f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
 
-                fvalue = (float) PARASynth[swrite].env1_sustain * 0.0078125f;
+                fvalue = (float) PARASynth[swrite].env_1_sustain * 0.0078125f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
 
-                fvalue = ((float) (PARASynth[swrite].env1_release + 1)) / 512.0f;
+                fvalue = ((float) (PARASynth[swrite].env_1_release + 1)) / 512.0f;
                 if(fvalue < 0.15f) fvalue = 0.15f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
 
-                fvalue = ((float) (PARASynth[swrite].env2_attack + 1)) / 512.0f;
+                fvalue = ((float) (PARASynth[swrite].env_2_attack + 1)) / 512.0f;
                 if(fvalue < 0.1f) fvalue = 0.1f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
 
-                fvalue = ((float) (PARASynth[swrite].env2_decay + 1)) / 512.0f;
+                fvalue = ((float) (PARASynth[swrite].env_2_decay + 1)) / 512.0f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
 
-                fvalue = (float) (PARASynth[swrite].env2_sustain * 0.0078125f);
+                fvalue = (float) (PARASynth[swrite].env_2_sustain * 0.0078125f);
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
 
-                fvalue = ((float) (PARASynth[swrite].env2_release + 1)) / 512.0f;
+                fvalue = ((float) (PARASynth[swrite].env_2_release + 1)) / 512.0f;
                 if(fvalue < 0.15f) fvalue = 0.15f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
 
-                fvalue = (float) (PARASynth[swrite].lfo1_period * 2) + 1;
+                fvalue = (float) (PARASynth[swrite].lfo_1_period * 2) + 1;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
                 ivalue = (int) (((float) SamplesPerTick * 0.000277f * fvalue));
                 Write_Mod_Data(&ivalue, sizeof(int), 1, in);
 
-                fvalue = (float) (PARASynth[swrite].lfo2_period * 2) + 1;
+                fvalue = (float) (PARASynth[swrite].lfo_2_period * 2) + 1;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
                 ivalue = (int) (((float) SamplesPerTick * 0.000277f * fvalue));
                 Write_Mod_Data(&ivalue, sizeof(int), 1, in);
 
-                if(Store_Synth_Phase_Osc1)
+                if(Store_Synth_Phase_Osc_1)
                 {
-                    if(PARASynth[swrite].lfo1_osc1_pw != 64) Store_Synth_Lfo1 = TRUE;
+                    if(PARASynth[swrite].lfo_1_osc_1_pw != 64) Store_Synth_Lfo_1 = TRUE;
                 }
-                if(Store_Synth_Phase_Osc2)
+                if(Store_Synth_Phase_Osc_2)
                 {
-                    if(PARASynth[swrite].lfo1_osc2_pw != 64) Store_Synth_Lfo1 = TRUE;
+                    if(PARASynth[swrite].lfo_1_osc_2_pw != 64) Store_Synth_Lfo_1 = TRUE;
                 }
-                if(PARASynth[swrite].lfo1_osc1_pitch != 64) Store_Synth_Lfo1 = TRUE;
-                if(PARASynth[swrite].lfo1_osc2_pitch != 64) Store_Synth_Lfo1 = TRUE;
-                if(PARASynth[swrite].lfo1_osc1_pitch != 64) Store_Synth_Lfo1_Pitch = TRUE;
-                if(PARASynth[swrite].lfo1_osc2_pitch != 64) Store_Synth_Lfo1_Pitch = TRUE;
-                if(PARASynth[swrite].lfo1_osc1_volume != 64) Store_Synth_Lfo1 = TRUE;
-                if(PARASynth[swrite].lfo1_osc2_volume != 64) Store_Synth_Lfo1 = TRUE;
-                if(PARASynth[swrite].lfo1_vcf_cutoff != 64) Store_Synth_Lfo1 = TRUE;
-                if(PARASynth[swrite].lfo1_vcf_resonance != 64) Store_Synth_Lfo1 = TRUE;
+                if(PARASynth[swrite].lfo_1_osc_1_pitch != 64) Store_Synth_Lfo_1 = TRUE;
+                if(PARASynth[swrite].lfo_1_osc_2_pitch != 64) Store_Synth_Lfo_1 = TRUE;
+                if(PARASynth[swrite].lfo_1_osc_1_pitch != 64) Store_Synth_Lfo_1_Pitch = TRUE;
+                if(PARASynth[swrite].lfo_1_osc_2_pitch != 64) Store_Synth_Lfo_1_Pitch = TRUE;
+                if(PARASynth[swrite].lfo_1_osc_1_volume != 64) Store_Synth_Lfo_1 = TRUE;
+                if(PARASynth[swrite].lfo_1_osc_2_volume != 64) Store_Synth_Lfo_1 = TRUE;
+                if(PARASynth[swrite].lfo_1_vcf_cutoff != 64) Store_Synth_Lfo_1 = TRUE;
+                if(PARASynth[swrite].lfo_1_vcf_resonance != 64) Store_Synth_Lfo_1 = TRUE;
 
-                fvalue = ((float) PARASynth[swrite].lfo1_osc1_pw - 64) * 0.015625f;
+                fvalue = ((float) PARASynth[swrite].lfo_1_osc_1_pw - 64) * 0.015625f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
-                fvalue = ((float) PARASynth[swrite].lfo1_osc2_pw - 64) * 0.015625f;
+                fvalue = ((float) PARASynth[swrite].lfo_1_osc_2_pw - 64) * 0.015625f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
-                fvalue = ((float) PARASynth[swrite].lfo1_osc1_pitch - 64) * 0.015625f;
+                fvalue = ((float) PARASynth[swrite].lfo_1_osc_1_pitch - 64) * 0.015625f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
-                fvalue = ((float) PARASynth[swrite].lfo1_osc2_pitch - 64) * 0.015625f;
+                fvalue = ((float) PARASynth[swrite].lfo_1_osc_2_pitch - 64) * 0.015625f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
-                fvalue = ((float) PARASynth[swrite].lfo1_osc1_volume - 64) * 0.015625f;
+                fvalue = ((float) PARASynth[swrite].lfo_1_osc_1_volume - 64) * 0.015625f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
-                fvalue = ((float) PARASynth[swrite].lfo1_osc2_volume - 64) * 0.015625f;
+                fvalue = ((float) PARASynth[swrite].lfo_1_osc_2_volume - 64) * 0.015625f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
-                fvalue = ((float) PARASynth[swrite].lfo1_vcf_cutoff - 64) * 0.015625f;
+                fvalue = ((float) PARASynth[swrite].lfo_1_vcf_cutoff - 64) * 0.015625f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
-                fvalue = ((float) PARASynth[swrite].lfo1_vcf_resonance - 64) * 0.015625f;
-                Write_Mod_Data(&fvalue, sizeof(float), 1, in);
-
-                if(Store_Synth_Phase_Osc1)
-                {
-                    if(PARASynth[swrite].lfo2_osc1_pw != 64) Store_Synth_Lfo2 = TRUE;
-                }
-                if(Store_Synth_Phase_Osc2)
-                {
-                    if(PARASynth[swrite].lfo2_osc2_pw != 64) Store_Synth_Lfo2 = TRUE;
-                }
-                if(PARASynth[swrite].lfo2_osc1_pitch != 64) Store_Synth_Lfo2 = TRUE;
-                if(PARASynth[swrite].lfo2_osc2_pitch != 64) Store_Synth_Lfo2 = TRUE;
-                if(PARASynth[swrite].lfo2_osc1_pitch != 64) Store_Synth_Lfo2_Pitch = TRUE;
-                if(PARASynth[swrite].lfo2_osc2_pitch != 64) Store_Synth_Lfo2_Pitch = TRUE;
-                if(PARASynth[swrite].lfo2_osc1_volume != 64) Store_Synth_Lfo2 = TRUE;
-                if(PARASynth[swrite].lfo2_osc2_volume != 64) Store_Synth_Lfo2 = TRUE;
-                if(PARASynth[swrite].lfo2_vcf_cutoff != 64) Store_Synth_Lfo2 = TRUE;
-                if(PARASynth[swrite].lfo2_vcf_resonance != 64) Store_Synth_Lfo2 = TRUE;
-
-                fvalue = ((float) PARASynth[swrite].lfo2_osc1_pw - 64) * 0.015625f;
-                Write_Mod_Data(&fvalue, sizeof(float), 1, in);
-                fvalue = ((float) PARASynth[swrite].lfo2_osc2_pw - 64) * 0.015625f;
-                Write_Mod_Data(&fvalue, sizeof(float), 1, in);
-                fvalue = ((float) PARASynth[swrite].lfo2_osc1_pitch - 64) * 0.015625f;
-                Write_Mod_Data(&fvalue, sizeof(float), 1, in);
-                fvalue = ((float) PARASynth[swrite].lfo2_osc2_pitch - 64) * 0.015625f;
-                Write_Mod_Data(&fvalue, sizeof(float), 1, in);
-                fvalue = ((float) PARASynth[swrite].lfo2_osc1_volume - 64) * 0.015625f;
-                Write_Mod_Data(&fvalue, sizeof(float), 1, in);
-                fvalue = ((float) PARASynth[swrite].lfo2_osc2_volume - 64) * 0.015625f;
-                Write_Mod_Data(&fvalue, sizeof(float), 1, in);
-                fvalue = ((float) PARASynth[swrite].lfo2_vcf_cutoff - 64) * 0.015625f;
-                Write_Mod_Data(&fvalue, sizeof(float), 1, in);
-                fvalue = ((float) PARASynth[swrite].lfo2_vcf_resonance - 64) * 0.015625f;
+                fvalue = ((float) PARASynth[swrite].lfo_1_vcf_resonance - 64) * 0.015625f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
 
-                if(Store_Synth_Phase_Osc1)
+                if(Store_Synth_Phase_Osc_1)
                 {
-                    if(PARASynth[swrite].env1_osc1_pw != 64) Store_Synth_Env1 = TRUE;
+                    if(PARASynth[swrite].lfo_2_osc_1_pw != 64) Store_Synth_Lfo_2 = TRUE;
                 }
-                if(Store_Synth_Phase_Osc2)
+                if(Store_Synth_Phase_Osc_2)
                 {
-                    if(PARASynth[swrite].env1_osc2_pw != 64) Store_Synth_Env1 = TRUE;
+                    if(PARASynth[swrite].lfo_2_osc_2_pw != 64) Store_Synth_Lfo_2 = TRUE;
                 }
-                if(PARASynth[swrite].env1_osc1_pitch != 64) Store_Synth_Env1 = TRUE;
-                if(PARASynth[swrite].env1_osc2_pitch != 64) Store_Synth_Env1 = TRUE;
-                if(PARASynth[swrite].env1_osc1_pitch != 64) Store_Synth_Env1_Pitch = TRUE;
-                if(PARASynth[swrite].env1_osc2_pitch != 64) Store_Synth_Env1_Pitch = TRUE;
-                if(PARASynth[swrite].env1_osc1_volume != 127) Store_Synth_Env1 = TRUE;
-                if(PARASynth[swrite].env1_osc2_volume != 127) Store_Synth_Env1 = TRUE;
-                if(PARASynth[swrite].env1_vcf_cutoff != 64) Store_Synth_Env1 = TRUE;
-                if(PARASynth[swrite].env1_vcf_resonance != 64) Store_Synth_Env1 = TRUE;
+                if(PARASynth[swrite].lfo_2_osc_1_pitch != 64) Store_Synth_Lfo_2 = TRUE;
+                if(PARASynth[swrite].lfo_2_osc_2_pitch != 64) Store_Synth_Lfo_2 = TRUE;
+                if(PARASynth[swrite].lfo_2_osc_1_pitch != 64) Store_Synth_Lfo_2_Pitch = TRUE;
+                if(PARASynth[swrite].lfo_2_osc_2_pitch != 64) Store_Synth_Lfo_2_Pitch = TRUE;
+                if(PARASynth[swrite].lfo_2_osc_1_volume != 64) Store_Synth_Lfo_2 = TRUE;
+                if(PARASynth[swrite].lfo_2_osc_2_volume != 64) Store_Synth_Lfo_2 = TRUE;
+                if(PARASynth[swrite].lfo_2_vcf_cutoff != 64) Store_Synth_Lfo_2 = TRUE;
+                if(PARASynth[swrite].lfo_2_vcf_resonance != 64) Store_Synth_Lfo_2 = TRUE;
 
-                fvalue = ((float) PARASynth[swrite].env1_osc1_pw - 64) * 0.015625f;
+                fvalue = ((float) PARASynth[swrite].lfo_2_osc_1_pw - 64) * 0.015625f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
-                fvalue = ((float) PARASynth[swrite].env1_osc2_pw - 64) * 0.015625f;
+                fvalue = ((float) PARASynth[swrite].lfo_2_osc_2_pw - 64) * 0.015625f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
-                fvalue = ((float) PARASynth[swrite].env1_osc1_pitch - 64) * 0.015625f;
+                fvalue = ((float) PARASynth[swrite].lfo_2_osc_1_pitch - 64) * 0.015625f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
-                fvalue = ((float) PARASynth[swrite].env1_osc2_pitch - 64) * 0.015625f;
+                fvalue = ((float) PARASynth[swrite].lfo_2_osc_2_pitch - 64) * 0.015625f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
-                fvalue = ((float) PARASynth[swrite].env1_osc1_volume - 64) * 0.015625f;
-                //if((PARASynth[swrite].env1_osc1_volume - 64) == 0) fvalue = 1.0f;
+                fvalue = ((float) PARASynth[swrite].lfo_2_osc_1_volume - 64) * 0.015625f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
-                fvalue = ((float) PARASynth[swrite].env1_osc2_volume - 64) * 0.015625f;
-                //if((PARASynth[swrite].env1_osc2_volume - 64) == 0) fvalue = 1.0f;
+                fvalue = ((float) PARASynth[swrite].lfo_2_osc_2_volume - 64) * 0.015625f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
-                fvalue = ((float) PARASynth[swrite].env1_vcf_cutoff - 64) * 0.015625f;
+                fvalue = ((float) PARASynth[swrite].lfo_2_vcf_cutoff - 64) * 0.015625f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
-                fvalue = ((float) PARASynth[swrite].env1_vcf_resonance - 64) * 0.015625f;
+                fvalue = ((float) PARASynth[swrite].lfo_2_vcf_resonance - 64) * 0.015625f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
 
-                if(Store_Synth_Phase_Osc1)
+                if(Store_Synth_Phase_Osc_1)
                 {
-                    if(PARASynth[swrite].env2_osc1_pw != 64) Store_Synth_Env2 = TRUE;
+                    if(PARASynth[swrite].env_1_osc_1_pw != 64) Store_Synth_Env_1 = TRUE;
                 }
-                if(Store_Synth_Phase_Osc2)
+                if(Store_Synth_Phase_Osc_2)
                 {
-                    if(PARASynth[swrite].env2_osc2_pw != 64) Store_Synth_Env2 = TRUE;
+                    if(PARASynth[swrite].env_1_osc_2_pw != 64) Store_Synth_Env_1 = TRUE;
                 }
-                if(PARASynth[swrite].env2_osc1_pitch != 64) Store_Synth_Env2 = TRUE;
-                if(PARASynth[swrite].env2_osc2_pitch != 64) Store_Synth_Env2 = TRUE;
-                if(PARASynth[swrite].env2_osc1_pitch != 64) Store_Synth_Env2_Pitch = TRUE;
-                if(PARASynth[swrite].env2_osc2_pitch != 64) Store_Synth_Env2_Pitch = TRUE;
-                if(PARASynth[swrite].env2_osc1_volume != 127) Store_Synth_Env2 = TRUE;
-                if(PARASynth[swrite].env2_osc2_volume != 127) Store_Synth_Env2 = TRUE;
-                if(PARASynth[swrite].env2_vcf_cutoff != 64) Store_Synth_Env2 = TRUE;
-                if(PARASynth[swrite].env2_vcf_resonance != 64) Store_Synth_Env2 = TRUE;
+                if(PARASynth[swrite].env_1_osc_1_pitch != 64) Store_Synth_Env_1 = TRUE;
+                if(PARASynth[swrite].env_1_osc_2_pitch != 64) Store_Synth_Env_1 = TRUE;
+                if(PARASynth[swrite].env_1_osc_1_pitch != 64) Store_Synth_Env_1_Pitch = TRUE;
+                if(PARASynth[swrite].env_1_osc_2_pitch != 64) Store_Synth_Env_1_Pitch = TRUE;
+                if(PARASynth[swrite].env_1_osc_1_volume != 127) Store_Synth_Env_1 = TRUE;
+                if(PARASynth[swrite].env_1_osc_2_volume != 127) Store_Synth_Env_1 = TRUE;
+                if(PARASynth[swrite].env_1_vcf_cutoff != 64) Store_Synth_Env_1 = TRUE;
+                if(PARASynth[swrite].env_1_vcf_resonance != 64) Store_Synth_Env_1 = TRUE;
 
-                fvalue = ((float) PARASynth[swrite].env2_osc1_pw - 64) * 0.015625f;
+                fvalue = ((float) PARASynth[swrite].env_1_osc_1_pw - 64) * 0.015625f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
-                fvalue = ((float) PARASynth[swrite].env2_osc2_pw - 64) * 0.015625f;
+                fvalue = ((float) PARASynth[swrite].env_1_osc_2_pw - 64) * 0.015625f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
-                fvalue = ((float) PARASynth[swrite].env2_osc1_pitch - 64) * 0.015625f;
+                fvalue = ((float) PARASynth[swrite].env_1_osc_1_pitch - 64) * 0.015625f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
-                fvalue = ((float) PARASynth[swrite].env2_osc2_pitch - 64) * 0.015625f;
+                fvalue = ((float) PARASynth[swrite].env_1_osc_2_pitch - 64) * 0.015625f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
-                fvalue = ((float) PARASynth[swrite].env2_osc1_volume - 64) * 0.015625f;
-                //if((PARASynth[swrite].env2_osc1_volume - 64) == 0) fvalue = 1.0f;
+                fvalue = ((float) PARASynth[swrite].env_1_osc_1_volume - 64) * 0.015625f;
+                //if((PARASynth[swrite].env_1_osc_1_volume - 64) == 0) fvalue = 1.0f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
-                fvalue = ((float) PARASynth[swrite].env2_osc2_volume - 64) * 0.015625f;
-                //if((PARASynth[swrite].env2_osc2_volume - 64) == 0) fvalue = 1.0f;
+                fvalue = ((float) PARASynth[swrite].env_1_osc_2_volume - 64) * 0.015625f;
+                //if((PARASynth[swrite].env_1_osc_2_volume - 64) == 0) fvalue = 1.0f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
-                fvalue = ((float) PARASynth[swrite].env2_vcf_cutoff - 64) * 0.015625f;
+                fvalue = ((float) PARASynth[swrite].env_1_vcf_cutoff - 64) * 0.015625f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
-                fvalue = ((float) PARASynth[swrite].env2_vcf_resonance - 64) * 0.015625f;
+                fvalue = ((float) PARASynth[swrite].env_1_vcf_resonance - 64) * 0.015625f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
 
-                fvalue = ((float) PARASynth[swrite].osc3_volume - 64) * 0.015625f;
+                if(Store_Synth_Phase_Osc_1)
+                {
+                    if(PARASynth[swrite].env_2_osc_1_pw != 64) Store_Synth_Env_2 = TRUE;
+                }
+                if(Store_Synth_Phase_Osc_2)
+                {
+                    if(PARASynth[swrite].env_2_osc_2_pw != 64) Store_Synth_Env_2 = TRUE;
+                }
+                if(PARASynth[swrite].env_2_osc_1_pitch != 64) Store_Synth_Env_2 = TRUE;
+                if(PARASynth[swrite].env_2_osc_2_pitch != 64) Store_Synth_Env_2 = TRUE;
+                if(PARASynth[swrite].env_2_osc_1_pitch != 64) Store_Synth_Env_2_Pitch = TRUE;
+                if(PARASynth[swrite].env_2_osc_2_pitch != 64) Store_Synth_Env_2_Pitch = TRUE;
+                if(PARASynth[swrite].env_2_osc_1_volume != 127) Store_Synth_Env_2 = TRUE;
+                if(PARASynth[swrite].env_2_osc_2_volume != 127) Store_Synth_Env_2 = TRUE;
+                if(PARASynth[swrite].env_2_vcf_cutoff != 64) Store_Synth_Env_2 = TRUE;
+                if(PARASynth[swrite].env_2_vcf_resonance != 64) Store_Synth_Env_2 = TRUE;
+
+                fvalue = ((float) PARASynth[swrite].env_2_osc_1_pw - 64) * 0.015625f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
-                Write_Mod_Data(&PARASynth[swrite].osc3_switch, sizeof(char), 1, in);
-                if(PARASynth[swrite].osc3_switch) Store_Synth_Osc3 = TRUE;
+                fvalue = ((float) PARASynth[swrite].env_2_osc_2_pw - 64) * 0.015625f;
+                Write_Mod_Data(&fvalue, sizeof(float), 1, in);
+                fvalue = ((float) PARASynth[swrite].env_2_osc_1_pitch - 64) * 0.015625f;
+                Write_Mod_Data(&fvalue, sizeof(float), 1, in);
+                fvalue = ((float) PARASynth[swrite].env_2_osc_2_pitch - 64) * 0.015625f;
+                Write_Mod_Data(&fvalue, sizeof(float), 1, in);
+                fvalue = ((float) PARASynth[swrite].env_2_osc_1_volume - 64) * 0.015625f;
+                //if((PARASynth[swrite].env_2_osc_1_volume - 64) == 0) fvalue = 1.0f;
+                Write_Mod_Data(&fvalue, sizeof(float), 1, in);
+                fvalue = ((float) PARASynth[swrite].env_2_osc_2_volume - 64) * 0.015625f;
+                //if((PARASynth[swrite].env_2_osc_2_volume - 64) == 0) fvalue = 1.0f;
+                Write_Mod_Data(&fvalue, sizeof(float), 1, in);
+                fvalue = ((float) PARASynth[swrite].env_2_vcf_cutoff - 64) * 0.015625f;
+                Write_Mod_Data(&fvalue, sizeof(float), 1, in);
+                fvalue = ((float) PARASynth[swrite].env_2_vcf_resonance - 64) * 0.015625f;
+                Write_Mod_Data(&fvalue, sizeof(float), 1, in);
+
+                fvalue = ((float) PARASynth[swrite].osc_3_volume - 64) * 0.015625f;
+                Write_Mod_Data(&fvalue, sizeof(float), 1, in);
+                Write_Mod_Data(&PARASynth[swrite].osc_3_switch, sizeof(char), 1, in);
+                if(PARASynth[swrite].osc_3_switch) Store_Synth_Osc_3 = TRUE;
 
                 fvalue = ((float) PARASynth[swrite].ptc_glide * (float) PARASynth[swrite].ptc_glide) * 0.0000015625f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
@@ -1384,25 +1384,25 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
                 if(PARASynth[swrite].disto) Store_Synth_Disto = TRUE;
 
-                fvalue = ((float) (PARASynth[swrite].lfo1_attack + 1)) / 512.0f;
+                fvalue = ((float) (PARASynth[swrite].lfo_1_attack + 1)) / 512.0f;
                 if(fvalue < 0.1f) fvalue = 0.1f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
-                fvalue = ((float) (PARASynth[swrite].lfo1_decay + 1)) / 512.0f;
+                fvalue = ((float) (PARASynth[swrite].lfo_1_decay + 1)) / 512.0f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
-                fvalue = (float) PARASynth[swrite].lfo1_sustain * 0.0078125f;
+                fvalue = (float) PARASynth[swrite].lfo_1_sustain * 0.0078125f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
-                fvalue = ((float) (PARASynth[swrite].lfo1_release + 1)) / 512.0f;
+                fvalue = ((float) (PARASynth[swrite].lfo_1_release + 1)) / 512.0f;
                 if(fvalue < 0.15f) fvalue = 0.15f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
 
-                fvalue = ((float) (PARASynth[swrite].lfo2_attack + 1)) / 512.0f;
+                fvalue = ((float) (PARASynth[swrite].lfo_2_attack + 1)) / 512.0f;
                 if(fvalue < 0.1f) fvalue = 0.1f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
-                fvalue = ((float) (PARASynth[swrite].lfo2_decay + 1)) / 512.0f;
+                fvalue = ((float) (PARASynth[swrite].lfo_2_decay + 1)) / 512.0f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
-                fvalue = (float) PARASynth[swrite].lfo2_sustain * 0.0078125f;
+                fvalue = (float) PARASynth[swrite].lfo_2_sustain * 0.0078125f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
-                fvalue = ((float) (PARASynth[swrite].lfo2_release + 1)) / 512.0f;
+                fvalue = ((float) (PARASynth[swrite].lfo_2_release + 1)) / 512.0f;
                 if(fvalue < 0.15f) fvalue = 0.15f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
 
@@ -1590,28 +1590,28 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
 
     Save_Constant("PTK_SYNTH", Store_Synth);
 
-    Save_Constant("PTK_SYNTH_PHASE1", Store_Synth_Phase_Osc1);
-    Save_Constant("PTK_SYNTH_PHASE2", Store_Synth_Phase_Osc2);
+    Save_Constant("PTK_SYNTH_PHASE1", Store_Synth_Phase_Osc_1);
+    Save_Constant("PTK_SYNTH_PHASE2", Store_Synth_Phase_Osc_2);
 
-    Save_Constant("PTK_SYNTH_LFO1", Store_Synth_Lfo1);
-    Save_Constant("PTK_SYNTH_LFO2", Store_Synth_Lfo2);
+    Save_Constant("PTK_SYNTH_LFO_1", Store_Synth_Lfo_1);
+    Save_Constant("PTK_SYNTH_LFO_2", Store_Synth_Lfo_2);
 
-    Save_Constant("PTK_SYNTH_ENV1", Store_Synth_Env1);
-    Save_Constant("PTK_SYNTH_ENV2", Store_Synth_Env2);
+    Save_Constant("PTK_SYNTH_ENV_1", Store_Synth_Env_1);
+    Save_Constant("PTK_SYNTH_ENV_2", Store_Synth_Env_2);
 
-    Save_Constant("PTK_SYNTH_LFO1_PITCH", Store_Synth_Lfo1_Pitch);
-    Save_Constant("PTK_SYNTH_LFO2_PITCH", Store_Synth_Lfo2_Pitch);
+    Save_Constant("PTK_SYNTH_LFO_1_PITCH", Store_Synth_Lfo_1_Pitch);
+    Save_Constant("PTK_SYNTH_LFO_2_PITCH", Store_Synth_Lfo_2_Pitch);
 
-    Save_Constant("PTK_SYNTH_ENV1_PITCH", Store_Synth_Env1_Pitch);
-    Save_Constant("PTK_SYNTH_ENV2_PITCH", Store_Synth_Env2_Pitch);
+    Save_Constant("PTK_SYNTH_ENV_1_PITCH", Store_Synth_Env_1_Pitch);
+    Save_Constant("PTK_SYNTH_ENV_2_PITCH", Store_Synth_Env_2_Pitch);
 
-    Save_Constant("PTK_SYNTH_PITCH", Store_Synth_Lfo1_Pitch | Store_Synth_Env1_Pitch |
-                                     Store_Synth_Lfo2_Pitch | Store_Synth_Env2_Pitch
+    Save_Constant("PTK_SYNTH_PITCH", Store_Synth_Lfo_1_Pitch | Store_Synth_Env_1_Pitch |
+                                     Store_Synth_Lfo_2_Pitch | Store_Synth_Env_2_Pitch
                  );
 
     Save_Constant("PTK_SYNTH_DISTO", Store_Synth_Disto);
-    Save_Constant("PTK_SYNTH_OSC2", Store_Synth_Osc2);
-    Save_Constant("PTK_SYNTH_OSC3", Store_Synth_Osc3);
+    Save_Constant("PTK_SYNTH_OSC_2", Store_Synth_Osc_2);
+    Save_Constant("PTK_SYNTH_OSC_3", Store_Synth_Osc_3);
     Save_Constant("PTK_SYNTH_FILTER", Store_Synth_Filter);
     Save_Constant("PTK_SYNTH_FILTER_LO", Store_Synth_Filter_Lo);
     Save_Constant("PTK_SYNTH_FILTER_HI", Store_Synth_Filter_Hi);
@@ -1624,9 +1624,9 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
     Save_Constant("PTK_SYNTH_WHITE", Store_Synth_WhiteNoise);
     Save_Constant("PTK_SYNTH_PINK", Store_Synth_PinkNoise);
 
-    //Save_Constant("PTK_WAVEFORM", Store_Instr_Waveform_Osc1 | Store_Instr_Waveform_Osc2);
-    //Save_Constant("PTK_WAVEFORM_OSC1", Store_Instr_Waveform_Osc1);
-    //Save_Constant("PTK_WAVEFORM_OSC2", Store_Instr_Waveform_Osc2);
+    //Save_Constant("PTK_WAVEFORM", Store_Instr_Waveform_Osc_1 | Store_Instr_Waveform_Osc_2);
+    //Save_Constant("PTK_WAVEFORM_OSC_1", Store_Instr_Waveform_Osc_1);
+    //Save_Constant("PTK_WAVEFORM_OSC_2", Store_Instr_Waveform_Osc_2);
 
     Save_Constant("PTK_GSM", Store_Gsm);
     Save_Constant("PTK_MP3", Store_Mp3);

@@ -350,7 +350,7 @@ void Load_Amiga_Mod(char *Name, const char *FileName, int channels, int digiboos
             Midi_Reset();
 #endif
 
-            init_sample_bank();
+            Init_Sample_Bank();
             Pre_Song_Init();
             int Patterns;
 
@@ -1156,8 +1156,8 @@ void Load_Amiga_Mod(char *Name, const char *FileName, int channels, int digiboos
             for(i = 0; i < channels; i++)
             {
                 TPan[i] = mt_pannels[i];
-                ComputeStereo(i);
-                FixStereo(i);
+                Compute_Stereo(i);
+                Fix_Stereo(i);
             }
 
             Use_Cubic = NONE_INT;

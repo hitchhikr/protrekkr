@@ -2,6 +2,13 @@
 ProTrekkr releases history
 ===============================================================================
 
+v2.7.2
+
+- Fixed a long time running bug that would make the tracker to crash when
+  loading or messing with the intruments.
+- Fixed a small visual bug in patterns display.
+- Patterns size can now also be doubled vertically.
+
 v2.7.1
 
 - Copy buffers icons weren't updated properly when selected with keyboard.
@@ -476,8 +483,8 @@ v1.98c:
 
 v1.98b:
 
-- Fixed a bug in the synth: ENV1 and ENV2 now really modulate the volume 
-  of OSC1 or OSC2.
+- Fixed a bug in the synth: ENV_1 and ENV_2 now really modulate the volume 
+  of OSC_1 or OSC_2.
 
   **Due to this older modules don't sound exactly the same**
 

@@ -2862,7 +2862,7 @@ void RtMidiOut :: sendMessage(std::vector<unsigned char> *message)
 
         }
         else
-        {     // Channel or system message.
+        {   // Channel or system message.
 
             // Make sure the message size isn't too big.
             if(nBytes > 3)

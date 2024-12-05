@@ -423,6 +423,7 @@ extern int Locked_Sub_Channels[MAX_TRACKS][MAX_POLYPHONY];
 extern int sp_Stage[MAX_TRACKS][MAX_POLYPHONY];
 extern int Cut_Stage[MAX_TRACKS][MAX_POLYPHONY];
 extern int Glide_Stage[MAX_TRACKS][MAX_POLYPHONY];
+extern unsigned int Current_Pointer[4];
 
 #if defined(PTK_SYNTH)
 extern int sp_Stage2[MAX_TRACKS][MAX_POLYPHONY];
@@ -452,7 +453,7 @@ extern int right_value;
 
 #if defined(PTK_SYNTH)
 #if !defined(__STAND_ALONE__) || defined(__WINAMP__)
-extern SynthParameters PARASynth[128];
+extern Synth_Parameters PARASynth[128];
 #else
 extern SYNTH_DATA PARASynth[128];
 #endif
@@ -482,17 +483,17 @@ void Schedule_Instrument(int channel, int sub_channel,
                          int Pos,
                          int Row);
 void Play_Instrument(int channel, int sub_channel);
-void ResetFilters(int tr);
-void ComputeStereo(int channel);
-void FixStereo(int channel);
+void Reset_Filters(int tr);
+void Compute_Stereo(int channel);
+void Fix_Stereo(int channel);
 void Get_Player_Values(void);
-void noteoff303(char strack);
-void init_sample_bank(void);
-void KillInst(int inst_nbr, int all_splits);
+void Note_Off_303(char strack);
+void Init_Sample_Bank(void);
+void Kill_Instrument(int inst_nbr, int all_splits);
 void Post_Song_Init(void);
 
 #if !defined(__STAND_ALONE__) || defined(__WINAMP__)
-void ResetSynthParameters(SynthParameters *TSP);
+void Reset_Synth_Parameters(Synth_Parameters *TSP);
 #endif
 
 void Free_Samples(void);
@@ -509,7 +510,7 @@ float Do_RMS(float input, float *rms_sum, float *buffer);
 #endif
 int Get_Free_Sub_Channel(int channel, int polyphony);
 int Get_Pattern_Offset(int pattern, int track, int row);
-void InitRevervbFilter(void);
+void Init_Reverb_Filter(void);
 void Set_Spline_Boundaries(unsigned int Position,
                            unsigned int *Boundaries,
                            int LoopType,
@@ -518,8 +519,8 @@ void Set_Spline_Boundaries(unsigned int Position,
                            unsigned int LoopEnd,
                            unsigned int LoopStart);
 float Process_Sample(short *Data, int c, int i, unsigned int res_dec);
-void init_eq(LPEQSTATE es);
-float do_eq(LPEQSTATE es, float sample, int Left);
+void Init_Equ(LPEQSTATE es);
+float Do_Equ(LPEQSTATE es, float sample, int Left);
 #if defined(PTK_SHUFFLE)
 void Update_Shuffle(void);
 #endif

@@ -104,10 +104,14 @@ int Startup_Height;
 int Resize_Width;
 int Resize_Height;
 int Burn_Title = FALSE;
+
+SDL_sem *thread_sem;
 SDL_Surface *Main_Screen;
+
 #if defined(__WIN32__)
 SDL_SysWMinfo WMInfo;
 #endif
+
 MOUSE Mouse;
 unsigned short Keys[SDLK_LAST];
 unsigned short Keys_Sym[SDLK_LAST];
@@ -649,6 +653,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
 
     SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
     SDL_EnableUNICODE(TRUE);
+    thread_sem = SDL_CreateSemaphore(1);
 
 #if !defined(__NO_MIDI__)
     // Load midi devices infos
@@ -688,21 +693,21 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
     // Check if there's an argument
     if(argc != 1)
     {
-        LoadFile(0, argv[1]);
+        Load_File(0, argv[1]);
     }
     else
     {
         // Nope: check if auto reload was turned on
         if(AutoReload)
         {
-            LoadFile(0, Last_Used_Ptk);
+            Load_File(0, Last_Used_Ptk);
         }
     }
 
     Resize_Width = Cur_Width;
     Resize_Height = Cur_Height;
     do_resize = TRUE;
-    
+
     while(1)
     {
         Mouse.wheel = 0;
@@ -1024,8 +1029,14 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
         
     Save_Config();
 
-    if(ExePath) free(ExePath);
-
+    if(ExePath)
+    {
+        free(ExePath);
+    }
+    if(thread_sem)
+    {
+        SDL_DestroySemaphore(thread_sem);
+    }
     exit(0);
 }
 
@@ -1191,7 +1202,6 @@ int Switch_FullScreen(int Width, int Height, int Refresh, int Force_Window_Mode)
     CONSOLE_HEIGHT2 = CONSOLE_HEIGHT - 42;
     fsize = 638 + restx;
     Visible_Columns = CONSOLE_WIDTH / 128;
-
 
     // Flush any pending rects
     Nbr_Update_Rects = 0;

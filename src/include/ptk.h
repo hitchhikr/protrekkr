@@ -145,5 +145,7 @@ void Note_Jazz(int track, int note, float volume);
 void Note_Jazz_Off(int note);
 void Display_Beat_Time(void);
 int Read_Pattern_Note(int Position);
+void Set_Font_Normal(void);
+void Set_Font_Double(void);
 
 #endif

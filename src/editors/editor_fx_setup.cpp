@@ -83,7 +83,7 @@ void Actualize_Fx_Ed(char gode)
     {
         if(gode == 0 || gode == 2)
         {
-            Realslider(77, (Cur_Height - 102), (int) (Feedback * 127.0f), compressor);
+            Real_Slider(77, (Cur_Height - 102), (int) (Feedback * 127.0f), compressor);
         }
 
         if(gode == 0 || gode == 3)
@@ -95,8 +95,8 @@ void Actualize_Fx_Ed(char gode)
                 lchorus_counter = MIX_RATE;
                 lchorus_counter2 = MIX_RATE - lchorus_delay;
             }
-            Realslider(307, (Cur_Height - 120), lchorus_delay / 175, TRUE);
-            outlong(458, (Cur_Height - 120), (lchorus_delay * 1000) / MIX_RATE, 2);
+            Real_Slider(307, (Cur_Height - 120), lchorus_delay / 175, TRUE);
+            Print_Long(458, (Cur_Height - 120), (lchorus_delay * 1000) / MIX_RATE, 2);
         }
 
         if(gode == 0 || gode == 4)
@@ -108,33 +108,33 @@ void Actualize_Fx_Ed(char gode)
                 rchorus_counter = MIX_RATE;
                 rchorus_counter2 = MIX_RATE - rchorus_delay;
             }
-            Realslider(307, (Cur_Height - 102), rchorus_delay / 175, TRUE);
-            outlong(458, (Cur_Height - 102), (rchorus_delay * 1000) / MIX_RATE, 2);
+            Real_Slider(307, (Cur_Height - 102), rchorus_delay / 175, TRUE);
+            Print_Long(458, (Cur_Height - 102), (rchorus_delay * 1000) / MIX_RATE, 2);
         }
 
         if(gode == 0 || gode == 5)
         {
             if(lchorus_feedback > 0.95f) lchorus_feedback = 0.95f;
             if(lchorus_feedback < 0) lchorus_feedback = 0;
-            Realslider(307, (Cur_Height - 84), (int) (lchorus_feedback * 127.0f), TRUE);
-            outlong(458, (Cur_Height - 84), (int) (lchorus_feedback * 100.0f), 1);
+            Real_Slider(307, (Cur_Height - 84), (int) (lchorus_feedback * 127.0f), TRUE);
+            Print_Long(458, (Cur_Height - 84), (int) (lchorus_feedback * 100.0f), 1);
         }
 
         if(gode == 0 || gode == 6)
         {
             if(rchorus_feedback > 0.95f) rchorus_feedback = 0.95f;
             if(rchorus_feedback < 0) rchorus_feedback = 0;
-            Realslider(307, (Cur_Height - 66), (int) (rchorus_feedback * 127), TRUE);
-            outlong(458, (Cur_Height - 66), (int) (rchorus_feedback * 100), 1);
+            Real_Slider(307, (Cur_Height - 66), (int) (rchorus_feedback * 127), TRUE);
+            Print_Long(458, (Cur_Height - 66), (int) (rchorus_feedback * 100), 1);
         }
 
         if(gode == 0 || gode == 7)
         {
             if(c_threshold < 10) c_threshold = 10;
             if(c_threshold > 127) c_threshold = 127;
-            Realslider(77, (Cur_Height - 84), c_threshold, compressor);
+            Real_Slider(77, (Cur_Height - 84), c_threshold, compressor);
             // Re-generate
-            if(gode == 7) InitRevervbFilter();
+            if(gode == 7) Init_Reverb_Filter();
         }
 
         if(gode == 0 || gode == 8)
@@ -198,7 +198,7 @@ void Actualize_Fx_Ed(char gode)
         {
             if(Reverb_Stereo_Amount < 0) Reverb_Stereo_Amount = 0;
             if(Reverb_Stereo_Amount > 127) Reverb_Stereo_Amount = 127;
-            Realslider(77, (Cur_Height - 48), Reverb_Stereo_Amount, compressor);
+            Real_Slider(77, (Cur_Height - 48), Reverb_Stereo_Amount, compressor);
             if(gode == 13) Initreverb();
         }
 
@@ -213,12 +213,12 @@ void Actualize_Fx_Ed(char gode)
             char string[64];
 
             Gui_Draw_Button_Box(648, 505, 56, 16, "Attack", BUTTON_NORMAL | BUTTON_DISABLED);
-            Realslider_Size(705, 505, 55, (int) (mas_attack * 55.0f), TRUE);
+            Real_Slider_Size(705, 505, 55, (int) (mas_attack * 55.0f), TRUE);
             sprintf(string, "%d%%", (int) (mas_attack * 100.0f));
             Print_String(string, 705, 507, 72, BUTTON_TEXT_CENTERED);
 
             Gui_Draw_Button_Box(648, 523, 56, 16, "Release", BUTTON_NORMAL | BUTTON_DISABLED);
-            Realslider_Size(705, 523, 55, (int) (mas_release * 55.0f), TRUE);
+            Real_Slider_Size(705, 523, 55, (int) (mas_release * 55.0f), TRUE);
             sprintf(string, "%d%%", (int) (mas_release * 100.0f));
             Print_String(string, 705, 525, 72, BUTTON_TEXT_CENTERED);
         }*/
@@ -229,7 +229,7 @@ void Mouse_Sliders_Fx_Ed(void)
 {
     if(userscreen == USER_SCREEN_FX_SETUP_EDIT)
     {
-        if(zcheckMouse(77, (Cur_Height - 102), 148, 16) && compressor)
+        if(Check_Mouse(77, (Cur_Height - 102), 148, 16) && compressor)
         {
             Feedback = float(float(Mouse.x - 87) / 127.0f);
             if(Feedback < 0) Feedback = 0;
@@ -239,14 +239,14 @@ void Mouse_Sliders_Fx_Ed(void)
             teac = 2;
         }
         
-        if(zcheckMouse(77, (Cur_Height - 84), 148, 16) && compressor)
+        if(Check_Mouse(77, (Cur_Height - 84), 148, 16) && compressor)
         {
             c_threshold = Mouse.x - 87;
             gui_action = GUI_CMD_UPDATE_FX_ED;
             teac = 7;
         }
         // Reverb filter cutoff
-        if(zcheckMouse(77, (Cur_Height - 66), 67, 16) && compressor)
+        if(Check_Mouse(77, (Cur_Height - 66), 67, 16) && compressor)
         {
             Reverb_Filter_Cutoff = (float)(Mouse.x - 87) / 50.0f;
             if(Reverb_Filter_Cutoff < 0.02f) Reverb_Filter_Cutoff = 0.02f;
@@ -255,7 +255,7 @@ void Mouse_Sliders_Fx_Ed(void)
             teac = 9;
         }  
         // Reverb filter resonance
-        if(zcheckMouse(150, (Cur_Height - 66), 67, 16) && compressor)
+        if(Check_Mouse(150, (Cur_Height - 66), 67, 16) && compressor)
         {
             Reverb_Filter_Resonance = (float)(Mouse.x - 160) / 50.0f;
             if(Reverb_Filter_Resonance < 0.02f) Reverb_Filter_Resonance = 0.02f;
@@ -264,7 +264,7 @@ void Mouse_Sliders_Fx_Ed(void)
             teac = 14;
         }  
         // Reverb stereo
-        if(zcheckMouse(77, (Cur_Height - 48), 148, 16) && compressor)
+        if(Check_Mouse(77, (Cur_Height - 48), 148, 16) && compressor)
         {
             int value = (Mouse.x - 87);
             if(value < 0) value = 0;
@@ -273,25 +273,25 @@ void Mouse_Sliders_Fx_Ed(void)
             gui_action = GUI_CMD_UPDATE_FX_ED;
             teac = 13;
         }  
-        if(zcheckMouse(307, (Cur_Height - 120), 148, 16))
+        if(Check_Mouse(307, (Cur_Height - 120), 148, 16))
         {
             lchorus_delay = (Mouse.x - 317) * 174;
             gui_action = GUI_CMD_UPDATE_FX_ED;
             teac = 3;
         }
-        if(zcheckMouse(307, (Cur_Height - 102), 148, 16))
+        if(Check_Mouse(307, (Cur_Height - 102), 148, 16))
         {
             rchorus_delay = (Mouse.x - 317) * 174;
             gui_action = GUI_CMD_UPDATE_FX_ED;
             teac = 4;
         }
-        if(zcheckMouse(307, (Cur_Height - 84), 148, 16))
+        if(Check_Mouse(307, (Cur_Height - 84), 148, 16))
         {
             lchorus_feedback = float(Mouse.x - 317) / 127;
             gui_action = GUI_CMD_UPDATE_FX_ED;
             teac = 5;
         }
-        if(zcheckMouse(307, (Cur_Height - 66), 148, 16))
+        if(Check_Mouse(307, (Cur_Height - 66), 148, 16))
         {
             rchorus_feedback = float(Mouse.x - 317) / 127;
             gui_action = GUI_CMD_UPDATE_FX_ED;
@@ -299,7 +299,7 @@ void Mouse_Sliders_Fx_Ed(void)
         }
 
 /*        // Compressor attack
-        if(zcheckMouse(706, 505, 72, 18))
+        if(Check_Mouse(706, 505, 72, 18))
         {
             mas_attack = float(Mouse.x - 716.0f) / 55;
             if(mas_attack < 0.0f) mas_attack = 0.0f;
@@ -309,7 +309,7 @@ void Mouse_Sliders_Fx_Ed(void)
         }
 
         // Compressor release
-        if(zcheckMouse(706, 523, 72, 18))
+        if(Check_Mouse(706, 523, 72, 18))
         {
             mas_release = float(Mouse.x - 716.0f) / 55;
             if(mas_release < 0.0f) mas_release = 0.0f;
@@ -326,13 +326,13 @@ void Mouse_Right_Fx_Ed(void)
     if(userscreen == USER_SCREEN_FX_SETUP_EDIT)
     {
         // Ticks synchro left
-        if(zcheckMouse(534, (Cur_Height - 120), 16, 16) == 1)
+        if(Check_Mouse(534, (Cur_Height - 120), 16, 16) == 1)
         {
             Ticks_Synchro_Left -= 10;
             gui_action = GUI_CMD_UPDATE_FX_ED;
             teac = 10;
         }
-        if(zcheckMouse(578, (Cur_Height - 120), 16, 16) == 1)
+        if(Check_Mouse(578, (Cur_Height - 120), 16, 16) == 1)
         {
             Ticks_Synchro_Left += 10;
             gui_action = GUI_CMD_UPDATE_FX_ED;
@@ -340,13 +340,13 @@ void Mouse_Right_Fx_Ed(void)
         }
 
         // Ticks synchro right
-        if(zcheckMouse(534, (Cur_Height - 102), 16, 16) == 1)
+        if(Check_Mouse(534, (Cur_Height - 102), 16, 16) == 1)
         {
             Ticks_Synchro_Right -= 10;
             gui_action = GUI_CMD_UPDATE_FX_ED;
             teac = 11;
         }
-        if(zcheckMouse(578, (Cur_Height - 102), 16, 16) == 1)
+        if(Check_Mouse(578, (Cur_Height - 102), 16, 16) == 1)
         {
             Ticks_Synchro_Right += 10;
             gui_action = GUI_CMD_UPDATE_FX_ED;
@@ -360,14 +360,14 @@ void Mouse_Left_Fx_Ed(void)
     if(userscreen == USER_SCREEN_FX_SETUP_EDIT)
     {
         // Delay type
-        if(zcheckMouse(79, (Cur_Height - 84), 16, 16) && compressor)
+        if(Check_Mouse(79, (Cur_Height - 84), 16, 16) && compressor)
         {
             DelayType--;
             gui_action = GUI_CMD_UPDATE_FX_ED;
             teac = 1;
         }
         // Delay type
-        if(zcheckMouse(79 + 44, (Cur_Height - 84), 16, 16) && compressor)
+        if(Check_Mouse(79 + 44, (Cur_Height - 84), 16, 16) && compressor)
         {
             DelayType++;
             gui_action = GUI_CMD_UPDATE_FX_ED;
@@ -375,13 +375,13 @@ void Mouse_Left_Fx_Ed(void)
         }
 
         // Ticks synchro left
-        if(zcheckMouse(534, (Cur_Height - 120), 16, 16))
+        if(Check_Mouse(534, (Cur_Height - 120), 16, 16))
         {
             Ticks_Synchro_Left--;
             gui_action = GUI_CMD_UPDATE_FX_ED;
             teac = 10;
         }
-        if(zcheckMouse(578, (Cur_Height - 120), 16, 16))
+        if(Check_Mouse(578, (Cur_Height - 120), 16, 16))
         {
             Ticks_Synchro_Left++;
             gui_action = GUI_CMD_UPDATE_FX_ED;
@@ -389,46 +389,46 @@ void Mouse_Left_Fx_Ed(void)
         }
 
         // Ticks synchro right
-        if(zcheckMouse(534, (Cur_Height - 102), 16, 16))
+        if(Check_Mouse(534, (Cur_Height - 102), 16, 16))
         {
             Ticks_Synchro_Right--;
             gui_action = GUI_CMD_UPDATE_FX_ED;
             teac = 11;
         }
-        if(zcheckMouse(578, (Cur_Height - 102), 16, 16))
+        if(Check_Mouse(578, (Cur_Height - 102), 16, 16))
         {
             Ticks_Synchro_Right++;
             gui_action = GUI_CMD_UPDATE_FX_ED;
             teac = 11;
         }
 
-        if(zcheckMouse(596, (Cur_Height - 120), 32, 16))
+        if(Check_Mouse(596, (Cur_Height - 120), 32, 16))
         {
             lchorus_delay = SamplesPerTick * Ticks_Synchro_Left;
             gui_action = GUI_CMD_UPDATE_FX_ED;
             teac = 3;
         }
-        if(zcheckMouse(596, (Cur_Height - 102), 32, 16))
+        if(Check_Mouse(596, (Cur_Height - 102), 32, 16))
         {
             rchorus_delay = SamplesPerTick * Ticks_Synchro_Right;
             gui_action = GUI_CMD_UPDATE_FX_ED;
             teac = 4;
         }
 
-        if(compressor == FALSE && zcheckMouse(79, (Cur_Height - 120), 32, 16))
+        if(compressor == FALSE && Check_Mouse(79, (Cur_Height - 120), 32, 16))
         {
             compressor = TRUE;
             gui_action = GUI_CMD_UPDATE_FX_ED;
             teac = 0;
         }
-        if(compressor == TRUE && zcheckMouse(113, (Cur_Height - 120), 32, 16))
+        if(compressor == TRUE && Check_Mouse(113, (Cur_Height - 120), 32, 16))
         {
             compressor = FALSE;
             gui_action = GUI_CMD_UPDATE_FX_ED;
             teac = 0;
         }  
 
-        if(zcheckMouse(706, (Cur_Height - 136), 16, 16))
+        if(Check_Mouse(706, (Cur_Height - 136), 16, 16))
         {
             if(Use_Cubic > 0)
             {
@@ -437,7 +437,7 @@ void Mouse_Left_Fx_Ed(void)
             gui_action = GUI_CMD_UPDATE_FX_ED;
             teac = 12;
         }
-        if(zcheckMouse(706 + (18 + 42) + 2, (Cur_Height - 136), 16, 16))
+        if(Check_Mouse(706 + (18 + 42) + 2, (Cur_Height - 136), 16, 16))
         {
             if(Use_Cubic <= SPLINE_INT)
             {
@@ -457,7 +457,7 @@ void Display_Reverb_Cutoff(void)
     if(Reverb_Filter_Cutoff < 0.02f) Reverb_Filter_Cutoff = 0.02f;
     if(Reverb_Filter_Cutoff > 0.99f) Reverb_Filter_Cutoff = 0.99f;
 
-    Realslider_Size(77, (Cur_Height - 66), 55, (int) (Reverb_Filter_Cutoff * 55.0f), compressor);
+    Real_Slider_Size(77, (Cur_Height - 66), 55, (int) (Reverb_Filter_Cutoff * 55.0f), compressor);
 
     sprintf(string, "%d%%", (int) (Reverb_Filter_Cutoff * 102.0f));
     Print_String(string, 77, (Cur_Height - (66 - 2)), 55 + 17, BUTTON_TEXT_CENTERED);
@@ -470,7 +470,7 @@ void Display_Reverb_Resonance(void)
     if(Reverb_Filter_Resonance < 0.02f) Reverb_Filter_Resonance = 0.02f;
     if(Reverb_Filter_Resonance > 0.99f) Reverb_Filter_Resonance = 0.99f;
 
-    Realslider_Size(150, (Cur_Height - 66), 55, (int) (Reverb_Filter_Resonance * 55.0f), compressor);
+    Real_Slider_Size(150, (Cur_Height - 66), 55, (int) (Reverb_Filter_Resonance * 55.0f), compressor);
 
     sprintf(string, "%d%%", (int) (Reverb_Filter_Resonance * 102.0f));
     Print_String(string, 150, (Cur_Height - (66 - 2)), 55 + 17, BUTTON_TEXT_CENTERED);

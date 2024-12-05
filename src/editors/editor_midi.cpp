@@ -276,7 +276,7 @@ void Mouse_Left_Midi_Ed(void)
     if(userscreen == USER_SCREEN_SETUP_MIDI)
     {
         // Save the data
-        if(zcheckMouse(749, (Cur_Height - 142), 34, 16))
+        if(Check_Mouse(749, (Cur_Height - 142), 34, 16))
         {
             if(File_Exist_Req("%s" SLASH "%s.pmi", Dir_MidiCfg, Midi_Name))
             {
@@ -289,7 +289,7 @@ void Mouse_Left_Midi_Ed(void)
         }
 
         // Start midi name input
-        if(zcheckMouse(583, (Cur_Height - 142), 164, 16) && snamesel == INPUT_NONE)
+        if(Check_Mouse(583, (Cur_Height - 142), 164, 16) && snamesel == INPUT_NONE)
         {
             snamesel = INPUT_MIDI_NAME;
             strcpy(cur_input_name, Midi_Name);
@@ -301,7 +301,7 @@ void Mouse_Left_Midi_Ed(void)
 
 #if !defined(__NO_MIDI__)
         // Previous midi in device
-        if(zcheckMouse(70, (Cur_Height - 134), 16, 16))
+        if(Check_Mouse(70, (Cur_Height - 134), 16, 16))
         {
             c_midiin--;
             gui_action = GUI_CMD_UPDATE_MIDI_ED;
@@ -309,7 +309,7 @@ void Mouse_Left_Midi_Ed(void)
             teac = UPDATE_MIDI_ED_SEL_IN;
         }
         // Next midi in device
-        if(zcheckMouse(114, (Cur_Height - 134), 16, 16))
+        if(Check_Mouse(114, (Cur_Height - 134), 16, 16))
         {
             c_midiin++;
             gui_action = GUI_CMD_UPDATE_MIDI_ED;
@@ -318,7 +318,7 @@ void Mouse_Left_Midi_Ed(void)
         }
 
         // Previous midi out device
-        if(zcheckMouse(70, (Cur_Height - 117), 16, 16))
+        if(Check_Mouse(70, (Cur_Height - 117), 16, 16))
         {
             c_midiout--;
             gui_action = GUI_CMD_UPDATE_MIDI_ED;
@@ -326,7 +326,7 @@ void Mouse_Left_Midi_Ed(void)
             teac = UPDATE_MIDI_ED_SEL_OUT;
         }
         // Next midi out device
-        if(zcheckMouse(114, (Cur_Height - 117), 16, 16))
+        if(Check_Mouse(114, (Cur_Height - 117), 16, 16))
         {
             c_midiout++;
             gui_action = GUI_CMD_UPDATE_MIDI_ED;
@@ -337,7 +337,7 @@ void Mouse_Left_Midi_Ed(void)
 
         // Midi track notes off
 #if !defined(__NO_MIDI__)
-        if(zcheckMouse(12, (Cur_Height - 99), 82, 16) == 1 && c_midiout != -1)
+        if(Check_Mouse(12, (Cur_Height - 99), 82, 16) == 1 && c_midiout != -1)
         {
             Midi_NoteOff(Track_Under_Caret, -1);
             int i;
@@ -351,7 +351,7 @@ void Mouse_Left_Midi_Ed(void)
 
         // All Midi notes off
 #if !defined(__NO_MIDI__)
-        if(zcheckMouse(12, (Cur_Height - 81), 82, 16) == 1 && c_midiout != -1)
+        if(Check_Mouse(12, (Cur_Height - 81), 82, 16) == 1 && c_midiout != -1)
         {
             Midi_AllNotesOff();
             gui_action = GUI_CMD_MIDI_NOTE_OFF_ALL_TRACKS;
@@ -398,7 +398,7 @@ void Mod_Midi_Automation_Value(int Amount)
 
     for(i = 0; i < NBR_MIDI_DISPATCH_MSG; i++)
     {
-        if(zcheckMouse(Pos_Midi_Automation[i].x,
+        if(Check_Mouse(Pos_Midi_Automation[i].x,
                        (Cur_Height - Pos_Midi_Automation[i].y),
                        16, 16) && snamesel == INPUT_NONE)
         {
@@ -409,7 +409,7 @@ void Mod_Midi_Automation_Value(int Amount)
             break;
         }
 
-        if(zcheckMouse(Pos_Midi_Automation[i].x + 44,
+        if(Check_Mouse(Pos_Midi_Automation[i].x + 44,
                        (Cur_Height - Pos_Midi_Automation[i].y),
                        16, 16) && snamesel == INPUT_NONE)
         {
@@ -420,7 +420,7 @@ void Mod_Midi_Automation_Value(int Amount)
             break;
         }
 
-        if(zcheckMouse(Pos_Midi_Automation[i].x + GAP_X_MIDI,
+        if(Check_Mouse(Pos_Midi_Automation[i].x + GAP_X_MIDI,
                        (Cur_Height - Pos_Midi_Automation[i].y),
                        16, 16) && snamesel == INPUT_NONE)
         {
@@ -431,7 +431,7 @@ void Mod_Midi_Automation_Value(int Amount)
             break;
         }
 
-        if(zcheckMouse(Pos_Midi_Automation[i].x + GAP_X_MIDI + (18 + 110),
+        if(Check_Mouse(Pos_Midi_Automation[i].x + GAP_X_MIDI + (18 + 110),
                        (Cur_Height - Pos_Midi_Automation[i].y),
                        16, 16) && snamesel == INPUT_NONE)
         {

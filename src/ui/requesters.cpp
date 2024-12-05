@@ -347,7 +347,7 @@ void Mouse_Handler_Requester(void)
         {
             for(i = 0; i < Nbr_Buttons; i++)
             {
-                if(zcheckMouse(Pos_X + Buttons_Pos[i],
+                if(Check_Mouse(Pos_X + Buttons_Pos[i],
                                Pos_Y + (Size_Y - Font_Height) - 16, Buttons_Size[i], 16))
                 {
                     Req_Pressed_Button = i + 1;

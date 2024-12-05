@@ -218,53 +218,53 @@ void Actualize_Reverb_Ed(int gode)
 
         if(gode == UPDATE_REVERB_ED_ALL || gode == UPDATE_REVERB_ED_DELAY1)
         {
-            outlong_small(108, (Cur_Height - 115), delays[0], 0, 45,
-                          BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
+            Print_Long_Small(108, (Cur_Height - 115), delays[0], 0, 45,
+                             BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
         }
         if(gode == UPDATE_REVERB_ED_ALL || gode == UPDATE_REVERB_ED_DELAY2)
         {
-            outlong_small(108, (Cur_Height - 97), delays[1], 0, 45,
-                          BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
+            Print_Long_Small(108, (Cur_Height - 97), delays[1], 0, 45,
+                             BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
         }
         if(gode == UPDATE_REVERB_ED_ALL || gode == UPDATE_REVERB_ED_DELAY3)
         {
-            outlong_small(108, (Cur_Height - 79), delays[2], 0, 45,
-                          BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
+            Print_Long_Small(108, (Cur_Height - 79), delays[2], 0, 45,
+                             BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
         }
         if(gode == UPDATE_REVERB_ED_ALL || gode == UPDATE_REVERB_ED_DELAY4)
         {
-            outlong_small(108, (Cur_Height - 61), delays[3], 0, 45,
-                          BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
+            Print_Long_Small(108, (Cur_Height - 61), delays[3], 0, 45,
+                             BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
         }
         if(gode == UPDATE_REVERB_ED_ALL || gode == UPDATE_REVERB_ED_DELAY5)
         {
-            outlong_small(108, (Cur_Height - 43), delays[4], 0, 45,
-                          BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
+            Print_Long_Small(108, (Cur_Height - 43), delays[4], 0, 45,
+                             BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
         }
         if(gode == UPDATE_REVERB_ED_ALL || gode == UPDATE_REVERB_ED_DELAY6)
         {
-            outlong_small(108 + 185, (Cur_Height - 115), delays[5], 0, 45,
-                          BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
+            Print_Long_Small(108 + 185, (Cur_Height - 115), delays[5], 0, 45,
+                             BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
         }
         if(gode == UPDATE_REVERB_ED_ALL || gode == UPDATE_REVERB_ED_DELAY7)
         {
-            outlong_small(108 + 185, (Cur_Height - 97), delays[6], 0, 45,
-                          BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
+            Print_Long_Small(108 + 185, (Cur_Height - 97), delays[6], 0, 45,
+                             BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
         }
         if(gode == UPDATE_REVERB_ED_ALL || gode == UPDATE_REVERB_ED_DELAY8)
         {
-            outlong_small(108 + 185, (Cur_Height - 79), delays[7], 0, 45,
-                          BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
+            Print_Long_Small(108 + 185, (Cur_Height - 79), delays[7], 0, 45,
+                             BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
         }
         if(gode == UPDATE_REVERB_ED_ALL || gode == UPDATE_REVERB_ED_DELAY9)
         {
-            outlong_small(108 + 185, (Cur_Height - 61), delays[8], 0, 45,
-                          BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
+            Print_Long_Small(108 + 185, (Cur_Height - 61), delays[8], 0, 45,
+                             BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
         }
         if(gode == UPDATE_REVERB_ED_ALL || gode == UPDATE_REVERB_ED_DELAY10)
         {
-            outlong_small(108 + 185, (Cur_Height - 43), delays[9], 0, 45,
-                          BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
+            Print_Long_Small(108 + 185, (Cur_Height - 43), delays[9], 0, 45,
+                             BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
         }
 
         if(gode == UPDATE_REVERB_ED_ALL || gode == UPDATE_REVERB_ED_CHANGE_NAME)
@@ -290,7 +290,7 @@ void Mouse_Right_Reverb_Ed(void)
 {
     if(userscreen == USER_SCREEN_REVERB_EDIT)
     {
-        if(zcheckMouse(72, (Cur_Height - 135), 16, 16))
+        if(Check_Mouse(72, (Cur_Height - 135), 16, 16))
         {
             num_echoes -= 2;
             if(num_echoes < 1) num_echoes = 1;
@@ -300,7 +300,7 @@ void Mouse_Right_Reverb_Ed(void)
         }
 
         // Number of echoes
-        if(zcheckMouse(72 + 44, (Cur_Height - 135), 16, 16))
+        if(Check_Mouse(72 + 44, (Cur_Height - 135), 16, 16))
         {
             num_echoes += 2;
             if(num_echoes > 10) num_echoes = 10;
@@ -314,7 +314,7 @@ void Mouse_Right_Reverb_Ed(void)
         for(i = 0; i < num_echoes; i++)
         {
             // Arrows left
-            if(zcheckMouse(Table_Arrows[i].x + 18, (Cur_Height - 115) + Table_Arrows[i].y, 16, 16))
+            if(Check_Mouse(Table_Arrows[i].x + 18, (Cur_Height - 115) + Table_Arrows[i].y, 16, 16))
             {
                 delays[i] -= 50;
                 if(delays[i] < 83) delays[i] = 83;
@@ -325,7 +325,7 @@ void Mouse_Right_Reverb_Ed(void)
             }
 
             // Arrows right
-            if(zcheckMouse(Table_Arrows[i].x + 82, (Cur_Height - 115) + Table_Arrows[i].y, 16, 16))
+            if(Check_Mouse(Table_Arrows[i].x + 82, (Cur_Height - 115) + Table_Arrows[i].y, 16, 16))
             {
                 delays[i] += 50;
                 if(delays[i] > 15000) delays[i] = 15000;
@@ -347,7 +347,7 @@ void Mouse_Left_Reverb_Ed(void)
     {
 
         // Number of echoes
-        if(zcheckMouse(72, (Cur_Height - 135), 16, 16))
+        if(Check_Mouse(72, (Cur_Height - 135), 16, 16))
         {
             num_echoes--;
             if(num_echoes < 1) num_echoes = 1;
@@ -357,7 +357,7 @@ void Mouse_Left_Reverb_Ed(void)
         }
 
         // Number of echoes
-        if(zcheckMouse(72 + 44, (Cur_Height - 135), 16, 16))
+        if(Check_Mouse(72 + 44, (Cur_Height - 135), 16, 16))
         {
             num_echoes++;
             if(num_echoes > 10) num_echoes = 10;
@@ -367,7 +367,7 @@ void Mouse_Left_Reverb_Ed(void)
         }
 
         // Save the data
-        if(zcheckMouse(749, (Cur_Height - 142), 34, 16))
+        if(Check_Mouse(749, (Cur_Height - 142), 34, 16))
         {
             if(File_Exist_Req("%s" SLASH "%s.prv", Dir_Reverbs, Reverb_Name))
             {
@@ -380,7 +380,7 @@ void Mouse_Left_Reverb_Ed(void)
         }
 
         // Start reverb name input
-        if(zcheckMouse(583, (Cur_Height - 142), 164, 16) && snamesel == INPUT_NONE)
+        if(Check_Mouse(583, (Cur_Height - 142), 164, 16) && snamesel == INPUT_NONE)
         {
             snamesel = INPUT_REVERB_NAME;
             strcpy(cur_input_name, Reverb_Name);
@@ -395,7 +395,7 @@ void Mouse_Left_Reverb_Ed(void)
         for(i = 0; i < num_echoes; i++)
         {
             // Center buttons
-            if(zcheckMouse(Table_Sliders[i].x + 120, (Cur_Height - 115) + Table_Sliders[i].y, 16, 16))
+            if(Check_Mouse(Table_Sliders[i].x + 120, (Cur_Height - 115) + Table_Sliders[i].y, 16, 16))
             {
                 decays[i] = 0.0f;
                 teac = 0;
@@ -408,7 +408,7 @@ void Mouse_Left_Reverb_Ed(void)
         for(i = 0; i < num_echoes; i++)
         {
             // Arrows left
-            if(zcheckMouse(Table_Arrows[i].x + 18, (Cur_Height - 115) + Table_Arrows[i].y, 16, 16))
+            if(Check_Mouse(Table_Arrows[i].x + 18, (Cur_Height - 115) + Table_Arrows[i].y, 16, 16))
             {
                 delays[i]--;
                 if(delays[i] < 83) delays[i] = 83;
@@ -419,7 +419,7 @@ void Mouse_Left_Reverb_Ed(void)
             }
 
             // Arrows right
-            if(zcheckMouse(Table_Arrows[i].x + 82, (Cur_Height - 115) + Table_Arrows[i].y, 16, 16))
+            if(Check_Mouse(Table_Arrows[i].x + 82, (Cur_Height - 115) + Table_Arrows[i].y, 16, 16))
             {
                 delays[i]++;
                 if(delays[i] > 15000) delays[i] = 15000;
@@ -443,7 +443,7 @@ void Mouse_Sliders_Reverb_Ed(void)
         for(i = 0; i < num_echoes; i++)
         {
             // Rows slider
-            if(zcheckMouse(Table_Sliders[i].x, (Cur_Height - 115) + Table_Sliders[i].y, 119, 16))
+            if(Check_Mouse(Table_Sliders[i].x, (Cur_Height - 115) + Table_Sliders[i].y, 119, 16))
             {
                 int max_length = 128 + 16;
                 int Center = Slider_Get_Center(16, max_length, 119);
@@ -464,7 +464,7 @@ void Mouse_Sliders_Reverb_Ed(void)
         for(i = 0; i < num_echoes; i++)
         {
             // Arrows left
-            if(zcheckMouse(Table_Arrows[i].x, (Cur_Height - 115) + Table_Arrows[i].y, 16, 16))
+            if(Check_Mouse(Table_Arrows[i].x, (Cur_Height - 115) + Table_Arrows[i].y, 16, 16))
             {
                 delays[i]--;
                 if(delays[i] < 83) delays[i] = 83;
@@ -475,7 +475,7 @@ void Mouse_Sliders_Reverb_Ed(void)
             }
 
             // Arrows right
-            if(zcheckMouse(Table_Arrows[i].x + 82 + 18, (Cur_Height - 115) + Table_Arrows[i].y, 16, 16))
+            if(Check_Mouse(Table_Arrows[i].x + 82 + 18, (Cur_Height - 115) + Table_Arrows[i].y, 16, 16))
             {
                 delays[i]++;
                 if(delays[i] > 15000) delays[i] = 15000;
@@ -499,7 +499,7 @@ void Mouse_Sliders_Right_Reverb_Ed(void)
         for(i = 0; i < num_echoes; i++)
         {
             // Arrows left
-            if(zcheckMouse(Table_Arrows[i].x, (Cur_Height - 115) + Table_Arrows[i].y, 16, 16))
+            if(Check_Mouse(Table_Arrows[i].x, (Cur_Height - 115) + Table_Arrows[i].y, 16, 16))
             {
                 delays[i] -= 50;
                 if(delays[i] < 83) delays[i] = 83;
@@ -510,7 +510,7 @@ void Mouse_Sliders_Right_Reverb_Ed(void)
             }
 
             // Arrows right
-            if(zcheckMouse(Table_Arrows[i].x + 82 + 18, (Cur_Height - 115) + Table_Arrows[i].y, 16, 16))
+            if(Check_Mouse(Table_Arrows[i].x + 82 + 18, (Cur_Height - 115) + Table_Arrows[i].y, 16, 16))
             {
                 delays[i] += 50;
                 if(delays[i] > 15000) delays[i] = 15000;
@@ -560,7 +560,7 @@ void Display_Delays_Arrows(void)
 // Display a decay slider
 void Display_Decay_Slider(int Index)
 {
-    Realslider_Horiz(Table_Sliders[Index].x, (Cur_Height - 115) + Table_Sliders[Index].y,
+    Real_Slider_Horiz(Table_Sliders[Index].x, (Cur_Height - 115) + Table_Sliders[Index].y,
                      (int) ((decays[Index] * 64.0f) + 64.0f), 16, 128 + 16, 119, num_echoes > Index);
     Gui_Draw_Button_Box(Table_Sliders[Index].x + 120, (Cur_Height - 115) + Table_Sliders[Index].y, 16, 16, "C", BUTTON_NORMAL | (num_echoes > Index ? 0 : BUTTON_DISABLED) | BUTTON_TEXT_CENTERED);
 }

@@ -967,7 +967,7 @@ int32_t read_bytes(void *buff, int32_t bcount)
     return bcount;
 }
 
-void UnpackWavPack(Uint8 *Source, short *Dest, int Src_Size, int Dst_Size)
+void Unpack_WavPack(Uint8 *Source, short *Dest, int Src_Size, int Dst_Size)
 {
     int32_t temp;
     int32_t temp_buffer[256];

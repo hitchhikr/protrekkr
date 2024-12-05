@@ -192,7 +192,10 @@ void Actualize_Master_Ed(char gode)
                 }
             }
         }
-        if(gode == 7) Actupated(0);
+        if(gode == 7)
+        {
+            Update_Pattern(0);
+        }
 
         // Use decimal numbering for rows
         if(gode == 0 || gode == 8)
@@ -238,7 +241,7 @@ void Actualize_Master_Ed(char gode)
                 Gui_Draw_Button_Box(446 + 31, (Cur_Height - 45), 29, 16, "Off", BUTTON_PUSHED | BUTTON_TEXT_CENTERED);
             }
             Draw_Pattern_Right_Stuff();
-            Actupated(0);
+            Update_Pattern(0);
         }
 
         // Full screen
@@ -271,12 +274,12 @@ void Actualize_Master_Ed(char gode)
             if(Phony_Palette[Real_Palette_Idx].g > 255) Phony_Palette[Real_Palette_Idx].g = 255;
             if(Phony_Palette[Real_Palette_Idx].b < 0) Phony_Palette[Real_Palette_Idx].b = 0;
             if(Phony_Palette[Real_Palette_Idx].b > 255) Phony_Palette[Real_Palette_Idx].b = 255;
-            Realslider(518, (Cur_Height - 85), Ptk_Palette[Real_Palette_Idx].r / 2, TRUE);
-            outlong_small(668, (Cur_Height - 85), Ptk_Palette[Real_Palette_Idx].r, 0, 41, BUTTON_NORMAL | BUTTON_DISABLED);
-            Realslider(518, (Cur_Height - 65), Ptk_Palette[Real_Palette_Idx].g / 2, TRUE);
-            outlong_small(668, (Cur_Height - 65), Ptk_Palette[Real_Palette_Idx].g, 0, 41, BUTTON_NORMAL | BUTTON_DISABLED);
-            Realslider(518, (Cur_Height - 45), Ptk_Palette[Real_Palette_Idx].b / 2, TRUE);
-            outlong_small(668, (Cur_Height - 45), Ptk_Palette[Real_Palette_Idx].b, 0, 41, BUTTON_NORMAL | BUTTON_DISABLED);
+            Real_Slider(518, (Cur_Height - 85), Ptk_Palette[Real_Palette_Idx].r / 2, TRUE);
+            Print_Long_Small(668, (Cur_Height - 85), Ptk_Palette[Real_Palette_Idx].r, 0, 41, BUTTON_NORMAL | BUTTON_DISABLED);
+            Real_Slider(518, (Cur_Height - 65), Ptk_Palette[Real_Palette_Idx].g / 2, TRUE);
+            Print_Long_Small(668, (Cur_Height - 65), Ptk_Palette[Real_Palette_Idx].g, 0, 41, BUTTON_NORMAL | BUTTON_DISABLED);
+            Real_Slider(518, (Cur_Height - 45), Ptk_Palette[Real_Palette_Idx].b / 2, TRUE);
+            Print_Long_Small(668, (Cur_Height - 45), Ptk_Palette[Real_Palette_Idx].b, 0, 41, BUTTON_NORMAL | BUTTON_DISABLED);
             Set_Phony_Palette();
             if(gode) 
             {
@@ -383,7 +386,10 @@ void Actualize_Master_Ed(char gode)
             {
                 Gui_Draw_Button_Box(780, (Cur_Height - 125), 14, 16, "#", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
             }
-            if(gode == 19) Actupated(0);
+            if(gode == 19)
+            {
+                Update_Pattern(0);
+            }
         }
 
         // Bevel on/off
@@ -398,7 +404,7 @@ void Actualize_Master_Ed(char gode)
                     Gui_Draw_Button_Box(520 + 18 + (18 + 108) + 2 + 20, (Cur_Height - 105), 40, 16, "Shades", BUTTON_PUSHED | BUTTON_TEXT_CENTERED);
                     break;
             }
-            Actupated(0);
+            Update_Pattern(0);
         }
 
         // Set default size of patterns
@@ -480,7 +486,7 @@ void Mouse_Right_Master_Ed(void)
     if(userscreen == USER_SCREEN_SETUP_EDIT)
     {
         // Previous color
-        if(zcheckMouse(520, (Cur_Height - 105), 16, 16) == 1)
+        if(Check_Mouse(520, (Cur_Height - 105), 16, 16) == 1)
         {
             current_palette_idx -= 10;
             gui_action = GUI_CMD_UPDATE_SETUP_ED;
@@ -488,7 +494,7 @@ void Mouse_Right_Master_Ed(void)
         }
 
         // Next color
-        if(zcheckMouse(520 + (18 + 108) + 2, (Cur_Height - 105), 16, 16) == 1)
+        if(Check_Mouse(520 + (18 + 108) + 2, (Cur_Height - 105), 16, 16) == 1)
         {
             current_palette_idx += 10;
             gui_action = GUI_CMD_UPDATE_SETUP_ED;
@@ -496,7 +502,7 @@ void Mouse_Right_Master_Ed(void)
         }
 
         // Turn beveling type 2 on/off
-        if(zcheckMouse(520 + (18 + 108) + 2 + 20, (Cur_Height - 105), 14, 16))
+        if(Check_Mouse(520 + (18 + 108) + 2 + 20, (Cur_Height - 105), 14, 16))
         {
             if(Beveled == 2) Beveled = 0;
             else Beveled = 2;
@@ -505,7 +511,7 @@ void Mouse_Right_Master_Ed(void)
         }
 
         // Metronome
-        if(zcheckMouse(8 + 112, (Cur_Height - 125), 16, 16))
+        if(Check_Mouse(8 + 112, (Cur_Height - 125), 16, 16))
         {
             metronome_magnify -= 10;
             if(metronome_magnify < 0) metronome_magnify = 0;
@@ -514,7 +520,7 @@ void Mouse_Right_Master_Ed(void)
         }
 
         // Metronome
-        if(zcheckMouse(8 + 112 + 44, (Cur_Height - 125), 16, 16))
+        if(Check_Mouse(8 + 112 + 44, (Cur_Height - 125), 16, 16))
         {
             metronome_magnify += 10;
             if(metronome_magnify > 128) metronome_magnify = 128;
@@ -529,7 +535,7 @@ void Mouse_Left_Master_Ed(void)
     if(userscreen == USER_SCREEN_SETUP_EDIT)
     {
         // Latency
-        if(zcheckMouse(8 + 112, (Cur_Height - 105), 16, 16))
+        if(Check_Mouse(8 + 112, (Cur_Height - 105), 16, 16))
         {
             if(AUDIO_Milliseconds > 10)
             {
@@ -540,7 +546,7 @@ void Mouse_Left_Master_Ed(void)
         }
 
         // Latency
-        if(zcheckMouse(8 + 112 + 44, (Cur_Height - 105), 16, 16))
+        if(Check_Mouse(8 + 112 + 44, (Cur_Height - 105), 16, 16))
         {
             if(AUDIO_Milliseconds < 250)
             {
@@ -551,7 +557,7 @@ void Mouse_Left_Master_Ed(void)
         }
 
         // Mousewheel
-        if(zcheckMouse(446, (Cur_Height - 125), 16, 16))
+        if(Check_Mouse(446, (Cur_Height - 125), 16, 16))
         {
             MouseWheel_Multiplier--;
             gui_action = GUI_CMD_UPDATE_SETUP_ED;
@@ -559,7 +565,7 @@ void Mouse_Left_Master_Ed(void)
         }
 
         // Mousewheel
-        if(zcheckMouse(446 + 44, (Cur_Height - 125), 16, 16))
+        if(Check_Mouse(446 + 44, (Cur_Height - 125), 16, 16))
         {
             MouseWheel_Multiplier++;
             gui_action = GUI_CMD_UPDATE_SETUP_ED;
@@ -567,7 +573,7 @@ void Mouse_Left_Master_Ed(void)
         }
 
         // Patterns sep.
-        if(zcheckMouse(446, (Cur_Height - 105), 16, 16))
+        if(Check_Mouse(446, (Cur_Height - 105), 16, 16))
         {
             patt_highlight--;
             gui_action = GUI_CMD_UPDATE_SETUP_ED;
@@ -575,7 +581,7 @@ void Mouse_Left_Master_Ed(void)
         }
 
         // Patterns sep.
-        if(zcheckMouse(446 + 44, (Cur_Height - 105), 16, 16))
+        if(Check_Mouse(446 + 44, (Cur_Height - 105), 16, 16))
         {
             patt_highlight++;
             gui_action = GUI_CMD_UPDATE_SETUP_ED;
@@ -583,45 +589,45 @@ void Mouse_Left_Master_Ed(void)
         }
 
         // Rows decimal on
-        if(zcheckMouse(446, (Cur_Height - 85), 29, 16))
+        if(Check_Mouse(446, (Cur_Height - 85), 29, 16))
         {
             Rows_Decimal = TRUE;
             teac = 0;
             gui_action = GUI_CMD_UPDATE_SETUP_ED;
             Actualize_Sequencer();
-            Actupated(0);
+            Update_Pattern(0);
         }
 
         // Rows decimal off
-        if(zcheckMouse(446 + 31, (Cur_Height - 85), 29, 16))
+        if(Check_Mouse(446 + 31, (Cur_Height - 85), 29, 16))
         {
             Rows_Decimal = FALSE;
             teac = 0;
             gui_action = GUI_CMD_UPDATE_SETUP_ED;
             Actualize_Sequencer();
-            Actupated(0);
+            Update_Pattern(0);
         }
 
         // See prev/next pattern
-        if(zcheckMouse(446, (Cur_Height - 65), 29, 16))
+        if(Check_Mouse(446, (Cur_Height - 65), 29, 16))
         {
             See_Prev_Next_Pattern = TRUE;
             teac = 13;
             gui_action = GUI_CMD_UPDATE_SETUP_ED;
-            Actupated(0);
+            Update_Pattern(0);
         }
 
         // See prev/next pattern
-        if(zcheckMouse(446 + 31, (Cur_Height - 65), 29, 16))
+        if(Check_Mouse(446 + 31, (Cur_Height - 65), 29, 16))
         {
             See_Prev_Next_Pattern = FALSE;
             teac = 13;
             gui_action = GUI_CMD_UPDATE_SETUP_ED;
-            Actupated(0);
+            Update_Pattern(0);
         }
 
         // Continuous scroll
-        if(zcheckMouse(446, (Cur_Height - 45), 29, 16))
+        if(Check_Mouse(446, (Cur_Height - 45), 29, 16))
         {
             Continuous_Scroll = 1;
             teac = 14;
@@ -629,7 +635,7 @@ void Mouse_Left_Master_Ed(void)
         }
 
         // Continuous scroll
-        if(zcheckMouse(446 + 31, (Cur_Height - 45), 29, 16))
+        if(Check_Mouse(446 + 31, (Cur_Height - 45), 29, 16))
         {
             Continuous_Scroll = 0;
             teac = 14;
@@ -637,7 +643,7 @@ void Mouse_Left_Master_Ed(void)
         }
 
         // Paste across pattern
-        if(zcheckMouse(120, (Cur_Height - 45), 29, 16))
+        if(Check_Mouse(120, (Cur_Height - 45), 29, 16))
         {
             Paste_Across = TRUE;
             teac = 17;
@@ -645,7 +651,7 @@ void Mouse_Left_Master_Ed(void)
         }
 
         // Paste across pattern
-        if(zcheckMouse(120 + 31, (Cur_Height - 45), 29, 16))
+        if(Check_Mouse(120 + 31, (Cur_Height - 45), 29, 16))
         {
             Paste_Across = FALSE;
             teac = 17;
@@ -653,7 +659,7 @@ void Mouse_Left_Master_Ed(void)
         }
 
         // Play while editing
-        if(zcheckMouse(258, (Cur_Height - 125), 29, 16))
+        if(Check_Mouse(258, (Cur_Height - 125), 29, 16))
         {
             Jazz_Edit = TRUE;
             teac = 18;
@@ -661,7 +667,7 @@ void Mouse_Left_Master_Ed(void)
         }
 
         // Play while editing
-        if(zcheckMouse(258 + 31, (Cur_Height - 125), 29, 16))
+        if(Check_Mouse(258 + 31, (Cur_Height - 125), 29, 16))
         {
             Jazz_Edit = FALSE;
             teac = 18;
@@ -669,7 +675,7 @@ void Mouse_Left_Master_Ed(void)
         }
 
         // Accidental type
-        if(zcheckMouse(780, (Cur_Height - 125), 14, 16))
+        if(Check_Mouse(780, (Cur_Height - 125), 14, 16))
         {
             Accidental ^= TRUE;
             teac = 19;
@@ -677,7 +683,7 @@ void Mouse_Left_Master_Ed(void)
         }
 
         // Full screen on
-        if(zcheckMouse(734, (Cur_Height - 145), 29, 16))
+        if(Check_Mouse(734, (Cur_Height - 145), 29, 16))
         {
             if(!FullScreen)
             {
@@ -688,7 +694,7 @@ void Mouse_Left_Master_Ed(void)
         }
 
         // Full screen off
-        if(zcheckMouse(734 + 31, (Cur_Height - 145), 29, 16))
+        if(Check_Mouse(734 + 31, (Cur_Height - 145), 29, 16))
         {
             if(FullScreen)
             {
@@ -699,7 +705,7 @@ void Mouse_Left_Master_Ed(void)
         }
 
         // Previous color
-        if(zcheckMouse(520, (Cur_Height - 105), 16, 16))
+        if(Check_Mouse(520, (Cur_Height - 105), 16, 16))
         {
             current_palette_idx--;
             gui_action = GUI_CMD_UPDATE_SETUP_ED;
@@ -707,7 +713,7 @@ void Mouse_Left_Master_Ed(void)
         }
 
         // Next color
-        if(zcheckMouse(520 + (18 + 108) + 2, (Cur_Height - 105), 16, 16))
+        if(Check_Mouse(520 + (18 + 108) + 2, (Cur_Height - 105), 16, 16))
         {
             current_palette_idx++;
             gui_action = GUI_CMD_UPDATE_SETUP_ED;
@@ -715,7 +721,7 @@ void Mouse_Left_Master_Ed(void)
         }
 
         // set default palette 1
-        if(zcheckMouse(520 + (18 + 108) + 2 + 20 + 66, (Cur_Height - 85), 18, 16))
+        if(Check_Mouse(520 + (18 + 108) + 2 + 20 + 66, (Cur_Height - 85), 18, 16))
         {
             Restore_Default_Palette(Default_Palette1, Default_Beveled1);
             Get_Phony_Palette();
@@ -724,7 +730,7 @@ void Mouse_Left_Master_Ed(void)
         }
 
         // Set default palette 2
-        if(zcheckMouse(520 + (18 + 108) + 2 + 20 + 66 + 21, (Cur_Height - 85), 18, 16))
+        if(Check_Mouse(520 + (18 + 108) + 2 + 20 + 66 + 21, (Cur_Height - 85), 18, 16))
         {
             Restore_Default_Palette(Default_Palette2, Default_Beveled2);
             Get_Phony_Palette();
@@ -733,7 +739,7 @@ void Mouse_Left_Master_Ed(void)
         }
 
         // Set default palette 3
-        if(zcheckMouse(520 + (18 + 108) + 2 + 20 + 66 + 42, (Cur_Height - 85), 18, 16))
+        if(Check_Mouse(520 + (18 + 108) + 2 + 20 + 66 + 42, (Cur_Height - 85), 18, 16))
         {
             Restore_Default_Palette(Default_Palette3, Default_Beveled3);
             Get_Phony_Palette();
@@ -742,7 +748,7 @@ void Mouse_Left_Master_Ed(void)
         }
 
         // Set default palette 4
-        if(zcheckMouse(520 + (18 + 108) + 2 + 20 + 66, (Cur_Height - 65), 18, 16))
+        if(Check_Mouse(520 + (18 + 108) + 2 + 20 + 66, (Cur_Height - 65), 18, 16))
         {
             Restore_Default_Palette(Default_Palette4, Default_Beveled4);
             Get_Phony_Palette();
@@ -751,7 +757,7 @@ void Mouse_Left_Master_Ed(void)
         }
 
         // Set default palette 5
-        if(zcheckMouse(520 + (18 + 108) + 2 + 20 + 66 + 21, (Cur_Height - 65), 18, 16))
+        if(Check_Mouse(520 + (18 + 108) + 2 + 20 + 66 + 21, (Cur_Height - 65), 18, 16))
         {
             Restore_Default_Palette(Default_Palette5, Default_Beveled5);
             Get_Phony_Palette();
@@ -760,7 +766,7 @@ void Mouse_Left_Master_Ed(void)
         }
 
         // Set default palette 6
-        if(zcheckMouse(520 + (18 + 108) + 2 + 20 + 66 + 42, (Cur_Height - 65), 18, 16))
+        if(Check_Mouse(520 + (18 + 108) + 2 + 20 + 66 + 42, (Cur_Height - 65), 18, 16))
         {
             Restore_Default_Palette(Default_Palette6, Default_Beveled6);
             Get_Phony_Palette();
@@ -769,7 +775,7 @@ void Mouse_Left_Master_Ed(void)
         }
 
         // Set default palette 7
-        if(zcheckMouse(520 + (18 + 108) + 2 + 20 + 66, (Cur_Height - 45), 18, 16))
+        if(Check_Mouse(520 + (18 + 108) + 2 + 20 + 66, (Cur_Height - 45), 18, 16))
         {
             Restore_Default_Palette(Default_Palette7, Default_Beveled7);
             Get_Phony_Palette();
@@ -778,7 +784,7 @@ void Mouse_Left_Master_Ed(void)
         }
 
         // Set default palette 8
-        if(zcheckMouse(520 + (18 + 108) + 2 + 20 + 66 + 21, (Cur_Height - 45), 18, 16))
+        if(Check_Mouse(520 + (18 + 108) + 2 + 20 + 66 + 21, (Cur_Height - 45), 18, 16))
         {
             Restore_Default_Palette(Default_Palette8, Default_Beveled8);
             Get_Phony_Palette();
@@ -787,7 +793,7 @@ void Mouse_Left_Master_Ed(void)
         }
 
         // Set default palette 9
-        if(zcheckMouse(520 + (18 + 108) + 2 + 20 + 66 + 42, (Cur_Height - 45), 18, 16))
+        if(Check_Mouse(520 + (18 + 108) + 2 + 20 + 66 + 42, (Cur_Height - 45), 18, 16))
         {
             Restore_Default_Palette(Default_Palette9, Default_Beveled9);
             Get_Phony_Palette();
@@ -796,7 +802,7 @@ void Mouse_Left_Master_Ed(void)
         }
 
         // Turn beveling type 1 on/off
-        if(zcheckMouse(520 + (18 + 108) + 2 + 20, (Cur_Height - 105), 14, 16))
+        if(Check_Mouse(520 + (18 + 108) + 2 + 20, (Cur_Height - 105), 14, 16))
         {
             if(Beveled == 1) Beveled = 0;
             else Beveled = 1;
@@ -805,7 +811,7 @@ void Mouse_Left_Master_Ed(void)
         }
 
         // Turn shadows on/off
-        if(zcheckMouse(520 + 18 + (18 + 108) + 2 + 20, (Cur_Height - 105), 40, 16))
+        if(Check_Mouse(520 + 18 + (18 + 108) + 2 + 20, (Cur_Height - 105), 40, 16))
         {
             Use_Shadows ^= TRUE;
             gui_action = GUI_CMD_UPDATE_SETUP_ED;
@@ -813,7 +819,7 @@ void Mouse_Left_Master_Ed(void)
         }
 
         // Default patterns zoom
-        if(zcheckMouse(120, (Cur_Height - 65), 16, 16))
+        if(Check_Mouse(120, (Cur_Height - 65), 16, 16))
         {
             Global_Patterns_Font--;
             gui_action = GUI_CMD_UPDATE_SETUP_ED;
@@ -821,7 +827,7 @@ void Mouse_Left_Master_Ed(void)
         }
 
         // Default patterns zoom
-        if(zcheckMouse(120 + 48 + 18, (Cur_Height - 65), 16, 16))
+        if(Check_Mouse(120 + 48 + 18, (Cur_Height - 65), 16, 16))
         {
             Global_Patterns_Font++;
             gui_action = GUI_CMD_UPDATE_SETUP_ED;
@@ -829,7 +835,7 @@ void Mouse_Left_Master_Ed(void)
         }
 
         // Autosave
-        if(zcheckMouse(8 + 112, (Cur_Height - 85), 16, 16))
+        if(Check_Mouse(8 + 112, (Cur_Height - 85), 16, 16))
         {
             AutoSave--;
             wait_AutoSave = 0;
@@ -838,7 +844,7 @@ void Mouse_Left_Master_Ed(void)
         }
 
         // Autosave
-        if(zcheckMouse(8 + 112 + 48 + 18, (Cur_Height - 85), 16, 16))
+        if(Check_Mouse(8 + 112 + 48 + 18, (Cur_Height - 85), 16, 16))
         {
             AutoSave++;
             wait_AutoSave = 0;
@@ -848,7 +854,7 @@ void Mouse_Left_Master_Ed(void)
 
 #if !defined(__WIN32__)
         // Keyboard
-        if(zcheckMouse(520 + 62 + 2, (Cur_Height - 125), 16, 16))
+        if(Check_Mouse(520 + 62 + 2, (Cur_Height - 125), 16, 16))
         {
             Keyboard_Idx--;
             gui_action = GUI_CMD_UPDATE_SETUP_ED;
@@ -856,7 +862,7 @@ void Mouse_Left_Master_Ed(void)
         }
 
         // Keyboard
-        if(zcheckMouse(520 + 62 + 2 + 108 + 18, (Cur_Height - 125), 16, 16))
+        if(Check_Mouse(520 + 62 + 2 + 108 + 18, (Cur_Height - 125), 16, 16))
         {
             Keyboard_Idx++;
             gui_action = GUI_CMD_UPDATE_SETUP_ED;
@@ -865,7 +871,7 @@ void Mouse_Left_Master_Ed(void)
 #endif
 
         // Metronome
-        if(zcheckMouse(8 + 112, (Cur_Height - 125), 16, 16))
+        if(Check_Mouse(8 + 112, (Cur_Height - 125), 16, 16))
         {
             if(metronome_magnify > 0)
             {
@@ -876,7 +882,7 @@ void Mouse_Left_Master_Ed(void)
         }
 
         // Metronome
-        if(zcheckMouse(8 + 112 + 44, (Cur_Height - 125), 16, 16))
+        if(Check_Mouse(8 + 112 + 44, (Cur_Height - 125), 16, 16))
         {
             if(metronome_magnify < 128)
             {
@@ -887,7 +893,7 @@ void Mouse_Left_Master_Ed(void)
         }
 
         // Auto backup on
-        if(zcheckMouse(258, (Cur_Height - 105), 29, 16))
+        if(Check_Mouse(258, (Cur_Height - 105), 29, 16))
         {
             AutoBackup = TRUE;
             teac = 23;
@@ -895,7 +901,7 @@ void Mouse_Left_Master_Ed(void)
         }
 
         // Auto backup off
-        if(zcheckMouse(258 + 31, (Cur_Height - 105), 29, 16))
+        if(Check_Mouse(258 + 31, (Cur_Height - 105), 29, 16))
         {
             AutoBackup = FALSE;
             teac = 23;
@@ -903,7 +909,7 @@ void Mouse_Left_Master_Ed(void)
         }
 
         // Splash Screen on
-        if(zcheckMouse(258, (Cur_Height - 65), 29, 16))
+        if(Check_Mouse(258, (Cur_Height - 65), 29, 16))
         {
             SplashScreen = TRUE;
             teac = 24;
@@ -911,7 +917,7 @@ void Mouse_Left_Master_Ed(void)
         }
 
         // Splash Screen off
-        if(zcheckMouse(258 + 31, (Cur_Height - 65), 29, 16))
+        if(Check_Mouse(258 + 31, (Cur_Height - 65), 29, 16))
         {
             SplashScreen = FALSE;
             teac = 24;
@@ -919,7 +925,7 @@ void Mouse_Left_Master_Ed(void)
         }
 
         // Load Last Ptk on
-        if(zcheckMouse(258, (Cur_Height - 45), 29, 16))
+        if(Check_Mouse(258, (Cur_Height - 45), 29, 16))
         {
             AutoReload = TRUE;
             teac = 25;
@@ -927,7 +933,7 @@ void Mouse_Left_Master_Ed(void)
         }
 
         // Load Last Ptk off
-        if(zcheckMouse(258 + 31, (Cur_Height - 45), 29, 16))
+        if(Check_Mouse(258 + 31, (Cur_Height - 45), 29, 16))
         {
             AutoReload = FALSE;
             teac = 25;
@@ -943,7 +949,7 @@ void Mouse_Sliders_Master_Ed(void)
     if(userscreen == USER_SCREEN_SETUP_EDIT)
     {
         // Red component
-        if(zcheckMouse(518, (Cur_Height - 81), 148, 16))
+        if(Check_Mouse(518, (Cur_Height - 81), 148, 16))
         {
             Real_Palette_Idx = Idx_Palette[current_palette_idx];
             Phony_Palette[Real_Palette_Idx].r = (int) ((Mouse.x - 10 - 518.0f)) * 2;
@@ -952,7 +958,7 @@ void Mouse_Sliders_Master_Ed(void)
         }
 
         // Green component
-        if(zcheckMouse(518, (Cur_Height - 81) + 18, 148, 16))
+        if(Check_Mouse(518, (Cur_Height - 81) + 18, 148, 16))
         {
             Real_Palette_Idx = Idx_Palette[current_palette_idx];
             Phony_Palette[Real_Palette_Idx].g = (int) ((Mouse.x - 10 - 518.0f)) * 2;
@@ -961,7 +967,7 @@ void Mouse_Sliders_Master_Ed(void)
         }
 
         // Blue component
-        if(zcheckMouse(518, (Cur_Height - 81) + 18 + 18, 148, 16))
+        if(Check_Mouse(518, (Cur_Height - 81) + 18 + 18, 148, 16))
         {
             Real_Palette_Idx = Idx_Palette[current_palette_idx];
             Phony_Palette[Real_Palette_Idx].b = (int) ((Mouse.x - 10 - 518.0f)) * 2;

@@ -80,19 +80,19 @@ extern float SIN[360];
 
 #if !defined(__STAND_ALONE__) || defined(__WINAMP__)
 
-struct SynthParameters
+struct Synth_Parameters
 {
-    char presetname[20];
+    char Preset_Name[20];
 
-    unsigned char osc1_waveform;
-    unsigned char osc2_waveform;
+    unsigned char osc_1_waveform;
+    unsigned char osc_2_waveform;
     unsigned char osc_combine;
 
-    int osc1_pw;
-    int osc2_pw;
+    int osc_1_pw;
+    int osc_2_pw;
 
-    unsigned char osc2_detune;
-    unsigned char osc2_finetune;
+    unsigned char osc_2_detune;
+    unsigned char osc_2_finetune;
 
     unsigned char vcf_cutoff;
     unsigned char vcf_resonance;
@@ -100,74 +100,74 @@ struct SynthParameters
 
     /* Envelopes and LFO's properties */
 
-    int env1_attack;
-    int env1_decay;
-    unsigned char env1_sustain;
-    int env1_release;
+    int env_1_attack;
+    int env_1_decay;
+    unsigned char env_1_sustain;
+    int env_1_release;
 
-    int env2_attack;
-    int env2_decay;
-    unsigned char env2_sustain;
-    int env2_release;
+    int env_2_attack;
+    int env_2_decay;
+    unsigned char env_2_sustain;
+    int env_2_release;
 
-    int lfo1_period;
-    int lfo2_period;
+    int lfo_1_period;
+    int lfo_2_period;
 
     /* Envelopes and LFO's modulation variables */
 
-    unsigned char lfo1_osc1_pw;
-    unsigned char lfo1_osc2_pw;
-    unsigned char lfo1_osc1_pitch;
-    unsigned char lfo1_osc2_pitch;
-    unsigned char lfo1_osc1_volume;
-    unsigned char lfo1_osc2_volume;
-    unsigned char lfo1_vcf_cutoff;
-    unsigned char lfo1_vcf_resonance;
+    unsigned char lfo_1_osc_1_pw;
+    unsigned char lfo_1_osc_2_pw;
+    unsigned char lfo_1_osc_1_pitch;
+    unsigned char lfo_1_osc_2_pitch;
+    unsigned char lfo_1_osc_1_volume;
+    unsigned char lfo_1_osc_2_volume;
+    unsigned char lfo_1_vcf_cutoff;
+    unsigned char lfo_1_vcf_resonance;
 
-    unsigned char lfo2_osc1_pw;
-    unsigned char lfo2_osc2_pw;
-    unsigned char lfo2_osc1_pitch;
-    unsigned char lfo2_osc2_pitch;
-    unsigned char lfo2_osc1_volume;
-    unsigned char lfo2_osc2_volume;
-    unsigned char lfo2_vcf_cutoff;
-    unsigned char lfo2_vcf_resonance;
+    unsigned char lfo_2_osc_1_pw;
+    unsigned char lfo_2_osc_2_pw;
+    unsigned char lfo_2_osc_1_pitch;
+    unsigned char lfo_2_osc_2_pitch;
+    unsigned char lfo_2_osc_1_volume;
+    unsigned char lfo_2_osc_2_volume;
+    unsigned char lfo_2_vcf_cutoff;
+    unsigned char lfo_2_vcf_resonance;
 
-    unsigned char env1_osc1_pw;
-    unsigned char env1_osc2_pw;
-    unsigned char env1_osc1_pitch;
-    unsigned char env1_osc2_pitch;
-    unsigned char env1_osc1_volume;
-    unsigned char env1_osc2_volume;  
-    unsigned char env1_vcf_cutoff;
-    unsigned char env1_vcf_resonance;
+    unsigned char env_1_osc_1_pw;
+    unsigned char env_1_osc_2_pw;
+    unsigned char env_1_osc_1_pitch;
+    unsigned char env_1_osc_2_pitch;
+    unsigned char env_1_osc_1_volume;
+    unsigned char env_1_osc_2_volume;  
+    unsigned char env_1_vcf_cutoff;
+    unsigned char env_1_vcf_resonance;
 
-    unsigned char env2_osc1_pw;
-    unsigned char env2_osc2_pw;
-    unsigned char env2_osc1_pitch;
-    unsigned char env2_osc2_pitch;
-    unsigned char env2_osc1_volume;
-    unsigned char env2_osc2_volume;  
-    unsigned char env2_vcf_cutoff;
-    unsigned char env2_vcf_resonance;
+    unsigned char env_2_osc_1_pw;
+    unsigned char env_2_osc_2_pw;
+    unsigned char env_2_osc_1_pitch;
+    unsigned char env_2_osc_2_pitch;
+    unsigned char env_2_osc_1_volume;
+    unsigned char env_2_osc_2_volume;  
+    unsigned char env_2_vcf_cutoff;
+    unsigned char env_2_vcf_resonance;
 
-    unsigned char osc3_volume;
-    unsigned char osc3_switch;
+    unsigned char osc_3_volume;
+    unsigned char osc_3_switch;
 
     unsigned char ptc_glide;
     unsigned char glb_volume;
 
     unsigned char disto;
 
-    int lfo1_attack;
-    int lfo1_decay;
-    unsigned char lfo1_sustain;
-    int lfo1_release;
+    int lfo_1_attack;
+    int lfo_1_decay;
+    unsigned char lfo_1_sustain;
+    int lfo_1_release;
 
-    int lfo2_attack;
-    int lfo2_decay;
-    unsigned char lfo2_sustain;
-    int lfo2_release;
+    int lfo_2_attack;
+    int lfo_2_decay;
+    unsigned char lfo_2_sustain;
+    int lfo_2_release;
 };
 
 #endif      // !defined(__STAND_ALONE__) || defined(__WINAMP__)
@@ -210,74 +210,74 @@ extern int SIZE_WAVEFORMS;
 
 typedef struct
 {
-        char OSC1_WAVEFORM;
-        char OSC2_WAVEFORM;
+        char OSC_1_WAVEFORM;
+        char OSC_2_WAVEFORM;
 
-        float OSC1_PW;
-        float OSC2_PW; 
-        float OSC2_DETUNE;
-        float OSC2_FINETUNE; 
+        float OSC_1_PW;
+        float OSC_2_PW; 
+        float OSC_2_DETUNE;
+        float OSC_2_FINETUNE; 
         float VCF_CUTOFF;
         float VCF_RESONANCE;
         char VCF_TYPE;
-        float ENV1_ATTACK;
-        float ENV1_DECAY;
-        float ENV1_SUSTAIN;
-        float ENV1_RELEASE;
-        float ENV2_ATTACK;
-        float ENV2_DECAY;
-        float ENV2_SUSTAIN;
-        float ENV2_RELEASE;
-        float LFO1_PERIOD;
-        int LFO1_SUBGRMAX;
-        float LFO2_PERIOD;
-        int LFO2_SUBGRMAX;
-        float LFO1_OSC1_PW;
-        float LFO1_OSC2_PW;
-        float LFO1_OSC1_PITCH;
-        float LFO1_OSC2_PITCH;
-        float LFO1_OSC1_VOLUME;
-        float LFO1_OSC2_VOLUME; 
-        float LFO1_VCF_CUTOFF;
-        float LFO1_VCF_RESONANCE;  
-        float LFO2_OSC1_PW;
-        float LFO2_OSC2_PW;
-        float LFO2_OSC1_PITCH;
-        float LFO2_OSC2_PITCH;
-        float LFO2_OSC1_VOLUME;
-        float LFO2_OSC2_VOLUME;
-        float LFO2_VCF_CUTOFF;
-        float LFO2_VCF_RESONANCE;  
-        float ENV1_OSC1_PW;
-        float ENV1_OSC2_PW;
-        float ENV1_OSC1_PITCH;
-        float ENV1_OSC2_PITCH;
-        float ENV1_OSC1_VOLUME;
-        float ENV1_OSC2_VOLUME; 
-        float ENV1_VCF_CUTOFF;
-        float ENV1_VCF_RESONANCE;  
-        float ENV2_OSC1_PW;
-        float ENV2_OSC2_PW;
-        float ENV2_OSC1_PITCH;
-        float ENV2_OSC2_PITCH;
-        float ENV2_OSC1_VOLUME;
-        float ENV2_OSC2_VOLUME; 
-        float ENV2_VCF_CUTOFF;
-        float ENV2_VCF_RESONANCE;  
-        float OSC3_VOLUME;
-        unsigned char OSC3_SWITCH;
+        float ENV_1_ATTACK;
+        float ENV_1_DECAY;
+        float ENV_1_SUSTAIN;
+        float ENV_1_RELEASE;
+        float ENV_2_ATTACK;
+        float ENV_2_DECAY;
+        float ENV_2_SUSTAIN;
+        float ENV_2_RELEASE;
+        float LFO_1_PERIOD;
+        int LFO_1_SUBGRMAX;
+        float LFO_2_PERIOD;
+        int LFO_2_SUBGRMAX;
+        float LFO_1_OSC_1_PW;
+        float LFO_1_OSC_2_PW;
+        float LFO_1_OSC_1_PITCH;
+        float LFO_1_OSC_2_PITCH;
+        float LFO_1_OSC_1_VOLUME;
+        float LFO_1_OSC_2_VOLUME; 
+        float LFO_1_VCF_CUTOFF;
+        float LFO_1_VCF_RESONANCE;  
+        float LFO_2_OSC_1_PW;
+        float LFO_2_OSC_2_PW;
+        float LFO_2_OSC_1_PITCH;
+        float LFO_2_OSC_2_PITCH;
+        float LFO_2_OSC_1_VOLUME;
+        float LFO_2_OSC_2_VOLUME;
+        float LFO_2_VCF_CUTOFF;
+        float LFO_2_VCF_RESONANCE;  
+        float ENV_1_OSC_1_PW;
+        float ENV_1_OSC_2_PW;
+        float ENV_1_OSC_1_PITCH;
+        float ENV_1_OSC_2_PITCH;
+        float ENV_1_OSC_1_VOLUME;
+        float ENV_1_OSC_2_VOLUME; 
+        float ENV_1_VCF_CUTOFF;
+        float ENV_1_VCF_RESONANCE;  
+        float ENV_2_OSC_1_PW;
+        float ENV_2_OSC_2_PW;
+        float ENV_2_OSC_1_PITCH;
+        float ENV_2_OSC_2_PITCH;
+        float ENV_2_OSC_1_VOLUME;
+        float ENV_2_OSC_2_VOLUME; 
+        float ENV_2_VCF_CUTOFF;
+        float ENV_2_VCF_RESONANCE;  
+        float OSC_3_VOLUME;
+        unsigned char OSC_3_SWITCH;
         float PTC_GLIDE;
-        int64 PTC_GLIDE64;
+        int64 PTC_GLIDE_64;
         float GLB_VOLUME;
         float DISTO;
-        float LFO1_ATTACK;
-        float LFO1_DECAY;
-        float LFO1_SUSTAIN;
-        float LFO1_RELEASE;
-        float LFO2_ATTACK;
-        float LFO2_DECAY;
-        float LFO2_SUSTAIN;
-        float LFO2_RELEASE;
+        float LFO_1_ATTACK;
+        float LFO_1_DECAY;
+        float LFO_1_SUSTAIN;
+        float LFO_1_RELEASE;
+        float LFO_2_ATTACK;
+        float LFO_2_DECAY;
+        float LFO_2_SUSTAIN;
+        float LFO_2_RELEASE;
 
         char OSC_COMBINE;
 } SYNTH_DATA, *LPSYNTH_DATA;
@@ -294,15 +294,15 @@ class CSynth
    
         SYNTH_DATA Data;
 
-        char ENV1_STAGE;
-        char ENV2_STAGE;
+        char ENV_1_STAGE;
+        char ENV_2_STAGE;
 
         void Reset(void);
 
 #if defined(__STAND_ALONE__) && !defined(__WINAMP__)
         void ChangeParameters(LPSYNTH_DATA TSP);
 #else
-        void ChangeParameters(SynthParameters TSP);
+        void ChangeParameters(Synth_Parameters TSP);
 #endif
 
         /* Work functions */
@@ -317,11 +317,11 @@ class CSynth
                         float vol,
                         int *track,
                         int *track2,
-                        Uint64 *position_osc1,
-                        Uint64 *position_osc2,
+                        Uint64 *position_osc_1,
+                        Uint64 *position_osc_2,
 
-#if defined(PTK_SYNTH_OSC3)
-                        Uint64 *position_osc3,
+#if defined(PTK_SYNTH_OSC_3)
+                        Uint64 *position_osc_3,
 #endif
                         int64 osc_speed,
                         float Ampli_Vol);
@@ -341,9 +341,9 @@ class CSynth
         float MoogFilterL(void);
         float MoogFilterR(void);
 
-        char ENV1_LOOP_BACKWARD;
-        char ENV2_LOOP_BACKWARD;
-        char ENV3_LOOP_BACKWARD;
+        char ENV_1_LOOP_BACKWARD;
+        char ENV_2_LOOP_BACKWARD;
+        char ENV_3_LOOP_BACKWARD;
 
     private:
 
@@ -362,76 +362,76 @@ class CSynth
 #endif
 
         float T_OSC_PW;
-        float T_OSC1_VOLUME;
-        float T_OSC2_VOLUME;
+        float T_OSC_1_VOLUME;
+        float T_OSC_2_VOLUME;
 
-        int64 OSC1_SPEED;
-        int64 OSC2_SPEED;
-        int64 OSC3_SPEED;
+        int64 OSC_1_SPEED;
+        int64 OSC_2_SPEED;
+        int64 OSC_3_SPEED;
 
         /* Envelopes and LFO's properties */
-        float ENV1b_ATTACK;
-        float ENV1b_DECAY;
-        float ENV1b_RELEASE;
+        float ENV_1b_ATTACK;
+        float ENV_1b_DECAY;
+        float ENV_1b_RELEASE;
 
-        float ENV2b_ATTACK;
-        float ENV2b_DECAY;
-        float ENV2b_RELEASE;
+        float ENV_2b_ATTACK;
+        float ENV_2b_DECAY;
+        float ENV_2b_RELEASE;
 
-        float ENV1_A_COEF;
-        float ENV1_D_COEF;
-        float ENV1_R_COEF;
+        float ENV_1_A_COEF;
+        float ENV_1_D_COEF;
+        float ENV_1_R_COEF;
 
-        float ENV2_A_COEF;
-        float ENV2_D_COEF;
-        float ENV2_R_COEF;
+        float ENV_2_A_COEF;
+        float ENV_2_D_COEF;
+        float ENV_2_R_COEF;
 
-#if defined(PTK_SYNTH_LFO1)
-        float LFO1_COUNTER;
-        char LFO1_STAGE;
-        float LFO1b_ATTACK;
-        float LFO1b_DECAY;
-        float LFO1b_RELEASE;
-        float LFO1_A_COEF;
-        float LFO1_D_COEF;
-        float LFO1_R_COEF;
-        float LFO1_ADSR_VALUE;
+#if defined(PTK_SYNTH_LFO_1)
+        float LFO_1_COUNTER;
+        char LFO_1_STAGE;
+        float LFO_1b_ATTACK;
+        float LFO_1b_DECAY;
+        float LFO_1b_RELEASE;
+        float LFO_1_A_COEF;
+        float LFO_1_D_COEF;
+        float LFO_1_R_COEF;
+        float LFO_1_ADSR_VALUE;
 #endif
 
-#if defined(PTK_SYNTH_LFO2)
-        float LFO2_COUNTER;
-        char LFO2_STAGE;
-        float LFO2b_ATTACK;
-        float LFO2b_DECAY;
-        float LFO2b_RELEASE;
-        float LFO2_A_COEF;
-        float LFO2_D_COEF;
-        float LFO2_R_COEF;
-        float LFO2_ADSR_VALUE;
+#if defined(PTK_SYNTH_LFO_2)
+        float LFO_2_COUNTER;
+        char LFO_2_STAGE;
+        float LFO_2b_ATTACK;
+        float LFO_2b_DECAY;
+        float LFO_2b_RELEASE;
+        float LFO_2_A_COEF;
+        float LFO_2_D_COEF;
+        float LFO_2_R_COEF;
+        float LFO_2_ADSR_VALUE;
 #endif
 
-#if defined(PTK_SYNTH_LFO1)
-        int LFO1_GR;
+#if defined(PTK_SYNTH_LFO_1)
+        int LFO_1_GR;
 #endif
 
-#if defined(PTK_SYNTH_LFO2)
-        int LFO2_GR;
+#if defined(PTK_SYNTH_LFO_2)
+        int LFO_2_GR;
 #endif
 
-#if defined(PTK_SYNTH_LFO1)
-        int LFO1_SUBGRCOUNTER;
+#if defined(PTK_SYNTH_LFO_1)
+        int LFO_1_SUBGRCOUNTER;
 #endif
 
-#if defined(PTK_SYNTH_LFO2)
-        int LFO2_SUBGRCOUNTER;
+#if defined(PTK_SYNTH_LFO_2)
+        int LFO_2_SUBGRCOUNTER;
 #endif
 
-#if defined(PTK_SYNTH_LFO1)
-        float LFO1_VALUE;
+#if defined(PTK_SYNTH_LFO_1)
+        float LFO_1_VALUE;
 #endif
 
-#if defined(PTK_SYNTH_LFO2)
-        float LFO2_VALUE;
+#if defined(PTK_SYNTH_LFO_2)
+        float LFO_2_VALUE;
 #endif
 
         /* Internal rendering variables */
@@ -440,20 +440,20 @@ class CSynth
         float MoogBufferR[5];
 #endif
 
-        float OSC1_STEP;
-        float OSC2_STEP;
+        float OSC_1_STEP;
+        float OSC_2_STEP;
 
-        float ENV1_COUNTER;
-        float ENV2_COUNTER;
+        float ENV_1_COUNTER;
+        float ENV_2_COUNTER;
 
-        float ENV1_VOLUME;
-        float ENV2_VOLUME;
+        float ENV_1_VOLUME;
+        float ENV_2_VOLUME;
 
-        float ENV1_VALUE;
-        float ENV2_VALUE;
+        float ENV_1_VALUE;
+        float ENV_2_VALUE;
 
-        float ENV1_MIN;
-        float ENV2_MIN;
+        float ENV_1_MIN;
+        float ENV_2_MIN;
 
         float sbuf0L;
         float sbuf1L;

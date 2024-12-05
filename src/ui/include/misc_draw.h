@@ -223,8 +223,8 @@ void Gui_Draw_Arrows_Number_Box(int x, int y, int val, int flags);
 void Gui_Draw_Arrows_Number_Box2(int x, int y, int val, int flags);
 void value_box4(int x, int y, int val);
 void value_box3(int x, int y, char val, int flags);
-void outlong(int x, int y, int cant, int mode);
-void outlong_small(int x, int y, int cant, int mode, int size, int flags);
+void Print_Long(int x, int y, int cant, int mode);
+void Print_Long_Small(int x, int y, int cant, int mode, int size, int flags);
 void outfloat(int x, int y, float cant, int mode);
 void outfloat_small(int x, int y, float cant, int mode, int size, int flags);
 
@@ -237,12 +237,12 @@ void bjbox(int x, int y, int sx, int sy);
 void Draw_Editors_Bar(int Highlight);
 void Status_Box(char const *str);
 
-void Realslider(int x, int y, int val, int Enabled);
-void Realslider_Size(int x, int y, int size, int val, int Enabled);
-void Realslider2(int x, int y, int val, int Enabled);
+void Real_Slider(int x, int y, int val, int Enabled);
+void Real_Slider_Size(int x, int y, int size, int val, int Enabled);
+void Real_Slider_2(int x, int y, int val, int Enabled);
 int Slider_Get_Center(unsigned int Size, unsigned int Maximum, int Pixels);
-void Realslider_Horiz(int x, int y, int value, int displayed, int maximum, int size, int enable);
-void Realslider_Vert(int x, int y, int value, int displayed, int maximum, int size, int enable, int invert_color);
+void Real_Slider_Horiz(int x, int y, int value, int displayed, int maximum, int size, int enable);
+void Real_Slider_Vert(int x, int y, int value, int displayed, int maximum, int size, int enable, int invert_color);
 
 void Coolwrite(int x, int y, int colour, char *txt);
 void Refresh_UI_Context(void);
@@ -266,7 +266,8 @@ void Destroy_Textures();
 #endif
 void Fillrect(int x1, int y1, int x2, int y2);
 void Copy(SDL_Surface *Source, int x, int y, int x1, int y1, int x2, int y2);
-void Copy_To_Surface(SDL_Surface *Source, SDL_Surface *dest, int x, int y, int x1, int y1, int x2, int y2);
+void Copy_To_Surface(SDL_Surface *Source, SDL_Surface *dest,
+                     int dest_x, int dest_y, int src_start_x, int src_start_y, int src_end_x, int src_end_y);
 void Print_String(char *str, int x, int y, int size_x, int flag);
 int Get_Size_Text(char *String);
 SDL_Surface *Load_Picture(char *FileName);

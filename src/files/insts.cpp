@@ -84,7 +84,7 @@ void Load_Inst(char *FileName)
                 old_bug = TRUE;
                 break;
         }
-        KillInst(Current_Instrument, TRUE);
+        Kill_Instrument(Current_Instrument, TRUE);
         Status_Box("Loading Instrument -> Header..."); 
         Read_Data(&nameins[Current_Instrument], sizeof(char), 20, in);
 
@@ -109,17 +109,17 @@ void Load_Inst(char *FileName)
 
         PARASynth[swrite].disto = 0;
 
-        PARASynth[swrite].lfo1_attack = 0;
-        PARASynth[swrite].lfo1_decay = 0;
-        PARASynth[swrite].lfo1_sustain = 128;
-        PARASynth[swrite].lfo1_release = 0x10000;
+        PARASynth[swrite].lfo_1_attack = 0;
+        PARASynth[swrite].lfo_1_decay = 0;
+        PARASynth[swrite].lfo_1_sustain = 128;
+        PARASynth[swrite].lfo_1_release = 0x10000;
 
-        PARASynth[swrite].lfo2_attack = 0;
-        PARASynth[swrite].lfo2_decay = 0;
-        PARASynth[swrite].lfo2_sustain = 128;
+        PARASynth[swrite].lfo_2_attack = 0;
+        PARASynth[swrite].lfo_2_decay = 0;
+        PARASynth[swrite].lfo_2_sustain = 128;
         PARASynth[swrite].osc_combine = COMBINE_ADD;
 
-        PARASynth[swrite].lfo2_release = 0x10000;
+        PARASynth[swrite].lfo_2_release = 0x10000;
 
         Read_Synth_Params(Read_Data, Read_Data_Swap, in, swrite,
                           !old_bug, new_adsr, tight,
@@ -195,7 +195,7 @@ void Load_Inst(char *FileName)
             } // Exist Sample
         }
         fclose(in);
-        Actualize_Patterned();
+        Actualize_Pattern_Ed();
         Actualize_Instrument_Ed(2, 0);
         Actualize_Synth_Ed(UPDATE_SYNTH_ED_ALL);
         Status_Box("Instrument Loaded Successfully.");
@@ -204,7 +204,6 @@ void Load_Inst(char *FileName)
     {
         Status_Box("Instrument Loading Failed. (Possible Cause: File Not Found)");
     }
-    
     Clear_Input();
 }
 
@@ -297,7 +296,7 @@ void Save_Inst(void)
         Read_SMPT();
         last_index = -1;
         Actualize_Files_List(0);
-        Actualize_Patterned();
+        Actualize_Pattern_Ed();
         Status_Box("Instrument Saved Successfully."); 
     }
     else

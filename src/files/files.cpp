@@ -66,7 +66,7 @@ extern REQUESTER Overwrite_Requester;
 extern char OverWrite_Name[1024];
 #endif
 
-extern SynthParameters PARASynth[128];
+extern Synth_Parameters PARASynth[128];
 
 extern int Beveled;
 char AutoBackup;
@@ -303,7 +303,7 @@ Read_Mod_File:
         Midi_Reset();
 #endif
 
-        init_sample_bank();
+        Init_Sample_Bank();
         Pre_Song_Init();
 
         // Load the module into memory and depack it
@@ -377,7 +377,7 @@ Read_Mod_File:
             }
             for(i = 0; i < MAX_TRACKS; i++)
             {
-                init_eq(&EqDat[i]);
+                Init_Equ(&EqDat[i]);
                 Read_Mod_Data_Swap(&EqDat[i].lg, sizeof(float), 1, in);
                 Read_Mod_Data_Swap(&EqDat[i].mg, sizeof(float), 1, in);
                 Read_Mod_Data_Swap(&EqDat[i].hg, sizeof(float), 1, in);
@@ -475,23 +475,23 @@ Read_Mod_File:
 
             PARASynth[swrite].disto = 0;
 
-            PARASynth[swrite].lfo1_attack = 0;
-            PARASynth[swrite].lfo1_decay = 0;
-            PARASynth[swrite].lfo1_sustain = 128;
-            PARASynth[swrite].lfo1_release = 0x10000;
+            PARASynth[swrite].lfo_1_attack = 0;
+            PARASynth[swrite].lfo_1_decay = 0;
+            PARASynth[swrite].lfo_1_sustain = 128;
+            PARASynth[swrite].lfo_1_release = 0x10000;
 
-            PARASynth[swrite].lfo2_attack = 0;
-            PARASynth[swrite].lfo2_decay = 0;
-            PARASynth[swrite].lfo2_sustain = 128;
-            PARASynth[swrite].lfo2_release = 0x10000;
+            PARASynth[swrite].lfo_2_attack = 0;
+            PARASynth[swrite].lfo_2_decay = 0;
+            PARASynth[swrite].lfo_2_sustain = 128;
+            PARASynth[swrite].lfo_2_release = 0x10000;
 
             Read_Synth_Params(Read_Mod_Data, Read_Mod_Data_Swap, in, swrite,
                               new_disto, New_adsr, Portable, Env_Modulation,
                               New_Env, Ntk_Beta, Combine);
 
             // Fix some very old Ntk bugs
-            if(PARASynth[swrite].lfo1_period > 128) PARASynth[swrite].lfo1_period = 128;
-            if(PARASynth[swrite].lfo2_period > 128) PARASynth[swrite].lfo2_period = 128;
+            if(PARASynth[swrite].lfo_1_period > 128) PARASynth[swrite].lfo_1_period = 128;
+            if(PARASynth[swrite].lfo_2_period > 128) PARASynth[swrite].lfo_2_period = 128;
             if(Old_Ntk)
             {
                 if(PARASynth[swrite].ptc_glide < 1) PARASynth[swrite].ptc_glide = 64;
@@ -570,8 +570,8 @@ Read_Mod_File:
             if(ICut[twrite] > 0.0078125f) ICut[twrite] = 0.0078125f;
             if(ICut[twrite] < 0.00006103515625f) ICut[twrite] = 0.00006103515625f;
             Read_Mod_Data_Swap(&TPan[twrite], sizeof(float), 1, in);
-            ComputeStereo(twrite);
-            FixStereo(twrite);
+            Compute_Stereo(twrite);
+            Fix_Stereo(twrite);
             Read_Mod_Data_Swap(&FType[twrite], sizeof(int), 1, in);
             Read_Mod_Data_Swap(&FRez[twrite], sizeof(int), 1, in);
             Read_Mod_Data_Swap(&DThreshold[twrite], sizeof(float), 1, in);
@@ -841,29 +841,29 @@ short *Unpack_Sample(FILE *FileHandle, int Dest_Length, char Pack_Type, int BitR
         {
 #if defined(__AT3_CODEC__)
             case SMP_PACK_AT3:
-                UnpackAT3(Packed_Read_Buffer, Dest_Buffer, Packed_Length, Dest_Length, BitRate);
+                Unpack_AT3(Packed_Read_Buffer, Dest_Buffer, Packed_Length, Dest_Length, BitRate);
                 break;
 #endif
 #if defined(__GSM_CODEC__)
             case SMP_PACK_GSM:
-                UnpackGSM(Packed_Read_Buffer, Dest_Buffer, Packed_Length, Dest_Length);
+                Unpack_GSM(Packed_Read_Buffer, Dest_Buffer, Packed_Length, Dest_Length);
                 break;
 #endif
 #if defined(__MP3_CODEC__)
             case SMP_PACK_MP3:
-                UnpackMP3(Packed_Read_Buffer, Dest_Buffer, Packed_Length, Dest_Length, BitRate);
+                Unpack_MP3(Packed_Read_Buffer, Dest_Buffer, Packed_Length, Dest_Length, BitRate);
                 break;
 #endif
             case SMP_PACK_ADPCM:
-                UnpackADPCM(Packed_Read_Buffer, Dest_Buffer, Packed_Length, Dest_Length);
+                Unpack_ADPCM(Packed_Read_Buffer, Dest_Buffer, Packed_Length, Dest_Length);
                 break;
 
             case SMP_PACK_8BIT:
-                Unpack8Bit(Packed_Read_Buffer, Dest_Buffer, Packed_Length, Dest_Length);
+                Unpack_8Bit(Packed_Read_Buffer, Dest_Buffer, Packed_Length, Dest_Length);
                 break;
 
             case SMP_PACK_WAVPACK:
-                UnpackWavPack(Packed_Read_Buffer, Dest_Buffer, Packed_Length, Dest_Length);
+                Unpack_WavPack(Packed_Read_Buffer, Dest_Buffer, Packed_Length, Dest_Length);
                 break;
         }
         free(Packed_Read_Buffer);
@@ -2207,7 +2207,7 @@ void Clear_Input(void)
     if(snamesel == INPUT_INSTRUMENT_NAME)
     {
         snamesel = INPUT_NONE;
-        Actualize_Patterned();
+        Actualize_Pattern_Ed();
     }
 
     if(snamesel == INPUT_REVERB_NAME)
