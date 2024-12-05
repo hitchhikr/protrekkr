@@ -7,7 +7,7 @@ v2.7.2
 - Fixed a long time running bug that would make the tracker to crash when
   loading or messing with the intruments.
 - Fixed a small visual bug in patterns display.
-- Patterns size can now also be doubled vertically.
+- Patterns font size can now also be doubled vertically.
 
 v2.7.1
 
