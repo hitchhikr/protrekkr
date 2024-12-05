@@ -364,11 +364,17 @@ void Draw_Pattern(int track, int line, int petrack, int row)
         else Cur_Char_Function[cur_track].Fnc(dover, y, 24, 0, 0);
         dover += 29;
 
-        // Zoom on/off
-        if((dover + 17) >= MAX_PATT_SCREEN_X) goto Skip_Header;
-        if(Get_Track_Zoom(cur_track) != TRACK_MEDIUM) Cur_Char_Function[cur_track].Fnc(dover, y, 27, 0, 0);
-        else Cur_Char_Function[cur_track].Fnc(dover, y, 28, 0, 0);
-        dover += 17;
+        // Reduce zoom
+        if((dover + 9) >= MAX_PATT_SCREEN_X) goto Skip_Header;
+        if(Get_Track_Zoom(cur_track) == TRACK_SMALL) Cur_Char_Function[cur_track].Fnc(dover, y, 37, 0, 0);
+        else Cur_Char_Function[cur_track].Fnc(dover, y, 35, 0, 0);
+        dover += 9;
+
+        // Expand zoom
+        if((dover + 9) >= MAX_PATT_SCREEN_X) goto Skip_Header;
+        if(Get_Track_Zoom(cur_track) == TRACK_LARGE) Cur_Char_Function[cur_track].Fnc(dover, y, 38, 0, 0);
+        else Cur_Char_Function[cur_track].Fnc(dover, y, 36, 0, 0);
+        dover += 9;
 
 Skip_Header:
 
@@ -2883,7 +2889,7 @@ void Mouse_Sliders_Pattern_Ed(void)
     int sub = chars_height == 16 ? 4 : -13;
 
     // End of the marking stuff
-    if(Check_Mouse(1, 184 + (chars_height * 2), MAX_PATT_SCREEN_X, (Cur_Height - 384 - sub) + Patterns_Lines_Offset) && !Song_Playing)
+    if(Check_Mouse(1, 184 + (chars_height * 2) - 1, MAX_PATT_SCREEN_X, (Cur_Height - 384 - sub) + Patterns_Lines_Offset) && !Song_Playing)
     {
         int track;
         int column;
@@ -2973,7 +2979,7 @@ void Mouse_Left_Pattern_Ed(void)
     int sub = chars_height == 16 ? 4 : -13;
 
     // Start of the marking block
-    if(Check_Mouse(1, 184 + (chars_height * 2), MAX_PATT_SCREEN_X, (Cur_Height - 384 - sub) + Patterns_Lines_Offset) && !Song_Playing)
+    if(Check_Mouse(1, 184 + (chars_height * 2) - 1, MAX_PATT_SCREEN_X, (Cur_Height - 384 - sub) + Patterns_Lines_Offset) && !Song_Playing)
     {
         int track;
         int column;
@@ -3036,7 +3042,7 @@ void Mouse_Left_Pattern_Ed(void)
     tracks = Get_Visible_Partial_Tracks();
     for(i = gui_track; i < gui_track + tracks; i++)
     {
-        if(Check_Mouse(start_mute_check_x + Cur_Char_size[i], 184, 28, chars_height))
+        if(Check_Mouse(start_mute_check_x + Cur_Char_size[i], 184 - 1, 28, chars_height))
         {
             gui_action = GUI_CMD_SWITCH_TRACK_MUTE_STATE;
             break;
@@ -3049,7 +3055,7 @@ void Mouse_Left_Pattern_Ed(void)
     tracks = Get_Visible_Partial_Tracks();
     for(i = gui_track; i < gui_track + tracks; i++)
     {
-        if(Check_Mouse(start_mute_check_x + Cur_Char_size[i], 184, 28, chars_height))
+        if(Check_Mouse(start_mute_check_x + Cur_Char_size[i], 184 - 1, 28, chars_height))
         {
             int Cur_Position = Get_Song_Position();
             int tmp_track = Get_Track_Over_Mouse(Mouse.x, NULL, FALSE);
@@ -3059,14 +3065,20 @@ void Mouse_Left_Pattern_Ed(void)
         start_mute_check_x += Get_Track_Size(i, NULL);
     }
 
-    // Track zoom > large
+    // Reduce/Expand track zoom
     start_mute_check_x = PAT_COL_NOTE + 1 + 4 + (29 * 2) + 1;
     tracks = Get_Visible_Partial_Tracks();
     for(i = gui_track; i < gui_track + tracks; i++)
     {
-        if(Check_Mouse(start_mute_check_x + Cur_Char_size[i], 184, 16, chars_height))
+        if(Check_Mouse(start_mute_check_x + Cur_Char_size[i], 184 - 1, 8, chars_height))
         {
-            gui_action = GUI_CMD_SWITCH_TRACK_LARGE_STATE;
+            gui_action = GUI_CMD_SWITCH_TRACK_REDUCE_STATE;
+            break;
+        }
+
+        if(Check_Mouse(start_mute_check_x + Cur_Char_size[i] + 8, 184 - 1, 8, chars_height))
+        {
+            gui_action = GUI_CMD_SWITCH_TRACK_EXPAND_STATE;
             break;
         }
         start_mute_check_x += Get_Track_Size(i, NULL);
@@ -3077,7 +3089,7 @@ void Mouse_Left_Pattern_Ed(void)
     tracks = Get_Visible_Partial_Tracks();
     for(i = gui_track; i < gui_track + tracks; i++)
     {
-        if(Check_Mouse(start_mute_check_x , 184 + chars_height, 8, chars_height))
+        if(Check_Mouse(start_mute_check_x , 184 + chars_height - 2, 8, chars_height))
         {
             gui_action = GUI_CMD_REDUCE_TRACK_NOTES;
             break;
@@ -3090,7 +3102,7 @@ void Mouse_Left_Pattern_Ed(void)
     tracks = Get_Visible_Partial_Tracks();
     for(i = gui_track; i < gui_track + tracks; i++)
     {
-        if(Check_Mouse(start_mute_check_x, 184 + chars_height, 8, chars_height))
+        if(Check_Mouse(start_mute_check_x, 184 + chars_height - 2, 8, chars_height))
         {
             gui_action = GUI_CMD_EXPAND_TRACK_NOTES;
             break;
@@ -3103,7 +3115,7 @@ void Mouse_Left_Pattern_Ed(void)
     for(i = 0; i < tracks; i++)
     {
         start_mute_check_x = pos_effects_icons[i] - 1;
-        if(Check_Mouse(start_mute_check_x, 184 + chars_height, 8, chars_height))
+        if(Check_Mouse(start_mute_check_x, 184 + chars_height - 2, 8, chars_height))
         {
             gui_action = GUI_CMD_REDUCE_TRACK_EFFECTS;
             break;
@@ -3115,7 +3127,7 @@ void Mouse_Left_Pattern_Ed(void)
     for(i = 0; i < tracks; i++)
     {
         start_mute_check_x = pos_effects_icons[i] + 9 - 1;
-        if(Check_Mouse(start_mute_check_x, 184 + chars_height, 8, chars_height))
+        if(Check_Mouse(start_mute_check_x, 184 + chars_height - 2, 8, chars_height))
         {
             gui_action = GUI_CMD_EXPAND_TRACK_EFFECTS;
             break;
@@ -3149,7 +3161,7 @@ void Mouse_Right_Pattern_Ed(void)
     for(i = gui_track; i < gui_track + tracks; i++)
     {
         if(start_mute_check_x + Cur_Char_size[i] >= MAX_PATT_SCREEN_X) break;
-        if(Check_Mouse(start_mute_check_x + Cur_Char_size[i], 184, 28, chars_height))
+        if(Check_Mouse(start_mute_check_x + Cur_Char_size[i], 184 - 1, 28, chars_height))
         {
             int tmp_track = Get_Track_Over_Mouse(Mouse.x, NULL, FALSE);
             Solo_Track(tmp_track);
@@ -3165,23 +3177,13 @@ void Mouse_Right_Pattern_Ed(void)
     for(i = gui_track; i < gui_track + tracks; i++)
     {
         if(start_mute_check_x + Cur_Char_size[i] >= MAX_PATT_SCREEN_X) break;
-        if(Check_Mouse(start_mute_check_x + Cur_Char_size[i], 184, 28, chars_height))
+        if(Check_Mouse(start_mute_check_x + Cur_Char_size[i], 184 - 1, 28, chars_height))
         {
             int Cur_Position = Get_Song_Position();
             int tmp_track = Get_Track_Over_Mouse(Mouse.x, NULL, FALSE);
             Solo_Track_On_Off(Cur_Position, tmp_track);
             break;
         }
-        start_mute_check_x += Get_Track_Size(i, NULL);
-    }
-
-    // Track zoom > small
-    start_mute_check_x = PAT_COL_NOTE + 1 + 4 + (29 * 2);
-    tracks = Get_Visible_Partial_Tracks();
-    for(i = gui_track; i < gui_track + tracks; i++)
-    {
-        if(start_mute_check_x + Cur_Char_size[i] >= MAX_PATT_SCREEN_X) break;
-        if(Check_Mouse(start_mute_check_x + Cur_Char_size[i], 184, 16, chars_height)) gui_action = GUI_CMD_SWITCH_TRACK_SMALL_STATE;
         start_mute_check_x += Get_Track_Size(i, NULL);
     }
 
@@ -3417,29 +3419,33 @@ void Reset_Patterns_Zoom(void)
 }
 
 // ------------------------------------------------------
-// Toggle the zoom status of a track
-void Toggle_Track_Zoom(int track, int large)
+// Change the zoom status of a track
+void Change_Track_Zoom(int track, int expand)
 {
-    if(large)
+    if(expand)
     {
-        if(Get_Track_Zoom(track) == TRACK_LARGE)
+        switch(Get_Track_Zoom(track))
         {
-            Set_Track_Zoom(track, TRACK_MEDIUM);
-        }
-        else
-        {
-            Set_Track_Zoom(track, TRACK_LARGE);
+            case TRACK_SMALL:
+                Set_Track_Zoom(track, TRACK_MEDIUM);
+                break;
+
+            case TRACK_MEDIUM:
+                Set_Track_Zoom(track, TRACK_LARGE);
+                break;
         }
     }
     else
     {
-        if(Get_Track_Zoom(track) == TRACK_SMALL)
+        switch(Get_Track_Zoom(track))
         {
-            Set_Track_Zoom(track, TRACK_MEDIUM);
-        }
-        else
-        {
-            Set_Track_Zoom(track, TRACK_SMALL);
+            case TRACK_LARGE:
+                Set_Track_Zoom(track, TRACK_MEDIUM);
+                break;
+
+            case TRACK_MEDIUM:
+                Set_Track_Zoom(track, TRACK_SMALL);
+                break;
         }
     }
 }

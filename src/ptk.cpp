@@ -1142,15 +1142,15 @@ int Screen_Update(void)
             Update_Pattern(0);
         }
 
-        if(gui_action == GUI_CMD_SWITCH_TRACK_LARGE_STATE)
+        if(gui_action == GUI_CMD_SWITCH_TRACK_EXPAND_STATE)
         {
-            Toggle_Track_Zoom(Get_Track_Over_Mouse(Mouse.x, NULL, FALSE), TRUE);
+            Change_Track_Zoom(Get_Track_Over_Mouse(Mouse.x, NULL, FALSE), TRUE);
             Update_Pattern(0);
         }
 
-        if(gui_action == GUI_CMD_SWITCH_TRACK_SMALL_STATE)
+        if(gui_action == GUI_CMD_SWITCH_TRACK_REDUCE_STATE)
         {
-            Toggle_Track_Zoom(Get_Track_Over_Mouse(Mouse.x, NULL, FALSE), FALSE);
+            Change_Track_Zoom(Get_Track_Over_Mouse(Mouse.x, NULL, FALSE), FALSE);
             Update_Pattern(0);
         }
 
