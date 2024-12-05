@@ -68,6 +68,13 @@ SDL_Surface *Note_Surface;
 SDL_Surface *Note_Alt_Surface;
 #if defined(__USE_OPENGL__)
 // ---
+GLuint Ptr_Temp_PFONT_GL;
+GLuint Ptr_Temp_LARGEPFONT_GL;
+GLuint Ptr_Temp_SMALLPFONT_GL;
+GLuint Ptr_Temp_NOTEPFONT_GL;
+GLuint Ptr_Temp_NOTELARGEPFONT_GL;
+GLuint Ptr_Temp_NOTESMALLPFONT_GL;
+// ---
 GLuint Temp_PFONT_GL = -1;
 GLuint Temp_LARGEPFONT_GL = -1;
 GLuint Temp_SMALLPFONT_GL = -1;
@@ -2464,12 +2471,22 @@ void Note_Small_Letter(int x, int y, char ltr, int ys, int y2)
 
 void Set_Font_Normal(void)
 {
+
+#if defined(__USE_OPENGL__)
+    Ptr_Temp_PFONT_GL = Temp_PFONT_GL;
+    Ptr_Temp_LARGEPFONT_GL = Temp_LARGEPFONT_GL;
+    Ptr_Temp_SMALLPFONT_GL = Temp_SMALLPFONT_GL;
+    Ptr_Temp_NOTEPFONT_GL = Temp_NOTEPFONT_GL;
+    Ptr_Temp_NOTELARGEPFONT_GL = Temp_NOTELARGEPFONT_GL;
+    Ptr_Temp_NOTESMALLPFONT_GL = Temp_NOTESMALLPFONT_GL;
+#else
     Ptr_Temp_PFONT = Temp_PFONT;
     Ptr_Temp_LARGEPFONT = Temp_LARGEPFONT;
     Ptr_Temp_SMALLPFONT = Temp_SMALLPFONT;
     Ptr_Temp_NOTEPFONT = Temp_NOTEPFONT;
     Ptr_Temp_NOTELARGEPFONT = Temp_NOTELARGEPFONT;
     Ptr_Temp_NOTESMALLPFONT = Temp_NOTESMALLPFONT;
+#endif
     chars_height = 8;
     pattern_double = FALSE;
     header_y = 64;
@@ -2478,12 +2495,23 @@ void Set_Font_Normal(void)
 
 void Set_Font_Double(void)
 {
+
+#if defined(__USE_OPENGL__)
+    Ptr_Temp_PFONT_GL = Temp_PFONT_GL_DOUBLE;
+    Ptr_Temp_LARGEPFONT_GL = Temp_LARGEPFONT_GL_DOUBLE;
+    Ptr_Temp_SMALLPFONT_GL = Temp_SMALLPFONT_GL_DOUBLE;
+    Ptr_Temp_NOTEPFONT_GL = Temp_NOTEPFONT_GL_DOUBLE;
+    Ptr_Temp_NOTELARGEPFONT_GL = Temp_NOTELARGEPFONT_GL_DOUBLE;
+    Ptr_Temp_NOTESMALLPFONT_GL = Temp_NOTESMALLPFONT_GL_DOUBLE;
+#else
     Ptr_Temp_PFONT = Temp_PFONT_DOUBLE;
     Ptr_Temp_LARGEPFONT = Temp_LARGEPFONT_DOUBLE;
     Ptr_Temp_SMALLPFONT = Temp_SMALLPFONT_DOUBLE;
     Ptr_Temp_NOTEPFONT = Temp_NOTEPFONT_DOUBLE;
     Ptr_Temp_NOTELARGEPFONT = Temp_NOTELARGEPFONT_DOUBLE;
     Ptr_Temp_NOTESMALLPFONT = Temp_NOTESMALLPFONT_DOUBLE;
+#endif
+
     chars_height = 16;
     pattern_double = TRUE;
     header_y = 64 * 2;
