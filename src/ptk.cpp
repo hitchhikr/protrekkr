@@ -2301,8 +2301,8 @@ void Load_File(int Freeindex, const char *str)
             fclose(in);
             gui_action = GUI_CMD_NONE;
             Actualize_DiskIO_Ed(0);
-            AUDIO_Play();
             Unlock_Audio_Thread();
+            AUDIO_Play();
             return;
         }
 
@@ -2361,8 +2361,8 @@ void Load_File(int Freeindex, const char *str)
             Lock_Audio_Thread();
             Load_Ptk(name);
             Renew_Sample_Ed();
-            AUDIO_Play();
             Unlock_Audio_Thread();
+            AUDIO_Play();
         }
         else if(strcmp(extension, "TWNNSYN0") == 0 ||
                 strcmp(extension, "TWNNSYN1") == 0 ||
@@ -3466,8 +3466,6 @@ void Stop_Current_Instrument(void)
             if(sp_channelsample[u][i] == Current_Instrument)
             {
                 sp_Stage[u][i] = PLAYING_NOSAMPLE;
-                Player_WL[u][i] = NULL;
-                Player_WR[u][i] = NULL;
                 sp_Position[u][i].absolu = 0;
             }
         }

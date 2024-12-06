@@ -3297,7 +3297,8 @@ ByPass_Wav:
                                           Player_LW[c][i],
                                           Player_NS[c][i],
                                           Player_LE[c][i],
-                                          Player_LS[c][i]);
+                                          Player_LS[c][i]
+                                         );
 
                     if(Player_WL[c][i])
                     {
@@ -4368,9 +4369,18 @@ void Play_Instrument(int channel, int sub_channel)
                     }
                     Player_LS[channel][sub_channel] = Sel_Start;
                     Player_LE[channel][sub_channel] = Sel_End;
-                    if(!no_retrig_note) sp_Position[channel][sub_channel].half.first = Sel_Start;
+                    if(!no_retrig_note)
+                    {
+                        sp_Position[channel][sub_channel].half.first = Sel_Start;
+                    }
                     Player_NS[channel][sub_channel] = Sel_End;
-                    if(!glide) if(!no_retrig_note) sp_Position[channel][sub_channel].half.first += offset << 8;
+                    if(!glide)
+                    {
+                        if(!no_retrig_note)
+                        {
+                            sp_Position[channel][sub_channel].half.first += offset << 8;
+                        }
+                    }
                 }
                 else
                 {
@@ -4499,7 +4509,10 @@ void Play_Instrument(int channel, int sub_channel)
 
                 int Max_Loop = Player_NS[channel][sub_channel];
                 // No loop: go to the end of the sample
-                if((int) Player_LE[channel][sub_channel] < Max_Loop) Max_Loop = Player_LE[channel][sub_channel];
+                if((int) Player_LE[channel][sub_channel] < Max_Loop)
+                {
+                    Max_Loop = Player_LE[channel][sub_channel];
+                }
                 sp_Position[channel][sub_channel].half.first = Max_Loop;
 #if defined(PTK_SYNTH)
                 if(Synthesizer[channel][sub_channel].Data.OSC_1_WAVEFORM == WAVEFORM_WAV)

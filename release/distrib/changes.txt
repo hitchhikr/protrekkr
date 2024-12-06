@@ -2,6 +2,12 @@
 ProTrekkr releases history
 ===============================================================================
 
+v2.7.3
+
+- Samples data & properties weren't properly recalculated after
+  samples editor operations often leading to a crash
+  when a song was being replayed at the same time.
+
 v2.7.2
 
 - Fixed a long time running bug that would make the tracker to crash when

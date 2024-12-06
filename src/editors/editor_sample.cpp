@@ -635,12 +635,10 @@ void Actualize_Sample_Ed(char gode)
             // Cut Sample
             if(gode == SMPED_CUT)
             {
-                Lock_Audio_Thread();
                 if(Sample_Cut(sed_real_range_start, sed_real_range_end, TRUE))
                 {
                     Refresh_Sample(TRUE);
                 }
-                Unlock_Audio_Thread();
             }
 
             // Copy Sample
@@ -655,23 +653,19 @@ void Actualize_Sample_Ed(char gode)
             // Paste Sample
             if(gode == SMPED_PASTE)
             {
-                Lock_Audio_Thread();
                 if(Sample_Paste(sed_real_range_start))
                 {
                     Refresh_Sample(TRUE);
                 }
-                Unlock_Audio_Thread();
             }
 
             // Crop Sample
             if(gode == SMPED_CROP)
             {
-                Lock_Audio_Thread();
                 if(Sample_Crop(sed_real_range_start, sed_real_range_end))
                 {
                     Refresh_Sample(TRUE);
                 }
-                Unlock_Audio_Thread();
             }
 
             // Reverse Sample
@@ -714,12 +708,10 @@ void Actualize_Sample_Ed(char gode)
             // Zap
             if(gode == SMPED_ZAP)
             {
-                Lock_Audio_Thread();
                 if(Sample_Cut(sed_real_range_start, sed_real_range_end, FALSE))
                 {
                     Refresh_Sample(TRUE);
                 }
-                Unlock_Audio_Thread();
             }
 
             // DC adjust
@@ -761,23 +753,19 @@ void Actualize_Sample_Ed(char gode)
             // Duplicate
             if(gode == SMPED_DUPLICATE)
             {
-                Lock_Audio_Thread();
                 if(Sample_Duplicate(sed_real_range_start, sed_real_range_end))
                 {
                     Refresh_Sample(TRUE);
                 }
-                Unlock_Audio_Thread();
             }
 
             // Insert zero
             if(gode == SMPED_INSERTZERO)
             {
-                Lock_Audio_Thread();
                 if(Sample_InsertZero(sed_real_range_start, sed_real_range_end))
                 {
                     Refresh_Sample(TRUE);
                 }
-                Unlock_Audio_Thread();
             }
 
             // Draw mode
