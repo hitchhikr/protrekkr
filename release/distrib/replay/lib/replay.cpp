@@ -1699,7 +1699,7 @@ int PTKEXPORT Ptk_InitModule(Uint8 *Module, int start_position)
         }
 #endif
 
-        // Tracks compressors.
+        // Tracks compressors
         Mod_Dat_Read(&Comp_Flag, sizeof(char));
 #if defined(PTK_LIMITER_TRACKS)
         if(Comp_Flag)
@@ -4124,7 +4124,7 @@ void Play_Instrument(int channel, int sub_channel)
         if(associated_sample != 255)
         {
 #if defined(PTK_INSTRUMENTS)
-            for(int revo = 0; revo < 16; revo++)
+            for(int revo = 0; revo < MAX_INSTRS_SPLITS; revo++)
             {
                 if(inote >= Basenote[associated_sample][revo] &&
                    SampleType[associated_sample][revo] != 0)
@@ -4387,13 +4387,25 @@ void Play_Instrument(int channel, int sub_channel)
                     Player_LS[channel][sub_channel] = LoopStart[associated_sample][split];
                     Player_LE[channel][sub_channel] = LoopEnd[associated_sample][split];
                     Player_NS[channel][sub_channel] = Sample_Length[associated_sample][split];
-                    if(!glide) if(!no_retrig_note) sp_Position[channel][sub_channel].half.first = offset << 8;
+                    if(!glide)
+                    {
+                        if(!no_retrig_note)
+                        {
+                            sp_Position[channel][sub_channel].half.first = offset << 8;
+                        }
+                    }
                 }
 #else
                 Player_LS[channel][sub_channel] = LoopStart[associated_sample][split];
                 Player_LE[channel][sub_channel] = LoopEnd[associated_sample][split];
                 Player_NS[channel][sub_channel] = Sample_Length[associated_sample][split];
-                if(!glide) if(!no_retrig_note) sp_Position[channel][sub_channel].half.first = offset << 8;
+                if(!glide)
+                {
+                    if(!no_retrig_note)
+                    {
+                        sp_Position[channel][sub_channel].half.first = offset << 8;
+                    }
+                }
 #endif
                 Player_LL[channel][sub_channel] = Player_LE[channel][sub_channel] - Player_LS[channel][sub_channel];
 
@@ -4414,7 +4426,7 @@ void Play_Instrument(int channel, int sub_channel)
                 Player_SC[channel][sub_channel] = Sample_Channels[associated_sample][split];
 
                 // I know this isn't exactly correct but using a sub channel for this
-                // would mean that we'd have to maintain 1 filters state / sub channel which would be insane.
+                // would mean that we'd have to maintain 1 filters state per sub channel which would be insane.
                 Player_FD[channel] = FDecay[associated_sample][split];
 
                 Player_WL[channel][sub_channel] = RawSamples[associated_sample][0][split];
@@ -4431,7 +4443,6 @@ void Play_Instrument(int channel, int sub_channel)
 #endif // PTK_INSTRUMENTS
 
             {
-
                 Player_WL[channel][sub_channel] = 0;
                 Player_WR[channel][sub_channel] = 0;
                 Player_Ampli[channel][sub_channel] = 1.0f;
@@ -6411,20 +6422,32 @@ void Kill_Instrument(int inst_nbr, int all_splits)
 #endif
     for(int z = first_split; z < last_split; z++)
     {
-        if(RawSamples[inst_nbr][0][z]) free(RawSamples[inst_nbr][0][z]);
+        if(RawSamples[inst_nbr][0][z])
+        {
+            free(RawSamples[inst_nbr][0][z]);
+        }
         RawSamples[inst_nbr][0][z] = NULL;
         if(Sample_Channels[inst_nbr][z] == 2)
         {
-            if(RawSamples[inst_nbr][1][z]) free(RawSamples[inst_nbr][1][z]);
+            if(RawSamples[inst_nbr][1][z])
+            {
+                free(RawSamples[inst_nbr][1][z]);
+            }
             RawSamples[inst_nbr][1][z] = NULL;
         }
 
 #if !defined(__STAND_ALONE__) && !defined(__WINAMP__)
-        if(RawSamples_Swap[inst_nbr][0][z]) free(RawSamples_Swap[inst_nbr][0][z]);
+        if(RawSamples_Swap[inst_nbr][0][z])
+        {
+            free(RawSamples_Swap[inst_nbr][0][z]);
+        }
         RawSamples_Swap[inst_nbr][0][z] = NULL;
         if(Sample_Channels[inst_nbr][z] == 2)
         {
-            if(RawSamples_Swap[inst_nbr][1][z]) free(RawSamples_Swap[inst_nbr][1][z]);
+            if(RawSamples_Swap[inst_nbr][1][z])
+            {
+                free(RawSamples_Swap[inst_nbr][1][z]);
+            }
             RawSamples_Swap[inst_nbr][1][z] = NULL;
         }
 #endif

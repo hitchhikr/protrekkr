@@ -38,6 +38,7 @@
 #include "files_list.h"
 #include "synths.h"
 #include "../../editors/include/editor_pattern.h"
+#include "../../samples/include/samples_ops.h"
 #include "../../include/ptk.h"
 
 // ------------------------------------------------------

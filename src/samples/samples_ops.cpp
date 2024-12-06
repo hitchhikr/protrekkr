@@ -52,6 +52,7 @@ extern unsigned int Player_LL[MAX_TRACKS][MAX_POLYPHONY];
 extern unsigned int Player_NS[MAX_TRACKS][MAX_POLYPHONY];
 extern char Player_LT[MAX_TRACKS][MAX_POLYPHONY];
 extern char Player_LW[MAX_TRACKS][MAX_POLYPHONY];
+extern s_access sp_Position[MAX_TRACKS][MAX_POLYPHONY];
 
 // ------------------------------------------------------
 // Rotate a selection to the left by a given amount
@@ -1001,6 +1002,17 @@ int Sample_InsertZero(int32 range_start, int32 range_end)
 
 void Recalculate_Sample_Size(int Instrument, int Split)
 {
+    int c;
+    int i;
+
+    if(Player_LE[Instrument][Split] != LoopEnd[Instrument][Split])
+    {
+        Player_LE[Instrument][Split] = LoopEnd[Instrument][Split];
+    }
+    if(Player_LS[Instrument][Split] != LoopStart[Instrument][Split])
+    {
+        Player_LS[Instrument][Split] = LoopStart[Instrument][Split];
+    }
     if(Player_LS[Instrument][Split] > Sample_Length[Instrument][Split])
     {
         Player_LS[Instrument][Split] = Sample_Length[Instrument][Split];
@@ -1015,7 +1027,7 @@ void Recalculate_Sample_Size(int Instrument, int Split)
     }
 
     // Remove the loop info if it's no longer relevant
-    if(Player_LS[Instrument][Split] == Player_LE[Instrument][Split])
+    if(Player_LS[Instrument][Split] >= Player_LE[Instrument][Split])
     {
         Player_LS[Instrument][Split] = 0;
         Player_LE[Instrument][Split] = 0;
@@ -1024,4 +1036,34 @@ void Recalculate_Sample_Size(int Instrument, int Split)
     }
     Player_LL[Instrument][Split] = Player_LE[Instrument][Split] - Player_LS[Instrument][Split];
     Player_NS[Instrument][Split] = Sample_Length[Instrument][Split];
+    if(Player_LE[Instrument][Split] != LoopEnd[Instrument][Split])
+    {
+        LoopEnd[Instrument][Split] = Player_LE[Instrument][Split];;
+    }
+    if(Player_LS[Instrument][Split] != LoopStart[Instrument][Split])
+    {
+        LoopStart[Instrument][Split] = Player_LS[Instrument][Split];
+    }
+    sp_Stage[Instrument][Split] = PLAYING_NOSAMPLE;
+    sp_Position[Instrument][Split].absolu = 0;
+
+    // Now look if this instrument is being played somewhere
+    for(c = 0; c < Songtracks; c++)
+    {
+        for(i = 0; i < Channels_Polyphony[c]; i++)
+        {
+            if(sp_channelsample[c][i] == Instrument)
+            {
+                // Set the waveform for the played split
+                if(sp_split[c][i] == Split)
+                {
+                    Player_WL[c][i] = RawSamples[Instrument][0][Split];
+                    if(Sample_Channels[Instrument][Split] == 2)
+                    {
+                        Player_WR[c][i] = RawSamples[Instrument][1][Split];
+                    }
+                }
+            }
+        }
+    }           
 }

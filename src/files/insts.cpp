@@ -164,7 +164,7 @@ void Load_Inst(char *FileName)
                 else Read_Data(&SampleName[swrite][slwrite], sizeof(char), 64, in);
                 
                 Read_Data(&Basenote[swrite][slwrite], sizeof(char), 1, in);
-                
+
                 Read_Data_Swap(&LoopStart[swrite][slwrite], sizeof(int), 1, in);
                 Read_Data_Swap(&LoopEnd[swrite][slwrite], sizeof(int), 1, in);
                 Read_Data(&LoopType[swrite][slwrite], sizeof(char), 1, in);
@@ -193,6 +193,7 @@ void Load_Inst(char *FileName)
                     *RawSamples[swrite][1][slwrite] = 0;
                 }
             } // Exist Sample
+            Recalculate_Sample_Size(swrite, slwrite);
         }
         fclose(in);
         Actualize_Pattern_Ed();
