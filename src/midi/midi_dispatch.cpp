@@ -503,7 +503,7 @@ void Midi_Edit_Next_Row(int Data)
 // Set pattern track (EDIT)
 void Midi_Edit_Set_Track(int Data)
 {
-    float factor = ((float) Songtracks / 16.0f);
+    float factor = ((float) Song_Tracks / 16.0f);
     Column_Under_Caret = 0;
     Track_Under_Caret = (int) (((float) Data * factor) / 127.0f * 15.0f);
     gui_action = GUI_CMD_SET_FOCUS_TRACK_EXTERNAL;

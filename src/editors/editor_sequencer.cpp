@@ -170,7 +170,7 @@ void Actualize_Seq_Ed(char gode)
                 out_decchar(93, (Cur_Height - 95) + lseq * 12, rel, 0);
                 out_decchar(261, (Cur_Height - 95) + lseq * 12, pSequence[rel], 0);
 
-                for(int rel2 = 0; rel2 < Songtracks; rel2++)
+                for(int rel2 = 0; rel2 < Song_Tracks; rel2++)
                 {
                     if(Chan_Active_State[rel][rel2]) out_nibble(124 + rel2 * 8, (Cur_Height - 95) + lseq * 12, USE_FONT, rel2);
                     else out_nibble(124 + rel2 * 8, (Cur_Height - 95) + lseq * 12, USE_FONT_LOW, rel2);
@@ -298,7 +298,7 @@ void Mouse_Left_Sequencer_Ed(void)
         // Remap Pattern
         if(Check_Mouse(652, (Cur_Height - 76), 60, 16))
         {
-            for(i = 0; i < Songtracks; i++)
+            for(i = 0; i < Song_Tracks; i++)
             {
                 if(transpose_semitones)
                 {
@@ -345,7 +345,7 @@ void Mouse_Left_Sequencer_Ed(void)
                 {
                     if(!Done_Pattern[pSequence[j]])
                     {
-                        for(i = 0; i < Songtracks; i++)
+                        for(i = 0; i < Song_Tracks; i++)
                         {
                             if(transpose_semitones)
                             {
@@ -890,7 +890,7 @@ void Seq_Fill(int st, int en, char n)
 {
     for(int cl = st; cl < en; cl++)
     {
-        for(char trk = 0; trk < Songtracks; trk++)
+        for(char trk = 0; trk < Song_Tracks; trk++)
         {
             Chan_Active_State[cl][trk] = n;
             Chan_History_State[cl][trk] = FALSE;
@@ -909,14 +909,14 @@ void Seq_Delete(int st)
         for(cl = st; cl < Song_Length - 1; cl++)
         {
             pSequence[cl] = pSequence[cl + 1];
-            for(char trk = 0; trk < Songtracks; trk++)
+            for(char trk = 0; trk < Song_Tracks; trk++)
             {
                 Chan_Active_State[cl][trk] = Chan_Active_State[cl + 1][trk];
                 Chan_History_State[cl][trk] = Chan_History_State[cl + 1][trk];
             }
         }
         pSequence[cl] = 0;
-        for(char trk = 0; trk < Songtracks; trk++)
+        for(char trk = 0; trk < Song_Tracks; trk++)
         {
             Chan_Active_State[cl][trk] = TRUE;
             Chan_History_State[cl][trk] = FALSE;
@@ -936,14 +936,14 @@ void Seq_Insert(int st)
         for(cl = Song_Length - 1; cl >= st; cl--)
         {
             pSequence[cl + 1] = pSequence[cl];
-            for(char trk = 0; trk < Songtracks; trk++)
+            for(char trk = 0; trk < Song_Tracks; trk++)
             {
                 Chan_Active_State[cl + 1][trk] = Chan_Active_State[cl][trk];
                 Chan_History_State[cl + 1][trk] = Chan_History_State[cl][trk];
             }
         }
         pSequence[st] = 0;
-        for(char trk = 0; trk < Songtracks; trk++)
+        for(char trk = 0; trk < Song_Tracks; trk++)
         {
             Chan_Active_State[st][trk] = TRUE;
             Chan_History_State[st][trk] = FALSE;
@@ -968,7 +968,7 @@ void Seq_Copy(int st)
 {
     Seq_Buffers_Full[Cur_Seq_Buffer] = TRUE;
     Seq_Buffers[Cur_Seq_Buffer].pattern = pSequence[st];
-    for(char trk = 0; trk < Songtracks; trk++)
+    for(char trk = 0; trk < Song_Tracks; trk++)
     {
         Seq_Buffers[Cur_Seq_Buffer].active_state[trk] = Chan_Active_State[st][trk];
     }
@@ -980,7 +980,7 @@ void Seq_Copy(int st)
 void Seq_Paste(int st)
 {
     pSequence[st] = Seq_Buffers[Cur_Seq_Buffer].pattern;
-    for(char trk = 0; trk < Songtracks; trk++)
+    for(char trk = 0; trk < Song_Tracks; trk++)
     {
         Chan_Active_State[st][trk] = Seq_Buffers[Cur_Seq_Buffer].active_state[trk];
         Chan_History_State[st][trk] = FALSE;
@@ -1004,7 +1004,7 @@ void Toggle_Track_On_Off_Status(int posindex, int seqindex)
     if(posindex >= 0 && posindex < Song_Length)
     {
         if(seqindex < 0) seqindex = 0;
-        if(seqindex > Songtracks - 1) seqindex = Songtracks - 1;
+        if(seqindex > Song_Tracks - 1) seqindex = Song_Tracks - 1;
         if(!Chan_Active_State[posindex][seqindex])
         {
             Chan_Active_State[posindex][seqindex] = TRUE;
@@ -1029,20 +1029,20 @@ void Solo_Track_On_Off(int posindex, int seqindex)
     if(posindex >= 0 && posindex < Song_Length)
     {
         if(seqindex < 0) seqindex = 0;
-        if(seqindex > Songtracks - 1) seqindex = Songtracks - 1;
+        if(seqindex > Song_Tracks - 1) seqindex = Song_Tracks - 1;
 
         if(Chan_Active_State[posindex][seqindex])
         {
             // Check if it was the only track turned on
             Already_Solo = 0;
-            for(int alphac = 0; alphac < Songtracks; alphac++)
+            for(int alphac = 0; alphac < Song_Tracks; alphac++)
             {
                 if(Chan_Active_State[posindex][alphac] == TRUE) Already_Solo++;
             }
             if(Already_Solo == 1)
             {
                 // Was already soloed: turn'em all on
-                for(int alphac = 0; alphac < Songtracks; alphac++)
+                for(int alphac = 0; alphac < Song_Tracks; alphac++)
                 {
                     Chan_Active_State[posindex][alphac] = TRUE;
                     Chan_History_State[posindex][alphac] = FALSE;
@@ -1051,7 +1051,7 @@ void Solo_Track_On_Off(int posindex, int seqindex)
             else
             {
                 // Solo it
-                for(int alphac = 0; alphac < Songtracks; alphac++)
+                for(int alphac = 0; alphac < Song_Tracks; alphac++)
                 {
                     Chan_Active_State[posindex][alphac] = FALSE;
                     Chan_History_State[posindex][alphac] = FALSE;
@@ -1061,7 +1061,7 @@ void Solo_Track_On_Off(int posindex, int seqindex)
         else
         {
             // Solo it
-            for(int alphac = 0; alphac < Songtracks; alphac++)
+            for(int alphac = 0; alphac < Song_Tracks; alphac++)
             {
                 Chan_Active_State[posindex][alphac] = FALSE;
                 Chan_History_State[posindex][alphac] = FALSE;

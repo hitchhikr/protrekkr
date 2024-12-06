@@ -431,7 +431,7 @@ void Mouse_Left_DiskIO_Ed(void)
                    rawrender_target == RENDER_TO_FILE)
                 {
                     int any_file = FALSE;
-                    for(i = 0; i < Songtracks; i++)
+                    for(i = 0; i < Song_Tracks; i++)
                     {
                         sprintf(WavFileName, "%%s" SLASH "%%s_%x.wav", i);
                         if(File_Exist(WavFileName, Dir_Mods, name))
@@ -599,7 +599,7 @@ int Is_Track_To_Render_Solo(int nbr)
     int i;
     int found_tracks = FALSE;
 
-    for(i = 0; i < Songtracks; i++)
+    for(i = 0; i < Song_Tracks; i++)
     {
         if(i != nbr)
         {
@@ -618,7 +618,7 @@ void Display_1_Track_To_Render(int nbr)
 {
     if(Tracks_To_Render[nbr])
     {
-        if(nbr < Songtracks)
+        if(nbr < Song_Tracks)
         {
             Gui_Draw_Button_Box(Tracks_Position[nbr].x, (Cur_Height - 112) + Tracks_Position[nbr].y, 16, 16, Tracks_Labels[nbr], BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
         }
@@ -629,7 +629,7 @@ void Display_1_Track_To_Render(int nbr)
     }
     else
     {
-        if(nbr < Songtracks)
+        if(nbr < Song_Tracks)
         {
             Gui_Draw_Button_Box(Tracks_Position[nbr].x, (Cur_Height - 112) + Tracks_Position[nbr].y, 16, 16, Tracks_Labels[nbr], BUTTON_PUSHED | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
         }
@@ -660,7 +660,7 @@ void Display_Tracks_To_Render(void)
 void Reset_Tracks_To_Render(void)
 {
     int i;
-    for(i = 0; i < Songtracks; i++)
+    for(i = 0; i < Song_Tracks; i++)
     {
         Tracks_To_Render[i] = FALSE;
     }
@@ -674,20 +674,20 @@ void Check_Tracks_To_Render_To_Solo(void)
     int i;
     int j;
 
-    for(i = 0; i < Songtracks; i++)
+    for(i = 0; i < Song_Tracks; i++)
     {
         if(Check_Mouse(Tracks_Position[i].x, (Cur_Height - 112) + Tracks_Position[i].y, 17, 16))
         {
             if(Is_Track_To_Render_Solo(i))
             {
-                for(j = 0; j < Songtracks; j++)
+                for(j = 0; j < Song_Tracks; j++)
                 {
                     Tracks_To_Render[j] = FALSE;
                 }
             }
             else
             {
-                for(j = 0; j < Songtracks; j++)
+                for(j = 0; j < Song_Tracks; j++)
                 {
                     Tracks_To_Render[j] = TRUE;
                 }
@@ -706,7 +706,7 @@ void Check_Tracks_To_Render(void)
 
     for(i = 0; i < MAX_TRACKS; i++)
     {
-        if(i < Songtracks)
+        if(i < Song_Tracks)
         {
             if(Check_Mouse(Tracks_Position[i].x, (Cur_Height - 112) + Tracks_Position[i].y, 17, 16))
             {

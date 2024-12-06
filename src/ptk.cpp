@@ -1146,12 +1146,14 @@ int Screen_Update(void)
         {
             Change_Track_Zoom(Get_Track_Over_Mouse(Mouse.x, NULL, FALSE), TRUE);
             Update_Pattern(0);
+            Display_Patterns_Sizes_Status();
         }
 
         if(gui_action == GUI_CMD_SWITCH_TRACK_REDUCE_STATE)
         {
             Change_Track_Zoom(Get_Track_Over_Mouse(Mouse.x, NULL, FALSE), FALSE);
             Update_Pattern(0);
+            Display_Patterns_Sizes_Status();
         }
 
         if(gui_action == GUI_CMD_REDUCE_TRACK_NOTES)
@@ -1242,6 +1244,7 @@ int Screen_Update(void)
             Display_Tracks_To_Render();
             Actualize_Track_Ed(0);
             Actualize_Track_Fx_Ed(0);
+            Display_Patterns_Sizes_Status();
         }
 
         if(gui_action == GUI_CMD_SET_TRACK_CUTOFF_FREQ)
@@ -1889,17 +1892,9 @@ int Screen_Update(void)
         Gui_Draw_Button_Box(8, 126, 80, 16, "Step Add", BUTTON_NORMAL | BUTTON_DISABLED);
         Gui_Draw_Button_Box(166, 126, 90, 16, "Keyboard Octave", BUTTON_NORMAL | BUTTON_DISABLED);
 
-        // Tracks sizes
-        Gui_Draw_Button_Box(332, 126, 16, 16, "\003", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
-        Gui_Draw_Button_Box(332 + 18, 126, 16, 16, "\004", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
-        if(pattern_double)
-        {
-            Gui_Draw_Button_Box(332 + (18 * 2), 126, 16, 16, "\017", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
-        }
-        else
-        {
-            Gui_Draw_Button_Box(332 + (18 * 2), 126, 16, 16, "\016", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
-        }
+        // Patterns sizes
+        Display_Patterns_Sizes_Status();
+
         Gui_Draw_Button_Box(0, 148, 392, 30, NULL, BUTTON_NORMAL | BUTTON_DISABLED);
         Gui_Draw_Button_Box(8, 152, 61, 10, S_ E_ L_ DOT_ SPC_ T_ R_ A_ C_ K_, BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE | BUTTON_SMALL_FONT);
         Gui_Draw_Button_Box(8, 164, 61, 10, S_ E_ L_ DOT_ SPC_ N_ O_ T_ E_, BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE | BUTTON_SMALL_FONT);
@@ -2814,7 +2809,7 @@ void New_Mod(void)
 
     if(ZzaappOMatic == ZZAAPP_ALL || ZzaappOMatic == ZZAAPP_PATTERNS)
     {
-        Songtracks = 6;
+        Song_Tracks = 6;
         for(int api = 0; api < MAX_ROWS; api++)
         {
             patternLines[api] = DEFAULT_PATTERN_LEN;
@@ -2850,6 +2845,7 @@ void New_Mod(void)
         Actualize_Master(0);
         Update_Pattern(0);
         Reset_Tracks_To_Render();
+        Display_Patterns_Sizes_Status();
     }
 
     if(ZzaappOMatic == ZZAAPP_ALL || ZzaappOMatic == ZZAAPP_303)
@@ -3105,7 +3101,7 @@ void Wav_Renderizer()
     if(rawrender_multi &&
        rawrender_target == RENDER_TO_FILE)
     {
-        max_tracks_to_render = Songtracks;
+        max_tracks_to_render = Song_Tracks;
         do_multi = TRUE;
         for(i = 0; i < MAX_TRACKS; i++)
         {
@@ -3805,7 +3801,7 @@ void Keyboard_Handler(void)
     {
         Unselect_Selection();
         Track_Under_Caret++;
-        if(Track_Under_Caret >= Songtracks)
+        if(Track_Under_Caret >= Song_Tracks)
         {
             Track_Under_Caret = 0;
         }
@@ -5948,29 +5944,29 @@ void Mouse_Handler(void)
         // --- Song Settings --------------------------------------
 
         // Reduce the number of tracks
-        if(Check_Mouse(324, 28, 16, 16) && Songtracks > 1)
+        if(Check_Mouse(324, 28, 16, 16) && Song_Tracks > 1)
         {
-            Songtracks--;
-            if(Songtracks < 1) Songtracks = 1;
+            Song_Tracks--;
+            if(Song_Tracks < 1) Song_Tracks = 1;
             gui_action = GUI_CMD_CHANGE_TRACKS_NBR;
             teac = 4;
         }
         // Increase the number of tracks
-        if(Check_Mouse(368, 28, 16, 16) && Songtracks < 16)
+        if(Check_Mouse(368, 28, 16, 16) && Song_Tracks < 16)
         {
-            Songtracks++;
-            if(Songtracks > 16) Songtracks = 16;
+            Song_Tracks++;
+            if(Song_Tracks > 16) Song_Tracks = 16;
             gui_action = GUI_CMD_CHANGE_TRACKS_NBR;
             teac = 4;
         }
 
         // Delete the current track
-        if(Check_Mouse(313, 28, 9, 16) && Songtracks >= 1 && !Song_Playing)
+        if(Check_Mouse(313, 28, 9, 16) && Song_Tracks >= 1 && !Song_Playing)
         {
-            Songtracks--;
-            if(Songtracks < 1)
+            Song_Tracks--;
+            if(Song_Tracks < 1)
             {
-                Songtracks = 1;
+                Song_Tracks = 1;
                 // Just clear it
                 Reset_Track(pSequence[Song_Position], Track_Under_Caret);
             }
@@ -5982,12 +5978,12 @@ void Mouse_Handler(void)
             teac = 4;
         }
         // Insert a track at current position
-        if(Check_Mouse(302, 28, 9, 16) && Songtracks < 16 && !Song_Playing)
+        if(Check_Mouse(302, 28, 9, 16) && Song_Tracks < 16 && !Song_Playing)
         {
-            Songtracks++;
-            if(Songtracks > 16)
+            Song_Tracks++;
+            if(Song_Tracks > 16)
             {
-                Songtracks = 16;
+                Song_Tracks = 16;
             }
             else
             {
@@ -6038,7 +6034,7 @@ void Mouse_Handler(void)
         // Zoom'em down
         if(Check_Mouse(332, 126, 16, 16))
         {
-            for(i = 0; i < Songtracks; i++)
+            for(i = 0; i < Song_Tracks; i++)
             {
                 switch(Get_Track_Zoom(i))
                 {
@@ -6053,11 +6049,12 @@ void Mouse_Handler(void)
             }
             Update_Pattern(0);
             Set_Track_Slider(gui_track);
+            Display_Patterns_Sizes_Status();
         }
         // Zoom'em up
         if(Check_Mouse(332 + (18 * 1), 126, 16, 16))
         {
-            for(i = 0; i < Songtracks; i++)
+            for(i = 0; i < Song_Tracks; i++)
             {
                 switch(Get_Track_Zoom(i))
                 {
@@ -6072,6 +6069,7 @@ void Mouse_Handler(void)
             }
             Update_Pattern(0);
             Set_Track_Slider(gui_track);
+            Display_Patterns_Sizes_Status();
         }
         // Double the font
         if(Check_Mouse(332 + (18 * 2), 126, 16, 16))
@@ -6305,18 +6303,18 @@ void Mouse_Handler(void)
         }
 
         // Reduce the number of tracks
-        if(Check_Mouse(324, 28, 16, 16) && Songtracks > 1)
+        if(Check_Mouse(324, 28, 16, 16) && Song_Tracks > 1)
         {
-            Songtracks -= 5;
-            if(Songtracks < 1) Songtracks = 1;
+            Song_Tracks -= 5;
+            if(Song_Tracks < 1) Song_Tracks = 1;
             gui_action = GUI_CMD_CHANGE_TRACKS_NBR;
             teac = 4;
         }
         // Increase the number of tracks
-        if(Check_Mouse(368, 28, 16, 16) && Songtracks < 16)
+        if(Check_Mouse(368, 28, 16, 16) && Song_Tracks < 16)
         {
-            Songtracks += 5;
-            if(Songtracks > 16) Songtracks = 16;
+            Song_Tracks += 5;
+            if(Song_Tracks > 16) Song_Tracks = 16;
             gui_action = GUI_CMD_CHANGE_TRACKS_NBR;
             teac = 4;
         }
@@ -6744,12 +6742,12 @@ void Actualize_Master(char gode)
 
     if(gode == 0)
     {
-        Gui_Draw_Arrows_Number_Box2(324, 28, Songtracks, BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
+        Gui_Draw_Arrows_Number_Box2(324, 28, Song_Tracks, BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
     }
 
     if(gode == 4)
     {
-        Gui_Draw_Arrows_Number_Box2(324, 28, Songtracks, BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
+        Gui_Draw_Arrows_Number_Box2(324, 28, Song_Tracks, BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
 
         if(userscreen == USER_SCREEN_SEQUENCER) Actualize_Seq_Ed(0);
         Update_Pattern(0);
@@ -7074,8 +7072,8 @@ void Draw_Scope(void)
         else
         {
             // Tracks
-            ptrTbl_Dat = &Scope_Table_Dats[Scope_Table[Songtracks].offset];
-            for(i = 0; i < Scope_Table[Songtracks].nbr; i++)
+            ptrTbl_Dat = &Scope_Table_Dats[Scope_Table[Song_Tracks].offset];
+            for(i = 0; i < Scope_Table[Song_Tracks].nbr; i++)
             {
                 if(ptrTbl_Dat->x_div) nibble_pos = ((max_right / ptrTbl_Dat->x_div) * ptrTbl_Dat->x_mul);
                 else
@@ -7346,6 +7344,8 @@ void Note_Jazz_Off(int note)
 
 }
 
+// ------------------------------------------------------
+// Lock & unlock the audio thread so we can perform modifications
 void Lock_Audio_Thread(void)
 {
     if(thread_sema)
@@ -7359,5 +7359,43 @@ void Unlock_Audio_Thread(void)
     if(thread_sema)
     {
         SDL_SemPost(thread_sema);
+    }
+}
+
+// ------------------------------------------------------
+// The status of the track zooms
+void Display_Patterns_Sizes_Status(void)
+{
+    int i;
+    int all_same = BUTTON_DISABLED;
+
+    for(i = 0; i < Song_Tracks; i++)
+    {
+        if(Get_Track_Zoom(i) != TRACK_SMALL)
+        {
+            all_same = 0;
+            break;
+        }
+    }
+    Gui_Draw_Button_Box(332, 126, 16, 16, "\003", BUTTON_NORMAL | all_same | BUTTON_TEXT_CENTERED);
+
+    all_same = BUTTON_DISABLED;
+    for(i = 0; i < Song_Tracks; i++)
+    {
+        if(Get_Track_Zoom(i) != TRACK_LARGE)
+        {
+            all_same = 0;
+            break;
+        }
+    }
+    Gui_Draw_Button_Box(332 + 18, 126, 16, 16, "\004", BUTTON_NORMAL | all_same | BUTTON_TEXT_CENTERED);
+
+    if(pattern_double)
+    {
+        Gui_Draw_Button_Box(332 + (18 * 2), 126, 16, 16, "\017", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
+    }
+    else
+    {
+        Gui_Draw_Button_Box(332 + (18 * 2), 126, 16, 16, "\016", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
     }
 }

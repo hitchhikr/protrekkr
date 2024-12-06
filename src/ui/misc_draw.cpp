@@ -1764,6 +1764,7 @@ void Refresh_UI_Context(void)
     Actualize_Pattern_Ed();
     Actualize_Instruments_Synths_List(0);
     Display_Beat_Time();
+    Display_Patterns_Sizes_Status();
 }
 
 // ------------------------------------------------------

@@ -584,9 +584,9 @@ int PosJump = -1;
 #endif
 
 #if !defined(__STAND_ALONE__) || defined(__WINAMP__)
-    char Songtracks = 6;
+    char Song_Tracks = 6;
 #else
-    char Songtracks;
+    char Song_Tracks;
 #endif
 
 char Channels_Polyphony[MAX_TRACKS];
@@ -1367,7 +1367,7 @@ int PTKEXPORT Ptk_InitModule(Uint8 *Module, int start_position)
         Pre_Song_Init();
 
         Mod_Dat_Read(&nPatterns, sizeof(char));
-        Mod_Dat_Read(&Songtracks, sizeof(char));
+        Mod_Dat_Read(&Song_Tracks, sizeof(char));
         Mod_Dat_Read(&Song_Length, sizeof(char));
 
         Mod_Dat_Read(&Use_Cubic, sizeof(char));
@@ -1406,19 +1406,19 @@ int PTKEXPORT Ptk_InitModule(Uint8 *Module, int start_position)
         if(!RawPatterns) return(FALSE);
 
         // Multi notes
-        Mod_Dat_Read(Channels_MultiNotes, sizeof(char) * Songtracks);
+        Mod_Dat_Read(Channels_MultiNotes, sizeof(char) * Song_Tracks);
 
         // Multi fx
-        Mod_Dat_Read(Channels_Effects, sizeof(char) * Songtracks);
+        Mod_Dat_Read(Channels_Effects, sizeof(char) * Song_Tracks);
 
         // Individual volumes
-        Mod_Dat_Read(Track_Volume, sizeof(float) * Songtracks);
+        Mod_Dat_Read(Track_Volume, sizeof(float) * Song_Tracks);
 
         // Surround effect
-        Mod_Dat_Read(Track_Surround, sizeof(char) * Songtracks);
+        Mod_Dat_Read(Track_Surround, sizeof(char) * Song_Tracks);
 
         // Eq parameters
-        for(i = 0; i < Songtracks; i++)
+        for(i = 0; i < Song_Tracks; i++)
         {
             Mod_Dat_Read(&EqDat[i].lg, sizeof(float));
             Mod_Dat_Read(&EqDat[i].mg, sizeof(float));
@@ -1431,7 +1431,7 @@ int PTKEXPORT Ptk_InitModule(Uint8 *Module, int start_position)
             TmpPatterns_Rows = TmpPatterns + (pwrite * PATTERN_LEN);
             for(i = 0; i < PATTERN_BYTES; i++)
             {   // Bytes / track
-                for(k = 0; k < Songtracks; k++)
+                for(k = 0; k < Song_Tracks; k++)
                 {   // Tracks
                     TmpPatterns_Tracks = TmpPatterns_Rows + (k * PATTERN_BYTES);
                     for(j = 0; j < patternLines[pwrite]; j++)
@@ -1658,7 +1658,7 @@ int PTKEXPORT Ptk_InitModule(Uint8 *Module, int start_position)
         Mod_Dat_Read(&compressor, sizeof(char));
 
         // Reading Track Properties
-        for(twrite = 0; twrite < Songtracks; twrite++)
+        for(twrite = 0; twrite < Song_Tracks; twrite++)
         {
             Mod_Dat_Read(&TCut[twrite], sizeof(float));
             Mod_Dat_Read(&ICut[twrite], sizeof(float));
@@ -1704,9 +1704,9 @@ int PTKEXPORT Ptk_InitModule(Uint8 *Module, int start_position)
 #if defined(PTK_LIMITER_TRACKS)
         if(Comp_Flag)
         {
-            Mod_Dat_Read(&mas_threshold_Track, sizeof(float) * Songtracks);
-            Mod_Dat_Read(&mas_ratio_Track, sizeof(float) * Songtracks);
-            Mod_Dat_Read(&Compress_Track, sizeof(char) * Songtracks);
+            Mod_Dat_Read(&mas_threshold_Track, sizeof(float) * Song_Tracks);
+            Mod_Dat_Read(&mas_ratio_Track, sizeof(float) * Song_Tracks);
+            Mod_Dat_Read(&Compress_Track, sizeof(char) * Song_Tracks);
         }
 #endif
 
@@ -1738,18 +1738,18 @@ int PTKEXPORT Ptk_InitModule(Uint8 *Module, int start_position)
         // Reading track part sequence
         for(int tps_pos = 0; tps_pos < Song_Length; tps_pos++)
         {
-            for(tps_trk = 0; tps_trk < Songtracks; tps_trk++)
+            for(tps_trk = 0; tps_trk < Song_Tracks; tps_trk++)
             {
                 Mod_Dat_Read(&Chan_Active_State[tps_pos][tps_trk], sizeof(char));
             }
         }
 
-        for(int spl = 0; spl < Songtracks; spl++)
+        for(int spl = 0; spl < Song_Tracks; spl++)
         {
             CCoef[spl] = float((float) CSend[spl] / 127.0f);
         }
 
-        for(twrite = 0; twrite < Songtracks; twrite++)
+        for(twrite = 0; twrite < Song_Tracks; twrite++)
         {
             Mod_Dat_Read(&LFO_ON[twrite], sizeof(char));
 
@@ -1763,7 +1763,7 @@ int PTKEXPORT Ptk_InitModule(Uint8 *Module, int start_position)
 #endif
         }
 
-        for(twrite = 0; twrite < Songtracks; twrite++)
+        for(twrite = 0; twrite < Song_Tracks; twrite++)
         {
             Mod_Dat_Read(&FLANGER_ON[twrite], sizeof(char));
 
@@ -1784,7 +1784,7 @@ int PTKEXPORT Ptk_InitModule(Uint8 *Module, int start_position)
 
         }
 
-        for(tps_trk = 0; tps_trk < Songtracks; tps_trk++)
+        for(tps_trk = 0; tps_trk < Song_Tracks; tps_trk++)
         {
             Mod_Dat_Read(&Disclap[tps_trk], sizeof(char));
         }
@@ -2621,7 +2621,7 @@ void Sp_Player(void)
             fired_303_1 = FALSE;
             fired_303_2 = FALSE;
 
-            for(ct = 0; ct < Songtracks; ct++)
+            for(ct = 0; ct < Song_Tracks; ct++)
             {
                 int efactor = Get_Pattern_Offset(pSequence[Song_Position], ct, Pattern_Line);
                 
@@ -2682,7 +2682,7 @@ void Sp_Player(void)
 
 #endif
 
-            for(ct = 0; ct < Songtracks; ct++)
+            for(ct = 0; ct < Song_Tracks; ct++)
             {
                 int efactor = Get_Pattern_Offset(pSequence[Song_Position], ct, Pattern_Line);
                 
@@ -3192,7 +3192,7 @@ void Sp_Player(void)
     // -------------------------------------------
     // Process the data, this is the huge loop
     // -------------------------------------------
-    for(c = 0; c < Songtracks; c++)
+    for(c = 0; c < Song_Tracks; c++)
     {
 
 #if defined(PTK_FX_VIBRATO)
@@ -3939,7 +3939,7 @@ ByPass_Wav:
             Scope_Dats[c][pos_scope] = 0.0f;
         }
 #endif
-    } // Songtracks
+    } // Song_Tracks
 }
 
 // ------------------------------------------------------
@@ -4590,7 +4590,7 @@ void Do_Effects_Tick_0(void)
     int pltr_eff_row[MAX_FX];
     int pltr_dat_row[MAX_FX];
 
-    for(int trackef = 0; trackef < Songtracks; trackef++)
+    for(int trackef = 0; trackef < Song_Tracks; trackef++)
     {
         int tefactor = Get_Pattern_Offset(pSequence[Song_Position], trackef, Pattern_Line);
 
@@ -4858,7 +4858,7 @@ void Do_Effects_Ticks_X(void)
     int64 pltr_dat_row[MAX_FX];
 #endif
 
-    for(int trackef = 0; trackef < Songtracks; trackef++)
+    for(int trackef = 0; trackef < Song_Tracks; trackef++)
     {
         int tefactor = Get_Pattern_Offset(pSequence[Song_Position], trackef, Pattern_Line);
 

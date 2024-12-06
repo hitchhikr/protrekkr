@@ -560,7 +560,7 @@ void Load_Amiga_Mod(char *Name, const char *FileName, int channels, int digiboos
                 }
             }
         
-            Songtracks = channels;
+            Song_Tracks = channels;
 
             for(swrite = 0; swrite < 31; swrite++)
             {

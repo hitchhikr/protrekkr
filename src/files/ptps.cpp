@@ -293,7 +293,7 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
     unsigned char *New_RawPatterns;
     unsigned char done_pattern[256];
     int int_pattern;
-    int Real_SongTracks;
+    int Real_Song_Tracks;
     int pwrite;
     int swrite;
     char Constant_Filename[MAX_PATH];
@@ -354,7 +354,7 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
     }
 
     // Check which tracks are muted
-    for(tps_trk = 0; tps_trk < Songtracks; tps_trk++)
+    for(tps_trk = 0; tps_trk < Song_Tracks; tps_trk++)
     {
         if(Chan_Mute_State[tps_trk])
         {
@@ -362,13 +362,13 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
             Nbr_Muted_Tracks++;
         }
     }
-    Real_SongTracks = Songtracks - Nbr_Muted_Tracks;
+    Real_Song_Tracks = Song_Tracks - Nbr_Muted_Tracks;
 
     char_value = (char) int_pattern;
     Write_Mod_Data(&char_value, sizeof(char), 1, in);
     
     // Number of tracks is stored here in .ptp format
-    char_value = (char) Real_SongTracks;
+    char_value = (char) Real_Song_Tracks;
     Write_Mod_Data(&char_value, sizeof(char), 1, in);
 
     Write_Mod_Data(&Song_Length, sizeof(char), 1, in);
@@ -383,7 +383,7 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
         Write_Mod_Data(&char_value, sizeof(char), 1, in);
     }
 
-    char_value = (char) Real_SongTracks;
+    char_value = (char) Real_Song_Tracks;
     Write_Mod_Data(Channels_MultiNotes, sizeof(char), char_value, in);
 
     Write_Mod_Data(Channels_Effects, sizeof(char), char_value, in);
@@ -430,7 +430,7 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
         TmpPatterns_Rows = TmpPatterns + (pwrite * PATTERN_LEN);
         for(i = 0; i < PATTERN_BYTES; i++)
         {   // Datas
-            for(k = 0; k < Songtracks; k++)
+            for(k = 0; k < Song_Tracks; k++)
             {   // Tracks
                 if(!Track_Is_Muted(k))
                 {
@@ -530,7 +530,7 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                 TmpPatterns_Rows = New_RawPatterns + (New_pSequence[l] * PATTERN_LEN);
                 for(i = 0; i < PATTERN_BYTES; i++)
                 {   // Datas
-                    for(k = 0; k < Songtracks; k++)
+                    for(k = 0; k < Song_Tracks; k++)
                     {   // Tracks
                         if(!Track_Is_Muted(k))
                         {
@@ -570,7 +570,7 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                     TmpPatterns_Rows = New_RawPatterns + (New_pSequence[l] * PATTERN_LEN);
                     for(i = 0; i < PATTERN_BYTES; i++)
                     {   // Datas
-                        for(k = 0; k < Songtracks; k++)
+                        for(k = 0; k < Song_Tracks; k++)
                         {   // Tracks
                             if(!Track_Is_Muted(k))
                             {
@@ -622,7 +622,7 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
         TmpPatterns_Rows = TmpPatterns + (pwrite * PATTERN_LEN);
         for(i = 0; i < PATTERN_BYTES; i++)
         {   // Datas
-            for(k = 0; k < Songtracks; k++)
+            for(k = 0; k < Song_Tracks; k++)
             {   // Tracks
                 if(!Track_Is_Muted(k))
                 {
@@ -1637,7 +1637,7 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
 
     Write_Mod_Data(&compressor, sizeof(char), 1, in);
 
-    for(twrite = 0; twrite < Songtracks; twrite++)
+    for(twrite = 0; twrite < Song_Tracks; twrite++)
     {
         if(!Track_Is_Muted(twrite))
         {
@@ -1763,7 +1763,7 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
         Save_Constant("PTK_LIMITER_MASTER", FALSE);
     }
 
-    for(i = 0; i < Songtracks; i++)
+    for(i = 0; i < Song_Tracks; i++)
     {
         // At least 1 track is compressed
         if(Compress_Track[i])
@@ -1784,7 +1784,7 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
 
     if(Comp_Flag_Tracks)
     {
-        for(i = 0; i < Songtracks; i++)
+        for(i = 0; i < Song_Tracks; i++)
         {
             if(!Track_Is_Muted(i))
             {
@@ -1795,7 +1795,7 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                 Write_Mod_Data(&threshold, sizeof(float), 1, in);
             }
         }
-        for(i = 0; i < Songtracks; i++)
+        for(i = 0; i < Song_Tracks; i++)
         {
             if(!Track_Is_Muted(i))
             {
@@ -1806,7 +1806,7 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                 Write_Mod_Data(&ratio, sizeof(float), 1, in);
             }
         }
-        for(i = 0; i < Songtracks; i++)
+        for(i = 0; i < Song_Tracks; i++)
         {
             if(!Track_Is_Muted(i))
             {
@@ -1871,7 +1871,7 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
 
     for(int tps_pos = 0; tps_pos < Song_Length; tps_pos++)
     {
-        for(tps_trk = 0; tps_trk < Songtracks; tps_trk++)
+        for(tps_trk = 0; tps_trk < Song_Tracks; tps_trk++)
         {
             if(!Track_Is_Muted(tps_trk))
             {
@@ -1880,7 +1880,7 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
         }
     }
 
-    for(twrite = 0; twrite < Songtracks; twrite++)
+    for(twrite = 0; twrite < Song_Tracks; twrite++)
     {
         if(!Track_Is_Muted(twrite))
         {
@@ -1895,7 +1895,7 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
     }
     Save_Constant("PTK_LFO", Store_LFO);
 
-    for(twrite = 0; twrite < Songtracks; twrite++)
+    for(twrite = 0; twrite < Song_Tracks; twrite++)
     {
         if(!Track_Is_Muted(twrite))
         {
@@ -1914,7 +1914,7 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
     }
     Save_Constant("PTK_FLANGER", Store_Flanger);
 
-    for(tps_trk = 0; tps_trk < Songtracks; tps_trk++)
+    for(tps_trk = 0; tps_trk < Song_Tracks; tps_trk++)
     {
         if(!Track_Is_Muted(tps_trk))
         {
@@ -1930,7 +1930,7 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
 
     Save_Constant("PTK_TRACK_EQ", Store_Track_Eq);
 
-    for(tps_trk = 0; tps_trk < Songtracks; tps_trk++)
+    for(tps_trk = 0; tps_trk < Song_Tracks; tps_trk++)
     {
         if(!Track_Is_Muted(tps_trk))
         {

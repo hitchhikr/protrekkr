@@ -1864,7 +1864,7 @@ void Select_Pattern_Block(void)
         Mark_Block_Start(0, 0, 0);
         nlines = patternLines[pSequence[Song_Position]] - 1;
         Mark_Block_End(Get_Track_Nibble_Start(Channels_MultiNotes, Channels_Effects, Track_Under_Caret) - 1,
-                       Songtracks,
+                       Song_Tracks,
                        nlines,
                        BLOCK_MARK_TRACKS | BLOCK_MARK_ROWS);
     }
@@ -1978,7 +1978,7 @@ void Insert_Pattern_Line(int Position)
 {
     int i;
 
-    for(i = 0; i < Songtracks; i++)
+    for(i = 0; i < Song_Tracks; i++)
     {
         Insert_Track_Line(i, Position);
     }
@@ -2023,7 +2023,7 @@ void Remove_Pattern_Line(int Position)
 {
     int i;
 
-    for(i = 0; i < Songtracks; i++)
+    for(i = 0; i < Song_Tracks; i++)
     {
         Remove_Track_Line(i, Position);
     }
@@ -2308,7 +2308,7 @@ int Get_Max_Nibble_All_Tracks(void)
     int i;
     int max_columns = 0;
 
-    for(i = 0; i < Songtracks; i++)
+    for(i = 0; i < Song_Tracks; i++)
     {
         max_columns += Get_Max_Nibble_Track(Channels_MultiNotes, Channels_Effects, i);
     }
@@ -2515,11 +2515,11 @@ void Delete_Track(void)
 {
     int i;
 
-    for(i = Track_Under_Caret; i < Songtracks; i++)
+    for(i = Track_Under_Caret; i < Song_Tracks; i++)
     {
         Copy_Track(Song_Position, i + 1, i);
     }
-    Reset_Track(Song_Position, Songtracks);
+    Reset_Track(Song_Position, Song_Tracks);
     Column_Under_Caret = 0;
 }
 
@@ -2529,9 +2529,9 @@ void Insert_Track(void)
 {
     int i;
 
-    if(Songtracks < 16)
+    if(Song_Tracks < 16)
     {
-        for(i = Songtracks - 1; i > Track_Under_Caret; i--)
+        for(i = Song_Tracks - 1; i > Track_Under_Caret; i--)
         {
             Copy_Track(Song_Position, i - 1, i);
         }

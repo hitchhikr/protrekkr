@@ -322,7 +322,7 @@ extern float mas_comp_threshold_Master;
 extern float mas_comp_ratio_Master;
 extern char Compress_Master;
 extern unsigned char nPatterns;
-extern char Songtracks;
+extern char Song_Tracks;
 extern unsigned char Song_Length;
 extern unsigned char pSequence[MAX_SEQUENCES];
 extern short patternLines[MAX_ROWS];

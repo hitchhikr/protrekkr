@@ -1047,7 +1047,7 @@ void Recalculate_Sample_Size(int Instrument, int Split)
     sp_Position[Instrument][Split].absolu = 0;
 
     // Now look if this instrument is being played somewhere
-    for(c = 0; c < Songtracks; c++)
+    for(c = 0; c < Song_Tracks; c++)
     {
         for(i = 0; i < Channels_Polyphony[c]; i++)
         {
