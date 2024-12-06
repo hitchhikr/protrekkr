@@ -1044,7 +1044,6 @@ void Recalculate_Sample_Size(int Instrument, int Split)
     {
         LoopStart[Instrument][Split] = Player_LS[Instrument][Split];
     }
-    sp_Stage[Instrument][Split] = PLAYING_NOSAMPLE;
     sp_Position[Instrument][Split].absolu = 0;
 
     // Now look if this instrument is being played somewhere
