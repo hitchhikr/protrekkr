@@ -14,10 +14,14 @@
 #include <psp2/kernel/threadmgr.h>
 #include "../lib/include/ptkreplay.h"
 
+#ifdef __cplusplus
 extern "C"
+#endif
 {
     extern unsigned int _PTK_MODULE;
+#ifdef __cplusplus
 }
+#endif
 
 // If the VITA isn't fast enough to render a module,
 // this value won't save anything anyway.

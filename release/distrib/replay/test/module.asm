@@ -1,6 +1,6 @@
                 bits    32
                 section .data
 
-                global _PTK_MODULE
+                global  __PTK_MODULE
 
-_PTK_MODULE:   incbin "aa.ptp"
+__PTK_MODULE:   incbin  "303 test.ptp"

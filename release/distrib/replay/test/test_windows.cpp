@@ -17,10 +17,14 @@
 
 #include "../lib/include/ptkreplay.h"
 
+#ifdef __cplusplus
 extern "C"
+#endif
 {
-    extern unsigned int PTK_MODULE;
+    extern unsigned int _PTK_MODULE;
+#ifdef __cplusplus
 }
+#endif
 
 // Initialize with 20 milliseconds of latency
 #define LATENCY 20
@@ -31,7 +35,7 @@ int main(void)
     if(!Ptk_InitDriver(GetConsoleWindow(), LATENCY)) return(0);
 
     // Load it
-    if(!Ptk_InitModule((unsigned char *) &PTK_MODULE, 0))
+    if(!Ptk_InitModule((unsigned char *) &_PTK_MODULE, 0))
     {
         Ptk_ReleaseDriver();
         return(0);

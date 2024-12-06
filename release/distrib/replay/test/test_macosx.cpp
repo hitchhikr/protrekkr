@@ -15,10 +15,14 @@
 
 #include "../lib/include/ptkreplay.h"
 
+#ifdef __cplusplus
 extern "C"
+#endif
 {
     extern unsigned int _PTK_MODULE;
+#ifdef __cplusplus
 }
+#endif
 
 /* Initialize with 20 milliseconds of latency */
 #define LATENCY 20

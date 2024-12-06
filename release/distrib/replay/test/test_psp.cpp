@@ -24,11 +24,15 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER);
 
 SceCtrlData Ctrl_Buf;
 
+#ifdef __cplusplus
 extern "C"
+#endif
 {
     extern unsigned int _PTK_MODULE;
     int sceKernelPowerTick(int type);
+#ifdef __cplusplus
 }
+#endif
 
 // If the PSP isn't fast enough to render a module,
 // this value won't save anything anyway.
