@@ -193,7 +193,7 @@ void Load_Inst(char *FileName)
                     *RawSamples[swrite][1][slwrite] = 0;
                 }
             } // Exist Sample
-            Recalculate_Sample_Size(swrite, slwrite, TRUE, 0, 0);
+            Recalculate_Sample_Size(swrite, slwrite, TRUE, 0, 0, FALSE);
         }
         fclose(in);
         Actualize_Pattern_Ed();
