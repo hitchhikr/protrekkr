@@ -113,6 +113,7 @@ void CSynth::Reset(void)
     Data.LFO_1_OSC_2_VOLUME = 0;   
     Data.LFO_1_VCF_CUTOFF = 0;
     Data.LFO_1_VCF_RESONANCE = 0; 
+    Data.LFO_1_DISTO = 0; 
 
     Data.LFO_2_OSC_1_PW = 0;
     Data.LFO_2_OSC_2_PW = 0;
@@ -122,6 +123,7 @@ void CSynth::Reset(void)
     Data.LFO_2_OSC_2_VOLUME = 0;   
     Data.LFO_2_VCF_CUTOFF = 0;
     Data.LFO_2_VCF_RESONANCE = 0; 
+    Data.LFO_2_DISTO = 0; 
 
     Data.ENV_1_OSC_1_PW = 0;
     Data.ENV_1_OSC_2_PW = 0;
@@ -131,6 +133,7 @@ void CSynth::Reset(void)
     Data.ENV_1_OSC_2_VOLUME = 1.0f;   
     Data.ENV_1_VCF_CUTOFF = 0;
     Data.ENV_1_VCF_RESONANCE = 0; 
+    Data.ENV_1_DISTO = 0; 
 
     Data.ENV_2_OSC_1_PW = 0;
     Data.ENV_2_OSC_2_PW = 0;
@@ -140,6 +143,7 @@ void CSynth::Reset(void)
     Data.ENV_2_OSC_2_VOLUME = 0;   
     Data.ENV_2_VCF_CUTOFF = 0;
     Data.ENV_2_VCF_RESONANCE = 0; 
+    Data.ENV_2_DISTO = 0; 
 
     Data.OSC_3_SWITCH = FALSE;
 
@@ -1720,11 +1724,26 @@ float CSynth::GetSample(short *Left_Samples,
 // Left signal
 
 #if defined(PTK_SYNTH_DISTO)
-    if(Data.DISTO != 1.0f)
+    if(Data.DISTO != 0.0f)
     {
+        float Disto;
+ 
+        Disto = Data.DISTO
+#if defined(PTK_SYNTH_LFO_1)
+                    + (LFO_1_VALUE * Data.LFO_1_DISTO)
+#endif
+#if defined(PTK_SYNTH_LFO_2)
+                    + (LFO_2_VALUE * Data.LFO_2_DISTO)
+#endif
+#if defined(PTK_SYNTH_ENV_1)
+                    + (ENV_1_VALUE * Data.ENV_1_DISTO)
+#endif
+#if defined(PTK_SYNTH_ENV_2)
+                    + (ENV_2_VALUE * Data.ENV_2_DISTO)
+#endif
+                   ;
         GS_VAL /= 32767.0f;
-        GS_VAL = GS_VAL * (fabsf(GS_VAL) + Data.DISTO) / ((GS_VAL * GS_VAL) + (Data.DISTO - 1) *
-                 fabsf(GS_VAL) + 1);
+        GS_VAL = GS_VAL * (fabsf(GS_VAL) + Disto) / ((GS_VAL * GS_VAL) + (Disto - 1.0f) * fabsf(GS_VAL) + 1.0f);
         GS_VAL *= 32767.0f;
     }
 #endif
@@ -1821,19 +1840,40 @@ float CSynth::GetSample(short *Left_Samples,
     {
 
 #if defined(PTK_SYNTH_DISTO)
-        if(Data.DISTO != 1.0f)
+        if(Data.DISTO != 0.0f)
         {
+            float Disto;
+
+            Disto = Data.DISTO
+#if defined(PTK_SYNTH_LFO_1)
+                        + (LFO_1_VALUE * Data.LFO_1_DISTO)
+#endif
+#if defined(PTK_SYNTH_LFO_2)
+                        + (LFO_2_VALUE * Data.LFO_2_DISTO)
+#endif
+#if defined(PTK_SYNTH_ENV_1)
+                        + (ENV_1_VALUE * Data.ENV_1_DISTO)
+#endif
+#if defined(PTK_SYNTH_ENV_2)
+                        + (ENV_2_VALUE * Data.ENV_2_DISTO)
+#endif
+                       ;
             GS_VAL2 /= 32767.0f;
-            GS_VAL2 = GS_VAL2 * (fabsf(GS_VAL2) + Data.DISTO) / ((GS_VAL2 * GS_VAL2) + (Data.DISTO - 1) *
-                      fabsf(GS_VAL2) + 1);
+            GS_VAL2 = GS_VAL2 * (fabsf(GS_VAL2) + Disto) / ((GS_VAL2 * GS_VAL2) + (Disto - 1.0f) * fabsf(GS_VAL2) + 1.0f);
             GS_VAL2 *= 32767.0f;
         }
 #endif
 
 #if defined(PTK_SYNTH_FILTER)
-        if(Data.VCF_TYPE < 2) GS_VAL2 = FilterR();
+        if(Data.VCF_TYPE < 2)
+        {
+            GS_VAL2 = FilterR();
+        }
 #if defined(PTK_SYNTH_FILTER_MOOG_LO) || defined(PTK_SYNTH_FILTER_MOOG_BAND)
-        else if(Data.VCF_TYPE > 2) GS_VAL2 = MoogFilterR();
+        else if(Data.VCF_TYPE > 2)
+        {
+            GS_VAL2 = MoogFilterR();
+        }
 #endif
 #endif
 
@@ -1904,6 +1944,7 @@ void CSynth::ChangeParameters(Synth_Parameters TSP)
     Data.LFO_1_OSC_2_VOLUME =   ((float) TSP.lfo_1_osc_2_volume - 64) * 0.015625f;
     Data.LFO_1_VCF_CUTOFF =     ((float) TSP.lfo_1_vcf_cutoff - 64) * 0.015625f;
     Data.LFO_1_VCF_RESONANCE =  ((float) TSP.lfo_1_vcf_resonance - 64) * 0.015625f;
+    Data.LFO_1_DISTO =          ((float) TSP.lfo_1_disto - 64) * 0.015625f;
 
     Data.LFO_2_OSC_1_PW =       ((float) TSP.lfo_2_osc_1_pw - 64) * 0.015625f;
     Data.LFO_2_OSC_2_PW =       ((float) TSP.lfo_2_osc_2_pw - 64) * 0.015625f;
@@ -1913,6 +1954,7 @@ void CSynth::ChangeParameters(Synth_Parameters TSP)
     Data.LFO_2_OSC_2_VOLUME =   ((float) TSP.lfo_2_osc_2_volume - 64) * 0.015625f;
     Data.LFO_2_VCF_CUTOFF =     ((float) TSP.lfo_2_vcf_cutoff - 64) * 0.015625f;
     Data.LFO_2_VCF_RESONANCE =  ((float) TSP.lfo_2_vcf_resonance - 64) * 0.015625f;
+    Data.LFO_2_DISTO =          ((float) TSP.lfo_2_disto - 64) * 0.015625f;
 
     Data.ENV_1_OSC_1_PW =       ((float) TSP.env_1_osc_1_pw - 64) * 0.015625f;
     Data.ENV_1_OSC_2_PW =       ((float) TSP.env_1_osc_2_pw - 64) * 0.015625f;
@@ -1922,6 +1964,7 @@ void CSynth::ChangeParameters(Synth_Parameters TSP)
     Data.ENV_1_OSC_2_VOLUME =   ((float) TSP.env_1_osc_2_volume - 64) * 0.015625f;
     Data.ENV_1_VCF_CUTOFF =     ((float) TSP.env_1_vcf_cutoff - 64) * 0.015625f;
     Data.ENV_1_VCF_RESONANCE =  ((float) TSP.env_1_vcf_resonance - 64) * 0.015625f;
+    Data.ENV_1_DISTO =          ((float) TSP.env_1_disto - 64) * 0.015625f;
 
     Data.ENV_2_OSC_1_PW =       ((float) TSP.env_2_osc_1_pw - 64) * 0.015625f;
     Data.ENV_2_OSC_2_PW =       ((float) TSP.env_2_osc_2_pw - 64) * 0.015625f;
@@ -1931,6 +1974,7 @@ void CSynth::ChangeParameters(Synth_Parameters TSP)
     Data.ENV_2_OSC_2_VOLUME =   ((float) TSP.env_2_osc_2_volume - 64) * 0.015625f;
     Data.ENV_2_VCF_CUTOFF =     ((float) TSP.env_2_vcf_cutoff - 64) * 0.015625f;
     Data.ENV_2_VCF_RESONANCE =  ((float) TSP.env_2_vcf_resonance - 64) * 0.015625f;
+    Data.ENV_2_DISTO =          ((float) TSP.env_2_disto - 64) * 0.015625f;
 
     Data.OSC_3_VOLUME =         ((float) TSP.osc_3_volume - 64) * 0.015625f;
     Data.OSC_3_SWITCH =         TSP.osc_3_switch;
@@ -1938,7 +1982,7 @@ void CSynth::ChangeParameters(Synth_Parameters TSP)
     Data.PTC_GLIDE =            ((float) TSP.ptc_glide * (float) TSP.ptc_glide) * 0.0000015625f;
     Data.PTC_GLIDE_64 =         (int64) ((double) Data.PTC_GLIDE * 4294967296.0);
 
-    Data.DISTO =                (((float) TSP.disto)) + 1.0f;
+    Data.DISTO =                ((float) TSP.disto - 64) * 0.015625f;
 
     Data.LFO_1_ATTACK =         ((float) (TSP.lfo_1_attack + 1)) / 512.0f;
     Data.LFO_1_DECAY =          ((float) (TSP.lfo_1_decay + 1)) / 512.0f;

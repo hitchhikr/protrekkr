@@ -51,7 +51,8 @@ void Read_Synth_Params(int (*Read_Function)(void *, int ,int, FILE *),
                        int Env_Modulation,
                        int New_Env,
                        int Ntk_Beta,
-                       int Combine);
+                       int Combine,
+                       int Var_Disto);
 void Write_Synth_Params(int (*Write_Function)(void *, int ,int, FILE *),
                         int (*Write_Function_Swap)(void *, int ,int, FILE *),
                         FILE *in,

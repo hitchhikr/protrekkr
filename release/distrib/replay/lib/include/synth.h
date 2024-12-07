@@ -123,6 +123,7 @@ struct Synth_Parameters
     unsigned char lfo_1_osc_2_volume;
     unsigned char lfo_1_vcf_cutoff;
     unsigned char lfo_1_vcf_resonance;
+    unsigned char lfo_1_disto;
 
     unsigned char lfo_2_osc_1_pw;
     unsigned char lfo_2_osc_2_pw;
@@ -132,6 +133,7 @@ struct Synth_Parameters
     unsigned char lfo_2_osc_2_volume;
     unsigned char lfo_2_vcf_cutoff;
     unsigned char lfo_2_vcf_resonance;
+    unsigned char lfo_2_disto;
 
     unsigned char env_1_osc_1_pw;
     unsigned char env_1_osc_2_pw;
@@ -141,6 +143,7 @@ struct Synth_Parameters
     unsigned char env_1_osc_2_volume;  
     unsigned char env_1_vcf_cutoff;
     unsigned char env_1_vcf_resonance;
+    unsigned char env_1_disto;
 
     unsigned char env_2_osc_1_pw;
     unsigned char env_2_osc_2_pw;
@@ -150,6 +153,7 @@ struct Synth_Parameters
     unsigned char env_2_osc_2_volume;  
     unsigned char env_2_vcf_cutoff;
     unsigned char env_2_vcf_resonance;
+    unsigned char env_2_disto;
 
     unsigned char osc_3_volume;
     unsigned char osc_3_switch;
@@ -215,23 +219,30 @@ typedef struct
 
         float OSC_1_PW;
         float OSC_2_PW; 
+        
         float OSC_2_DETUNE;
         float OSC_2_FINETUNE; 
+        
         float VCF_CUTOFF;
         float VCF_RESONANCE;
+
         char VCF_TYPE;
+        
         float ENV_1_ATTACK;
         float ENV_1_DECAY;
         float ENV_1_SUSTAIN;
         float ENV_1_RELEASE;
+        
         float ENV_2_ATTACK;
         float ENV_2_DECAY;
         float ENV_2_SUSTAIN;
         float ENV_2_RELEASE;
+        
         float LFO_1_PERIOD;
         int LFO_1_SUBGRMAX;
         float LFO_2_PERIOD;
         int LFO_2_SUBGRMAX;
+
         float LFO_1_OSC_1_PW;
         float LFO_1_OSC_2_PW;
         float LFO_1_OSC_1_PITCH;
@@ -240,6 +251,8 @@ typedef struct
         float LFO_1_OSC_2_VOLUME; 
         float LFO_1_VCF_CUTOFF;
         float LFO_1_VCF_RESONANCE;  
+        float LFO_1_DISTO;
+        
         float LFO_2_OSC_1_PW;
         float LFO_2_OSC_2_PW;
         float LFO_2_OSC_1_PITCH;
@@ -248,14 +261,18 @@ typedef struct
         float LFO_2_OSC_2_VOLUME;
         float LFO_2_VCF_CUTOFF;
         float LFO_2_VCF_RESONANCE;  
+        float LFO_2_DISTO;
+        
         float ENV_1_OSC_1_PW;
         float ENV_1_OSC_2_PW;
         float ENV_1_OSC_1_PITCH;
         float ENV_1_OSC_2_PITCH;
         float ENV_1_OSC_1_VOLUME;
-        float ENV_1_OSC_2_VOLUME; 
+        float ENV_1_OSC_2_VOLUME;
         float ENV_1_VCF_CUTOFF;
-        float ENV_1_VCF_RESONANCE;  
+        float ENV_1_VCF_RESONANCE;
+        float ENV_1_DISTO;
+        
         float ENV_2_OSC_1_PW;
         float ENV_2_OSC_2_PW;
         float ENV_2_OSC_1_PITCH;
@@ -264,6 +281,8 @@ typedef struct
         float ENV_2_OSC_2_VOLUME; 
         float ENV_2_VCF_CUTOFF;
         float ENV_2_VCF_RESONANCE;  
+        float ENV_2_DISTO;
+        
         float OSC_3_VOLUME;
         unsigned char OSC_3_SWITCH;
         float PTC_GLIDE;

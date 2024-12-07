@@ -46,13 +46,17 @@ void Read_Synth_Params(int (*Read_Function)(void *, int ,int, FILE *),
                        int Env_Modulation,
                        int New_Env,
                        int Ntk_Beta,
-                       int Combine)
+                       int Combine,
+                       int Var_Disto)
 {
     if(!new_version)
     {
         if(read_disto && read_lfo_adsr)
         {
             Read_Function(&PARASynth[idx], sizeof(Synth_Parameters), 1, in);
+            PARASynth[idx].disto /= 2;
+            PARASynth[idx].disto += 64;
+            PARASynth[idx].glb_volume = 0x7f;
         }
         else
         {
@@ -122,7 +126,8 @@ void Read_Synth_Params(int (*Read_Function)(void *, int ,int, FILE *),
                     Read_Function(&PARASynth[idx].lfo_2_osc_1_volume, sizeof(char), 1, in);
                     Read_Function(&PARASynth[idx].lfo_2_osc_2_volume, sizeof(char), 1, in);
                     Read_Function(&PARASynth[idx].lfo_2_vcf_cutoff, sizeof(char), 1, in);
-                    Read_Function(&PARASynth[idx].lfo_2_vcf_resonance, sizeof(char), 1, in);//81
+                    Read_Function(&PARASynth[idx].lfo_2_vcf_resonance, sizeof(char), 1, in); //81
+
                     Read_Function(&PARASynth[idx].env_1_osc_1_pw, sizeof(char), 1, in);
                     Read_Function(&PARASynth[idx].env_1_osc_2_pw, sizeof(char), 1, in);
                     PARASynth[idx].env_1_osc_1_pitch = 0x40;
@@ -218,7 +223,10 @@ void Read_Synth_Params(int (*Read_Function)(void *, int ,int, FILE *),
         Read_Function(&PARASynth[idx].lfo_1_osc_2_volume, sizeof(char), 1, in);
         Read_Function(&PARASynth[idx].lfo_1_vcf_cutoff, sizeof(char), 1, in);
         Read_Function(&PARASynth[idx].lfo_1_vcf_resonance, sizeof(char), 1, in);
-
+        if(Var_Disto)
+        {
+            Read_Function(&PARASynth[idx].lfo_1_disto, sizeof(char), 1, in);
+        }
         Read_Function(&PARASynth[idx].lfo_2_osc_1_pw, sizeof(char), 1, in);
         Read_Function(&PARASynth[idx].lfo_2_osc_2_pw, sizeof(char), 1, in);
         Read_Function(&PARASynth[idx].lfo_2_osc_1_pitch, sizeof(char), 1, in);
@@ -227,7 +235,10 @@ void Read_Synth_Params(int (*Read_Function)(void *, int ,int, FILE *),
         Read_Function(&PARASynth[idx].lfo_2_osc_2_volume, sizeof(char), 1, in);
         Read_Function(&PARASynth[idx].lfo_2_vcf_cutoff, sizeof(char), 1, in);
         Read_Function(&PARASynth[idx].lfo_2_vcf_resonance, sizeof(char), 1, in);
-
+        if(Var_Disto)
+        {
+            Read_Function(&PARASynth[idx].lfo_2_disto, sizeof(char), 1, in);
+        }
         Read_Function(&PARASynth[idx].env_1_osc_1_pw, sizeof(char), 1, in);
         Read_Function(&PARASynth[idx].env_1_osc_2_pw, sizeof(char), 1, in);
         Read_Function(&PARASynth[idx].env_1_osc_1_pitch, sizeof(char), 1, in);
@@ -236,7 +247,10 @@ void Read_Synth_Params(int (*Read_Function)(void *, int ,int, FILE *),
         Read_Function(&PARASynth[idx].env_1_osc_2_volume, sizeof(char), 1, in);
         Read_Function(&PARASynth[idx].env_1_vcf_cutoff, sizeof(char), 1, in);
         Read_Function(&PARASynth[idx].env_1_vcf_resonance, sizeof(char), 1, in);
-
+        if(Var_Disto)
+        {
+            Read_Function(&PARASynth[idx].env_1_disto, sizeof(char), 1, in);
+        }
         Read_Function(&PARASynth[idx].env_2_osc_1_pw, sizeof(char), 1, in);
         Read_Function(&PARASynth[idx].env_2_osc_2_pw, sizeof(char), 1, in);
         Read_Function(&PARASynth[idx].env_2_osc_1_pitch, sizeof(char), 1, in);
@@ -245,7 +259,10 @@ void Read_Synth_Params(int (*Read_Function)(void *, int ,int, FILE *),
         Read_Function(&PARASynth[idx].env_2_osc_2_volume, sizeof(char), 1, in);
         Read_Function(&PARASynth[idx].env_2_vcf_cutoff, sizeof(char), 1, in);
         Read_Function(&PARASynth[idx].env_2_vcf_resonance, sizeof(char), 1, in);
-
+        if(Var_Disto)
+        {
+            Read_Function(&PARASynth[idx].env_2_disto, sizeof(char), 1, in);
+        }
         Read_Function(&PARASynth[idx].osc_3_volume, sizeof(char), 1, in);
         Read_Function(&PARASynth[idx].osc_3_switch, sizeof(char), 1, in);
 
@@ -255,6 +272,12 @@ void Read_Synth_Params(int (*Read_Function)(void *, int ,int, FILE *),
         if(read_disto)
         {
             Read_Function(&PARASynth[idx].disto, sizeof(char), 1, in);
+        }
+        if(!Var_Disto)
+        {
+            // New disto can now be positive or negative
+            PARASynth[idx].disto /= 2;
+            PARASynth[idx].disto += 64;
         }
 
         if(read_lfo_adsr)
@@ -336,6 +359,7 @@ void Write_Synth_Params(int (*Write_Function)(void *, int ,int, FILE *),
     Write_Function(&PARASynth[idx].lfo_1_osc_2_volume, sizeof(char), 1, in);
     Write_Function(&PARASynth[idx].lfo_1_vcf_cutoff, sizeof(char), 1, in);
     Write_Function(&PARASynth[idx].lfo_1_vcf_resonance, sizeof(char), 1, in);
+    Write_Function(&PARASynth[idx].lfo_1_disto, sizeof(char), 1, in);
 
     Write_Function(&PARASynth[idx].lfo_2_osc_1_pw, sizeof(char), 1, in);
     Write_Function(&PARASynth[idx].lfo_2_osc_2_pw, sizeof(char), 1, in);
@@ -345,6 +369,7 @@ void Write_Synth_Params(int (*Write_Function)(void *, int ,int, FILE *),
     Write_Function(&PARASynth[idx].lfo_2_osc_2_volume, sizeof(char), 1, in);
     Write_Function(&PARASynth[idx].lfo_2_vcf_cutoff, sizeof(char), 1, in);
     Write_Function(&PARASynth[idx].lfo_2_vcf_resonance, sizeof(char), 1, in);
+    Write_Function(&PARASynth[idx].lfo_2_disto, sizeof(char), 1, in);
 
     Write_Function(&PARASynth[idx].env_1_osc_1_pw, sizeof(char), 1, in);
     Write_Function(&PARASynth[idx].env_1_osc_2_pw, sizeof(char), 1, in);
@@ -354,6 +379,7 @@ void Write_Synth_Params(int (*Write_Function)(void *, int ,int, FILE *),
     Write_Function(&PARASynth[idx].env_1_osc_2_volume, sizeof(char), 1, in);
     Write_Function(&PARASynth[idx].env_1_vcf_cutoff, sizeof(char), 1, in);
     Write_Function(&PARASynth[idx].env_1_vcf_resonance, sizeof(char), 1, in);
+    Write_Function(&PARASynth[idx].env_1_disto, sizeof(char), 1, in);
 
     Write_Function(&PARASynth[idx].env_2_osc_1_pw, sizeof(char), 1, in);
     Write_Function(&PARASynth[idx].env_2_osc_2_pw, sizeof(char), 1, in);
@@ -363,6 +389,7 @@ void Write_Synth_Params(int (*Write_Function)(void *, int ,int, FILE *),
     Write_Function(&PARASynth[idx].env_2_osc_2_volume, sizeof(char), 1, in);
     Write_Function(&PARASynth[idx].env_2_vcf_cutoff, sizeof(char), 1, in);
     Write_Function(&PARASynth[idx].env_2_vcf_resonance, sizeof(char), 1, in);
+    Write_Function(&PARASynth[idx].env_2_disto, sizeof(char), 1, in);
 
     Write_Function(&PARASynth[idx].osc_3_volume, sizeof(char), 1, in);
     Write_Function(&PARASynth[idx].osc_3_switch, sizeof(char), 1, in);
@@ -395,6 +422,7 @@ void Load_Synth(char *FileName)
     int Env_Modulation = FALSE;
     int New_Env = FALSE;
     int Combine = FALSE;
+    int Disto = FALSE;
 
     in = fopen(FileName, "rb");
 
@@ -406,6 +434,8 @@ void Load_Synth(char *FileName)
 
         switch(extension[7])
         {
+            case '5':
+                Disto = TRUE;
             case '4':
                 Combine = TRUE;
             case '3':
@@ -421,7 +451,8 @@ void Load_Synth(char *FileName)
         Status_Box("Loading Synthesizer -> Structure...");
         Reset_Synth_Parameters(&PARASynth[Current_Instrument]);
 
-        PARASynth[Current_Instrument].disto = 0;
+        PARASynth[Current_Instrument].disto = 64;
+        PARASynth[Current_Instrument].glb_volume = 64;
 
         PARASynth[Current_Instrument].lfo_1_attack = 0;
         PARASynth[Current_Instrument].lfo_1_decay = 0;
@@ -435,7 +466,7 @@ void Load_Synth(char *FileName)
 
         Read_Synth_Params(Read_Data, Read_Data_Swap, in, Current_Instrument,
                           TRUE, TRUE, new_version,
-                          Env_Modulation, New_Env, FALSE, Combine);
+                          Env_Modulation, New_Env, FALSE, Combine, Disto);
 
         // Fix some old Ntk bugs
         if(PARASynth[Current_Instrument].lfo_1_period > 128) PARASynth[Current_Instrument].lfo_1_period = 128;
@@ -465,7 +496,7 @@ void Save_Synth(void)
     char Temph[MAX_PATH];
     char extension[10];
 
-    sprintf(extension, "TWNNSYN4");
+    sprintf(extension, "TWNNSYN5");
     sprintf (Temph, "Saving '%s.pts' Synthesizer Program In Presets Directory...", PARASynth[Current_Instrument].Preset_Name);
     Status_Box(Temph);
 

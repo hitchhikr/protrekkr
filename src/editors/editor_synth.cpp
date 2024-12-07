@@ -145,6 +145,7 @@ int Tbl_Synth_LFO_1[] =
     22, /* lfo_1->osc_2 volume */
     23, /* lfo_1->vcf cutoff */
     24, /* lfo_1->vcf resonance */
+    24, /* lfo_1->disto */
     25, /* lfo_1_attack */
     26, /* lfo_1_decay */
     27, /* lfo_1_sustain */
@@ -165,6 +166,7 @@ int Tbl_Synth_LFO_2[] =
     30, /* lfo_2->osc_2 volume */
     31, /* lfo_2->vcf cutoff */
     32, /* lfo_2->vcf resonance */
+    32, /* lfo_2->disto */
     25, /* lfo_2_attack */
     26, /* lfo_2_decay */
     27, /* lfo_2_sustain */
@@ -184,6 +186,7 @@ int Tbl_Synth_ENV_1[] =
     38, /* Env1->osc_2 volume */
     39, /* Env1->vcf cutoff */
     40, /* Env1->vcf resonance */
+    40, /* Env1->disto */
 };
 int Pos_Tbl_Synth_ENV_1;
 int Size_Tbl_Synth_ENV_1 = (sizeof(Tbl_Synth_ENV_1) / sizeof(int)) - 1;
@@ -199,6 +202,7 @@ int Tbl_Synth_ENV_2[] =
     46, /* Env2->osc_2 volume */
     47, /* Env2->vcf cutoff */
     48, /* Env2->vcf resonance */
+    48, /* Env2->disto */
 };
 int Pos_Tbl_Synth_ENV_2;
 int Size_Tbl_Synth_ENV_2 = (sizeof(Tbl_Synth_ENV_2) / sizeof(int)) - 1;
@@ -1307,7 +1311,6 @@ void Mouse_Left_Synth_Ed(void)
                 gui_action = GUI_CMD_UPDATE_SYNTH_ED;
             }
 
-
             // Oscillators combiner
             if(Check_Mouse(4, (Cur_Height - 95) - 1 + (18 * 0), 17, 16))
             {
@@ -1573,25 +1576,31 @@ void Actualize_Synth_Params_Sliders(void)
             csynth_slv_LFO_1 = Cur_SynthParam->lfo_1_vcf_resonance;
             break;
 
-        case 9: /* LFO_1_Attack */
+        case 9: /* lfo_1->distortion */
+            Real_Slider(311, (Cur_Height - 77) - 1, Cur_SynthParam->lfo_1_disto, Allow_All);
+            outfloat_small(311 + 167, (Cur_Height - 77) - 1, ((float) Cur_SynthParam->lfo_1_disto - 64.0f) * 1.5625f, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
+            csynth_slv_LFO_1 = Cur_SynthParam->lfo_1_disto;
+            break;
+
+        case 10: /* LFO_1_Attack */
             Real_Slider(311, (Cur_Height - 77) - 1, Cur_SynthParam->lfo_1_attack / 512, Allow_All);
             Print_Long_Small(311 + 167, (Cur_Height - 77) - 1, (Cur_SynthParam->lfo_1_attack * 100) / 512 / 128, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_LFO_1 = Cur_SynthParam->lfo_1_attack / 512;
             break;
 
-        case 10: /* LFO_1_Decay */
+        case 11: /* LFO_1_Decay */
             Real_Slider(311, (Cur_Height - 77) - 1, Cur_SynthParam->lfo_1_decay / 512, Allow_All);
             Print_Long_Small(311 + 167, (Cur_Height - 77) - 1, (Cur_SynthParam->lfo_1_decay * 100) / 512 / 128, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_LFO_1 = Cur_SynthParam->lfo_1_decay / 512;
             break;
 
-        case 11: /* LFO_1_Sustain */
+        case 12: /* LFO_1_Sustain */
             Real_Slider(311, (Cur_Height - 77) - 1, Cur_SynthParam->lfo_1_sustain, Allow_All);
             Print_Long_Small(311 + 167, (Cur_Height - 77) - 1, (Cur_SynthParam->lfo_1_sustain * 100) / 128, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_LFO_1 = Cur_SynthParam->lfo_1_sustain;
             break;
 
-        case 12: /* LFO_1_Release */
+        case 13: /* LFO_1_Release */
             Real_Slider(311, (Cur_Height - 77) - 1, Cur_SynthParam->lfo_1_release / 512, Allow_All);
             Print_Long_Small(311 + 167, (Cur_Height - 77) - 1, (Cur_SynthParam->lfo_1_release * 100) / 512 / 128, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_LFO_1 = Cur_SynthParam->lfo_1_release / 512;
@@ -1670,25 +1679,31 @@ void Actualize_Synth_Params_Sliders(void)
             csynth_slv_LFO_2 = Cur_SynthParam->lfo_2_vcf_resonance;
             break;
 
-        case 9: /* LFO_2_Attack */
+        case 9: /* lfo_2->distortion */
+            Real_Slider(311, (Cur_Height - 41) - 1, Cur_SynthParam->lfo_2_disto, Allow_All);
+            outfloat_small(311 + 167, (Cur_Height - 41) - 1, ((float) Cur_SynthParam->lfo_2_disto - 64.0f) * 1.5625f, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
+            csynth_slv_LFO_2 = Cur_SynthParam->lfo_2_disto;
+            break;
+
+        case 10: /* LFO_2_Attack */
             Real_Slider(311, (Cur_Height - 41) - 1, Cur_SynthParam->lfo_2_attack / 512, Allow_All);
             Print_Long_Small(311 + 167, (Cur_Height - 41) - 1, (Cur_SynthParam->lfo_2_attack * 100) / 512 / 128, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_LFO_2 = Cur_SynthParam->lfo_2_attack / 512;
             break;
 
-        case 10: /* LFO_2_Decay */
+        case 11: /* LFO_2_Decay */
             Real_Slider(311, (Cur_Height - 41) - 1, Cur_SynthParam->lfo_2_decay / 512, Allow_All);
             Print_Long_Small(311 + 167, (Cur_Height - 41) - 1, (Cur_SynthParam->lfo_2_decay * 100) / 512 / 128, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_LFO_2 = Cur_SynthParam->lfo_2_decay / 512;
             break;
 
-        case 11: /* LFO_2_Sustain */
+        case 12: /* LFO_2_Sustain */
             Real_Slider(311, (Cur_Height - 41) - 1, Cur_SynthParam->lfo_2_sustain, Allow_All);
             Print_Long_Small(311 + 167, (Cur_Height - 41) - 1, (Cur_SynthParam->lfo_2_sustain * 100) / 128, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_LFO_2 = Cur_SynthParam->lfo_2_sustain;
             break;
 
-        case 12: /* LFO_2_Release */
+        case 13: /* LFO_2_Release */
             Real_Slider(311, (Cur_Height - 41) - 1, Cur_SynthParam->lfo_2_release / 512, Allow_All);
             Print_Long_Small(311 + 167, (Cur_Height - 41) - 1, (Cur_SynthParam->lfo_2_release * 100) / 512 / 128, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_LFO_2 = Cur_SynthParam->lfo_2_release / 512;
@@ -1774,6 +1789,12 @@ void Actualize_Synth_Params_Sliders(void)
             outfloat_small(563 + 167, (Cur_Height - 113) - 1, ((float) Cur_SynthParam->env_1_vcf_resonance - 64.0f) * 1.5625f, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_ENV_1 = Cur_SynthParam->env_1_vcf_resonance;
             break;
+
+        case 8: /* Env1->distortion */
+            Real_Slider(563, (Cur_Height - 113) - 1, Cur_SynthParam->env_1_disto, Allow_All);
+            outfloat_small(563 + 167, (Cur_Height - 113) - 1, ((float) Cur_SynthParam->env_1_disto - 64.0f) * 1.5625f, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
+            csynth_slv_ENV_1 = Cur_SynthParam->env_1_disto;
+            break;
     }
     // -----------------------------
 
@@ -1855,6 +1876,12 @@ void Actualize_Synth_Params_Sliders(void)
             outfloat_small(563 + 167, (Cur_Height - 77) - 1, ((float) Cur_SynthParam->env_2_vcf_resonance - 64.0f) * 1.5625f, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_ENV_2 = Cur_SynthParam->env_2_vcf_resonance;
             break;
+
+        case 8: /* Env2->distortion */
+            Real_Slider(563, (Cur_Height - 77) - 1, Cur_SynthParam->env_2_disto, Allow_All);
+            outfloat_small(563 + 167, (Cur_Height - 77) - 1, ((float) Cur_SynthParam->env_2_disto - 64.0f) * 1.5625f, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
+            csynth_slv_ENV_2 = Cur_SynthParam->env_2_disto;
+            break;
     }
     // -----------------------------
 
@@ -1890,7 +1917,7 @@ void Actualize_Synth_Params_Sliders(void)
 
         case 2: /* Misc. Distortion */
             Real_Slider(563, (Cur_Height - 41) - 1, Cur_SynthParam->disto, Allow_All);
-            outfloat_small(563 + 167, (Cur_Height - 41) - 1, (((float) Cur_SynthParam->disto)) * 0.78125f, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
+            outfloat_small(563 + 167, (Cur_Height - 41) - 1, (((float) Cur_SynthParam->disto) - 64.0f) * 1.5625f, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_Misc = Cur_SynthParam->disto;
             break;
     }
@@ -2047,22 +2074,27 @@ void Center_SynthParam_LFO_1(void)
             csynth_slv_LFO_1 = Cur_SynthParam->lfo_1_vcf_resonance;
             break;
 
-        case 9: /* LFO_1_Attack */
+        case 9: /* lfo_1->distortion */
+            Cur_SynthParam->lfo_1_disto = 64;
+            csynth_slv_LFO_1 = Cur_SynthParam->lfo_1_disto;
+            break;
+
+        case 10: /* LFO_1_Attack */
             Cur_SynthParam->lfo_1_attack = 64 * 512;
             csynth_slv_LFO_1 = Cur_SynthParam->lfo_1_attack / 512;
             break;
 
-        case 10: /* LFO_1_Decay */
+        case 11: /* LFO_1_Decay */
             Cur_SynthParam->lfo_1_decay = 64 * 512;
             csynth_slv_LFO_1 = Cur_SynthParam->lfo_1_decay / 512;
             break;
 
-        case 11: /* LFO_1_Sustain */
+        case 12: /* LFO_1_Sustain */
             Cur_SynthParam->lfo_1_sustain = 64;
             csynth_slv_LFO_1 = Cur_SynthParam->lfo_1_sustain;
             break;
 
-        case 12: /* LFO_1_Release */
+        case 13: /* LFO_1_Release */
             Cur_SynthParam->lfo_1_release = 64 * 512;
             csynth_slv_LFO_1 = Cur_SynthParam->lfo_1_release / 512;
             break;
@@ -2120,22 +2152,27 @@ void Center_SynthParam_LFO_2(void)
             csynth_slv_LFO_2 = Cur_SynthParam->lfo_2_vcf_resonance;
             break;
 
-        case 9: /* LFO_2_Attack */
+        case 9: /* lfo_2->distortion */
+            Cur_SynthParam->lfo_2_disto = 64;
+            csynth_slv_LFO_2 = Cur_SynthParam->lfo_2_disto;
+            break;
+
+        case 10: /* LFO_2_Attack */
             Cur_SynthParam->lfo_2_attack = 64 * 512;
             csynth_slv_LFO_2 = Cur_SynthParam->lfo_2_attack / 512;
             break;
 
-        case 10: /* LFO_2_Decay */
+        case 11: /* LFO_2_Decay */
             Cur_SynthParam->lfo_2_decay = 64 * 512;
             csynth_slv_LFO_2 = Cur_SynthParam->lfo_2_decay / 512;
             break;
 
-        case 11: /* LFO_2_Sustain */
+        case 12: /* LFO_2_Sustain */
             Cur_SynthParam->lfo_2_sustain = 64;
             csynth_slv_LFO_2 = Cur_SynthParam->lfo_2_sustain;
             break;
 
-        case 12: /* LFO_2_Release */
+        case 13: /* LFO_2_Release */
             Cur_SynthParam->lfo_2_release = 64 * 512;
             csynth_slv_LFO_2 = Cur_SynthParam->lfo_2_release / 512;
             break;
@@ -2187,6 +2224,11 @@ void Center_SynthParam_ENV_1(void)
             Cur_SynthParam->env_1_vcf_resonance = 64;
             csynth_slv_ENV_1 = Cur_SynthParam->env_1_vcf_resonance;
             break;
+
+        case 8: /* Env1->distortion */
+            Cur_SynthParam->env_1_disto = 64;
+            csynth_slv_ENV_1 = Cur_SynthParam->env_1_disto;
+            break;
     }
 }
 
@@ -2235,6 +2277,12 @@ void Center_SynthParam_ENV_2(void)
             Cur_SynthParam->env_2_vcf_resonance = 64;
             csynth_slv_ENV_2 = Cur_SynthParam->env_2_vcf_resonance;
             break;
+
+        case 8: /* Env2->distortion */
+            Cur_SynthParam->env_2_disto = 64;
+            csynth_slv_ENV_2 = Cur_SynthParam->env_2_disto;
+            break;
+
     }
 }
 
@@ -2379,19 +2427,23 @@ void CParcha_LFO_1(int cpar)
             PARASynth[Current_Instrument].lfo_1_vcf_resonance = cpar;
             break;
 
-        case 9: /* LFO_1_Attack */
+        case 9: /* lfo_1->distortion */
+            PARASynth[Current_Instrument].lfo_1_disto = cpar;
+            break;
+
+        case 10: /* LFO_1_Attack */
             PARASynth[Current_Instrument].lfo_1_attack = cpar * 512;
             break;
 
-        case 10: /* LFO_1_Decay */
+        case 11: /* LFO_1_Decay */
             PARASynth[Current_Instrument].lfo_1_decay = cpar * 512;
             break;
 
-        case 11: /* LFO_1_Sustain */
+        case 12: /* LFO_1_Sustain */
             PARASynth[Current_Instrument].lfo_1_sustain = cpar;
             break;
 
-        case 12: /* LFO_1_Release */
+        case 13: /* LFO_1_Release */
             PARASynth[Current_Instrument].lfo_1_release = cpar * 512;
             break;
     }
@@ -2437,19 +2489,23 @@ void CParcha_LFO_2(int cpar)
             PARASynth[Current_Instrument].lfo_2_vcf_resonance = cpar;
             break;
 
-        case 9: /* LFO_1_Attack */
+        case 9: /* lfo_2->distortion */
+            PARASynth[Current_Instrument].lfo_2_disto = cpar;
+            break;
+
+        case 10: /* LFO_1_Attack */
             PARASynth[Current_Instrument].lfo_2_attack = cpar * 512;
             break;
 
-        case 10: /* LFO_1_Decay */
+        case 11: /* LFO_1_Decay */
             PARASynth[Current_Instrument].lfo_2_decay = cpar * 512;
             break;
 
-        case 11: /* LFO_1_Sustain */
+        case 12: /* LFO_1_Sustain */
             PARASynth[Current_Instrument].lfo_2_sustain = cpar;
             break;
 
-        case 12: /* LFO_1_Release */
+        case 13: /* LFO_1_Release */
             PARASynth[Current_Instrument].lfo_2_release = cpar * 512;
             break;
     }
@@ -2490,6 +2546,10 @@ void CParcha_ENV_1(int cpar)
         case 7: /* Env1->vcf resonance */
             PARASynth[Current_Instrument].env_1_vcf_resonance = cpar;
             break;
+
+        case 8: /* Env1->distortion */
+            PARASynth[Current_Instrument].env_1_disto = cpar;
+            break;
     }
 }
 
@@ -2527,6 +2587,10 @@ void CParcha_ENV_2(int cpar)
 
         case 7: /* Env2->vcf resonance */
             PARASynth[Current_Instrument].env_2_vcf_resonance = cpar;
+            break;
+
+        case 8: /* Env2->distortion */
+            PARASynth[Current_Instrument].env_2_disto = cpar;
             break;
     }
 }
@@ -2604,6 +2668,7 @@ void Rand_LFO_1()
     PARASynth[Current_Instrument].lfo_1_osc_2_volume = rand() & 0x7f;
     PARASynth[Current_Instrument].lfo_1_vcf_cutoff = rand() & 0x7f;
     PARASynth[Current_Instrument].lfo_1_vcf_resonance = rand() & 0x7f;
+    PARASynth[Current_Instrument].lfo_1_disto = rand() & 0x7f;
     PARASynth[Current_Instrument].lfo_1_osc_1_pitch = rand() & 0x7f;
     PARASynth[Current_Instrument].lfo_1_osc_2_pitch = rand() & 0x7f;
 
@@ -2629,6 +2694,7 @@ void Rand_LFO_2()
     PARASynth[Current_Instrument].lfo_2_osc_2_volume = rand() & 0x7f;
     PARASynth[Current_Instrument].lfo_2_vcf_cutoff = rand() & 0x7f;
     PARASynth[Current_Instrument].lfo_2_vcf_resonance = rand() & 0x7f;
+    PARASynth[Current_Instrument].lfo_2_disto = rand() & 0x7f;
     PARASynth[Current_Instrument].lfo_2_osc_1_pitch = rand() & 0x7f;
     PARASynth[Current_Instrument].lfo_2_osc_2_pitch = rand() & 0x7f;
 
@@ -2653,6 +2719,7 @@ void Rand_ENV_1()
     PARASynth[Current_Instrument].env_1_osc_2_volume = rand() & 0x7f;
     PARASynth[Current_Instrument].env_1_vcf_cutoff = rand() & 0x7f;
     PARASynth[Current_Instrument].env_1_vcf_resonance = rand() & 0x7f;
+    PARASynth[Current_Instrument].env_1_disto = rand() & 0x7f;
     PARASynth[Current_Instrument].env_1_osc_1_pitch = rand() & 0x7f;
     PARASynth[Current_Instrument].env_1_osc_2_pitch = rand() & 0x7f;
 
@@ -2673,6 +2740,7 @@ void Rand_ENV_2()
     PARASynth[Current_Instrument].env_2_osc_2_volume = rand() & 0x7f;
     PARASynth[Current_Instrument].env_2_vcf_cutoff = rand() & 0x7f;
     PARASynth[Current_Instrument].env_2_vcf_resonance = rand() & 0x7f;
+    PARASynth[Current_Instrument].env_2_disto = rand() & 0x7f;
     PARASynth[Current_Instrument].env_2_osc_1_pitch = rand() & 0x7f;
     PARASynth[Current_Instrument].env_2_osc_2_pitch = rand() & 0x7f;
 
@@ -2719,10 +2787,11 @@ void Init_Synth_Params_Names(void)
     sprintf(Names_Tbl_Synth_LFO_1[6], "-> Osc2 Volume");
     sprintf(Names_Tbl_Synth_LFO_1[7], "-> Vcf CutOff");
     sprintf(Names_Tbl_Synth_LFO_1[8], "-> Vcf Resonance");
-    sprintf(Names_Tbl_Synth_LFO_1[9], "Attack");
-    sprintf(Names_Tbl_Synth_LFO_1[10], "Decay");
-    sprintf(Names_Tbl_Synth_LFO_1[11], "Sustain Level");
-    sprintf(Names_Tbl_Synth_LFO_1[12], "Release");
+    sprintf(Names_Tbl_Synth_LFO_1[9], "-> Distortion");
+    sprintf(Names_Tbl_Synth_LFO_1[10], "Attack");
+    sprintf(Names_Tbl_Synth_LFO_1[11], "Decay");
+    sprintf(Names_Tbl_Synth_LFO_1[12], "Sustain Level");
+    sprintf(Names_Tbl_Synth_LFO_1[13], "Release");
 
     sprintf(Names_Tbl_Synth_LFO_2[0], "Period");
     sprintf(Names_Tbl_Synth_LFO_2[1], "-> Osc1 Pulse Phase");
@@ -2733,10 +2802,11 @@ void Init_Synth_Params_Names(void)
     sprintf(Names_Tbl_Synth_LFO_2[6], "-> Osc2 Volume");
     sprintf(Names_Tbl_Synth_LFO_2[7], "-> Vcf CutOff");
     sprintf(Names_Tbl_Synth_LFO_2[8], "-> Vcf Resonance");
-    sprintf(Names_Tbl_Synth_LFO_2[9], "Attack");
-    sprintf(Names_Tbl_Synth_LFO_2[10], "Decay");
-    sprintf(Names_Tbl_Synth_LFO_2[11], "Sustain Level");
-    sprintf(Names_Tbl_Synth_LFO_2[12], "Release");
+    sprintf(Names_Tbl_Synth_LFO_2[9], "-> Distortion");
+    sprintf(Names_Tbl_Synth_LFO_2[10], "Attack");
+    sprintf(Names_Tbl_Synth_LFO_2[11], "Decay");
+    sprintf(Names_Tbl_Synth_LFO_2[12], "Sustain Level");
+    sprintf(Names_Tbl_Synth_LFO_2[13], "Release");
 
     sprintf(Names_Tbl_Synth_ENV_1[0], "-> Osc1 Pulse Phase");
     sprintf(Names_Tbl_Synth_ENV_1[1], "-> Osc2 Pulse Phase");
@@ -2746,6 +2816,7 @@ void Init_Synth_Params_Names(void)
     sprintf(Names_Tbl_Synth_ENV_1[5], "-> Osc2 Volume");
     sprintf(Names_Tbl_Synth_ENV_1[6], "-> Vcf CutOff");
     sprintf(Names_Tbl_Synth_ENV_1[7], "-> Vcf Resonance");
+    sprintf(Names_Tbl_Synth_ENV_1[8], "-> Distortion");
 
     sprintf(Names_Tbl_Synth_ENV_2[0], "-> Osc1 Pulse Phase");
     sprintf(Names_Tbl_Synth_ENV_2[1], "-> Osc2 Pulse Phase");
@@ -2755,6 +2826,7 @@ void Init_Synth_Params_Names(void)
     sprintf(Names_Tbl_Synth_ENV_2[5], "-> Osc2 Volume");
     sprintf(Names_Tbl_Synth_ENV_2[6], "-> Vcf CutOff");
     sprintf(Names_Tbl_Synth_ENV_2[7], "-> Vcf Resonance");
+    sprintf(Names_Tbl_Synth_ENV_2[8], "-> Distortion");
 
     sprintf(Names_Tbl_Synth_Misc[0], "Portamento Glide");
     sprintf(Names_Tbl_Synth_Misc[1], "Final [global] Volume");

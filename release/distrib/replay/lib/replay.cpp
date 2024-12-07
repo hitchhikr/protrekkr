@@ -6485,22 +6485,28 @@ void Reset_Synth_Parameters(Synth_Parameters *TSP)
     TSP->osc_2_waveform = WAVEFORM_PULSE;
     TSP->osc_combine = COMBINE_ADD;
     TSP->osc_1_pw = 256;
+
     TSP->osc_2_pw = 256;
     TSP->osc_2_detune = 65;
     TSP->osc_2_finetune = 0;
+    
     TSP->vcf_cutoff = 64;
     TSP->vcf_resonance = 64;
     TSP->vcf_type = 0;
+    
     TSP->env_1_attack = 0;
     TSP->env_1_decay = 2560;
     TSP->env_1_sustain = 20;
     TSP->env_1_release = 16384;
+    
     TSP->env_2_attack = 0;
     TSP->env_2_decay = 2560;
     TSP->env_2_sustain = 20;
     TSP->env_2_release = 16384;
+    
     TSP->lfo_1_period = 16;
     TSP->lfo_2_period = 16;
+    
     TSP->lfo_1_osc_1_pw = 64;
     TSP->lfo_1_osc_2_pw = 64;
     TSP->lfo_1_osc_1_pitch = 64;
@@ -6509,6 +6515,8 @@ void Reset_Synth_Parameters(Synth_Parameters *TSP)
     TSP->lfo_1_osc_2_volume = 64;   
     TSP->lfo_1_vcf_cutoff = 64;
     TSP->lfo_1_vcf_resonance = 64; 
+    TSP->lfo_1_disto = 64; 
+
     TSP->lfo_2_osc_1_pw = 64;
     TSP->lfo_2_osc_2_pw = 64;
     TSP->lfo_2_osc_1_pitch = 64;
@@ -6517,6 +6525,8 @@ void Reset_Synth_Parameters(Synth_Parameters *TSP)
     TSP->lfo_2_osc_2_volume = 64;   
     TSP->lfo_2_vcf_cutoff = 64;
     TSP->lfo_2_vcf_resonance = 64; 
+    TSP->lfo_2_disto = 64; 
+
     TSP->env_1_osc_1_pw = 64;
     TSP->env_1_osc_2_pw = 64;
     TSP->env_1_osc_1_pitch = 64;
@@ -6525,6 +6535,8 @@ void Reset_Synth_Parameters(Synth_Parameters *TSP)
     TSP->env_1_osc_2_volume = 127;   
     TSP->env_1_vcf_cutoff = 64;
     TSP->env_1_vcf_resonance = 64; 
+    TSP->env_1_disto = 64; 
+    
     TSP->env_2_osc_1_pw = 64;
     TSP->env_2_osc_2_pw = 64;
     TSP->env_2_osc_1_pitch = 64;
@@ -6533,11 +6545,13 @@ void Reset_Synth_Parameters(Synth_Parameters *TSP)
     TSP->env_2_osc_2_volume = 127;
     TSP->env_2_vcf_cutoff = 64;
     TSP->env_2_vcf_resonance = 64; 
+    TSP->env_2_disto = 64; 
+    
     TSP->osc_3_volume = 128;
     TSP->osc_3_switch = FALSE;
     TSP->ptc_glide = 0;
     TSP->glb_volume = 128;
-    TSP->disto = 0;
+    TSP->disto = 64;
     TSP->lfo_1_attack = 2560;
     TSP->lfo_1_decay = 2560;
     TSP->lfo_1_sustain = 16;

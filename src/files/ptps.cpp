@@ -1243,6 +1243,7 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                 if(PARASynth[swrite].lfo_1_osc_2_volume != 64) Store_Synth_Lfo_1 = TRUE;
                 if(PARASynth[swrite].lfo_1_vcf_cutoff != 64) Store_Synth_Lfo_1 = TRUE;
                 if(PARASynth[swrite].lfo_1_vcf_resonance != 64) Store_Synth_Lfo_1 = TRUE;
+                if(PARASynth[swrite].lfo_1_disto != 64) Store_Synth_Lfo_1 = TRUE;
 
                 fvalue = ((float) PARASynth[swrite].lfo_1_osc_1_pw - 64) * 0.015625f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
@@ -1259,6 +1260,8 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                 fvalue = ((float) PARASynth[swrite].lfo_1_vcf_cutoff - 64) * 0.015625f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
                 fvalue = ((float) PARASynth[swrite].lfo_1_vcf_resonance - 64) * 0.015625f;
+                Write_Mod_Data(&fvalue, sizeof(float), 1, in);
+                fvalue = ((float) PARASynth[swrite].lfo_1_disto - 64) * 0.015625f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
 
                 if(Store_Synth_Phase_Osc_1)
@@ -1277,6 +1280,7 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                 if(PARASynth[swrite].lfo_2_osc_2_volume != 64) Store_Synth_Lfo_2 = TRUE;
                 if(PARASynth[swrite].lfo_2_vcf_cutoff != 64) Store_Synth_Lfo_2 = TRUE;
                 if(PARASynth[swrite].lfo_2_vcf_resonance != 64) Store_Synth_Lfo_2 = TRUE;
+                if(PARASynth[swrite].lfo_2_disto != 64) Store_Synth_Lfo_2 = TRUE;
 
                 fvalue = ((float) PARASynth[swrite].lfo_2_osc_1_pw - 64) * 0.015625f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
@@ -1293,6 +1297,8 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                 fvalue = ((float) PARASynth[swrite].lfo_2_vcf_cutoff - 64) * 0.015625f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
                 fvalue = ((float) PARASynth[swrite].lfo_2_vcf_resonance - 64) * 0.015625f;
+                Write_Mod_Data(&fvalue, sizeof(float), 1, in);
+                fvalue = ((float) PARASynth[swrite].lfo_2_disto - 64) * 0.015625f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
 
                 if(Store_Synth_Phase_Osc_1)
@@ -1311,6 +1317,7 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                 if(PARASynth[swrite].env_1_osc_2_volume != 127) Store_Synth_Env_1 = TRUE;
                 if(PARASynth[swrite].env_1_vcf_cutoff != 64) Store_Synth_Env_1 = TRUE;
                 if(PARASynth[swrite].env_1_vcf_resonance != 64) Store_Synth_Env_1 = TRUE;
+                if(PARASynth[swrite].env_1_disto != 64) Store_Synth_Env_1 = TRUE;
 
                 fvalue = ((float) PARASynth[swrite].env_1_osc_1_pw - 64) * 0.015625f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
@@ -1330,6 +1337,8 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
                 fvalue = ((float) PARASynth[swrite].env_1_vcf_resonance - 64) * 0.015625f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
+                fvalue = ((float) PARASynth[swrite].env_1_disto - 64) * 0.015625f;
+                Write_Mod_Data(&fvalue, sizeof(float), 1, in);
 
                 if(Store_Synth_Phase_Osc_1)
                 {
@@ -1347,6 +1356,7 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                 if(PARASynth[swrite].env_2_osc_2_volume != 127) Store_Synth_Env_2 = TRUE;
                 if(PARASynth[swrite].env_2_vcf_cutoff != 64) Store_Synth_Env_2 = TRUE;
                 if(PARASynth[swrite].env_2_vcf_resonance != 64) Store_Synth_Env_2 = TRUE;
+                if(PARASynth[swrite].env_2_disto != 64) Store_Synth_Env_2 = TRUE;
 
                 fvalue = ((float) PARASynth[swrite].env_2_osc_1_pw - 64) * 0.015625f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
@@ -1366,6 +1376,8 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
                 fvalue = ((float) PARASynth[swrite].env_2_vcf_resonance - 64) * 0.015625f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
+                fvalue = ((float) PARASynth[swrite].env_2_disto - 64) * 0.015625f;
+                Write_Mod_Data(&fvalue, sizeof(float), 1, in);
 
                 fvalue = ((float) PARASynth[swrite].osc_3_volume - 64) * 0.015625f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
@@ -1380,9 +1392,10 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                 fvalue = ((float) PARASynth[swrite].glb_volume) * 0.0078125f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
 
-                fvalue = (((float) PARASynth[swrite].disto)) + 1.0f;
+                if(PARASynth[swrite].disto != 64) Store_Synth_Disto = TRUE;
+
+                fvalue = ((float) PARASynth[swrite].disto - 64) * 0.015625f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
-                if(PARASynth[swrite].disto) Store_Synth_Disto = TRUE;
 
                 fvalue = ((float) (PARASynth[swrite].lfo_1_attack + 1)) / 512.0f;
                 if(fvalue < 0.1f) fvalue = 0.1f;

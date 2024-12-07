@@ -170,6 +170,7 @@ int Load_Ptk(char *FileName)
     int Tb303_Scaling = FALSE;
     int Track_Srnd = FALSE;
     int Long_Midi_Prg = FALSE;
+    int Var_Disto = FALSE;
     char Comp_Flag;
     int i;
     int j;
@@ -218,6 +219,8 @@ int Load_Ptk(char *FileName)
 
         switch(extension[7])
         {
+            case 'R':
+                Var_Disto = TRUE;
             case 'Q':
                 Long_Midi_Prg = TRUE;
             case 'P':
@@ -473,7 +476,7 @@ Read_Mod_File:
             
             Read_Mod_Data(&Synthprg[swrite], sizeof(char), 1, in);
 
-            PARASynth[swrite].disto = 0;
+            PARASynth[swrite].disto = 64;
 
             PARASynth[swrite].lfo_1_attack = 0;
             PARASynth[swrite].lfo_1_decay = 0;
@@ -487,7 +490,7 @@ Read_Mod_File:
 
             Read_Synth_Params(Read_Mod_Data, Read_Mod_Data_Swap, in, swrite,
                               new_disto, New_adsr, Portable, Env_Modulation,
-                              New_Env, Ntk_Beta, Combine);
+                              New_Env, Ntk_Beta, Combine, Var_Disto);
 
             // Fix some very old Ntk bugs
             if(PARASynth[swrite].lfo_1_period > 128) PARASynth[swrite].lfo_1_period = 128;
@@ -1685,7 +1688,7 @@ int Pack_Module(char *FileName)
     output = fopen(Temph, "wb");
     if(output)
     {
-        sprintf(extension, "PROTREKQ");
+        sprintf(extension, "PROTREKR");
         Write_Data(extension, sizeof(char), 9, output);
         Write_Data_Swap(&Depack_Size, sizeof(int), 1, output);
         Write_Data(Final_Mem_Out, sizeof(char), Len, output);

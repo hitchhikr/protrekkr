@@ -719,12 +719,25 @@ int Screen_Update(void)
 
     int Lt_vu = (int) (MIN_VUMETER + (((float) L_MaxLevel / 32767.0f) * LARG_VUMETER));
     int Rt_vu = (int) (MIN_VUMETER + (((float) R_MaxLevel / 32767.0f) * LARG_VUMETER));
-    if(Lt_vu > MIN_PEAK) Lt_vu = MIN_PEAK;
-    if(Rt_vu > MIN_PEAK) Rt_vu = MIN_PEAK;
     int Lt_vu_Peak = Lt_vu;
     int Rt_vu_Peak = Rt_vu;
-    if(Lt_vu_Peak > MAX_VUMETER - 2) Lt_vu_Peak = MAX_VUMETER - 2;
-    if(Rt_vu_Peak > MAX_VUMETER - 2) Rt_vu_Peak = MAX_VUMETER - 2;
+
+    if(Lt_vu > MIN_PEAK)
+    {
+        Lt_vu = MIN_PEAK;
+    }
+    if(Rt_vu > MIN_PEAK)
+    {
+        Rt_vu = MIN_PEAK;
+    }
+    if(Lt_vu_Peak > MAX_VUMETER - 2)
+    {
+        Lt_vu_Peak = MAX_VUMETER - 2;
+    }
+    if(Rt_vu_Peak > MAX_VUMETER - 2)
+    {
+        Rt_vu_Peak = MAX_VUMETER - 2;
+    }
 
     // Draw the vu meters
     for(i = MIN_VUMETER; i < Lt_vu; i += 2)
@@ -2314,7 +2327,9 @@ void Load_File(int Freeindex, const char *str)
            strcmp(extension, "TWNNINS7") == 0 ||
            strcmp(extension, "TWNNINS8") == 0 ||
            strcmp(extension, "TWNNINS9") == 0 ||
-           strcmp(extension, "PROTINSA") == 0)
+           strcmp(extension, "TWNNINS9") == 0 ||
+           strcmp(extension, "PROTINSA") == 0 ||
+           strcmp(extension, "PROTINSB") == 0)
         {
             sprintf(instrname, "%s", FileName);
             Lock_Audio_Thread();
@@ -2348,7 +2363,8 @@ void Load_File(int Freeindex, const char *str)
                 strcmp(extension, "PROTREKN") == 0 ||
                 strcmp(extension, "PROTREKO") == 0 ||
                 strcmp(extension, "PROTREKP") == 0 ||
-                strcmp(extension, "PROTREKQ") == 0)
+                strcmp(extension, "PROTREKQ") == 0 ||
+                strcmp(extension, "PROTREKR") == 0)
         {
             sprintf(name, "%s", FileName);
             Song_Stop();
@@ -2363,7 +2379,8 @@ void Load_File(int Freeindex, const char *str)
                 strcmp(extension, "TWNNSYN1") == 0 ||
                 strcmp(extension, "TWNNSYN2") == 0 ||
                 strcmp(extension, "TWNNSYN3") == 0 ||
-                strcmp(extension, "TWNNSYN4") == 0)
+                strcmp(extension, "TWNNSYN4") == 0 ||
+                strcmp(extension, "TWNNSYN5") == 0)
         {
             sprintf(synthname, "%s", FileName);
             Lock_Audio_Thread();
