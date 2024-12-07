@@ -2,6 +2,10 @@
 ProTrekkr releases history
 ===============================================================================
 
+v2.7.4
+
+- Sample editor keeps loop information intact whenever possible.
+
 v2.7.3
 
 - Samples data & properties weren't properly recalculated after
