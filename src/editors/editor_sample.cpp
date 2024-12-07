@@ -302,23 +302,57 @@ void Draw_Wave_Data(void)
 
                     if(LSX >= 0 && LSX <= LARGE_SMP_VIEW)
                     {
+                        int min_LSX;
+                        int max_LSX;
+                        min_LSX = LSX + WAVE_LEFT + 1 + 2;
+                        max_LSX = LSX + WAVE_LEFT + 1 + 5;
+                        if(min_LSX >= LARGE_SMP_VIEW + 4)
+                        {
+                            min_LSX = -1;
+                            max_LSX = -1;
+                        }
+                        else
+                        {
+                            if(max_LSX >= LARGE_SMP_VIEW + 4)
+                            {
+                                max_LSX = min_LSX;
+                            }
+                        }
+                        // Loop start
                         DrawVLine(LSX + WAVE_LEFT + 1, (Cur_Height - 150) + 1, (Cur_Height - 150) + SAMPLE_HEIGHT - 2, COL_VUMETERPEAK);
-                        DrawHLine((Cur_Height - 150) + 5, LSX + WAVE_LEFT + 1 + 2, LSX + WAVE_LEFT + 1 + 5, COL_VUMETERPEAK);
-                        DrawHLine((Cur_Height - 150) + 6, LSX + WAVE_LEFT + 1 + 2, LSX + WAVE_LEFT + 1 + 2, COL_VUMETERPEAK);
-                        DrawHLine((Cur_Height - 150) + 7, LSX + WAVE_LEFT + 1 + 2, LSX + WAVE_LEFT + 1 + 5, COL_VUMETERPEAK);
-                        DrawHLine((Cur_Height - 150) + 8, LSX + WAVE_LEFT + 1 + 5, LSX + WAVE_LEFT + 1 + 5, COL_VUMETERPEAK);
-                        DrawHLine((Cur_Height - 150) + 9, LSX + WAVE_LEFT + 1 + 2, LSX + WAVE_LEFT + 1 + 5, COL_VUMETERPEAK);
+                        if(min_LSX != 1 && max_LSX != 1) DrawHLine((Cur_Height - 150) + 5, min_LSX, max_LSX, COL_VUMETERPEAK);
+                        if(min_LSX != 1 && max_LSX != 1) DrawHLine((Cur_Height - 150) + 6, min_LSX, min_LSX, COL_VUMETERPEAK);
+                        if(min_LSX != 1 && max_LSX != 1) DrawHLine((Cur_Height - 150) + 7, min_LSX, max_LSX, COL_VUMETERPEAK);
+                        if(min_LSX != 1 && max_LSX != 1) DrawHLine((Cur_Height - 150) + 8, max_LSX, max_LSX, COL_VUMETERPEAK);
+                        if(min_LSX != 1 && max_LSX != 1) DrawHLine((Cur_Height - 150) + 9, min_LSX, max_LSX, COL_VUMETERPEAK);
                     }
 
                     if(LEX >= 0 && LEX <= LARGE_SMP_VIEW)
                     {
+                        int min_LEX;
+                        int max_LEX;
+                        // Loop end
                         if(LEX == LARGE_SMP_VIEW) LEX--;
+                        min_LEX = LEX + WAVE_LEFT + 1 - 5;
+                        max_LEX = LEX + WAVE_LEFT + 1 - 2;
+                        if(min_LEX < 2)
+                        {
+                            min_LEX = -1;
+                            max_LEX = -1;
+                        }
+                        else
+                        {
+                            if(max_LEX < 2)
+                            {
+                                min_LEX = max_LEX;
+                            }
+                        }
                         DrawVLine(LEX + WAVE_LEFT + 1 + 1, (Cur_Height - 150) + 1, (Cur_Height - 150) + SAMPLE_HEIGHT - 2, COL_VUMETERPEAK);
-                        DrawHLine((Cur_Height - 150) + SAMPLE_HEIGHT - 9, LEX + WAVE_LEFT + 1 - 5, LEX + WAVE_LEFT + 1 - 2, COL_VUMETERPEAK);
-                        DrawHLine((Cur_Height - 150) + SAMPLE_HEIGHT - 8, LEX + WAVE_LEFT + 1 - 5, LEX + WAVE_LEFT + 1 - 5, COL_VUMETERPEAK);
-                        DrawHLine((Cur_Height - 150) + SAMPLE_HEIGHT - 7, LEX + WAVE_LEFT + 1 - 5, LEX + WAVE_LEFT + 1 - 2, COL_VUMETERPEAK);
-                        DrawHLine((Cur_Height - 150) + SAMPLE_HEIGHT - 6, LEX + WAVE_LEFT + 1 - 5, LEX + WAVE_LEFT + 1 - 5, COL_VUMETERPEAK);
-                        DrawHLine((Cur_Height - 150) + SAMPLE_HEIGHT - 5, LEX + WAVE_LEFT + 1 - 5, LEX + WAVE_LEFT + 1 - 2, COL_VUMETERPEAK);
+                        if(min_LEX != 1 && max_LEX != 1) DrawHLine((Cur_Height - 150) + SAMPLE_HEIGHT - 9, min_LEX, max_LEX, COL_VUMETERPEAK);
+                        if(min_LEX != 1 && max_LEX != 1) DrawHLine((Cur_Height - 150) + SAMPLE_HEIGHT - 8, min_LEX, min_LEX, COL_VUMETERPEAK);
+                        if(min_LEX != 1 && max_LEX != 1) DrawHLine((Cur_Height - 150) + SAMPLE_HEIGHT - 7, min_LEX, max_LEX, COL_VUMETERPEAK);
+                        if(min_LEX != 1 && max_LEX != 1) DrawHLine((Cur_Height - 150) + SAMPLE_HEIGHT - 6, min_LEX, min_LEX, COL_VUMETERPEAK);
+                        if(min_LEX != 1 && max_LEX != 1) DrawHLine((Cur_Height - 150) + SAMPLE_HEIGHT - 5, min_LEX, max_LEX, COL_VUMETERPEAK);
                     }
                 }
             }

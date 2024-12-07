@@ -245,7 +245,7 @@ int Sample_Crop(int32 range_start, int32 range_end)
             Player_WR[Current_Instrument][Current_Instrument_Split] = NewBuffer[1];
         }
         Sample_Length[Current_Instrument][Current_Instrument_Split] = cropsize;
-        Recalculate_Sample_Size(Current_Instrument, Current_Instrument_Split, FALSE, range_start, range_end, FALSE);
+        Recalculate_Sample_Size(Current_Instrument, Current_Instrument_Split, FALSE, range_start, range_end, FALSE, TRUE);
 
         Unlock_Audio_Thread();
         Status_Box("Crop Done.");
@@ -416,7 +416,7 @@ int Sample_Paste(int32 range_start)
             Player_WR[Current_Instrument][Current_Instrument_Split] = NewBuffer[1];
         }
         Sample_Length[Current_Instrument][Current_Instrument_Split] = newsize;
-        Recalculate_Sample_Size(Current_Instrument, Current_Instrument_Split, FALSE, range_start, range_start + cutsize, TRUE);
+        Recalculate_Sample_Size(Current_Instrument, Current_Instrument_Split, FALSE, range_start, range_start + cutsize, TRUE, FALSE);
 
         Unlock_Audio_Thread();
         Status_Box("Paste Done.");
@@ -518,7 +518,7 @@ int Sample_Cut(int32 range_start, int32 range_end, int do_copy)
             Player_WR[Current_Instrument][Current_Instrument_Split] = NewBuffer[1];
         }
         Sample_Length[Current_Instrument][Current_Instrument_Split] = newsize;
-        Recalculate_Sample_Size(Current_Instrument, Current_Instrument_Split, FALSE, range_start, range_end, FALSE);
+        Recalculate_Sample_Size(Current_Instrument, Current_Instrument_Split, FALSE, range_start, range_end, FALSE, FALSE);
 
         Unlock_Audio_Thread();
         Status_Box("Cut Done.");
@@ -891,7 +891,7 @@ int Sample_Duplicate(int32 range_start, int32 range_end)
             Player_WR[Current_Instrument][Current_Instrument_Split] = NewBuffer[1];
         }
         Sample_Length[Current_Instrument][Current_Instrument_Split] = newsize;
-        Recalculate_Sample_Size(Current_Instrument, Current_Instrument_Split, FALSE, range_start, range_end, FALSE);
+        Recalculate_Sample_Size(Current_Instrument, Current_Instrument_Split, FALSE, range_start, range_end, TRUE, FALSE);
 
         Unlock_Audio_Thread();
         Status_Box("Insert Zeroes Done.");
@@ -991,7 +991,7 @@ int Sample_InsertZero(int32 range_start, int32 range_end)
             Player_WR[Current_Instrument][Current_Instrument_Split] = NewBuffer[1];
         }
         Sample_Length[Current_Instrument][Current_Instrument_Split] = newsize;
-        Recalculate_Sample_Size(Current_Instrument, Current_Instrument_Split, FALSE, range_start, range_end, FALSE);
+        Recalculate_Sample_Size(Current_Instrument, Current_Instrument_Split, FALSE, range_start, range_end, TRUE, FALSE);
 
         Unlock_Audio_Thread();
         Status_Box("Duplicate Done.");
@@ -1000,7 +1000,7 @@ int Sample_InsertZero(int32 range_start, int32 range_end)
     return 0;
 }
 
-void Recalculate_Sample_Size(int Instrument, int Split, int Discard_Loop, Uint32 Range_Start, Uint32 Range_End, int Add_Data)
+void Recalculate_Sample_Size(int Instrument, int Split, int Discard_Loop, Uint32 Range_Start, Uint32 Range_End, int Add_Data, int Crop)
 {
     int c;
     int i;
@@ -1015,8 +1015,8 @@ void Recalculate_Sample_Size(int Instrument, int Split, int Discard_Loop, Uint32
             {
                 // Move right
                 LoopStart[Instrument][Split] = LoopStart[Instrument][Split] + (Range_End - Range_Start);
-                Player_LS[Instrument][Split] = LoopStart[Instrument][Split];
                 LoopEnd[Instrument][Split] = LoopEnd[Instrument][Split] + (Range_End - Range_Start);
+                Player_LS[Instrument][Split] = LoopStart[Instrument][Split];
                 Player_LE[Instrument][Split] = LoopEnd[Instrument][Split];
                 goto Done_Set_Range;
             }
@@ -1031,14 +1031,25 @@ void Recalculate_Sample_Size(int Instrument, int Split, int Discard_Loop, Uint32
                 goto Done_Set_Range;
             }
 
-            // Was the addition bigger than the loop ?
+            // Was it added inside or on loop and bigger than loop ?
+            if(Range_Start >= LoopStart[Instrument][Split] &&
+               Range_Start < LoopEnd[Instrument][Split] &&
+               Range_End >= LoopEnd[Instrument][Split])
+            {
+                // Move right
+                LoopEnd[Instrument][Split] = LoopEnd[Instrument][Split] + (Range_End - Range_Start);
+                Player_LE[Instrument][Split] = LoopEnd[Instrument][Split];
+                goto Done_Set_Range;
+            }
+
+            // Was the addition bigger than the loop and added on the left ?
             if(Range_Start < LoopStart[Instrument][Split] &&
-               Range_End > LoopEnd[Instrument][Split])
+               Range_End >= LoopEnd[Instrument][Split])
             {
                 // Move right
                 LoopStart[Instrument][Split] = LoopStart[Instrument][Split] + (Range_End - Range_Start);
-                Player_LS[Instrument][Split] = LoopStart[Instrument][Split];
                 LoopEnd[Instrument][Split] = LoopEnd[Instrument][Split] + (Range_End - Range_Start);
+                Player_LS[Instrument][Split] = LoopStart[Instrument][Split];
                 Player_LE[Instrument][Split] = LoopEnd[Instrument][Split];
                 goto Done_Set_Range;
             }
@@ -1049,15 +1060,15 @@ void Recalculate_Sample_Size(int Instrument, int Split, int Discard_Loop, Uint32
             {
                 // Move right
                 LoopStart[Instrument][Split] = LoopStart[Instrument][Split] + (Range_End - Range_Start);
-                Player_LS[Instrument][Split] = LoopStart[Instrument][Split];
                 LoopEnd[Instrument][Split] = LoopEnd[Instrument][Split] + (Range_End - Range_Start);
+                Player_LS[Instrument][Split] = LoopStart[Instrument][Split];
                 Player_LE[Instrument][Split] = LoopEnd[Instrument][Split];
                 goto Done_Set_Range;
             }
 
             // Was it added half inside on the right ?
-            if(Range_Start <= LoopEnd[Instrument][Split] &&
-               Range_End > LoopEnd[Instrument][Split])
+            if(Range_Start < LoopEnd[Instrument][Split] &&
+               Range_End >= LoopEnd[Instrument][Split])
             {
                 // Move right
                 LoopEnd[Instrument][Split] = LoopEnd[Instrument][Split] + (Range_End - Range_Start);
@@ -1066,57 +1077,159 @@ void Recalculate_Sample_Size(int Instrument, int Split, int Discard_Loop, Uint32
         }
         else
         {
-            // Was it cutted before ?
-            if(Range_Start < LoopStart[Instrument][Split] &&
-               Range_End <= LoopStart[Instrument][Split])
+            if(Crop == TRUE)
             {
-                // Move left
-                LoopStart[Instrument][Split] = LoopStart[Instrument][Split] - (Range_End - Range_Start);
-                Player_LS[Instrument][Split] = LoopStart[Instrument][Split];
-                LoopEnd[Instrument][Split] = LoopEnd[Instrument][Split] - (Range_End - Range_Start);
-                Player_LE[Instrument][Split] = LoopEnd[Instrument][Split];
-                goto Done_Set_Range;
-            }
+                // Was it cropped on loop borders or outside ?
+                if(Range_Start <= LoopStart[Instrument][Split] &&
+                   Range_End >= LoopEnd[Instrument][Split])
+                {
+                    // Move left
+                    LoopStart[Instrument][Split] = LoopStart[Instrument][Split] - Range_Start;
+                    LoopEnd[Instrument][Split] = LoopEnd[Instrument][Split] - Range_Start;
+                    Player_LS[Instrument][Split] = LoopStart[Instrument][Split];
+                    Player_LE[Instrument][Split] = LoopEnd[Instrument][Split];
+                    goto Done_Set_Range;
+                }
 
-            // Was it cutted inside ?
-            if(Range_Start >= LoopStart[Instrument][Split] &&
-               Range_End <= LoopEnd[Instrument][Split])
-            {
-                // Move right
-                LoopEnd[Instrument][Split] = LoopEnd[Instrument][Split] - (Range_End - Range_Start);
-                Player_LE[Instrument][Split] = LoopEnd[Instrument][Split];
-                goto Done_Set_Range;
-            }
+                // Was it cropped inside ?
+                if(Range_Start > LoopStart[Instrument][Split] &&
+                   Range_End < LoopEnd[Instrument][Split])
+                {
+                    // Discard it
+                    LoopStart[Instrument][Split] = 0;
+                    LoopEnd[Instrument][Split] = 0;
+                    Player_LS[Instrument][Split] = LoopStart[Instrument][Split];
+                    Player_LE[Instrument][Split] = LoopEnd[Instrument][Split];
+                    goto Done_Set_Range;
+                }
 
-            // Was it cutted outside ?
-            if(Range_Start < LoopStart[Instrument][Split] &&
-               Range_End > LoopEnd[Instrument][Split])
-            {
-                // Discard it
-                LoopEnd[Instrument][Split] = 0;
-                LoopStart[Instrument][Split] = 0;
-                Player_LS[Instrument][Split] = LoopStart[Instrument][Split];
-                Player_LE[Instrument][Split] = LoopEnd[Instrument][Split];
-                goto Done_Set_Range;
-            }
+                // Was it cropped before ?
+                if(Range_Start < LoopStart[Instrument][Split] &&
+                   Range_End <= LoopStart[Instrument][Split])
+                {
+                    // Discard it
+                    LoopStart[Instrument][Split] = 0;
+                    LoopEnd[Instrument][Split] = 0;
+                    Player_LS[Instrument][Split] = LoopStart[Instrument][Split];
+                    Player_LE[Instrument][Split] = LoopEnd[Instrument][Split];
+                    goto Done_Set_Range;
+                }
 
-            // Was it cutted half inside on the left ?
-            if(Range_Start < LoopStart[Instrument][Split] &&
-               Range_End <= LoopEnd[Instrument][Split])
-            {
-                // Move to range start
-                LoopStart[Instrument][Split] = Range_Start;
-                Player_LS[Instrument][Split] = LoopStart[Instrument][Split];
-                goto Done_Set_Range;
-            }
+                // Was it cropped after ?
+                if(Range_Start >= LoopEnd[Instrument][Split] &&
+                   Range_End > LoopEnd[Instrument][Split])
+                {
+                    // Discard it
+                    LoopStart[Instrument][Split] = 0;
+                    LoopEnd[Instrument][Split] = 0;
+                    Player_LS[Instrument][Split] = LoopStart[Instrument][Split];
+                    Player_LE[Instrument][Split] = LoopEnd[Instrument][Split];
+                    goto Done_Set_Range;
+                }
 
-            // Was it cutted half inside on the right ?
-            if(Range_Start <= LoopEnd[Instrument][Split] &&
-               Range_End > LoopEnd[Instrument][Split])
+                // Was it cropped before and inside ?
+                if(Range_Start < LoopStart[Instrument][Split] &&
+                   Range_End < LoopEnd[Instrument][Split])
+                {
+                    // Discard it
+                    LoopStart[Instrument][Split] = 0;
+                    LoopEnd[Instrument][Split] = 0;
+                    Player_LS[Instrument][Split] = LoopStart[Instrument][Split];
+                    Player_LE[Instrument][Split] = LoopEnd[Instrument][Split];
+                    goto Done_Set_Range;
+                }
+
+                // Was it cropped inside and after ?
+                if(Range_Start > LoopStart[Instrument][Split] &&
+                   Range_End > LoopEnd[Instrument][Split])
+                {
+                    // Discard it
+                    LoopStart[Instrument][Split] = 0;
+                    LoopEnd[Instrument][Split] = 0;
+                    Player_LS[Instrument][Split] = LoopStart[Instrument][Split];
+                    Player_LE[Instrument][Split] = LoopEnd[Instrument][Split];
+                    goto Done_Set_Range;
+                }
+
+                // Was it cropped on loop and after ?
+                if(Range_Start == LoopStart[Instrument][Split] &&
+                   Range_End > LoopEnd[Instrument][Split])
+                {
+                    // Move left
+                    LoopStart[Instrument][Split] = LoopStart[Instrument][Split] - Range_Start;
+                    LoopEnd[Instrument][Split] = LoopEnd[Instrument][Split] - Range_Start;
+                    Player_LS[Instrument][Split] = LoopStart[Instrument][Split];
+                    Player_LE[Instrument][Split] = LoopEnd[Instrument][Split];
+                    goto Done_Set_Range;
+                }
+
+                // Was it cropped before and on loop ?
+                if(Range_Start < LoopStart[Instrument][Split] &&
+                   Range_End == LoopEnd[Instrument][Split])
+                {
+                    // Move left
+                    LoopStart[Instrument][Split] = LoopStart[Instrument][Split] - Range_Start;
+                    LoopEnd[Instrument][Split] = LoopEnd[Instrument][Split] - Range_Start;
+                    Player_LS[Instrument][Split] = LoopStart[Instrument][Split];
+                    Player_LE[Instrument][Split] = LoopEnd[Instrument][Split];
+                    goto Done_Set_Range;
+                }
+            }
+            else
             {
-                // Move to range end
-                LoopEnd[Instrument][Split] = Range_End;
-                Player_LE[Instrument][Split] = LoopEnd[Instrument][Split];
+                // Was it cutted before ?
+                if(Range_Start < LoopStart[Instrument][Split] &&
+                   Range_End <= LoopStart[Instrument][Split])
+                {
+                    // Move left
+                    LoopStart[Instrument][Split] = LoopStart[Instrument][Split] - (Range_End - Range_Start);
+                    LoopEnd[Instrument][Split] = LoopEnd[Instrument][Split] - (Range_End - Range_Start);
+                    Player_LS[Instrument][Split] = LoopStart[Instrument][Split];
+                    Player_LE[Instrument][Split] = LoopEnd[Instrument][Split];
+                    goto Done_Set_Range;
+                }
+
+                // Was it cutted inside ?
+                // (result may be zero but it's handled below)
+                if(Range_Start >= LoopStart[Instrument][Split] &&
+                   Range_End <= LoopEnd[Instrument][Split])
+                {
+                    // Move right
+                    LoopEnd[Instrument][Split] = LoopEnd[Instrument][Split] - (Range_End - Range_Start);
+                    Player_LE[Instrument][Split] = LoopEnd[Instrument][Split];
+                    goto Done_Set_Range;
+                }
+
+                // Was it cutted outside ?
+                if(Range_Start < LoopStart[Instrument][Split] &&
+                   Range_End > LoopEnd[Instrument][Split])
+                {
+                    // Discard it
+                    LoopStart[Instrument][Split] = 0;
+                    LoopEnd[Instrument][Split] = 0;
+                    Player_LS[Instrument][Split] = LoopStart[Instrument][Split];
+                    Player_LE[Instrument][Split] = LoopEnd[Instrument][Split];
+                    goto Done_Set_Range;
+                }
+
+                // Was it cutted half inside on the left ?
+                if(Range_Start < LoopStart[Instrument][Split] &&
+                   Range_End <= LoopEnd[Instrument][Split])
+                {
+                    // Move to range start
+                    LoopStart[Instrument][Split] = Range_Start;
+                    Player_LS[Instrument][Split] = LoopStart[Instrument][Split];
+                    goto Done_Set_Range;
+                }
+
+                // Was it cutted half inside on the right ?
+                if(Range_Start <= LoopEnd[Instrument][Split] &&
+                   Range_End > LoopEnd[Instrument][Split])
+                {
+                    // Move to range end
+                    LoopEnd[Instrument][Split] = Range_End;
+                    Player_LE[Instrument][Split] = LoopEnd[Instrument][Split];
+                }
             }
         }
     }
