@@ -59,6 +59,6 @@ void Sample_FadeOut(int32 range_start, int32 range_end);
 void Sample_Half(int32 range_start, int32 range_end);
 int Sample_Duplicate(int32 range_start, int32 range_end);
 int Sample_InsertZero(int32 range_start, int32 range_end);
-void Recalculate_Sample_Size(int Instrument, int Split);
+void Recalculate_Sample_Size(int Instrument, int Split, int Discard_Loop, Uint32 Range_Start, Uint32 Range_End);
 
 #endif
