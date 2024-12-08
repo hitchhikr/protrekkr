@@ -87,7 +87,7 @@ LINK32=link.exe
 
 # Name "plugin - Win32 Release"
 # Name "plugin - Win32 Debug"
-# Begin Group "Source Files"
+# Begin Group "source files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
@@ -115,7 +115,7 @@ SOURCE=..\files\reverbs.cpp
 SOURCE=..\files\synths.cpp
 # End Source File
 # End Group
-# Begin Group "Header Files"
+# Begin Group "header files"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
@@ -127,7 +127,7 @@ SOURCE=.\in2.h
 SOURCE=.\out.h
 # End Source File
 # End Group
-# Begin Group "Replay"
+# Begin Group "replay"
 
 # PROP Default_Filter ""
 # Begin Source File

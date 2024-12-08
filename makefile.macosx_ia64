@@ -14,7 +14,7 @@ EXEOBJS_IA64 = ptk_ia64.o \
               samples_pack_ia64.o files_list_ia64.o files_ia64.o mods_ia64.o patterns_ia64.o reverbs_ia64.o midi_cfg_ia64.o \
               bits_ia64.o pack_ia64.o tinypack_ia64.o words_ia64.o wputils_ia64.o \
               config_ia64.o 303s_ia64.o synths_ia64.o insts_ia64.o ptps_ia64.o \
-              midi_ia64.o RtMidi_ia64.o midi_dispatch_ia64.o \
+              midi_ia64.o rtmidi_ia64.o midi_dispatch_ia64.o \
               timer_ia64.o main_ia64.o sdlmain_ia64.o \
               misc_draw_ia64.o draw_primitives_ia64.o requesters_ia64.o \
               samples_ops_ia64.o aiff_ia64.o riff_ia64.o \
@@ -122,7 +122,7 @@ ptps_ia64.o: src/files/ptps.cpp
 midi_ia64.o: src/midi/midi.cpp
 	$(CXX) -c -o $(@) $(FLAGS_IA64) $<
 
-RtMidi_ia64.o: src/midi/RtMidi.cpp
+rtmidi_ia64.o: src/midi/rtmidi.cpp
 	$(CXX) -c -o $(@) $(FLAGS_IA64) $<
 
 midi_dispatch_ia64.o: src/midi/midi_dispatch.cpp

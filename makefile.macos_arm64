@@ -14,7 +14,7 @@ EXEOBJS_ARM64 = ptk_arm64.o \
               samples_pack_arm64.o files_list_arm64.o files_arm64.o mods_arm64.o patterns_arm64.o reverbs_arm64.o midi_cfg_arm64.o \
               bits_arm64.o pack_arm64.o tinypack_arm64.o words_arm64.o wputils_arm64.o \
               config_arm64.o 303s_arm64.o synths_arm64.o insts_arm64.o ptps_arm64.o \
-              midi_arm64.o RtMidi_arm64.o midi_dispatch_arm64.o \
+              midi_arm64.o rtmidi_arm64.o midi_dispatch_arm64.o \
               timer_arm64.o main_arm64.o sdlmain_arm64.o \
               misc_draw_arm64.o draw_primitives_arm64.o requesters_arm64.o \
               samples_ops_arm64.o aiff_arm64.o riff_arm64.o \
@@ -122,7 +122,7 @@ ptps_arm64.o: src/files/ptps.cpp
 midi_arm64.o: src/midi/midi.cpp
 	$(CXX) -c -o $(@) $(FLAGS_ARM64) $<
 
-RtMidi_arm64.o: src/midi/RtMidi.cpp
+rtmidi_arm64.o: src/midi/rtmidi.cpp
 	$(CXX) -c -o $(@) $(FLAGS_ARM64) $<
 
 midi_dispatch_arm64.o: src/midi/midi_dispatch.cpp

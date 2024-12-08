@@ -14,7 +14,7 @@ EXEOBJS_PPC = ptk_ppc.o \
               samples_pack_ppc.o files_list_ppc.o files_ppc.o mods_ppc.o patterns_ppc.o reverbs_ppc.o midi_cfg_ppc.o \
               bits_ppc.o pack_ppc.o tinypack_ppc.o words_ppc.o wputils_ppc.o \
               config_ppc.o 303s_ppc.o synths_ppc.o insts_ppc.o ptps_ppc.o \
-              midi_ppc.o RtMidi_ppc.o midi_dispatch_ppc.o \
+              midi_ppc.o rtmidi_ppc.o midi_dispatch_ppc.o \
               timer_ppc.o main_ppc.o sdlmain_ppc.o \
               misc_draw_ppc.o draw_primitives_ppc.o requesters_ppc.o \
               samples_ops_ppc.o aiff_ppc.o riff_ppc.o \
@@ -122,7 +122,7 @@ ptps_ppc.o: src/files/ptps.cpp
 midi_ppc.o: src/midi/midi.cpp
 	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
 
-RtMidi_ppc.o: src/midi/RtMidi.cpp
+rtmidi_ppc.o: src/midi/rtmidi.cpp
 	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
 
 midi_dispatch_ppc.o: src/midi/midi_dispatch.cpp

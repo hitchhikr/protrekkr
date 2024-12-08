@@ -17,7 +17,7 @@ CFG=ProTrekkr - Win32 Debug
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "ProTrekkr - Win32 Release" (based on "Win32 (x86) Application")
+!MESSAGE "ProTrekkr - Win32 release" (based on "Win32 (x86) Application")
 !MESSAGE "ProTrekkr - Win32 Debug" (based on "Win32 (x86) Application")
 !MESSAGE 
 
@@ -29,17 +29,17 @@ CPP=cl.exe
 MTL=midl.exe
 RSC=rc.exe
 
-!IF  "$(CFG)" == "ProTrekkr - Win32 Release"
+!IF  "$(CFG)" == "ProTrekkr - Win32 release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
-# PROP BASE Output_Dir "Release"
-# PROP BASE Intermediate_Dir "Release"
+# PROP BASE Output_Dir "release"
+# PROP BASE Intermediate_Dir "release"
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 0
-# PROP Output_Dir "Release"
-# PROP Intermediate_Dir "Release"
+# PROP Output_Dir "release"
+# PROP Intermediate_Dir "release"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /c
@@ -86,12 +86,12 @@ LINK32=link.exe
 
 # Begin Target
 
-# Name "ProTrekkr - Win32 Release"
+# Name "ProTrekkr - Win32 release"
 # Name "ProTrekkr - Win32 Debug"
-# Begin Group "Main"
+# Begin Group "startup"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
-# Begin Group "Main Include"
+# Begin Group "startup include"
 
 # PROP Default_Filter ""
 # Begin Source File
@@ -100,11 +100,11 @@ SOURCE=.\src\support\include\main.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\Support\include\resource.h
+SOURCE=.\src\support\include\resource.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\Support\include\timer.h
+SOURCE=.\src\support\include\timer.h
 # End Source File
 # End Group
 # Begin Source File
@@ -113,25 +113,25 @@ SOURCE=.\src\support\main.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\Support\Project.ico
+SOURCE=.\src\support\project.ico
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\support\Project_16x16.ico
+SOURCE=.\src\support\project_16x16.ico
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\Support\Resources.rc
+SOURCE=.\src\support\resources.rc
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\Support\timer.cpp
+SOURCE=.\src\support\timer.cpp
 # End Source File
 # End Group
 # Begin Group "ProTrekkr"
 
 # PROP Default_Filter ""
-# Begin Group "ProTrekkr Include"
+# Begin Group "ProTrekkr include"
 
 # PROP Default_Filter ""
 # Begin Source File
@@ -140,34 +140,34 @@ SOURCE=.\src\include\ptk.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\include\Variables.h
+SOURCE=.\src\include\variables.h
 # End Source File
 # Begin Source File
 
 SOURCE=.\src\include\version.h
 # End Source File
 # End Group
-# Begin Group "Editors"
+# Begin Group "editors"
 
 # PROP Default_Filter ""
-# Begin Group "Editors Include"
+# Begin Group "editors include"
 
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\src\Editors\include\Editor_303.h
+SOURCE=.\src\editors\include\editor_303.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\Editors\include\Editor_DiskIO.h
+SOURCE=.\src\editors\include\editor_diskio.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\Editors\include\Editor_Fx_Setup.h
+SOURCE=.\src\editors\include\editor_fx_setup.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\Editors\include\Editor_Instrument.h
+SOURCE=.\src\editors\include\editor_instrument.h
 # End Source File
 # Begin Source File
 
@@ -175,7 +175,7 @@ SOURCE=.\src\editors\include\editor_midi.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\Editors\include\Editor_Pattern.h
+SOURCE=.\src\editors\include\editor_pattern.h
 # End Source File
 # Begin Source File
 
@@ -183,48 +183,48 @@ SOURCE=.\src\editors\include\editor_reverb.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\Editors\include\Editor_Sample.h
+SOURCE=.\src\editors\include\editor_sample.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\Editors\include\Editor_Sequencer.h
+SOURCE=.\src\editors\include\editor_sequencer.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\Editors\include\Editor_Setup.h
+SOURCE=.\src\editors\include\editor_setup.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\Editors\include\Editor_Synth.h
+SOURCE=.\src\editors\include\editor_synth.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\Editors\include\Editor_Track.h
+SOURCE=.\src\editors\include\editor_track.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\Editors\include\Editor_Track_Fx.h
+SOURCE=.\src\editors\include\editor_track_fx.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\Editors\include\Patterns_Blocks.h
+SOURCE=.\src\editors\include\patterns_blocks.h
 # End Source File
 # End Group
 # Begin Source File
 
-SOURCE=.\src\Editors\Editor_303.cpp
+SOURCE=.\src\editors\editor_303.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\Editors\Editor_DiskIO.cpp
+SOURCE=.\src\editors\editor_diskio.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\Editors\Editor_Fx_Setup.cpp
+SOURCE=.\src\editors\editor_fx_setup.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\Editors\Editor_Instrument.cpp
+SOURCE=.\src\editors\editor_instrument.cpp
 # End Source File
 # Begin Source File
 
@@ -232,7 +232,7 @@ SOURCE=.\src\editors\editor_midi.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\Editors\Editor_Pattern.cpp
+SOURCE=.\src\editors\editor_pattern.cpp
 # End Source File
 # Begin Source File
 
@@ -240,42 +240,42 @@ SOURCE=.\src\editors\editor_reverb.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\Editors\Editor_Sample.cpp
+SOURCE=.\src\editors\editor_sample.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\Editors\Editor_Sequencer.cpp
+SOURCE=.\src\editors\editor_sequencer.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\Editors\Editor_Setup.cpp
+SOURCE=.\src\editors\editor_setup.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\Editors\Editor_Synth.cpp
+SOURCE=.\src\editors\editor_synth.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\Editors\Editor_Track.cpp
+SOURCE=.\src\editors\editor_track.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\Editors\Editor_Track_Fx.cpp
+SOURCE=.\src\editors\editor_track_fx.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\Editors\Patterns_Blocks.cpp
+SOURCE=.\src\editors\patterns_blocks.cpp
 # End Source File
 # End Group
-# Begin Group "Replay"
+# Begin Group "replay"
 
 # PROP Default_Filter ""
-# Begin Group "Replay Include"
+# Begin Group "replay include"
 
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\Release\Distrib\Replay\lib\include\Cubic_Spline.h
+SOURCE=.\release\distrib\replay\lib\include\cubic_spline.h
 # End Source File
 # Begin Source File
 
@@ -283,19 +283,19 @@ SOURCE=.\release\distrib\replay\lib\include\endianness.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\Release\Distrib\Replay\lib\include\Ptk_Def_Properties.h
+SOURCE=.\release\distrib\replay\lib\include\ptk_def_properties.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\Release\Distrib\Replay\lib\include\PtkReplay.h
+SOURCE=.\release\distrib\replay\lib\include\ptkreplay.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\Release\Distrib\Replay\lib\include\Replay.h
+SOURCE=.\release\distrib\replay\lib\include\replay.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\Release\Distrib\Replay\lib\include\Samples_Unpack.h
+SOURCE=.\release\distrib\replay\lib\include\samples_unpack.h
 # End Source File
 # Begin Source File
 
@@ -303,21 +303,21 @@ SOURCE=.\release\distrib\replay\lib\include\spline.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\Release\Distrib\Replay\lib\include\Synth.h
+SOURCE=.\release\distrib\replay\lib\include\synth.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\Release\Distrib\Replay\lib\include\TB_303.h
+SOURCE=.\release\distrib\replay\lib\include\tb_303.h
 # End Source File
 # Begin Source File
 
 SOURCE=.\release\distrib\replay\lib\include\wavpack.h
 # End Source File
 # End Group
-# Begin Group "SoundDriver"
+# Begin Group "sounddriver"
 
 # PROP Default_Filter ""
-# Begin Group "SoundDriver Include"
+# Begin Group "sounddriver include"
 
 # PROP Default_Filter ""
 # Begin Source File
@@ -336,11 +336,11 @@ SOURCE=.\release\distrib\replay\lib\endianness.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Release\Distrib\Replay\lib\Replay.cpp
+SOURCE=.\release\distrib\replay\lib\replay.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Release\Distrib\Replay\lib\Samples_Unpack.cpp
+SOURCE=.\release\distrib\replay\lib\samples_unpack.cpp
 # End Source File
 # Begin Source File
 
@@ -348,21 +348,21 @@ SOURCE=.\release\distrib\replay\lib\spline.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Release\Distrib\Replay\lib\Synth.cpp
+SOURCE=.\release\distrib\replay\lib\synth.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Release\Distrib\Replay\lib\TB_303.cpp
+SOURCE=.\release\distrib\replay\lib\tb_303.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\release\distrib\replay\lib\wavpack.cpp
 # End Source File
 # End Group
-# Begin Group "UI"
+# Begin Group "ui"
 
 # PROP Default_Filter ""
-# Begin Group "UI Include"
+# Begin Group "ui include"
 
 # PROP Default_Filter ""
 # Begin Source File
@@ -371,7 +371,7 @@ SOURCE=.\src\ui\include\draw_primitives.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\UI\include\Misc_Draw.h
+SOURCE=.\src\UI\include\misc_draw.h
 # End Source File
 # Begin Source File
 
@@ -384,17 +384,17 @@ SOURCE=.\src\ui\draw_primitives.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\UI\Misc_Draw.cpp
+SOURCE=.\src\ui\misc_draw.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\src\ui\requesters.cpp
 # End Source File
 # End Group
-# Begin Group "Files"
+# Begin Group "files"
 
 # PROP Default_Filter ""
-# Begin Group "Files Include"
+# Begin Group "files include"
 
 # PROP Default_Filter ""
 # Begin Source File
@@ -407,11 +407,11 @@ SOURCE=.\src\files\include\config.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\Files\include\Files.h
+SOURCE=.\src\files\include\files.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\Files\include\Files_List.h
+SOURCE=.\src\files\include\files_list.h
 # End Source File
 # Begin Source File
 
@@ -448,11 +448,11 @@ SOURCE=.\src\files\config.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\Files\Files.cpp
+SOURCE=.\src\files\files.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\Files\Files_List.cpp
+SOURCE=.\src\files\files_list.cpp
 # End Source File
 # Begin Source File
 
@@ -483,10 +483,10 @@ SOURCE=.\src\files\reverbs.cpp
 SOURCE=.\src\files\synths.cpp
 # End Source File
 # End Group
-# Begin Group "Midi"
+# Begin Group "midi"
 
 # PROP Default_Filter ""
-# Begin Group "Midi Include"
+# Begin Group "midi include"
 
 # PROP Default_Filter ""
 # Begin Source File
@@ -499,11 +499,11 @@ SOURCE=.\src\midi\include\midi_dispatch.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\midi\include\RtError.h
+SOURCE=.\src\midi\include\rterror.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\midi\include\RtMidi.h
+SOURCE=.\src\midi\include\rtmidi.h
 # End Source File
 # End Group
 # Begin Source File
@@ -516,16 +516,16 @@ SOURCE=.\src\midi\midi_dispatch.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\midi\RtMidi.cpp
+SOURCE=.\src\midi\rtmidi.cpp
 # End Source File
 # End Group
-# Begin Group "Samples"
+# Begin Group "samples"
 
 # PROP Default_Filter ""
-# Begin Group "Aiff"
+# Begin Group "aiff"
 
 # PROP Default_Filter ""
-# Begin Group "Aiff Include"
+# Begin Group "aiff include"
 
 # PROP Default_Filter ""
 # Begin Source File
@@ -538,10 +538,10 @@ SOURCE=.\src\samples\aiff\include\aiff.h
 SOURCE=.\src\samples\aiff\aiff.cpp
 # End Source File
 # End Group
-# Begin Group "Wav"
+# Begin Group "wav"
 
 # PROP Default_Filter ""
-# Begin Group "Wav Include"
+# Begin Group "wav include"
 
 # PROP Default_Filter ""
 # Begin Source File
@@ -558,7 +558,7 @@ SOURCE=.\src\samples\wav\include\riff.h
 SOURCE=.\src\samples\wav\riff.cpp
 # End Source File
 # End Group
-# Begin Group "Samples Include"
+# Begin Group "samples include"
 
 # PROP Default_Filter ""
 # Begin Source File
@@ -570,10 +570,10 @@ SOURCE=.\src\samples\include\samples_ops.h
 SOURCE=.\src\samples\include\samples_pack.h
 # End Source File
 # End Group
-# Begin Group "Wavpack"
+# Begin Group "wavpack"
 
 # PROP Default_Filter ""
-# Begin Group "Wavpack Include"
+# Begin Group "wavpack include"
 
 # PROP Default_Filter ""
 # Begin Source File

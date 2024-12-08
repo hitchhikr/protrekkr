@@ -124,7 +124,7 @@ ptps.o: src/files/ptps.cpp
 midi.o: src/midi/midi.cpp
 	$(CXX) -c -o $(@) $(FLAGS) $<
 
-RtMidi.o: src/midi/RtMidi.cpp
+rtmidi.o: src/midi/rtmidi.cpp
 	$(CXX) -c -o $(@) $(FLAGS) $<
 
 midi_dispatch.o: src/midi/midi_dispatch.cpp

@@ -37,7 +37,7 @@
 
 // RtMidi: Version 1.0.11
 
-#include "include/RtMidi.h"
+#include "include/rtmidi.h"
 #include <sstream>
 #include <stdio.h>
 

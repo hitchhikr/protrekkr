@@ -1,9 +1,9 @@
 Microsoft Visual Studio Solution File, Format Version 8.00
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PtkReplay", ".\lib\PtkReplay.vcproj", "{3BC09C15-701E-4557-B9FC-E05133EDF399}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ptkreplay", ".\lib\ptkreplay.vcproj", "{3BC09C15-701E-4557-B9FC-E05133EDF399}"
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Test", "Test.vcproj", "{F0283139-D16E-4607-875A-50F3EA9E6972}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test", "test.vcproj", "{F0283139-D16E-4607-875A-50F3EA9E6972}"
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject

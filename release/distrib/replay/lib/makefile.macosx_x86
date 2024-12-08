@@ -7,7 +7,7 @@ clean: remlibobj
 remlibobj:
 	-rm -f $(LIBOBJS_X86)
 	-rm libptkreplay_x86.a
-	
+
 ptkreplay: $(LIBOBJS_X86)
 	-rm libptkreplay_x86.a
 	ar -s -r libptkreplay_x86.a $(LIBOBJS_X86)

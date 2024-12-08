@@ -1,24 +1,24 @@
-# Microsoft Developer Studio Project File - Name="PtkReplay" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="ptkreplay" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Static Library" 0x0104
 
-CFG=PtkReplay - Win32 Debug
+CFG=ptkreplay - Win32 Debug
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
-!MESSAGE NMAKE /f "PtkReplay.mak".
+!MESSAGE NMAKE /f "ptkreplay.mak".
 !MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "PtkReplay.mak" CFG="PtkReplay - Win32 Debug"
+!MESSAGE NMAKE /f "ptkreplay.mak" CFG="ptkreplay - Win32 Debug"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "PtkReplay - Win32 Release" (based on "Win32 (x86) Static Library")
-!MESSAGE "PtkReplay - Win32 Debug" (based on "Win32 (x86) Static Library")
+!MESSAGE "ptkreplay - Win32 Release" (based on "Win32 (x86) Static Library")
+!MESSAGE "ptkreplay - Win32 Debug" (based on "Win32 (x86) Static Library")
 !MESSAGE 
 
 # Begin Project
@@ -28,7 +28,7 @@ CFG=PtkReplay - Win32 Debug
 CPP=cl.exe
 RSC=rc.exe
 
-!IF  "$(CFG)" == "PtkReplay - Win32 Release"
+!IF  "$(CFG)" == "ptkreplay - Win32 Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
@@ -50,9 +50,9 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
-# ADD LIB32 /nologo /out:"..\PtkReplay.lib"
+# ADD LIB32 /nologo /out:"..\ptkreplay.lib"
 
-!ELSEIF  "$(CFG)" == "PtkReplay - Win32 Debug"
+!ELSEIF  "$(CFG)" == "ptkreplay - Win32 Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
@@ -73,24 +73,24 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
-# ADD LIB32 /nologo /out:"..\PtkReplay.lib"
+# ADD LIB32 /nologo /out:"..\ptkreplay.lib"
 
 !ENDIF 
 
 # Begin Target
 
-# Name "PtkReplay - Win32 Release"
-# Name "PtkReplay - Win32 Debug"
-# Begin Group "Source Files"
+# Name "ptkreplay - Win32 Release"
+# Name "ptkreplay - Win32 Debug"
+# Begin Group "source files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=.\Replay.cpp
+SOURCE=.\replay.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Samples_Unpack.cpp
+SOURCE=.\samples_unpack.cpp
 # End Source File
 # Begin Source File
 
@@ -102,35 +102,35 @@ SOURCE=.\spline.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Synth.cpp
+SOURCE=.\synth.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\TB_303.cpp
+SOURCE=.\tb_303.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\wavpack.cpp
 # End Source File
 # End Group
-# Begin Group "Header Files"
+# Begin Group "header files"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=.\include\Cubic_Spline.h
+SOURCE=.\include\cubic_spline.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Ptk_Properties.h
+SOURCE=..\ptk_properties.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\include\Replay.h
+SOURCE=.\include\replay.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\include\Samples_Unpack.h
+SOURCE=.\include\samples_unpack.h
 # End Source File
 # Begin Source File
 
@@ -142,11 +142,11 @@ SOURCE=.\include\spline.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\include\Synth.h
+SOURCE=.\include\synth.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\include\TB_303.h
+SOURCE=.\include\tb_303.h
 # End Source File
 # Begin Source File
 

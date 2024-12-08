@@ -14,7 +14,7 @@ EXEOBJS_X86 = ptk_x86.o \
               samples_pack_x86.o files_list_x86.o files_x86.o mods_x86.o patterns_x86.o reverbs_x86.o midi_cfg_x86.o \
               bits_x86.o pack_x86.o tinypack_x86.o words_x86.o wputils_x86.o \
               config_x86.o 303s_x86.o synths_x86.o insts_x86.o ptps_x86.o \
-              midi_x86.o RtMidi_x86.o midi_dispatch_x86.o \
+              midi_x86.o rtmidi_x86.o midi_dispatch_x86.o \
               timer_x86.o main_x86.o sdlmain_x86.o \
               misc_draw_x86.o draw_primitives_x86.o requesters_x86.o \
               samples_ops_x86.o aiff_x86.o riff_x86.o \
@@ -122,7 +122,7 @@ ptps_x86.o: src/files/ptps.cpp
 midi_x86.o: src/midi/midi.cpp
 	$(CXX) -c -o $(@) $(FLAGS_X86) $<
 
-RtMidi_x86.o: src/midi/RtMidi.cpp
+rtmidi_x86.o: src/midi/rtmidi.cpp
 	$(CXX) -c -o $(@) $(FLAGS_X86) $<
 
 midi_dispatch_x86.o: src/midi/midi_dispatch.cpp
