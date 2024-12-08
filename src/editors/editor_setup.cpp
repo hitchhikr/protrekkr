@@ -157,7 +157,7 @@ void Actualize_Master_Ed(char gode)
             Song_Stop();
             AUDIO_Stop_Sound_Buffer();
             AUDIO_Create_Sound_Buffer(AUDIO_Milliseconds);
-            Init_Scopes_Buffers();
+            Init_Scopes_VuMeters_Buffers();
             AUDIO_Play();
         }
 

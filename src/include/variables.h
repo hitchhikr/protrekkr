@@ -315,17 +315,18 @@
 #define LIVE_PARAM_303_1_VOLUME 23
 #define LIVE_PARAM_303_2_VOLUME 24
 
-#define SCOPE_ZONE_SCOPE 0
-#define SCOPE_ZONE_MOD_DIR 1
-#define SCOPE_ZONE_INSTR_DIR 2
-#define SCOPE_ZONE_PRESET_DIR 3
-#define SCOPE_ZONE_INSTR_LIST 4
-#define SCOPE_ZONE_SYNTH_LIST 5
-#define SCOPE_ZONE_REVERB_DIR 6
-#define SCOPE_ZONE_PATTERN_DIR 7
-#define SCOPE_ZONE_SAMPLE_DIR 8
-#define SCOPE_ZONE_MIDICFG_DIR 9
-#define SCOPE_LAST_DIR 10
+#define SCOPE_ZONE_VUMETERS 0
+#define SCOPE_ZONE_SCOPE 1
+#define SCOPE_ZONE_MOD_DIR 2
+#define SCOPE_ZONE_INSTR_DIR 3
+#define SCOPE_ZONE_PRESET_DIR 4
+#define SCOPE_ZONE_INSTR_LIST 5
+#define SCOPE_ZONE_SYNTH_LIST 6
+#define SCOPE_ZONE_REVERB_DIR 7
+#define SCOPE_ZONE_PATTERN_DIR 8
+#define SCOPE_ZONE_SAMPLE_DIR 9
+#define SCOPE_ZONE_MIDICFG_DIR 10
+#define SCOPE_LAST_DIR 11
 
 #define MIN_VUMETER 22
 #define MAX_VUMETER 155
@@ -471,6 +472,8 @@ extern char sas;
 
 extern float *Scope_Dats[MAX_TRACKS];
 extern float *Scope_Dats_LeftRight[2];
+extern float *VuMeters_Dats_L[MAX_TRACKS];
+extern float *VuMeters_Dats_R[MAX_TRACKS];
 
 extern SDL_Surface *SKIN303;
 extern SDL_Surface *LOGOPIC;
@@ -596,8 +599,9 @@ void Display_Master_Comp(void);
 void Display_Master_Volume(void);
 void Display_Shuffle(void);
 void Actualize_Input(void);
+void Draw_VuMeters(void);
 void Draw_Scope(void);
-int Init_Scopes_Buffers(void);
+int Init_Scopes_VuMeters_Buffers(void);
 
 void Remove_Title(void);
 void Switch_Cmd_Playing(int Enable);

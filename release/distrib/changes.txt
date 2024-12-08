@@ -2,14 +2,16 @@
 ProTrekkr releases history
 ===============================================================================
 
-v2.7.4
+v2.7.5
 
-- Sample editor keeps loop information intact whenever possible.
+- Sample editor tries to keep loop information intact whenever possible.
 - Synth distortion can now have positive or negative values.
 - Synth ENV 1 & 2 can be directed to drive synth distortion.
 - Synth LVO 1 & 2 can be directed to drive synth distortion as well.
 - Removed broken instruments and presets from distribution.
 - Fixed a couple of bugs here and there.
+- Added replay routine support for AROS.
+- Added global stereo VU meters view for each channel.
 
 v2.7.3
 

@@ -855,6 +855,8 @@ int delay_time;
     extern int Chan_Midi_Prg[MAX_TRACKS];
     float *Scope_Dats[MAX_TRACKS];
     float *Scope_Dats_LeftRight[2];
+    float *VuMeters_Dats_L[MAX_TRACKS];
+    float *VuMeters_Dats_R[MAX_TRACKS];
     int pos_scope;
     int pos_scope_latency;
     extern signed char c_midiin;
@@ -1215,7 +1217,7 @@ int STDCALL Ptk_InitDriver(void)
     }
 
 #if !defined(__STAND_ALONE__)
-    if(!Init_Scopes_Buffers()) return(FALSE);
+    if(!Init_Scopes_VuMeters_Buffers()) return(FALSE);
 #endif
 
     AUDIO_Play();
@@ -1845,12 +1847,31 @@ void PTKEXPORT Ptk_ReleaseDriver(void)
 #if !defined(__STAND_ALONE__)
     for(i = 0; i < MAX_TRACKS; i++)
     {  
-        if(Scope_Dats[i]) free(Scope_Dats[i]);
+        if(Scope_Dats[i])
+        {
+            free(Scope_Dats[i]);
+        }
         Scope_Dats[i] = NULL;
+        if(VuMeters_Dats_L[i])
+        {
+            free(VuMeters_Dats_L[i]);
+        }
+        VuMeters_Dats_L[i] = NULL;
+        if(VuMeters_Dats_R[i])
+        {
+            free(VuMeters_Dats_R[i]);
+        }
+        VuMeters_Dats_R[i] = NULL;
     }
-    if(Scope_Dats_LeftRight[0]) free(Scope_Dats_LeftRight[0]);
+    if(Scope_Dats_LeftRight[0])
+    {
+        free(Scope_Dats_LeftRight[0]);
+    }
     Scope_Dats_LeftRight[0] = NULL;
-    if(Scope_Dats_LeftRight[1]) free(Scope_Dats_LeftRight[1]);
+    if(Scope_Dats_LeftRight[1])
+    {
+        free(Scope_Dats_LeftRight[1]);
+    }
     Scope_Dats_LeftRight[1] = NULL;
 #endif
 
@@ -3932,11 +3953,15 @@ ByPass_Wav:
 #if !defined(__STAND_ALONE__)
         if(!Chan_Mute_State[c])
         {
-            Scope_Dats[c][pos_scope] = (All_Signal_L + All_Signal_R) * 0.15f;
+            Scope_Dats[c][pos_scope] = ((All_Signal_L + All_Signal_R) * 0.2f) * mas_vol;
+            VuMeters_Dats_L[c][pos_scope] = All_Signal_L * mas_vol;
+            VuMeters_Dats_R[c][pos_scope] = All_Signal_R * mas_vol;
         }
         else
         {
             Scope_Dats[c][pos_scope] = 0.0f;
+            VuMeters_Dats_L[c][pos_scope] = 0.0f;
+            VuMeters_Dats_R[c][pos_scope] = 0.0f;
         }
 #endif
     } // Song_Tracks

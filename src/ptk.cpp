@@ -709,9 +709,15 @@ int Screen_Update(void)
         }
     }
 
-    if(Scopish == SCOPE_ZONE_SCOPE)
+    switch(Scopish)
     {
-        Draw_Scope();
+        case SCOPE_ZONE_VUMETERS:
+            Draw_VuMeters();
+            break;
+
+        case SCOPE_ZONE_SCOPE:
+            Draw_Scope();
+            break;
     }
 
     // Sample ed. stuff
@@ -5803,6 +5809,13 @@ void Mouse_Handler(void)
             Draw_Scope_Files_Button();
         }
 
+        // Tracks vumeters.
+        if(Check_Mouse(Cur_Width - 72, 6, 18, 16))
+        {
+            Scopish = SCOPE_ZONE_VUMETERS;
+            Draw_Scope_Files_Button();
+        }
+
         // Tracks scopes.
         if(Check_Mouse(Cur_Width - 54, 6, 18, 16))
         {
@@ -6668,10 +6681,10 @@ void Display_Master_Volume(void)
 
     if(mas_vol < 0.01f) mas_vol = 0.01f;
     if(mas_vol > 1.0f) mas_vol = 1.0f;
-    Gui_Draw_Button_Box(394, 6, 44, 16, "Mst Vol.", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
-    Real_Slider(394 + 44, 6, (int) (mas_vol * 128.0f), TRUE);
+    Gui_Draw_Button_Box(394, 6, 28, 16, "Mast", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
+    Real_Slider(394 + 28, 6, (int) (mas_vol * 128.0f), TRUE);
     sprintf(String, "%d%%", (int) (mas_vol * 100.0f));
-    Print_String(String, 394 + 44, 8, 145, BUTTON_TEXT_CENTERED);
+    Print_String(String, 394 + 28, 8, 145, BUTTON_TEXT_CENTERED);
 }
 
 // ------------------------------------------------------
@@ -6682,12 +6695,12 @@ void Display_Shuffle(void)
 
     if(shuffle_amount > 100) shuffle_amount = 100;
     if(shuffle_amount < 0) shuffle_amount = 0;
-    Gui_Draw_Button_Box(586, 6, 40, 16, "Shuffle", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
+    Gui_Draw_Button_Box(570, 6, 40, 16, "Shuffle", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
 
-    Real_Slider_Size(586 + 40, 6, 100, shuffle_amount, TRUE);
+    Real_Slider_Size(570 + 40, 6, 100, shuffle_amount, TRUE);
     sprintf(string, "%d%%", shuffle_amount);
-    Print_String(string, 586 + 40, 8, 116, BUTTON_TEXT_CENTERED);
-    Gui_Draw_Button_Box(746, 6, Cur_Width - 802, 16, NULL, BUTTON_NORMAL | BUTTON_DISABLED);
+    Print_String(string, 570 + 40, 8, 116, BUTTON_TEXT_CENTERED);
+    Gui_Draw_Button_Box(730, 6, Cur_Width - 802, 16, NULL, BUTTON_NORMAL | BUTTON_DISABLED);
 }
 
 // ------------------------------------------------------
@@ -6709,17 +6722,17 @@ void Mouse_Sliders_Master_Shuffle(void)
     }
 
     // Master volume
-    if(Check_Mouse(438, 6, 148, 18))
+    if(Check_Mouse(422, 6, 148, 18))
     {
         // Normalized
-        mas_vol = (Mouse.x - 448.0f) / 128.0f;
+        mas_vol = (Mouse.x - 432.0f) / 128.0f;
         Display_Master_Volume();
     }
 
     // Shuffle
-    if(Check_Mouse(586 + 40, 6, 120, 18))
+    if(Check_Mouse(586 + 24, 6, 120, 18))
     {
-        shuffle_amount = (int) ((Mouse.x - (586 + 40 + 10)));
+        shuffle_amount = (int) ((Mouse.x - (586 + 24 + 10)));
         Display_Shuffle();
     }
 }
@@ -7136,7 +7149,7 @@ void Draw_Scope(void)
     }
 }
 
-int Init_Scopes_Buffers(void)
+int Init_Scopes_VuMeters_Buffers(void)
 {
     int i;
 
@@ -7144,21 +7157,191 @@ int Init_Scopes_Buffers(void)
     pos_scope_latency = 0;
     for(i = 0; i < MAX_TRACKS; i++)
     {  
-        if(Scope_Dats[i]) free(Scope_Dats[i]);
+        if(Scope_Dats[i])
+        {
+            free(Scope_Dats[i]);
+        }
         Scope_Dats[i] = (float *) malloc(((AUDIO_Latency + 1) + (512 * 4)) * 2 * sizeof(float));
-        if(!Scope_Dats[i]) return(FALSE);
+        if(!Scope_Dats[i])
+        {
+            return(FALSE);
+        }
         memset(Scope_Dats[i], 0, ((AUDIO_Latency + 1) + (512 * 4)) * 2 * sizeof(float));
+
+        if(VuMeters_Dats_L[i])
+        {
+            free(VuMeters_Dats_L[i]);
+        }
+        VuMeters_Dats_L[i] = (float *) malloc(((AUDIO_Latency + 1) + (512 * 4)) * 2 * sizeof(float));
+        if(!VuMeters_Dats_L[i])
+        {
+            return(FALSE);
+        }
+        memset(VuMeters_Dats_L[i], 0, ((AUDIO_Latency + 1) + (512 * 4)) * 2 * sizeof(float));
+
+        if(VuMeters_Dats_R[i])
+        {
+            free(VuMeters_Dats_R[i]);
+        }
+        VuMeters_Dats_R[i] = (float *) malloc(((AUDIO_Latency + 1) + (512 * 4)) * 2 * sizeof(float));
+        if(!VuMeters_Dats_R[i])
+        {
+            return(FALSE);
+        }
+        memset(VuMeters_Dats_R[i], 0, ((AUDIO_Latency + 1) + (512 * 4)) * 2 * sizeof(float));
     }
 
-    if(Scope_Dats_LeftRight[0]) free(Scope_Dats_LeftRight[0]);
-    if(Scope_Dats_LeftRight[1]) free(Scope_Dats_LeftRight[1]);
+    if(Scope_Dats_LeftRight[0])
+    {
+        free(Scope_Dats_LeftRight[0]);
+    }
+    if(Scope_Dats_LeftRight[1])
+    {
+        free(Scope_Dats_LeftRight[1]);
+    }
     Scope_Dats_LeftRight[0] = (float *) malloc(((AUDIO_Latency + 1) + (512 * 4)) * 2 * sizeof(float));
-    if(!Scope_Dats_LeftRight[0]) return(FALSE);
+    if(!Scope_Dats_LeftRight[0])
+    {
+        return(FALSE);
+    }
     Scope_Dats_LeftRight[1] = (float *) malloc(((AUDIO_Latency + 1) + (512 * 4)) * 2 * sizeof(float));
-    if(!Scope_Dats_LeftRight[1]) return(FALSE);
+    if(!Scope_Dats_LeftRight[1])
+    {
+        return(FALSE);
+    }
     memset(Scope_Dats_LeftRight[0], 0, ((AUDIO_Latency + 1) + (512 * 4)) * 2 * sizeof(float));
     memset(Scope_Dats_LeftRight[1], 0, ((AUDIO_Latency + 1) + (512 * 4)) * 2 * sizeof(float));
     return(TRUE);
+}
+
+// ------------------------------------------------------
+// Draw the vumeters
+void Draw_VuMeters(void)
+{
+    int i;
+    int j;
+    LPDAT_POS_SCOPE ptrTbl_Dat;
+    float pos_in_line;
+    float datas;
+    float MaxLevel_L;
+    float MaxLevel_R;
+    int i_MaxLevel_L;
+    int i_MaxLevel_R;
+    int bottom_line;
+    int peak_line;
+    int offset_scope = pos_scope_latency;
+    int x_max;
+    int x_max_half;
+    int x_max_half_start;
+    int nibble_pos;
+    int active_channel;
+    int max_right = Cur_Width - 395;
+    int cur_pos_x = 394;
+    int pixel_color = COL_SCOPESSAMPLES;
+    int scope_pos = Get_Song_Position();
+    int start_pos_x;
+
+    SetColor(COL_BACKGROUND);
+    Fillrect(394, 42, Cur_Width, 179);
+
+    // Tracks
+    ptrTbl_Dat = &Scope_Table_Dats[Scope_Table[Song_Tracks].offset];
+    for(i = 0; i < Scope_Table[Song_Tracks].nbr; i++)
+    {
+        if(ptrTbl_Dat->x_div)
+        {
+            nibble_pos = ((max_right / ptrTbl_Dat->x_div) * ptrTbl_Dat->x_mul);
+        }
+        else
+        {
+            nibble_pos = 0;
+            cur_pos_x = 394;
+        }
+        // Print the number of the track
+        if(Chan_Active_State[scope_pos][i])
+        {
+            PrintString(cur_pos_x + 4, 44 + (ptrTbl_Dat->y_pos - ptrTbl_Dat->y_large),
+                        USE_FONT, table_channels_scopes[i]);
+            active_channel = TRUE;
+        }
+        else
+        {
+            PrintString(cur_pos_x + 4, 44 + (ptrTbl_Dat->y_pos - ptrTbl_Dat->y_large),
+                        USE_FONT_LOW,
+                        table_channels_scopes[i]);
+            active_channel = FALSE;
+        }
+        x_max = max_right / ptrTbl_Dat->x_max;
+        if(!nibble_pos)
+        {
+            x_max += max_right % ptrTbl_Dat->x_max;
+        }
+        MaxLevel_L = 0.0f;  
+        MaxLevel_R = 0.0f;  
+        start_pos_x = cur_pos_x;
+        x_max_half = x_max >> 2;
+        x_max_half_start = x_max_half ;
+        for(int s = 0; s < x_max; s++)
+        {
+            // [0..1]
+            pos_in_line = ((float) s) / (float) x_max;
+
+            datas = VuMeters_Dats_L[i][offset_scope + (int) (pos_in_line * 128)];
+            datas = fabsf(datas);
+            if(datas > MaxLevel_L)
+            {
+                MaxLevel_L = (int) datas;
+            }
+            MaxLevel_L *= 0.002f;
+            if(MaxLevel_L > ((ptrTbl_Dat->y_large << 1) - 2))
+            {
+                MaxLevel_L = (ptrTbl_Dat->y_large << 1) - 2;
+            }
+
+            datas = VuMeters_Dats_R[i][offset_scope + (int) (pos_in_line * 128)];
+            datas = fabsf(datas);
+            if(datas > MaxLevel_R)
+            {
+                MaxLevel_R = (int) datas;
+            }
+            MaxLevel_R *= 0.002f;
+            if(MaxLevel_R > ((ptrTbl_Dat->y_large << 1) - 2))
+            {
+                MaxLevel_R = (ptrTbl_Dat->y_large << 1) - 2;
+            }
+            peak_line = (ptrTbl_Dat->y_large << 1) - (ptrTbl_Dat->y_large >> 1);
+            i_MaxLevel_L = MaxLevel_L;
+            i_MaxLevel_R = MaxLevel_R;
+            bottom_line = 44 + (ptrTbl_Dat->y_pos + ptrTbl_Dat->y_large);
+            
+            for(j = 0; j < i_MaxLevel_L + 1; j += 2)
+            {
+                if(j > peak_line)
+                {
+                    DrawHLine(bottom_line - j, start_pos_x + x_max_half_start + 2, start_pos_x + x_max_half_start + x_max_half - 4, COL_VUMETERPEAK);
+                }
+                else
+                {
+                    DrawHLine(bottom_line - j, start_pos_x  + x_max_half_start + 2, start_pos_x  + x_max_half_start + x_max_half - 4, COL_VUMETER);
+                }
+            }
+
+            for(j = 0; j < i_MaxLevel_R + 1; j += 2)
+            {
+                if(j > peak_line)
+                {
+                    DrawHLine(bottom_line - j, start_pos_x  + x_max_half_start + x_max_half + 2, start_pos_x  + x_max_half_start + x_max_half + x_max_half - 4, COL_VUMETERPEAK);
+                }
+                else
+                {
+                    DrawHLine(bottom_line - j, start_pos_x  + x_max_half_start + x_max_half + 2, start_pos_x  + x_max_half_start + x_max_half + x_max_half - 4, COL_VUMETER);
+                }
+            }
+            cur_pos_x++;
+        }
+        ptrTbl_Dat++;
+        pixel_color = COL_SCOPESSAMPLES;
+    }
 }
 
 void Display_Dirs_Icons(int Idx)
@@ -7195,9 +7378,18 @@ void Draw_Scope_Files_Button(void)
 {
     switch(Scopish)
     {
+        case SCOPE_ZONE_VUMETERS:
+            Draw_VuMeters();
+            Gui_Draw_Button_Box(394, 24, Cur_Width - 522, 16, NULL, BUTTON_NORMAL | BUTTON_DISABLED);
+            Gui_Draw_Button_Box(Cur_Width - 72, 6, 16, 16, "\215", BUTTON_PUSHED | BUTTON_TEXT_CENTERED);
+            Gui_Draw_Button_Box(Cur_Width - 54, 6, 16, 16, "\255", BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
+            Display_Dirs_Icons(0);
+            break;
+
         case SCOPE_ZONE_SCOPE:
             Draw_Scope();
             Gui_Draw_Button_Box(394, 24, Cur_Width - 522, 16, NULL, BUTTON_NORMAL | BUTTON_DISABLED);
+            Gui_Draw_Button_Box(Cur_Width - 72, 6, 16, 16, "\215", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
             Gui_Draw_Button_Box(Cur_Width - 54, 6, 16, 16, "\255", BUTTON_PUSHED | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
 
             Display_Dirs_Icons(0);
@@ -7205,6 +7397,7 @@ void Draw_Scope_Files_Button(void)
 
         case SCOPE_ZONE_INSTR_LIST:
             Actualize_Instruments_Synths_List(0);
+            Gui_Draw_Button_Box(Cur_Width - 72, 6, 16, 16, "\215", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
             Gui_Draw_Button_Box(Cur_Width - 54, 6, 16, 16, "\255", BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
 
             Display_Dirs_Icons(1);
@@ -7212,6 +7405,7 @@ void Draw_Scope_Files_Button(void)
 
         case SCOPE_ZONE_SYNTH_LIST:
             Actualize_Instruments_Synths_List(0);
+            Gui_Draw_Button_Box(Cur_Width - 72, 6, 16, 16, "\215", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
             Gui_Draw_Button_Box(Cur_Width - 54, 6, 16, 16, "\255", BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
 
             Display_Dirs_Icons(2);
@@ -7228,6 +7422,7 @@ void Draw_Scope_Files_Button(void)
             Read_SMPT();
             Dump_Files_List(395, 41);
             Actualize_Files_List(0);
+            Gui_Draw_Button_Box(Cur_Width - 72, 6, 16, 16, "\215", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
             Gui_Draw_Button_Box(Cur_Width - 54, 6, 16, 16, "\255", BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
 
             switch(Scopish)

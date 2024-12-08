@@ -121,8 +121,8 @@ char *Font_Ascii =
     "\360\361\362\363\364\365\366\367\370\372"
     ///   (   )   :
     "\373\374\375\376"
-    //.   -   |>  ||  Wave Y expand shrink
-    "\250\251\253\254\255\016\017"
+    //.   -   |>  ||  Wave Y expand shrink vu-meters
+    "\250\251\253\254\255\016\017\215"
     " ";
 int Font_Pos[256];
 int Font_Size[256];
@@ -2827,7 +2827,7 @@ void Set_Channel_State_Pic(int x, int color, int inv_color)
     Pix = (unsigned char *) Temp_PFONT_DOUBLE->pixels;
 
     Pix += ((16 * 16) * Temp_PFONT_DOUBLE->pitch) + x;
-    for(j = 0; j < 15; j++)
+    for(j = 0; j < 14; j++)
     {
         for(i = 0; i < 27; i++)
         {
