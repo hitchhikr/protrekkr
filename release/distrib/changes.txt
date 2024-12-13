@@ -4,7 +4,7 @@ ProTrekkr releases history
 
 v2.7.6
 
-- Fixing keyboard handling on Mac OS.
+- Fixed keyboard handling on Mac OS.
 
 v2.7.5
 
