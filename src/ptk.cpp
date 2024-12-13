@@ -6681,7 +6681,7 @@ void Display_Master_Volume(void)
 
     if(mas_vol < 0.01f) mas_vol = 0.01f;
     if(mas_vol > 1.0f) mas_vol = 1.0f;
-    Gui_Draw_Button_Box(394, 6, 28, 16, "Mast", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
+    Gui_Draw_Button_Box(394, 6, 28, 16, "M.Vol", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
     Real_Slider(394 + 28, 6, (int) (mas_vol * 128.0f), TRUE);
     sprintf(String, "%d%%", (int) (mas_vol * 100.0f));
     Print_String(String, 394 + 28, 8, 145, BUTTON_TEXT_CENTERED);

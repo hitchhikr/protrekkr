@@ -2573,7 +2573,10 @@ int Get_Line_Over_Mouse(int *Need_Scroll)
     int mouse_line = (Mouse.y - (184 + (chars_height * 2)));
     *Need_Scroll = 0;
     // (Highlight line is doubled)
-    if(mouse_line >= ((VIEWLINE + 1) * chars_height)) mouse_line -= chars_height;
+    if(mouse_line >= ((VIEWLINE + 1) * chars_height))
+    {
+        mouse_line -= chars_height;
+    }
     mouse_line /= chars_height;
     mouse_line -= VIEWLINE;
     mouse_line += Pattern_Line;
@@ -2592,7 +2595,10 @@ int Get_Line_Over_Mouse(int *Need_Scroll)
             *Need_Scroll = -(-(VIEWLINE - Pattern_Line) - mouse_line);
         }
     }
-    if(mouse_line > patternLines[pSequence[Cur_Position]] - 1) mouse_line = patternLines[pSequence[Cur_Position]] - 1;
+    if(mouse_line > patternLines[pSequence[Cur_Position]] - 1)
+    {
+        mouse_line = patternLines[pSequence[Cur_Position]] - 1;
+    }
     if(mouse_line < 0)
     {
         mouse_line = 0;
