@@ -28,7 +28,7 @@ Notice that you'll need SDL 1 (only to compile the tracker, the replay routines 
 > **When compiling for Linux or Mac OS: Use libSDL12 and NOT libSDL12-compat.**<br><br>
 > **On Linux use libsdl12-dev and on Mac OS use libsdl from Mac Ports.**<br><br>
 > **If your Linux distribution doesn't include SDL 1.2 then try your luck here:<br>https://github.com/libsdl-org/SDL-1.2**<br><br>
-> **"ptk_vx.x.x_macosx_ia64_ogl.zip" may be problematic on some versions of Mac OS (ulterior to Catalina), use ptk_vx.x.x_macosx_ia64.zip" instead.**
+> **"ptk_vx.x.x_macosx_ia64_ogl.zip" may be problematic on some versions of Mac OS (ulterior to Catalina), on those you should use ptk_vx.x.x_macosx_ia64.zip" instead.**
 
 ---
 This is a FREEWARE tool, this means that you can use it for whatever you want and for free.
