@@ -37,7 +37,7 @@
 // Constants
 // This is a nasty hack: we should have a specific ASCII buffer
 // instead of using the unicode one.
-#if !defined(__MACOSX_PPC__)
+#if !defined(__MACOSX_PPC__) && !defined(__MACOSX_X86__)
 #define UNICODE_OFFSET1 0x20
 #define UNICODE_OFFSET2 0x60
 #else

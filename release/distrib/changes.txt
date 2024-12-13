@@ -2,6 +2,10 @@
 ProTrekkr releases history
 ===============================================================================
 
+v2.7.6
+
+- Fixing keyboard handling on Mac OS.
+
 v2.7.5
 
 - Sample editor tries to keep loop information intact whenever possible.
