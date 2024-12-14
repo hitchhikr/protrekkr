@@ -37,7 +37,7 @@
 #include "../include/ptk.h"
 
 #include "include/midi.h"
-#include "include/RtMidi.h"
+#include "include/rtmidi.h"
 #include "include/midi_dispatch.h"
 
 // ------------------------------------------------------
