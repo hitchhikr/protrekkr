@@ -1752,6 +1752,7 @@ void Swap_Sample(short *buffer, int sample, int bank)
 #endif
 }
 
+#if !defined(__WINAMP__)
 // ------------------------------------------------------
 // Create a new buffer and switch the endianness of a sample
 short *Swap_New_Sample(short *buffer, int sample, int bank)
@@ -1835,6 +1836,7 @@ int Write_Data_Swap(void *value, int size, int amount, FILE *handle)
     }
     return(TRUE);
 }
+#endif
 
 // ------------------------------------------------------
 // Read data from a file

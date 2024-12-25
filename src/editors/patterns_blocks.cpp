@@ -2125,6 +2125,7 @@ int Alloc_Patterns_Pool(void)
 
 // ------------------------------------------------------
 // Return the number of nibbles in a track
+#if !defined(__STAND_ALONE__) && !defined(__WINAMP__)
 int Get_Max_Nibble_Track(char *Buffer_Multinotes, char *Buffer_Effects, int track)
 {
     return((Buffer_Multinotes[track] * 3) +
@@ -2318,7 +2319,6 @@ int Get_Max_Nibble_All_Tracks(void)
 // ------------------------------------------------------
 // Return 1 if a column is compatible to another according to a table
 // return 0 otherwise
-#if !defined(__STAND_ALONE__) && !defined(__WINAMP__)
 int Are_Columns_Compatible(int type_src, int type_dst)
 {
     int i;
