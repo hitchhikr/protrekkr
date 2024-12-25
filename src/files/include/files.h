@@ -77,9 +77,50 @@ extern int wait_AutoSave;
 extern gear303 tb303engine[2];
 extern para303 tb303[2];
 
+#if defined(BZR2)
+struct CustomFile
+{
+    CustomFile(const uint8_t *data, size_t size) : buf(data), maxSize(size) {}
+    const uint8_t* buf;
+    size_t maxSize;
+    size_t pos = 0;
+
+    int Read(void *dst, size_t size, size_t count)
+    {
+        auto newPos = pos + size * count;
+        if(newPos > maxSize)
+        {
+            if(pos < maxSize)
+            {
+                memcpy(dst, buf + pos, maxSize - pos);
+                memset(reinterpret_cast<char *>(dst) + maxSize - pos, 0, newPos - maxSize);
+                count = (maxSize - pos) / size;
+            }
+            else
+            {
+                memset(dst, 0, size * count);
+                count = 0;
+            }
+            newPos = maxSize;
+        }
+        else
+        {
+            memcpy(dst, buf + pos, size * count);
+        }
+        pos = newPos;
+        return int(count);
+    }
+};
+#endif
+
 // ------------------------------------------------------
 // Functions
+#if !defined(BZR2)
 int Load_Ptk(char *FileName);
+#else
+int Load_Ptk(CustomFile customFile);
+#endif
+
 int Save_Ptk(char *FileName, int NewFormat, int Simulate, Uint8 *Memory);
 void Backup_Module(char *FileName);
 int Pack_Module(char *FileName);
@@ -92,15 +133,26 @@ void Song_Stop(void);
 void Free_Samples(void);
 Uint8 *Pack_Data(Uint8 *Memory, int *Len);
 Uint8 *Depack_Data(Uint8 *Memory, int Size, int size_out);
+#if !defined(BZR2)
 int Get_File_Size(FILE *Handle);
+#else
+int Get_File_Size(CustomFile &Handle);
+#endif
 int Calc_Length(void);
 void Reset_Song_Length(void);
 void Clear_Input(void);
 int File_Exist(char *Format, char *Directory, char *FileName);
 int File_Exist_Req(char *Format, char *Directory, char *FileName);
 void Init_Tracker_Context_After_ModLoad(void);
+
+#if !defined(BZR2)
 int Read_Data(void *value, int size, int amount, FILE *handle);
 int Read_Data_Swap(void *value, int size, int amount, FILE *handle);
+#else
+int Read_Data(void *value, int size, int amount, CustomFile &handle);
+int Read_Data_Swap(void *value, int size, int amount, CustomFile &handle);
+#endif
+
 int Write_Data(void *value, int size, int amount, FILE *handle);
 int Write_Data_Swap(void *value, int size, int amount, FILE *handle);
 void Swap_Sample(short *buffer, int sample, int bank);

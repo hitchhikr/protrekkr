@@ -37,8 +37,11 @@
 #include "files.h"
 #include "reverbs.h"
 #include "../../editors/include/patterns_blocks.h"
+
+#if !defined(BZR2)
 #include "../../midi/include/midi.h"
 #include "../../ui/include/misc_draw.h"
+#endif
 
 // ------------------------------------------------------
 // Structures

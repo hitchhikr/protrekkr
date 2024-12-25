@@ -37,6 +37,7 @@
 #include "tb_303.h"
 #include "cubic_spline.h"
 #include "spline.h"
+#if !defined(BZR2)
 #if defined(__WIN32__)
 #include "../sounddriver/include/sounddriver_windows.h"
 #elif defined(__FREEBSD__)
@@ -61,6 +62,9 @@
 #include "../sounddriver/include/sounddriver_haiku.h"
 #else
 #error "No sound driver defined !"
+#endif
+#else
+#include "sounddriver_dummy.h"
 #endif
 #include "samples_unpack.h"
 #include "ptkreplay.h"

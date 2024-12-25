@@ -34,15 +34,21 @@
 
 // ------------------------------------------------------
 // Includes
+#if !defined(BZR2)
 #include "../support/include/main.h"
+#else
+#include <cstdio>
+#endif
 
 #include "../samples/wav/include/riff.h"
 #include "../samples/aiff/include/aiff.h"
 #include "../include/variables.h"
 
+#if !defined(BZR2)
 #include "../ui/include/misc_draw.h"
 #include "../ui/include/draw_primitives.h"
 #include "../ui/include/requesters.h"
+#endif
 
 #include "../files/include/files.h"
 #include "../files/include/files_list.h"
@@ -52,6 +58,7 @@
 #include "../files/include/midi_cfg.h"
 #include "../files/include/patterns.h"
 
+#if !defined(BZR2)
 #include "../editors/include/editor_setup.h"
 #include "../editors/include/editor_midi.h"
 #include "../editors/include/editor_303.h"
@@ -70,6 +77,7 @@
 #include "../support/include/timer.h"
 
 #include "../midi/include/midi.h"
+#endif
 
 #include "../../release/distrib/replay/lib/include/endianness.h"
 #include "../../release/distrib/replay/lib/include/replay.h"
@@ -88,7 +96,9 @@ class skin_file
 };
 
 extern list <skin_file> skin_files;
+#if !defined(BZR2)
 extern REQUESTER Exit_Requester;
+#endif
 
 // ------------------------------------------------------
 // Structures
@@ -101,8 +111,10 @@ typedef struct
 
 // ------------------------------------------------------
 // Variables
+#if !defined(BZR2)
 extern SDL_Surface *Main_Screen;
 extern MOUSE Mouse;
+#endif
 
 #if defined(__WIN32__)
 #include <mmsystem.h>
@@ -135,7 +147,9 @@ int Init_Context(void);
 void Destroy_Context(void);
 int Screen_Update(void);
 void STDCALL Mixer(Uint8 *Buffer, Uint32 Len);
+#if !defined(BZR2)
 SDL_Surface *Load_Skin_Picture(char *name);
+#endif
 LPJAZZ_KEY Get_Jazz_Key_Off(JAZZ_KEY Pool[MAX_TRACKS][MAX_POLYPHONY], int Note);
 int Discard_Key_Note_Off(JAZZ_KEY Pool[MAX_TRACKS][MAX_POLYPHONY], int Channel, int Sub_Channel);
 void Set_Default_Channels_Polyphony(void);

@@ -31,7 +31,11 @@
 
 // ------------------------------------------------------
 // Includes
+#if !defined(BZR2)
 #include "../extralibs/zlib-1.2.3/zlib.h"
+#else
+#include "zlib.h"
+#endif
 
 #include "../include/ptk.h"
 #include "include/files.h"
@@ -41,6 +45,8 @@
 #include "include/303s.h"
 #include "include/synths.h"
 #include "include/ptps.h"
+
+#if !defined(BZR2)
 #include "../ui/include/misc_draw.h"
 #include "../samples/include/samples_pack.h"
 #include "../editors/include/editor_synth.h"
@@ -56,6 +62,7 @@
 #include "../editors/include/editor_track_fx.h"
 #include "../editors/include/editor_track.h"
 #include "../editors/include/editor_pattern.h"
+#endif
 
 #include "../../release/distrib/replay/lib/include/endianness.h"
 
@@ -81,11 +88,22 @@ int Final_Mod_Length;
 
 // ------------------------------------------------------
 // Functions
+#if !defined(BZR2)
 int Read_Mod_Data(void *Datas, int Unit, int Length, FILE *Handle);
 int Read_Mod_Data_Swap(void *Datas, int Unit, int Length, FILE *Handle);
 short *Unpack_Sample(FILE *FileHandle, int Dest_Length, char Pack_Type, int BitRate);
+#else
+int Read_Mod_Data(void *Datas, int Unit, int Length, CustomFile &Handle);
+int Read_Mod_Data_Swap(void *Datas, int Unit, int Length, CustomFile &Handle);
+short *Unpack_Sample(CustomFile &FileHandle, int Dest_Length, char Pack_Type, int BitRate);
+#endif
+
 void Swap_Short_Buffer(short *buffer, int size);
 short *Swap_New_Sample(short *buffer, int sample, int bank);
+
+#if defined(BZR2)
+char customPtkName[20] = { 0 };
+#endif
 
 // ------------------------------------------------------
 // Prepare the tracker interface once a module has been loaded
@@ -150,7 +168,11 @@ void Init_Tracker_Context_After_ModLoad(void)
 
 // ------------------------------------------------------
 // Load a module file
+#if !defined(BZR2)
 int Load_Ptk(char *FileName)
+#else
+int Load_Ptk(CustomFile customFile)
+#endif
 {
     int Ye_Old_Phony_Value;
     int New_adsr = FALSE;
@@ -194,17 +216,29 @@ int Load_Ptk(char *FileName)
     int UnPacked_Size;
     int Flanger_Bug = FALSE;
     unsigned char *Packed_Module = NULL;
+
+#if !defined(BZR2)
     FILE *in;
+#else
+    auto &in = customFile;
+#endif
 
     Mod_Simulate = LOAD_READ;
     Mod_Mem_Pos = 0;
     Mod_Memory = NULL;
 
+#if !defined(BZR2)
     in = fopen(FileName, "rb");
+#endif
+
     Old_Ntk = FALSE;
     Ntk_Beta = FALSE;
 
+#if !defined(BZR2)
     if(in != NULL)
+#else
+    if(1)
+#endif
     {
 
 #if !defined(__WINAMP__)
@@ -331,7 +365,12 @@ Read_Mod_File:
             }
         }
 
+#if !defined(BZR2)
         Read_Mod_Data(FileName, sizeof(char), 20, in);
+#else
+        Read_Mod_Data(customPtkName, sizeof(char), 20, in);
+#endif
+
         Read_Mod_Data(&nPatterns, sizeof(char), 1, in);
 
         Song_Tracks = MAX_TRACKS;
@@ -776,9 +815,19 @@ Read_Mod_File:
             }
             Read_Mod_Data_Swap(&tb303engine[0].tbVolume, sizeof(float), 1, in);
             Read_Mod_Data_Swap(&tb303engine[1].tbVolume, sizeof(float), 1, in);
+
+#if defined(BZR2)
+            if(in.pos > in.maxSize)
+            {
+                return(FALSE);
+            }
+#endif
+
         }
 
+#if !defined(BZR2)
         fclose(in);
+#endif
 
         if(!New_Reverb)
         {
@@ -814,12 +863,14 @@ Read_Mod_File:
 
 // ------------------------------------------------------
 // Load and decode a packed sample
+#if !defined(BZR2)
 short *Unpack_Sample(FILE *FileHandle, int Dest_Length, char Pack_Type, int BitRate)
+#else
+short *Unpack_Sample(CustomFile &FileHandle, int Dest_Length, char Pack_Type, int BitRate)
+#endif
 {
     int Packed_Length;
-
     short *Dest_Buffer;
-
     Uint8 *Packed_Read_Buffer;
 
     Read_Mod_Data(&Packed_Length, sizeof(int), 1, FileHandle);
@@ -1015,7 +1066,11 @@ int Write_Mod_Data_Swap(void *Datas, int Unit, int Length, FILE *Handle)
 
 // ------------------------------------------------------
 // Read data from a module file
+#if !defined(BZR2)
 int Read_Mod_Data(void *Datas, int Unit, int Length, FILE *Handle)
+#else
+int Read_Mod_Data(void *Datas, int Unit, int Length, CustomFile &Handle)
+#endif
 {
     switch(Mod_Simulate)
     {
@@ -1033,7 +1088,11 @@ int Read_Mod_Data(void *Datas, int Unit, int Length, FILE *Handle)
 
 // ------------------------------------------------------
 // Read data from a module file
+#if !defined(BZR2)
 int Read_Mod_Data_Swap(void *Datas, int Unit, int Length, FILE *Handle)
+#else
+int Read_Mod_Data_Swap(void *Datas, int Unit, int Length, CustomFile &Handle)
+#endif
 {
     short svalue;
     int ivalue;
@@ -1110,6 +1169,7 @@ int File_Exist_Req(char *Format, char *Directory, char *FileName)
 
 // ------------------------------------------------------
 // Return the size of an opened file
+#if !defined(BZR2)
 int Get_File_Size(FILE *Handle)
 {
     int File_Size;
@@ -1121,6 +1181,12 @@ int Get_File_Size(FILE *Handle)
     fseek(Handle, Current_Pos, SEEK_SET);
     return(File_Size);
 }
+#else
+int Get_File_Size(CustomFile &Handle)
+{
+    return int(Handle.maxSize);
+}
+#endif
 
 #if !defined(__WINAMP__)
 
@@ -1840,14 +1906,25 @@ int Write_Data_Swap(void *value, int size, int amount, FILE *handle)
 
 // ------------------------------------------------------
 // Read data from a file
+#if !defined(BZR2)
 int Read_Data(void *value, int size, int amount, FILE *handle)
 {
     return(fread(value, size, amount, handle));
 }
+#else
+int Read_Data(void *value, int size, int amount, CustomFile &handle)
+{
+    return handle.Read(value, size, amount);
+}
+#endif
 
 // ------------------------------------------------------
 // Read data from a file taking care of the endianness
+#if !defined(BZR2)
 int Read_Data_Swap(void *value, int size, int amount, FILE *handle)
+#else
+int Read_Data_Swap(void *value, int size, int amount, CustomFile &handle)
+#endif
 {
     short svalue;
     int ivalue;

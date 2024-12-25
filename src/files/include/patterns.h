@@ -39,7 +39,10 @@
 #include "../../editors/include/editor_pattern.h"
 #include "../../editors/include/editor_sequencer.h"
 #include "../../editors/include/patterns_blocks.h"
+
+#if !defined(BZR2)
 #include "../../ui/include/misc_draw.h"
+#endif
 
 // ------------------------------------------------------
 // Functions

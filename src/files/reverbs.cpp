@@ -35,9 +35,15 @@
 
 // ------------------------------------------------------
 // Load the data from a reverb file (or a module)
-void Load_Reverb_Data(int (*Read_Function)(void *, int ,int, FILE *),
-                      int (*Read_Function_Swap)(void *, int ,int, FILE *),
+#if !defined(BZR2)
+void Load_Reverb_Data(int (*Read_Function)(void *, int, int, FILE *),
+                      int (*Read_Function_Swap)(void *, int, int, FILE *),
                       FILE *in, int New)
+#else
+void Load_Reverb_Data(int (*Read_Function)(void *, int, int, CustomFile &),
+                      int (*Read_Function_Swap)(void *, int, int, CustomFile &),
+                      CustomFile &in, int New)
+#endif
 {
     int i;
 

@@ -37,7 +37,7 @@
 #if defined(__GCC__)
 #include "../../include/variables.h"
 #include "../../ui/include/misc_draw.h"
-#else
+#elif !defined(BZR2)
 #include "../include/variables.h"
 #include "../ui/include/misc_draw.h"
 #endif

@@ -35,7 +35,7 @@
 #if defined(__WIN32__) && !defined(__GCC__)
 typedef unsigned __int64 Uint64;
 #else
-#if defined(__HAIKU__) || defined(__LINUX__) || defined(__AROS__)
+#if defined(__HAIKU__) || defined(__LINUX__) || defined(__AROS__) || defined(BZR2)
 #include <stdint.h>
 typedef uint64_t Uint64;
 #else

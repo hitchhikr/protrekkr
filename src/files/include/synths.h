@@ -41,9 +41,15 @@
 
 // ------------------------------------------------------
 // Functions
+#if !defined(BZR2)
 void Read_Synth_Params(int (*Read_Function)(void *, int ,int, FILE *),
                        int (*Read_Function_Swap)(void *, int ,int, FILE *),
                        FILE *in,
+#else
+void Read_Synth_Params(int (*Read_Function)(void *, int ,int, FILE *),
+                       int (*Read_Function_Swap)(void *, int ,int, CustomFile &),
+                       CustomFile &in,
+#endif
                        int idx,
                        int read_disto,
                        int read_lfo_adsr,

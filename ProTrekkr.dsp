@@ -419,6 +419,10 @@ SOURCE=.\src\files\include\insts.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\src\files\include\midi_cfg.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\src\files\include\mods.h
 # End Source File
 # Begin Source File

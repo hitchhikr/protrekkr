@@ -952,10 +952,14 @@ void Reset_Values(void);
 
 // ------------------------------------------------------
 // Audio mixer
+#if !defined(BZR2)
 void STDCALL Mixer(Uint8 *Buffer, Uint32 Len)
+#else
+Uint32 STDCALL Mixer(Uint8 *Buffer, Uint32 Len)
+#endif
 {
 
-#if defined(__MACOSX_PPC__) || defined(__MACOSX_X86__)
+#if defined(__MACOSX_PPC__) || defined(__MACOSX_X86__) || defined(BZR2)
     float *pSamples_flt = (float *) Buffer;
 #endif
 
@@ -974,6 +978,10 @@ void STDCALL Mixer(Uint8 *Buffer, Uint32 Len)
     }
 #endif
 
+#if defined(BZR2)
+    Uint32 numSamples = Len;
+#endif
+
 #if !defined(__STAND_ALONE__)
     if(!rawrender && Buffer)
     {
@@ -981,10 +989,29 @@ void STDCALL Mixer(Uint8 *Buffer, Uint32 Len)
 
 #if defined(__MACOSX_PPC__) || defined(__MACOSX_X86__)
         for(i = Len - 1; i >= 0; i -= 8)
+#elif defined(BZR2)
+        for(; numSamples; --numSamples)
 #else
         for(i = Len - 1; i >= 0; i -= 4)
 #endif
         {
+
+#if defined(BZR2)
+            if(!Song_Playing)
+            {
+                break;
+            }
+            if(done)
+            {
+                if(numSamples == Len)
+                {
+                    done = FALSE;
+                }
+                break;
+            }
+            
+#endif 
+
             Get_Player_Values();
 
 #if !defined(__STAND_ALONE__)
@@ -1024,7 +1051,7 @@ void STDCALL Mixer(Uint8 *Buffer, Uint32 Len)
 #endif
 #endif
 
-#if defined(__MACOSX_PPC__) || defined(__MACOSX_X86__)
+#if defined(__MACOSX_PPC__) || defined(__MACOSX_X86__) || defined (BZR2)
             *pSamples_flt++ = left_float;
             *pSamples_flt++ = right_float;
 #else
@@ -1073,6 +1100,10 @@ void STDCALL Mixer(Uint8 *Buffer, Uint32 Len)
     {
         SDL_SemPost(thread_sema);
     }
+#endif
+
+#if defined(BZR2)
+    return Len - numSamples;
 #endif
 
 }

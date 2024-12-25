@@ -36,9 +36,11 @@
 
 // ------------------------------------------------------
 // Includes
+#if !defined(BZR2)
 #include <SDL/SDL.h>
 
 #include "../support/include/main.h"
+#endif
 #include "../../release/distrib/replay/lib/include/replay.h"
 
 // ------------------------------------------------------
@@ -407,16 +409,21 @@ extern char Current_Instrument_Split;
 extern int resty;
 extern int rs_coef;
 
+#if !defined(BZR2)
 extern SDL_Surface *Main_Screen;
+#endif
+
 extern int CONSOLE_HEIGHT2;
 
 extern float left_float_render;
 extern float right_float_render;
 
+#if !defined(BZR2)
 extern SDL_Surface *PFONT;
 extern SDL_Surface *PFONT_DOUBLE;
 extern SDL_Surface *FONT;
 extern SDL_Surface *FONT_LOW;
+#endif
 
 extern int gui_action;
 extern int gui_action_external;
@@ -424,7 +431,9 @@ extern int gui_action_external_303;
 extern int gui_action_metronome;
 extern char teac;
 
+#if !defined(BZR2)
 extern MOUSE Mouse;
+#endif
 
 extern int fluzy;
 
@@ -475,8 +484,10 @@ extern float *Scope_Dats_LeftRight[2];
 extern float *VuMeters_Dats_L[MAX_TRACKS];
 extern float *VuMeters_Dats_R[MAX_TRACKS];
 
+#if !defined(BZR2)
 extern SDL_Surface *SKIN303;
 extern SDL_Surface *LOGOPIC;
+#endif
 
 extern int MouseWheel_Multiplier;
 extern char Rows_Decimal;

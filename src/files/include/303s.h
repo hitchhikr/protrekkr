@@ -43,11 +43,17 @@
 // Functions
 void Load_303(char *FileName);
 void Save_303(void);
-void Load_303_Data(int (*Read_Function)(void *, int ,int, FILE *),
-                   int (*Read_Function_Swap)(void *, int ,int, FILE *),
+#if !defined(BZR2)
+void Load_303_Data(int (*Read_Function)(void *, int, int, FILE *),
+                   int (*Read_Function_Swap)(void *, int, int, FILE *),
                    FILE *in, int unit, int pattern);
-void Save_303_Data(int (*Write_Function)(void *, int ,int, FILE *),
-                   int (*Write_Function_Swap)(void *, int ,int, FILE *),
+#else
+void Load_303_Data(int (*Read_Function)(void *, int, int, CustomFile &),
+                   int (*Read_Function_Swap)(void *, int, int, CustomFile &),
+                   CustomFile &in, int unit, int pattern);
+#endif
+void Save_303_Data(int (*Write_Function)(void *, int, int, FILE *),
+                   int (*Write_Function_Swap)(void *, int, int, FILE *),
                    FILE *in, int unit, int pattern);
 
 #endif
