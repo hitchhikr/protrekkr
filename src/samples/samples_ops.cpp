@@ -596,64 +596,68 @@ void Sample_DC_Adjust(int32 range_start, int32 range_end)
 }
 
 // ------------------------------------------------------
-// Maximize a sample
-void Sample_Maximize(int32 range_start, int32 range_end)
+// Normalize a sample
+void Sample_Normalize(int32 range_start, int32 range_end)
 {
     int32 i;
     char nc = Sample_Channels[Current_Instrument][Current_Instrument_Split];
-    float l_shift = 0;
+    float l_scale = 0;
+    float r_scale = 0;
 
     for(i = range_start; i < range_end + 1; i++)
     {
-        if(abs(*(RawSamples[Current_Instrument][0][Current_Instrument_Split] + i)) > l_shift)
+        if(abs(*(RawSamples[Current_Instrument][0][Current_Instrument_Split] + i)) > l_scale)
         {
-            l_shift = *(RawSamples[Current_Instrument][0][Current_Instrument_Split] + i);
+            l_scale = *(RawSamples[Current_Instrument][0][Current_Instrument_Split] + i);
         }
         if(nc == 2)
         {
-            if(abs(*(RawSamples[Current_Instrument][1][Current_Instrument_Split] + i)) > l_shift)
+            if(abs(*(RawSamples[Current_Instrument][1][Current_Instrument_Split] + i)) > r_scale)
             {
-                l_shift = *(RawSamples[Current_Instrument][1][Current_Instrument_Split] + i);
+                r_scale = *(RawSamples[Current_Instrument][1][Current_Instrument_Split] + i);
             }
         }
     }
 
-    l_shift = 32768.0f / l_shift;
+    l_scale = l_scale / 32767.0f;
+    r_scale = r_scale / 32767.0f;
 
     for(i = range_start; i < range_end + 1; i++)
     {
         float bleak = *(RawSamples[Current_Instrument][0][Current_Instrument_Split] + i);
-        bleak *= l_shift;
 
-        if(bleak > 32767)
+        bleak = ((bleak / 32767.0f) / l_scale) * 32767.0f;
+            
+        if(bleak > 32767.0f)
         {
-            bleak = 32767;
+            bleak = 32767.0f;
         }
-        if(bleak < -32767)
+        if(bleak < -32767.0f)
         {
-            bleak = -32767;
+            bleak = -32767.0f;
         }
         *(RawSamples[Current_Instrument][0][Current_Instrument_Split] + i) = (short) bleak;
 
         if(nc == 2)
         {
             bleak = *(RawSamples[Current_Instrument][1][Current_Instrument_Split] + i);
-            bleak *= l_shift;
+            
+            bleak = ((bleak / 32767.0f) / r_scale) * 32767.0f;
 
-            if(bleak > 32767)
+            if(bleak > 32767.0f)
             {
-                bleak = 32767;
+                bleak = 32767.0f;
             }
-            if(bleak < -32767)
+            if(bleak < -32767.0f)
             {
-                bleak = -32767;
+                bleak = -32767.0f;
             }
             *(RawSamples[Current_Instrument][1][Current_Instrument_Split] + i) = (short) bleak;
         }
     }
 
     draw_sampled_wave = TRUE;
-    Status_Box("Maximize Done.");
+    Status_Box("Normalize Done.");
 }
 
 // ------------------------------------------------------

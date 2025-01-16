@@ -52,8 +52,8 @@
 #define SMPED_COPY (SMPED_CUT + 1)
 #define SMPED_PASTE (SMPED_COPY + 1)
 #define SMPED_DC_ADJUST (SMPED_PASTE + 1)
-#define SMPED_MAXIMIZE (SMPED_DC_ADJUST + 1)
-#define SMPED_FADEIN (SMPED_MAXIMIZE + 1)
+#define SMPED_NORMALIZE (SMPED_DC_ADJUST + 1)
+#define SMPED_FADEIN (SMPED_NORMALIZE + 1)
 #define SMPED_FADEOUT (SMPED_FADEIN + 1)
 #define SMPED_HALF (SMPED_FADEOUT + 1)
 #define SMPED_BUF1 (SMPED_HALF + 1)
@@ -400,7 +400,22 @@ void Draw_Wave_PlayBack_Pos(void)
             int s_ey2 = s_ey + ((SAMPLE_LINES_HEIGHT / strober) * 2);
             int rcolor3;
             int rcolor4;
+            int s_size = 0;
+            int s_coef;
 
+            if(strober)
+            {
+                s_ey = (Cur_Height - 150) + 1 + (SAMPLE_LINES_HEIGHT / strober);
+                s_ey2 = s_ey + ((SAMPLE_LINES_HEIGHT / strober) * 2);
+                if(s_ey2 > ((Cur_Height - 150) + SAMPLE_HEIGHT - 2)) s_ey2 = (Cur_Height - 150) + SAMPLE_HEIGHT - 2;
+                if(s_ey > ((Cur_Height - 150) + SAMPLE_HEIGHT - 2)) s_ey = (Cur_Height - 150) + SAMPLE_HEIGHT - 2;
+                s_size = SAMPLE_LINES_HEIGHT / strober;
+                s_coef = 32768 / s_size;
+                if(rs_coef > s_coef) rs_coef = s_coef;
+                if(rs_coef < 1) rs_coef = 1;
+            }
+
+            
             pos_in_sample = 0;
             for(i = 0; i < MAX_POLYPHONY; i++)
             {
@@ -430,6 +445,12 @@ void Draw_Wave_PlayBack_Pos(void)
                     pos_in_wav = ((int64) s_ex * (int64) sed_display_length);
                     int32 s_offset = (int) (pos_in_wav / LARGE_SMP_VIEW) + sed_display_start;
 
+                    int h = *(RawSamples[Current_Instrument][0][Current_Instrument_Split] + s_offset) / rs_coef;
+                    if(h > s_size) h = s_size;
+                    if(h < -s_size) h = -s_size;
+                    int s_y = s_ey - h;
+                    if(s_y > ((Cur_Height - 150) + SAMPLE_HEIGHT - 2)) s_y = (Cur_Height - 150) + SAMPLE_HEIGHT - 2;
+
                     if(pos_in_sample > s_offset)
                     {
                         rcolor3 = COL_PUSHED_MED;
@@ -447,7 +468,7 @@ void Draw_Wave_PlayBack_Pos(void)
                             rcolor3 = cur_sample_color;
                         }
                     }
-                    DrawVLine(s_ex + WAVE_LEFT + 1, s_ey, s_ey, rcolor3);
+                    DrawVLine(s_ex + WAVE_LEFT + 1, s_ey, s_y, rcolor3);
                 }
             } // If
 
@@ -458,7 +479,17 @@ void Draw_Wave_PlayBack_Pos(void)
                 {
                     pos_in_wav = ((int64) s_ex * (int64) sed_display_length);
                     int32 s_offset = (int) (pos_in_wav / LARGE_SMP_VIEW) + sed_display_start;
- 
+                    int h = *(RawSamples[Current_Instrument][0][Current_Instrument_Split] + s_offset) / rs_coef;
+                    int h2 = *(RawSamples[Current_Instrument][1][Current_Instrument_Split] + s_offset) / rs_coef;
+                    if(h > s_size) h = s_size;
+                    if(h < -s_size) h = -s_size;
+                    if(h2 > s_size) h2 = s_size;
+                    if(h2 < -s_size) h2 = -s_size;
+                    int s_y = s_ey - h;
+                    int s_y2 = s_ey2 - h2;
+                    if(s_y2 > ((Cur_Height - 150) + SAMPLE_HEIGHT - 2)) s_y2 = (Cur_Height - 150) + SAMPLE_HEIGHT - 2;
+                    if(s_y > ((Cur_Height - 150) + SAMPLE_HEIGHT - 2)) s_y = (Cur_Height - 150) + SAMPLE_HEIGHT - 2;
+
                     if(pos_in_sample > s_offset)
                     {
                         rcolor3 = COL_PUSHED_MED;
@@ -480,8 +511,8 @@ void Draw_Wave_PlayBack_Pos(void)
                         }
                     }
 
-                    DrawVLine(s_ex + WAVE_LEFT + 1, s_ey, s_ey, rcolor3);
-                    DrawVLine(s_ex + WAVE_LEFT + 1, s_ey2, s_ey2, rcolor4);
+                    DrawVLine(s_ex + WAVE_LEFT + 1, s_ey, s_y, rcolor3);
+                    DrawVLine(s_ex + WAVE_LEFT + 1, s_ey2, s_y2, rcolor4);
                 }
 
             } // If Stereo
@@ -547,7 +578,7 @@ void Actualize_Sample_Ed(char gode)
             
             Gui_Draw_Button_Box(520, (Cur_Height - 132), 29, 16, "Zap", BUTTON_NORMAL | Allow | read_only | allow_draw_mode | BUTTON_TEXT_CENTERED);
 
-            Gui_Draw_Button_Box(520, (Cur_Height - 114), 29, 16, "Max.", BUTTON_NORMAL | Allow | read_only | allow_draw_mode | BUTTON_TEXT_CENTERED);
+            Gui_Draw_Button_Box(520, (Cur_Height - 114), 29, 16, "Norm", BUTTON_NORMAL | Allow | read_only | allow_draw_mode | BUTTON_TEXT_CENTERED);
             Gui_Draw_Button_Box(551, (Cur_Height - 114), 29, 16, "Zero", BUTTON_NORMAL | Allow | read_only | allow_draw_mode | BUTTON_TEXT_CENTERED);
             Gui_Draw_Button_Box(520, (Cur_Height - 96), 29, 16, "Dup.", BUTTON_NORMAL | Allow | read_only | allow_draw_mode | BUTTON_TEXT_CENTERED);
             Gui_Draw_Button_Box(551, (Cur_Height - 96), 29, 16, "Ins.", BUTTON_NORMAL | Allow | read_only | allow_draw_mode | BUTTON_TEXT_CENTERED);
@@ -754,10 +785,10 @@ void Actualize_Sample_Ed(char gode)
                 Sample_DC_Adjust(sed_real_range_start, sed_real_range_end);
             }
 
-            // Maximize
-            if(gode == SMPED_MAXIMIZE)
+            // Normalize
+            if(gode == SMPED_NORMALIZE)
             {
-                Sample_Maximize(sed_real_range_start, sed_real_range_end);
+                Sample_Normalize(sed_real_range_start, sed_real_range_end);
             }
 
             // Zeroize
@@ -1132,10 +1163,10 @@ void Mouse_Left_Sample_Ed(void)
                 gui_action = GUI_CMD_REFRESH_SAMPLE_ED;
             }
 
-            // Maximize
+            // Normalize
             if(Check_Mouse(520, (Cur_Height - 114), 29, 16) && sed_range_mode && Allow)
             {
-                teac = SMPED_MAXIMIZE;
+                teac = SMPED_NORMALIZE;
                 gui_action = GUI_CMD_REFRESH_SAMPLE_ED;
             }
 
@@ -1161,9 +1192,16 @@ void Mouse_Left_Sample_Ed(void)
             }
 
             // DC Adjust
-            if(Check_Mouse(520, (Cur_Height - 78), 60, 16) && sed_range_mode && Allow)
+            if(Check_Mouse(520, (Cur_Height - 78), 29, 16) && sed_range_mode && Allow)
             {
                 teac = SMPED_DC_ADJUST;
+                gui_action = GUI_CMD_REFRESH_SAMPLE_ED;
+            }
+
+            // Normalize
+            if(Check_Mouse(551, (Cur_Height - 78), 29, 16) && sed_range_mode && Allow)
+            {
+                teac = SMPED_NORMALIZE;
                 gui_action = GUI_CMD_REFRESH_SAMPLE_ED;
             }
 

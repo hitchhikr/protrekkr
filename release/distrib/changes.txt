@@ -2,6 +2,11 @@
 ProTrekkr releases history
 ===============================================================================
 
+v2.7.7
+
+- Sample "maximize" is now called "normalize" in samples editor.
+- More visual feedback for currently played sample in samples editor.
+
 v2.7.6
 
 - Fixed keyboard handling on Mac OS.
