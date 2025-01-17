@@ -252,10 +252,13 @@ void blitlargenote(int x, int y, int note, int y1, int y2);
 void blitsmallnote(int x, int y, int note, int y1, int y2);
 void Note_Letter(int x, int y, char ltr, int ys, int y2);
 void Letter(int x, int y, char ltr, int ys, int y2);
+void Slider(int x, int y, int ltr, int col1, int y2, int larg, int scale_x, int col_back, int scale, int scale_y);
+void Slider_Pan(int x, int y, int ltr, int col1, int y2, int larg, int scale_x, int col_back, int scale, int scale_y);
 void Large_Letter(int x, int y, char ltr, int ys, int y2);
 void Small_Letter(int x, int y, char ltr, int ys, int y2);
 void Note_Large_Letter(int x, int y, char ltr, int ys, int y2);
 extern void (*Letter_Function)(int x, int y, char ltr, int ys, int y2);
+extern void (*Slider_Function)(int x, int y, int ltr, int ys, int y2, int larg, int col2, int col_back, int scale, int scale_y);
 
 void DrawPixel(int x, int y, int Color);
 void DrawHLine(int y, int x1, int x2, int Color);

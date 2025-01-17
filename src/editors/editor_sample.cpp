@@ -510,7 +510,6 @@ void Draw_Wave_PlayBack_Pos(void)
                             rcolor4 = cur_sample_color;
                         }
                     }
-
                     DrawVLine(s_ex + WAVE_LEFT + 1, s_ey, s_y, rcolor3);
                     DrawVLine(s_ex + WAVE_LEFT + 1, s_ey2, s_y2, rcolor4);
                 }

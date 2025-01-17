@@ -98,11 +98,13 @@ extern GLuint SKIN303_GL;
 int Beveled = 1;
 char Use_Shadows = TRUE;
 
-int done_303_palette = FALSE;
-int done_logo_palette = FALSE;
+extern int pattern_double;
 extern int Burn_Title;
 extern int chars_height;
-extern int pattern_double;
+extern int pattern_sliders_numbers;
+
+int done_303_palette = FALSE;
+int done_logo_palette = FALSE;
 int header_y;
 int header_size;
 int curr_tab_highlight = USER_SCREEN_DISKIO_EDIT;
@@ -1153,6 +1155,7 @@ int bare_color_idx;
 // ------------------------------------------------------
 // Functions
 void (*Letter_Function)(int x, int y, char ltr, int ys, int y2) = Letter;
+void (*Slider_Function)(int x, int y, int ltr, int col1, int y2, int larg, int col2, int col_back, int scale, int scale_y) = Slider;
 
 void Blit_note(int x, int y, int note, int y1, int y2, int size, int acc);
 
@@ -2124,50 +2127,278 @@ void Letter(int x, int y, char ltr, int ys, int y2)
 {
     switch(ltr)
     {
-        case 0: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 72, ys, 79, y2); break;
-        case 1: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 80, ys, 87, y2); break;
-        case 2: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 88, ys, 95, y2); break;
-        case 3: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 96, ys, 103, y2); break;
-        case 4: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 104, ys, 111, y2); break;
-        case 5: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 112, ys, 119, y2); break;
-        case 6: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 120, ys, 127, y2); break;
-        case 7: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 128, ys, 135, y2); break;
-        case 8: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 136, ys, 143, y2); break;
-        case 9: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 144, ys, 151, y2); break;
-        case 10: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 0, ys, 7, y2); break; // A
-        case 11: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 8, ys, 15, y2); break;// B
-        case 12: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 16, ys, 23, y2); break;// C
-        case 13: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 24, ys, 31, y2); break;// D
-        case 14: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 32, ys, 39, y2); break;// E
-        case 15: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 40, ys, 47, y2); break;// F
-        case 16: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 48, ys, 55, y2); break;// G
-        case 17: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 64, ys, 71, y2); break; // #
-        case 18: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 176, ys, 183, y2); break; // -
-        case 19: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 152, ys, 175, y2); break; // Off
-        case 20: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 56, ys, 63, y2); break; // Blank
-        case 21: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 184, ys, 191, y2); break; // .
+        case 0: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 72, ys, 79, y2, 1); break;
+        case 1: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 80, ys, 87, y2, 1); break;
+        case 2: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 88, ys, 95, y2, 1); break;
+        case 3: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 96, ys, 103, y2, 1); break;
+        case 4: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 104, ys, 111, y2, 1); break;
+        case 5: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 112, ys, 119, y2, 1); break;
+        case 6: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 120, ys, 127, y2, 1); break;
+        case 7: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 128, ys, 135, y2, 1); break;
+        case 8: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 136, ys, 143, y2, 1); break;
+        case 9: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 144, ys, 151, y2, 1); break;
+        case 10: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 0, ys, 7, y2, 1); break; // A
+        case 11: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 8, ys, 15, y2, 1); break;// B
+        case 12: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 16, ys, 23, y2, 1); break;// C
+        case 13: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 24, ys, 31, y2, 1); break;// D
+        case 14: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 32, ys, 39, y2, 1); break;// E
+        case 15: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 40, ys, 47, y2, 1); break;// F
+        case 16: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 48, ys, 55, y2, 1); break;// G
+        case 17: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 64, ys, 71, y2, 1); break; // #
+        case 18: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 176, ys, 183, y2, 1); break; // -
+        case 19: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 152, ys, 175, y2, 1); break; // Off
+        case 20: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 56, ys, 63, y2, 1); break; // Blank
+        case 21: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 184, ys, 191, y2, 1); break; // .
 
-        case 23: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 56, header_y, 56 + 26, header_size); break; // ON
-        case 24: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 84, header_y, 84 + 26, header_size); break; // OFF
-        case 25: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y,  0, header_y,  0 + 26, header_size); break; // MUTE
-        case 26: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 28, header_y, 28 + 26, header_size); break; // PLAY
+        case 23: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 56, header_y, 56 + 26, header_size, -1); break; // ON
+        case 24: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 84, header_y, 84 + 26, header_size, -1); break; // OFF
+        case 25: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y,  0, header_y,  0 + 26, header_size, -1); break; // MUTE
+        case 26: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 28, header_y, 28 + 26, header_size, -1); break; // PLAY
 
-        case 27: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 193, header_y, 193 + 14, header_size); break; // ZOOM ON
-        case 28: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 221, header_y, 221 + 14, header_size); break; // ZOOM OFF
+        case 27: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 193, header_y, 193 + 14, header_size, -1); break; // ZOOM ON
+        case 28: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 221, header_y, 221 + 14, header_size, -1); break; // ZOOM OFF
 
-        case 29: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 56, ys, 59, y2); break; // Blank (4 pixels)
-        case 30: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 56, ys, 57, y2); break; // Blank (2 pixels)
+        case 29: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 56, ys, 59, y2, 1); break; // Blank (4 pixels)
+        case 30: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 56, ys, 57, y2, 1); break; // Blank (2 pixels)
 
-        case 31: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 111, header_y, 111 + 4, header_size); break; // FX ARROW LO BACK
-        case 32: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 138, header_y, 138 + 4, header_size); break; // FX ARROW HI BACK
-        case 33: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 165, header_y, 165 + 4, header_size); break; // FX ARROW SEL BACK
+        case 31: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 111, header_y, 111 + 4, header_size, -1); break; // FX ARROW LO BACK
+        case 32: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 138, header_y, 138 + 4, header_size, -1); break; // FX ARROW HI BACK
+        case 33: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 165, header_y, 165 + 4, header_size, -1); break; // FX ARROW SEL BACK
 
-        case 34: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 56, ys, 56, y2); break; // Blank (1 pixels)
+        case 34: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 56, ys, 56, y2, 1); break; // Blank (1 pixels)
 
-        case 35: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 249, header_y, 249 + 6, header_size); break; // REDUCE NOTES ON
-        case 36: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 257, header_y, 257 + 6, header_size); break; // EXPAND NOTES ON
-        case 37: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 277, header_y, 277 + 6, header_size); break; // REDUCE NOTES OFF
-        case 38: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 285, header_y, 285 + 6, header_size); break; // EXPAND NOTES OFF
+        case 35: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 249, header_y, 249 + 6, header_size, -1); break; // REDUCE NOTES ON
+        case 36: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 257, header_y, 257 + 6, header_size, -1); break; // EXPAND NOTES ON
+        case 37: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 277, header_y, 277 + 6, header_size, -1); break; // REDUCE NOTES OFF
+        case 38: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 285, header_y, 285 + 6, header_size, -1); break; // EXPAND NOTES OFF
+    }
+}
+
+#define SCALE 1
+void Draw_Slider_Digit(int x, int y, int hex_digit, int color, int scale_x, int scale_y)
+{
+    scale_y = SCALE << scale_y;
+    switch(hex_digit)
+    {
+        case 0:
+            DrawHLine(y,               x + 1, x + (2 << scale_x) - 1, color);
+            DrawHLine(y + (4 * scale_y), x + 1, x + (2 << scale_x) - 1, color);
+            DrawVLine(x,                  y + 1, y + (4 * scale_y) - 1, color);
+            DrawVLine(x + (2 << scale_x), y + 1, y + (4 * scale_y) - 1, color);
+            return;
+        case 1:
+            DrawVLine(x + (1 << scale_x), y, y + (4 * scale_y), color);
+            return;
+        case 2:
+            DrawHLine(y, x, x + (2 << scale_x) - 1, color);
+            DrawHLine(y + (2 * scale_y), x + 1, x + (2 << scale_x) - 1, color);
+            DrawHLine(y + (4 * scale_y), x, x + (2 << scale_x), color);
+            DrawVLine(x + (2 << scale_x), y + 1, y + (2 * scale_y) - 1, color);
+            DrawVLine(x, y + (2 * scale_y) + 1, y + (4 * scale_y), color);
+            return;
+        case 3:
+            DrawHLine(y, x, x + (2 << scale_x) - 1, color);
+            DrawHLine(y + (2 * scale_y), x + 1, x + (2 << scale_x) - 1, color);
+            DrawHLine(y + (4 * scale_y), x, x + (2 << scale_x) - 1, color);
+            DrawVLine(x + (2 << scale_x), y + 1, y + (2 * scale_y) - 1, color);
+            DrawVLine(x + (2 << scale_x), y + (2 * scale_y) + 1, y + (4 * scale_y) - 1, color);
+            return;
+        case 4:
+            DrawHLine(y + (2 * scale_y), x + 1, x + (2 << scale_x), color);
+            DrawVLine(x, y, y + (2 * scale_y) - 1, color);
+            DrawVLine(x + (2 << scale_x), y, y + (4 * scale_y), color);
+            return;
+        case 5:
+            DrawHLine(y, x, x + (2 << scale_x), color);
+            DrawHLine(y + (2 * scale_y), x, x + (2 << scale_x) - 1, color);
+            DrawHLine(y + (4 * scale_y), x, x + (2 << scale_x) - 1, color);
+            DrawVLine(x, y, y + (2 * scale_y), color);
+            DrawVLine(x + (2 << scale_x), y + (2 * scale_y) + 1, y + (4 * scale_y) - 1, color);
+            return;
+        case 6:
+            DrawHLine(y, x + 1, x + (2 << scale_x) - 1, color);
+            DrawHLine(y + (2 * scale_y), x, x + (2 << scale_x) - 1, color);
+            DrawHLine(y + (4 * scale_y), x + 1, x + (2 << scale_x) - 1, color);
+            DrawVLine(x, y + 1, y + (4 * scale_y) - 1, color);
+            DrawVLine(x + (2 << scale_x), y + (2 * scale_y) + 1, y + (4 * scale_y) - 1, color);
+            return;
+        case 7:
+            DrawHLine(y, x, x + (2 << scale_x) - 1, color);
+            DrawVLine(x + (2 << scale_x), y + 1, y + (4 * scale_y), color);
+            return;
+        case 8:
+            DrawHLine(y,               x + 1, x + (2 << scale_x) - 1, color);
+            DrawHLine(y + (2 * scale_y), x + 1, x + (2 << scale_x) - 1, color);
+            DrawHLine(y + (4 * scale_y), x + 1, x + (2 << scale_x) - 1, color);
+            DrawVLine(x, y + 1,               y + (2 * scale_y) - 1, color);
+            DrawVLine(x, y + 1 + (2 * scale_y), y + (4 * scale_y) - 1, color);
+            DrawVLine(x + (2 << scale_x), y + 1,               y + (2 * scale_y) - 1, color);
+            DrawVLine(x + (2 << scale_x), y + 1 + (2 * scale_y), y + (4 * scale_y) - 1, color);
+            return;
+        case 9:
+            DrawHLine(y, x + 1, x + (2 << scale_x) - 1, color);
+            DrawHLine(y + (2 * scale_y), x + 1, x + (2 << scale_x), color);
+            DrawHLine(y + (4 * scale_y), x + 1, x + (2 << scale_x) - 1, color);
+            DrawVLine(x, y + 1, y + (2 * scale_y) - 1, color);
+            DrawVLine(x + (2 << scale_x), y + 1, y + (4 * scale_y) - 1, color);
+            return;
+        case 0xa:
+            DrawHLine(y, x + 1, x + (2 << scale_x) - 1, color);
+            DrawHLine(y + (2 * scale_y), x, x + (2 << scale_x), color);
+            DrawVLine(x, y + 1, y + (4 * scale_y), color);
+            DrawVLine(x + (2 << scale_x), y + 1, y + (4 * scale_y), color);
+            return;
+        case 0xb:
+            //
+            DrawHLine(y, x, x + (2 << scale_x) - 1, color);
+            DrawHLine(y + (2 * scale_y), x, x + (2 << scale_x) - 1, color);
+            DrawHLine(y + (4 * scale_y), x, x + (2 << scale_x) - 1,  color);
+            DrawVLine(x, y, y + (4 * scale_y), color);
+            DrawVLine(x + (2 << scale_x), y + 1,               y + (2 * scale_y) - 1, color);
+            DrawVLine(x + (2 << scale_x), y + 1 + (2 * scale_y), y + (4 * scale_y) - 1, color);
+            return;
+        case 0xc:
+            DrawHLine(y, x + 1, x + (2 << scale_x), color);
+            DrawHLine(y + (4 * scale_y), x + 1, x + (2 << scale_x), color);
+            DrawVLine(x, y + 1, y + (4 * scale_y) - 1, color);
+            return;
+        case 0xd:
+            DrawHLine(y, x, x + (2 << scale_x) - 1, color);
+            DrawHLine(y + (4 * scale_y), x, x + (2 << scale_x) - 1,  color);
+            DrawVLine(x, y, y + (4 * scale_y), color);
+            DrawVLine(x + (2 << scale_x), y + 1,               y + (4 * scale_y) - 1, color);
+            return;
+        case 0xe:
+            DrawHLine(y, x + 1, x + (2 << scale_x), color);
+            DrawHLine(y + (2 * scale_y), x, x + (2 << scale_x) - 1, color);
+            DrawHLine(y + (4 * scale_y), x + 1, x + (2 << scale_x), color);
+            DrawVLine(x, y + 1, y + (4 * scale_y) - 1, color);
+            return;
+        case 0xf:
+            DrawHLine(y, x + 1, x + (2 << scale_x), color);
+            DrawHLine(y + (2 * scale_y), x, x + (2 << scale_x) - 1, color);
+            DrawVLine(x, y + 1, y + (4 * scale_y), color);
+            return;
+    }
+}
+
+// ------------------------------------------------------
+// Patterns sliders
+// ------------------------------------------------------
+void Slider(int x, int y, int ltr, int col1, int y2, int larg, int scale_x, int col_back, int scale, int scale_y)
+{
+    SetColor(col_back);
+    Fillrect(x, y, x + larg + larg, y + (y2 * 2) - 1);
+
+    float dat;
+    float fltr;
+    int idat;
+
+    DrawHLine(y, x, x + larg + larg - 1, col1);
+    DrawHLine(y + (y2 * 2) - 2, x, x + larg + larg - 1, col1);
+    DrawVLine(x, y, y + (y2 * 2) - 2, col1);
+    DrawVLine(x + (larg * 2) - 1, y, y + (y2 * 2) - 2, col1);
+
+    SetColor(col1);
+
+    if(ltr != 0)
+    {
+        // Normalize
+        fltr = (float) ltr / (float) scale;
+        dat = (float) (1.0f - fltr);
+
+        idat = (int) (dat * (larg << 1));
+        idat += 2;
+        if(idat >= (larg + larg - 2))
+        {
+            idat = larg + larg - 2;
+        }
+        Fillrect(x + idat, y + 2, x + larg + larg - 2, y + (y2 * 2) - 3);
+    }
+
+    if(pattern_sliders_numbers && pattern_double)
+    {
+        Draw_Slider_Digit(x + (larg << 1) - (2 << (scale_x)) - (2 << (scale_x)) - 3 - 2, y + y2 - (4 * (SCALE << scale_y) / 2) - 1, ltr >> 4, COL_VUMETERPEAK, scale_x, scale_y);
+        Draw_Slider_Digit(x + (larg << 1) - (2 << (scale_x)) - 2, y + y2 - (4 * (SCALE << scale_y) / 2) - 1, ltr & 0xf, COL_VUMETERPEAK, scale_x, scale_y);
+    }
+}
+
+// ------------------------------------------------------
+// Patterns panning sliders
+// ------------------------------------------------------
+void Slider_Pan(int x, int y, int ltr, int col1, int y2, int larg, int scale_x, int col_back, int scale, int scale_y)
+{
+    SetColor(col_back);
+    if(scale_x < 0)
+    {
+        // Back
+        Fillrect(x + larg, y, x + larg + larg, y + (y2 * 2) - 1);
+    }
+    else
+    {
+        // Back
+        Fillrect(x, y, x + 2 + larg, y + (y2 * 2) - 1);
+    }
+
+    float dat;
+    float fltr;
+    int idat;
+        
+    DrawHLine(y, x, x + larg + larg - 1, col1);
+    DrawHLine(y + (y2 * 2) - 2, x, x + larg + larg - 1, col1);
+    DrawVLine(x, y, y + (y2 * 2) - 2, col1);
+    DrawVLine(x + (larg * 2) - 1, y, y + (y2 * 2) - 2, col1);
+
+    SetColor(col1);
+
+    if(scale_x < 0)
+    {
+        scale_x = -scale_x;
+
+        if(ltr >= (scale >> 1))
+        {
+            // [0..0x40]
+            ltr -= (scale >> 1);
+            // Normalize
+            fltr = -((float) ltr / (float) (scale * 0.60f));
+            dat = (float) 1.0f - (fltr + 1.0f);
+
+            idat = (int) (dat * larg);
+
+            int start = x + larg;
+            int end = x + larg + idat;
+            if(start == end)
+            {
+                end++;
+            }
+            Fillrect(start, y + 2, end, y + (y2 * 2) - 3);
+        }
+    }
+    else
+    {
+        if(ltr < (scale >> 1))
+        {
+            // Normalize
+            fltr = (float) ltr / (float) (scale * 0.60f);
+            dat = (float) (fltr);
+            idat = (int) (dat * larg);
+            int start = x + 2 + idat;
+            int end = x + 1 + larg;
+            if(start == end)
+            {
+                end++;
+            }
+            Fillrect(start, y + 2, end, y + (y2 * 2) - 3);
+        }
+        else
+        {
+            Fillrect(x + larg, y + 2, x + larg + 1, y + (y2 * 2) - 3);
+        }
+    }
+    if(pattern_sliders_numbers && pattern_double)
+    {
+        Draw_Slider_Digit(x + (larg << 1) - (2 << (scale_x)) - (2 << (scale_x)) - 3 - 2, y + y2 - (4 * (SCALE << scale_y) / 2) - 1, ltr >> 4, COL_VUMETERPEAK, scale_x, scale_y);
+        Draw_Slider_Digit(x + (larg << 1) - (2 << (scale_x)) - 2, y + y2 - (4 * (SCALE << scale_y) / 2) - 1, ltr & 0xf, COL_VUMETERPEAK, scale_x, scale_y);
     }
 }
 
@@ -2182,58 +2413,58 @@ void Note_Letter(int x, int y, char ltr, int ys, int y2)
 {
     switch(ltr)
     {
-        case 0: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 72, ys, 79, y2); break; // 0
-        case 1: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 80, ys, 87, y2); break; // 1
-        case 2: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 88, ys, 95, y2); break; // 2
-        case 3: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 96, ys, 103, y2); break; // 3
-        case 4: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 104, ys, 111, y2); break; // 4
-        case 5: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 112, ys, 119, y2); break; // 5
-        case 6: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 120, ys, 127, y2); break; // 6
-        case 7: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 128, ys, 135, y2); break; // 7
-        case 8: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 136, ys, 143, y2); break; // 8
-        case 9: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 144, ys, 151, y2); break; // 9
-        case 10: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 0, ys, 7, y2); break; // A
-        case 11: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 8, ys, 15, y2); break;// B
-        case 12: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 16, ys, 23, y2); break;// C
-        case 13: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 24, ys, 31, y2); break;// D
-        case 14: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 32, ys, 39, y2); break;// E
-        case 15: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 40, ys, 47, y2); break;// F
-        case 16: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 48, ys, 55, y2); break;// G
+        case 0: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 72, ys, 79, y2, 1); break; // 0
+        case 1: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 80, ys, 87, y2, 1); break; // 1
+        case 2: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 88, ys, 95, y2, 1); break; // 2
+        case 3: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 96, ys, 103, y2, 1); break; // 3
+        case 4: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 104, ys, 111, y2, 1); break; // 4
+        case 5: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 112, ys, 119, y2, 1); break; // 5
+        case 6: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 120, ys, 127, y2, 1); break; // 6
+        case 7: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 128, ys, 135, y2, 1); break; // 7
+        case 8: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 136, ys, 143, y2, 1); break; // 8
+        case 9: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 144, ys, 151, y2, 1); break; // 9
+        case 10: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 0, ys, 7, y2, 1); break; // A
+        case 11: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 8, ys, 15, y2, 1); break;// B
+        case 12: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 16, ys, 23, y2, 1); break;// C
+        case 13: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 24, ys, 31, y2, 1); break;// D
+        case 14: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 32, ys, 39, y2, 1); break;// E
+        case 15: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 40, ys, 47, y2, 1); break;// F
+        case 16: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 48, ys, 55, y2, 1); break;// G
         case 17:
         {
             if(Accidental)
             {
-                Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 193, ys, 193 + 7, y2); break; // b
+                Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 193, ys, 193 + 7, y2, 1); break; // b
             }
             else
             {
-                Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 64, ys, 71, y2); break; // #
+                Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 64, ys, 71, y2, 1); break; // #
             }
         }
-        case 18: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 176, ys, 183, y2); break; // -
-        case 19: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 152, ys, 175, y2); break; // Off
-        case 20: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 56, ys, 63, y2); break; // Blank
-        case 21: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 184, ys, 191, y2); break; // .
+        case 18: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 176, ys, 183, y2, 1); break; // -
+        case 19: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 152, ys, 175, y2, 1); break; // Off
+        case 20: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 56, ys, 63, y2, 1); break; // Blank
+        case 21: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 184, ys, 191, y2, 1); break; // .
 
-        case 23: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 56, header_y, 56 + 26, header_size); break; // ON
-        case 24: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 84, header_y, 84 + 26, header_size); break; // OFF
-        case 25: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y,  0, header_y,  0 + 26, header_size); break; // MUTE
-        case 26: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 28, header_y, 28 + 26, header_size); break; // PLAY
+        case 23: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 56, header_y, 56 + 26, header_size, -1); break; // ON
+        case 24: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 84, header_y, 84 + 26, header_size, -1); break; // OFF
+        case 25: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y,  0, header_y,  0 + 26, header_size, -1); break; // MUTE
+        case 26: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 28, header_y, 28 + 26, header_size, -1); break; // PLAY
 
-        case 27: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 193, header_y, 193 + 14, header_size); break; // ZOOM ON
-        case 28: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 221, header_y, 221 + 14, header_size); break; // ZOOM OFF
+        case 27: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 193, header_y, 193 + 14, header_size, -1); break; // ZOOM ON
+        case 28: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 221, header_y, 221 + 14, header_size, -1); break; // ZOOM OFF
 
-        case 29: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 56, ys, 59, y2); break; // Blank (4 pixels)
-        case 30: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 56, ys, 57, y2); break; // Blank (2 pixels)
+        case 29: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 56, ys, 59, y2, 1); break; // Blank (4 pixels)
+        case 30: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 56, ys, 57, y2, 1); break; // Blank (2 pixels)
 
-        case 31: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 111, header_y, 111 + 4, header_size); break; // FX ARROW LO BACK
-        case 32: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 138, header_y, 138 + 4, header_size); break; // FX ARROW HI BACK
-        case 33: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 165, header_y, 165 + 4, header_size); break; // FX ARROW SEL BACK
+        case 31: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 111, header_y, 111 + 4, header_size, -1); break; // FX ARROW LO BACK
+        case 32: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 138, header_y, 138 + 4, header_size, -1); break; // FX ARROW HI BACK
+        case 33: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 165, header_y, 165 + 4, header_size, -1); break; // FX ARROW SEL BACK
 
-        case 35: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 249, header_y, 249 + 6, header_size); break; // REDUCE NOTES ON
-        case 36: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 257, header_y, 257 + 6, header_size); break; // EXPAND NOTES ON
-        case 37: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 277, header_y, 277 + 6, header_size); break; // REDUCE NOTES OFF
-        case 38: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 285, header_y, 285 + 6, header_size); break; // EXPAND NOTES OFF
+        case 35: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 249, header_y, 249 + 6, header_size, -1); break; // REDUCE NOTES ON
+        case 36: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 257, header_y, 257 + 6, header_size, -1); break; // EXPAND NOTES ON
+        case 37: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 277, header_y, 277 + 6, header_size, -1); break; // REDUCE NOTES OFF
+        case 38: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 285, header_y, 285 + 6, header_size, -1); break; // EXPAND NOTES OFF
     }
 }
 
@@ -2243,50 +2474,50 @@ void Large_Letter(int x, int y, char ltr, int ys, int y2)
 {
     switch(ltr)
     {
-        case 0: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 100, ys, 100 + 11, y2); break;
-        case 1: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 111, ys, 111 + 11, y2); break;
-        case 2: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 122, ys, 122 + 11, y2); break;
-        case 3: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 133, ys, 133 + 11, y2); break;
-        case 4: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 144, ys, 144 + 11, y2); break;
-        case 5: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 155, ys, 155 + 11, y2); break;
-        case 6: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 166, ys, 166 + 11, y2); break;
-        case 7: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 177, ys, 177 + 11, y2); break;
-        case 8: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 188, ys, 188 + 11, y2); break;
-        case 9: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 199, ys, 199 + 11, y2); break;
+        case 0: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 100, ys, 100 + 11, y2, 1); break;
+        case 1: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 111, ys, 111 + 11, y2, 1); break;
+        case 2: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 122, ys, 122 + 11, y2, 1); break;
+        case 3: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 133, ys, 133 + 11, y2, 1); break;
+        case 4: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 144, ys, 144 + 11, y2, 1); break;
+        case 5: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 155, ys, 155 + 11, y2, 1); break;
+        case 6: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 166, ys, 166 + 11, y2, 1); break;
+        case 7: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 177, ys, 177 + 11, y2, 1); break;
+        case 8: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 188, ys, 188 + 11, y2, 1); break;
+        case 9: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 199, ys, 199 + 11, y2, 1); break;
 
-        case 10: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 0, ys, 11, y2); break; // A
-        case 11: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 11, ys, 11 + 11, y2); break;// B
-        case 12: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 22, ys, 22 + 11, y2); break;// C
-        case 13: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 33, ys, 33 + 11, y2); break;// D
-        case 14: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 44, ys, 44 + 11, y2); break;// E
-        case 15: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 55, ys, 55 + 11, y2); break;// F
-        case 16: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 66, ys, 66 + 11, y2); break;// G
+        case 10: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 0, ys, 11, y2, 1); break; // A
+        case 11: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 11, ys, 11 + 11, y2, 1); break;// B
+        case 12: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 22, ys, 22 + 11, y2, 1); break;// C
+        case 13: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 33, ys, 33 + 11, y2, 1); break;// D
+        case 14: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 44, ys, 44 + 11, y2, 1); break;// E
+        case 15: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 55, ys, 55 + 11, y2, 1); break;// F
+        case 16: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 66, ys, 66 + 11, y2, 1); break;// G
         
-        case 17: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 88, ys, 88 + 11, y2); break; // #
-        case 18: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 243, ys, 243 + 11, y2); break; // -
-        case 19: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 210, ys, 210 + 34, y2); break; // Off
-        case 20: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 77, ys, 77 + 11, y2); break; // Blank
-        case 21: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 254, ys, 254 + 11, y2); break; // .
+        case 17: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 88, ys, 88 + 11, y2, 1); break; // #
+        case 18: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 243, ys, 243 + 11, y2, 1); break; // -
+        case 19: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 210, ys, 210 + 34, y2, 1); break; // Off
+        case 20: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 77, ys, 77 + 11, y2, 1); break; // Blank
+        case 21: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_LARGEPFONT), x, y, 254, ys, 254 + 11, y2, 1); break; // .
 
-        case 23: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 56, header_y, 56 + 26, header_size); break; // ON
-        case 24: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 84, header_y, 84 + 26, header_size); break; // OFF
-        case 25: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y,  0, header_y,  0 + 26, header_size); break; // MUTE
-        case 26: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 28, header_y, 28 + 26, header_size); break; // PLAY
+        case 23: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 56, header_y, 56 + 26, header_size, -1); break; // ON
+        case 24: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 84, header_y, 84 + 26, header_size, -1); break; // OFF
+        case 25: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y,  0, header_y,  0 + 26, header_size, -1); break; // MUTE
+        case 26: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 28, header_y, 28 + 26, header_size, -1); break; // PLAY
 
-        case 27: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 193, header_y, 193 + 14, header_size); break; // ZOOM ON
-        case 28: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 221, header_y, 221 + 14, header_size); break; // ZOOM OFF
+        case 27: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 193, header_y, 193 + 14, header_size, -1); break; // ZOOM ON
+        case 28: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 221, header_y, 221 + 14, header_size, -1); break; // ZOOM OFF
 
-        case 29: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 56, ys, 59, y2); break; // Blank (4 pixels)
-        case 30: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 56, ys, 57, y2); break; // Blank (2 pixels)
+        case 29: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 56, ys, 59, y2, 1); break; // Blank (4 pixels)
+        case 30: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 56, ys, 57, y2, 1); break; // Blank (2 pixels)
 
-        case 31: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 111, header_y, 111 + 4, header_size); break; // FX ARROW LO BACK
-        case 32: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 138, header_y, 138 + 4, header_size); break; // FX ARROW HI BACK
-        case 33: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 165, header_y, 165 + 4, header_size); break; // FX ARROW SEL BACK
+        case 31: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 111, header_y, 111 + 4, header_size, -1); break; // FX ARROW LO BACK
+        case 32: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 138, header_y, 138 + 4, header_size, -1); break; // FX ARROW HI BACK
+        case 33: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 165, header_y, 165 + 4, header_size, -1); break; // FX ARROW SEL BACK
 
-        case 35: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 249, header_y, 249 + 6, header_size); break; // REDUCE NOTES ON
-        case 36: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 257, header_y, 257 + 6, header_size); break; // EXPAND NOTES ON
-        case 37: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 277, header_y, 277 + 6, header_size); break; // REDUCE NOTES OFF
-        case 38: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 285, header_y, 285 + 6, header_size); break; // EXPAND NOTES OFF
+        case 35: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 249, header_y, 249 + 6, header_size, -1); break; // REDUCE NOTES ON
+        case 36: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 257, header_y, 257 + 6, header_size, -1); break; // EXPAND NOTES ON
+        case 37: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 277, header_y, 277 + 6, header_size, -1); break; // REDUCE NOTES OFF
+        case 38: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 285, header_y, 285 + 6, header_size, -1); break; // EXPAND NOTES OFF
     }
 }
 
@@ -2296,60 +2527,60 @@ void Note_Large_Letter(int x, int y, char ltr, int ys, int y2)
 {
     switch(ltr)
     {
-        case 0: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 100, ys, 100 + 11, y2); break;
-        case 1: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 111, ys, 111 + 11, y2); break;
-        case 2: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 122, ys, 122 + 11, y2); break;
-        case 3: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 133, ys, 133 + 11, y2); break;
-        case 4: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 144, ys, 144 + 11, y2); break;
-        case 5: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 155, ys, 155 + 11, y2); break;
-        case 6: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 166, ys, 166 + 11, y2); break;
-        case 7: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 177, ys, 177 + 11, y2); break;
-        case 8: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 188, ys, 188 + 11, y2); break;
-        case 9: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 199, ys, 199 + 11, y2); break;
+        case 0: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 100, ys, 100 + 11, y2, 1); break;
+        case 1: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 111, ys, 111 + 11, y2, 1); break;
+        case 2: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 122, ys, 122 + 11, y2, 1); break;
+        case 3: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 133, ys, 133 + 11, y2, 1); break;
+        case 4: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 144, ys, 144 + 11, y2, 1); break;
+        case 5: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 155, ys, 155 + 11, y2, 1); break;
+        case 6: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 166, ys, 166 + 11, y2, 1); break;
+        case 7: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 177, ys, 177 + 11, y2, 1); break;
+        case 8: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 188, ys, 188 + 11, y2, 1); break;
+        case 9: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 199, ys, 199 + 11, y2, 1); break;
 
-        case 10: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 0, ys, 11, y2); break; // A
-        case 11: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 11, ys, 11 + 11, y2); break;// B
-        case 12: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 22, ys, 22 + 11, y2); break;// C
-        case 13: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 33, ys, 33 + 11, y2); break;// D
-        case 14: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 44, ys, 44 + 11, y2); break;// E
-        case 15: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 55, ys, 55 + 11, y2); break;// F
-        case 16: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 66, ys, 66 + 11, y2); break;// G
+        case 10: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 0, ys, 11, y2, 1); break; // A
+        case 11: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 11, ys, 11 + 11, y2, 1); break;// B
+        case 12: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 22, ys, 22 + 11, y2, 1); break;// C
+        case 13: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 33, ys, 33 + 11, y2, 1); break;// D
+        case 14: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 44, ys, 44 + 11, y2, 1); break;// E
+        case 15: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 55, ys, 55 + 11, y2, 1); break;// F
+        case 16: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 66, ys, 66 + 11, y2, 1); break;// G
         
         case 17:
         {
             if(Accidental)
             {
-                Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 269, ys, 269 + 11, y2); break; // b
+                Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 269, ys, 269 + 11, y2, 1); break; // b
             }
             else
             {
-                Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 88, ys, 88 + 11, y2); break; // #
+                Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 88, ys, 88 + 11, y2, 1); break; // #
             }
         }
-        case 18: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 243, ys, 243 + 11, y2); break; // -
-        case 19: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 210, ys, 210 + 34, y2); break; // Off
-        case 20: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 77, ys, 77 + 11, y2); break; // Blank
-        case 21: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 254, ys, 254 + 11, y2); break; // .
+        case 18: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 243, ys, 243 + 11, y2, 1); break; // -
+        case 19: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 210, ys, 210 + 34, y2, 1); break; // Off
+        case 20: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 77, ys, 77 + 11, y2, 1); break; // Blank
+        case 21: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 254, ys, 254 + 11, y2, 1); break; // .
 
-        case 23: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 56, header_y, 56 + 26, header_size); break; // ON
-        case 24: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 84, header_y, 84 + 26, header_size); break; // OFF
-        case 25: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y,  0, header_y,  0 + 26, header_size); break; // MUTE
-        case 26: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 28, header_y, 28 + 26, header_size); break; // PLAY
+        case 23: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 56, header_y, 56 + 26, header_size, -1); break; // ON
+        case 24: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 84, header_y, 84 + 26, header_size, -1); break; // OFF
+        case 25: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y,  0, header_y,  0 + 26, header_size, -1); break; // MUTE
+        case 26: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 28, header_y, 28 + 26, header_size, -1); break; // PLAY
 
-        case 27: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 193, header_y, 193 + 14, header_size); break; // ZOOM ON
-        case 28: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 221, header_y, 221 + 14, header_size); break; // ZOOM OFF
+        case 27: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 193, header_y, 193 + 14, header_size, -1); break; // ZOOM ON
+        case 28: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 221, header_y, 221 + 14, header_size, -1); break; // ZOOM OFF
 
-        case 29: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 56, ys, 59, y2); break; // Blank (4 pixels)
-        case 30: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 56, ys, 57, y2); break; // Blank (2 pixels)
+        case 29: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 56, ys, 59, y2, 1); break; // Blank (4 pixels)
+        case 30: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 56, ys, 57, y2, 1); break; // Blank (2 pixels)
 
-        case 31: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 111, header_y, 111 + 4, header_size); break; // FX ARROW LO BACK
-        case 32: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 138, header_y, 138 + 4, header_size); break; // FX ARROW HI BACK
-        case 33: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 165, header_y, 165 + 4, header_size); break; // FX ARROW SEL BACK
+        case 31: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 111, header_y, 111 + 4, header_size, -1); break; // FX ARROW LO BACK
+        case 32: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 138, header_y, 138 + 4, header_size, -1); break; // FX ARROW HI BACK
+        case 33: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 165, header_y, 165 + 4, header_size, -1); break; // FX ARROW SEL BACK
 
-        case 35: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 249, header_y, 249 + 6, header_size); break; // REDUCE NOTES ON
-        case 36: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 257, header_y, 257 + 6, header_size); break; // EXPAND NOTES ON
-        case 37: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 277, header_y, 277 + 6, header_size); break; // REDUCE NOTES OFF
-        case 38: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 285, header_y, 285 + 6, header_size); break; // EXPAND NOTES OFF
+        case 35: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 249, header_y, 249 + 6, header_size, -1); break; // REDUCE NOTES ON
+        case 36: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 257, header_y, 257 + 6, header_size, -1); break; // EXPAND NOTES ON
+        case 37: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 277, header_y, 277 + 6, header_size, -1); break; // REDUCE NOTES OFF
+        case 38: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 285, header_y, 285 + 6, header_size, -1); break; // EXPAND NOTES OFF
     }
 }
 
@@ -2359,50 +2590,50 @@ void Small_Letter(int x, int y, char ltr, int ys, int y2)
 {
     switch(ltr)
     {
-        case 0: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 54, ys, 54 + 5, y2); break; // 0
-        case 1: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 60, ys, 60 + 5, y2); break; // 1
-        case 2: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 66, ys, 66 + 5, y2); break; // 2
-        case 3: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 72, ys, 72 + 5, y2); break; // 3
-        case 4: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 78, ys, 78 + 5, y2); break; // 4
-        case 5: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 84, ys, 84 + 5, y2); break; // 5
-        case 6: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 90, ys, 90 + 5, y2); break; // 6
-        case 7: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 96, ys, 96 + 5, y2); break; // 7
-        case 8: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 102, ys, 102 + 5, y2); break; // 8
-        case 9: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 108, ys, 108 + 5, y2); break; // 9
+        case 0: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 54, ys, 54 + 5, y2, 1); break; // 0
+        case 1: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 60, ys, 60 + 5, y2, 1); break; // 1
+        case 2: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 66, ys, 66 + 5, y2, 1); break; // 2
+        case 3: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 72, ys, 72 + 5, y2, 1); break; // 3
+        case 4: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 78, ys, 78 + 5, y2, 1); break; // 4
+        case 5: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 84, ys, 84 + 5, y2, 1); break; // 5
+        case 6: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 90, ys, 90 + 5, y2, 1); break; // 6
+        case 7: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 96, ys, 96 + 5, y2, 1); break; // 7
+        case 8: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 102, ys, 102 + 5, y2, 1); break; // 8
+        case 9: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 108, ys, 108 + 5, y2, 1); break; // 9
         
-        case 10: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 0, ys, 5, y2); break; // A
-        case 11: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 6, ys, 6 + 5, y2); break;// B
-        case 12: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 12, ys, 12 + 5, y2); break;// C
-        case 13: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 18, ys, 18 + 5, y2); break;// D
-        case 14: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 24, ys, 24 + 5, y2); break;// E
-        case 15: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 30, ys, 30 + 5, y2); break;// F
-        case 16: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 36, ys, 36 + 5, y2); break;// G
+        case 10: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 0, ys, 5, y2, 1); break; // A
+        case 11: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 6, ys, 6 + 5, y2, 1); break;// B
+        case 12: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 12, ys, 12 + 5, y2, 1); break;// C
+        case 13: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 18, ys, 18 + 5, y2, 1); break;// D
+        case 14: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 24, ys, 24 + 5, y2, 1); break;// E
+        case 15: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 30, ys, 30 + 5, y2, 1); break;// F
+        case 16: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 36, ys, 36 + 5, y2, 1); break;// G
         
-        case 17: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 48, ys, 48 + 5, y2); break; // #
-        case 18: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 132, ys, 132 + 5, y2); break; // -
-        case 19: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 114, ys, 114 + 17, y2); break; // Off
-        case 20: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 42, ys, 42 + 5, y2); break; // Blank
-        case 21: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 138, ys, 138 + 5, y2); break; // .
+        case 17: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 48, ys, 48 + 5, y2, 1); break; // #
+        case 18: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 132, ys, 132 + 5, y2, 1); break; // -
+        case 19: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 114, ys, 114 + 17, y2, 1); break; // Off
+        case 20: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 42, ys, 42 + 5, y2, 1); break; // Blank
+        case 21: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_SMALLPFONT), x, y, 138, ys, 138 + 5, y2, 1); break; // .
 
-        case 23: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 56, header_y, 56 + 26, header_size); break; // ON
-        case 24: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 84, header_y, 84 + 26, header_size); break; // OFF
-        case 25: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y,  0, header_y,  0 + 26, header_size); break; // MUTE
-        case 26: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 28, header_y, 28 + 26, header_size); break; // PLAY
+        case 23: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 56, header_y, 56 + 26, header_size, -1); break; // ON
+        case 24: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 84, header_y, 84 + 26, header_size, -1); break; // OFF
+        case 25: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y,  0, header_y,  0 + 26, header_size, -1); break; // MUTE
+        case 26: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 28, header_y, 28 + 26, header_size, -1); break; // PLAY
 
-        case 27: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 193, header_y, 193 + 14, header_size); break; // ZOOM ON
-        case 28: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 221, header_y, 221 + 14, header_size); break; // ZOOM OFF
+        case 27: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 193, header_y, 193 + 14, header_size, -1); break; // ZOOM ON
+        case 28: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 221, header_y, 221 + 14, header_size, -1); break; // ZOOM OFF
 
-        case 29: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 56, ys, 59, y2); break; // Blank (4 pixels)
-        case 30: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 56, ys, 57, y2); break; // Blank (2 pixels)
+        case 29: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 56, ys, 59, y2, 1); break; // Blank (4 pixels)
+        case 30: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 56, ys, 57, y2, 1); break; // Blank (2 pixels)
 
-        case 31: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 111, header_y, 111 + 4, header_size); break; // FX ARROW LO BACK
-        case 32: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 138, header_y, 138 + 4, header_size); break; // FX ARROW HI BACK
-        case 33: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 165, header_y, 165 + 4, header_size); break; // FX ARROW SEL BACK
+        case 31: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 111, header_y, 111 + 4, header_size, -1); break; // FX ARROW LO BACK
+        case 32: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 138, header_y, 138 + 4, header_size, -1); break; // FX ARROW HI BACK
+        case 33: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 165, header_y, 165 + 4, header_size, -1); break; // FX ARROW SEL BACK
 
-        case 35: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 249, header_y, 249 + 6, header_size); break; // REDUCE NOTES ON
-        case 36: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 257, header_y, 257 + 6, header_size); break; // EXPAND NOTES ON
-        case 37: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 277, header_y, 277 + 6, header_size); break; // REDUCE NOTES OFF
-        case 38: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 285, header_y, 285 + 6, header_size); break; // EXPAND NOTES OFF
+        case 35: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 249, header_y, 249 + 6, header_size, -1); break; // REDUCE NOTES ON
+        case 36: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 257, header_y, 257 + 6, header_size, -1); break; // EXPAND NOTES ON
+        case 37: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 277, header_y, 277 + 6, header_size, -1); break; // REDUCE NOTES OFF
+        case 38: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_PFONT), x, y, 285, header_y, 285 + 6, header_size, -1); break; // EXPAND NOTES OFF
     }
 }
 
@@ -2412,61 +2643,61 @@ void Note_Small_Letter(int x, int y, char ltr, int ys, int y2)
 {
     switch(ltr)
     {
-        case 0: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 54, ys, 54 + 5, y2); break; // 0
-        case 1: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 60, ys, 60 + 5, y2); break; // 1
-        case 2: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 66, ys, 66 + 5, y2); break; // 2
-        case 3: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 72, ys, 72 + 5, y2); break; // 3
-        case 4: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 78, ys, 78 + 5, y2); break; // 4
-        case 5: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 84, ys, 84 + 5, y2); break; // 5
-        case 6: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 90, ys, 90 + 5, y2); break; // 6
-        case 7: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 96, ys, 96 + 5, y2); break; // 7
-        case 8: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 102, ys, 102 + 5, y2); break; // 8
-        case 9: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 108, ys, 108 + 5, y2); break; // 9
+        case 0: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 54, ys, 54 + 5, y2, 1); break; // 0
+        case 1: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 60, ys, 60 + 5, y2, 1); break; // 1
+        case 2: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 66, ys, 66 + 5, y2, 1); break; // 2
+        case 3: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 72, ys, 72 + 5, y2, 1); break; // 3
+        case 4: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 78, ys, 78 + 5, y2, 1); break; // 4
+        case 5: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 84, ys, 84 + 5, y2, 1); break; // 5
+        case 6: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 90, ys, 90 + 5, y2, 1); break; // 6
+        case 7: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 96, ys, 96 + 5, y2, 1); break; // 7
+        case 8: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 102, ys, 102 + 5, y2, 1); break; // 8
+        case 9: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 108, ys, 108 + 5, y2, 1); break; // 9
         
-        case 10: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 0, ys, 5, y2); break; // A
-        case 11: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 6, ys, 6 + 5, y2); break;// B
-        case 12: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 12, ys, 12 + 5, y2); break;// C
-        case 13: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 18, ys, 18 + 5, y2); break;// D
-        case 14: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 24, ys, 24 + 5, y2); break;// E
-        case 15: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 30, ys, 30 + 5, y2); break;// F
-        case 16: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 36, ys, 36 + 5, y2); break;// G
+        case 10: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 0, ys, 5, y2, 1); break; // A
+        case 11: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 6, ys, 6 + 5, y2, 1); break;// B
+        case 12: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 12, ys, 12 + 5, y2, 1); break;// C
+        case 13: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 18, ys, 18 + 5, y2, 1); break;// D
+        case 14: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 24, ys, 24 + 5, y2, 1); break;// E
+        case 15: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 30, ys, 30 + 5, y2, 1); break;// F
+        case 16: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 36, ys, 36 + 5, y2, 1); break;// G
         
         case 17: 
         {
             if(Accidental)
             {
-                Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 145, ys, 145 + 5, y2); break; // b
+                Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 145, ys, 145 + 5, y2, 1); break; // b
             }
             else
             {
-                Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 48, ys, 48 + 5, y2); break; // #
+                Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 48, ys, 48 + 5, y2, 1); break; // #
             }
         }
-        case 18: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 132, ys, 132 + 5, y2); break; // -
-        case 19: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 114, ys, 114 + 17, y2); break; // Off
+        case 18: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 132, ys, 132 + 5, y2, 1); break; // -
+        case 19: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 114, ys, 114 + 17, y2, 1); break; // Off
         
-        case 20: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 42, ys, 42 + 5, y2); break; // Blank
-        case 21: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 138, ys, 138 + 5, y2); break; // .
+        case 20: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 42, ys, 42 + 5, y2, 1); break; // Blank
+        case 21: Copy_No_Refresh(GET_SURFACE(Note_Surface), x, y, 138, ys, 138 + 5, y2, 1); break; // .
 
-        case 23: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_NOTEPFONT), x, y,  56, header_y, 56 + 26, header_size); break; // ON
-        case 24: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_NOTEPFONT), x, y,  84, header_y, 84 + 26, header_size); break; // OFF
-        case 25: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_NOTEPFONT), x, y,   0, header_y,  0 + 26, header_size); break; // MUTE
-        case 26: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_NOTEPFONT), x, y,  28, header_y, 28 + 26, header_size); break; // PLAY
+        case 23: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_NOTEPFONT), x, y,  56, header_y, 56 + 26, header_size, -1); break; // ON
+        case 24: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_NOTEPFONT), x, y,  84, header_y, 84 + 26, header_size, -1); break; // OFF
+        case 25: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_NOTEPFONT), x, y,   0, header_y,  0 + 26, header_size, -1); break; // MUTE
+        case 26: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_NOTEPFONT), x, y,  28, header_y, 28 + 26, header_size, -1); break; // PLAY
 
-        case 27: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_NOTEPFONT), x, y,  193, header_y, 193 + 14, header_size); break; // ZOOM ON
-        case 28: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_NOTEPFONT), x, y,  221, header_y, 221 + 14, header_size); break; // ZOOM OFF
+        case 27: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_NOTEPFONT), x, y,  193, header_y, 193 + 14, header_size, -1); break; // ZOOM ON
+        case 28: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_NOTEPFONT), x, y,  221, header_y, 221 + 14, header_size, -1); break; // ZOOM OFF
 
-        case 29: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_NOTEPFONT), x, y, 56, ys, 59, y2); break; // Blank (4 pixels)
-        case 30: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_NOTEPFONT), x, y, 56, ys, 57, y2); break; // Blank (2 pixels)
+        case 29: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_NOTEPFONT), x, y, 56, ys, 59, y2, 1); break; // Blank (4 pixels)
+        case 30: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_NOTEPFONT), x, y, 56, ys, 57, y2, 1); break; // Blank (2 pixels)
 
-        case 31: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_NOTEPFONT), x, y, 111, header_y, 111 + 4, header_size); break; // FX ARROW LO BACK
-        case 32: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_NOTEPFONT), x, y, 138, header_y, 138 + 4, header_size); break; // FX ARROW HI BACK
-        case 33: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_NOTEPFONT), x, y, 165, header_y, 165 + 4, header_size); break; // FX ARROW SEL BACK
+        case 31: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_NOTEPFONT), x, y, 111, header_y, 111 + 4, header_size, -1); break; // FX ARROW LO BACK
+        case 32: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_NOTEPFONT), x, y, 138, header_y, 138 + 4, header_size, -1); break; // FX ARROW HI BACK
+        case 33: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_NOTEPFONT), x, y, 165, header_y, 165 + 4, header_size, -1); break; // FX ARROW SEL BACK
 
-        case 35: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_NOTEPFONT), x, y, 249, header_y, 249 + 6, header_size); break; // REDUCE NOTES ON
-        case 36: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_NOTEPFONT), x, y, 257, header_y, 257 + 6, header_size); break; // EXPAND NOTES ON
-        case 37: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_NOTEPFONT), x, y, 277, header_y, 277 + 6, header_size); break; // REDUCE NOTES OFF
-        case 38: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_NOTEPFONT), x, y, 285, header_y, 285 + 6, header_size); break; // EXPAND NOTES OFF
+        case 35: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_NOTEPFONT), x, y, 249, header_y, 249 + 6, header_size, -1); break; // REDUCE NOTES ON
+        case 36: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_NOTEPFONT), x, y, 257, header_y, 257 + 6, header_size, -1); break; // EXPAND NOTES ON
+        case 37: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_NOTEPFONT), x, y, 277, header_y, 277 + 6, header_size, -1); break; // REDUCE NOTES OFF
+        case 38: Copy_No_Refresh(GET_SURFACE(Ptr_Temp_NOTEPFONT), x, y, 285, header_y, 285 + 6, header_size, -1); break; // EXPAND NOTES OFF
     }
 }
 

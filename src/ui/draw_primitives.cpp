@@ -469,7 +469,8 @@ void Copy_No_Refresh(SDL_Surface *Source,
 #endif
           int x, int y,
           int x1, int y1,
-          int x2, int y2)
+          int x2, int y2,
+          int remainder)
 {
     SDL_Rect Src_Rect;
     SDL_Rect Dst_Rect;
@@ -478,6 +479,7 @@ void Copy_No_Refresh(SDL_Surface *Source,
     {
         y1 <<= 1;
         y2 <<= 1;
+        y2 += remainder;
     }
 
     Dst_Rect.x = x;

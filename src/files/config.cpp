@@ -56,6 +56,8 @@ extern char *cur_dir;
 extern char Last_Used_Ptk[MAX_PATH];
 extern int Burn_Title;
 extern int pattern_double;
+extern int pattern_sliders;
+extern int pattern_sliders_numbers;
 
 // ------------------------------------------------------
 // Save the configuration file
@@ -70,7 +72,7 @@ void Save_Config(void)
     char KeyboardName[MAX_PATH];
     signed char phony = -1;
 
-    sprintf(extension, "PROTCFGI");
+    sprintf(extension, "PROTCFGJ");
     Status_Box("Saving 'ptk.cfg'...");
 
     SET_FILENAME;
@@ -164,6 +166,10 @@ void Save_Config(void)
     // New double sized patterns font
 	Write_Data_Swap(&pattern_double, sizeof(int), 1, out);
 
+    // Patterns sliders
+	Write_Data_Swap(&pattern_sliders, sizeof(int), 1, out);
+	Write_Data_Swap(&pattern_sliders_numbers, sizeof(int), 1, out);
+
 	fclose(out);
 
 	Read_SMPT();
@@ -181,6 +187,7 @@ void Load_Config(void)
     int older_cfg = FALSE;
     int ok_cfg = FALSE;
     int dbl = TRUE;
+    int sliders = TRUE;
     int Real_Palette_Idx;
     char FileName[MAX_PATH];
     char KeyboardName[MAX_PATH];
@@ -200,18 +207,22 @@ void Load_Config(void)
 
         Read_Data(extension, sizeof(char), 9, in);
         ok_cfg = TRUE;
-        if(strcmp(extension, "PROTCFGI") != 0)
+        if(strcmp(extension, "PROTCFGJ") != 0)
         {
-            dbl = FALSE;
-            if(strcmp(extension, "PROTCFGH") != 0)
+            sliders = FALSE;
+            if(strcmp(extension, "PROTCFGI") != 0)
             {
-                if(strcmp(extension, "PROTCFGG") == 0)
+                dbl = FALSE;
+                if(strcmp(extension, "PROTCFGH") != 0)
                 {
-                    older_cfg = TRUE;
-                }
-                else
-                {
-                    ok_cfg = FALSE;
+                    if(strcmp(extension, "PROTCFGG") == 0)
+                    {
+                        older_cfg = TRUE;
+                    }
+                    else
+                    {
+                        ok_cfg = FALSE;
+                    }
                 }
             }
         }
@@ -294,6 +305,12 @@ void Load_Config(void)
             if(dbl)
             {
                 Read_Data_Swap(&pattern_double, sizeof(int), 1, in);
+            }
+
+            if(sliders)
+            {
+                Read_Data_Swap(&pattern_sliders, sizeof(int), 1, in);
+                Read_Data_Swap(&pattern_sliders_numbers, sizeof(int), 1, in);
             }
 
 #ifndef __MORPHOS__

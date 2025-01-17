@@ -65,10 +65,10 @@ GLuint Create_Texture(SDL_Surface *Source);
 void Destroy_Texture(GLuint *txId);
 void Draw_Tx_Quad(float x, float y, float x1, float y1, float Width, float Height, GLuint TexID, int Blend);
 void Copy(GLuint Source, int x, int y, int x1, int y1, int x2, int y2);
-void Copy_No_Refresh(GLuint Source, int x, int y, int x1, int y1, int x2, int y2);
+void Copy_No_Refresh(GLuint Source, int x, int y, int x1, int y1, int x2, int y2, int remainder);
 #else
 void Copy(SDL_Surface *Source, int x, int y, int x1, int y1, int x2, int y2);
-void Copy_No_Refresh(SDL_Surface *Source, int x, int y, int x1, int y1, int x2, int y2);
+void Copy_No_Refresh(SDL_Surface *Source, int x, int y, int x1, int y1, int x2, int y2, int remainder);
 #endif
 void Copy_To_Surface(SDL_Surface *Source, SDL_Surface *dest,
                      int dest_x, int dest_y, int src_start_x, int src_start_y, int src_end_x, int src_end_y);

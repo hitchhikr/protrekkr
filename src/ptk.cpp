@@ -68,6 +68,8 @@ extern int Delay_Sound_Buffer;
 extern int Cur_Delay_Sound_Buffer;
 extern int Subicounter;
 extern int pattern_double;
+extern int pattern_sliders;
+extern int pattern_sliders_numbers;
 
 #if defined(PTK_SHUFFLE)
 extern int shufflestep;
@@ -1213,7 +1215,7 @@ int Screen_Update(void)
             is_recording = 0;
             is_recording_2 = 0;
             Nbr_Sub_NoteOff = 0;
-            is_editing = 0;
+            is_editing = FALSE;
             Notify_Edit();
             Song_Stop();
         }
@@ -1226,7 +1228,7 @@ int Screen_Update(void)
         if(gui_action == GUI_CMD_EDIT_MODE)
         {
             is_recording = 0;
-            is_editing ^= 1;
+            is_editing ^= TRUE;
             is_recording_2 = 0;
             Nbr_Sub_NoteOff = 0;
             Song_Stop();
@@ -1240,7 +1242,7 @@ int Screen_Update(void)
             is_recording ^= 1;
             is_recording_2 = 0;
             Nbr_Sub_NoteOff = 0;
-            is_editing = 0;
+            is_editing = FALSE;
             key_record_first_time = TRUE;
             Clear_Midi_Channels_Pool();
             Update_Pattern(0);
@@ -1907,7 +1909,7 @@ int Screen_Update(void)
 
         Gui_Draw_Button_Box(0, 104, 392, 42, NULL, BUTTON_NORMAL | BUTTON_DISABLED);
         Gui_Draw_Button_Box(8, 108, 80, 16, "Instrument", BUTTON_NORMAL | BUTTON_DISABLED);
-        Gui_Draw_Button_Box(320, 108, 64, 16, "Delete", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
+        Gui_Draw_Button_Box(320, 108, 28, 16, "Del", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
         Gui_Draw_Button_Box(8, 126, 80, 16, "Step Add", BUTTON_NORMAL | BUTTON_DISABLED);
         Gui_Draw_Button_Box(166, 126, 90, 16, "Keyboard Octave", BUTTON_NORMAL | BUTTON_DISABLED);
 
@@ -3917,25 +3919,49 @@ void Keyboard_Handler(void)
         }
 
         // Previous column or previous track
-        if(Keys[SDLK_LEFT] && !Get_LCtrl() && !Get_LAlt())
+        if(Keys[SDLK_LEFT] && !Get_LCtrl() && !Get_LAlt() && !Get_RShift())
         {
             Goto_Previous_Column();
         }
 
         // Next column or next track
-        if(Keys[SDLK_RIGHT] && !Get_LCtrl() && !Get_LAlt())
+        if(Keys[SDLK_RIGHT] && !Get_LCtrl() && !Get_LAlt() && !Get_RShift())
         {
             Goto_Next_Column();
         }
 
+        // Decrease slider value by 1
+        if(Keys[SDLK_RIGHT] && !Get_LCtrl() && !Get_LAlt() && Get_RShift() && pattern_sliders && is_editing)
+        {
+            Set_Slider_Value(-1);
+        }
+
+        // Increase slider value by 1
+        if(Keys[SDLK_LEFT] && !Get_LCtrl() && !Get_LAlt() && Get_RShift() && pattern_sliders && is_editing)
+        {
+            Set_Slider_Value(1);
+        }
+
+        // Decrease slider value by 10
+        if(Keys[SDLK_DOWN] && !Get_LCtrl() && !Get_LAlt() && Get_RShift() && pattern_sliders && is_editing)
+        {
+            Set_Slider_Value(-10);
+        }
+
+        // Increase slider value by 10
+        if(Keys[SDLK_UP] && !Get_LCtrl() && !Get_LAlt() && Get_RShift() && pattern_sliders && is_editing)
+        {
+            Set_Slider_Value(10);
+        }
+
         // Previous row
-        if(Keys[SDLK_UP] && !Song_Playing)
+        if(Keys[SDLK_UP] && !Song_Playing && !Get_RShift())
         {
             Goto_Previous_Row(TRUE);
         }
 
         // Next row
-        if(Keys[SDLK_DOWN] && !Song_Playing)
+        if(Keys[SDLK_DOWN] && !Song_Playing && !Get_RShift())
         {
             Goto_Next_Row(TRUE);
         }
@@ -4999,7 +5025,7 @@ void Keyboard_Handler(void)
         Done_Value = FALSE;
         if(!Get_LAlt())
         {
-            if(retvalue != NOTE_OFF && is_editing == 1)
+            if(retvalue != NOTE_OFF && is_editing)
             {
                 int ped_cell;
                 int i;
@@ -6056,7 +6082,7 @@ void Mouse_Handler(void)
         }
 
         // Delete instrument
-        if(Check_Mouse(320, 108, 64, 16))
+        if(Check_Mouse(320, 108, 28, 16))
         {
             Display_Requester(&Delete_Requester, GUI_CMD_DELETE_INSTRUMENT, NULL, TRUE);
         }
@@ -6123,11 +6149,29 @@ void Mouse_Handler(void)
             if(pattern_double)
             {
                 Gui_Draw_Button_Box(332 + (18 * 2), 126, 16, 16, "\017", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
+                Display_Patterns_Sliders_Status();
             }
             else
             {
                 Gui_Draw_Button_Box(332 + (18 * 2), 126, 16, 16, "\016", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
+                Display_Patterns_Sliders_Status();
             }
+            Update_Pattern(0);
+        }
+
+        // Switch patterns sliders
+        if(Check_Mouse(350, 108, 16, 16))
+        {
+            pattern_sliders ^= TRUE;
+            Display_Patterns_Sliders_Status();
+            Update_Pattern(0);
+        }
+
+        // Switch patterns sliders
+        if(Check_Mouse(368, 108, 16, 16) && pattern_double)
+        {
+            pattern_sliders_numbers ^= TRUE;
+            Display_Patterns_Sliders_Status();
             Update_Pattern(0);
         }
 
@@ -7575,7 +7619,7 @@ void Unlock_Audio_Thread(void)
 }
 
 // ------------------------------------------------------
-// The status of the track zooms
+// The status of the patterns zoom
 void Display_Patterns_Sizes_Status(void)
 {
     int i;
@@ -7610,4 +7654,35 @@ void Display_Patterns_Sizes_Status(void)
     {
         Gui_Draw_Button_Box(332 + (18 * 2), 126, 16, 16, "\016", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
     }
+    Display_Patterns_Sliders_Status();
+}
+
+// ------------------------------------------------------
+// The status of the patterns sliders
+void Display_Patterns_Sliders_Status(void)
+{
+    if(pattern_double && pattern_sliders)
+    {
+        if(pattern_sliders_numbers)
+        {
+            Gui_Draw_Button_Box(368, 108, 16, 16, "xx", BUTTON_PUSHED | BUTTON_TEXT_CENTERED);
+        }
+        else
+        {
+            Gui_Draw_Button_Box(368, 108, 16, 16, "xx", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
+        }
+    }
+    else
+    {
+        Gui_Draw_Button_Box(368, 108, 16, 16, "xx", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
+    }
+    if(pattern_sliders)
+    {
+        Gui_Draw_Button_Box(350, 108, 16, 16, "S", BUTTON_PUSHED | BUTTON_TEXT_CENTERED);
+    }
+    else
+    {
+        Gui_Draw_Button_Box(350, 108, 16, 16, "S", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
+    }
+    Sanitize_Sliders_Block();
 }

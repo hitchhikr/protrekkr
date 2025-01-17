@@ -40,6 +40,7 @@
 // ------------------------------------------------------
 // Variables
 extern char Global_Patterns_Font;
+extern int pattern_sliders;
 
 unsigned char *Spec_BuffBlock;
 unsigned char *BuffBlock[NBR_COPY_BLOCKS];
@@ -63,6 +64,7 @@ char Buff_MultiNotes[NBR_COPY_BLOCKS][MAX_TRACKS];
 char Buff_Effects[NBR_COPY_BLOCKS][MAX_TRACKS];
 int Curr_Buff_Block;
 
+// What values from a block can be pasted where
 COLUMN_TYPE table_compatibilities[] =
 {
     EFFECTLO, EFFECT2LO, EFFECT3LO, EFFECT4LO,
@@ -189,6 +191,32 @@ void Mark_Block_Start(int start_nibble, int start_track, int start_line)
                                                Get_Track_Nibble_Start(Channels_MultiNotes, Channels_Effects, start_track))
                                                + start_track;
     swap_block_end_track[Curr_Buff_Block] = swap_block_start_track[Curr_Buff_Block];
+
+    // Only effect block selection
+    if(pattern_sliders)
+    {
+        switch(Get_Column_Type_With_Track(Channels_MultiNotes, Channels_Effects, start_track, start_nibble))
+        {
+            case VOLUMEHI:
+            case PANNINGHI:
+            case EFFECTDATHI:
+            case EFFECT2DATHI:
+            case EFFECT3DATHI:
+            case EFFECT4DATHI:
+                swap_block_end_track[Curr_Buff_Block]++;
+                break;
+            case VOLUMELO:
+            case PANNINGLO:
+            case EFFECTDATLO:
+            case EFFECT2DATLO:
+            case EFFECT3DATLO:
+            case EFFECT4DATLO:
+                swap_block_start_track[Curr_Buff_Block]--;
+                break;
+        }
+    }
+
+    // Line
     swap_block_start[Curr_Buff_Block] = start_line;
     swap_block_end[Curr_Buff_Block] = swap_block_start[Curr_Buff_Block];
 
@@ -215,12 +243,15 @@ void Mark_Block_Start(int start_nibble, int start_track, int start_line)
 void Mark_Block_End(int end_nibble, int start_track, int start_line, int Modif)
 {
     int swap_value;
-
-    end_nibble += Get_Track_Nibble_Start(Channels_MultiNotes, Channels_Effects, start_track);
+    int prior_nibble;
 
     if(Modif & BLOCK_MARK_TRACKS)
     {
+        end_nibble += Get_Track_Nibble_Start(Channels_MultiNotes, Channels_Effects, start_track);
+        prior_nibble = end_nibble;
+
         swap_value = end_nibble + start_track;
+
         if(swap_block_start_track[Curr_Buff_Block] >= swap_value)
         {
             block_start_track[Curr_Buff_Block] = swap_value;
@@ -231,6 +262,9 @@ void Mark_Block_End(int end_nibble, int start_track, int start_line, int Modif)
             block_end_track[Curr_Buff_Block] = swap_value;
             block_start_track[Curr_Buff_Block] = swap_block_start_track[Curr_Buff_Block];
         }
+
+        Sanitize_Sliders_Block();
+
         if(block_end_track[Curr_Buff_Block] < 0) block_end_track[Curr_Buff_Block] = 0;
         if(block_start_track[Curr_Buff_Block] < 0) block_start_track[Curr_Buff_Block] = 0;
     }
@@ -248,6 +282,8 @@ void Mark_Block_End(int end_nibble, int start_track, int start_line, int Modif)
             block_end[Curr_Buff_Block] = swap_value;
             block_start[Curr_Buff_Block] = swap_block_start[Curr_Buff_Block];
         }
+
+        Sanitize_Sliders_Block();
     }
     Update_Pattern(0);
 }
@@ -1962,7 +1998,10 @@ void Select_Block_Keyboard(int Type)
     {
         if(Get_LShift())
         {
-            if(block_in_selection[Curr_Buff_Block] == FALSE) Mark_Block_Start(Column_Under_Caret, Track_Under_Caret, Pattern_Line);
+            if(block_in_selection[Curr_Buff_Block] == FALSE)
+            {
+                Mark_Block_Start(Column_Under_Caret, Track_Under_Caret, Pattern_Line);
+            }
             Mark_Block_End(Column_Under_Caret, Track_Under_Caret, Pattern_Line, Type);
         }
         else
@@ -2123,9 +2162,10 @@ int Alloc_Patterns_Pool(void)
     return FALSE;
 }
 
+#if !defined(__STAND_ALONE__) && !defined(__WINAMP__)
+
 // ------------------------------------------------------
 // Return the number of nibbles in a track
-#if !defined(__STAND_ALONE__) && !defined(__WINAMP__)
 int Get_Max_Nibble_Track(char *Buffer_Multinotes, char *Buffer_Effects, int track)
 {
     return((Buffer_Multinotes[track] * 3) +
@@ -2245,6 +2285,66 @@ int Get_Byte_From_Column(char *Buffer_MultiNotes, char *Buffer_Effects, int colu
 }
 
 // ------------------------------------------------------
+// Return the byte index from a given column and track
+int Get_Byte_Type_From_Column_With_Track(char *Buffer_MultiNotes, char *Buffer_Effects, int track, int column)
+{
+    int max_notes = Buffer_MultiNotes[track];
+
+    int byte = 0;
+    int i;
+
+    for(i = 0; i < max_notes; i++)
+    {
+        if(column == (i * 3)) return(PATTERN_NOTE1 + (i * 2));
+        if(column == ((i * 3) + 1)) return(PATTERN_INSTR1 + (i * 2));
+        if(column == ((i * 3) + 2)) return(PATTERN_INSTR1 + (i * 2));
+    }
+    i--;
+
+    // Volume
+    if(column == ((i * 3) + 3)) return(PATTERN_VOLUME);
+    if(column == ((i * 3) + 4)) return(PATTERN_VOLUME);
+
+    // Panning
+    if(column == ((i * 3) + 5)) return(PATTERN_PANNING);
+    if(column == ((i * 3) + 6)) return(PATTERN_PANNING);
+
+    // Fx
+    if(column == ((i * 3) + 7)) return(PATTERN_FX);
+    if(column == ((i * 3) + 8)) return(PATTERN_FX);
+
+    // Fx data
+    if(column == ((i * 3) + 9)) return(PATTERN_FXDATA);
+    if(column == ((i * 3) + 10)) return(PATTERN_FXDATA);
+
+    // Fx 2
+    if(column == ((i * 3) + 11)) return(PATTERN_FX2);
+    if(column == ((i * 3) + 12)) return(PATTERN_FX2);
+
+    // Fx 2 data
+    if(column == ((i * 3) + 13)) return(PATTERN_FXDATA2);
+    if(column == ((i * 3) + 14)) return(PATTERN_FXDATA2);
+
+    // Fx 3
+    if(column == ((i * 3) + 15)) return(PATTERN_FX3);
+    if(column == ((i * 3) + 16)) return(PATTERN_FX3);
+
+    // Fx 3 data
+    if(column == ((i * 3) + 17)) return(PATTERN_FXDATA3);
+    if(column == ((i * 3) + 18)) return(PATTERN_FXDATA3);
+
+    // Fx 4
+    if(column == ((i * 3) + 19)) return(PATTERN_FX4);
+    if(column == ((i * 3) + 20)) return(PATTERN_FX4);
+
+    // Fx 4 data
+    if(column == ((i * 3) + 21)) return(PATTERN_FXDATA4);
+    if(column == ((i * 3) + 22)) return(PATTERN_FXDATA4);
+
+    return(byte);
+}
+
+// ------------------------------------------------------
 // Return the byte index from a given column
 COLUMN_TYPE Get_Column_Type(char *Buffer_MultiNotes, char *Buffer_Effects, int column)
 {
@@ -2284,6 +2384,68 @@ COLUMN_TYPE Get_Column_Type(char *Buffer_MultiNotes, char *Buffer_Effects, int c
     if(column == ((i * 3) + 21)) return(EFFECT4DATHI);
     if(column == ((i * 3) + 22)) return(EFFECT4DATLO);
     return(NOTE);
+}
+
+// ------------------------------------------------------
+// Return the byte index from a given column and track
+COLUMN_TYPE Get_Column_Type_With_Track(char *Buffer_MultiNotes, char *Buffer_Effects, int track, int column)
+{
+    int i;
+    int notes = (Get_Max_Nibble_Track(Buffer_MultiNotes, Buffer_Effects, track) -
+                 EXTRA_NIBBLE_DAT - 
+                 (Buffer_Effects[track] * 4)) / 3;
+
+    for(i = 0; i < notes; i++)
+    {
+        if(column == (i * 3)) return(NOTE);
+        if(column == ((i * 3) + 1)) return(INSTRHI);
+        if(column == ((i * 3) + 2)) return(INSTRLO);
+    }
+    i--;
+    if(column == ((i * 3) + 3)) return(VOLUMEHI);
+    if(column == ((i * 3) + 4)) return(VOLUMELO);
+    if(column == ((i * 3) + 5)) return(PANNINGHI);
+    if(column == ((i * 3) + 6)) return(PANNINGLO);
+    if(column == ((i * 3) + 7)) return(EFFECTHI);
+    if(column == ((i * 3) + 8)) return(EFFECTLO);
+    if(column == ((i * 3) + 9)) return(EFFECTDATHI);
+    if(column == ((i * 3) + 10)) return(EFFECTDATLO);
+    if(column == ((i * 3) + 11)) return(EFFECT2HI);
+    if(column == ((i * 3) + 12)) return(EFFECT2LO);
+    if(column == ((i * 3) + 13)) return(EFFECT2DATHI);
+    if(column == ((i * 3) + 14)) return(EFFECT2DATLO);
+    if(column == ((i * 3) + 15)) return(EFFECT3HI);
+    if(column == ((i * 3) + 16)) return(EFFECT3LO);
+    if(column == ((i * 3) + 17)) return(EFFECT3DATHI);
+    if(column == ((i * 3) + 18)) return(EFFECT3DATLO);
+    if(column == ((i * 3) + 19)) return(EFFECT4HI);
+    if(column == ((i * 3) + 20)) return(EFFECT4LO);
+    if(column == ((i * 3) + 21)) return(EFFECT4DATHI);
+    if(column == ((i * 3) + 22)) return(EFFECT4DATLO);
+    return(NOTE);
+}
+
+// ------------------------------------------------------
+// Return the data from a given column and track
+int Get_Column_Data_With_Track(char *Buffer_MultiNotes, char *Buffer_Effects, int Position, int track, int column, int row)
+{
+    return *(RawPatterns + (pSequence[Position] * PATTERN_LEN) + (row * PATTERN_ROW_LEN) + (track * PATTERN_BYTES) + 
+                           Get_Byte_Type_From_Column_With_Track(Buffer_MultiNotes, Buffer_Effects, track, column));
+}
+
+// ------------------------------------------------------
+// Set the data from a given column and track
+void Set_Column_Data_With_Track(char *Buffer_MultiNotes, char *Buffer_Effects, int Position, int track, int column, int row, int data)
+{
+    *(RawPatterns + (pSequence[Position] * PATTERN_LEN) + (row * PATTERN_ROW_LEN) + (track * PATTERN_BYTES) + 
+      Get_Byte_Type_From_Column_With_Track(Buffer_MultiNotes, Buffer_Effects, track, column)) = data;
+}
+
+// ------------------------------------------------------
+// Return the data from a given column and track
+int Get_Column_Panning_Data_With_Track(char *Buffer_MultiNotes, char *Buffer_Effects, int Position, int track, int row)
+{
+    return *(RawPatterns + (pSequence[Position] * PATTERN_LEN) + (row * PATTERN_ROW_LEN) + (track * PATTERN_BYTES) + PATTERN_PANNING);
 }
 
 // ------------------------------------------------------
@@ -2539,4 +2701,232 @@ void Insert_Track(void)
         Column_Under_Caret = 0;
     }
 }
+
+// ------------------------------------------------------
+// Make sure selection doesn't select half a slider (in sliders mode)
+void Sanitize_Sliders_Block(void)
+{
+    int panning_data;
+
+    if(pattern_sliders)
+    {
+        if(block_in_selection[Curr_Buff_Block])
+        {
+            switch(Get_Column_Type(Channels_MultiNotes, Channels_Effects, block_start_track[Curr_Buff_Block]))
+            {
+                case VOLUMELO:
+                case PANNINGLO:
+                case EFFECTDATLO:
+                case EFFECT2DATLO:
+                case EFFECT3DATLO:
+                case EFFECT4DATLO:
+                    block_start_track[Curr_Buff_Block]--;
+                    break;
+            }
+            switch(Get_Column_Type(Channels_MultiNotes, Channels_Effects, block_end_track[Curr_Buff_Block]))
+            {
+                case VOLUMEHI:
+                case PANNINGHI:
+                case EFFECTDATHI:
+                case EFFECT2DATHI:
+                case EFFECT3DATHI:
+                case EFFECT4DATHI:
+                    block_end_track[Curr_Buff_Block]++;
+                    break;
+            }
+        }
+        else
+        {
+            COLUMN_TYPE type = Get_Column_Type_With_Track(Channels_MultiNotes, Channels_Effects, Track_Under_Caret, Column_Under_Caret);
+            switch(type)
+            {
+                case VOLUMEHI:
+                    Column_Under_Caret++;
+                    break;
+                case PANNINGHI:
+                case EFFECTDATHI:
+                case EFFECT2DATHI:
+                case EFFECT3DATHI:
+                case EFFECT4DATHI:
+                    panning_data = Get_Column_Panning_Data_With_Track(Channels_MultiNotes, Channels_Effects, Get_Song_Position(),
+                                                                      Track_Under_Caret, Pattern_Line);
+                    if(panning_data != 0x90)
+                    {
+                        Column_Under_Caret++;
+                    }
+                    break;
+            }
+        }
+    }
+}
+
+// ------------------------------------------------------
+// Set a value from a slider on a line or in a block
+void Set_Slider_Value(int delta)
+{
+    int panning_data;
+    int data;
+    int fx;
+    int track;
+    int Position;
+    COLUMN_TYPE type;
+
+    int ybc;
+    int xbc;
+
+    if(block_in_selection[Curr_Buff_Block])
+    {
+        int max_columns = Get_Max_Nibble_All_Tracks();
+        Position = Get_Song_Position();
+
+        SELECTION Sel = Get_Real_Selection(TRUE);
+        for(ybc = Sel.y_start; ybc <= Sel.y_end; ybc++)
+        {
+            for(xbc = Sel.x_start; xbc <= Sel.x_end; xbc++)
+            {
+                if(xbc < max_columns && ybc < MAX_ROWS)
+                {
+                    type = Get_Column_Type(Channels_MultiNotes, Channels_Effects, xbc);
+
+                    switch(type)
+                    {
+                        case NOTE:
+                        case INSTRHI:
+                        case EFFECTHI:
+                        case EFFECT2HI:
+                        case EFFECT3HI:
+                        case EFFECT4HI:
+                        case INSTRLO:
+                        case EFFECTLO:
+                        case EFFECT2LO:
+                        case EFFECT3LO:
+                        case EFFECT4LO:
+                        case VOLUMELO:
+                        case PANNINGLO:
+                        case EFFECTDATLO:
+                        case EFFECT2DATLO:
+                        case EFFECT3DATLO:
+                        case EFFECT4DATLO:
+                            break;
+
+                        case PANNINGHI:
+                        case VOLUMEHI:
+                        case EFFECTDATHI:
+                        case EFFECT2DATHI:
+                        case EFFECT3DATHI:
+                        case EFFECT4DATHI:
+                            track = Get_Track_From_Nibble(Channels_MultiNotes, Channels_Effects, xbc);
+                            panning_data = Get_Column_Panning_Data_With_Track(Channels_MultiNotes, Channels_Effects, 
+                                                                              Position,
+                                                                              track, ybc);
+                            if(panning_data != 0x90 || type == VOLUMEHI)
+                            {
+                                data = Get_Pattern_Column(Position, xbc, ybc) & 0xf0;
+                                data |= Get_Pattern_Column(Position, xbc + 1, ybc) & 0xf;
+                            
+                                switch(type)
+                                {
+                                    case VOLUMEHI:
+                                        if(data == 255) goto No_Update;
+                                        data += delta;
+                                        if(data > 0x40) data = 0x40;
+                                        break;
+                                    case PANNINGHI:
+                                        if(data == 255) goto No_Update;
+                                        if(delta == 1 || delta == -1) delta = -delta;
+                                        data += delta;
+                                        if(data > 0x80) data = 0x80;
+                                        break;
+                                    case EFFECTDATHI:
+                                    case EFFECT2DATHI:
+                                    case EFFECT3DATHI:
+                                    case EFFECT4DATHI:
+                                        fx = Get_Pattern_Column(Position, xbc - 2, ybc) & 0xf0;
+                                        fx |= Get_Pattern_Column(Position, xbc - 1, ybc) & 0xf;
+                                        if(fx == 0) goto No_Update;
+                                        data += delta;
+                                        if(data > 0xff) data = 0xff;
+                                        break;
+                                }
+                                if(data < 0) data = 0;
+                            
+                                Set_Pattern_Column(Position, xbc, ybc, data );
+No_Update:;
+                            }
+                            break;
+                    }
+                }
+            }
+        }
+        Update_Pattern(0);
+    }
+    else
+    {
+        type = Get_Column_Type_With_Track(Channels_MultiNotes, Channels_Effects, Track_Under_Caret, Column_Under_Caret);
+        switch(type)
+        {
+            case VOLUMELO:
+                Column_Under_Caret--;
+                break;
+            case PANNINGLO:
+            case EFFECTDATLO:
+            case EFFECT2DATLO:
+            case EFFECT3DATLO:
+            case EFFECT4DATLO:
+                panning_data = Get_Column_Panning_Data_With_Track(Channels_MultiNotes, Channels_Effects, Get_Song_Position(),
+                                                                  Track_Under_Caret, Pattern_Line);
+                if(panning_data != 0x90)
+                {
+                    Column_Under_Caret--;
+                }
+                break;
+            case VOLUMEHI:
+            case PANNINGHI:
+            case EFFECTDATHI:
+            case EFFECT2DATHI:
+            case EFFECT3DATHI:
+            case EFFECT4DATHI:
+                break;
+            default:
+                return;
+        }
+
+        data = Get_Column_Data_With_Track(Channels_MultiNotes, Channels_Effects, Get_Song_Position(),
+                                          Track_Under_Caret, Column_Under_Caret, Pattern_Line);
+
+        type = Get_Column_Type_With_Track(Channels_MultiNotes, Channels_Effects, Track_Under_Caret, Column_Under_Caret);
+        switch(type)
+        {
+            case VOLUMEHI:
+                if(data == 255) data = 0;
+                data += delta;
+                if(data > 0x40) data = 0x40;
+                break;
+            case PANNINGHI:
+                if(data == 255) data = 0;
+                if(delta == 1 || delta == -1) delta = -delta;
+                data += delta;
+                if(data > 0x80) data = 0x80;
+                break;
+            case EFFECTDATHI:
+            case EFFECT2DATHI:
+            case EFFECT3DATHI:
+            case EFFECT4DATHI:
+                fx = Get_Column_Data_With_Track(Channels_MultiNotes, Channels_Effects, Get_Song_Position(),
+                                                Track_Under_Caret, Column_Under_Caret - 2, Pattern_Line);
+                if(!fx) goto No_Up_Line;
+                data += delta;
+                if(data > 0xff) data = 0xff;
+                break;
+        }
+        if(data < 0) data = 0;
+        Set_Column_Data_With_Track(Channels_MultiNotes, Channels_Effects, Get_Song_Position(), 
+                                   Track_Under_Caret, Column_Under_Caret, Pattern_Line, data);
+        Update_Pattern(0);
+No_Up_Line:;
+    }
+
+
+}
+
 #endif

@@ -75,6 +75,12 @@ typedef struct
 
 typedef struct
 {
+    void (*Fnc)(int, int, int, int, int, int, int, int, int, int);
+    void (*Fnc_Pan)(int, int, int, int, int, int, int, int, int, int);
+} SLIDER_FUNCTION, *LPSLIDER_FUNCTION;
+
+typedef struct
+{
     void (*Fnc)(int, int, int, int, int);
     void (*Fnc_Lo)(int, int, char, int, int);
 } NOTE_FUNCTION, *LPNOTE_FUNCTION;
