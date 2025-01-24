@@ -305,13 +305,13 @@ int Load_Ptk(CustomFile customFile)
             case '3':
                 goto Read_Mod_File;
 
-            // Old noisetrekker
-            case '2':
-                Old_Ntk = TRUE;
-
             // Noisetrekker Beta (1.6)
             case '1':
                 Ntk_Beta = TRUE;
+
+                // Old noisetrekker
+            case '2':
+                Old_Ntk = TRUE;
         }
 
 Read_Mod_File:
