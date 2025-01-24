@@ -2831,8 +2831,7 @@ void Set_Slider_Value(int delta)
                                     break;
                                 case PANNINGHI:
                                     if(data == 255) goto No_Update;
-                                    if(delta == 1 || delta == -1) delta = -delta;
-                                    data += delta;
+                                    data += -delta;
                                     if(data > 0x80) data = 0x80;
                                     break;
                                 case EFFECTDATHI:
@@ -2896,8 +2895,7 @@ No_Update:;
                 break;
             case PANNINGHI:
                 if(data == 255) data = 0;
-                if(delta == 1 || delta == -1) delta = -delta;
-                data += delta;
+                data += -delta;
                 if(data > 0x80) data = 0x80;
                 break;
             case EFFECTDATHI:

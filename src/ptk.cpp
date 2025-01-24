@@ -5556,7 +5556,7 @@ No_Key:;
         }
 
         // Note off (RSHIFT)
-        if(retnote == -3 && is_editing && !is_recording_2)
+        if(retnote == -3 && is_editing && !is_recording_2 && !pattern_sliders)
         {
             int column = 0;
             int in_note = FALSE;
@@ -7361,68 +7361,78 @@ void Draw_VuMeters(void)
             x_max += max_right % ptrTbl_Dat->x_max;
         }
         MaxLevel_L = 0.0f;  
-        MaxLevel_R = 0.0f;  
+        MaxLevel_R = 0.0f;
         start_pos_x = cur_pos_x;
         x_max_half = x_max >> 2;
-        x_max_half_start = x_max_half ;
+        x_max_half_start = x_max_half;
+
         for(int s = 0; s < x_max; s++)
         {
             // [0..1]
             pos_in_line = ((float) s) / (float) x_max;
 
-            data = VuMeters_Dats_L[i][offset_scope + (int) (pos_in_line * 128)];
+            data = VuMeters_Dats_L[i][offset_scope + (int) (pos_in_line * 128)] / (32767.0f / 2.0f);
             data = fabsf(data);
+            if(data > 1.0f)
+            {
+                data = 1.0f;
+            }
             if(data > MaxLevel_L)
             {
-                MaxLevel_L = (int) data;
-            }
-            MaxLevel_L *= 0.002f;
-            if(MaxLevel_L > ((ptrTbl_Dat->y_large << 1) - 2))
-            {
-                MaxLevel_L = (ptrTbl_Dat->y_large << 1) - 2;
+                MaxLevel_L = data;
             }
 
-            data = VuMeters_Dats_R[i][offset_scope + (int) (pos_in_line * 128)];
+            data = VuMeters_Dats_R[i][offset_scope + (int) (pos_in_line * 128)] / (32767.0f / 2.0f);
             data = fabsf(data);
+            if(data > 1.0f)
+            {
+                data = 1.0f;
+            }
             if(data > MaxLevel_R)
             {
-                MaxLevel_R = (int) data;
+                MaxLevel_R = data;
             }
-            MaxLevel_R *= 0.002f;
-            if(MaxLevel_R > ((ptrTbl_Dat->y_large << 1) - 2))
-            {
-                MaxLevel_R = (ptrTbl_Dat->y_large << 1) - 2;
-            }
-            peak_line = (ptrTbl_Dat->y_large << 1) - (ptrTbl_Dat->y_large >> 1);
-            i_MaxLevel_L = MaxLevel_L;
-            i_MaxLevel_R = MaxLevel_R;
-            bottom_line = 44 + (ptrTbl_Dat->y_pos + ptrTbl_Dat->y_large);
-            
-            for(j = 0; j < i_MaxLevel_L + 1; j += 2)
-            {
-                if(j > peak_line)
-                {
-                    DrawHLine(bottom_line - j, start_pos_x + x_max_half_start + 2, start_pos_x + x_max_half_start + x_max_half - 4, COL_VUMETERPEAK);
-                }
-                else
-                {
-                    DrawHLine(bottom_line - j, start_pos_x  + x_max_half_start + 2, start_pos_x  + x_max_half_start + x_max_half - 4, COL_VUMETER);
-                }
-            }
-
-            for(j = 0; j < i_MaxLevel_R + 1; j += 2)
-            {
-                if(j > peak_line)
-                {
-                    DrawHLine(bottom_line - j, start_pos_x  + x_max_half_start + x_max_half + 2, start_pos_x  + x_max_half_start + x_max_half + x_max_half - 4, COL_VUMETERPEAK);
-                }
-                else
-                {
-                    DrawHLine(bottom_line - j, start_pos_x  + x_max_half_start + x_max_half + 2, start_pos_x  + x_max_half_start + x_max_half + x_max_half - 4, COL_VUMETER);
-                }
-            }
-            cur_pos_x++;
         }
+
+        MaxLevel_R *= (float) (ptrTbl_Dat->y_large << 1);
+        MaxLevel_L *= (float) (ptrTbl_Dat->y_large << 1);
+        peak_line = (ptrTbl_Dat->y_large << 1) - (ptrTbl_Dat->y_large >> 1);
+        i_MaxLevel_L = MaxLevel_L;
+        i_MaxLevel_R = MaxLevel_R;
+        bottom_line = 44 + (ptrTbl_Dat->y_pos + ptrTbl_Dat->y_large);
+        if(i_MaxLevel_L > bottom_line)
+        {
+            i_MaxLevel_L = bottom_line;
+        }
+        if(i_MaxLevel_R > bottom_line)
+        {
+            i_MaxLevel_R = bottom_line;
+        }
+    
+        for(j = 0; j < i_MaxLevel_L + 1; j += 2)
+        {
+            if(j > peak_line)
+            {
+                DrawHLine(bottom_line - j, start_pos_x + x_max_half_start + 2, start_pos_x + x_max_half_start + x_max_half - 4, COL_VUMETERPEAK);
+            }
+            else
+            {
+                DrawHLine(bottom_line - j, start_pos_x  + x_max_half_start + 2, start_pos_x  + x_max_half_start + x_max_half - 4, COL_VUMETER);
+            }
+        }
+
+        for(j = 0; j < i_MaxLevel_R + 1; j += 2)
+        {
+            if(j > peak_line)
+            {
+                DrawHLine(bottom_line - j, start_pos_x  + x_max_half_start + x_max_half + 2, start_pos_x  + x_max_half_start + x_max_half + x_max_half - 4, COL_VUMETERPEAK);
+            }
+            else
+            {
+                DrawHLine(bottom_line - j, start_pos_x  + x_max_half_start + x_max_half + 2, start_pos_x  + x_max_half_start + x_max_half + x_max_half - 4, COL_VUMETER);
+            }
+        }
+        cur_pos_x += x_max;
         ptrTbl_Dat++;
         pixel_color = COL_SCOPESSAMPLES;
     }

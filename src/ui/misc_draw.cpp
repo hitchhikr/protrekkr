@@ -382,7 +382,7 @@ SDL_Color Default_Palette1[] =
     { 0x00, 0x00, 0x00, 0x00 },      // 13 (calculated)
 
     { 0x10, 0xea, 0xb0, 0x00 },      // 14 vumeter
-    { 0xff, 0xc8, 0x7e, 0x00 },      // 15 vumeter peak / Caret
+    { 0xff, 0x88, 0x5e, 0x00 },      // 15 vumeter peak / Caret
     { 0x88, 0xd0, 0xff, 0x00 },      // 16 scopes / samples
 
     { 0xdc, 0xf2, 0xff, 0x00 },      // 17 Font hi
@@ -469,8 +469,8 @@ SDL_Color Default_Palette2[] =
     { 0xa2, 0xba, 0xd8, 0x00 },
     { 0x00, 0x00, 0x00, 0x00 },      // 13 (calculated)
 
-    { 0x30, 0x60, 0x32, 0x00 },
-    { 0xcc, 0x82, 0x6c, 0x00 },
+    { 0x10, 0xca, 0x90, 0x00 },
+    { 0xfc, 0x72, 0x4c, 0x00 },
     { 0x24, 0x38, 0x64, 0x00 },
 
     { 0x06, 0x0e, 0x28, 0x00 },
@@ -557,7 +557,7 @@ SDL_Color Default_Palette3[] =
     { 0x00, 0x1c, 0x00, 0x00 },
     { 0x00, 0x00, 0x00, 0x00 },      // 13 (calculated)
 
-    { 0xa6, 0xea, 0x32, 0x00 },
+    { 0xea, 0x86, 0x32, 0x00 },
     { 0xff, 0x30, 0x00, 0x00 },
     { 0x64, 0xea, 0x24, 0x00 },
 
@@ -644,7 +644,7 @@ SDL_Color Default_Palette4[] =
     { 0x1c, 0x1e, 0x20, 0x00 },
     { 0x00, 0x00, 0x00, 0x00 },      // 13 (calculated)
 
-    { 0xd6, 0xe8, 0xfa, 0x00 },
+    { 0x10, 0xca, 0x90, 0x00 },
     { 0xff, 0x8c, 0x5e, 0x00 },
     { 0xd4, 0xbc, 0x86, 0x00 },
 
@@ -732,8 +732,8 @@ SDL_Color Default_Palette5[] =
     { 0x00, 0x30, 0x76, 0x00 },
     { 0x00, 0x00, 0x00, 0x00 },      // 13 (calculated)
 
-    { 0x66, 0xa0, 0xfa, 0x00 },
-    { 0x26, 0xb6, 0xff, 0x00 },
+    { 0x10, 0xfa, 0xc0, 0x00 },
+    { 0xff, 0xb6, 0x26, 0x00 },
     { 0x4e, 0x7e, 0xff, 0x00 },
 
     { 0xb0, 0xce, 0xff, 0x00 },
@@ -820,7 +820,7 @@ SDL_Color Default_Palette6[] =
     { 0x66, 0x18, 0x14, 0x00 },
     { 0x00, 0x00, 0x00, 0x00 },      // 13 (calculated)
 
-    { 0x9c, 0x36, 0x00, 0x00 },
+    { 0x10, 0xfa, 0xc0, 0x00 },
     { 0xff, 0x40, 0x00, 0x00 },
     { 0xff, 0xb6, 0x54, 0x00 },
 
@@ -908,8 +908,8 @@ SDL_Color Default_Palette7[] =
     { 0x5a, 0x66, 0x76, 0x00 },
     { 0x00, 0x00, 0x00, 0x00 },      // 13 (calculated)
 
-    { 0xff, 0xff, 0xff, 0x00 },
-    { 0x30, 0x60, 0xc8, 0x00 },
+    { 0x10, 0xda, 0xa0, 0x00 },
+    { 0xf8, 0x50, 0x10, 0x00 },
     { 0x00, 0x10, 0x20, 0x00 },
 
     { 0x00, 0x08, 0x16, 0x00 },
@@ -996,8 +996,8 @@ SDL_Color Default_Palette8[] =
     { 0x00, 0x30, 0x44, 0x00 },
     { 0x00, 0x00, 0x00, 0x00 },      // 13 (calculated)
 
-    { 0xb2, 0xf6, 0xae, 0x00 },      // vu-meter
-    { 0x00, 0x00, 0x00, 0x00 },      // vu-meter peak/caret
+    { 0xfa, 0x50, 0x10, 0x00 },      // vu-meter
+    { 0x10, 0xfa, 0x50, 0x00 },      // vu-meter peak/caret
     { 0xff, 0xe8, 0xa4, 0x00 },
 
     { 0xf2, 0xfe, 0xff, 0x00 },
@@ -1084,8 +1084,8 @@ SDL_Color Default_Palette9[] =
     { 0x20, 0x14, 0x0e, 0x00 },
     { 0x00, 0x00, 0x00, 0x00 },      // 13 (calculated)
 
-    { 0x58, 0xc6, 0x22, 0x00 },
-    { 0x5e, 0x9e, 0xd4, 0x00 },
+    { 0x78, 0xe6, 0x22, 0x00 },
+    { 0xf4, 0x9e, 0x5e, 0x00 },
     { 0x24, 0xac, 0x52, 0x00 },
 
     { 0xff, 0xf6, 0xee, 0x00 },
@@ -2321,17 +2321,17 @@ void Slider(int x, int y, int ltr, int col1, int y2, int larg, int scale_x, int 
     {
         if(ltr >> 4)
         {
-            Draw_Slider_Digit(x + (larg << 1) - (2 << (scale_x)) - (2 << (scale_x)) - 3 - 2, y + y2 - (4 * (SCALE << scale_y) / 2) - 1, ltr >> 4, COL_VUMETERPEAK, scale_x, scale_y);
+            Draw_Slider_Digit(x + (larg << 1) - (2 << (scale_x)) - (2 << (scale_x)) - 3 - 2, y + y2 - (4 * (SCALE << scale_y) / 2) - 1, ltr >> 4, COL_VUMETER, scale_x, scale_y);
         }
         else
         {
             if(leading_zeroes)
             {
-                Draw_Slider_Digit(x + (larg << 1) - (2 << (scale_x)) - (2 << (scale_x)) - 3 - 2, y + y2 - (4 * (SCALE << scale_y) / 2) - 1, ltr >> 4, COL_VUMETERPEAK, scale_x, scale_y);
+                Draw_Slider_Digit(x + (larg << 1) - (2 << (scale_x)) - (2 << (scale_x)) - 3 - 2, y + y2 - (4 * (SCALE << scale_y) / 2) - 1, ltr >> 4, COL_VUMETER, scale_x, scale_y);
             }
         }
         
-        Draw_Slider_Digit(x + (larg << 1) - (2 << (scale_x)) - 2, y + y2 - (4 * (SCALE << scale_y) / 2) - 1, ltr & 0xf, COL_VUMETERPEAK, scale_x, scale_y);
+        Draw_Slider_Digit(x + (larg << 1) - (2 << (scale_x)) - 2, y + y2 - (4 * (SCALE << scale_y) / 2) - 1, ltr & 0xf, COL_VUMETER, scale_x, scale_y);
     }
 }
 
@@ -2341,20 +2341,13 @@ void Slider(int x, int y, int ltr, int col1, int y2, int larg, int scale_x, int 
 void Slider_Pan(int x, int y, int ltr, int col1, int y2, int larg, int scale_x, int col_back, int scale, int scale_y)
 {
     SetColor(col_back);
-    if(scale_x < 0)
-    {
-        // Back
-        Fillrect(x + larg, y, x + larg + larg, y + (y2 * 2) - 1);
-    }
-    else
-    {
-        // Back
-        Fillrect(x, y, x + 2 + larg, y + (y2 * 2) - 1);
-    }
+    Fillrect(x, y, x + larg + larg, y + (y2 * 2) - 1);
+    SetColor(col_back);
 
-    float dat;
     float fltr;
     int idat;
+    int start;
+    int end;
         
     DrawHLine(y, x, x + larg + larg - 1, col1);
     DrawHLine(y + (y2 * 2) - 2, x, x + larg + larg - 1, col1);
@@ -2363,64 +2356,67 @@ void Slider_Pan(int x, int y, int ltr, int col1, int y2, int larg, int scale_x, 
 
     SetColor(col1);
 
-    if(scale_x < 0)
+    // Normalize
+    // [0.0..1.0]
+    if(ltr != 0x40)
     {
-        scale_x = -scale_x;
-
-        if(ltr >= (scale >> 1))
+        fltr = ((float) ltr / (float) scale);
+        // [-0.5..0.5]
+        fltr -= 0.5f;
+        if(fltr < 0.0f)
         {
-            // [0..0x40]
-            ltr -= (scale >> 1);
-            // Normalize
-            fltr = -((float) ltr / (float) (scale * 0.60f));
-            dat = (float) 1.0f - (fltr + 1.0f);
-
-            idat = (int) (dat * larg);
-
-            int start = x + larg;
-            int end = x + larg + idat;
-            if(start == end)
+            // Draw the left part
+            // [0.0..0.5]
+            fltr = -fltr;
+            // [0.5..0.0]
+            fltr = 0.5f - fltr;
+            // [1.0..0.0]
+            fltr = fltr * 2.0f;
+            idat = (int) (fltr * larg);
+            start = x + idat;
+            end = x + larg;
+            if(start < (x + 2))
             {
-                end++;
+                start = (x + 2);
             }
-            Fillrect(start, y + 2, end, y + (y2 * 2) - 3);
-        }
-    }
-    else
-    {
-        if(ltr < (scale >> 1))
-        {
-            // Normalize
-            fltr = (float) ltr / (float) (scale * 0.60f);
-            dat = (float) (fltr);
-            idat = (int) (dat * larg);
-            int start = x + 2 + idat;
-            int end = x + 1 + larg;
-            if(start == end)
-            {
-                end++;
-            }
-            Fillrect(start, y + 2, end, y + (y2 * 2) - 3);
         }
         else
         {
-            Fillrect(x + larg, y + 2, x + larg + 1, y + (y2 * 2) - 3);
+            // [0.0..1.0]
+            fltr = fltr * 2.0f;
+            // Draw the right part
+            idat = (int) (fltr * larg);
+            start = x + larg;
+            end = x + larg + idat;
+            if(end > (x + larg + larg - 2))
+            {
+                end = (x + larg + larg - 2);
+            }
         }
+        if(start >= end)
+        {
+            end = start + 1;
+        }
+        Fillrect(start, y + 2, end, y + (y2 * 2) - 3);
+    }
+    else
+    {
+        Fillrect(x + larg, y + 2, x + larg + 1, y + (y2 * 2) - 3);
     }
     if(pattern_sliders_numbers && pattern_double)
     {
         if(ltr >> 4)
         {
-            Draw_Slider_Digit(x + (larg << 1) - (2 << (scale_x)) - (2 << (scale_x)) - 3 - 2, y + y2 - (4 * (SCALE << scale_y) / 2) - 1, ltr >> 4, COL_VUMETERPEAK, scale_x, scale_y);
+            Draw_Slider_Digit(x + (larg << 1) - (2 << (scale_x)) - (2 << (scale_x)) - 3 - 2, y + y2 - (4 * (SCALE << scale_y) / 2) - 1, ltr >> 4, COL_VUMETER, scale_x, scale_y);
         }
         else
         {
             if(leading_zeroes)
             {
-                Draw_Slider_Digit(x + (larg << 1) - (2 << (scale_x)) - (2 << (scale_x)) - 3 - 2, y + y2 - (4 * (SCALE << scale_y) / 2) - 1, ltr >> 4, COL_VUMETERPEAK, scale_x, scale_y);
+                Draw_Slider_Digit(x + (larg << 1) - (2 << (scale_x)) - (2 << (scale_x)) - 3 - 2, y + y2 - (4 * (SCALE << scale_y) / 2) - 1, ltr >> 4, COL_VUMETER, scale_x, scale_y);
             }
         }
-        Draw_Slider_Digit(x + (larg << 1) - (2 << (scale_x)) - 2, y + y2 - (4 * (SCALE << scale_y) / 2) - 1, ltr & 0xf, COL_VUMETERPEAK, scale_x, scale_y);
+        Draw_Slider_Digit(x + (larg << 1) - (2 << (scale_x)) - 2, y + y2 - (4 * (SCALE << scale_y) / 2) - 1, ltr & 0xf, COL_VUMETER, scale_x, scale_y);
     }
 }
 

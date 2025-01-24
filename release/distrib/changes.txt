@@ -9,6 +9,8 @@ v2.8.0
 - Added the option to show/clear leading zeroes digits in patterns.
 - Added patterns sliders edition mode (check manual for explanations).
 - Fixed various bugs in patterns edition.
+- Channels vu-meters were drawn way to many times over each others, fixed.
+- Fixed the audio levels of the channels vu-meters.
 
 v2.7.6
 
