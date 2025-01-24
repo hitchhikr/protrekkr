@@ -89,12 +89,12 @@ int Final_Mod_Length;
 // ------------------------------------------------------
 // Functions
 #if !defined(BZR2)
-int Read_Mod_Data(void *Datas, int Unit, int Length, FILE *Handle);
-int Read_Mod_Data_Swap(void *Datas, int Unit, int Length, FILE *Handle);
+int Read_Mod_Data(void *Data, int Unit, int Length, FILE *Handle);
+int Read_Mod_Data_Swap(void *Data, int Unit, int Length, FILE *Handle);
 short *Unpack_Sample(FILE *FileHandle, int Dest_Length, char Pack_Type, int BitRate);
 #else
-int Read_Mod_Data(void *Datas, int Unit, int Length, CustomFile &Handle);
-int Read_Mod_Data_Swap(void *Datas, int Unit, int Length, CustomFile &Handle);
+int Read_Mod_Data(void *Data, int Unit, int Length, CustomFile &Handle);
+int Read_Mod_Data_Swap(void *Data, int Unit, int Length, CustomFile &Handle);
 short *Unpack_Sample(CustomFile &FileHandle, int Dest_Length, char Pack_Type, int BitRate);
 #endif
 
@@ -767,7 +767,7 @@ Read_Mod_File:
 
             if(!Portable) Read_Mod_Data(&Ye_Old_Phony_Value, sizeof(char), 1, in);
 
-            // Read the 303 datas
+            // Read the 303 data
             for(j = 0; j < 2; j++)
             {
                 Read_Mod_Data(&tb303[j].enabled, sizeof(char), 1, in);
@@ -983,7 +983,7 @@ void Pack_Sample(FILE *FileHandle, short *Sample, int Size, char Pack_Type, int 
     {
         // Write the encoded length
         Write_Mod_Data(&PackedLen, sizeof(char), 4, FileHandle);
-        // Write the encoded datas
+        // Write the encoded data
         Write_Mod_Data(PackedSample, sizeof(char), PackedLen, FileHandle);
     }
     else
@@ -998,12 +998,12 @@ void Pack_Sample(FILE *FileHandle, short *Sample, int Size, char Pack_Type, int 
 
 // ------------------------------------------------------
 // Write data into a module file
-int Write_Mod_Data(void *Datas, int Unit, int Length, FILE *Handle)
+int Write_Mod_Data(void *Data, int Unit, int Length, FILE *Handle)
 {
     switch(Mod_Simulate)
     {
         case SAVE_WRITE:
-            Write_Data(Datas, Unit, Length, Handle);
+            Write_Data(Data, Unit, Length, Handle);
             break;
 
         case SAVE_CALCLEN:
@@ -1011,7 +1011,7 @@ int Write_Mod_Data(void *Datas, int Unit, int Length, FILE *Handle)
             break;
 
         case SAVE_WRITEMEM:
-            memcpy(Mod_Memory + Mod_Mem_Pos, Datas, Unit * Length);
+            memcpy(Mod_Memory + Mod_Mem_Pos, Data, Unit * Length);
             Mod_Mem_Pos += Unit * Length;
             break;
     }
@@ -1020,7 +1020,7 @@ int Write_Mod_Data(void *Datas, int Unit, int Length, FILE *Handle)
 
 // ------------------------------------------------------
 // Write data into a module file (handling bytes swapping)
-int Write_Mod_Data_Swap(void *Datas, int Unit, int Length, FILE *Handle)
+int Write_Mod_Data_Swap(void *Data, int Unit, int Length, FILE *Handle)
 {
     short sswap_value;
     int iswap_value;
@@ -1030,7 +1030,7 @@ int Write_Mod_Data_Swap(void *Datas, int Unit, int Length, FILE *Handle)
     switch(Mod_Simulate)
     {
         case SAVE_WRITE:
-            Write_Data_Swap(Datas, Unit, Length, Handle);
+            Write_Data_Swap(Data, Unit, Length, Handle);
             break;
 
         case SAVE_CALCLEN:
@@ -1041,14 +1041,14 @@ int Write_Mod_Data_Swap(void *Datas, int Unit, int Length, FILE *Handle)
             switch(Unit)
             {
                 case 2:
-                    svalue = (short *) Datas;
+                    svalue = (short *) Data;
                     sswap_value = Swap_16(*svalue);
                     memcpy(Mod_Memory + Mod_Mem_Pos, &sswap_value, Unit * Length);
                     Mod_Mem_Pos += Unit * Length;
                     break;
 
                 case 4:
-                    ivalue = (int *) Datas;
+                    ivalue = (int *) Data;
                     iswap_value = Swap_32(*ivalue);
                     memcpy(Mod_Memory + Mod_Mem_Pos, &iswap_value, Unit * Length);
                     Mod_Mem_Pos += Unit * Length;
@@ -1067,19 +1067,19 @@ int Write_Mod_Data_Swap(void *Datas, int Unit, int Length, FILE *Handle)
 // ------------------------------------------------------
 // Read data from a module file
 #if !defined(BZR2)
-int Read_Mod_Data(void *Datas, int Unit, int Length, FILE *Handle)
+int Read_Mod_Data(void *Data, int Unit, int Length, FILE *Handle)
 #else
-int Read_Mod_Data(void *Datas, int Unit, int Length, CustomFile &Handle)
+int Read_Mod_Data(void *Data, int Unit, int Length, CustomFile &Handle)
 #endif
 {
     switch(Mod_Simulate)
     {
         case LOAD_READ:
-            Read_Data(Datas, Unit, Length, Handle);
+            Read_Data(Data, Unit, Length, Handle);
             break;
 
         case LOAD_READMEM:
-            memcpy(Datas, Mod_Memory + Mod_Mem_Pos, Unit * Length);
+            memcpy(Data, Mod_Memory + Mod_Mem_Pos, Unit * Length);
             Mod_Mem_Pos += Unit * Length;
             break;
     }
@@ -1089,9 +1089,9 @@ int Read_Mod_Data(void *Datas, int Unit, int Length, CustomFile &Handle)
 // ------------------------------------------------------
 // Read data from a module file
 #if !defined(BZR2)
-int Read_Mod_Data_Swap(void *Datas, int Unit, int Length, FILE *Handle)
+int Read_Mod_Data_Swap(void *Data, int Unit, int Length, FILE *Handle)
 #else
-int Read_Mod_Data_Swap(void *Datas, int Unit, int Length, CustomFile &Handle)
+int Read_Mod_Data_Swap(void *Data, int Unit, int Length, CustomFile &Handle)
 #endif
 {
     short svalue;
@@ -1100,7 +1100,7 @@ int Read_Mod_Data_Swap(void *Datas, int Unit, int Length, CustomFile &Handle)
     switch(Mod_Simulate)
     {
         case LOAD_READ:
-            Read_Data_Swap(Datas, Unit, Length, Handle);
+            Read_Data_Swap(Data, Unit, Length, Handle);
             break;
 
         case LOAD_READMEM:
@@ -1109,14 +1109,14 @@ int Read_Mod_Data_Swap(void *Datas, int Unit, int Length, CustomFile &Handle)
                 case 2:
                     memcpy(&svalue, Mod_Memory + Mod_Mem_Pos, Unit * Length);
                     svalue = Swap_16(svalue);
-                    *((short *) Datas) = (int) svalue;
+                    *((short *) Data) = (int) svalue;
                     Mod_Mem_Pos += Unit * Length;
                     break;
 
                 case 4:
                     memcpy(&ivalue, Mod_Memory + Mod_Mem_Pos, Unit * Length);
                     ivalue = Swap_32(ivalue);
-                    *((int *) Datas) = (int) ivalue;
+                    *((int *) Data) = (int) ivalue;
                     Mod_Mem_Pos += Unit * Length;
                     break;
 
@@ -1964,7 +1964,7 @@ int Calc_Length(void)
     int l;
     int pos_patt;
     int patt_cmd[MAX_FX];
-    int patt_datas[MAX_FX];
+    int patt_data[MAX_FX];
     Uint8 *Cur_Patt;
     float Ticks = (float) Ticks_Per_Beat;
     float BPM = (float) Beats_Per_Min;
@@ -2007,7 +2007,7 @@ int Calc_Length(void)
                     for(l = 0; l < Channels_Effects[k]; l++)
                     {
                         patt_cmd[l] = Cur_Patt[PATTERN_FX + (l * 2)];
-                        patt_datas[l] = Cur_Patt[PATTERN_FXDATA + (l * 2)];
+                        patt_data[l] = Cur_Patt[PATTERN_FXDATA + (l * 2)];
                     }                    
 
                     for(l = 0; l < Channels_Effects[k]; l++)
@@ -2017,7 +2017,7 @@ int Calc_Length(void)
                             case 0x6:
                                 if(!already_in_loop)
                                 {
-                                    if(!patt_datas[l])
+                                    if(!patt_data[l])
                                     {
                                         rep_counter = -1;
                                         rep_pos = pos_patt;
@@ -2027,7 +2027,7 @@ int Calc_Length(void)
                                     {
                                         if(rep_counter == -1)
                                         {
-                                            rep_counter = (int) patt_datas[l];
+                                            rep_counter = (int) patt_data[l];
                                             pos_patt = rep_pos;
                                         }
                                         else
@@ -2050,26 +2050,26 @@ int Calc_Length(void)
                                 break;
 
                             case 0xd:
-                                if(patt_datas[l] < MAX_ROWS) have_break = patt_datas[l];
+                                if(patt_data[l] < MAX_ROWS) have_break = patt_data[l];
                                 break;
                         
                             case 0x1f:
                                 // Avoid looping the song when jumping
-                                if(i == (Song_Length - 1) || patt_datas[l] <= i)
+                                if(i == (Song_Length - 1) || patt_data[l] <= i)
                                 {
                                     early_exit = TRUE;
                                 }
-                                i = patt_datas[l];
+                                i = patt_data[l];
                                 // Was there a break already ?
                                 if(have_break >= MAX_ROWS) have_break = 0;
                                 break;
                         
                             case 0xf:
-                                Ticks = (float) patt_datas[l];
+                                Ticks = (float) patt_data[l];
                                 break;
     
                             case 0xf0:
-                                BPM = (float) patt_datas[l];
+                                BPM = (float) patt_data[l];
                                 break;
                         }
                     }

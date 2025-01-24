@@ -2,9 +2,9 @@
 ProTrekkr releases history
 ===============================================================================
 
-v2.7.7
+v2.8.0
 
-- Sample "maximize" is now called "normalize" in samples editor.
+- Sample "Maximize" (Max) is now called "Normalize" (Norm) in samples editor.
 - More visual feedback for currently played sample in samples editor.
 - Added the option to show/clear leading zeroes digits in patterns.
 - Added patterns sliders edition mode.
@@ -786,7 +786,7 @@ v1.83c:
   --- .. .. .. 0000
   --- .. .. .. 0000
   --- .. .. .. 0000
-  --- .. .. .. 1B38 <- Change datas
+  --- .. .. .. 1B38 <- Change data
   --- .. .. .. 0000
   --- .. .. .. 0000
   --- .. .. .. 0000
@@ -844,7 +844,7 @@ v1.82:
 v1.81:
 
 - Blocks commands can now work without a block being actually selected
-  (the complete datas of the current track will be processed in that case).
+  (the complete data of the current track will be processed in that case).
 - Right mouse button in sampler now selects complete sample
   if nothing is already selected (and unselect all if something is).
 - LSHIFT + M: Toggle mute state of the current channel.

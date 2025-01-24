@@ -70,6 +70,8 @@ extern int Subicounter;
 extern int pattern_double;
 extern int pattern_sliders;
 extern int pattern_sliders_numbers;
+extern int RShift_Notification;
+extern int RShift_Notified;
 
 #if defined(PTK_SHUFFLE)
 extern int shufflestep;
@@ -228,6 +230,7 @@ void Draw_Scope(void);
 void Draw_Scope_Files_Button(void);
 void Display_Tracks_To_Render(void);
 void Solo_Track(int track_to_solo);
+void Display_RShift_Status(void);
 
 JAZZ_KEY Sub_Channels_Jazz[MAX_TRACKS][MAX_POLYPHONY];
 
@@ -478,7 +481,7 @@ SDL_Surface *Load_Skin_Picture(char *name)
 
 // ------------------------------------------------------
 // Load the font letters sizes according
-int Load_Font_Datas(char *name)
+int Load_Font_Data(char *name)
 {
     char filepath[MAX_PATH];
     char error[256];
@@ -488,7 +491,7 @@ int Load_Font_Datas(char *name)
 #else
     sprintf(filepath, "skins/%s", name);
 #endif
-    if(!Create_Font_Datas(filepath))
+    if(!Create_Font_Data(filepath))
     {
         sprintf(error, "Can't load %s file.", name);
         Message_Error(error);
@@ -498,7 +501,7 @@ int Load_Font_Datas(char *name)
 }
 
 // ------------------------------------------------------
-// Load the necessary datas and initialize the interface
+// Load the necessary data and initialize the interface
 int Init_Context(void)
 {
     srand(time(0));
@@ -577,7 +580,7 @@ int Init_Context(void)
     FONT_LOW = Load_Skin_Picture("font.bmp");
     if(!FONT_LOW) return(FALSE);
 
-    if(!Load_Font_Datas("font_datas.txt"))
+    if(!Load_Font_Data("font_data.txt"))
     {
         return(FALSE);
     }
@@ -1553,33 +1556,33 @@ int Screen_Update(void)
                 if(LoopType[Current_Instrument][Current_Instrument_Split])
                 {
                     RiffChunkHeader header;
-                    WaveSmpl_ChunkData datas;
+                    WaveSmpl_ChunkData data;
 
                     header.ckID = FourCC("smpl");
                     header.ckSize = 0x3c;
 
-                    memset(&datas, 0, sizeof(datas));
-                    datas.Num_Sample_Loops = 1;
+                    memset(&data, 0, sizeof(data));
+                    data.Num_Sample_Loops = 1;
                     if(gui_action == GUI_CMD_EXPORT_LOOP_WAV)
                     {
                         // Whole sample is the loop
-                        datas.Start = 0;
-                        datas.End = wend;
+                        data.Start = 0;
+                        data.End = wend;
                     }
                     else
                     {
-                        datas.Start = LoopStart[Current_Instrument][Current_Instrument_Split];
-                        datas.End = LoopEnd[Current_Instrument][Current_Instrument_Split];
+                        data.Start = LoopStart[Current_Instrument][Current_Instrument_Split];
+                        data.End = LoopEnd[Current_Instrument][Current_Instrument_Split];
                     }
 
                     header.ckSize = Swap_32(header.ckSize);
 
-                    datas.Num_Sample_Loops = Swap_32(datas.Num_Sample_Loops);
-                    datas.Start = Swap_32(datas.Start);
-                    datas.End = Swap_32(datas.End);
+                    data.Num_Sample_Loops = Swap_32(data.Num_Sample_Loops);
+                    data.Start = Swap_32(data.Start);
+                    data.End = Swap_32(data.End);
 
                     RF.WriteData((void *) &header, sizeof(header));
-                    RF.WriteData((void *) &datas, sizeof(datas));
+                    RF.WriteData((void *) &data, sizeof(data));
                 }
             }
             RF.Close();
@@ -2140,6 +2143,8 @@ int Screen_Update(void)
         Mouse_Handler_Requester();
         Keyboard_Handler_Requester();
     }
+
+    Display_RShift_Status();
 
     // Refresh the sequencer each time the song position is different
     if(Song_Playing)
@@ -3742,6 +3747,7 @@ void Keyboard_Handler(void)
 {
     int Cur_Position = Get_Song_Position();
     int Done_Value;
+    int data;
 
     // Exit tracker
     if(Get_LAlt() && Keys[SDLK_F4]) gui_action = GUI_CMD_EXIT;
@@ -5067,6 +5073,22 @@ void Keyboard_Handler(void)
                     if(Column_Under_Caret == (19 + j)) ped_cell = PATTERN_FX4;         	// fx 4
                     if(Column_Under_Caret == (21 + j)) ped_cell = PATTERN_FXDATA4;     	// fx 4 data
                     
+                    switch(ped_cell)
+                    {
+                        case PATTERN_FXDATA:
+                        case PATTERN_FXDATA2:
+                        case PATTERN_FXDATA3:
+                        case PATTERN_FXDATA4:
+                            data = Get_Column_Data_With_Track(Channels_MultiNotes, Channels_Effects, pSequence[Cur_Position],
+                                                              Track_Under_Caret, Column_Under_Caret - 2, Pattern_Line);
+                            if(data == 0)
+                            {
+                                Done_Value = TRUE;
+                                goto Cannot_Modify_Odd;
+                            }
+                            break;
+                    }
+
                     ltretvalue = retvalue;
                     xoffseted = (Track_Under_Caret * PATTERN_BYTES) + (Pattern_Line * PATTERN_ROW_LEN) + ped_cell;
 
@@ -5149,6 +5171,7 @@ void Keyboard_Handler(void)
                     }
                     Update_Pattern(0);
                 }
+Cannot_Modify_Odd:
 
                 if(!Done_Value)
                 {
@@ -5189,6 +5212,22 @@ void Keyboard_Handler(void)
                         ltretvalue = retvalue;
                         xoffseted = (Track_Under_Caret * PATTERN_BYTES) + (Pattern_Line * PATTERN_ROW_LEN) + ped_cell;
                         int oldval = *(RawPatterns + pSequence[Cur_Position] * PATTERN_LEN + xoffseted);
+
+                            switch(ped_cell)
+                            {
+                                case PATTERN_FXDATA:
+                                case PATTERN_FXDATA2:
+                                case PATTERN_FXDATA3:
+                                case PATTERN_FXDATA4:
+                                    data = Get_Column_Data_With_Track(Channels_MultiNotes, Channels_Effects, pSequence[Cur_Position],
+                                                                      Track_Under_Caret, Column_Under_Caret - 3, Pattern_Line);
+                                    if(data == 0)
+                                    {
+                                        Done_Value = TRUE;
+                                        goto Cannot_Modify_Even;
+                                    }
+                                    break;
+                            }
 
                         if(retvalue < 16)
                         {
@@ -5266,6 +5305,7 @@ void Keyboard_Handler(void)
                         Update_Pattern(0);
                     }
                 }
+Cannot_Modify_Even:;
             }
         }
     }
@@ -5596,7 +5636,7 @@ No_Key:;
 }
 
 // ------------------------------------------------------
-// Retrieve mouse datas
+// Retrieve mouse data
 char Check_Mouse_No_Button(int x, int y, int xs, int ys)
 {
     if(Mouse.x > x && Mouse.x < x + xs && Mouse.y > y && Mouse.y < y + ys + 1)
@@ -6662,13 +6702,13 @@ int Get_Free_Midi_Sub_Channel(int track)
 
 // ------------------------------------------------------
 // Search & return the midi channel corresponding to the given data
-int Search_Corresponding_Midi_Sub_Channel(int track, Uint32 Datas)
+int Search_Corresponding_Midi_Sub_Channel(int track, Uint32 Data)
 {
     int i;
 
     for(i = 0; i < MAX_TRACKS; i++)
     {
-        if(Alloc_midi_Channels[track][i] == (Datas & 0x00ff00))
+        if(Alloc_midi_Channels[track][i] == (Data & 0x00ff00))
         {
             return(i);
         }
@@ -7089,7 +7129,7 @@ void Draw_Scope(void)
     int i;
     int pixel_color = COL_SCOPESSAMPLES;
     float pos_in_line;
-    float datas;
+    float data;
     int x_max;
     int nibble_pos;
     int offset_scope = pos_scope_latency;
@@ -7132,10 +7172,10 @@ void Draw_Scope(void)
                 for(int s = 0; s < x_max; s++)
                 {
                     pos_in_line = ((float) s) / (float) x_max;
-                    datas = (Scope_Dats_LeftRight[i][offset_scope + (int) (pos_in_line * 128)] * 0.25f) / 8192;
-                    if(datas < -1.0f) datas = -1.0f;
-                    if(datas > 1.0f) datas = 1.0f;
-                    int y = 42 + ptrTbl_Dat->y_pos + (int) (datas * ptrTbl_Dat->y_large);
+                    data = (Scope_Dats_LeftRight[i][offset_scope + (int) (pos_in_line * 128)] * 0.25f) / 8192;
+                    if(data < -1.0f) data = -1.0f;
+                    if(data > 1.0f) data = 1.0f;
+                    int y = 42 + ptrTbl_Dat->y_pos + (int) (data * ptrTbl_Dat->y_large);
                     DrawPixel(cur_pos_x, y, pixel_color);
                     cur_pos_x++;
                 }
@@ -7179,10 +7219,10 @@ void Draw_Scope(void)
                 {
                     // [0..1]
                     pos_in_line = ((float) s) / (float) x_max;
-                    datas = Scope_Dats[i][offset_scope + (int) (pos_in_line * 128)] / 8192;
-                    if(datas < -1.0f) datas = -1.0f;
-                    if(datas > 1.0f) datas = 1.0f;
-                    int y = 42 + ptrTbl_Dat->y_pos + (int) (datas * ptrTbl_Dat->y_large);
+                    data = Scope_Dats[i][offset_scope + (int) (pos_in_line * 128)] / 8192;
+                    if(data < -1.0f) data = -1.0f;
+                    if(data > 1.0f) data = 1.0f;
+                    int y = 42 + ptrTbl_Dat->y_pos + (int) (data * ptrTbl_Dat->y_large);
                     DrawPixel(cur_pos_x, y, pixel_color);
                     cur_pos_x++;
                 }
@@ -7266,7 +7306,7 @@ void Draw_VuMeters(void)
     int j;
     LPDAT_POS_SCOPE ptrTbl_Dat;
     float pos_in_line;
-    float datas;
+    float data;
     float MaxLevel_L;
     float MaxLevel_R;
     int i_MaxLevel_L;
@@ -7330,11 +7370,11 @@ void Draw_VuMeters(void)
             // [0..1]
             pos_in_line = ((float) s) / (float) x_max;
 
-            datas = VuMeters_Dats_L[i][offset_scope + (int) (pos_in_line * 128)];
-            datas = fabsf(datas);
-            if(datas > MaxLevel_L)
+            data = VuMeters_Dats_L[i][offset_scope + (int) (pos_in_line * 128)];
+            data = fabsf(data);
+            if(data > MaxLevel_L)
             {
-                MaxLevel_L = (int) datas;
+                MaxLevel_L = (int) data;
             }
             MaxLevel_L *= 0.002f;
             if(MaxLevel_L > ((ptrTbl_Dat->y_large << 1) - 2))
@@ -7342,11 +7382,11 @@ void Draw_VuMeters(void)
                 MaxLevel_L = (ptrTbl_Dat->y_large << 1) - 2;
             }
 
-            datas = VuMeters_Dats_R[i][offset_scope + (int) (pos_in_line * 128)];
-            datas = fabsf(datas);
-            if(datas > MaxLevel_R)
+            data = VuMeters_Dats_R[i][offset_scope + (int) (pos_in_line * 128)];
+            data = fabsf(data);
+            if(data > MaxLevel_R)
             {
-                MaxLevel_R = (int) datas;
+                MaxLevel_R = (int) data;
             }
             MaxLevel_R *= 0.002f;
             if(MaxLevel_R > ((ptrTbl_Dat->y_large << 1) - 2))
@@ -7665,16 +7705,16 @@ void Display_Patterns_Sliders_Status(void)
     {
         if(pattern_sliders_numbers)
         {
-            Gui_Draw_Button_Box(368, 108, 16, 16, "xx", BUTTON_PUSHED | BUTTON_TEXT_CENTERED);
+            Gui_Draw_Button_Box(368, 108, 16, 16, "00", BUTTON_PUSHED | BUTTON_TEXT_CENTERED);
         }
         else
         {
-            Gui_Draw_Button_Box(368, 108, 16, 16, "xx", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
+            Gui_Draw_Button_Box(368, 108, 16, 16, "00", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
         }
     }
     else
     {
-        Gui_Draw_Button_Box(368, 108, 16, 16, "xx", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
+        Gui_Draw_Button_Box(368, 108, 16, 16, "00", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
     }
     if(pattern_sliders)
     {
@@ -7684,5 +7724,32 @@ void Display_Patterns_Sliders_Status(void)
     {
         Gui_Draw_Button_Box(350, 108, 16, 16, "S", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
     }
+    Gui_Draw_Button_Box(320, 126, 10, 16, NULL, BUTTON_DISABLED);
     Sanitize_Sliders_Block();
+}
+
+// ------------------------------------------------------
+// The status of the right shift key in edit mode
+void Display_RShift_Status(void)
+{
+    if(is_editing)
+    {
+        if(RShift_Notification)
+        {
+            if(RShift_Notified)
+            {
+                SetColor(COL_VUMETERPEAK);
+                Fillrect(320 + 1, 126 + 1, 320 + 1 + 9, 126  + 1 + 15);
+                RShift_Notified = FALSE;
+            }
+        }
+        else
+        {
+            if(RShift_Notified)
+            {
+                Gui_Draw_Button_Box(320, 126, 10, 16, NULL, BUTTON_DISABLED);
+                RShift_Notified = FALSE;
+            }
+        }
+    }
 }

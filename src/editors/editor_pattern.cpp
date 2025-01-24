@@ -55,6 +55,8 @@ int chars_height = 8;
 int pattern_double = FALSE;
 int pattern_sliders_numbers = FALSE;
 int RShift_Notification = FALSE;
+int RShift_Notified = FALSE;
+
 int leading_zeroes = FALSE;
 int leading_zeroes_char = 21;
 int leading_zeroes_char_row = 20;
@@ -287,6 +289,7 @@ void Record_Live_Fx(int Track,
                     int Cmd,
                     int Data,
                     int Free);
+void Set_Slider_Value_By_Mouse(int track, int column, int column_x_coords, int line_number);
 
 // ------------------------------------------------------
 // Draw a pattern on screen
@@ -717,7 +720,7 @@ Found_Synchro:
     {
         cur_track = track + tracky;
 
-        // Read the datas
+        // Read the data
         offset_t = Get_Pattern_Offset(pattern, cur_track, rel);
 
         unsigned char p_a;
@@ -949,7 +952,7 @@ Done_Vol_Slider:;
                 exit_tracks = TRUE;
                 break;
             }
-            if(!p_e[i] && !p_f[i])
+            if(!p_e[i])
             {
                 // No FX
                 cur_color = Get_Nibble_Color(In_Prev_Next, rel, ++cur_column, multip, Shadow_Pattern | shadow_tracks[cur_track]);
@@ -1675,7 +1678,7 @@ Done_Panning_Sliders:
                 int effect_lo;
                 int effect_dat_hi;
                 int effect_dat_lo;
-                if(!p_e[i] && !p_f[i])
+                if(!p_e[i])
                 {
                     effect_hi = 21;
                     effect_lo = 21;
@@ -1723,7 +1726,7 @@ Done_Panning_Sliders:
                     break;
                 }
 
-                if(pattern_sliders)
+                if(pattern_sliders && p_e[i])
                 {
                     if(p_d != 255 && ((p_d | p_dh) > 0x80) && ((p_d | p_dh) != 0x90))
                     {
@@ -3421,6 +3424,7 @@ void Mouse_Sliders_Right_Pattern_Ed(void)
                               FALSE,
                               NULL,
                               NULL);
+        Sanitize_Sliders_Block();
         Update_Pattern(0);
         gui_action = GUI_CMD_SET_FOCUS_TRACK;
     }
@@ -3662,9 +3666,9 @@ void Mouse_Sliders_Pattern_Ed(void)
         }
         else
         {
-            if(pattern_sliders)
+            if(pattern_sliders && is_editing)
             {
-
+                Set_Slider_Value_By_Mouse(track, column, column_x_coords, line_number);
             }
             else
             {
@@ -3683,12 +3687,7 @@ void Mouse_Left_Pattern_Ed(void)
     int tracks;
     int Need_Scroll;
     int line_number;
-    float slider_offset;
-    int low_offset;
-    int data;
-    int in_offset;
     int sub = chars_height == 16 ? 4 : -13;
-    COLUMN_TYPE type;
     int column_x_coords;
 
     // Start of the marking block
@@ -3704,88 +3703,9 @@ void Mouse_Left_Pattern_Ed(void)
         }
         else
         {
-            if(pattern_sliders)
+            if(pattern_sliders && is_editing)
             {
-                type = Get_Column_Type_With_Track(Channels_MultiNotes, Channels_Effects, track, column);
-                low_offset = 0;
-                in_offset = 0;
-                switch(type)
-                {
-                    case VOLUMELO:
-                        column--;
-                        low_offset = Cur_Char_size[track];
-                    case VOLUMEHI:
-                        slider_offset = (float) ((column_x_coords - Get_Column_Coord(track, column_x_coords)) + low_offset) - 2.0f;
-                        if(slider_offset < 0.0f) slider_offset = 0.0f;
-                        slider_offset /= Cur_Char_size[track] * 2;
-                        slider_offset *= 64.0f;
-                        slider_offset = 64.0f - slider_offset;
-
-                        line_number = line_number - (VIEWLINE - Get_Pattern_Line());
-                        if(line_number >= 0)
-                        {
-                            Set_Column_Data_With_Track(Channels_MultiNotes, Channels_Effects, Get_Song_Position(), track,
-                                                       column, line_number, (int) slider_offset);
-                            Update_Pattern(0);
-                        }
-                        break;
-
-                    case PANNINGLO:
-                        column--;
-                        low_offset = Cur_Char_size[track];
-                    case PANNINGHI:
-                        slider_offset = (float) ((column_x_coords - Get_Column_Coord(track, column_x_coords)) + low_offset) - 2.0f;
-                        if(slider_offset < 0.0f) slider_offset = 0.0f;
-                        slider_offset /= Cur_Char_size[track] * 2;
-                        slider_offset *= 128.0f;
-
-                        line_number = line_number - (VIEWLINE - Get_Pattern_Line());
-                        if(line_number >= 0)
-                        {
-                            Set_Column_Data_With_Track(Channels_MultiNotes, Channels_Effects, Get_Song_Position(), track,
-                                                       column, line_number, (int) slider_offset);
-                            Update_Pattern(0);
-                        }
-                        break;
-
-                    case EFFECTDATLO:
-                    case EFFECT2DATLO:
-                    case EFFECT3DATLO:
-                    case EFFECT4DATLO:
-                        column--;
-                        low_offset = Cur_Char_size[track];
-                    case EFFECT4DATHI:
-                        in_offset = Cur_Char_size[track] * 4 * 3;
-                    case EFFECT3DATHI:
-                        in_offset = Cur_Char_size[track] * 4 * 2;
-                    case EFFECT2DATHI:
-                        in_offset = Cur_Char_size[track] * 4 * 1;
-                    case EFFECTDATHI:
-                        slider_offset = (float) ((column_x_coords - Get_Column_Coord(track, column_x_coords)) + low_offset) - 2.0f;
-                        if(slider_offset < 0.0f) slider_offset = 0.0f;
-                        slider_offset /= Cur_Char_size[track] * 2;
-                        slider_offset *= 255.0f;
-                        slider_offset = 255.0f - slider_offset;
-
-                        line_number = line_number - (VIEWLINE - Get_Pattern_Line());
-                        if(line_number >= 0)
-                        {
-                            // Check the effect number (can't set a value if there's no effect)
-                            data = Get_Column_Data_With_Track(Channels_MultiNotes, Channels_Effects, Get_Song_Position(),
-                                                              track, column - 2, line_number);
-                            if(data)
-                            {
-                                Set_Column_Data_With_Track(Channels_MultiNotes, Channels_Effects, Get_Song_Position(), track,
-                                                           column, line_number, (int) slider_offset);
-                                Update_Pattern(0);
-                            }
-                        }
-                        break;
-                    default:
-                        return;
-                }
-
-                
+                Set_Slider_Value_By_Mouse(track, column, column_x_coords, line_number);
             }
             else
             {
@@ -4475,4 +4395,93 @@ void Set_Pattern_Size()
         DISPLAYED_LINES = ((Cur_Height - (384 + sub)) / chars_height);
     }
     VIEWLINE = (DISPLAYED_LINES / 2);
+}
+
+void Set_Slider_Value_By_Mouse(int track, int column, int column_x_coords, int line_number)
+{
+    int data;
+    int in_offset;
+    COLUMN_TYPE type;
+    float slider_offset;
+    int low_offset;
+
+    type = Get_Column_Type_With_Track(Channels_MultiNotes, Channels_Effects, track, column);
+    low_offset = 0;
+    in_offset = 0;
+    switch(type)
+    {
+        case VOLUMELO:
+            column--;
+            low_offset = Cur_Char_size[track];
+        case VOLUMEHI:
+            slider_offset = (float) ((column_x_coords - Get_Column_Coord(track, column_x_coords)) + low_offset) - 2.0f;
+            if(slider_offset < 0.0f) slider_offset = 0.0f;
+            slider_offset /= Cur_Char_size[track] * 2;
+            slider_offset *= 64.0f;
+            slider_offset = 64.0f - slider_offset;
+
+            line_number = line_number - (VIEWLINE - Get_Pattern_Line());
+            if(line_number >= 0)
+            {
+                Set_Column_Data_With_Track(Channels_MultiNotes, Channels_Effects, Get_Song_Position(), track,
+                                           column, line_number, (int) slider_offset);
+                Update_Pattern(0);
+            }
+            break;
+
+        case PANNINGLO:
+            column--;
+            low_offset = Cur_Char_size[track];
+        case PANNINGHI:
+            slider_offset = (float) ((column_x_coords - Get_Column_Coord(track, column_x_coords)) + low_offset) - 2.0f;
+            if(slider_offset < 0.0f) slider_offset = 0.0f;
+            slider_offset /= Cur_Char_size[track] * 2;
+            slider_offset *= 128.0f;
+
+            line_number = line_number - (VIEWLINE - Get_Pattern_Line());
+            if(line_number >= 0)
+            {
+                Set_Column_Data_With_Track(Channels_MultiNotes, Channels_Effects, Get_Song_Position(), track,
+                                           column, line_number, (int) slider_offset);
+                Update_Pattern(0);
+            }
+            break;
+
+        case EFFECTDATLO:
+        case EFFECT2DATLO:
+        case EFFECT3DATLO:
+        case EFFECT4DATLO:
+            column--;
+            low_offset = Cur_Char_size[track];
+        case EFFECT4DATHI:
+            in_offset = Cur_Char_size[track] * 4 * 3;
+        case EFFECT3DATHI:
+            in_offset = Cur_Char_size[track] * 4 * 2;
+        case EFFECT2DATHI:
+            in_offset = Cur_Char_size[track] * 4 * 1;
+        case EFFECTDATHI:
+            slider_offset = (float) ((column_x_coords - Get_Column_Coord(track, column_x_coords)) + low_offset) - 2.0f;
+            if(slider_offset < 0.0f) slider_offset = 0.0f;
+            slider_offset /= Cur_Char_size[track] * 2;
+            slider_offset *= 255.0f;
+            slider_offset = 255.0f - slider_offset;
+
+            line_number = line_number - (VIEWLINE - Get_Pattern_Line());
+            if(line_number >= 0)
+            {
+                // Check the effect number (can't set a value if there's no effect)
+                data = Get_Column_Data_With_Track(Channels_MultiNotes, Channels_Effects, Get_Song_Position(),
+                                                  track, column - 2, line_number);
+                if(data)
+                {
+                    Set_Column_Data_With_Track(Channels_MultiNotes, Channels_Effects, Get_Song_Position(), track,
+                                               column, line_number, (int) slider_offset);
+                    Update_Pattern(0);
+                }
+            }
+            break;
+        
+        default:
+            return;
+    }
 }

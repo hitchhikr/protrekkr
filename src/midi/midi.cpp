@@ -97,8 +97,8 @@ void Midi_CallBackIn(double deltatime,
 {
     int Midi_Channel_Number;
     int Midi_Command;
-    int Midi_Datas_1;
-    int Midi_Datas_2;
+    int Midi_Data_1;
+    int Midi_Data_2;
     int Midi_Velocity;
     int Instrument_Number; 
     int tmp_note;
@@ -153,15 +153,15 @@ void Midi_CallBackIn(double deltatime,
     {
         // Pitch bend (not handled yet).
         case 0xe0:
-            Midi_Datas_1 = (Param1 >> 8) & 0xff;
-            Midi_Datas_2 = (Param1 >> 16) & 0xff;
+            Midi_Data_1 = (Param1 >> 8) & 0xff;
+            Midi_Data_2 = (Param1 >> 16) & 0xff;
             break;
 
         // Control Change
         case 0xb0:
-            Midi_Datas_1 = (Param1 >> 8) & 0xff;
-            Midi_Datas_2 = (Param1 >> 16) & 0xff;
-            Dispatch_Midi_Msg(Midi_Datas_1, Midi_Datas_2);
+            Midi_Data_1 = (Param1 >> 8) & 0xff;
+            Midi_Data_2 = (Param1 >> 16) & 0xff;
+            Dispatch_Midi_Msg(Midi_Data_1, Midi_Data_2);
             break;
 
         // Program Change

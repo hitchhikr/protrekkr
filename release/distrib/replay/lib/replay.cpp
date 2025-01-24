@@ -1015,7 +1015,7 @@ Uint32 STDCALL Mixer(Uint8 *Buffer, Uint32 Len)
             Get_Player_Values();
 
 #if !defined(__STAND_ALONE__)
-            // Gather datas for the scopes and the vumeters
+            // Gather data for the scopes and the vumeters
             clamp_left_value = left_float * 32767.0f;
             clamp_right_value = right_float * 32767.0f;
 #endif
@@ -1828,7 +1828,7 @@ int PTKEXPORT Ptk_InitModule(Uint8 *Module, int start_position)
 
         char tb303_1_enabled;
         char tb303_2_enabled;
-        // Read the 303 datas
+        // Read the 303 data
         Mod_Dat_Read(&tb303_1_enabled, sizeof(char));
 
 #if defined(PTK_303)
@@ -2305,7 +2305,7 @@ void Pre_Song_Init(void)
 }
 
 // ------------------------------------------------------
-// Init the replayer datas
+// Init the replayer data
 void Post_Song_Init(void)
 {
     int i;

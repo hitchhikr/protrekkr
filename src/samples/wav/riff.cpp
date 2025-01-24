@@ -305,7 +305,7 @@ int RiffFile::SeekChunk(const char *ChunkName)
             Seek(i);
             return(1);
         }
-        // Skip the datas to speed up the process
+        // Skip the data to speed up the process
 
 #if defined(__BIG_ENDIAN__)
         if(Chunk == 'data')

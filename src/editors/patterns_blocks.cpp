@@ -139,7 +139,7 @@ void Copy_Buff(int dst, int src)
 }
 
 // ------------------------------------------------------
-// Init the blocks datas and buffers
+// Init the blocks data and buffers
 int Init_Block_Work(void)
 {
     int i;
@@ -376,15 +376,15 @@ int Read_Pattern_Note(int Position)
 
 // ------------------------------------------------------
 // Write a byte in the given pattern
-void Write_Pattern_Column(int Position, int xbc, int ybc, int datas)
+void Write_Pattern_Column(int Position, int xbc, int ybc, int data)
 {
-    int datas_nibble;
+    int data_nibble;
     COLUMN_TYPE type = Get_Column_Type(Channels_MultiNotes, Channels_Effects, xbc);
 
     switch(type)
     {
         case NOTE:
-            Set_Pattern_Column(Position, xbc, ybc, datas);
+            Set_Pattern_Column(Position, xbc, ybc, data);
             break;
         case INSTRHI:
         case VOLUMEHI:
@@ -397,10 +397,10 @@ void Write_Pattern_Column(int Position, int xbc, int ybc, int datas)
         case EFFECT3DATHI:
         case EFFECT4HI:
         case EFFECT4DATHI:
-            datas_nibble = Get_Pattern_Column(Position, xbc, ybc);
-            datas_nibble &= 0x0f;
-            datas_nibble |= datas;
-            Set_Pattern_Column(Position, xbc, ybc, datas_nibble);
+            data_nibble = Get_Pattern_Column(Position, xbc, ybc);
+            data_nibble &= 0x0f;
+            data_nibble |= data;
+            Set_Pattern_Column(Position, xbc, ybc, data_nibble);
             break;
         case INSTRLO:
         case VOLUMELO:
@@ -413,10 +413,10 @@ void Write_Pattern_Column(int Position, int xbc, int ybc, int datas)
         case EFFECT3DATLO:
         case EFFECT4LO:
         case EFFECT4DATLO:
-            datas_nibble = Get_Pattern_Column(Position, xbc, ybc);
-            datas_nibble &= 0xf0;
-            datas_nibble |= datas;
-            Set_Pattern_Column(Position, xbc, ybc, datas_nibble);
+            data_nibble = Get_Pattern_Column(Position, xbc, ybc);
+            data_nibble &= 0xf0;
+            data_nibble |= data;
+            Set_Pattern_Column(Position, xbc, ybc, data_nibble);
             break;
         default:
             break;
@@ -425,7 +425,7 @@ void Write_Pattern_Column(int Position, int xbc, int ybc, int datas)
 
 // ------------------------------------------------------
 // Write a byte in the given pattern without reading the previous one
-void Write_Pattern_Column_No_Read(int Position, int xbc, int ybc, int datas)
+void Write_Pattern_Column_No_Read(int Position, int xbc, int ybc, int data)
 {
     COLUMN_TYPE type = Get_Column_Type(Channels_MultiNotes, Channels_Effects, xbc);
 
@@ -454,7 +454,7 @@ void Write_Pattern_Column_No_Read(int Position, int xbc, int ybc, int datas)
         case EFFECT3DATLO:
         case EFFECT4LO:
         case EFFECT4DATLO:
-            Set_Pattern_Column(Position, xbc, ybc, datas);
+            Set_Pattern_Column(Position, xbc, ybc, data);
             break;
         default:
             break;
@@ -502,15 +502,15 @@ int Read_Buff_Column(int Position, int xbc, int ybc)
 
 // ------------------------------------------------------
 // Write a byte in the copy buffer
-void Write_Buff_Column(int Position, int xbc, int ybc, int datas)
+void Write_Buff_Column(int Position, int xbc, int ybc, int data)
 {
-    int datas_nibble;
+    int data_nibble;
     COLUMN_TYPE type = Get_Column_Type(Buff_MultiNotes[Curr_Buff_Block], Buff_Effects[Curr_Buff_Block], xbc);
 
     switch(type)
     {
         case NOTE:
-            Set_Buff_Column(Position, xbc, ybc, datas);
+            Set_Buff_Column(Position, xbc, ybc, data);
             break;
         case INSTRHI:
         case VOLUMEHI:
@@ -523,10 +523,10 @@ void Write_Buff_Column(int Position, int xbc, int ybc, int datas)
         case EFFECT3DATHI:
         case EFFECT4HI:
         case EFFECT4DATHI:
-            datas_nibble = Get_Buff_Column(Position, xbc, ybc);
-            datas_nibble &= 0x0f;
-            datas_nibble |= datas;
-            Set_Buff_Column(Position, xbc, ybc, datas_nibble);
+            data_nibble = Get_Buff_Column(Position, xbc, ybc);
+            data_nibble &= 0x0f;
+            data_nibble |= data;
+            Set_Buff_Column(Position, xbc, ybc, data_nibble);
             break;
         case INSTRLO:
         case VOLUMELO:
@@ -539,10 +539,10 @@ void Write_Buff_Column(int Position, int xbc, int ybc, int datas)
         case EFFECT3DATLO:
         case EFFECT4LO:
         case EFFECT4DATLO:
-            datas_nibble = Get_Buff_Column(Position, xbc, ybc);
-            datas_nibble &= 0xf0;
-            datas_nibble |= datas;
-            Set_Buff_Column(Position, xbc, ybc, datas_nibble);
+            data_nibble = Get_Buff_Column(Position, xbc, ybc);
+            data_nibble &= 0xf0;
+            data_nibble |= data;
+            Set_Buff_Column(Position, xbc, ybc, data_nibble);
             break;
         default:
             break;
@@ -2770,9 +2770,12 @@ void Set_Slider_Value(int delta)
     int track;
     int Position;
     COLUMN_TYPE type;
+    int Current_Column;
 
     int ybc;
     int xbc;
+
+    Current_Column = Column_Under_Caret;
 
     if(block_in_selection[Curr_Buff_Block])
     {
@@ -2816,43 +2819,37 @@ void Set_Slider_Value(int delta)
                         case EFFECT3DATHI:
                         case EFFECT4DATHI:
                             track = Get_Track_From_Nibble(Channels_MultiNotes, Channels_Effects, xbc);
-                            /*panning_data = Get_Column_Panning_Data_With_Track(Channels_MultiNotes, Channels_Effects, 
-                                                                              Position,
-                                                                              track, ybc);*/
-                            if(/*panning_data != 0x90 || */ type == VOLUMEHI)
+                            data = Get_Pattern_Column(Position, xbc, ybc) & 0xf0;
+                            data |= Get_Pattern_Column(Position, xbc + 1, ybc) & 0xf;
+                        
+                            switch(type)
                             {
-                                data = Get_Pattern_Column(Position, xbc, ybc) & 0xf0;
-                                data |= Get_Pattern_Column(Position, xbc + 1, ybc) & 0xf;
-                            
-                                switch(type)
-                                {
-                                    case VOLUMEHI:
-                                        if(data == 255) goto No_Update;
-                                        data += delta;
-                                        if(data > 0x40) data = 0x40;
-                                        break;
-                                    case PANNINGHI:
-                                        if(data == 255) goto No_Update;
-                                        if(delta == 1 || delta == -1) delta = -delta;
-                                        data += delta;
-                                        if(data > 0x80) data = 0x80;
-                                        break;
-                                    case EFFECTDATHI:
-                                    case EFFECT2DATHI:
-                                    case EFFECT3DATHI:
-                                    case EFFECT4DATHI:
-                                        fx = Get_Pattern_Column(Position, xbc - 2, ybc) & 0xf0;
-                                        fx |= Get_Pattern_Column(Position, xbc - 1, ybc) & 0xf;
-                                        if(fx == 0) goto No_Update;
-                                        data += delta;
-                                        if(data > 0xff) data = 0xff;
-                                        break;
-                                }
-                                if(data < 0) data = 0;
-                            
-                                Set_Pattern_Column(Position, xbc, ybc, data );
-No_Update:;
+                                case VOLUMEHI:
+                                    if(data == 255) goto No_Update;
+                                    data += delta;
+                                    if(data > 0x40) data = 0x40;
+                                    break;
+                                case PANNINGHI:
+                                    if(data == 255) goto No_Update;
+                                    if(delta == 1 || delta == -1) delta = -delta;
+                                    data += delta;
+                                    if(data > 0x80) data = 0x80;
+                                    break;
+                                case EFFECTDATHI:
+                                case EFFECT2DATHI:
+                                case EFFECT3DATHI:
+                                case EFFECT4DATHI:
+                                    fx = Get_Pattern_Column(Position, xbc - 2, ybc) & 0xf0;
+                                    fx |= Get_Pattern_Column(Position, xbc - 1, ybc) & 0xf;
+                                    if(!fx) goto No_Update;
+                                    data += delta;
+                                    if(data > 0xff) data = 0xff;
+                                    break;
                             }
+                            if(data < 0) data = 0;
+                        
+                            Set_Pattern_Column(Position, xbc, ybc, data );
+No_Update:;
                             break;
                     }
                 }
@@ -2862,23 +2859,18 @@ No_Update:;
     }
     else
     {
-        type = Get_Column_Type_With_Track(Channels_MultiNotes, Channels_Effects, Track_Under_Caret, Column_Under_Caret);
+        type = Get_Column_Type_With_Track(Channels_MultiNotes, Channels_Effects, Track_Under_Caret, Current_Column);
         switch(type)
         {
             case VOLUMELO:
-                Column_Under_Caret--;
+                Current_Column--;
                 break;
             case PANNINGLO:
             case EFFECTDATLO:
             case EFFECT2DATLO:
             case EFFECT3DATLO:
             case EFFECT4DATLO:
-                //panning_data = Get_Column_Panning_Data_With_Track(Channels_MultiNotes, Channels_Effects, Get_Song_Position(),
-                //                                                  Track_Under_Caret, Pattern_Line);
-                //if(panning_data != 0x90)
-                //{
-                    Column_Under_Caret--;
-                //}
+                Current_Column--;
                 break;
             case VOLUMEHI:
             case PANNINGHI:
@@ -2892,9 +2884,9 @@ No_Update:;
         }
 
         data = Get_Column_Data_With_Track(Channels_MultiNotes, Channels_Effects, Get_Song_Position(),
-                                          Track_Under_Caret, Column_Under_Caret, Pattern_Line);
+                                          Track_Under_Caret, Current_Column, Pattern_Line);
 
-        type = Get_Column_Type_With_Track(Channels_MultiNotes, Channels_Effects, Track_Under_Caret, Column_Under_Caret);
+        type = Get_Column_Type_With_Track(Channels_MultiNotes, Channels_Effects, Track_Under_Caret, Current_Column);
         switch(type)
         {
             case VOLUMEHI:
@@ -2913,7 +2905,7 @@ No_Update:;
             case EFFECT3DATHI:
             case EFFECT4DATHI:
                 fx = Get_Column_Data_With_Track(Channels_MultiNotes, Channels_Effects, Get_Song_Position(),
-                                                Track_Under_Caret, Column_Under_Caret - 2, Pattern_Line);
+                                                Track_Under_Caret, Current_Column - 2, Pattern_Line);
                 if(!fx) goto No_Up_Line;
                 data += delta;
                 if(data > 0xff) data = 0xff;
@@ -2921,12 +2913,10 @@ No_Update:;
         }
         if(data < 0) data = 0;
         Set_Column_Data_With_Track(Channels_MultiNotes, Channels_Effects, Get_Song_Position(), 
-                                   Track_Under_Caret, Column_Under_Caret, Pattern_Line, data);
+                                   Track_Under_Caret, Current_Column, Pattern_Line, data);
         Update_Pattern(0);
 No_Up_Line:;
     }
-
-
 }
 
 #endif

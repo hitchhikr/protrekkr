@@ -603,7 +603,7 @@ void Select_Block_Keyboard(int Type);
 void Calc_selection(void);
 int Next_Line_Pattern_Auto(int *position, int lines, int *line);
 int Get_Free_Midi_Sub_Channel(int track);
-int Search_Corresponding_Midi_Sub_Channel(int track, Uint32 Datas);
+int Search_Corresponding_Midi_Sub_Channel(int track, Uint32 Data);
 int Get_Midi_Channel(int midi_channel);
 void Draw_Scope_Files_Button(void);
 

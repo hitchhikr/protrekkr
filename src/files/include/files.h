@@ -159,8 +159,8 @@ void Swap_Sample(short *buffer, int sample, int bank);
 void rtrim_string(char *string, int maxlen);
 void Write_Unpacked_Sample(int (*Write_Function)(void *, int ,int, FILE *),
                            FILE *in, int sample, int bank);
-int Write_Mod_Data(void *Datas, int Unit, int Length, FILE *Handle);
-int Write_Mod_Data_Swap(void *Datas, int Unit, int Length, FILE *Handle);
+int Write_Mod_Data(void *Data, int Unit, int Length, FILE *Handle);
+int Write_Mod_Data_Swap(void *Data, int Unit, int Length, FILE *Handle);
 short *Get_WaveForm(int Instr_Nbr, int Channel, int Split);
 void Pack_Sample(FILE *FileHandle, short *Sample, int Size, char Pack_Type, int BitRate);
 int Fix_Codec(int Scheme);

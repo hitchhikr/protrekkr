@@ -102,6 +102,7 @@ extern int pattern_double;
 extern int Burn_Title;
 extern int chars_height;
 extern int pattern_sliders_numbers;
+extern int leading_zeroes;
 
 int done_303_palette = FALSE;
 int done_logo_palette = FALSE;
@@ -2318,7 +2319,18 @@ void Slider(int x, int y, int ltr, int col1, int y2, int larg, int scale_x, int 
 
     if(pattern_sliders_numbers && pattern_double)
     {
-        Draw_Slider_Digit(x + (larg << 1) - (2 << (scale_x)) - (2 << (scale_x)) - 3 - 2, y + y2 - (4 * (SCALE << scale_y) / 2) - 1, ltr >> 4, COL_VUMETERPEAK, scale_x, scale_y);
+        if(ltr >> 4)
+        {
+            Draw_Slider_Digit(x + (larg << 1) - (2 << (scale_x)) - (2 << (scale_x)) - 3 - 2, y + y2 - (4 * (SCALE << scale_y) / 2) - 1, ltr >> 4, COL_VUMETERPEAK, scale_x, scale_y);
+        }
+        else
+        {
+            if(leading_zeroes)
+            {
+                Draw_Slider_Digit(x + (larg << 1) - (2 << (scale_x)) - (2 << (scale_x)) - 3 - 2, y + y2 - (4 * (SCALE << scale_y) / 2) - 1, ltr >> 4, COL_VUMETERPEAK, scale_x, scale_y);
+            }
+        }
+        
         Draw_Slider_Digit(x + (larg << 1) - (2 << (scale_x)) - 2, y + y2 - (4 * (SCALE << scale_y) / 2) - 1, ltr & 0xf, COL_VUMETERPEAK, scale_x, scale_y);
     }
 }
@@ -2397,7 +2409,17 @@ void Slider_Pan(int x, int y, int ltr, int col1, int y2, int larg, int scale_x, 
     }
     if(pattern_sliders_numbers && pattern_double)
     {
-        Draw_Slider_Digit(x + (larg << 1) - (2 << (scale_x)) - (2 << (scale_x)) - 3 - 2, y + y2 - (4 * (SCALE << scale_y) / 2) - 1, ltr >> 4, COL_VUMETERPEAK, scale_x, scale_y);
+        if(ltr >> 4)
+        {
+            Draw_Slider_Digit(x + (larg << 1) - (2 << (scale_x)) - (2 << (scale_x)) - 3 - 2, y + y2 - (4 * (SCALE << scale_y) / 2) - 1, ltr >> 4, COL_VUMETERPEAK, scale_x, scale_y);
+        }
+        else
+        {
+            if(leading_zeroes)
+            {
+                Draw_Slider_Digit(x + (larg << 1) - (2 << (scale_x)) - (2 << (scale_x)) - 3 - 2, y + y2 - (4 * (SCALE << scale_y) / 2) - 1, ltr >> 4, COL_VUMETERPEAK, scale_x, scale_y);
+            }
+        }
         Draw_Slider_Digit(x + (larg << 1) - (2 << (scale_x)) - 2, y + y2 - (4 * (SCALE << scale_y) / 2) - 1, ltr & 0xf, COL_VUMETERPEAK, scale_x, scale_y);
     }
 }
@@ -2987,8 +3009,8 @@ SDL_Surface *Load_Picture(char *FileName)
 }
 
 // ------------------------------------------------------
-// Create the font datas
-int Create_Font_Datas(char *FontName)
+// Create the font data
+int Create_Font_Data(char *FontName)
 {
     FILE *hFont;
     int Data;

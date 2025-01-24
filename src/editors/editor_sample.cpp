@@ -241,7 +241,7 @@ void Draw_Wave_Data(void)
                                s_offset >= sed_real_range_start &&
                                s_offset < sed_real_range_end)
                             {
-                                // Sample datas
+                                // Sample data
                                 DrawVLine(s_ex + WAVE_LEFT + 1, s_ey, s_y, COL_BACKGROUND);
                                 DrawPixel(s_ex + WAVE_LEFT + 1, s_ey, COL_BACKGROUND);
                             }
@@ -274,7 +274,7 @@ void Draw_Wave_Data(void)
                                s_offset >= sed_real_range_start &&
                                s_offset < sed_real_range_end)
                             {
-                                // Sample datas
+                                // Sample data
                                 DrawVLine(s_ex + WAVE_LEFT + 1, s_ey, s_y, COL_BACKGROUND);
                                 DrawVLine(s_ex + WAVE_LEFT + 1, s_ey2, s_y2, COL_BACKGROUND);
                                 // Straight line
