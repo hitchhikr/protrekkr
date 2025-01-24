@@ -54,6 +54,10 @@ int pattern_sliders = FALSE;
 int chars_height = 8;
 int pattern_double = FALSE;
 int pattern_sliders_numbers = FALSE;
+int RShift_Notification = FALSE;
+int leading_zeroes = FALSE;
+int leading_zeroes_char = 21;
+int leading_zeroes_char_row = 20;
 
 // Min 1 Max 16
 int patt_highlight = 4;
@@ -776,7 +780,7 @@ Found_Synchro:
             if(p_b != 255)
             {
                 if(p_b >> 4) Cur_Char_Function[cur_track].Fnc(dover, y, p_b >> 4, cur_color, cur_color + 7);
-                else Cur_Char_Function[cur_track].Fnc(dover, y, 20, cur_color, cur_color + 7);
+                else Cur_Char_Function[cur_track].Fnc(dover, y, leading_zeroes_char, cur_color, cur_color + 7);
                 dover += Cur_Char_size[cur_track];
                 
                 dover_break = dover + Cur_Char_size[cur_track];
@@ -842,7 +846,7 @@ Found_Synchro:
             }
 
             if(p_c >> 4) Cur_Char_Function[cur_track].Fnc(dover, y, p_c >> 4, cur_color, cur_color + 7);
-            else Cur_Char_Function[cur_track].Fnc(dover, y, 20, cur_color, cur_color + 7);
+            else Cur_Char_Function[cur_track].Fnc(dover, y, leading_zeroes_char, cur_color, cur_color + 7);
 
             dover += Cur_Char_size[cur_track];
             if(dover + Cur_Char_size[cur_track] >= MAX_PATT_SCREEN_X) break;
@@ -891,7 +895,7 @@ Done_Vol_Slider:;
             else
             {
                 if(p_d >> 4) Cur_Char_Function[cur_track].Fnc(dover, y, p_d >> 4, cur_color, cur_color + 7);
-                else Cur_Char_Function[cur_track].Fnc(dover, y, 20, cur_color, cur_color + 7);
+                else Cur_Char_Function[cur_track].Fnc(dover, y, leading_zeroes_char, cur_color, cur_color + 7);
             }
 
             dover += Cur_Char_size[cur_track];
@@ -988,9 +992,10 @@ Done_Vol_Slider:;
             {
                 // FX number
                 cur_color = Get_Nibble_Color(In_Prev_Next, rel, ++cur_column, multip, Shadow_Pattern | shadow_tracks[cur_track]);
-                Cur_Char_Function[cur_track].Fnc(dover, y, p_e[i] >> 4, cur_color, cur_color + 7);
+                if(p_e[i] >> 4) Cur_Char_Function[cur_track].Fnc(dover, y, p_e[i] >> 4, cur_color, cur_color + 7);
+                else Cur_Char_Function[cur_track].Fnc(dover, y, leading_zeroes_char, cur_color, cur_color + 7);
+                
                 dover += Cur_Char_size[cur_track];
-        
                 if(dover + Cur_Char_size[cur_track] >= MAX_PATT_SCREEN_X)
                 {
                     exit_tracks = TRUE;
@@ -1013,7 +1018,7 @@ Done_Vol_Slider:;
                 // Third nibble
                 if(pattern_sliders)
                 {
-                    if(p_d != 255 && ((p_d | p_dh) > 0x80))
+                    if(p_d != 255 && ((p_d | p_dh) > 0x80) && ((p_d | p_dh) != 0x90))
                     {
                         goto No_Slider_Effect_Hi;
                     }
@@ -1046,8 +1051,9 @@ No_Slider_Effect_Hi:
                     }
 
                     cur_color = Get_Nibble_Color(In_Prev_Next, rel, ++cur_column, multip, Shadow_Pattern | shadow_tracks[cur_track]);
-                    Cur_Char_Function[cur_track].Fnc(dover, y, p_f[i] >> 4, cur_color, cur_color + 7);
-
+                    if(p_f[i] >> 4) Cur_Char_Function[cur_track].Fnc(dover, y, p_f[i] >> 4, cur_color, cur_color + 7);
+                    else Cur_Char_Function[cur_track].Fnc(dover, y, leading_zeroes_char, cur_color, cur_color + 7);
+                    
                     dover += Cur_Char_size[cur_track];
                     // No effect data lo
                     if(dover + Cur_Char_size[cur_track] >= MAX_PATT_SCREEN_X)
@@ -1059,7 +1065,7 @@ No_Slider_Effect_Hi:
                 // Fourth nibble
                 if(pattern_sliders)
                 {
-                    if(p_d != 255 && ((p_d | p_dh) > 0x80))
+                    if(p_d != 255 && ((p_d | p_dh) > 0x80) && ((p_d | p_dh) != 0x90))
                     {
                         goto No_Slider_Effect_Lo;
                     }
@@ -1146,7 +1152,8 @@ No_Slider_Effect_Lo:
     else
     {
         Letter(1, y, 20, high_color, high_color + 7);
-        Letter(9, y, rel >> 4, high_color, high_color + 7);
+        if(rel >> 4) Letter(9, y, rel >> 4, high_color, high_color + 7);
+        else Letter(9, y, leading_zeroes_char_row, high_color, high_color + 7);
         Letter(17, y, rel & 0xf, high_color, high_color + 7);
     }
 
@@ -1299,7 +1306,7 @@ void Draw_Patt_Line_Highlighted(int track, int line, int petrack, int row, int y
                     if(p_b != 255)
                     {
                         if(p_b >> 4) Cur_Char_Function[cur_track].Fnc(dover, ypos, p_b >> 4, 48, 48 + 15);
-                        else Cur_Char_Function[cur_track].Fnc(dover, ypos, 20, 48, 48 + 15);
+                        else Cur_Char_Function[cur_track].Fnc(dover, ypos, leading_zeroes_char, 48, 48 + 15);
                     }
                     else Cur_Char_Function[cur_track].Fnc(dover, ypos, 21, 48, 48 + 15);
                 }
@@ -1308,7 +1315,7 @@ void Draw_Patt_Line_Highlighted(int track, int line, int petrack, int row, int y
                     if(p_b != 255)
                     {
                         if(p_b >> 4) Cur_Char_Function[cur_track].Fnc(dover, ypos, p_b >> 4, cur_color, cur_color + 15);
-                        else Cur_Char_Function[cur_track].Fnc(dover, ypos, 20, cur_color, cur_color + 15);
+                        else Cur_Char_Function[cur_track].Fnc(dover, ypos, leading_zeroes_char, cur_color, cur_color + 15);
                     }
                     else Cur_Char_Function[cur_track].Fnc(dover, ypos, 21, cur_color, cur_color + 15);
                 }
@@ -1419,14 +1426,8 @@ void Draw_Patt_Line_Highlighted(int track, int line, int petrack, int row, int y
                 else
                 {
 No_Volume_Sliders:
-                    if(p_c >> 4)
-                    {
-                        Cur_Char_Function[cur_track].Fnc(dover, ypos, p_c >> 4, cur_color, cur_color + 15);
-                    }
-                    else
-                    {
-                        Cur_Char_Function[cur_track].Fnc(dover, ypos, 20, cur_color, cur_color + 15);
-                    }
+                    if(p_c >> 4) Cur_Char_Function[cur_track].Fnc(dover, ypos, p_c >> 4, cur_color, cur_color + 15);
+                    else Cur_Char_Function[cur_track].Fnc(dover, ypos, leading_zeroes_char, cur_color, cur_color + 15);
                 }
             }
             else
@@ -1486,7 +1487,7 @@ No_Volume_Sliders:
                 cur_color = 48;
             }
 
-            if(p_d != 255)
+            if(p_c != 255)
             {
                 Cur_Char_Function[cur_track].Fnc(dover, ypos, p_ch, cur_color, cur_color + 15);
             }
@@ -1578,14 +1579,8 @@ Done_Volume_Sliders:
                 else
                 {
 No_Panning_Sliders:
-                    if(p_d >> 4)
-                    {
-                        Cur_Char_Function[cur_track].Fnc(dover, ypos, p_d >> 4, cur_color, cur_color + 15);
-                    }
-                    else
-                    {
-                        Cur_Char_Function[cur_track].Fnc(dover, ypos, 20, cur_color, cur_color + 15);
-                    }
+                    if(p_d >> 4) Cur_Char_Function[cur_track].Fnc(dover, ypos, p_d >> 4, cur_color, cur_color + 15);
+                    else Cur_Char_Function[cur_track].Fnc(dover, ypos, leading_zeroes_char, cur_color, cur_color + 15);
                 }
             }
             else
@@ -1690,8 +1685,10 @@ Done_Panning_Sliders:
                 else
                 {
                     effect_hi = p_e[i] >> 4;
+                    if(!effect_hi) effect_hi = leading_zeroes_char;
                     effect_lo = p_eh[i];
                     effect_dat_hi = p_f[i] >> 4;
+                    if(!effect_dat_hi) effect_dat_hi = leading_zeroes_char;
                     effect_dat_lo = p_fh[i];
                 }
 
@@ -1699,6 +1696,7 @@ Done_Panning_Sliders:
                 cur_color = Get_Nibble_Color_Highlight(line, ++cur_column);
                 if(row == high_col && cur_track == petrack) Cur_Char_Function[cur_track].Fnc(dover, ypos, effect_hi, 48, 48 + 15);
                 else Cur_Char_Function[cur_track].Fnc(dover, ypos, effect_hi, cur_color, cur_color + 15);
+                
                 dover += Cur_Char_size[cur_track];
                 Last_Pixel = dover;
                 high_col++;
@@ -1727,7 +1725,7 @@ Done_Panning_Sliders:
 
                 if(pattern_sliders)
                 {
-                    if(p_d != 255 && ((p_d | p_dh) > 0x80))
+                    if(p_d != 255 && ((p_d | p_dh) > 0x80) && ((p_d | p_dh) != 0x90))
                     {
                         goto No_Slider_Effect;
                     }
@@ -1944,7 +1942,8 @@ No_Slider_Effect:
         else
         {
             Letter(1, ypos, 20, 16, 16 + 15);
-            Letter(9, ypos, line >> 4, 16, 16 + 15);
+            if(line >> 4) Letter(9, ypos, line >> 4, 16, 16 + 15);
+            else Letter(9, ypos, leading_zeroes_char_row, 16, 16 + 15);
             Letter(17, ypos, line & 0xf, 16, 16 + 15);
         }
 
@@ -3185,7 +3184,7 @@ get_tracks_boundaries:
     }
     if(Column_Pos)
     {
-        *Column_Pos = mouse;
+        *Column_Pos = mouse_coord;
     }
     int mouse_line = (Mouse.y - (184 + (chars_height * 2)));
     if(mouse_line >= 0)
@@ -3204,6 +3203,10 @@ get_tracks_boundaries:
     if(Line)
     {
         *Line = mouse_line / chars_height;
+        if(*Line > VIEWLINE)
+        {
+            *Line = *Line - 1;
+        }
     }
     return need_scroll;
 }
@@ -3682,6 +3685,8 @@ void Mouse_Left_Pattern_Ed(void)
     int line_number;
     float slider_offset;
     int low_offset;
+    int data;
+    int in_offset;
     int sub = chars_height == 16 ? 4 : -13;
     COLUMN_TYPE type;
     int column_x_coords;
@@ -3703,38 +3708,77 @@ void Mouse_Left_Pattern_Ed(void)
             {
                 type = Get_Column_Type_With_Track(Channels_MultiNotes, Channels_Effects, track, column);
                 low_offset = 0;
+                in_offset = 0;
                 switch(type)
                 {
                     case VOLUMELO:
-                        break;
-                    case PANNINGLO:
-                        break;
+                        column--;
+                        low_offset = Cur_Char_size[track];
                     case VOLUMEHI:
-                    case PANNINGHI:
+                        slider_offset = (float) ((column_x_coords - Get_Column_Coord(track, column_x_coords)) + low_offset) - 2.0f;
+                        if(slider_offset < 0.0f) slider_offset = 0.0f;
+                        slider_offset /= Cur_Char_size[track] * 2;
+                        slider_offset *= 64.0f;
+                        slider_offset = 64.0f - slider_offset;
+
+                        line_number = line_number - (VIEWLINE - Get_Pattern_Line());
+                        if(line_number >= 0)
+                        {
+                            Set_Column_Data_With_Track(Channels_MultiNotes, Channels_Effects, Get_Song_Position(), track,
+                                                       column, line_number, (int) slider_offset);
+                            Update_Pattern(0);
+                        }
                         break;
+
+                    case PANNINGLO:
+                        column--;
+                        low_offset = Cur_Char_size[track];
+                    case PANNINGHI:
+                        slider_offset = (float) ((column_x_coords - Get_Column_Coord(track, column_x_coords)) + low_offset) - 2.0f;
+                        if(slider_offset < 0.0f) slider_offset = 0.0f;
+                        slider_offset /= Cur_Char_size[track] * 2;
+                        slider_offset *= 128.0f;
+
+                        line_number = line_number - (VIEWLINE - Get_Pattern_Line());
+                        if(line_number >= 0)
+                        {
+                            Set_Column_Data_With_Track(Channels_MultiNotes, Channels_Effects, Get_Song_Position(), track,
+                                                       column, line_number, (int) slider_offset);
+                            Update_Pattern(0);
+                        }
+                        break;
+
                     case EFFECTDATLO:
                     case EFFECT2DATLO:
                     case EFFECT3DATLO:
                     case EFFECT4DATLO:
                         column--;
                         low_offset = Cur_Char_size[track];
-                    case EFFECTDATHI:
-                    case EFFECT2DATHI:
-                    case EFFECT3DATHI:
                     case EFFECT4DATHI:
-                        slider_offset = (float) ((Mouse.x) - Get_Column_Coord(track, column_x_coords));
-                        slider_offset += (float) low_offset;
+                        in_offset = Cur_Char_size[track] * 4 * 3;
+                    case EFFECT3DATHI:
+                        in_offset = Cur_Char_size[track] * 4 * 2;
+                    case EFFECT2DATHI:
+                        in_offset = Cur_Char_size[track] * 4 * 1;
+                    case EFFECTDATHI:
+                        slider_offset = (float) ((column_x_coords - Get_Column_Coord(track, column_x_coords)) + low_offset) - 2.0f;
+                        if(slider_offset < 0.0f) slider_offset = 0.0f;
                         slider_offset /= Cur_Char_size[track] * 2;
                         slider_offset *= 255.0f;
                         slider_offset = 255.0f - slider_offset;
-                        //Get_Pattern_Line();
-                        
-                        line_number = line_number - VIEWLINE;
+
+                        line_number = line_number - (VIEWLINE - Get_Pattern_Line());
                         if(line_number >= 0)
                         {
-                            Set_Column_Data_With_Track(Channels_MultiNotes, Channels_Effects, Get_Song_Position(), track,
-                                                       column, line_number, (int) slider_offset);
-                            Update_Pattern(0);
+                            // Check the effect number (can't set a value if there's no effect)
+                            data = Get_Column_Data_With_Track(Channels_MultiNotes, Channels_Effects, Get_Song_Position(),
+                                                              track, column - 2, line_number);
+                            if(data)
+                            {
+                                Set_Column_Data_With_Track(Channels_MultiNotes, Channels_Effects, Get_Song_Position(), track,
+                                                           column, line_number, (int) slider_offset);
+                                Update_Pattern(0);
+                            }
                         }
                         break;
                     default:
@@ -4125,7 +4169,7 @@ void Goto_Next_Page(int Remove_Sel)
 // Move one column on the left
 void Goto_Previous_Column(void)
 {
-    int panning_data;
+    /*int panning_data;*/
 
     Select_Block_Keyboard(BLOCK_MARK_TRACKS);
     if(pattern_sliders)
@@ -4141,12 +4185,12 @@ void Goto_Previous_Column(void)
             case EFFECT2DATLO:
             case EFFECT3DATLO:
             case EFFECT4DATLO:
-                panning_data = Get_Column_Panning_Data_With_Track(Channels_MultiNotes, Channels_Effects, Get_Song_Position(),
+                /*panning_data = Get_Column_Panning_Data_With_Track(Channels_MultiNotes, Channels_Effects, Get_Song_Position(),
                                                                   Track_Under_Caret, Pattern_Line);
                 if(panning_data != 0x90)
-                {
+                {*/
                     Column_Under_Caret--;
-                }
+                //}
                 break;
         }
     }
@@ -4160,7 +4204,7 @@ void Goto_Previous_Column(void)
 // Move one column on the right
 void Goto_Next_Column(void)
 {
-    int panning_data;
+    /*int panning_data;*/
 
     Select_Block_Keyboard(BLOCK_MARK_TRACKS);
     Column_Under_Caret++;
@@ -4177,12 +4221,12 @@ void Goto_Next_Column(void)
             case EFFECT2DATHI:
             case EFFECT3DATHI:
             case EFFECT4DATHI:
-                panning_data = Get_Column_Panning_Data_With_Track(Channels_MultiNotes, Channels_Effects, Get_Song_Position(),
+                /*panning_data = Get_Column_Panning_Data_With_Track(Channels_MultiNotes, Channels_Effects, Get_Song_Position(),
                                                                   Track_Under_Caret, Pattern_Line);
                 if(panning_data != 0x90)
-                {
+                {*/
                     Column_Under_Caret++;
-                }
+                //}
                 break;
         }
     }

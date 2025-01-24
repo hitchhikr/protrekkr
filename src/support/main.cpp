@@ -153,6 +153,7 @@ char Last_Used_Ptk[MAX_PATH];
 
 SDL_Event Events[MAX_EVENTS];
 
+extern int RShift_Notification;
 int Nbr_Keyboards;
 int Keyboard_Idx;
 char Keyboard_Labels[256][256];
@@ -790,6 +791,14 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
                                     }
                                 }
                             }
+                            if(Get_RShift())
+                            {
+                                RShift_Notification = TRUE;
+                            }
+                            else
+                            {
+                                RShift_Notification = FALSE;
+                            }
                         }
                     }
 
@@ -843,6 +852,14 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
                                     Send_Note(Scancode | 0x80, FALSE, TRUE);
                                 }
                             }
+                        }
+                        if(Get_RShift())
+                        {
+                            RShift_Notification = TRUE;
+                        }
+                        else
+                        {
+                            RShift_Notification = FALSE;
                         }
                     }
                     break;
