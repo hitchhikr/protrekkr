@@ -7,7 +7,8 @@ v2.8.0
 - Sample "Maximize" (Max) is now called "Normalize" (Norm) in samples editor.
 - More visual feedback for currently played sample in samples editor.
 - Added the option to show/clear leading zeroes digits in patterns.
-- Added patterns sliders edition mode.
+- Added patterns sliders edition mode (check manual for explanations).
+- Fixed various bugs in patterns edition.
 
 v2.7.6
 
