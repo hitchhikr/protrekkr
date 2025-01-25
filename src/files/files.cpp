@@ -189,6 +189,7 @@ int Load_Ptk(CustomFile customFile)
     int Combine = FALSE;
     int Stereo_Reverb = FALSE;
     int Reverb_Resonance = FALSE;
+    int Reverb_Damp_On = FALSE;
     int Tb303_Scaling = FALSE;
     int Track_Srnd = FALSE;
     int Long_Midi_Prg = FALSE;
@@ -253,6 +254,8 @@ int Load_Ptk(CustomFile customFile)
 
         switch(extension[7])
         {
+            case 'S':
+                Reverb_Damp_On = TRUE;
             case 'R':
                 Var_Disto = TRUE;
             case 'Q':
@@ -758,6 +761,10 @@ Read_Mod_File:
             if(Stereo_Reverb)
             {
                 Read_Mod_Data(&Reverb_Stereo_Amount, sizeof(char), 1, in);
+            }
+            if(Reverb_Damp_On)
+            {
+                Read_Mod_Data_Swap(&Reverb_Damp, sizeof(float), 1, in);
             }
 
             for(i = 0; i < MAX_INSTRS; i++)
@@ -1546,6 +1553,8 @@ int Save_Ptk(char *FileName, int NewFormat, int Simulate, Uint8 *Memory)
             Write_Mod_Data_Swap(&Reverb_Filter_Cutoff, sizeof(float), 1, in);
             Write_Mod_Data_Swap(&Reverb_Filter_Resonance, sizeof(float), 1, in);
             Write_Mod_Data(&Reverb_Stereo_Amount, sizeof(char), 1, in);
+            Write_Mod_Data_Swap(&Reverb_Damp, sizeof(float), 1, in);
+            
             for(i = 0; i < MAX_INSTRS; i++)
             {
                 Write_Mod_Data_Swap(&Sample_Vol[i], sizeof(float), 1, in);
@@ -1754,7 +1763,7 @@ int Pack_Module(char *FileName)
     output = fopen(Temph, "wb");
     if(output)
     {
-        sprintf(extension, "PROTREKR");
+        sprintf(extension, "PROTREKS");
         Write_Data(extension, sizeof(char), 9, output);
         Write_Data_Swap(&Depack_Size, sizeof(int), 1, output);
         Write_Data(Final_Mem_Out, sizeof(char), Len, output);

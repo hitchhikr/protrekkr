@@ -103,7 +103,6 @@ int CONSOLE_HEIGHT2;
 int fluzy = -1;
 int Scopish = SCOPE_ZONE_MOD_DIR;
 char Scopish_LeftRight = FALSE;
-int rev_counter2 = 0;
 char Visible_Columns = 0;
 int rs_coef = 32768;
 
@@ -1981,6 +1980,12 @@ int Screen_Update(void)
                 gui_action_external &= ~GUI_UPDATE_EXTERNAL_REVERB_FILTER;
             }
 
+            if(gui_action_external & GUI_UPDATE_EXTERNAL_REVERB_DAMP)
+            {
+                Actualize_Fx_Ed(15);
+                gui_action_external &= ~GUI_UPDATE_EXTERNAL_REVERB_DAMP;
+            }
+
             if(gui_action_external & GUI_UPDATE_EXTERNAL_COMPRESSOR)
             {
                 Actualize_Track_Fx_Ed(12);
@@ -2377,7 +2382,8 @@ void Load_File(int Freeindex, const char *str)
                 strcmp(extension, "PROTREKO") == 0 ||
                 strcmp(extension, "PROTREKP") == 0 ||
                 strcmp(extension, "PROTREKQ") == 0 ||
-                strcmp(extension, "PROTREKR") == 0)
+                strcmp(extension, "PROTREKR") == 0 ||
+                strcmp(extension, "PROTREKS") == 0)
         {
             sprintf(name, "%s", FileName);
             Song_Stop();
@@ -2904,7 +2910,8 @@ void New_Mod(void)
         mas_vol = 1.0f;
         Reverb_Filter_Cutoff = 0.08f;
         Reverb_Filter_Resonance = 0.5f;
-        Reverb_Stereo_Amount = 50;
+        Reverb_Stereo_Amount = 63;
+        Reverb_Damp = 1.0f;
 
         for(i = 0; i < MAX_TRACKS; i++)
         {
@@ -7172,7 +7179,7 @@ void Draw_Scope(void)
                 for(int s = 0; s < x_max; s++)
                 {
                     pos_in_line = ((float) s) / (float) x_max;
-                    data = (Scope_Dats_LeftRight[i][offset_scope + (int) (pos_in_line * 128)] * 0.25f) / 8192;
+                    data = (Scope_Dats_LeftRight[i][offset_scope + (int) (pos_in_line * 128)]) / 32767.0f;
                     if(data < -1.0f) data = -1.0f;
                     if(data > 1.0f) data = 1.0f;
                     int y = 42 + ptrTbl_Dat->y_pos + (int) (data * ptrTbl_Dat->y_large);
@@ -7219,7 +7226,7 @@ void Draw_Scope(void)
                 {
                     // [0..1]
                     pos_in_line = ((float) s) / (float) x_max;
-                    data = Scope_Dats[i][offset_scope + (int) (pos_in_line * 128)] / 8192;
+                    data = Scope_Dats[i][offset_scope + (int) (pos_in_line * 128)];
                     if(data < -1.0f) data = -1.0f;
                     if(data > 1.0f) data = 1.0f;
                     int y = 42 + ptrTbl_Dat->y_pos + (int) (data * ptrTbl_Dat->y_large);
@@ -7241,6 +7248,7 @@ int Init_Scopes_VuMeters_Buffers(void)
     pos_scope_latency = 0;
     for(i = 0; i < MAX_TRACKS; i++)
     {  
+        // ---
         if(Scope_Dats[i])
         {
             free(Scope_Dats[i]);
@@ -7252,27 +7260,29 @@ int Init_Scopes_VuMeters_Buffers(void)
         }
         memset(Scope_Dats[i], 0, ((AUDIO_Latency + 1) + (512 * 4)) * 2 * sizeof(float));
 
-        if(VuMeters_Dats_L[i])
+        // ---
+        if(Scope_Dats_L[i])
         {
-            free(VuMeters_Dats_L[i]);
+            free(Scope_Dats_L[i]);
         }
-        VuMeters_Dats_L[i] = (float *) malloc(((AUDIO_Latency + 1) + (512 * 4)) * 2 * sizeof(float));
-        if(!VuMeters_Dats_L[i])
+        Scope_Dats_L[i] = (float *) malloc(((AUDIO_Latency + 1) + (512 * 4)) * 2 * sizeof(float));
+        if(!Scope_Dats_L[i])
         {
             return(FALSE);
         }
-        memset(VuMeters_Dats_L[i], 0, ((AUDIO_Latency + 1) + (512 * 4)) * 2 * sizeof(float));
+        memset(Scope_Dats_L[i], 0, ((AUDIO_Latency + 1) + (512 * 4)) * 2 * sizeof(float));
 
-        if(VuMeters_Dats_R[i])
+        // ---
+        if(Scope_Dats_R[i])
         {
-            free(VuMeters_Dats_R[i]);
+            free(Scope_Dats_R[i]);
         }
-        VuMeters_Dats_R[i] = (float *) malloc(((AUDIO_Latency + 1) + (512 * 4)) * 2 * sizeof(float));
-        if(!VuMeters_Dats_R[i])
+        Scope_Dats_R[i] = (float *) malloc(((AUDIO_Latency + 1) + (512 * 4)) * 2 * sizeof(float));
+        if(!Scope_Dats_R[i])
         {
             return(FALSE);
         }
-        memset(VuMeters_Dats_R[i], 0, ((AUDIO_Latency + 1) + (512 * 4)) * 2 * sizeof(float));
+        memset(Scope_Dats_R[i], 0, ((AUDIO_Latency + 1) + (512 * 4)) * 2 * sizeof(float));
     }
 
     if(Scope_Dats_LeftRight[0])
@@ -7371,7 +7381,7 @@ void Draw_VuMeters(void)
             // [0..1]
             pos_in_line = ((float) s) / (float) x_max;
 
-            data = VuMeters_Dats_L[i][offset_scope + (int) (pos_in_line * 128)] / (32767.0f / 2.0f);
+            data = Scope_Dats_L[i][offset_scope + (int) (pos_in_line * 128)];
             data = fabsf(data);
             if(data > 1.0f)
             {
@@ -7382,7 +7392,7 @@ void Draw_VuMeters(void)
                 MaxLevel_L = data;
             }
 
-            data = VuMeters_Dats_R[i][offset_scope + (int) (pos_in_line * 128)] / (32767.0f / 2.0f);
+            data = Scope_Dats_R[i][offset_scope + (int) (pos_in_line * 128)];
             data = fabsf(data);
             if(data > 1.0f)
             {
@@ -7393,7 +7403,6 @@ void Draw_VuMeters(void)
                 MaxLevel_R = data;
             }
         }
-
         MaxLevel_R *= (float) (ptrTbl_Dat->y_large << 1);
         MaxLevel_L *= (float) (ptrTbl_Dat->y_large << 1);
         peak_line = (ptrTbl_Dat->y_large << 1) - (ptrTbl_Dat->y_large >> 1);

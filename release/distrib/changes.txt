@@ -11,6 +11,8 @@ v2.8.0
 - Fixed various bugs in patterns edition.
 - Channels vu-meters were drawn way to many times over each others, fixed.
 - Fixed the audio levels of the channels vu-meters.
+- Modified the reverb (should sound better) also added a damp parameter.
+- Added effect 2C: Set reverb damp ratio.
 
 v2.7.6
 

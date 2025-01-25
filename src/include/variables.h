@@ -248,6 +248,7 @@
 #define GUI_UPDATE_EXTERNAL_FLANGER (1 << 8)
 #define GUI_UPDATE_EXTERNAL_LFO (1 << 9)
 #define GUI_UPDATE_EXTERNAL_SET_PANNING (1 << 10)
+#define GUI_UPDATE_EXTERNAL_REVERB_DAMP (1 << 11)
 
 #define GUI_UPDATE_EXTERNAL_303_1_CUTOFF (1 << 0)
 #define GUI_UPDATE_EXTERNAL_303_2_CUTOFF (1 << 1)
@@ -480,9 +481,9 @@ extern unsigned int SamplesPerSub;
 extern char sas;
 
 extern float *Scope_Dats[MAX_TRACKS];
+extern float *Scope_Dats_L[MAX_TRACKS];
+extern float *Scope_Dats_R[MAX_TRACKS];
 extern float *Scope_Dats_LeftRight[2];
-extern float *VuMeters_Dats_L[MAX_TRACKS];
-extern float *VuMeters_Dats_R[MAX_TRACKS];
 
 #if !defined(BZR2)
 extern SDL_Surface *SKIN303;

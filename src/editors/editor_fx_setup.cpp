@@ -74,7 +74,8 @@ void Draw_Fx_Ed(void)
 
     Gui_Draw_Button_Box(640, (Cur_Height - 136), 64, 16, "Interpolation", BUTTON_NORMAL | BUTTON_DISABLED);
 
-//    Gui_Draw_Button_Box(640, 484, 144, 66, "Compressor", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_VTOP);
+    Gui_Draw_Button_Box(113 + 34, (Cur_Height - 120), 32, 16, "Damp", BUTTON_NORMAL | BUTTON_DISABLED);
+
 }
 
 void Actualize_Fx_Ed(char gode)
@@ -83,6 +84,7 @@ void Actualize_Fx_Ed(char gode)
     {
         if(gode == 0 || gode == 2)
         {
+            // Reverb feedback
             Real_Slider(77, (Cur_Height - 102), (int) (Feedback * 127.0f), compressor);
         }
 
@@ -207,6 +209,19 @@ void Actualize_Fx_Ed(char gode)
             Display_Reverb_Resonance();
         }
 
+        if(gode == 0 || gode == 15)
+        {
+            // Reverb damp
+            Real_Slider_Horiz(181, 
+                              (Cur_Height - 120),
+                              (int) (Reverb_Damp * 41.0f),
+                              2,
+                              43,
+                              43,
+                              compressor);
+        }
+
+
 /*
         if(gode == 0 || gode == 13)
         {
@@ -229,6 +244,18 @@ void Mouse_Sliders_Fx_Ed(void)
 {
     if(userscreen == USER_SCREEN_FX_SETUP_EDIT)
     {
+        // Reverb damp
+        if(Check_Mouse(181, (Cur_Height - 120), 43, 16) && compressor)
+        {
+            Reverb_Damp = float(float(Mouse.x - 181) / 43.0f);
+            if(Reverb_Damp < 0.02f) Reverb_Damp = 0.02f;
+            if(Reverb_Damp > 1.0f) Reverb_Damp = 1.0f;
+
+            gui_action = GUI_CMD_UPDATE_FX_ED;
+            teac = 15;
+        }
+        
+        // Reverb feedback
         if(Check_Mouse(77, (Cur_Height - 102), 148, 16) && compressor)
         {
             Feedback = float(float(Mouse.x - 87) / 127.0f);
@@ -239,6 +266,7 @@ void Mouse_Sliders_Fx_Ed(void)
             teac = 2;
         }
         
+        // Reverb room size
         if(Check_Mouse(77, (Cur_Height - 84), 148, 16) && compressor)
         {
             c_threshold = Mouse.x - 87;

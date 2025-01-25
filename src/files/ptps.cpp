@@ -249,6 +249,7 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
     int Store_FX_Shuffle = FALSE;
     int Store_FX_RevCuto = FALSE;
     int Store_FX_RevReso = FALSE;
+    int Store_FX_RevDamp = FALSE;
 
     int Store_Synth = FALSE;
 
@@ -937,6 +938,11 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                                     }
                                     break;
 
+                                // $2c Set reverb damp
+                                case 0x2C:
+                                    Store_FX_RevDamp = TRUE;
+                                    break;
+                                
                                 // $31 First TB303 control
                                 case 0x31:
                                     Store_303_1 = TRUE;
@@ -1108,11 +1114,12 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
 
     Save_Constant("PTK_FX_SETREVCUTO", Store_FX_RevCuto);
     Save_Constant("PTK_FX_SETREVRESO", Store_FX_RevReso);
+    Save_Constant("PTK_FX_SETREVDAMP", Store_FX_RevDamp);
 
     // Special but only at tick 0
     Save_Constant("PTK_FX_TICK0", Store_FX_Vibrato | Store_FX_Arpeggio |
                                   Store_FX_PatternLoop | Store_FX_Reverse |
-                                  Store_FX_RevCuto | Store_FX_RevReso);
+                                  Store_FX_RevCuto | Store_FX_RevReso | Store_FX_RevDamp);
 
     // Remap the used instruments
     for(i = 0; i < MAX_INSTRS; i++)
@@ -1963,6 +1970,7 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
     Write_Mod_Data(&Reverb_Filter_Cutoff, sizeof(float), 1, in);
     Write_Mod_Data(&Reverb_Filter_Resonance, sizeof(float), 1, in);
     Write_Mod_Data(&Reverb_Stereo_Amount, sizeof(char), 1, in);
+    Write_Mod_Data(&Reverb_Damp, sizeof(float), 1, in);
 
     Write_Mod_Data(&Store_303_1, sizeof(char), 1, in);
     if(Store_303_1)

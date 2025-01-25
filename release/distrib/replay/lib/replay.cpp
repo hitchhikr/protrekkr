@@ -212,6 +212,8 @@ float left_float_render;
 float right_float_render;
 float left_chorus;
 float right_chorus;
+float left_reverb;
+float right_reverb;
 float delay_left_final;
 float delay_right_final;
 int PosInTick;
@@ -751,7 +753,8 @@ short *RawSamples[MAX_INSTRS][2][MAX_INSTRS_SPLITS];
 
 #if defined(PTK_COMPRESSOR)
     int currentCounter;
-    int delayedCounter[10];
+    int delayedCounterL[10];
+    int delayedCounterR[10];
     float reverb_threshold_delay[] = 
     {
         44.1f, 50.1f, 60.1f, 70.1f, 73.1f, 79.1f, 64.0f, 55.0f, 20.0f, 32.0f
@@ -760,9 +763,10 @@ short *RawSamples[MAX_INSTRS][2][MAX_INSTRS_SPLITS];
     float allBuffer_R[10][5760];
     float delay_left_buffer[MAX_COMB_FILTERS][100000];
     float delay_right_buffer[MAX_COMB_FILTERS][100000];
+    float left_buffer[MAX_COMB_FILTERS][100000];
+    float right_buffer[MAX_COMB_FILTERS][100000];
     int counters_L[MAX_COMB_FILTERS];
     int counters_R[MAX_COMB_FILTERS];
-    int rev_counter;
     rFilter LFP_L;
     rFilter LFP_R;
     char num_echoes;
@@ -813,11 +817,13 @@ char compressor;
 #if !defined(__STAND_ALONE__) || defined(__WINAMP__)
     float Reverb_Filter_Cutoff = 0.08f;
     float Reverb_Filter_Resonance = 0.5f;
-    unsigned char Reverb_Stereo_Amount = 50;
+    unsigned char Reverb_Stereo_Amount = 63;
+    float Reverb_Damp = 1.0f;
 #else
     float Reverb_Filter_Cutoff;
     float Reverb_Filter_Resonance;
     unsigned char Reverb_Stereo_Amount;
+    float Reverb_Damp;
 #endif
 
 int Reserved_Sub_Channels[MAX_TRACKS][MAX_POLYPHONY];
@@ -854,9 +860,9 @@ int delay_time;
     int R_MaxLevel;
     extern int Chan_Midi_Prg[MAX_TRACKS];
     float *Scope_Dats[MAX_TRACKS];
+    float *Scope_Dats_L[MAX_TRACKS];
+    float *Scope_Dats_R[MAX_TRACKS];
     float *Scope_Dats_LeftRight[2];
-    float *VuMeters_Dats_L[MAX_TRACKS];
-    float *VuMeters_Dats_R[MAX_TRACKS];
     int pos_scope;
     int pos_scope_latency;
     extern signed char c_midiin;
@@ -1825,6 +1831,7 @@ int PTKEXPORT Ptk_InitModule(Uint8 *Module, int start_position)
         Mod_Dat_Read(&Reverb_Filter_Cutoff, sizeof(float));
         Mod_Dat_Read(&Reverb_Filter_Resonance, sizeof(float));
         Mod_Dat_Read(&Reverb_Stereo_Amount, sizeof(char));
+        Mod_Dat_Read(&Reverb_Damp, sizeof(float));
 
         char tb303_1_enabled;
         char tb303_2_enabled;
@@ -1878,21 +1885,26 @@ void PTKEXPORT Ptk_ReleaseDriver(void)
 #if !defined(__STAND_ALONE__)
     for(i = 0; i < MAX_TRACKS; i++)
     {  
+        // ---
         if(Scope_Dats[i])
         {
             free(Scope_Dats[i]);
         }
         Scope_Dats[i] = NULL;
-        if(VuMeters_Dats_L[i])
+
+        // ---
+        if(Scope_Dats_L[i])
         {
-            free(VuMeters_Dats_L[i]);
+            free(Scope_Dats_L[i]);
         }
-        VuMeters_Dats_L[i] = NULL;
-        if(VuMeters_Dats_R[i])
+        Scope_Dats_L[i] = NULL;
+        
+        // ---
+        if(Scope_Dats_R[i])
         {
-            free(VuMeters_Dats_R[i]);
+            free(Scope_Dats_R[i]);
         }
-        VuMeters_Dats_R[i] = NULL;
+        Scope_Dats_R[i] = NULL;
     }
     if(Scope_Dats_LeftRight[0])
     {
@@ -2270,6 +2282,7 @@ void Pre_Song_Init(void)
 #endif
 
     Reverb_Filter_Resonance = 0.2f;
+    Reverb_Damp = 1.0f;
 
 #if defined(PTK_LIMITER_TRACKS)
     int j;
@@ -3984,15 +3997,13 @@ ByPass_Wav:
 #if !defined(__STAND_ALONE__)
         if(!Chan_Mute_State[c])
         {
-            Scope_Dats[c][pos_scope] = ((All_Signal_L + All_Signal_R) * 0.2f) * mas_vol;
-            VuMeters_Dats_L[c][pos_scope] = All_Signal_L * mas_vol;
-            VuMeters_Dats_R[c][pos_scope] = All_Signal_R * mas_vol;
+            Scope_Dats_L[c][pos_scope] = All_Signal_L / 32767.0f;
+            Scope_Dats_R[c][pos_scope] = All_Signal_R / 32767.0f;
         }
         else
         {
-            Scope_Dats[c][pos_scope] = 0.0f;
-            VuMeters_Dats_L[c][pos_scope] = 0.0f;
-            VuMeters_Dats_R[c][pos_scope] = 0.0f;
+            Scope_Dats_L[c][pos_scope] = 0.0f;
+            Scope_Dats_R[c][pos_scope] = 0.0f;
         }
 #endif
     } // Song_Tracks
@@ -4638,7 +4649,7 @@ void Do_Effects_Tick_0(void)
 {
 
 #if defined(PTK_FX_ARPEGGIO) || defined(PTK_FX_VIBRATO) || defined(PTK_FX_REVERSE) || defined(PTK_SHUFFLE) || \
-    defined(PTK_FX_SETREVCUTO) || defined(PTK_FX_SETREVRESO) || defined(PTK_LIMITER_TRACKS) || defined(PTK_FX_SETBPM) || \
+    defined(PTK_FX_SETREVCUTO) || defined(PTK_FX_SETREVRESO) || defined(PTK_FX_SETREVDAMP) || defined(PTK_LIMITER_TRACKS) || defined(PTK_FX_SETBPM) || \
     defined(PTK_FX_SETSPEED)
 
     int i;
@@ -4772,6 +4783,21 @@ void Do_Effects_Tick_0(void)
                     if(userscreen == USER_SCREEN_TRACK_FX_EDIT)
                     {
                         gui_action_external |= GUI_UPDATE_EXTERNAL_COMPRESSOR;
+                    }
+#endif
+
+                    break;
+#endif
+
+#if defined(PTK_FX_SETREVDAMP)
+                case 0x2c:
+                    Reverb_Damp = pltr_dat_row[j] / 255.0f * 1.0f;
+                    if(Reverb_Damp < 0.02f) Reverb_Damp = 0.02f;
+
+#if !defined(__STAND_ALONE__)
+                    if(userscreen == USER_SCREEN_FX_SETUP_EDIT)
+                    {
+                        gui_action_external |= GUI_UPDATE_EXTERNAL_REVERB_DAMP;
                     }
 #endif
 
@@ -5639,8 +5665,16 @@ void Fix_Stereo(int channel)
 // Main mixing routine
 void Get_Player_Values(void)
 {
+    int c;
+    float left_compress;
+    float right_compress;
+
     left_chorus = 0.0f;
     right_chorus = 0.0f;
+    left_reverb = 0.0f;
+    right_reverb = 0.0f;
+    left_compress = 1.0f;
+    right_compress = 1.0f;
 
 #if defined(PTK_LIMITER_MASTER) || defined(PTK_LIMITER_TRACKS)
     mas_comp_pos_rms_buffer++;
@@ -5675,9 +5709,13 @@ void Get_Player_Values(void)
     float lchore = rbuff_chorus[rchorus_counter2];
     left_float += lchore;
     right_float += rchore;
+    lchore /= 32767.0f;
+    rchore /= 32767.0f;
 
 #if defined(PTK_COMPRESSOR)
     Reverb_work();
+    left_float += left_reverb;
+    right_float += right_reverb;
 #endif
     
     left_float /= 32767.0f;
@@ -5691,8 +5729,10 @@ void Get_Player_Values(void)
     if(mas_ratio_Master > 0.01f)
     {
 #endif
-        left_float = Mas_Compressor_Master(left_float, &rms_sumL_Master, mas_comp_bufferL_Master, &mas_envL_Master);
-        right_float = Mas_Compressor_Master(right_float, &rms_sumR_Master, mas_comp_bufferR_Master, &mas_envR_Master);
+        left_compress = Mas_Compressor_Master(left_float, &rms_sumL_Master, mas_comp_bufferL_Master, &mas_envL_Master);
+        right_compress = Mas_Compressor_Master(right_float, &rms_sumR_Master, mas_comp_bufferR_Master, &mas_envR_Master);
+        left_float *= left_compress; 
+        right_float *= right_compress; 
     }
 #endif
 
@@ -5735,6 +5775,49 @@ void Get_Player_Values(void)
 #if !defined(__STAND_ALONE__)
     left_float_render = left_float;
     right_float_render = right_float;
+#endif
+
+#if !defined(__STAND_ALONE__)
+
+#if defined(PTK_COMPRESSOR)
+    left_reverb /= 32767.0f;
+    right_reverb /= 32767.0f;
+#endif
+
+    // Store the data for the tracks scopes now
+    for(c = 0; c < Song_Tracks; c++)
+    {
+        if(!Chan_Mute_State[c])
+        {
+            Scope_Dats_L[c][pos_scope] = ((((Scope_Dats_L[c][pos_scope]// + lchore
+#if defined(PTK_COMPRESSOR)
+//                                         + left_reverb
+#endif
+                                         ) * left_compress
+                                         ) * mas_vol
+                                         ) * local_curr_mas_vol
+                                         ) * local_curr_ramp_vol;
+
+            Scope_Dats_R[c][pos_scope] = ((((Scope_Dats_R[c][pos_scope] //+ rchore
+#if defined(PTK_COMPRESSOR)
+//                                         + right_reverb
+#endif
+                                         ) * right_compress
+                                         ) * mas_vol
+                                         ) * local_curr_mas_vol
+                                         ) * local_curr_ramp_vol;
+
+            Scope_Dats[c][pos_scope] = (Scope_Dats_L[c][pos_scope] + Scope_Dats_R[c][pos_scope]) * 0.5f;
+        }
+        else
+        {
+            Scope_Dats_L[c][pos_scope] = 0.0f;
+            Scope_Dats_R[c][pos_scope] = 0.0f;
+            Scope_Dats[c][pos_scope] = 0.0f;
+        }
+
+
+    }
 #endif
 
     left_value = (int) (left_float * 32767.0f);
@@ -6687,14 +6770,16 @@ void Initreverb(void)
     {
         memset(delay_left_buffer[i], 0, 100000 * sizeof(float));
         memset(delay_right_buffer[i], 0, 100000 * sizeof(float));
+        memset(left_buffer[i], 0, 100000 * sizeof(float));
+        memset(right_buffer[i], 0, 100000 * sizeof(float));
     }
 
-    for(i = 0; i < num_echoes; i++)
+    for(i = 0; i < MAX_COMB_FILTERS; i++)
     {
         mlrw = 99999 - (delays[i] * 4 * 2);
         if(mlrw < 0) mlrw += 100000;
         counters_L[i] = mlrw;
-        mlrw = 99999 - ((delays[i] + (Reverb_Stereo_Amount * 2)) * 4 * 2);
+        mlrw = 99999 - ((delays[i] + (Reverb_Stereo_Amount * 12)) * 4 * 2);
         if(mlrw < 0) mlrw += 100000;
         counters_R[i] = mlrw;
     }
@@ -6704,7 +6789,6 @@ void Initreverb(void)
     LFP_L.Reset();
     LFP_R.Reset();
 
-    rev_counter = 99999;
 }
 
 void Init_Reverb_Filter(void)
@@ -6717,9 +6801,12 @@ void Init_Reverb_Filter(void)
     {
         memset(allBuffer_L[i], 0, 5760 * sizeof(float));
         memset(allBuffer_R[i], 0, 5760 * sizeof(float));
-        delayedCounter[i] = 5759 - int(c_threshold * reverb_threshold_delay[i]);
-        if(delayedCounter[i] < 0) delayedCounter[i] += 5760;
-        if(delayedCounter[i] > 5759) delayedCounter[i] -= 5759;
+        delayedCounterL[i] = 5759 - int(c_threshold * reverb_threshold_delay[i]);
+        if(delayedCounterL[i] < 0) delayedCounterL[i] += 5760;
+        if(delayedCounterL[i] > 5759) delayedCounterL[i] -= 5759;
+        delayedCounterR[i] = 5759 - int(c_threshold * reverb_threshold_delay[i] + ((float) Reverb_Stereo_Amount * 12));
+        if(delayedCounterR[i] < 0) delayedCounterR[i] += 5760;
+        if(delayedCounterR[i] > 5759) delayedCounterR[i] -= 5759;
     }
 }
 
@@ -6739,38 +6826,55 @@ void Reverb_work(void)
     {
         float l_rout = 0.0f;
         float r_rout = 0.0f;
+        float dev_l;
+        float dev_r;
+        float nev_l;
+        float nev_r;
 
-        // Comb filter
+        // Comb filters
         for(i = 0; i < num_echoes; i++)
         {
-            delay_left_buffer[i][rev_counter] = (delay_left_final +
-                                                 delay_left_buffer[i][counters_L[i]]) *
-                                                 decays[i];
-            delay_right_buffer[i][rev_counter] = (delay_right_final +
-                                                 delay_right_buffer[i][counters_R[i]]) *
-                                                 decays[i];
-            l_rout += delay_left_buffer[i][counters_L[i]];
-            r_rout += delay_right_buffer[i][counters_R[i]];
+            dev_l = (delay_left_buffer[i][counters_L[i]] * decays[i]);
+            dev_r = (delay_right_buffer[i][counters_R[i]] * decays[i]);
+            if(i & 1)
+            {
+                nev_l = dev_l - delay_left_final;
+                nev_r = dev_r - delay_right_final;
+            }
+            else
+            {
+                nev_l = dev_l + delay_left_final;
+                nev_r = dev_r + delay_right_final;
+            }
+            nev_l *= Reverb_Damp;
+            nev_r *= Reverb_Damp;
+
             if(++counters_L[i] > 99999) counters_L[i] -= 99999;
             if(++counters_R[i] > 99999) counters_R[i] -= 99999;
+            delay_left_buffer[i][counters_L[i]] = nev_l;
+            delay_right_buffer[i][counters_R[i]] = nev_r;
+            l_rout += nev_l;
+            r_rout += nev_r;
         }
 
+        // All pass filters
+        for(i = 0; i < num_echoes; i++)
+        {
+            l_rout = allpass_filter(allBuffer_L[i], l_rout, delayedCounterL[i]);
+            r_rout = allpass_filter(allBuffer_R[i], r_rout, delayedCounterR[i]);
+            if(++delayedCounterL[i] > 5759) delayedCounterL[i] -= 5759;
+            if(++delayedCounterR[i] > 5759) delayedCounterR[i] -= 5759;
+        }
+
+        // Lopass
         l_rout = LFP_L.fWork(l_rout, Reverb_Filter_Cutoff, Reverb_Filter_Resonance);
         r_rout = LFP_R.fWork(r_rout, Reverb_Filter_Cutoff, Reverb_Filter_Resonance);
 
-        // All pass filters
-        for(i = 0; i < 10; i++)
-        {
-            l_rout = allpass_filter(allBuffer_L[i], l_rout, delayedCounter[i]);
-            r_rout = allpass_filter(allBuffer_R[i], r_rout, delayedCounter[i]);
-            if(++delayedCounter[i] > 5759) delayedCounter[i] -= 5759;
-        }
-        left_float += l_rout;
-        right_float += r_rout;
+        left_reverb = l_rout;
+        right_reverb = r_rout;
 
         // Updating current counters
         if(++currentCounter > 5759) currentCounter -= 5759;
-        if(++rev_counter > 99999) rev_counter -= 99999;
     }
 }
 #endif
@@ -6911,7 +7015,7 @@ float Mas_Compressor_Master(float input, float *rms_sum, float *buffer, float *e
     {
         gain = expf((FastLog(mas_threshold_Master) - FastLog(*env)) * mas_ratio_Master);
     }
-    return input * gain;
+    return gain;
 }
 #endif // PTK_LIMITER_MASTER
 
