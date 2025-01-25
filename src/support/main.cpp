@@ -1102,7 +1102,7 @@ int Switch_FullScreen(int Width, int Height, int Refresh, int Force_Window_Mode)
     }
 #endif
 
-#if defined(__LINUX__) || defined(__MACOSX_PPC__) || defined(__MACOSX_X86__) || defined(__WIN32__)
+#if defined(__LINUX__) || defined(__MACOSX_PPC__) || defined(__MACOSX_X86__) || defined(__WIN32__) || defined(__AROS__)
     Real_FullScreen = SDL_FULLSCREEN;
 #endif
 
