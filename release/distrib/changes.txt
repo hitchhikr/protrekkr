@@ -10,8 +10,8 @@ v2.8.0 PRE 1
 - Added patterns sliders edition mode (check manual for explanations).
   Note: This mode can be quite CPU intensive.
 - Fixed various bugs in patterns edition.
-- Channels vu meters were drawn way to many times over each others, fixed.
-- Fixed the audio levels of the channels vu meters.
+- Channels VU meters were drawn way to many times over each others, fixed.
+- Fixed the audio levels of the channels VU meters.
 - Modified the reverb (should sound better (?)) also added a damp parameter
   (had to rework some modules due to this).
 - Added effect 2C: Set reverb damp ratio.
