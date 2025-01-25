@@ -20,6 +20,10 @@ v2.8.0 PRE 1
   or bottom/last track of a pattern).
 - Added Enter or Return keys for Single step play.
 - Fixed channels multi polyphony allocations.
+- Fixed the fullscreen mode switching under AROS.
+- Added an OpenGL executable in AROS distribution (ptk_aros_ogl)
+  for some reason i don't explain it may be slower than the regular one, 
+  your mileage may vary.
 
 v2.7.6
 
