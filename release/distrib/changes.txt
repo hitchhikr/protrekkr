@@ -2,17 +2,24 @@
 ProTrekkr releases history
 ===============================================================================
 
-v2.8.0
+v2.8.0 PRE 1
 
 - Sample "Maximize" (Max) is now called "Normalize" (Norm) in samples editor.
 - More visual feedback for currently played sample in samples editor.
 - Added the option to show/clear leading zeroes digits in patterns.
 - Added patterns sliders edition mode (check manual for explanations).
+  Note: This mode can be quite CPU intensive.
 - Fixed various bugs in patterns edition.
 - Channels vu-meters were drawn way to many times over each others, fixed.
 - Fixed the audio levels of the channels vu-meters.
-- Modified the reverb (should sound better) also added a damp parameter.
+- Modified the reverb (should sound better (?)) also added a damp parameter
+  (had to rework some modules due to this).
 - Added effect 2C: Set reverb damp ratio.
+- Improved the volume ramping.
+- Added LCTRL + LALT + HOME / END keyboard shortcuts (jump to top/first track
+  or bottom/last track of a pattern).
+- Added Enter or Return keys for Single step play.
+- Fixed channels multi polyphony allocations.
 
 v2.7.6
 

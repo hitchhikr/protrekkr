@@ -528,6 +528,8 @@ void Init_Equ(LPEQSTATE es);
 float Do_Equ(LPEQSTATE es, float sample, int Left);
 #if defined(PTK_SHUFFLE)
 void Update_Shuffle(void);
+float absf(float x);
+
 #endif
 
 #endif

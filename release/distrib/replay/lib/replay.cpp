@@ -118,7 +118,11 @@ char FLANGER_ON[MAX_TRACKS];
 #endif
 
 float sp_Cvol[MAX_TRACKS][MAX_POLYPHONY];
+float sp_Cvol_Ramp[MAX_TRACKS][MAX_POLYPHONY];
+float sp_Cvol_Ramp_Dest[MAX_TRACKS][MAX_POLYPHONY];
 float sp_Cvol_Synth[MAX_TRACKS][MAX_POLYPHONY];
+float sp_Cvol_Synth_Ramp[MAX_TRACKS][MAX_POLYPHONY];
+float sp_Cvol_Synth_Ramp_Dest[MAX_TRACKS][MAX_POLYPHONY];
 float sp_Tvol[MAX_TRACKS][MAX_POLYPHONY];
 float sp_Tvol_Synth[MAX_TRACKS][MAX_POLYPHONY];
 float sp_Tvol_Mod[MAX_TRACKS];
@@ -227,6 +231,7 @@ int PosInTick;
     int rawrender_from;
     int rawrender_to;
     float mas_vol = 1.0f;
+    extern int play_one_step;
 #else
     float mas_vol;
 #endif
@@ -604,6 +609,7 @@ int Pattern_Line_Visual;
 
 int pl_note[MAX_POLYPHONY];
 int pl_sample[MAX_POLYPHONY];
+int old_pl_sample[MAX_TRACKS][MAX_POLYPHONY];
 int pl_vol_row;
 int pl_pan_row;
 unsigned char *RawPatterns;
@@ -956,6 +962,15 @@ void Initreverb(void);
 volatile int Done_Reset;
 void Reset_Values(void);
 
+// -----------------------------------------------------------------------------
+// Return the absolute value of a floating point
+// -----------------------------------------------------------------------------
+float absf(float x) 
+{
+    *(long *) &x &= 0x7fffffff;
+    return(x);
+}
+
 // ------------------------------------------------------
 // Audio mixer
 #if !defined(BZR2)
@@ -1070,8 +1085,8 @@ Uint32 STDCALL Mixer(Uint8 *Buffer, Uint32 Len)
             Scope_Dats_LeftRight[0][pos_scope] = clamp_left_value;
             Scope_Dats_LeftRight[1][pos_scope] = clamp_right_value;
 
-            clamp_left_value = fabsf(Scope_Dats_LeftRight[0][pos_scope_latency]);
-            clamp_right_value = fabsf(Scope_Dats_LeftRight[1][pos_scope_latency]);
+            clamp_left_value = absf(Scope_Dats_LeftRight[0][pos_scope_latency]);
+            clamp_right_value = absf(Scope_Dats_LeftRight[1][pos_scope_latency]);
             if(clamp_left_value > L_MaxLevel) L_MaxLevel = (int) clamp_left_value;
             if(clamp_right_value > R_MaxLevel) R_MaxLevel = (int) clamp_right_value;
             wait_level++;
@@ -2390,7 +2405,11 @@ void Post_Song_Init(void)
             Vstep1[i][j] = 0;
 
             sp_Cvol[i][j] = 0.0f;
+            sp_Cvol_Ramp[i][j] = 0.0f;
+            sp_Cvol_Ramp_Dest[i][j] = 10.0f;
             sp_Cvol_Synth[i][j] = 0.0f;
+            sp_Cvol_Synth_Ramp[i][j] = 0.0f;
+            sp_Cvol_Synth_Ramp_Dest[i][j] = 10.0f;
 
             sp_channelsample[i][j] = -1;
             sp_channelnote[i][j] = 120;
@@ -2499,11 +2518,15 @@ void Post_Song_Init(void)
 #if defined(PTK_INSTRUMENTS)
             sp_Tvol[i][j] = 0.0f;
             sp_Cvol[i][j] = 0.0f;
+            sp_Cvol_Ramp[i][j] = 0.0f;
+            sp_Cvol_Ramp_Dest[i][j] = 10.0f;
 #endif
 
 #if defined(PTK_SYNTH)
             sp_Tvol_Synth[i][j] = 0.0f;
             sp_Cvol_Synth[i][j] = 0.0f;
+            sp_Cvol_Synth_Ramp[i][j] = 0.0f;
+            sp_Cvol_Synth_Ramp_Dest[i][j] = 10.0f;
 #endif
 
 
@@ -2756,6 +2779,10 @@ void Sp_Player(void)
                 {
                     pl_note[i] = *(RawPatterns + efactor + PATTERN_NOTE1 + (i * 2));
                     pl_sample[i] = *(RawPatterns + efactor + PATTERN_INSTR1 + (i * 2));
+                    if(pl_sample[i] != 255)
+                    {
+                        old_pl_sample[ct][i] = pl_sample[i];
+                    }
                 }
 
                 pl_vol_row = *(RawPatterns + efactor + PATTERN_VOLUME);
@@ -3082,9 +3109,17 @@ void Sp_Player(void)
 #endif
 #endif
 
-
             // ------------------------------
             // Pattern movements
+
+#if !defined(__WINAMP__)
+#if !defined(__STAND_ALONE__) 
+            if(play_one_step)
+            {
+                goto No_Check_Loop;
+            }
+#endif
+#endif
 
 #if defined(PTK_FX_PATTERNLOOP)
             // Check if we're in a loop
@@ -3098,6 +3133,11 @@ void Sp_Player(void)
 #endif
             {
 
+#if !defined(__WINAMP__)
+#if !defined(__STAND_ALONE__) 
+No_Check_Loop:
+#endif
+#endif
 
 #if defined(PTK_FX_PATTERNBREAK)
                 if(Patbreak_Line > 127)
@@ -3247,6 +3287,20 @@ void Sp_Player(void)
                     repeat_loop_counter_in = 0;
 #endif
                 }
+
+#if !defined(__WINAMP__)
+#if !defined(__STAND_ALONE__)
+                if(play_one_step)
+                {
+                    Song_Position_Visual = Song_Position;
+                    Pattern_Line_Visual = Pattern_Line;
+                    Song_Playing = FALSE;
+                    gui_action = GUI_CMD_STOP_SONG;
+                    done = TRUE;
+                }
+#endif
+#endif
+
             }
         }
 
@@ -3315,13 +3369,26 @@ void Sp_Player(void)
                 {
 ByPass_Wav:
 #endif
+                    if(sp_Stage[c][i] == PLAYING_SAMPLE_NOTEOFF && sp_Cvol[c][i] <= 0.02f)
+                    {
+                        sp_Stage[c][i] = PLAYING_NOSAMPLE;
+                    }
                     if(Cut_Stage[c][i])
                     {
                         // Volume ramping
                         if(sp_Cvol[c][i] > 0.0f)
                         {
-                            sp_Cvol[c][i] -= 0.01f;
-                            if(sp_Cvol[c][i] < 0.0f) sp_Cvol[c][i] = 0.0f;
+                            if(sp_Cvol_Ramp_Dest[c][i] != 0.0f)
+                            {
+                                sp_Cvol_Ramp[c][i] = (sp_Cvol[c][i] - 0.0f) / 48.0f;
+                                sp_Cvol_Ramp_Dest[c][i] = 0.0f;
+                            }
+                            sp_Cvol[c][i] -= sp_Cvol_Ramp[c][i];
+                            if(sp_Cvol[c][i] <= 0.0f)
+                            {
+                                sp_Cvol[c][i] = 0.0f;
+                                sp_Cvol_Ramp_Dest[c][i] = 10.0f;
+                            }
                         }
                     }
                     else
@@ -3330,24 +3397,49 @@ ByPass_Wav:
                         {
                             // Note Stop
                             sp_Tvol[c][i] = 0.0f;
-                            if(sp_Cvol[c][i] <= 0.0f) sp_Stage[c][i] = PLAYING_NOSAMPLE;
+                            sp_Cvol_Ramp_Dest[c][i] = 10.0f;
                         }
+
                         dest_volume = sp_Tvol[c][i] * sp_Tvol_Mod[c];
                         // Volume ramping
                         if(sp_Cvol[c][i] != dest_volume)
                         {
                             if(sp_Cvol[c][i] > dest_volume)
                             {
-                                sp_Cvol[c][i] -= 0.01f;
-                                if(sp_Cvol[c][i] < dest_volume) sp_Cvol[c][i] = dest_volume;
+                                if(sp_Cvol_Ramp_Dest[c][i] != dest_volume)
+                                {
+                                    sp_Cvol_Ramp[c][i] = (sp_Cvol[c][i] - dest_volume) / 48.0f;
+                                    sp_Cvol_Ramp_Dest[c][i] = dest_volume;
+                                }
+                                sp_Cvol[c][i] -= sp_Cvol_Ramp[c][i];
+                                if(sp_Cvol[c][i] <= dest_volume)
+                                {
+                                    sp_Cvol[c][i] = dest_volume;
+                                    sp_Cvol_Ramp_Dest[c][i] = 10.0f;
+                                }
                             }
                             else
                             {
-                                sp_Cvol[c][i] += 0.01f;
-                                if(sp_Cvol[c][i] > dest_volume) sp_Cvol[c][i] = dest_volume;
+                                if(sp_Cvol_Ramp_Dest[c][i] != dest_volume)
+                                {
+                                    sp_Cvol_Ramp[c][i] = (dest_volume - sp_Cvol[c][i]) / 48.0f;
+                                    sp_Cvol_Ramp_Dest[c][i] = dest_volume;
+                                }
+                                sp_Cvol[c][i] += sp_Cvol_Ramp[c][i];
+                                if(sp_Cvol[c][i] >= dest_volume)
+                                {
+                                    sp_Cvol[c][i] = dest_volume;
+                                    sp_Cvol_Ramp_Dest[c][i] = 10.0f;
+                                }
                             }
-                            if(sp_Cvol[c][i] > 1.0f) sp_Cvol[c][i] = 1.0f;
-                            if(sp_Cvol[c][i] < 0.0f) sp_Cvol[c][i] = 0.0f;
+                            if(sp_Cvol[c][i] > 1.0f)
+                            {
+                                sp_Cvol[c][i] = 1.0f;
+                            }
+                            if(sp_Cvol[c][i] < 0.0f)
+                            {
+                                sp_Cvol[c][i] = 0.0f;
+                            }
                         }
                     }
 
@@ -3468,13 +3560,31 @@ ByPass_Wav:
                Synthesizer[c][i].ENV_2_STAGE ||
                Cut_Stage[c][i])
             {
+                if(Synthesizer[c][i].ENV_1_STAGE == SYNTH_RELEASE && 
+                   Synthesizer[c][i].ENV_2_STAGE == SYNTH_RELEASE && 
+                   sp_Cvol_Synth[c][i] <= 0.02f)
+                {
+                    Synthesizer[c][i].ENV_1_STAGE = PLAYING_NOSAMPLE;
+                    Synthesizer[c][i].ENV_2_STAGE = PLAYING_NOSAMPLE;
+                    sp_Stage[c][i] = PLAYING_NOSAMPLE;
+                    sp_Stage2[c][i] = PLAYING_NOSAMPLE;
+                    sp_Stage3[c][i] = PLAYING_NOSAMPLE;
+                }
                 if(Cut_Stage[c][i])
                 {
                     // Volume ramping
                     if(sp_Cvol_Synth[c][i] > 0.0f)
                     {
-                        sp_Cvol_Synth[c][i] -= 0.01f;
-                        if(sp_Cvol_Synth[c][i] < 0.0f) sp_Cvol_Synth[c][i] = 0.0f;
+                        if(sp_Cvol_Synth_Ramp_Dest[c][i] != 0.0f)
+                        {
+                            sp_Cvol_Synth_Ramp[c][i] = (sp_Cvol_Synth[c][i] - 0.0f) / 48.0f;
+                            sp_Cvol_Synth_Ramp_Dest[c][i] = 0.0f;
+                        }
+                        sp_Cvol_Synth[c][i] -= sp_Cvol_Synth_Ramp[c][i];
+                        if(sp_Cvol_Synth[c][i] < 0.0f)
+                        {
+                            sp_Cvol_Synth[c][i] = 0.0f;
+                        }
                     }
                 }
                 else
@@ -3485,16 +3595,38 @@ ByPass_Wav:
                     {
                         if(sp_Cvol_Synth[c][i] > dest_volume)
                         {
-                            sp_Cvol_Synth[c][i] -= 0.01f;
-                            if(sp_Cvol_Synth[c][i] < dest_volume) sp_Cvol_Synth[c][i] = dest_volume;
+                            if(sp_Cvol_Synth_Ramp_Dest[c][i] != dest_volume)
+                            {
+                                sp_Cvol_Synth_Ramp[c][i] = (sp_Cvol_Synth[c][i] - dest_volume) / 48.0f;
+                                sp_Cvol_Synth_Ramp_Dest[c][i] = dest_volume;
+                            }
+                            sp_Cvol_Synth[c][i] -= sp_Cvol_Synth_Ramp[c][i];
+                            if(sp_Cvol_Synth[c][i] < dest_volume)
+                            {
+                                sp_Cvol_Synth[c][i] = dest_volume;
+                            }
                         }
                         else
                         {
-                            sp_Cvol_Synth[c][i] += 0.01f;
-                            if(sp_Cvol_Synth[c][i] > dest_volume) sp_Cvol_Synth[c][i] = dest_volume;
+                            if(sp_Cvol_Synth_Ramp_Dest[c][i] != dest_volume)
+                            {
+                                sp_Cvol_Synth_Ramp[c][i] = (dest_volume - sp_Cvol_Synth[c][i]) / 48.0f;
+                                sp_Cvol_Synth_Ramp_Dest[c][i] = dest_volume;
+                            }
+                            sp_Cvol_Synth[c][i] += sp_Cvol_Synth_Ramp[c][i];
+                            if(sp_Cvol_Synth[c][i] > dest_volume)
+                            {
+                                sp_Cvol_Synth[c][i] = dest_volume;
+                            }
                         }
-                        if(sp_Cvol_Synth[c][i] > 1.0f) sp_Cvol_Synth[c][i] = 1.0f;
-                        if(sp_Cvol_Synth[c][i] < 0.0f) sp_Cvol_Synth[c][i] = 0.0f;
+                        if(sp_Cvol_Synth[c][i] > 1.0f)
+                        {
+                            sp_Cvol_Synth[c][i] = 1.0f;
+                        }
+                        if(sp_Cvol_Synth[c][i] < 0.0f)
+                        {
+                            sp_Cvol_Synth[c][i] = 0.0f;
+                        }
                     }
                 }
 
@@ -3572,6 +3704,7 @@ ByPass_Wav:
                 if(sp_Stage[c][i] == PLAYING_SAMPLE)
                 {
                     sp_Stage[c][i] = PLAYING_SAMPLE_NOTEOFF;
+                    sp_Cvol_Ramp_Dest[c][i] = 10.0f;
                 }
 #endif
 
@@ -3819,7 +3952,10 @@ ByPass_Wav:
             }
 #endif
             // Duplicate the mono signal if necessary
-            if(!grown) All_Signal_R = All_Signal_L;
+            if(!grown)
+            {
+                All_Signal_R = All_Signal_L;
+            }
 
             // Dry Send
 #if defined(PTK_DISCLAP)
@@ -3926,6 +4062,10 @@ ByPass_Wav:
             All_Signal_R = Do_Equ(&EqDat[c], All_Signal_R, 1);
         }
 #endif
+        if(Track_Surround[c])
+        {
+            All_Signal_R = -All_Signal_R;
+        }
 
         All_Signal_L *= LVol[c];
         All_Signal_R *= RVol[c];
@@ -3963,11 +4103,6 @@ ByPass_Wav:
         All_Signal_L *= Track_Volume[c];
         All_Signal_R *= Track_Volume[c];
 #endif
-
-        if(Track_Surround[c])
-        {
-            All_Signal_R = -All_Signal_R;
-        }
 
         // Store to global signals
         left_float += All_Signal_L;
@@ -4038,18 +4173,26 @@ int Get_Free_Sub_Channel(int channel, int polyphony)
         }
     }
 
-#if defined(PTK_INSTRUMENTS)
     for(i = 0; i < polyphony; i++)
     {
         if(!Cut_Stage[channel][i])
         {
-            if(sp_Stage[channel][i] == PLAYING_SAMPLE_NOTEOFF)
+            if(
+#if defined(PTK_INSTRUMENTS)
+               sp_Stage[channel][i] == PLAYING_SAMPLE_NOTEOFF
+#else
+               TRUE
+#endif
+#if defined(PTK_SYNTH)
+               && sp_Stage2[channel][i] == PLAYING_SAMPLE_NOTEOFF
+               && sp_Stage3[channel][i] == PLAYING_SAMPLE_NOTEOFF
+#endif
+              )
             {
                 return(i);
             }
         }
     }
-#endif
 
     // Take the oldest playing one
     oldest = 0;
@@ -4085,6 +4228,14 @@ void Schedule_Instrument(int channel,
     int Cur_Position = Song_Position;
     if(Chan_Active_State[Cur_Position][channel])
     {
+        if((Channels_MultiNotes[channel] - 1) <= sub_channel)
+        {
+            if(sample == 255)
+            {
+                sample = old_pl_sample[channel][midi_sub_channel - 1];
+            }
+
+        }
         // Nothing is already playing so play it directly
         old_note[channel][sub_channel] = inote;
         Instrument_Schedule_Dat[channel][sub_channel].start_backward = FALSE;
@@ -4103,6 +4254,8 @@ void Schedule_Instrument(int channel,
         Instrument_Schedule_Dat[channel][sub_channel].Play_Selection = Play_Selection;
         Instrument_Schedule_Dat[channel][sub_channel].midi_sub_channel = midi_sub_channel;
         Instrument_Schedule_Dat[channel][sub_channel].age = (Pos << 8) | Row;
+
+        sp_Cvol_Ramp_Dest[channel][sub_channel] = 10.0f;
 
         if(!glide)
         {
@@ -4282,7 +4435,9 @@ void Play_Instrument(int channel, int sub_channel)
 
             // Store the specified volume
             sp_Tvol[channel][sub_channel] = vol;
+            sp_Cvol_Ramp_Dest[channel][sub_channel] = 10.0f;
             sp_Tvol_Synth[channel][sub_channel] = vol_synth;
+            sp_Cvol_Synth_Ramp_Dest[channel][sub_channel] = 10.0f;
 
             double spreadnote = (double) POWF2(note2 / 12.0f);
             spreadnote *= 4294967296.0f;
@@ -5665,7 +5820,10 @@ void Fix_Stereo(int channel)
 // Main mixing routine
 void Get_Player_Values(void)
 {
+#if !defined(__STAND_ALONE__)
     int c;
+#endif
+    
     float left_compress;
     float right_compress;
 
@@ -5807,7 +5965,7 @@ void Get_Player_Values(void)
                                          ) * local_curr_mas_vol
                                          ) * local_curr_ramp_vol;
 
-            Scope_Dats[c][pos_scope] = (Scope_Dats_L[c][pos_scope] + Scope_Dats_R[c][pos_scope]) * 0.5f;
+            Scope_Dats[c][pos_scope] = (Scope_Dats_L[c][pos_scope] + Scope_Dats_R[c][pos_scope]) * 1.2f;
         }
         else
         {
@@ -6099,7 +6257,7 @@ float int_filter2p(int stereo, int ch, float input, float f, float q, float q2)
 {
     q *= 0.0787401f;
     input = filter2px(stereo, ch, input, f, q2);
-    return float(32767.0f * POWF(fabsf(input) / 32767.0f, 1.0f - q / 11.0f));
+    return float(32767.0f * POWF(absf(input) / 32767.0f, 1.0f - q / 11.0f));
 }
 
 float filter2px(int stereo, int ch, float input, float f, float q)

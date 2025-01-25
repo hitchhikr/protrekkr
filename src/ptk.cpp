@@ -123,6 +123,7 @@ char tipoftheday[256];
 char Current_Instrument_Split = 0;
 
 int player_pos = -1;
+int play_one_step = 0;
 int xew = 0;
 char sas = FALSE;
 int flagger = 0;
@@ -1209,7 +1210,12 @@ int Screen_Update(void)
 
         if(gui_action == GUI_CMD_PLAY_SONG)
         {
-            Song_Play();
+            Song_Play(FALSE);
+        }
+
+        if(gui_action == GUI_CMD_PLAY_STEP)
+        {
+            Song_Play(TRUE);
         }
 
         if(gui_action == GUI_CMD_STOP_SONG)
@@ -2690,12 +2696,16 @@ int Get_Free_Wave(void)
 
 // ------------------------------------------------------
 // Start replaying
-void Song_Play(void)
+void Song_Play(int play_step)
 {
     Ptk_Stop();
+    SubCounter = 0;
+    PosInTick = 0;
+    PosInTick_Delay = 0;
     liveparam = 0;
     livevalue = 0;
     player_pos = -1;
+    play_one_step = play_step;
 
     Post_Song_Init();
     Ptk_Play();
@@ -2783,6 +2793,7 @@ void Song_Stop(void)
     // Make sure the visuals stay
     Song_Position = Song_Position_Visual;
     Pattern_Line = Pattern_Line_Visual;
+    play_one_step = 0;
     Actualize_Master(5);
 }
 
@@ -3240,7 +3251,7 @@ void Wav_Renderizer()
             switch(rawrender_target)
             {
                 case RENDER_TO_FILE:
-                    Song_Play();
+                    Song_Play(FALSE);
                     while(Song_Position < Max_Position && done == FALSE)
                     {
                         Get_Player_Values();
@@ -3280,7 +3291,7 @@ void Wav_Renderizer()
                             memset(Sample_Buffer[1], 0, Mem_Buffer_Size * 2);
                         }
                         Pos_In_Memory = 0;
-                        Song_Play();
+                        Song_Play(FALSE);
                         while(Song_Position < Max_Position && done == FALSE)
                         {
                             if(!Mem_Buffer_Size)
@@ -3755,6 +3766,7 @@ void Keyboard_Handler(void)
     int Cur_Position = Get_Song_Position();
     int Done_Value;
     int data;
+    int validating_input = FALSE;
 
     // Exit tracker
     if(Get_LAlt() && Keys[SDLK_F4]) gui_action = GUI_CMD_EXIT;
@@ -4432,11 +4444,13 @@ void Keyboard_Handler(void)
         {
             retletter[39] = TRUE;
             reelletter = TRUE;
+            validating_input = TRUE;
         }
         if(Keys[SDLK_KP_ENTER])
         {
             retletter[39] = TRUE;
             reelletter = TRUE;
+            validating_input = TRUE;
         }
         if(Keys[SDLK_PERIOD])
         {
@@ -4717,6 +4731,16 @@ void Keyboard_Handler(void)
         else
         {
             gui_action = GUI_CMD_EDIT_MODE;
+        }
+    }
+
+    if(!Get_LAlt() && !Get_RAlt() && snamesel == INPUT_NONE && !validating_input)
+    {
+        if(Keys[SDLK_RETURN] || Keys[SDLK_KP_ENTER])
+        {
+            po_ctrl2 = FALSE;
+            plx = 0;
+            gui_action = GUI_CMD_PLAY_STEP;
         }
     }
 
@@ -5086,7 +5110,7 @@ void Keyboard_Handler(void)
                         case PATTERN_FXDATA2:
                         case PATTERN_FXDATA3:
                         case PATTERN_FXDATA4:
-                            data = Get_Column_Data_With_Track(Channels_MultiNotes, Channels_Effects, pSequence[Cur_Position],
+                            data = Get_Column_Data_With_Track(Channels_MultiNotes, Channels_Effects, Cur_Position,
                                                               Track_Under_Caret, Column_Under_Caret - 2, Pattern_Line);
                             if(data == 0)
                             {
@@ -5226,7 +5250,7 @@ Cannot_Modify_Odd:
                                 case PATTERN_FXDATA2:
                                 case PATTERN_FXDATA3:
                                 case PATTERN_FXDATA4:
-                                    data = Get_Column_Data_With_Track(Channels_MultiNotes, Channels_Effects, pSequence[Cur_Position],
+                                    data = Get_Column_Data_With_Track(Channels_MultiNotes, Channels_Effects, Cur_Position,
                                                                       Track_Under_Caret, Column_Under_Caret - 3, Pattern_Line);
                                     if(data == 0)
                                     {
@@ -7227,9 +7251,15 @@ void Draw_Scope(void)
                     // [0..1]
                     pos_in_line = ((float) s) / (float) x_max;
                     data = Scope_Dats[i][offset_scope + (int) (pos_in_line * 128)];
-                    if(data < -1.0f) data = -1.0f;
-                    if(data > 1.0f) data = 1.0f;
-                    int y = 42 + ptrTbl_Dat->y_pos + (int) (data * ptrTbl_Dat->y_large);
+                    if(data < -1.0f)
+                    {
+                        data = -1.0f;
+                    }
+                    if(data > 1.0f)
+                    {
+                        data = 1.0f;
+                    }
+                    int y = 42 + ptrTbl_Dat->y_pos + (int) (data * (ptrTbl_Dat->y_large ));
                     DrawPixel(cur_pos_x, y, pixel_color);
                     cur_pos_x++;
                 }
@@ -7382,7 +7412,7 @@ void Draw_VuMeters(void)
             pos_in_line = ((float) s) / (float) x_max;
 
             data = Scope_Dats_L[i][offset_scope + (int) (pos_in_line * 128)];
-            data = fabsf(data);
+            data = absf(data);
             if(data > 1.0f)
             {
                 data = 1.0f;
@@ -7393,7 +7423,7 @@ void Draw_VuMeters(void)
             }
 
             data = Scope_Dats_R[i][offset_scope + (int) (pos_in_line * 128)];
-            data = fabsf(data);
+            data = absf(data);
             if(data > 1.0f)
             {
                 data = 1.0f;

@@ -2706,7 +2706,7 @@ void Insert_Track(void)
 // Make sure selection doesn't select half a slider (in sliders mode)
 void Sanitize_Sliders_Block(void)
 {
-    /*int panning_data;*/
+    int data;
 
     if(pattern_sliders)
     {
@@ -2715,7 +2715,11 @@ void Sanitize_Sliders_Block(void)
             switch(Get_Column_Type(Channels_MultiNotes, Channels_Effects, block_start_track[Curr_Buff_Block]))
             {
                 case VOLUMELO:
+                    block_start_track[Curr_Buff_Block]--;
+                    break;
                 case PANNINGLO:
+                    block_start_track[Curr_Buff_Block]--;
+                    break;
                 case EFFECTDATLO:
                 case EFFECT2DATLO:
                 case EFFECT3DATLO:
@@ -2726,7 +2730,11 @@ void Sanitize_Sliders_Block(void)
             switch(Get_Column_Type(Channels_MultiNotes, Channels_Effects, block_end_track[Curr_Buff_Block]))
             {
                 case VOLUMEHI:
+                    block_end_track[Curr_Buff_Block]++;
+                    break;
                 case PANNINGHI:
+                    block_end_track[Curr_Buff_Block]++;
+                    break;
                 case EFFECTDATHI:
                 case EFFECT2DATHI:
                 case EFFECT3DATHI:
@@ -2741,19 +2749,31 @@ void Sanitize_Sliders_Block(void)
             switch(type)
             {
                 case VOLUMEHI:
-                    Column_Under_Caret++;
+                    data = Get_Column_Data_With_Track(Channels_MultiNotes, Channels_Effects, Get_Song_Position(),
+                                                      Track_Under_Caret, Column_Under_Caret, Pattern_Line);
+                    if(data <= 0x40 || data == 255)
+                    {
+                        Column_Under_Caret++;
+                    }
                     break;
                 case PANNINGHI:
+                    data = Get_Column_Panning_Data_With_Track(Channels_MultiNotes, Channels_Effects, Get_Song_Position(),
+                                                              Track_Under_Caret, Pattern_Line);
+                    if(data != 0x90)
+                    {
+                        Column_Under_Caret++;
+                    }
+                    break;
                 case EFFECTDATHI:
                 case EFFECT2DATHI:
                 case EFFECT3DATHI:
                 case EFFECT4DATHI:
-                    //panning_data = Get_Column_Panning_Data_With_Track(Channels_MultiNotes, Channels_Effects, Get_Song_Position(),
-                    //                                                  Track_Under_Caret, Pattern_Line);
-                    //if(panning_data != 0x90)
-                    //{
+                    data = Get_Column_Data_With_Track(Channels_MultiNotes, Channels_Effects, Get_Song_Position(),
+                                                      Track_Under_Caret, Column_Under_Caret - 2, Pattern_Line);
+                    if(data != 0)
+                    {
                         Column_Under_Caret++;
-                    //}
+                    }
                     break;
             }
         }

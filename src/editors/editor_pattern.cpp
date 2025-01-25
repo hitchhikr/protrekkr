@@ -844,8 +844,8 @@ Found_Synchro:
                                                        scale_x, sel_col ? col_1: col_2, 0x40, 1);
                     dover += Cur_Char_size[cur_track];
                     if(dover + Cur_Char_size[cur_track] >= MAX_PATT_SCREEN_X) break;
+                    goto Done_Vol_Slider;
                 }
-                goto Done_Vol_Slider;
             }
 
             if(p_c >> 4) Cur_Char_Function[cur_track].Fnc(dover, y, p_c >> 4, cur_color, cur_color + 7);
@@ -1049,7 +1049,7 @@ Done_Vol_Slider:;
                 {
 No_Slider_Effect_Hi:
                     // No effect data lo
-                    if(dover + Cur_Char_size[cur_track] + Cur_Char_size[cur_track] >= MAX_PATT_SCREEN_X)
+                    if(dover + Cur_Char_size[cur_track] >= MAX_PATT_SCREEN_X)
                     {
                         exit_tracks = TRUE;
                         break;
@@ -1095,7 +1095,7 @@ No_Slider_Effect_Hi:
                 {
 No_Slider_Effect_Lo:
 
-                    if(dover + Cur_Char_size[cur_track] + Cur_Char_size[cur_track] >= MAX_PATT_SCREEN_X)
+                    if(dover + Cur_Char_size[cur_track] >= MAX_PATT_SCREEN_X)
                     {
                         exit_tracks = TRUE;
                         break;
@@ -1569,10 +1569,6 @@ Done_Volume_Sliders:
                                                            chars_height, Cur_Char_size[cur_track],
                                                            scale_x, sel_col ? col_1: col_2, 0x80, 2);
 
-                        /*Cur_Slider_Function[cur_track].Fnc_Pan(x_pos, ypos, p_d | p_dh, sel_col ? col_2: col_1,
-                                                           chars_height, Cur_Char_size[cur_track],
-                                                           scale_x, sel_col ? col_1: col_2, 0x80, 2);*/
-                
                         ++cur_column;
                     }
                     else
@@ -4091,7 +4087,7 @@ void Goto_Next_Page(int Remove_Sel)
 // Move one column on the left
 void Goto_Previous_Column(void)
 {
-    /*int panning_data;*/
+    int data;
 
     Select_Block_Keyboard(BLOCK_MARK_TRACKS);
     if(pattern_sliders)
@@ -4100,19 +4096,31 @@ void Goto_Previous_Column(void)
         switch(type)
         {
             case VOLUMELO:
-                Column_Under_Caret--;
+                data = Get_Column_Data_With_Track(Channels_MultiNotes, Channels_Effects, Get_Song_Position(),
+                                                  Track_Under_Caret, Column_Under_Caret - 1, Pattern_Line);
+                if(data <= 0x40 || data == 255)
+                {
+                    Column_Under_Caret--;
+                }
                 break;
             case PANNINGLO:
+                data = Get_Column_Panning_Data_With_Track(Channels_MultiNotes, Channels_Effects, Get_Song_Position(),
+                                                          Track_Under_Caret, Pattern_Line);
+                if(data != 0x90)
+                {
+                    Column_Under_Caret--;
+                }
+                break;
             case EFFECTDATLO:
             case EFFECT2DATLO:
             case EFFECT3DATLO:
             case EFFECT4DATLO:
-                /*panning_data = Get_Column_Panning_Data_With_Track(Channels_MultiNotes, Channels_Effects, Get_Song_Position(),
-                                                                  Track_Under_Caret, Pattern_Line);
-                if(panning_data != 0x90)
-                {*/
+                data = Get_Column_Data_With_Track(Channels_MultiNotes, Channels_Effects, Get_Song_Position(),
+                                                  Track_Under_Caret, Column_Under_Caret - 3, Pattern_Line);
+                if(data != 0)
+                {
                     Column_Under_Caret--;
-                //}
+                }
                 break;
         }
     }
@@ -4126,7 +4134,7 @@ void Goto_Previous_Column(void)
 // Move one column on the right
 void Goto_Next_Column(void)
 {
-    /*int panning_data;*/
+    int data;
 
     Select_Block_Keyboard(BLOCK_MARK_TRACKS);
     Column_Under_Caret++;
@@ -4136,22 +4144,35 @@ void Goto_Next_Column(void)
         switch(type)
         {
             case VOLUMEHI:
-                Column_Under_Caret++;
+                data = Get_Column_Data_With_Track(Channels_MultiNotes, Channels_Effects, Get_Song_Position(),
+                                                  Track_Under_Caret, Column_Under_Caret, Pattern_Line);
+                if(data <= 0x40 || data == 255)
+                {
+                    Column_Under_Caret++;
+                }
                 break;
             case PANNINGHI:
+                data = Get_Column_Panning_Data_With_Track(Channels_MultiNotes, Channels_Effects, Get_Song_Position(),
+                                                          Track_Under_Caret, Pattern_Line);
+                if(data != 0x90)
+                {
+                    Column_Under_Caret++;
+                }
+                break;
             case EFFECTDATHI:
             case EFFECT2DATHI:
             case EFFECT3DATHI:
             case EFFECT4DATHI:
-                /*panning_data = Get_Column_Panning_Data_With_Track(Channels_MultiNotes, Channels_Effects, Get_Song_Position(),
-                                                                  Track_Under_Caret, Pattern_Line);
-                if(panning_data != 0x90)
-                {*/
+                data = Get_Column_Data_With_Track(Channels_MultiNotes, Channels_Effects, Get_Song_Position(),
+                                                  Track_Under_Caret, Column_Under_Caret - 2, Pattern_Line);
+                if(data != 0)
+                {
                     Column_Under_Caret++;
-                //}
+                }
                 break;
         }
     }
+    Sanitize_Sliders_Block();
     Update_Pattern(0);
     Select_Block_Keyboard(BLOCK_MARK_TRACKS);
     gui_action = GUI_CMD_SET_FOCUS_TRACK;
@@ -4170,7 +4191,12 @@ void Goto_Top_Left(void)
     {
         Column_Under_Caret = 0;
         Track_Under_Caret = 0;
+        if(Get_LAlt())
+        {
+            Pattern_Line = 0;
+        }
     }
+    Sanitize_Sliders_Block();
     Update_Pattern(0);
     Select_Block_Keyboard(BLOCK_MARK_ROWS | BLOCK_MARK_TRACKS);
     gui_action = GUI_CMD_SET_FOCUS_TRACK;
@@ -4189,6 +4215,10 @@ void Goto_Bottom_Right(void)
     {
         Column_Under_Caret = 0;
         Track_Under_Caret = Song_Tracks - 1;
+        if(Get_LAlt())
+        {
+            Pattern_Line = patternLines[pSequence[Get_Song_Position()]] - 1;
+        }
     }
     Update_Pattern(0);
     gui_action = GUI_CMD_SET_FOCUS_TRACK;
