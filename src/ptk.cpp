@@ -4813,7 +4813,10 @@ void Keyboard_Handler(void)
             if(Enter_Notified)
             {
                 Enter_Notified = FALSE;
-                gui_action = GUI_CMD_STOP_SONG;
+                is_recording = 0;
+                is_recording_2 = 0;
+                Nbr_Sub_NoteOff = 0;
+                Song_Stop();
             }
         }
     }
