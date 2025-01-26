@@ -206,8 +206,6 @@
 #define GUI_CMD_INSERT_TRACK 156
 #define GUI_CMD_DELETE_TRACK 157
 
-#define GUI_CMD_PLAY_STEP 158
-
 #define GUI_CMD_RENDER_WAV 169
 
 #define GUI_CMD_REDUCE_POSITIONS_10 170
@@ -542,7 +540,7 @@ void guiDial2(const char *str);
 void out_decchar(int x, int y, int number, char smith);
 
 void out_nibble(int x, int y, int color, int number);
-void Song_Play(int play_step);
+void Song_Play();
 void Song_Stop(void);
 void Free_Samples(void);
 void Draw_Pattern(int track, int line, int petrack, int row);

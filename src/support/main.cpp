@@ -153,8 +153,12 @@ char Last_Used_Ptk[MAX_PATH];
 
 SDL_Event Events[MAX_EVENTS];
 
+extern int Enter_Notification;
+extern int Enter_Notified;
+extern int Enter_Notified_Play_Pattern;
 extern int RShift_Notification;
 extern int RShift_Notified;
+
 int Nbr_Keyboards;
 int Keyboard_Idx;
 char Keyboard_Labels[256][256];
@@ -792,6 +796,20 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
                                     }
                                 }
                             }
+
+                            if((Keys[SDLK_RETURN] || Keys[SDLK_KP_ENTER]) && Enter_Notification == FALSE &&
+                                !Get_LAlt() && !Get_RAlt()
+                               )
+                            {
+                                Enter_Notification = TRUE;
+                                Enter_Notified = TRUE;
+                                Enter_Notified_Play_Pattern = TRUE;
+                                if(Get_LShift())
+                                {
+                                    Enter_Notified_Play_Pattern = FALSE;
+                                }
+                            }
+
                             RShift_Notification = FALSE;
                             if(Get_RShift())
                             {
@@ -852,6 +870,16 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
                                 }
                             }
                         }
+                        
+                        if(Keys[SDLK_RETURN] || Keys[SDLK_KP_ENTER] || Get_LAlt() || Get_RAlt())
+                        {
+                        }
+                        else
+                        {
+                            Enter_Notification = FALSE;
+                            Enter_Notified = TRUE;
+                        }
+                            
                         if(Get_RShift())
                         {
                             RShift_Notification = TRUE;

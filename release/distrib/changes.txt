@@ -2,6 +2,12 @@
 ProTrekkr releases history
 ===============================================================================
 
+v2.8.0 PRE 2
+
+- Changed the behaviour of the single step mode, plays only stops when
+  enter (or return) key is depressed and only the current pattern is played
+  (press Left Shift to go into song mode).
+
 v2.8.0 PRE 1
 
 - Sample "Maximize" (Max) is now called "Normalize" (Norm) in samples editor.
@@ -18,7 +24,7 @@ v2.8.0 PRE 1
 - Improved the volume ramping.
 - Added LCTRL + LALT + HOME / END keyboard shortcuts (jump to top/first track
   or bottom/last track of a pattern).
-- Added Enter or Return keys for Single step play.
+- Added Enter or Return keys for single step play.
 - Fixed channels multi polyphony allocations.
 - Fixed the fullscreen mode switching under AROS.
 - Added an OpenGL executable in AROS distribution (ptk_aros_ogl)

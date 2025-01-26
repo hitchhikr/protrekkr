@@ -72,6 +72,9 @@ extern int pattern_sliders;
 extern int pattern_sliders_numbers;
 extern int RShift_Notification;
 extern int RShift_Notified;
+int Enter_Notification;
+int Enter_Notified;
+int Enter_Notified_Play_Pattern;
 
 #if defined(PTK_SHUFFLE)
 extern int shufflestep;
@@ -123,7 +126,6 @@ char tipoftheday[256];
 char Current_Instrument_Split = 0;
 
 int player_pos = -1;
-int play_one_step = 0;
 int xew = 0;
 char sas = FALSE;
 int flagger = 0;
@@ -1210,12 +1212,7 @@ int Screen_Update(void)
 
         if(gui_action == GUI_CMD_PLAY_SONG)
         {
-            Song_Play(FALSE);
-        }
-
-        if(gui_action == GUI_CMD_PLAY_STEP)
-        {
-            Song_Play(TRUE);
+            Song_Play();
         }
 
         if(gui_action == GUI_CMD_STOP_SONG)
@@ -2696,7 +2693,7 @@ int Get_Free_Wave(void)
 
 // ------------------------------------------------------
 // Start replaying
-void Song_Play(int play_step)
+void Song_Play(void)
 {
     Ptk_Stop();
     SubCounter = 0;
@@ -2705,7 +2702,6 @@ void Song_Play(int play_step)
     liveparam = 0;
     livevalue = 0;
     player_pos = -1;
-    play_one_step = play_step;
 
     Post_Song_Init();
     Ptk_Play();
@@ -2760,7 +2756,7 @@ void Notify_Play(void)
 {
     if(Song_Playing)
     {
-        if(plx == 0)
+        if(!plx)
         {
             Gui_Draw_Button_Box(49, 28, 39, 16, "\253", BUTTON_NORMAL | BUTTON_RIGHT_MOUSE | BUTTON_TEXT_CENTERED);
             Gui_Draw_Button_Box(8, 28, 39, 16, "\04", BUTTON_PUSHED | BUTTON_RIGHT_MOUSE | BUTTON_TEXT_CENTERED);
@@ -2793,7 +2789,6 @@ void Song_Stop(void)
     // Make sure the visuals stay
     Song_Position = Song_Position_Visual;
     Pattern_Line = Pattern_Line_Visual;
-    play_one_step = 0;
     Actualize_Master(5);
 }
 
@@ -3128,7 +3123,7 @@ int Must_Render_Track(int Idx)
 
 void Wav_Renderizer()
 {
-    plx = 0;
+    plx = FALSE;
     char buffer[MAX_PATH];
     char buffer_name[MAX_PATH];
     int Save_Chan_Mute_State[MAX_TRACKS];
@@ -3251,7 +3246,7 @@ void Wav_Renderizer()
             switch(rawrender_target)
             {
                 case RENDER_TO_FILE:
-                    Song_Play(FALSE);
+                    Song_Play();
                     while(Song_Position < Max_Position && done == FALSE)
                     {
                         Get_Player_Values();
@@ -3291,7 +3286,7 @@ void Wav_Renderizer()
                             memset(Sample_Buffer[1], 0, Mem_Buffer_Size * 2);
                         }
                         Pos_In_Memory = 0;
-                        Song_Play(FALSE);
+                        Song_Play();
                         while(Song_Position < Max_Position && done == FALSE)
                         {
                             if(!Mem_Buffer_Size)
@@ -4734,24 +4729,43 @@ void Keyboard_Handler(void)
         }
     }
 
-    if(!Get_LAlt() && !Get_RAlt() && snamesel == INPUT_NONE && !validating_input)
+    if(!Get_LAlt() && !Get_RAlt() && snamesel == INPUT_NONE && !validating_input && !is_recording)
     {
-        if(Keys[SDLK_RETURN] || Keys[SDLK_KP_ENTER])
+        if(Enter_Notification)
         {
-            po_ctrl2 = FALSE;
-            plx = 0;
-            gui_action = GUI_CMD_PLAY_STEP;
+            if(Enter_Notified)
+            {
+                po_ctrl2 = FALSE;
+                Enter_Notified = FALSE;
+                plx = FALSE;
+                if(Enter_Notified_Play_Pattern)
+                {
+                    plx = TRUE;
+                }
+                gui_action = GUI_CMD_PLAY_SONG;
+            }
+        }
+        else
+        {
+            if(Enter_Notified)
+            {
+                Enter_Notified = FALSE;
+                gui_action = GUI_CMD_STOP_SONG;
+            }
         }
     }
 
-    if(pos_space == 0 && !Keys[SDLK_SPACE]) pos_space = 1;
+    if(pos_space == 0 && !Keys[SDLK_SPACE])
+    {
+        pos_space = 1;
+    }
 
     if(!is_recording)
     {
         // Play song
         if(Keys[SDLK_RCTRL] && snamesel == INPUT_NONE && po_ctrl2)
         {
-            plx = 0;
+            plx = FALSE;
             po_ctrl2 = FALSE;
             if(!Get_LShift()) Pattern_Line = 0;
             gui_action = GUI_CMD_PLAY_SONG;
@@ -4760,7 +4774,7 @@ void Keyboard_Handler(void)
 
         if(Keys[SDLK_RALT] && snamesel == INPUT_NONE && po_alt2)
         {
-            plx = 1;
+            plx = TRUE;
             po_alt2 = FALSE;
             if(!Get_LShift()) Pattern_Line = 0;
             gui_action = GUI_CMD_PLAY_SONG;
@@ -5999,14 +6013,14 @@ void Mouse_Handler(void)
         // Play song from top
         if(Check_Mouse(8, 28, 39, 16))
         {
-            plx = 0;
+            plx = FALSE;
             Pattern_Line = 0;
             gui_action = GUI_CMD_PLAY_SONG;
         }
         // Play pattern from top
         if(Check_Mouse(49, 28, 39, 16))
         {
-            plx = 1;
+            plx = TRUE;
             Pattern_Line = 0;
             gui_action = GUI_CMD_PLAY_SONG;
         }
@@ -6419,13 +6433,13 @@ void Mouse_Handler(void)
         // Play song from current position
         if(Check_Mouse(8, 28, 39, 16))
         {
-            plx = 0;
+            plx = FALSE;
             gui_action = GUI_CMD_PLAY_SONG;
         }
         // Play pattern from current position
         if(Check_Mouse(49, 28, 39, 16))
         {
-            plx = 1;
+            plx = TRUE;
             gui_action = GUI_CMD_PLAY_SONG;
         }
 
