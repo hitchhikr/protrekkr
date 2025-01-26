@@ -7920,7 +7920,7 @@ void Display_Patterns_Sliders_Status(void)
 // The status of the right shift key in edit mode
 void Display_RShift_Status(void)
 {
-    if(is_editing)
+    if(is_editing && pattern_sliders)
     {
         if(RShift_Notification)
         {

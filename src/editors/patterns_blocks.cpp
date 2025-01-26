@@ -1446,7 +1446,8 @@ void Fill_Block(int Position, int step)
 // Reset the transposition instruments survery block
 void Reset_Transpose_Block(void)
 {
-    memset(Transpose_Block, 0, sizeof(Transpose_Block));
+    // Not sample as start
+    memset(Transpose_Block, 255, sizeof(Transpose_Block));
 }
 
 // ------------------------------------------------------
@@ -1593,6 +1594,7 @@ void Instrument_Semitone_Up_Sel(int Position, SELECTION Sel, int Amount, int Ins
     int xbc;
     int note;
     int instrument;
+    int track;
     int max_columns = Get_Max_Nibble_All_Tracks();
 
     for(ybc = Sel.y_start; ybc <= Sel.y_end; ybc++)
@@ -1605,7 +1607,17 @@ void Instrument_Semitone_Up_Sel(int Position, SELECTION Sel, int Amount, int Ins
                 {
                     instrument = Read_Pattern_Column(Position, xbc + 1, ybc);
                     instrument |= Read_Pattern_Column(Position, xbc + 2, ybc);
-                    //Transpose_Block[
+                    track = Get_Track_From_Nibble(Channels_MultiNotes, Channels_Effects, xbc);
+                    if(instrument != 255)
+                    {
+                        // Store the current sample used for this track and nibble;
+                        Transpose_Block[track][Get_Max_Nibble_Track_From_Nibble(Channels_MultiNotes, Channels_Effects, xbc)] = instrument;
+                    }
+                    else
+                    {
+                        // Restore the current sample used for this track and nibble
+                        instrument = Transpose_Block[track][Get_Max_Nibble_Track_From_Nibble(Channels_MultiNotes, Channels_Effects, xbc)];
+                    }
                     if(instrument == Instr)
                     {
                         note = Read_Pattern_Column(Position, xbc, ybc);
@@ -1638,6 +1650,7 @@ void Instrument_Semitone_Down_Sel(int Position, SELECTION Sel, int Amount, int I
     int xbc;
     int note;
     int instrument;
+    int track;
     int max_columns = Get_Max_Nibble_All_Tracks();
 
     for(ybc = Sel.y_start; ybc <= Sel.y_end; ybc++)
@@ -1650,6 +1663,17 @@ void Instrument_Semitone_Down_Sel(int Position, SELECTION Sel, int Amount, int I
                 {
                     instrument = Read_Pattern_Column(Position, xbc + 1, ybc);
                     instrument |= Read_Pattern_Column(Position, xbc + 2, ybc);
+                    track = Get_Track_From_Nibble(Channels_MultiNotes, Channels_Effects, xbc);
+                    if(instrument != 255)
+                    {
+                        // Store the current sample used for this track and nibble;
+                        Transpose_Block[track][Get_Max_Nibble_Track_From_Nibble(Channels_MultiNotes, Channels_Effects, xbc)] = instrument;
+                    }
+                    else
+                    {
+                        // Restore the current sample used for this track and nibble
+                        instrument = Transpose_Block[track][Get_Max_Nibble_Track_From_Nibble(Channels_MultiNotes, Channels_Effects, xbc)];
+                    }
                     if(instrument == Instr)
                     {
                         note = Read_Pattern_Column(Position, xbc, ybc);
@@ -1674,6 +1698,7 @@ void Instrument_Octave_Up_Block(int Position)
     int xbc;
     int note;
     int instrument;
+    int track;
     int max_columns = Get_Max_Nibble_All_Tracks();
 
     SELECTION Sel = Get_Real_Selection(TRUE);
@@ -1687,6 +1712,17 @@ void Instrument_Octave_Up_Block(int Position)
                 {
                     instrument = Read_Pattern_Column(Position, xbc + 1, ybc);
                     instrument |= Read_Pattern_Column(Position, xbc + 2, ybc);
+                    track = Get_Track_From_Nibble(Channels_MultiNotes, Channels_Effects, xbc);
+                    if(instrument != 255)
+                    {
+                        // Store the current sample used for this track and nibble;
+                        Transpose_Block[track][Get_Max_Nibble_Track_From_Nibble(Channels_MultiNotes, Channels_Effects, xbc)] = instrument;
+                    }
+                    else
+                    {
+                        // Restore the current sample used for this track and nibble
+                        instrument = Transpose_Block[track][Get_Max_Nibble_Track_From_Nibble(Channels_MultiNotes, Channels_Effects, xbc)];
+                    }
                     if(instrument == Current_Instrument)
                     {
                         note = Read_Pattern_Column(Position, xbc, ybc);
@@ -1712,6 +1748,7 @@ void Instrument_Octave_Down_Block(int Position)
     int xbc;
     int note;
     int instrument;
+    int track;
     int max_columns = Get_Max_Nibble_All_Tracks();
 
     SELECTION Sel = Get_Real_Selection(TRUE);
@@ -1725,6 +1762,17 @@ void Instrument_Octave_Down_Block(int Position)
                 {
                     instrument = Read_Pattern_Column(Position, xbc + 1, ybc);
                     instrument |= Read_Pattern_Column(Position, xbc + 2, ybc);
+                    track = Get_Track_From_Nibble(Channels_MultiNotes, Channels_Effects, xbc);
+                    if(instrument != 255)
+                    {
+                        // Store the current sample used for this track and nibble;
+                        Transpose_Block[track][Get_Max_Nibble_Track_From_Nibble(Channels_MultiNotes, Channels_Effects, xbc)] = instrument;
+                    }
+                    else
+                    {
+                        // Restore the current sample used for this track and nibble
+                        instrument = Transpose_Block[track][Get_Max_Nibble_Track_From_Nibble(Channels_MultiNotes, Channels_Effects, xbc)];
+                    }
                     if(instrument == Current_Instrument)
                     {
                         note = Read_Pattern_Column(Position, xbc, ybc);
@@ -2477,7 +2525,7 @@ int Get_Track_Relative_Column(char *Buffer_MultiNotes, char *Buffer_Effects, int
 }
 
 // ------------------------------------------------------
-// Return the number of nibbles in a track
+// Return the number of nibbles of all tracks
 int Get_Max_Nibble_All_Tracks(void)
 {
     int i;

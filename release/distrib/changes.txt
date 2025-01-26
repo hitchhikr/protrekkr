@@ -8,6 +8,9 @@ v2.8.0 PRE 2
   enter (or return) key is depressed and only the current pattern is played
   (press Left Shift to go into song mode).
 - Added a function to transpose a range of instruments.
+- Patterns modifications functions are only active when edition mode is on.
+- Transposition functions now keep track of last used instruments to be able
+  to transpose relevant notes used without instruments.
 
 v2.8.0 PRE 1
 
