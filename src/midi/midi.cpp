@@ -137,10 +137,10 @@ void Midi_CallBackIn(double deltatime,
             is_editing = TRUE;
             L_MaxLevel = 0;
             R_MaxLevel = 0;
-            Switch_Cmd_Playing(FALSE);
             Pattern_Line_Visual = Pattern_Line;
             key_record_first_time = FALSE;
             old_key_Pattern_Line = Pattern_Line_Visual;
+            Notify_Edit();
             Clear_Midi_Channels_Pool();
             player_pos = -1;
             metronome_rows_counter = 0;

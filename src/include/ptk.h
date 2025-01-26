@@ -163,5 +163,7 @@ void Set_Font_Normal(void);
 void Set_Font_Double(void);
 void Display_Patterns_Sizes_Status(void);
 void Display_Patterns_Sliders_Status(void);
+int Get_Nbr_Synths(void);
+int Get_Instrs_Data(int *samp_size);
 
 #endif

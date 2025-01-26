@@ -64,6 +64,8 @@ char Buff_MultiNotes[NBR_COPY_BLOCKS][MAX_TRACKS];
 char Buff_Effects[NBR_COPY_BLOCKS][MAX_TRACKS];
 int Curr_Buff_Block;
 
+char Transpose_Block[MAX_TRACKS][MAX_POLYPHONY];
+
 // What values from a block can be pasted where
 COLUMN_TYPE table_compatibilities[] =
 {
@@ -1029,7 +1031,10 @@ Stop_Col:
 void Cut_Selection(int Position)
 {
     Copy_Selection_To_Buffer(Position);
-    if(is_editing) Delete_Selection(Position);
+    if(can_modify_song)
+    {
+        Delete_Selection(Position);
+    }
     Calc_selection();
     Unselect_Selection();
     Update_Pattern(0);
@@ -1438,6 +1443,13 @@ void Fill_Block(int Position, int step)
 }
 
 // ------------------------------------------------------
+// Reset the transposition instruments survery block
+void Reset_Transpose_Block(void)
+{
+    memset(Transpose_Block, 0, sizeof(Transpose_Block));
+}
+
+// ------------------------------------------------------
 // Transpose a block to 1 semitone higher
 void Semitone_Up_Block(int Position)
 {
@@ -1593,6 +1605,7 @@ void Instrument_Semitone_Up_Sel(int Position, SELECTION Sel, int Amount, int Ins
                 {
                     instrument = Read_Pattern_Column(Position, xbc + 1, ybc);
                     instrument |= Read_Pattern_Column(Position, xbc + 2, ybc);
+                    //Transpose_Block[
                     if(instrument == Instr)
                     {
                         note = Read_Pattern_Column(Position, xbc, ybc);
@@ -1730,7 +1743,7 @@ void Instrument_Octave_Down_Block(int Position)
 }
 
 // ------------------------------------------------------
-// Remap an instrument
+// Remap or swap an instrument
 void Instrument_Remap_Sel(int Position, SELECTION Sel, int From, int To, int Swap)
 {
     int ybc;
@@ -1869,7 +1882,6 @@ void Instrument_Remap_Sel(int Position, SELECTION Sel, int From, int To, int Swa
             }
         }
     }
-    Update_Pattern(0);
 }
 
 // ------------------------------------------------------

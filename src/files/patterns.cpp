@@ -117,7 +117,7 @@ void Load_Pattern(char *FileName)
     FILE *in;
     int version = 0;
 
-    if(!is_editing)
+    if(!can_modify_song)
     {
         Status_Box("Edit Mode Isn't Turned On.");
         return;

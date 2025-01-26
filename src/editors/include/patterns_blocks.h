@@ -161,5 +161,6 @@ void Insert_Track(void);
 void Reset_Track(int Position, int Track);
 void Sanitize_Sliders_Block(void);
 void Set_Slider_Value(int delta);
+void Reset_Transpose_Block(void);
 
 #endif

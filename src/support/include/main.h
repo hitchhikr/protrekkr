@@ -99,5 +99,6 @@ int Get_LAlt(void);
 int Get_RAlt(void);
 int Get_LCtrl(void);
 int Get_RCtrl(void);
+int Redraw_Screen(void);
 
 #endif

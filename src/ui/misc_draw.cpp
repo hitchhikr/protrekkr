@@ -1917,6 +1917,7 @@ void bjbox(int x, int y, int sx, int sy)
 void Status_Box(char const *str)
 {
     Gui_Draw_Button_Box(0, CONSOLE_HEIGHT - 21, fsize, 18, str, BUTTON_NORMAL | BUTTON_DISABLED);
+//    Redraw_Screen();
 }
       
 // ------------------------------------------------------

@@ -2031,7 +2031,7 @@ void Update_Pattern(int modac)
     // !!! TO CHECK !!!!
     if(is_editing > 1)
     {
-        is_editing = 0;
+        is_editing = FALSE;
         Notify_Edit();
     }
 
@@ -3664,7 +3664,7 @@ void Mouse_Sliders_Pattern_Ed(void)
         }
         else
         {
-            if(pattern_sliders && is_editing)
+            if(pattern_sliders && can_modify_song)
             {
                 Set_Slider_Value_By_Mouse(track, column, column_x_coords, line_number);
             }
@@ -3701,7 +3701,7 @@ void Mouse_Left_Pattern_Ed(void)
         }
         else
         {
-            if(pattern_sliders && is_editing)
+            if(pattern_sliders && can_modify_song)
             {
                 Set_Slider_Value_By_Mouse(track, column, column_x_coords, line_number);
             }
@@ -3779,7 +3779,7 @@ void Mouse_Left_Pattern_Ed(void)
     tracks = Get_Visible_Partial_Tracks();
     for(i = gui_track; i < gui_track + tracks; i++)
     {
-        if(Check_Mouse(start_mute_check_x + Cur_Char_size[i], 184 - 1, 28, chars_height))
+        if(Check_Mouse(start_mute_check_x + Cur_Char_size[i], 184 - 1, 28, chars_height) && can_modify_song)
         {
             int Cur_Position = Get_Song_Position();
             int tmp_track = Get_Track_Over_Mouse(Mouse.x, NULL, FALSE);

@@ -798,7 +798,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
                             }
 
                             if((Keys[SDLK_RETURN] || Keys[SDLK_KP_ENTER]) && Enter_Notification == FALSE &&
-                                !Get_LAlt() && !Get_RAlt()
+                                !Get_LAlt() && !Get_RAlt() && !Get_LCtrl() && !Get_RCtrl()
                                )
                             {
                                 Enter_Notification = TRUE;
@@ -826,7 +826,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
 
                     if(SDL_GetModState() & KMOD_LALT)
                     {
-                        if(Keys[SDLK_RETURN])
+                        if(Keys[SDLK_RETURN] && !Get_LCtrl() && !Get_RCtrl())
                         {
                             FullScreen ^= TRUE;
                             Switch_FullScreen(Cur_Width, Cur_Height, TRUE, FullScreen ? FALSE : TRUE);
@@ -871,13 +871,16 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
                             }
                         }
                         
-                        if(Keys[SDLK_RETURN] || Keys[SDLK_KP_ENTER] || Get_LAlt() || Get_RAlt())
+                        if(Keys[SDLK_RETURN] || Keys[SDLK_KP_ENTER] || Get_LAlt() || Get_RAlt() || Get_LCtrl() || Get_RCtrl())
                         {
                         }
                         else
                         {
-                            Enter_Notification = FALSE;
-                            Enter_Notified = TRUE;
+                            if(Enter_Notification)
+                            {
+                                Enter_Notification = FALSE;
+                                Enter_Notified = TRUE;
+                            }
                         }
                             
                         if(Get_RShift())
@@ -1017,48 +1020,10 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
             do_resize = FALSE;
         }
 
-#if defined(__USE_OPENGL__)
-        Enter_2D_Mode(Cur_Width, Cur_Height);
-#endif
-
-        if(!Screen_Update())
+        if(!Redraw_Screen())
         {
             break;
         }
-
-#if !defined(__USE_OPENGL__)
-        // Flush all pending blits
-        if(Nbr_Update_Rects)
-        {
-           SDL_UpdateRects(Main_Screen, Nbr_Update_Rects, Update_Stack);
-        }
-        Nbr_Update_Rects = 0;
-#endif
-
-        // Display the title requester once
-        if(!Burn_Title && SplashScreen)
-        {
-            Display_Requester(&Title_Requester, GUI_CMD_REFRESH_PALETTE, NULL, TRUE);
-            Burn_Title = TRUE;
-        }
-        if(!Burn_Title && !SplashScreen)
-        {
-            Burn_Title = TRUE;
-            Kill_Requester();
-        }
-
-#if defined(__USE_OPENGL__)
-        Leave_2d_Mode();
-#if !defined(__WIN32__) && !defined(__AROS__)
-        glDrawBuffer(GL_FRONT);
-        glRasterPos2f(-1.0f, -1.0f);
-        glCopyPixels(0, 0, Cur_Width, Cur_Height, GL_COLOR);
-        glDrawBuffer(GL_BACK);
-        glFinish();
-#else
-        SDL_GL_SwapBuffers();
-#endif
-#endif
 
 #if defined(__AMIGAOS4__) || defined(__AROS__) || defined(__MORPHOS__)
         SDL_Delay(delay_ms);
@@ -1090,6 +1055,59 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
 void Message_Error(char *Message)
 {
     printf("Error: %s\n", Message);
+}
+
+// ------------------------------------------------------
+// Redraw the screen
+int Redraw_Screen(void)
+{
+
+#if defined(__USE_OPENGL__)
+        Enter_2D_Mode(Cur_Width, Cur_Height);
+#endif
+
+        if(!Screen_Update())
+        {
+            return FALSE;
+        }
+
+#if !defined(__USE_OPENGL__)
+        // Flush all pending blits
+        if(Nbr_Update_Rects)
+        {
+           SDL_UpdateRects(Main_Screen, Nbr_Update_Rects, Update_Stack);
+        }
+        Nbr_Update_Rects = 0;
+#endif
+
+        // Display the title requester once
+        if(!Burn_Title && SplashScreen)
+        {
+            Display_Requester(&Title_Requester, GUI_CMD_REFRESH_PALETTE, NULL, TRUE);
+            Burn_Title = TRUE;
+        }
+        if(!Burn_Title && !SplashScreen)
+        {
+            Burn_Title = TRUE;
+            Kill_Requester();
+        }
+
+#if defined(__USE_OPENGL__)
+        Leave_2d_Mode();
+
+#if !defined(__WIN32__) && !defined(__AROS__)
+        glDrawBuffer(GL_FRONT);
+        glRasterPos2f(-1.0f, -1.0f);
+        glCopyPixels(0, 0, Cur_Width, Cur_Height, GL_COLOR);
+        glDrawBuffer(GL_BACK);
+        glFinish();
+#else
+        SDL_GL_SwapBuffers();
+#endif
+
+#endif
+
+    return TRUE;
 }
 
 // ------------------------------------------------------
