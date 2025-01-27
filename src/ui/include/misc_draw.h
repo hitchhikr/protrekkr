@@ -224,6 +224,7 @@ void Gui_Draw_Arrows_Number_Box2(int x, int y, int val, int flags);
 void value_box4(int x, int y, int val);
 void value_box3(int x, int y, char val, int flags);
 void Print_Long(int x, int y, int cant, int mode);
+void Print_Long_Tiny(int x, int y, int cant, int mode, int size_x, int size_y, int flags);
 void Print_Long_Small(int x, int y, int cant, int mode, int size, int flags);
 void outfloat(int x, int y, float cant, int mode);
 void outfloat_small(int x, int y, float cant, int mode, int size, int flags);
@@ -239,6 +240,7 @@ void Status_Box(char const *str);
 
 void Real_Slider(int x, int y, int val, int Enabled);
 void Real_Slider_Size(int x, int y, int size, int val, int Enabled);
+void Real_Slider_Tiny(int x, int y, int size_x, int size_y, int val, int Enabled);
 void Real_Slider_2(int x, int y, int val, int Enabled);
 int Slider_Get_Center(unsigned int Size, unsigned int Maximum, int Pixels);
 void Real_Slider_Horiz(int x, int y, int value, int displayed, int maximum, int size, int enable);

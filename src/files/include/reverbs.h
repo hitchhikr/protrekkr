@@ -37,7 +37,9 @@
 #include "files.h"
 #include "files_list.h"
 #include "../../editors/include/editor_reverb.h"
+#if !defined(BZR2)
 #include "../../ui/include/misc_draw.h"
+#endif
 
 // ------------------------------------------------------
 // Functions

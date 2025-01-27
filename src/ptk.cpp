@@ -2403,7 +2403,8 @@ void Load_File(int Freeindex, const char *str)
                 strcmp(extension, "PROTREKP") == 0 ||
                 strcmp(extension, "PROTREKQ") == 0 ||
                 strcmp(extension, "PROTREKR") == 0 ||
-                strcmp(extension, "PROTREKS") == 0)
+                strcmp(extension, "PROTREKS") == 0 ||
+                strcmp(extension, "PROTREKT") == 0)
         {
             sprintf(name, "%s", FileName);
             Song_Stop();
@@ -2787,7 +2788,7 @@ void Notify_Play(void)
 {
     if(Song_Playing)
     {
-        if(!plx)
+        if(!play_pattern)
         {
             Gui_Draw_Button_Box(8, 28, 39, 16, "\04", BUTTON_PUSHED | BUTTON_RIGHT_MOUSE | BUTTON_TEXT_CENTERED);
             Gui_Draw_Button_Box(49, 28, 39, 16, "\253", BUTTON_NORMAL | BUTTON_RIGHT_MOUSE | BUTTON_TEXT_CENTERED);
@@ -3154,7 +3155,8 @@ int Must_Render_Track(int Idx)
 
 void Wav_Renderizer()
 {
-    plx = FALSE;
+    play_pattern = FALSE;
+    reset_carriers = TRUE;
     char buffer[MAX_PATH];
     char buffer_name[MAX_PATH];
     int Save_Chan_Mute_State[MAX_TRACKS];
@@ -4800,10 +4802,11 @@ void Keyboard_Handler(void)
             {
                 po_ctrl2 = FALSE;
                 Enter_Notified = FALSE;
-                plx = FALSE;
+                play_pattern = FALSE;
+                reset_carriers = FALSE;
                 if(Enter_Notified_Play_Pattern)
                 {
-                    plx = TRUE;
+                    play_pattern = TRUE;
                 }
                 gui_action = GUI_CMD_PLAY_SONG;
             }
@@ -4831,18 +4834,28 @@ void Keyboard_Handler(void)
         // Play song
         if(Keys[SDLK_RCTRL] && snamesel == INPUT_NONE && po_ctrl2)
         {
-            plx = FALSE;
+            play_pattern = FALSE;
             po_ctrl2 = FALSE;
-            if(!Get_LShift()) Pattern_Line = 0;
+            reset_carriers = FALSE;
+            if(!Get_LShift())
+            {
+                reset_carriers = TRUE;
+                Pattern_Line = 0;
+            }
             gui_action = GUI_CMD_PLAY_SONG;
         }
         if(!Keys[SDLK_RCTRL] && !po_ctrl2) po_ctrl2 = TRUE;
 
         if(Keys[SDLK_RALT] && snamesel == INPUT_NONE && po_alt2)
         {
-            plx = TRUE;
+            play_pattern = TRUE;
             po_alt2 = FALSE;
-            if(!Get_LShift()) Pattern_Line = 0;
+            reset_carriers = FALSE;
+            if(!Get_LShift())
+            {
+                reset_carriers = TRUE;
+                Pattern_Line = 0;
+            }
             gui_action = GUI_CMD_PLAY_SONG;
         }
         if(!Keys[SDLK_RALT] && !po_alt2) po_alt2 = TRUE;
@@ -6097,14 +6110,16 @@ void Mouse_Handler(void)
         // Play song from top
         if(Check_Mouse(8, 28, 39, 16))
         {
-            plx = FALSE;
+            play_pattern = FALSE;
+            reset_carriers = TRUE;
             Pattern_Line = 0;
             gui_action = GUI_CMD_PLAY_SONG;
         }
         // Play pattern from top
         if(Check_Mouse(49, 28, 39, 16))
         {
-            plx = TRUE;
+            play_pattern = TRUE;
+            reset_carriers = TRUE;
             Pattern_Line = 0;
             gui_action = GUI_CMD_PLAY_SONG;
         }
@@ -6542,13 +6557,15 @@ void Mouse_Handler(void)
         // Play song from current position
         if(Check_Mouse(8, 28, 39, 16))
         {
-            plx = FALSE;
+            play_pattern = FALSE;
+            reset_carriers = FALSE;
             gui_action = GUI_CMD_PLAY_SONG;
         }
         // Play pattern from current position
         if(Check_Mouse(49, 28, 39, 16))
         {
-            plx = TRUE;
+            play_pattern = TRUE;
+            reset_carriers = FALSE;
             gui_action = GUI_CMD_PLAY_SONG;
         }
 

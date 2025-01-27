@@ -51,12 +51,14 @@ void Draw_Track_Fx_Ed(void)
 
     Gui_Draw_Button_Box(4, (Cur_Height - 138), 228, 110, NULL, BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_VTOP);
 
-    Gui_Draw_Button_Box(8, (Cur_Height - 128), 64, 16, "Filter LFO", BUTTON_NORMAL | BUTTON_DISABLED);
-    Gui_Draw_Button_Box(118, (Cur_Height - 128), 64, 16, "Flanger", BUTTON_NORMAL | BUTTON_DISABLED);
+    Gui_Draw_Button_Box(8, (Cur_Height - 134), 24, 16, "LFO", BUTTON_NORMAL | BUTTON_DISABLED);
+    Gui_Draw_Button_Box(118 + 21, (Cur_Height - 134), 43, 16, "Flanger", BUTTON_NORMAL | BUTTON_DISABLED);
 
-    Gui_Draw_Button_Box(8, (Cur_Height - 110), 64, 16, "Frequency", BUTTON_NORMAL | BUTTON_DISABLED);
-    Gui_Draw_Button_Box(8, (Cur_Height - 92), 64, 16, "Amplitude", BUTTON_NORMAL | BUTTON_DISABLED);
-    Gui_Draw_Button_Box(8, (Cur_Height - 74), 64, 16, "LFO Status", BUTTON_NORMAL | BUTTON_DISABLED);
+    Gui_Draw_Button_Box(8, (Cur_Height - 116), 64, 10, F_ R_ E_ Q_ U_ E_ N_ C_ Y_, BUTTON_NORMAL | BUTTON_DISABLED);
+    Gui_Draw_Button_Box(8, (Cur_Height - 104), 64, 10, F_ I_ L_ T_ E_ R_, BUTTON_NORMAL | BUTTON_DISABLED);
+    Gui_Draw_Button_Box(8, (Cur_Height - 92), 64, 10, V_ O_ L_ U_ M_ E_, BUTTON_NORMAL | BUTTON_DISABLED);
+    Gui_Draw_Button_Box(8, (Cur_Height - 80), 64, 10, P_ A_ N_ N_ I_ N_ G_, BUTTON_NORMAL | BUTTON_DISABLED);
+    Gui_Draw_Button_Box(8, (Cur_Height - 68), 64, 16, "LFO Status", BUTTON_NORMAL | BUTTON_DISABLED);
     Gui_Draw_Button_Box(8, (Cur_Height - 49), 64, 16, "Flanger 3D", BUTTON_NORMAL | BUTTON_DISABLED);
 
     Gui_Draw_Button_Box(240, (Cur_Height - 138), 288, 110, "Flanger Settings", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_VTOP);
@@ -130,13 +132,13 @@ void Actualize_Track_Fx_Ed(char gode)
         {
             if(FLANGER_ON[Track_Under_Caret])
             {
-                Gui_Draw_Button_Box(184, (Cur_Height - 128), 20, 16, "On", BUTTON_PUSHED);
-                Gui_Draw_Button_Box(206, (Cur_Height - 128), 20, 16, "Off", BUTTON_NORMAL);
+                Gui_Draw_Button_Box(184, (Cur_Height - 134), 20, 16, "On", BUTTON_PUSHED | BUTTON_TEXT_CENTERED);
+                Gui_Draw_Button_Box(206, (Cur_Height - 134), 20, 16, "Off", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
             }
             else
             {
-                Gui_Draw_Button_Box(184, (Cur_Height - 128), 20, 16, "On", BUTTON_NORMAL);
-                Gui_Draw_Button_Box(206, (Cur_Height - 128), 20, 16, "Off", BUTTON_PUSHED);
+                Gui_Draw_Button_Box(184, (Cur_Height - 134), 20, 16, "On", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
+                Gui_Draw_Button_Box(206, (Cur_Height - 134), 20, 16, "Off", BUTTON_PUSHED | BUTTON_TEXT_CENTERED);
             }
         }
 
@@ -155,37 +157,84 @@ void Actualize_Track_Fx_Ed(char gode)
             Print_Long(458, (Cur_Height - 49), long(FLANGER_DELAY[Track_Under_Caret] / 44.1f), 2);
         }
 
-        if(gode == 0 || gode == 2 || gode == 15)
+
+        // ----------------------
+        if(gode == 0 || gode == 18 || gode == 15)
+        {
+            if(LFO_RATE_MUL[Track_Under_Caret] < 1.0f) LFO_RATE_MUL[Track_Under_Caret] = 1.0f;
+            if(LFO_RATE_MUL[Track_Under_Caret] > 16.0f) LFO_RATE_MUL[Track_Under_Caret] = 16.0f;
+            Real_Slider_Horiz(96 - 40 + 20, 
+                              (Cur_Height - 134),
+                              (int) LFO_RATE_MUL[Track_Under_Caret],
+                              2,
+                              18,
+                              62,
+                              LFO_ON[Track_Under_Caret]);
+            outfloat_small(96 - 40 + 20, (Cur_Height - 134), 
+                           LFO_RATE_MUL[Track_Under_Caret], 9,
+                           62,
+                           BUTTON_NORMAL | BUTTON_NO_BORDER | BUTTON_TEXT_CENTERED);
+        }
+
+        if(gode == 0 || gode == 2 || gode == 15 || gode == 18)
         {
             if(LFO_RATE[Track_Under_Caret] < 0.0001f) LFO_RATE[Track_Under_Caret] = 0.0001f;
             if(LFO_RATE[Track_Under_Caret] > 0.0078125f) LFO_RATE[Track_Under_Caret] = 0.0078125f;
-            Real_Slider(74, (Cur_Height - 110), (int) (LFO_RATE[Track_Under_Caret] * 16384.0f), LFO_ON[Track_Under_Caret]);
-            float tmprate = (8.1632653f / LFO_RATE[Track_Under_Caret]);
-            Print_Long(76, (Cur_Height - 74), (long) tmprate, 2);
+            Real_Slider_Tiny(74, (Cur_Height - 116), 128, 10, (int) (LFO_RATE[Track_Under_Caret] * 16384.0f), LFO_ON[Track_Under_Caret]);
+
+            float tmprate = (8.1632653f / LFO_RATE[Track_Under_Caret]) * LFO_RATE_MUL[Track_Under_Caret];
+            Print_Long(76, (Cur_Height - 68), (long) tmprate, 2);
             tmprate = 1000.0f / tmprate;
-            outfloat(138, (Cur_Height - 74), tmprate, 3);
+            outfloat(138, (Cur_Height - 68), tmprate, 3);
         }
 
         if(gode == 0 || gode == 3 || gode == 15)
         {
-            if(LFO_AMPL[Track_Under_Caret] < 0) LFO_AMPL[Track_Under_Caret] = 0;
-            if(LFO_AMPL[Track_Under_Caret] > 128) LFO_AMPL[Track_Under_Caret] = 128;
-            Real_Slider(74, (Cur_Height - 92), (int) (LFO_AMPL[Track_Under_Caret]), LFO_ON[Track_Under_Caret]);
+            if(LFO_AMPL_FILTER[Track_Under_Caret] < 0.0f) LFO_AMPL_FILTER[Track_Under_Caret] = 0.0f;
+            if(LFO_AMPL_FILTER[Track_Under_Caret] > 128.0f) LFO_AMPL_FILTER[Track_Under_Caret] = 128.0f;
+            Real_Slider_Tiny(74, (Cur_Height - 104), 128, 10, (int) (LFO_AMPL_FILTER[Track_Under_Caret]), LFO_ON[Track_Under_Caret]);
+            if(LFO_AMPL_FILTER[Track_Under_Caret] == 0.0f)
+            {
+                Gui_Draw_Button_Box(76, (Cur_Height - 104), 144, 10, O_ F_ F_, BUTTON_NO_BORDER | BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
+            }
+        }
+
+        if(gode == 0 || gode == 16 || gode == 15)
+        {
+            if(LFO_AMPL_VOLUME[Track_Under_Caret] < 0.0f) LFO_AMPL_VOLUME[Track_Under_Caret] = 0.0f;
+            if(LFO_AMPL_VOLUME[Track_Under_Caret] > 128.0f) LFO_AMPL_VOLUME[Track_Under_Caret] = 128.0f;
+            Real_Slider_Tiny(74, (Cur_Height - 92), 128, 10, (int) (LFO_AMPL_VOLUME[Track_Under_Caret]), LFO_ON[Track_Under_Caret]);
+            if(LFO_AMPL_VOLUME[Track_Under_Caret] == 0.0f)
+            {
+                Gui_Draw_Button_Box(76, (Cur_Height - 92), 144, 10, O_ F_ F_, BUTTON_NO_BORDER | BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
+            }
+        }
+
+        if(gode == 0 || gode == 17 || gode == 15)
+        {
+            if(LFO_AMPL_PANNING[Track_Under_Caret] < 0.0f) LFO_AMPL_PANNING[Track_Under_Caret] = 0.0f;
+            if(LFO_AMPL_PANNING[Track_Under_Caret] > 128.0f) LFO_AMPL_PANNING[Track_Under_Caret] = 128.0f;
+            Real_Slider_Tiny(74, (Cur_Height - 80), 128, 10, (int) (LFO_AMPL_PANNING[Track_Under_Caret]), LFO_ON[Track_Under_Caret]);
+            if(LFO_AMPL_PANNING[Track_Under_Caret] == 0.0f)
+            {
+                Gui_Draw_Button_Box(76, (Cur_Height - 80), 144, 10, O_ F_ F_, BUTTON_NO_BORDER | BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
+            }
         }
 
         if(gode == 0 || gode == 9 || gode == 15)
         {
             if(LFO_ON[Track_Under_Caret] == 1)
             {
-                Gui_Draw_Button_Box(74, (Cur_Height - 128), 20, 16, "On", BUTTON_PUSHED);
-                Gui_Draw_Button_Box(96, (Cur_Height - 128), 20, 16, "Off", BUTTON_NORMAL);
+                Gui_Draw_Button_Box(74 - 40, (Cur_Height - 134), 18, 16, "On", BUTTON_PUSHED | BUTTON_TEXT_CENTERED);
+                Gui_Draw_Button_Box(96 - 40 - 2, (Cur_Height - 134), 18, 16, "Off", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
             }
             else
             {
-                Gui_Draw_Button_Box(74, (Cur_Height - 128), 20, 16, "On", BUTTON_NORMAL);
-                Gui_Draw_Button_Box(96, (Cur_Height - 128), 20, 16, "Off", BUTTON_PUSHED);
+                Gui_Draw_Button_Box(74 - 40, (Cur_Height - 134), 18, 16, "On", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
+                Gui_Draw_Button_Box(96 - 40 - 2, (Cur_Height - 134), 18, 16, "Off", BUTTON_PUSHED | BUTTON_TEXT_CENTERED);
             }
         }
+        // ----------------------
 
         if(gode == 0 || gode == 12)
         {
@@ -235,18 +284,50 @@ void Mouse_Sliders_Track_Fx_Ed(void)
 {
     if(userscreen == USER_SCREEN_TRACK_FX_EDIT)
     {
-        if(Check_Mouse(74, (Cur_Height - 110), 148, 16) && LFO_ON[Track_Under_Caret])
+        // ---      
+        // LFO rate multiplier
+        if(Check_Mouse(96 - 40 + 20, (Cur_Height - 134), 62, 16) && LFO_ON[Track_Under_Caret])
+        {
+            LFO_RATE_MUL[Track_Under_Caret] = float(float(Mouse.x - (96 - 40 + 20 + 5)) / 3.0f);
+            if(LFO_RATE_MUL[Track_Under_Caret] < 1.0f) LFO_RATE_MUL[Track_Under_Caret] = 1.0f;
+            if(LFO_RATE_MUL[Track_Under_Caret] > 16.0f) LFO_RATE_MUL[Track_Under_Caret] = 16.0f;
+            gui_action = GUI_CMD_UPDATE_TRACK_FX_ED;
+            teac = 18;
+        }
+        if(Check_Mouse(74, (Cur_Height - 116), 148, 10) && LFO_ON[Track_Under_Caret])
         {
             LFO_RATE[Track_Under_Caret] = (Mouse.x - 84) / 16384.0f;
+            if(LFO_RATE[Track_Under_Caret] < 0.0001f) LFO_RATE[Track_Under_Caret] = 0.0001f;
+            if(LFO_RATE[Track_Under_Caret] > 0.0078125f) LFO_RATE[Track_Under_Caret] = 0.0078125f;
             teac = 2;
             gui_action = GUI_CMD_UPDATE_TRACK_FX_ED;
         }
-        if(Check_Mouse(74, (Cur_Height - 92), 148, 16) && LFO_ON[Track_Under_Caret])
+        if(Check_Mouse(74, (Cur_Height - 104), 148, 10) && LFO_ON[Track_Under_Caret])
         {
-            LFO_AMPL[Track_Under_Caret] = float(Mouse.x - 84);
+            LFO_AMPL_FILTER[Track_Under_Caret] = float(Mouse.x - 84);
+            if(LFO_AMPL_FILTER[Track_Under_Caret] < 0.0f) LFO_AMPL_FILTER[Track_Under_Caret] = 0.0f;
+            if(LFO_AMPL_FILTER[Track_Under_Caret] > 128.0f) LFO_AMPL_FILTER[Track_Under_Caret] = 128.0f;
             teac = 3;
             gui_action = GUI_CMD_UPDATE_TRACK_FX_ED;
         }
+        if(Check_Mouse(74, (Cur_Height - 92), 148, 10) && LFO_ON[Track_Under_Caret])
+        {
+            LFO_AMPL_VOLUME[Track_Under_Caret] = float(Mouse.x - 84);
+            if(LFO_AMPL_VOLUME[Track_Under_Caret] < 0.0f) LFO_AMPL_VOLUME[Track_Under_Caret] = 0.0f;
+            if(LFO_AMPL_VOLUME[Track_Under_Caret] > 128.0f) LFO_AMPL_VOLUME[Track_Under_Caret] = 128.0f;
+            teac = 16;
+            gui_action = GUI_CMD_UPDATE_TRACK_FX_ED;
+        }
+        if(Check_Mouse(74, (Cur_Height - 80), 148, 10) && LFO_ON[Track_Under_Caret])
+        {
+            LFO_AMPL_PANNING[Track_Under_Caret] = float(Mouse.x - 84);
+            if(LFO_AMPL_PANNING[Track_Under_Caret] < 0.0f) LFO_AMPL_PANNING[Track_Under_Caret] = 0.0f;
+            if(LFO_AMPL_PANNING[Track_Under_Caret] > 128.0f) LFO_AMPL_PANNING[Track_Under_Caret] = 128.0f;
+            teac = 17;
+            gui_action = GUI_CMD_UPDATE_TRACK_FX_ED;
+        }
+        // ---      
+        
         if(Check_Mouse(74, (Cur_Height - 49), 148, 16) && FLANGER_ON[Track_Under_Caret])
         {
             FLANGER_DEPHASE[Track_Under_Caret] = (Mouse.x - 84) * 0.0490873f;
@@ -397,31 +478,33 @@ void Mouse_Left_Track_Fx_Ed(void)
 {
     if(userscreen == USER_SCREEN_TRACK_FX_EDIT)
     {
-        if(Check_Mouse(74, (Cur_Height - 128), 20, 16) && LFO_ON[Track_Under_Caret] == FALSE)
+        // ---
+        if(Check_Mouse(74 - 40, (Cur_Height - 134), 18, 16) && LFO_ON[Track_Under_Caret] == FALSE)
         {
             LFO_ON[Track_Under_Caret] = TRUE;
             gui_action = GUI_CMD_UPDATE_TRACK_FX_ED;
             teac = 0;
         }
-        if(Check_Mouse(96, (Cur_Height - 128), 20, 16) && LFO_ON[Track_Under_Caret] == TRUE)
+        if(Check_Mouse(96 - 40 - 2, (Cur_Height - 134), 18, 16) && LFO_ON[Track_Under_Caret] == TRUE)
         {
             LFO_ON[Track_Under_Caret] = FALSE;
             gui_action = GUI_CMD_UPDATE_TRACK_FX_ED;
             teac = 0;
         }
-        if(Check_Mouse(184, (Cur_Height - 128), 20, 16) && FLANGER_ON[Track_Under_Caret] == FALSE)
+        // ---
+        if(Check_Mouse(184, (Cur_Height - 134), 20, 16) && FLANGER_ON[Track_Under_Caret] == FALSE)
         {
             FLANGER_ON[Track_Under_Caret] = TRUE;
             gui_action = GUI_CMD_UPDATE_TRACK_FX_ED;
             teac = 0;
         }
-        if(Check_Mouse(206, (Cur_Height - 128), 20, 16) && FLANGER_ON[Track_Under_Caret])
+        if(Check_Mouse(206, (Cur_Height - 134), 20, 16) && FLANGER_ON[Track_Under_Caret])
         {
             FLANGER_ON[Track_Under_Caret] = FALSE;
             gui_action = GUI_CMD_UPDATE_TRACK_FX_ED;
             teac = 0;
         }
-
+        // ---
         if(Check_Mouse(602, (Cur_Height - 121), 20, 16) && Compress_Track[Track_Under_Caret] == FALSE)
         {
             Compress_Track[Track_Under_Caret] = TRUE;

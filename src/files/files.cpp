@@ -190,6 +190,7 @@ int Load_Ptk(CustomFile customFile)
     int Stereo_Reverb = FALSE;
     int Reverb_Resonance = FALSE;
     int Reverb_Damp_On = FALSE;
+    int extended_LFO = FALSE;
     int Tb303_Scaling = FALSE;
     int Track_Srnd = FALSE;
     int Long_Midi_Prg = FALSE;
@@ -254,6 +255,8 @@ int Load_Ptk(CustomFile customFile)
 
         switch(extension[7])
         {
+            case 'T':
+                extended_LFO = TRUE;
             case 'S':
                 Reverb_Damp_On = TRUE;
             case 'R':
@@ -704,7 +707,13 @@ Read_Mod_File:
         {
             Read_Mod_Data(&LFO_ON[twrite], sizeof(char), 1, in);
             Read_Mod_Data_Swap(&LFO_RATE[twrite], sizeof(float), 1, in);
-            Read_Mod_Data_Swap(&LFO_AMPL[twrite], sizeof(float), 1, in);
+            Read_Mod_Data_Swap(&LFO_AMPL_FILTER[twrite], sizeof(float), 1, in);
+            if(extended_LFO)
+            {
+                Read_Mod_Data_Swap(&LFO_AMPL_VOLUME[twrite], sizeof(float), 1, in);
+                Read_Mod_Data_Swap(&LFO_AMPL_PANNING[twrite], sizeof(float), 1, in);
+                Read_Mod_Data_Swap(&LFO_RATE_MUL[twrite], sizeof(float), 1, in);
+            }
         }
         for(twrite = 0; twrite < MAX_TRACKS; twrite++)
         {
@@ -1513,7 +1522,10 @@ int Save_Ptk(char *FileName, int NewFormat, int Simulate, Uint8 *Memory)
             {
                 Write_Mod_Data(&LFO_ON[twrite], sizeof(char), 1, in);
                 Write_Mod_Data_Swap(&LFO_RATE[twrite], sizeof(float), 1, in);
-                Write_Mod_Data_Swap(&LFO_AMPL[twrite], sizeof(float), 1, in);
+                Write_Mod_Data_Swap(&LFO_AMPL_FILTER[twrite], sizeof(float), 1, in);
+                Write_Mod_Data_Swap(&LFO_AMPL_VOLUME[twrite], sizeof(float), 1, in);
+                Write_Mod_Data_Swap(&LFO_AMPL_PANNING[twrite], sizeof(float), 1, in);
+                Write_Mod_Data_Swap(&LFO_RATE_MUL[twrite], sizeof(float), 1, in);
             }
 
             for(twrite = 0; twrite < MAX_TRACKS; twrite++)
@@ -1763,7 +1775,7 @@ int Pack_Module(char *FileName)
     output = fopen(Temph, "wb");
     if(output)
     {
-        sprintf(extension, "PROTREKS");
+        sprintf(extension, "PROTREKT");
         Write_Data(extension, sizeof(char), 9, output);
         Write_Data_Swap(&Depack_Size, sizeof(int), 1, output);
         Write_Data(Final_Mem_Out, sizeof(char), Len, output);

@@ -42,7 +42,8 @@
 extern REQUESTER Overwrite_Requester;
 
 extern Synth_Parameters PARASynth[128];
-extern int plx;
+extern int play_pattern;
+extern int reset_carriers;
 int csynth_slv_OSC_1;
 int csynth_slv_OSC_2;
 int csynth_slv_VCF;

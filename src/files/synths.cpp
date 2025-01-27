@@ -41,7 +41,7 @@ void Read_Synth_Params(int (*Read_Function)(void *, int, int, FILE *),
                        int (*Read_Function_Swap)(void *, int, int, FILE *),
                        FILE *in,
 #else
-void Read_Synth_Params(int (*Read_Function)(void *, int, int, FILE *),
+void Read_Synth_Params(int (*Read_Function)(void *, int, int, CustomFile &),
                        int (*Read_Function_Swap)(void *, int, int, CustomFile &),
                        CustomFile &in,
 #endif

@@ -2,6 +2,18 @@
 ProTrekkr releases history
 ===============================================================================
 
+v2.8.1
+
+- Channels LFO carriers are now properly reseted at playing start.
+- Channels LFO data can now be sent to the channel filter, volume and panning.
+- Added a channel LFO frequency multiplier.
+- Added these effects:
+  - 43: Set channel LFO frequency.
+  - 44: Set channel LFO frequency multiplier.
+  - 45: Set channel LFO amount to send to the channel filter.
+  - 46: Set channel LFO amount to send to the channel volume.
+  - 47: Set channel LFO amount to send to the channel panning.
+
 v2.8.0
 
 - Added a function to negate the current palette.

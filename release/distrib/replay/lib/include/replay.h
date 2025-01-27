@@ -388,7 +388,13 @@ extern int Chan_Midi_Prg[MAX_TRACKS];
 
 extern char LFO_ON[MAX_TRACKS];
 extern float LFO_RATE[MAX_TRACKS];
-extern float LFO_AMPL[MAX_TRACKS];
+extern float LFO_RATE_MUL[MAX_TRACKS];
+extern float LFO_AMPL_FILTER[MAX_TRACKS];
+extern float LFO_AMPL_VOLUME[MAX_TRACKS];
+extern float LFO_AMPL_PANNING[MAX_TRACKS];
+extern float LFO_CARRIER_FILTER[MAX_TRACKS];
+extern float LFO_CARRIER_VOLUME[MAX_TRACKS];
+extern float LFO_CARRIER_PANNING[MAX_TRACKS];
 
 extern char FLANGER_ON[MAX_TRACKS];
 extern float FLANGER_AMOUNT[MAX_TRACKS];
@@ -422,7 +428,8 @@ extern float Sample_Vol[MAX_INSTRS];
 #if !defined(__STAND_ALONE__)
 extern unsigned int SubCounter;
 extern int PosInTick;
-extern int plx;
+extern int play_pattern;
+extern int reset_carriers;
 extern int Reserved_Sub_Channels[MAX_TRACKS][MAX_POLYPHONY];
 extern int Locked_Sub_Channels[MAX_TRACKS][MAX_POLYPHONY];
 extern int sp_Stage[MAX_TRACKS][MAX_POLYPHONY];

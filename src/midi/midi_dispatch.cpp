@@ -414,7 +414,8 @@ void Midi_Track_Set_Disto_Clamp(int Data)
 // Start playing (EDIT)
 void Midi_Transport_Play(int Data)
 {
-    plx = FALSE;
+    play_pattern = FALSE;
+    reset_carriers = TRUE;
     Pattern_Line = 0;
     gui_action = GUI_CMD_PLAY_SONG;
 }

@@ -96,8 +96,13 @@ int PosInTick_Delay;
 
 #if defined(PTK_LFO)
     float LFO_RATE[MAX_TRACKS];
-    float LFO_AMPL[MAX_TRACKS];
-    float LFOGR[MAX_TRACKS];
+    float LFO_RATE_MUL[MAX_TRACKS];
+    float LFO_AMPL_FILTER[MAX_TRACKS];
+    float LFO_AMPL_VOLUME[MAX_TRACKS];
+    float LFO_AMPL_PANNING[MAX_TRACKS];
+    float LFO_CARRIER_FILTER[MAX_TRACKS];
+    float LFO_CARRIER_VOLUME[MAX_TRACKS];
+    float LFO_CARRIER_PANNING[MAX_TRACKS];
 #endif
 
 char FLANGER_ON[MAX_TRACKS];
@@ -872,7 +877,8 @@ int delay_time;
     int pos_scope_latency;
     extern signed char c_midiin;
     extern signed char c_midiout;
-    int plx;
+    int play_pattern;
+    int reset_carriers;
     int Midiprg[128];
     int LastProgram[MAX_TRACKS];
     int wait_level;
@@ -914,7 +920,9 @@ void Clear_Midi_Channels_Pool(void);
 
 // ------------------------------------------------------
 // Functions
-float Apply_Lfo(float cy, int trcy);
+float Apply_Lfo_To_Filter(float value, int channel);
+float Apply_Lfo_To_Volume(float value, int channel);
+float Apply_Lfo_To_Panning(float value, int channel);
 void ComputeCoefs(int freq, int r, int t);
 void Record_Delay_Event();
 
@@ -1810,7 +1818,10 @@ int PTKEXPORT Ptk_InitModule(Uint8 *Module, int start_position)
             if(LFO_ON[twrite])
             {
                 Mod_Dat_Read(&LFO_RATE[twrite], sizeof(float));
-                Mod_Dat_Read(&LFO_AMPL[twrite], sizeof(float));
+                Mod_Dat_Read(&LFO_AMPL_FILTER[twrite], sizeof(float));
+                Mod_Dat_Read(&LFO_AMPL_VOLUME[twrite], sizeof(float));
+                Mod_Dat_Read(&LFO_AMPL_PANNING[twrite], sizeof(float));
+                Mod_Dat_Read(&LFO_RATE_MUL[twrite], sizeof(float));
 
             }
 #endif
@@ -2216,9 +2227,7 @@ void Pre_Song_Init(void)
             Chan_Active_State[ini][i] = TRUE;
         }
 
-#if defined(PTK_TRACK_VOLUME)
         Track_Volume[ini] = 1.0f;
-#endif
 
         Track_Surround[ini] = FALSE;
 
@@ -2243,7 +2252,13 @@ void Pre_Song_Init(void)
 #if defined(PTK_LFO)
         LFO_ON[ini] = 0;
         LFO_RATE[ini] = 0.0001f;
-        LFO_AMPL[ini] = 0;
+        LFO_RATE_MUL[ini] = 1.0f;
+        LFO_AMPL_FILTER[ini] = 0.0f;
+        LFO_AMPL_VOLUME[ini] = 0.0f;
+        LFO_AMPL_PANNING[ini] = 0.0f;
+        LFO_CARRIER_FILTER[ini] = 0.0f;
+        LFO_CARRIER_VOLUME[ini] = 0.0f;
+        LFO_CARRIER_PANNING[ini] = 0.0f;
 #endif
 
 #if !defined(__STAND_ALONE__)
@@ -2463,6 +2478,19 @@ void Post_Song_Init(void)
 
 #if defined(PTK_FX_TRANCEGLIDER)
         glidestep[i] = 0;
+#endif
+
+#if defined(PTK_LFO)
+#if !defined(__STAND_ALONE__)
+        if(reset_carriers)
+        {
+#endif
+        LFO_CARRIER_FILTER[i] = 0.0f;
+        LFO_CARRIER_VOLUME[i] = 0.0f;
+        LFO_CARRIER_PANNING[i] = 0.0f;
+#if !defined(__STAND_ALONE__)
+        }
+#endif
 #endif
 
 #if defined(PTK_FLANGER)
@@ -2830,7 +2858,6 @@ void Sp_Player(void)
                 if(pl_pan_row <= 128)
                 {
                     TPan[ct] = (float) pl_pan_row * 0.0078125f; 
-                    Compute_Stereo(ct);
 
 #if !defined(__STAND_ALONE__)
                     if(userscreen == USER_SCREEN_TRACK_EDIT)
@@ -3141,7 +3168,7 @@ void Sp_Player(void)
                     {
 
 #if !defined(__STAND_ALONE__)
-                        if(!plx)            // Playing a pattern or not ?
+                        if(!play_pattern)            // Playing a pattern or not ?
 #endif
                         {
 
@@ -3216,7 +3243,7 @@ void Sp_Player(void)
                     {
 
 #if !defined(__STAND_ALONE__)
-                        if(!plx)
+                        if(!play_pattern)
 #endif
                         {
 
@@ -3724,7 +3751,7 @@ ByPass_Wav:
 
             if(dfi < -1.0f || dfi > 1.0f) CCut[c] += dfi * ICut[c];
 
-            realcut = Apply_Lfo(CCut[c] - ramper[c], c);
+            realcut = Apply_Lfo_To_Filter(CCut[c] - ramper[c], c);
 
             ramper[c] += Player_FD[c] * realcut * 0.015625f;
             gco = (int) realcut;
@@ -4037,6 +4064,8 @@ ByPass_Wav:
             All_Signal_R = -All_Signal_R;
         }
 
+        Compute_Stereo(c);
+
         All_Signal_L *= LVol[c];
         All_Signal_R *= RVol[c];
 
@@ -4072,6 +4101,11 @@ ByPass_Wav:
 #if defined(PTK_TRACK_VOLUME)
         All_Signal_L *= Track_Volume[c];
         All_Signal_R *= Track_Volume[c];
+#endif
+
+#if defined(PTK_LFO)
+        All_Signal_L *= Apply_Lfo_To_Volume(Track_Volume[c], c);
+        All_Signal_R *= Apply_Lfo_To_Volume(Track_Volume[c], c);
 #endif
 
         // Store to global signals
@@ -4929,6 +4963,103 @@ void Do_Effects_Tick_0(void)
                     break;
 #endif
 
+#if defined(PTK_LFO)
+#if defined(PTK_FX_RESETFILTERLFO)
+                // $16 Set channel filter lfo carrier value
+                case 0x16:
+                    LFO_CARRIER_FILTER[trackef] = ((float) pltr_dat_row[j] / 255.0f) * 359.0f;
+                    LFO_CARRIER_VOLUME[trackef] = ((float) pltr_dat_row[j] / 255.0f) * 359.0f;
+                    LFO_CARRIER_PANNING[trackef] = ((float) pltr_dat_row[j] / 255.0f) * 359.0f;
+                    break;
+#endif
+#endif
+
+#if defined(PTK_LFO)
+#if defined(PTK_FX_SETLFORATE)
+                // $43 Set channel lfo frequency value
+                case 0x43:
+                    LFO_RATE[trackef] = ((float) pltr_dat_row[j] / 255.0f) * 0.0078125f;
+                    if(LFO_RATE[trackef] < 0.0001f) LFO_RATE[trackef] = 0.0001f;
+
+#if !defined(__STAND_ALONE__)
+                    if(userscreen == USER_SCREEN_TRACK_FX_EDIT)
+                    {
+                        gui_action_external |= GUI_UPDATE_EXTERNAL_LFO;
+                    }
+#endif
+                    
+                    break;
+#endif
+#endif
+
+#if defined(PTK_LFO)
+#if defined(PTK_FX_SETLFOMULTIPLIER)
+                // $44 Set channel lfo multiplier value
+                case 0x44:
+                    LFO_RATE_MUL[trackef] = ((float) pltr_dat_row[j] / 255.0f) * 15.0f + 1.0f;
+
+#if !defined(__STAND_ALONE__)
+                    if(userscreen == USER_SCREEN_TRACK_FX_EDIT)
+                    {
+                        gui_action_external |= GUI_UPDATE_EXTERNAL_LFO;
+                    }
+#endif
+                    
+                    break;
+#endif
+#endif
+
+#if defined(PTK_LFO)
+#if defined(PTK_FX_SETFILTERLFO)
+                // $45 Set channel filter lfo value
+                case 0x45:
+                    LFO_AMPL_FILTER[trackef] = ((float) pltr_dat_row[j] / 255.0f) * 128.0f;
+
+#if !defined(__STAND_ALONE__)
+                    if(userscreen == USER_SCREEN_TRACK_FX_EDIT)
+                    {
+                        gui_action_external |= GUI_UPDATE_EXTERNAL_LFO;
+                    }
+#endif
+
+                    break;
+#endif
+#endif
+
+#if defined(PTK_LFO)
+#if defined(PTK_FX_SETVOLUMELFO)
+                // $46 Set channel volume lfo value
+                case 0x46:
+                    LFO_AMPL_VOLUME[trackef] = ((float) pltr_dat_row[j] / 255.0f) * 128.0f;
+
+#if !defined(__STAND_ALONE__)
+                    if(userscreen == USER_SCREEN_TRACK_FX_EDIT)
+                    {
+                        gui_action_external |= GUI_UPDATE_EXTERNAL_LFO;
+                    }
+#endif
+                    
+                    break;
+#endif
+#endif
+
+#if defined(PTK_LFO)
+#if defined(PTK_FX_SETPANNINGLFO)
+                // $47 Set channel panning lfo value
+                case 0x47:
+                    LFO_AMPL_PANNING[trackef] = ((float) pltr_dat_row[j] / 255.0f) * 128.0f;
+
+#if !defined(__STAND_ALONE__)
+                    if(userscreen == USER_SCREEN_TRACK_FX_EDIT)
+                    {
+                        gui_action_external |= GUI_UPDATE_EXTERNAL_LFO;
+                    }
+#endif
+                    
+                    break;
+#endif
+#endif
+
 #if defined(PTK_FX_SETBPM)
                 // $f0 Set BPM
                 case 0xf0:
@@ -5557,15 +5688,6 @@ void Do_Effects_Ticks_X(void)
                     break;
 #endif
 
-#if defined(PTK_LFO)
-#if defined(PTK_FX_RESETFILTERLFO)
-                // $16 Set filter lfo value
-                case 0x16:
-                    LFOGR[trackef] = ((float) pltr_dat_row[k] / 255.0f) * 359.0f;
-                    break;
-#endif
-#endif
-
 #if defined(PTK_FX_AUTOFADEIN)
                 // $17 Auto fade in xx ticks
                 case 0x17:
@@ -5617,7 +5739,8 @@ void Do_Effects_Ticks_X(void)
                     local_mas_vol = pltr_dat_row[k] / 255.0f;
                     break;
 #endif
-            }
+
+        }
 
 #endif  // PTK_FX_X
 
@@ -5753,29 +5876,92 @@ void Reset_Filters(int tr)
 
 // ------------------------------------------------------
 // Process track filter LFO
-float Apply_Lfo(float cy, int trcy)
+float Apply_Lfo_To_Filter(float value, int channel)
 {
 
 #if defined(PTK_LFO)
-    if(LFO_ON[trcy] == 1)
+    if(LFO_ON[channel] == 1)
     {
-        cy += SIN[(int) (LFOGR[trcy])] * LFO_AMPL[trcy];
-        LFOGR[trcy] += LFO_RATE[trcy];
-        if(LFOGR[trcy] >= 360.0f) LFOGR[trcy] -= 360.0f;
+        if(LFO_AMPL_FILTER[channel] != 0.0f)
+        {
+            value += ((SIN[(int) (LFO_CARRIER_FILTER[channel])] + 1.0f) * 0.5f) * LFO_AMPL_FILTER[channel];
+        }
+        LFO_CARRIER_FILTER[channel] += LFO_RATE[channel] * LFO_RATE_MUL[channel];
+        if(LFO_CARRIER_FILTER[channel] >= 360.0f) LFO_CARRIER_FILTER[channel] -= 360.0f;
     }
 #endif
 
-    if(cy < 1.0f) cy = 1.0f;
-    if(cy > 126.0f) cy = 126.0f;
-    return cy;
+    if(value < 1.0f) value = 1.0f;
+    if(value > 126.0f) value = 126.0f;
+    return value;
 }
+
+// ------------------------------------------------------
+// Process track volume LFO
+#if defined(PTK_LFO)
+float Apply_Lfo_To_Volume(float value, int channel)
+{
+    float temp_value;
+
+    if(LFO_ON[channel] == 1)
+    {
+        if(LFO_AMPL_VOLUME[channel] != 0.0f)
+        {
+            temp_value = ((SIN[(int) (LFO_CARRIER_VOLUME[channel])] + 1.0f) * 0.5f) * LFO_AMPL_VOLUME[channel];
+            temp_value /= 128.0f;
+            value *= 1.0f - temp_value;
+        }
+        LFO_CARRIER_VOLUME[channel] += LFO_RATE[channel] * LFO_RATE_MUL[channel];
+        if(LFO_CARRIER_VOLUME[channel] >= 360.0f) LFO_CARRIER_VOLUME[channel] -= 360.0f;
+    }
+
+    if(value < 0.0f) value = 0.0f;
+    if(value > 1.0f) value = 1.0f;
+    return value;
+}
+#endif
+
+// ------------------------------------------------------
+// Process track panning LFO
+#if defined(PTK_LFO)
+float Apply_Lfo_To_Panning(float value, int channel)
+{
+    float temp_value;
+
+    if(LFO_ON[channel] == 1)
+    {
+        if(LFO_AMPL_PANNING[channel] != 0.0f)
+        {
+            // [-0.5f..0.5f]
+            value -= 0.5f;
+            // [-1.0f..1.0f]
+            value *= 2.0f;
+            temp_value = SIN[(int) (LFO_CARRIER_PANNING[channel])] * LFO_AMPL_PANNING[channel];
+            temp_value /= 128.0f;
+            value *= temp_value;
+            // [-0.5f..0.5f]
+            value *= 0.5f;
+            // [0.0f..1.0f]
+            value += 0.5f;
+        }
+        LFO_CARRIER_PANNING[channel] += LFO_RATE[channel] * LFO_RATE_MUL[channel];
+        if(LFO_CARRIER_PANNING[channel] >= 360.0f) LFO_CARRIER_PANNING[channel] -= 360.0f;
+    }
+
+    if(value < 0.0f) value = 0.0f;
+    if(value > 1.0f) value = 1.0f;
+    return value;
+}
+#endif
 
 // ------------------------------------------------------
 // Set stereo panning
 void Compute_Stereo(int channel)
 {
-    Old_LVol[channel] = sqrtf(1.0f - TPan[channel]);
-    Old_RVol[channel] = sqrtf(TPan[channel]);
+    float pan_value;
+    pan_value = Apply_Lfo_To_Panning(TPan[channel], channel);
+    Old_LVol[channel] = sqrtf((1.0f - pan_value));
+    Old_RVol[channel] = sqrtf((pan_value));
 }
 
 // ------------------------------------------------------

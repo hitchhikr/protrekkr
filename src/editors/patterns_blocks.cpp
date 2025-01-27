@@ -2595,7 +2595,13 @@ void Reset_Track(int Position, int Track)
 
     LFO_ON[Track] = 0;
     LFO_RATE[Track] = 0.0001f;
-    LFO_AMPL[Track] = 0;
+    LFO_RATE_MUL[Track] = 1.0f;
+    LFO_AMPL_FILTER[Track] = 0.0f;
+    LFO_AMPL_VOLUME[Track] = 0.0f;
+    LFO_AMPL_PANNING[Track] = 0.0f;
+    LFO_CARRIER_FILTER[Track] = 0.0f;
+    LFO_CARRIER_VOLUME[Track] = 0.0f;
+    LFO_CARRIER_PANNING[Track] = 0.0f;
 
     FRez[Track] = 64;
 
@@ -2703,7 +2709,10 @@ void Copy_Track(int Position, int Track_Src, int Track_Dst)
 
     LFO_ON[Track_Dst] = LFO_ON[Track_Src];
     LFO_RATE[Track_Dst] = LFO_RATE[Track_Src];
-    LFO_AMPL[Track_Dst] = LFO_AMPL[Track_Src];
+    LFO_RATE_MUL[Track_Dst] = LFO_RATE_MUL[Track_Src];
+    LFO_AMPL_FILTER[Track_Dst] = LFO_AMPL_FILTER[Track_Src];
+    LFO_AMPL_VOLUME[Track_Dst] = LFO_AMPL_VOLUME[Track_Src];
+    LFO_AMPL_PANNING[Track_Dst] = LFO_AMPL_PANNING[Track_Src];
 
     FLANGER_ON[Track_Dst] = FLANGER_ON[Track_Src];
     FLANGER_AMOUNT[Track_Dst] = FLANGER_AMOUNT[Track_Src];

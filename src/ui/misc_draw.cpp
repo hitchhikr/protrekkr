@@ -116,7 +116,7 @@ int Font_Height_Small = 7;
 char *Font_Ascii =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     "abcdefghijklmnopqrstuvwxyz"
-    //           é        è    ç   à         ù    µ                   
+    //           é        è    ç   à         ù    µ                  /\  \/  <   >   <<  >>
     "0123456789&\351\"'(-\350_\347\340)=*+^$\371%\265,;:!?./<>@#[]|\\\001\002\003\004\005\006\007\010\011\012\013\014\015"
     //A   B   C   D   E   F   G   H   I   J   K   L   M   N   O   P   Q   R   S   T   U   V   W   X   Y   Z  
     "\216\217\220\221\222\223\224\225\226\227\230\231\232\233\234\235\236\237\240\241\242\243\244\245\246\247"
@@ -1586,7 +1586,10 @@ void Print_Long(int x, int y, int cant, int mode)
         case 11: sprintf(xstr, "E: %d", cant); break;
         case 12: sprintf(xstr, "L: %d", cant); break;
     }
-    if(mode != 7) Gui_Draw_Button_Box(x, y, 60, 16, xstr, BUTTON_NORMAL | BUTTON_DISABLED);
+    if(mode != 7)
+    {
+        Gui_Draw_Button_Box(x, y, 60, 16, xstr, BUTTON_NORMAL | BUTTON_DISABLED);
+    }
 }
 
 void outfloat(int x, int y, float cant, int mode)
@@ -1617,6 +1620,7 @@ void outfloat_small(int x, int y, float cant, int mode, int size, int flags)
         case 3: sprintf(xstr, "%.3f Hz", cant); break;
         case 5: sprintf(xstr, "%.3f K.", cant); break;
         case 8: sprintf(xstr, "%.1f Tk", cant); break;
+        case 9: sprintf(xstr, "x%.2f", cant); break;
     }
     Gui_Draw_Button_Box(x, y, size - 1, 16, xstr, flags);
 }
@@ -1921,7 +1925,7 @@ void Status_Box(char const *str)
 }
       
 // ------------------------------------------------------
-// Display a horizontal slider
+// Display an horizontal slider
 void Real_Slider_Size(int x, int y, int size, int val, int Enabled)
 {
     y--;
@@ -1963,6 +1967,42 @@ void Real_Slider(int x, int y, int val, int Enabled)
 void Real_Slider_2(int x, int y, int val, int Enabled)
 {
     Real_Slider_Size(x, y, 64, val, Enabled);
+}
+
+// ------------------------------------------------------
+// Display a tiny horizontal slider
+void Real_Slider_Tiny(int x, int y, int size_x, int size_y, int val, int Enabled)
+{
+    y--;
+    if(Enabled)
+    {
+        SetColor(COL_STATIC_LO);
+        bjbox(x + 2, y + 1, size_x + 17, size_y + 1);
+        SetColor(COL_STATIC_HI);
+        bjbox(x + 3, y + 2, size_x + 16, size_y);
+        SetColor(COL_INPUT_MED);
+        bjbox(x + 3, y + 2, val + 15, size_y - 1);
+        SetColor(COL_SLIDER_MED);
+        bjbox(x + 4 + val, y + 2, size_x - val + 14, size_y - 1);
+    }
+    else
+    {
+        SetColor(COL_STATIC_LO);
+        bjbox(x + 2, y + 1, size_x + 17, size_y + 1);
+        SetColor(COL_STATIC_HI);
+        bjbox(x + 3, y + 2, size_x + 16, size_y);
+        SetColor(COL_STATIC_MED);
+        bjbox(x + 3, y + 2, size_x + 15, size_y - 1);
+    }
+    // Draw the caret
+    if(Enabled)
+    {
+        Gui_Draw_Button_Box(x + 4 + val, y + 2, 13, size_y - 2, NULL, BUTTON_NORMAL);
+    }
+    else
+    {
+        Gui_Draw_Button_Box(x + 4 + val, y + 2, 13, size_y - 2, NULL, BUTTON_NORMAL | BUTTON_DISABLED);
+    }
 }
 
 // ------------------------------------------------------

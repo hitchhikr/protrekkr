@@ -230,6 +230,14 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
     int Store_FX_SetFilterResonance = FALSE;
     int Store_FX_SetFilterType = FALSE;
     int Store_FX_ResetFilterLfo = FALSE;
+    
+    int Store_FX_SetLfoRate = FALSE;
+    int Store_FX_SetLfoMultiplier = FALSE;
+    int Store_FX_SetFilterLfo = FALSE;
+    int Store_FX_SetVolumeLfo = FALSE;
+    int Store_FX_SetPanningLfo = FALSE;
+    
+    int Store_FX_SetLfoFrequency= FALSE;
     int Store_FX_AutoFadeIn = FALSE;
     int Store_FX_AutoFadeOut = FALSE;
     int Store_FX_VolumeSlideUp = FALSE;
@@ -834,7 +842,7 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                                     }
                                     break;
 
-                                // $16 Reset filter lfo
+                                // $16 Reset channel filter lfo
                                 case 0x16:
                                     Store_FX_ResetFilterLfo = TRUE;
                                     break;
@@ -943,6 +951,31 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                                     Store_FX_RevDamp = TRUE;
                                     break;
                                 
+                                // $43 Set channel lfo frequency value
+                                case 0x43:
+                                    Store_FX_SetLfoRate = TRUE;
+                                    break;
+
+                                // $44 Set channel lfo multiplier value
+                                case 0x44:
+                                    Store_FX_SetLfoMultiplier = TRUE;
+                                    break;
+
+                                // $45 Set channel filter lfo value
+                                case 0x45:
+                                    Store_FX_SetFilterLfo = TRUE;
+                                    break;
+
+                                // $46 Set channel volume lfo value
+                                case 0x46:
+                                    Store_FX_SetVolumeLfo = TRUE;
+                                    break;
+
+                                // $47 Set channel panning lfo value
+                                case 0x47:
+                                    Store_FX_SetPanningLfo = TRUE;
+                                    break;
+
                                 // $31 First TB303 control
                                 case 0x31:
                                     Store_303_1 = TRUE;
@@ -1046,7 +1079,14 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
 
     Save_Constant("PTK_FX_0", Store_FX_PitchUp | Store_FX_PitchDown |
                               Store_FX_TranceSlicer |
-                              Store_FX_TranceGlider);
+                              Store_FX_TranceGlider |
+                              Store_FX_ResetFilterLfo |
+                              Store_FX_SetLfoRate |
+                              Store_FX_SetLfoMultiplier |
+                              Store_FX_SetFilterLfo |
+                              Store_FX_SetVolumeLfo |
+                              Store_FX_SetPanningLfo
+                              );
 
     Save_Constant("PTK_FX_X", Store_FX_SetCutOff |
                               Store_FX_SetRandomCutOff |
@@ -1061,7 +1101,6 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                               Store_FX_SetDistortionClamp |
                               Store_FX_SetFilterResonance |
                               Store_FX_SetFilterType |
-                              Store_FX_ResetFilterLfo |
                               Store_FX_AutoFadeIn |
                               Store_FX_AutoFadeOut |
                               Store_FX_VolumeSlideUp |
@@ -1095,6 +1134,13 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
     Save_Constant("PTK_FX_SETFILTERRESONANCE", Store_FX_SetFilterResonance);
     Save_Constant("PTK_FX_SETFILTERTYPE", Store_FX_SetFilterType);
     Save_Constant("PTK_FX_RESETFILTERLFO", Store_FX_ResetFilterLfo);
+
+    Save_Constant("PTK_FX_SETLFORATE", Store_FX_SetLfoRate);
+    Save_Constant("PTK_FX_SETLFOMULTIPLIER", Store_FX_SetLfoMultiplier);
+    Save_Constant("PTK_FX_SETFILTERLFO", Store_FX_SetFilterLfo);
+    Save_Constant("PTK_FX_SETVOLUMELFO", Store_FX_SetVolumeLfo);
+    Save_Constant("PTK_FX_SETPANNINGLFO", Store_FX_SetPanningLfo);
+    
     Save_Constant("PTK_FX_AUTOFADEIN", Store_FX_AutoFadeIn);
     Save_Constant("PTK_FX_AUTOFADEOUT", Store_FX_AutoFadeOut);
     Save_Constant("PTK_FX_AUTOFADEMODE", Store_FX_AutoFadeIn | Store_FX_AutoFadeOut);
@@ -1918,7 +1964,10 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
             {
                 Store_LFO = TRUE;
                 Write_Mod_Data(&LFO_RATE[twrite], sizeof(float), 1, in);
-                Write_Mod_Data(&LFO_AMPL[twrite], sizeof(float), 1, in);
+                Write_Mod_Data(&LFO_AMPL_FILTER[twrite], sizeof(float), 1, in);
+                Write_Mod_Data(&LFO_AMPL_VOLUME[twrite], sizeof(float), 1, in);
+                Write_Mod_Data(&LFO_AMPL_PANNING[twrite], sizeof(float), 1, in);
+                Write_Mod_Data(&LFO_RATE_MUL[twrite], sizeof(float), 1, in);
             }
         }
     }
