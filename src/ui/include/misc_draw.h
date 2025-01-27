@@ -285,4 +285,8 @@ void Destroy_UI(void);
 int Get_Font_Height(void);
 int Get_Note_Ascii(int note, char *snote, int *octave, int tiret);
 
+void Negate_Palette(void);
+void Rotate_Palette_Left(void);
+void Rotate_Palette_Right(void);
+
 #endif

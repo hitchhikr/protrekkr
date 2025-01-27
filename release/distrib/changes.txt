@@ -2,6 +2,12 @@
 ProTrekkr releases history
 ===============================================================================
 
+v2.8.0
+
+- Added a function to negate the current palette.
+- Added two functions to rotate the current palette on the left or right.
+- Re-arranged bitchbiker.ptk and added it into the official list of modules.
+
 v2.8.0 PRE 2
 
 - Changed the behaviour of the single step mode, plays only stops when

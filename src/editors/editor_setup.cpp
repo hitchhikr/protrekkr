@@ -117,6 +117,10 @@ void Draw_Master_Ed(void)
     Gui_Draw_Button_Box(520, (Cur_Height - 125), 60, 16, "Keyboard", BUTTON_NORMAL | BUTTON_DISABLED);
     Gui_Draw_Button_Box(520 + (18 + 108) + 2 + 20 + 66, (Cur_Height - 105), 60, 16, "Themes", BUTTON_NO_BORDER | BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
     
+    Gui_Draw_Button_Box(520 + (18 + 108) + 1 + 66, (Cur_Height - 85), 18, 16, "\214", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
+    Gui_Draw_Button_Box(520 + (18 + 108) + 1 + 66, (Cur_Height - 65), 18, 16, "\005", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
+    Gui_Draw_Button_Box(520 + (18 + 108) + 1 + 66, (Cur_Height - 45), 18, 16, "\006", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
+
     Gui_Draw_Button_Box(520 + (18 + 108) + 2 + 20 + 66, (Cur_Height - 85), 18, 16, "1", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
     Gui_Draw_Button_Box(520 + (18 + 108) + 2 + 20 + 66 + 21, (Cur_Height - 85), 18, 16, "2", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
     Gui_Draw_Button_Box(520 + (18 + 108) + 2 + 20 + 66 + 42, (Cur_Height - 85), 18, 16, "3", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
@@ -493,6 +497,7 @@ void Actualize_Master_Ed(char gode)
                 Gui_Draw_Button_Box(258 + 31, (Cur_Height - 85), 29, 16, "Off", BUTTON_PUSHED | BUTTON_TEXT_CENTERED);
             }
         }
+        
         // There was a palette change
         if(RefreshTex)
         {
@@ -736,6 +741,33 @@ void Mouse_Left_Master_Ed(void)
         if(Check_Mouse(520 + (18 + 108) + 2, (Cur_Height - 105), 16, 16))
         {
             current_palette_idx++;
+            gui_action = GUI_CMD_UPDATE_SETUP_ED;
+            teac = 10;
+        }
+
+        // Negate the palette
+        if(Check_Mouse(520 + (18 + 108) +1 + 66, (Cur_Height - 85), 18, 16))
+        {
+            Negate_Palette();
+            Get_Phony_Palette();
+            gui_action = GUI_CMD_UPDATE_SETUP_ED;
+            teac = 10;
+        }
+
+        // Rotate the palette components to the left
+        if(Check_Mouse(520 + (18 + 108) +1 + 66, (Cur_Height - 65), 18, 16))
+        {
+            Rotate_Palette_Left();
+            Get_Phony_Palette();
+            gui_action = GUI_CMD_UPDATE_SETUP_ED;
+            teac = 10;
+        }
+
+        // Rotate the palette components to the right
+        if(Check_Mouse(520 + (18 + 108) +1 + 66, (Cur_Height - 45), 18, 16))
+        {
+            Rotate_Palette_Right();
+            Get_Phony_Palette();
             gui_action = GUI_CMD_UPDATE_SETUP_ED;
             teac = 10;
         }

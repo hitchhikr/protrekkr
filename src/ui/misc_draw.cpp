@@ -125,7 +125,7 @@ char *Font_Ascii =
     ///   (   )   :
     "\373\374\375\376"
     //.   -   |>  ||  Wave Y expand shrink vu-meters
-    "\250\251\253\254\255\016\017\215"
+    "\250\251\253\254\255\016\017\215\214"
     " ";
 int Font_Pos[256];
 int Font_Size[256];
@@ -3321,6 +3321,69 @@ void Restore_Default_Palette(SDL_Color *Def, int DefBevel)
         Ptk_Palette[i].unused = Def[i].unused;
     }
     Beveled = DefBevel;
+}
+
+// ------------------------------------------------------
+// Negate the current palette
+void Negate_Palette(void)
+{
+    int i;
+    
+    for(i = 0; i < sizeof(Default_Palette2) / sizeof(SDL_Color); i++)
+    {
+        if(i != 58)
+        {
+            Ptk_Palette[i].r = 0xff - Ptk_Palette[i].r;
+            Ptk_Palette[i].g = 0xff - Ptk_Palette[i].g;
+            Ptk_Palette[i].b = 0xff - Ptk_Palette[i].b;
+        }
+    }
+}
+
+// ------------------------------------------------------
+// Rotate the current palette components to the left
+void Rotate_Palette_Left(void)
+{
+    int i;
+    int red;
+    int green;
+    int blue;
+
+    for(i = 0; i < sizeof(Default_Palette2) / sizeof(SDL_Color); i++)
+    {
+        if(i != 58)
+        {
+            red = Ptk_Palette[i].r;
+            green = Ptk_Palette[i].g;
+            blue = Ptk_Palette[i].b;
+            Ptk_Palette[i].r = green;
+            Ptk_Palette[i].g = blue;
+            Ptk_Palette[i].b = red;
+        }
+    }
+}
+
+// ------------------------------------------------------
+// Rotate the current palette components to the right
+void Rotate_Palette_Right(void)
+{
+    int i;
+    int red;
+    int green;
+    int blue;
+    
+    for(i = 0; i < sizeof(Default_Palette2) / sizeof(SDL_Color); i++)
+    {
+        if(i != 58)
+        {
+            red = Ptk_Palette[i].r;
+            green = Ptk_Palette[i].g;
+            blue = Ptk_Palette[i].b;
+            Ptk_Palette[i].r = blue;
+            Ptk_Palette[i].g = red;
+            Ptk_Palette[i].b = green;
+        }
+    }
 }
 
 // ------------------------------------------------------
