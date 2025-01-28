@@ -2,7 +2,7 @@
 ProTrekkr releases history
 ===============================================================================
 
-v2.8.1
+v2.8.1 PRE
 
 - Channels LFO carriers are now properly reseted at playing start.
 - Channels LFO data can now be sent to the channel filter cutoff, 
