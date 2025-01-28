@@ -1951,6 +1951,17 @@ void PTKEXPORT Ptk_ReleaseDriver(void)
     Scope_Dats_LeftRight[1] = NULL;
 #endif
 
+#if defined(__STAND_ALONE__) && !defined(__WINAMP__)
+    // Free the patterns block
+#if defined(__PSVITA__)
+    if(RawPatterns) PSVITA_free(RawPatterns);
+#else
+    if(RawPatterns) free(RawPatterns);
+#endif
+    RawPatterns = NULL;
+#endif
+
+
 }
 
 // ------------------------------------------------------
@@ -2195,16 +2206,6 @@ void PTKEXPORT Ptk_Stop(void)
 #endif
 
     }
-#endif
-
-#if defined(__STAND_ALONE__) && !defined(__WINAMP__)
-    // Free the patterns block
-#if defined(__PSVITA__)
-    if(RawPatterns) PSVITA_free(RawPatterns);
-#else
-    if(RawPatterns) free(RawPatterns);
-#endif
-    RawPatterns = NULL;
 #endif
 
 }

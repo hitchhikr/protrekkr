@@ -161,7 +161,7 @@ int AUDIO_Init_Driver(void (*Mixer)(Uint8 *, Uint32))
     join = NULL;
     
     // Check ahiios are allocated
-    if (!AHIio || !AHIio2)
+    if(!AHIio || !AHIio2)
     {
 
 #if !defined(__STAND_ALONE__) && !defined(__WINAMP__)
@@ -174,7 +174,7 @@ int AUDIO_Init_Driver(void (*Mixer)(Uint8 *, Uint32))
     AHIio->ahir_Version = 4;
     
     // Open ahi
-    if (OpenDevice("ahi.device", 0, (struct IORequest *) AHIio, 0))
+    if(OpenDevice("ahi.device", 0, (struct IORequest *) AHIio, 0))
     {
         AHIio->ahir_Std.io_Device = NULL;
 
@@ -218,6 +218,9 @@ int AUDIO_Create_Sound_Buffer(int milliseconds)
 
 		return(FALSE);
 	}
+
+    memset(AHIbuf, 0, AUDIO_SoundBuffer_Size << 1);
+    memset(AHIbuf2, 0, AUDIO_SoundBuffer_Size << 1);
 
     Thread_Running = 1;
     

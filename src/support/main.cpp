@@ -1124,7 +1124,7 @@ void Redraw_Screen_Quick(void)
 #if defined(__USE_OPENGL__)
         Leave_2d_Mode();
 
-#if !defined(__WIN32__) && !defined(__AROS__)
+#if !defined(__WIN32__) && !defined(__AROS__) && !defined(__AMIGAOS4__)
         glDrawBuffer(GL_FRONT);
         glRasterPos2f(-1.0f, -1.0f);
         glCopyPixels(0, 0, Cur_Width, Cur_Height, GL_COLOR);
