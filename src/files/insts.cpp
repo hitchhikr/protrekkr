@@ -49,7 +49,7 @@ void Load_Inst(char *FileName)
     int Long_Midi_Prg = FALSE;
     int Var_Disto = FALSE;
 
-    Status_Box("Attempting To Load An Instrument File...");
+    Status_Box("Attempting To Load An Instrument File...", TRUE);
     FILE *in;
     in = fopen(FileName, "rb");
 
@@ -88,11 +88,11 @@ void Load_Inst(char *FileName)
                 break;
         }
         Kill_Instrument(Current_Instrument, TRUE);
-        Status_Box("Loading Instrument -> Header..."); 
+        Status_Box("Loading Instrument -> Header...", TRUE); 
         Read_Data(&nameins[Current_Instrument], sizeof(char), 20, in);
 
         // Reading sample data
-        Status_Box("Loading Instrument -> Sample Data...");
+        Status_Box("Loading Instrument -> Sample Data...", TRUE);
 
         int swrite = Current_Instrument;
 
@@ -202,11 +202,11 @@ void Load_Inst(char *FileName)
         Actualize_Pattern_Ed();
         Actualize_Instrument_Ed(2, 0);
         Actualize_Synth_Ed(UPDATE_SYNTH_ED_ALL);
-        Status_Box("Instrument Loaded Successfully.");
+        Status_Box("Instrument Loaded Successfully.", TRUE);
     }
     else
     {
-        Status_Box("Instrument Loading Failed. (Possible Cause: File Not Found)");
+        Status_Box("Instrument Loading Failed. (Possible Cause: File Not Found)", TRUE);
     }
     Clear_Input();
 }
@@ -225,7 +225,7 @@ void Save_Inst(void)
 
     if(!strlen(nameins[Current_Instrument])) sprintf(nameins[Current_Instrument], "Untitled");
     sprintf (Temph, "Saving '%s.pti' Instrument In Instruments Directory...", nameins[Current_Instrument]);
-    Status_Box(Temph);
+    Status_Box(Temph, TRUE);
     sprintf(Temph, "%s" SLASH "%s.pti", Dir_Instrs, nameins[Current_Instrument]);
 
     in = fopen(Temph, "wb");
@@ -301,11 +301,11 @@ void Save_Inst(void)
         last_index = -1;
         Actualize_Files_List(0);
         Actualize_Pattern_Ed();
-        Status_Box("Instrument Saved Successfully."); 
+        Status_Box("Instrument Saved Successfully.", TRUE);
     }
     else
     {
-        Status_Box("Instrument Saving Failed.");
+        Status_Box("Instrument Saving Failed.", TRUE);
     }
 
     Clear_Input();

@@ -393,7 +393,7 @@ void Load_Amiga_Mod(char *Name, const char *FileName, int channels, int digiboos
                 Digi_Mod = (unsigned char *) malloc((Patterns * 64 * 4 * channels) + Smps_Length + 1084);
                 if(!Digi_Mod)
                 {
-                    Status_Box("Not Enough Memory.");
+                    Status_Box("Not Enough Memory.", TRUE);
                     Clear_Input();
                     return;
                 }
@@ -1175,12 +1175,12 @@ void Load_Amiga_Mod(char *Name, const char *FileName, int channels, int digiboos
         }
         else
         {
-            Status_Box("Not Enough Memory.");
+            Status_Box("Not Enough Memory.", TRUE);
         }
     }
     else
     {
-        Status_Box("Protracker Module Loading Failed. (Possible Cause: File Not Found)");
+        Status_Box("Protracker Module Loading Failed. (Possible Cause: File Not Found)", TRUE);
     }
 
     Clear_Input();

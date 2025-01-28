@@ -454,7 +454,7 @@ void Load_Synth(char *FileName)
                 break;
         }
 
-        Status_Box("Loading Synthesizer -> Structure...");
+        Status_Box("Loading Synthesizer -> Structure...", TRUE);
         Reset_Synth_Parameters(&PARASynth[Current_Instrument]);
 
         PARASynth[Current_Instrument].disto = 64;
@@ -485,12 +485,12 @@ void Load_Synth(char *FileName)
         Actualize_Instrument_Ed(0, 0);
         Actualize_DiskIO_Ed(0);
         Actualize_Pattern_Ed();
-        Status_Box("Synthesizer Program Loaded Successfully.");
+        Status_Box("Synthesizer Program Loaded Successfully.", TRUE);
         fclose(in);
     }
     else
     {
-        Status_Box("Synthesizer Program Loading Failed. (Possible Cause: File Not Found)");
+        Status_Box("Synthesizer Program Loading Failed. (Possible Cause: File Not Found)", TRUE);
     }
 }
 
@@ -504,7 +504,7 @@ void Save_Synth(void)
 
     sprintf(extension, "TWNNSYN5");
     sprintf (Temph, "Saving '%s.pts' Synthesizer Program In Presets Directory...", PARASynth[Current_Instrument].Preset_Name);
-    Status_Box(Temph);
+    Status_Box(Temph, TRUE);
 
     sprintf(Temph, "%s" SLASH "%s.pts", Dir_Presets, PARASynth[Current_Instrument].Preset_Name);
 
@@ -518,11 +518,11 @@ void Save_Synth(void)
         Read_SMPT();
         last_index = -1;
         Actualize_Files_List(0);
-        Status_Box("Synthesizer Program Saved Successfully."); 
+        Status_Box("Synthesizer Program Saved Successfully.", TRUE); 
     }
     else
     {
-        Status_Box("Synthesizer Program Saving Failed.");
+        Status_Box("Synthesizer Program Saving Failed.", TRUE);
     }
     Clear_Input();
 }

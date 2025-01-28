@@ -92,7 +92,7 @@ int Sample_Rotate_Left(int32 range_start, int32 range_end, int amount)
                 RawSamples[Current_Instrument][1][Current_Instrument_Split][i] = sample2;
             }
         }
-        Status_Box("Shift Left Done.");
+        Status_Box("Shift Left Done.", TRUE);
         return 1;
     }
     return 0;
@@ -136,7 +136,7 @@ int Sample_Rotate_Right(int32 range_start, int32 range_end, int amount)
                 RawSamples[Current_Instrument][1][Current_Instrument_Split][range_start] = sample2;
             }
         }
-        Status_Box("Shift Right Done.");
+        Status_Box("Shift Right Done.", TRUE);
         return 1;
     }
     return 0;
@@ -171,7 +171,7 @@ int Sample_Reverse(int32 range_start, int32 range_end)
             }
             p_s--;
         }
-        Status_Box("Reverse Done.");
+        Status_Box("Reverse Done.", TRUE);
         return 1;
     }
     return 0;
@@ -198,7 +198,7 @@ int Sample_Crop(int32 range_start, int32 range_end)
         if(!NewBuffer[0])
         {
             Unlock_Audio_Thread();
-            Status_Box("Not enough memory.");
+            Status_Box("Not enough memory.", TRUE);
             return 0;
         }
         memset(NewBuffer[0], 0, cropsize * 2 + 8);
@@ -209,7 +209,7 @@ int Sample_Crop(int32 range_start, int32 range_end)
             {
                 free(NewBuffer[0]);
                 Unlock_Audio_Thread();
-                Status_Box("Not enough memory.");
+                Status_Box("Not enough memory.", TRUE);
                 return 0;
             }
             memset(NewBuffer[1], 0, cropsize * 2 + 8);
@@ -248,7 +248,7 @@ int Sample_Crop(int32 range_start, int32 range_end)
         Recalculate_Sample_Size(Current_Instrument, Current_Instrument_Split, FALSE, range_start, range_end, FALSE, TRUE);
 
         Unlock_Audio_Thread();
-        Status_Box("Crop Done.");
+        Status_Box("Crop Done.", TRUE);
         return 1;
     }
     return 0;
@@ -282,7 +282,7 @@ int Sample_Copy(int32 range_start, int32 range_end)
         Sample_Back[cur_sample_buffer][0] = (short *) malloc(copysize * 2 + 8);
         if(!Sample_Back[cur_sample_buffer][0])
         {
-            Status_Box("Not enough memory.");
+            Status_Box("Not enough memory.", TRUE);
             return 0;
         }
         memset(Sample_Back[cur_sample_buffer][0], 0, copysize * 2 + 8);
@@ -292,7 +292,7 @@ int Sample_Copy(int32 range_start, int32 range_end)
             if(!Sample_Back[cur_sample_buffer][1])
             {
                 free(Sample_Back[cur_sample_buffer][0]);
-                Status_Box("Not enough memory.");
+                Status_Box("Not enough memory.", TRUE);
                 return 0;
             }
             memset(Sample_Back[cur_sample_buffer][1], 0, copysize * 2 + 8);
@@ -311,7 +311,7 @@ int Sample_Copy(int32 range_start, int32 range_end)
                 *dest_stereo++ = *(RawSamples[Current_Instrument][1][Current_Instrument_Split] + i);
             }
         }
-        Status_Box("Copy Done.");
+        Status_Box("Copy Done.", TRUE);
         return 1;
     }
     return 0;
@@ -341,7 +341,7 @@ int Sample_Paste(int32 range_start)
         if(!NewBuffer[0])
         {
             Unlock_Audio_Thread();
-            Status_Box("Not enough memory.");
+            Status_Box("Not enough memory.", TRUE);
             return 0;
         }
         memset(NewBuffer[0], 0, newsize * 2 + 8);
@@ -353,7 +353,7 @@ int Sample_Paste(int32 range_start)
             {
                 free(NewBuffer[0]);
                 Unlock_Audio_Thread();
-                Status_Box("Not enough memory.");
+                Status_Box("Not enough memory.", TRUE);
                 return 0;
             }
             memset(NewBuffer[1], 0, newsize * 2 + 8);
@@ -419,7 +419,7 @@ int Sample_Paste(int32 range_start)
         Recalculate_Sample_Size(Current_Instrument, Current_Instrument_Split, FALSE, range_start, range_start + cutsize, TRUE, FALSE);
 
         Unlock_Audio_Thread();
-        Status_Box("Paste Done.");
+        Status_Box("Paste Done.", TRUE);
         return 1;
     }
     return 0;
@@ -454,7 +454,7 @@ int Sample_Cut(int32 range_start, int32 range_end, int do_copy)
             {
                 free(NewBuffer[0]);
                 Unlock_Audio_Thread();
-                Status_Box("Not enough memory.");
+                Status_Box("Not enough memory.", TRUE);
                 return 0;
             }
             memset(NewBuffer[1], 0, newsize * 2 + 8);
@@ -467,7 +467,7 @@ int Sample_Cut(int32 range_start, int32 range_end, int do_copy)
                 free(NewBuffer[1]);
                 free(NewBuffer[0]);
                 Unlock_Audio_Thread();
-                Status_Box("Not enough memory.");
+                Status_Box("Not enough memory.", TRUE);
                 return 0;
             }
         }
@@ -521,18 +521,18 @@ int Sample_Cut(int32 range_start, int32 range_end, int do_copy)
         Recalculate_Sample_Size(Current_Instrument, Current_Instrument_Split, FALSE, range_start, range_end, FALSE, FALSE);
 
         Unlock_Audio_Thread();
-        Status_Box("Cut Done.");
+        Status_Box("Cut Done.", TRUE);
         return 1;
     }
     else
     {
         if(do_copy)
         {
-            Status_Box("You Cannot Cut Entire Sample, Use 'Delete' On Instrument Instead.");
+            Status_Box("You Cannot Cut Entire Sample, Use 'Delete' On Instrument Instead.", TRUE);
         }
         else
         {
-            Status_Box("You Cannot Zap Entire Sample, Use 'Delete' On Instrument Instead.");
+            Status_Box("You Cannot Zap Entire Sample, Use 'Delete' On Instrument Instead.", TRUE);
         }
         return 0;
     }
@@ -592,7 +592,7 @@ void Sample_DC_Adjust(int32 range_start, int32 range_end)
     }
 
     draw_sampled_wave = TRUE;
-    Status_Box("DC Adjust Done.");
+    Status_Box("DC Adjust Done.", TRUE);
 }
 
 // ------------------------------------------------------
@@ -657,7 +657,7 @@ void Sample_Normalize(int32 range_start, int32 range_end)
     }
 
     draw_sampled_wave = TRUE;
-    Status_Box("Normalize Done.");
+    Status_Box("Normalize Done.", TRUE);
 }
 
 // ------------------------------------------------------
@@ -677,7 +677,7 @@ void Sample_Zeroize(int32 range_start, int32 range_end)
     }
 
     draw_sampled_wave = TRUE;
-    Status_Box("Zero Done.");
+    Status_Box("Zero Done.", TRUE);
 }
 
 // ------------------------------------------------------
@@ -722,7 +722,7 @@ void Sample_FadeIn(int32 range_start, int32 range_end)
     }
 
     draw_sampled_wave = TRUE;
-    Status_Box("Fade In Done.");
+    Status_Box("Fade In Done.", TRUE);
 }
 
 // ------------------------------------------------------
@@ -767,7 +767,7 @@ void Sample_FadeOut(int32 range_start, int32 range_end)
     }
 
     draw_sampled_wave = TRUE;
-    Status_Box("Fade Out Done.");
+    Status_Box("Fade Out Done.", TRUE);
 }
 
 // ------------------------------------------------------
@@ -793,7 +793,7 @@ void Sample_Half(int32 range_start, int32 range_end)
     }
 
     draw_sampled_wave = TRUE;
-    Status_Box("Half Done.");
+    Status_Box("Half Done.", TRUE);
 }
 
 // ------------------------------------------------------
@@ -820,7 +820,7 @@ int Sample_Duplicate(int32 range_start, int32 range_end)
         if(!NewBuffer[0])
         {
             Unlock_Audio_Thread();
-            Status_Box("Not enough memory.");
+            Status_Box("Not enough memory.", TRUE);
             return 0;
         }
         memset(NewBuffer[0], 0, newsize * 2 + 8);
@@ -832,7 +832,7 @@ int Sample_Duplicate(int32 range_start, int32 range_end)
             {
                 free(NewBuffer[0]);
                 Unlock_Audio_Thread();
-                Status_Box("Not enough memory.");
+                Status_Box("Not enough memory.", TRUE);
                 return 0;
             }
             memset(NewBuffer[1], 0, newsize * 2 + 8);
@@ -898,7 +898,7 @@ int Sample_Duplicate(int32 range_start, int32 range_end)
         Recalculate_Sample_Size(Current_Instrument, Current_Instrument_Split, FALSE, range_start, range_end, TRUE, FALSE);
 
         Unlock_Audio_Thread();
-        Status_Box("Insert Zeroes Done.");
+        Status_Box("Insert Zeroes Done.", TRUE);
         return 1;
     }
     return 0;
@@ -928,7 +928,7 @@ int Sample_InsertZero(int32 range_start, int32 range_end)
         if(!NewBuffer[0])
         {
             Unlock_Audio_Thread();
-            Status_Box("Not enough memory.");
+            Status_Box("Not enough memory.", TRUE);
             return 0;
         }
         memset(NewBuffer[0], 0, newsize * 2 + 8);
@@ -940,7 +940,7 @@ int Sample_InsertZero(int32 range_start, int32 range_end)
             {
                 free(NewBuffer[0]);
                 Unlock_Audio_Thread();
-                Status_Box("Not enough memory.");
+                Status_Box("Not enough memory.", TRUE);
                 return 0;
             }
             memset(NewBuffer[1], 0, newsize * 2 + 8);
@@ -998,7 +998,7 @@ int Sample_InsertZero(int32 range_start, int32 range_end)
         Recalculate_Sample_Size(Current_Instrument, Current_Instrument_Split, FALSE, range_start, range_end, TRUE, FALSE);
 
         Unlock_Audio_Thread();
-        Status_Box("Duplicate Done.");
+        Status_Box("Duplicate Done.", TRUE);
         return 1;
     }
     return 0;

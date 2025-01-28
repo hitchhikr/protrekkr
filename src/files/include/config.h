@@ -46,7 +46,7 @@
     status_t res = find_directory(B_USER_SETTINGS_DIRECTORY, volume, true, FileName, MAX_PATH); \
     if (res != B_OK) \
     { \
-        Status_Box("Configuration File Directory Failed."); \
+        Status_Box("Configuration File Directory Failed.", TRUE); \
 		return; \
     } \
 	strcat(FileName, "/protrekkr")

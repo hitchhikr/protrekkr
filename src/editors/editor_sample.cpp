@@ -839,13 +839,13 @@ void Actualize_Sample_Ed(char gode)
                 {
                     cur_sample_color = COL_VUMETER;
                     rs_coef = 32768;
-                    Status_Box("Sample Drawing Mode Turned On.");
+                    Status_Box("Sample Drawing Mode Turned On.", TRUE);
                 }
                 else
                 {
                     cur_sample_color = COL_SCOPESSAMPLES;
                     rs_coef = 32768;
-                    Status_Box("Sample Drawing Mode Turned Off.");
+                    Status_Box("Sample Drawing Mode Turned Off.", TRUE);
                 }
                 Refresh_Sample(TRUE);
             }

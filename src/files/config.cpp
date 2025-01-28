@@ -76,7 +76,7 @@ void Save_Config(void)
     signed char phony = -1;
 
     sprintf(extension, "PROTCFGK");
-    Status_Box("Saving 'ptk.cfg'...");
+    Status_Box("Saving 'ptk.cfg'...", FALSE);
 
     SET_FILENAME;
 
@@ -86,7 +86,7 @@ void Save_Config(void)
     out = fopen(FileName, "wb");
     if(out == NULL)
     {
-        Status_Box("Configuration File Saving Failed.");
+        Status_Box("Configuration File Saving Failed.", FALSE);
 		return;
     }
 
@@ -181,7 +181,7 @@ void Save_Config(void)
 	Read_SMPT();
 	last_index = -1;
 	Actualize_Files_List(0);
-	Status_Box("Configuration File Saved Successfully.");
+	Status_Box("Configuration File Saved Successfully.", FALSE);
 }
 
 // ------------------------------------------------------

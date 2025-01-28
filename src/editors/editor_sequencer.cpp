@@ -478,7 +478,7 @@ void Mouse_Left_Sequencer_Ed(void)
                 memset(Done_Pattern, 0, nbr_patterns + 1);
                 if(Done_Pattern)
                 {
-                    Status_Box("I'm working there...");
+                    Status_Box("I'm working there...", TRUE);
                     Reset_Transpose_Block();
                     for(j = 0; j < Song_Length; j++)
                     {
@@ -508,7 +508,6 @@ void Mouse_Left_Sequencer_Ed(void)
                             Done_Pattern[pSequence[j]] = TRUE;
                         }
                     }
-                    Status_Box("Feeling Groovy.");
                     Update_Pattern(0);
                     free(Done_Pattern);
                 }
@@ -540,7 +539,7 @@ void Mouse_Left_Sequencer_Ed(void)
                 memset(Done_Pattern, 0, nbr_patterns + 1);
                 if(Done_Pattern)
                 {
-                    Status_Box("I'm working there...");
+                    Status_Box("I'm working there...", TRUE);
                     Reset_Transpose_Block();
                     for(j = 0; j < Song_Length; j++)
                     {
@@ -572,7 +571,6 @@ void Mouse_Left_Sequencer_Ed(void)
                             Done_Pattern[pSequence[j]] = TRUE;
                         }
                     }
-                    Status_Box("Feeling Groovy.");
                     Update_Pattern(0);
                     free(Done_Pattern);
                 }

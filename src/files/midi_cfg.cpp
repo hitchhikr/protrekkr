@@ -81,23 +81,23 @@ void Load_Midi_Cfg(char *FileName)
         if(strcmp(extension, "PROTMID1") == 0)
         {
             // Ok, extension matched!
-            Status_Box("Loading Midi Config Data...");
+            Status_Box("Loading Midi Config Data...", TRUE);
 
             Read_Data(Midi_Name, sizeof(char), 20, in);
             Load_Midi_Cfg_Data(Read_Data, Read_Data_Swap, in);
             Actualize_Midi_Ed(0);
 
-            Status_Box("Midi Config Data Loaded Successfully.");
+            Status_Box("Midi Config Data Loaded Successfully.", TRUE);
         }
         else
         {
-            Status_Box("That File Is Not A " TITLE " Midi Config File...");
+            Status_Box("That File Is Not A " TITLE " Midi Config File...", TRUE);
         }
         fclose(in);
     }
     else
     {
-        Status_Box("Midi Config Data Loading Failed. (Possible Cause: File Not Found)");
+        Status_Box("Midi Config Data Loading Failed. (Possible Cause: File Not Found)", TRUE);
     }
 }
 
@@ -111,7 +111,7 @@ void Save_Midi_Cfg(void)
 
     sprintf(extension, "PROTMID1");
     sprintf(Temph, "Saving '%s.pmi' Data In Midi Configs Directory...", Midi_Name);
-    Status_Box(Temph);
+    Status_Box(Temph, TRUE);
     sprintf(Temph, "%s" SLASH "%s.pmi", Dir_MidiCfg, Midi_Name);
 
     in = fopen(Temph, "wb");
@@ -126,11 +126,11 @@ void Save_Midi_Cfg(void)
         Read_SMPT();
         last_index = -1;
         Actualize_Files_List(0);
-        Status_Box("Midi Config Data Saved Successfully.");   
+        Status_Box("Midi Config Data Saved Successfully.", TRUE);
     }
     else
     {
-        Status_Box("Midi Config Data Saving Failed.");
+        Status_Box("Midi Config Data Saving Failed.", TRUE);
     }
 
     Clear_Input();

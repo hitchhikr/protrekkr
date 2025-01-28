@@ -97,6 +97,9 @@ extern GLuint SKIN303_GL;
 #endif
 int Beveled = 1;
 char Use_Shadows = TRUE;
+char Status_Box_Text[MAX_PATH * 2];
+int Status_Box_Wait;
+int Status_Box_Wait_Done = 10;
 
 extern int pattern_double;
 extern int Burn_Title;
@@ -1918,10 +1921,19 @@ void bjbox(int x, int y, int sx, int sy)
 
 // ------------------------------------------------------
 // Display a status message at the bottom of the screen
-void Status_Box(char const *str)
+void Status_Box(char const *str, int refresh)
 {
-    Gui_Draw_Button_Box(0, CONSOLE_HEIGHT - 21, fsize, 18, str, BUTTON_NORMAL | BUTTON_DISABLED);
-    Redraw_Screen_Quick();
+    if(str != NULL)
+    {
+        strcpy(Status_Box_Text, str);
+    }
+    Status_Box_Wait = 5;
+    Status_Box_Wait_Done = 0;
+    Gui_Draw_Button_Box(0, CONSOLE_HEIGHT - 21, fsize, 18, Status_Box_Text, BUTTON_RIGHT_MOUSE);
+    if(refresh)
+    {
+        Redraw_Screen_Quick();
+    }
 }
       
 // ------------------------------------------------------

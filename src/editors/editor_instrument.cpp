@@ -707,7 +707,7 @@ void Mouse_Left_Instrument_Ed(void)
         {
             if(!(sed_real_range_end - sed_real_range_start))
             {
-                Status_Box("This Sample Doesn't Have Any Selected Section To Export.");
+                Status_Box("This Sample Doesn't Have Any Selected Section To Export.", TRUE);
             }
             else
             {
@@ -736,7 +736,7 @@ void Mouse_Left_Instrument_Ed(void)
         {
             if(!LoopType[Current_Instrument][Current_Instrument_Split])
             {
-                Status_Box("This Sample Doesn't Have Any Loop Section To Export.");
+                Status_Box("This Sample Doesn't Have Any Loop Section To Export.", TRUE);
             }
             else
             {

@@ -90,22 +90,22 @@ void Load_303(char *FileName)
         if(strcmp(extension, "TWNN3031") == 0)
         {
             // Ok, extension matched!
-            Status_Box("Loading 303 Pattern...");
+            Status_Box("Loading 303 Pattern...", TRUE);
 
             Load_303_Data(Read_Data, Read_Data_Swap, in, sl3, tb303[sl3].selectedpattern);
 
             Actualize_303_Ed(0);
-            Status_Box("303 Pattern Loaded Successfully.");
+            Status_Box("303 Pattern Loaded Successfully.", TRUE);
         }
         else
         {
-            Status_Box("That File Is Not A " TITLE " 303 Pattern File...");
+            Status_Box("That File Is Not A " TITLE " 303 Pattern File...", TRUE);
         }
         fclose(in);
     }
     else
     {
-        Status_Box("303 Pattern Loading Failed. (Possible Cause: File Not Found)");
+        Status_Box("303 Pattern Loading Failed. (Possible Cause: File Not Found)", TRUE);
     }
 }
 
@@ -120,7 +120,7 @@ void Save_303(void)
     sprintf(extension, "TWNN3031");
     sprintf(Temph, "Saving '%s.303' Pattern In Patterns Directory...",
             tb303[sl3].pattern_name[tb303[sl3].selectedpattern]);
-    Status_Box(Temph);
+    Status_Box(Temph, TRUE);
     sprintf(Temph, "%s" SLASH "%s.303", Dir_Patterns,
             tb303[sl3].pattern_name[tb303[sl3].selectedpattern]);
     in = fopen(Temph, "wb");
@@ -135,11 +135,11 @@ void Save_303(void)
         Read_SMPT();
         last_index = -1;
         Actualize_Files_List(0);
-        Status_Box("303 Pattern Saved Successfully.");   
+        Status_Box("303 Pattern Saved Successfully.", TRUE);
     }
     else
     {
-        Status_Box("303 Pattern Saving Failed.");
+        Status_Box("303 Pattern Saving Failed.", TRUE);
     }
 
     Clear_Input();

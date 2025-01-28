@@ -94,6 +94,13 @@ extern int pos_scope_latency;
 
 int can_modify_song = 0;
 
+int file_loaded = FALSE;
+int Burned_Title = FALSE;
+extern int global_argc;
+extern char global_argv[MAX_PATH];
+extern char AutoReload;
+extern char Last_Used_Ptk[MAX_PATH];
+
 #if defined(__USE_OPENGL__)
 extern unsigned int *RGBTexture;
 #endif
@@ -200,6 +207,8 @@ SDL_Surface *FONT_LOW;
 SDL_TimerID Timer;
 Uint32 Timer_CallBack(Uint32 interval, void *param);
 Uint32 (*Timer_Ptr)(Uint32 interval, void *param) = &Timer_CallBack;
+extern int Status_Box_Wait;
+extern int Status_Box_Wait_Done;
 
 extern s_access sp_Position[MAX_TRACKS][MAX_POLYPHONY];
 
@@ -692,6 +701,29 @@ int Screen_Update(void)
 #if defined(__MACOSX_PPC__)
     FSRef soundFileRef;
 #endif
+
+    if(Burned_Title && !file_loaded)
+    {
+        if(global_argc != 1)
+        {
+            Load_File(0, global_argv);
+        }
+        else
+        {
+            // Nope: check if auto reload was turned on
+            if(AutoReload)
+            {
+                Load_File(0, Last_Used_Ptk);
+            }
+        }
+        file_loaded = TRUE;
+    }
+
+    if(Status_Box_Wait_Done == 1)
+    {
+        Status_Box("Feeling Groovy...", TRUE);
+        Status_Box_Wait_Done = 2;
+    }
 
     redraw_everything = FALSE;
     if(Env_Change)
@@ -1486,15 +1518,15 @@ int Screen_Update(void)
             switch(gui_action)
             {
                 case GUI_CMD_EXPORT_SEL_WAV:
-                    Status_Box("Writing Wav Header And Selected Sample Data Range...");
+                    Status_Box("Writing Wav Header And Selected Sample Data Range...", TRUE);
                     break;
 
                 case GUI_CMD_EXPORT_WHOLE_WAV:
-                    Status_Box("Writing Wav Header And Whole Sample Data...");
+                    Status_Box("Writing Wav Header And Whole Sample Data...", TRUE);
                     break;
 
                 case GUI_CMD_EXPORT_LOOP_WAV:
-                    Status_Box("Writing Wav Header And Sample Data Loop...");
+                    Status_Box("Writing Wav Header And Sample Data Loop...", TRUE);
                     break;
             }
 
@@ -1592,7 +1624,7 @@ int Screen_Update(void)
             RF.Close();
             if(strlen(SampleName[Current_Instrument][Current_Instrument_Split])) sprintf(buffer, "File '%s' Saved.", SampleName[Current_Instrument][Current_Instrument_Split]);
             else sprintf(buffer, "File 'Untitled.wav' Saved.");
-            Status_Box(buffer);
+            Status_Box(buffer, TRUE);
 
             Read_SMPT();
             last_index = -1;
@@ -1741,12 +1773,12 @@ int Screen_Update(void)
 
         if(gui_action == GUI_CMD_MIDI_NOTE_OFF_1_TRACK)
         {
-            Status_Box("Notes Off Command Sent To This Track.");
+            Status_Box("Notes Off Command Sent To This Track.", TRUE);
         }
 
         if(gui_action == GUI_CMD_MIDI_NOTE_OFF_ALL_TRACKS)
         {
-            Status_Box("Notes Off Command Sent To All Tracks.");
+            Status_Box("Notes Off Command Sent To All Tracks.", TRUE);
         }
 
         if(gui_action == GUI_CMD_UPDATE_TRACK_FX_ED)
@@ -1861,7 +1893,7 @@ int Screen_Update(void)
 
         if(gui_action == GUI_CMD_PATTERNS_POOL_EXHAUSTED)
         {
-            Status_Box("Maximum Number Of Patterns Reached.");
+            Status_Box("Maximum Number Of Patterns Reached.", TRUE);
         }
 
         if(gui_action == GUI_CMD_REFRESH_SAMPLE_ED)
@@ -1895,12 +1927,12 @@ int Screen_Update(void)
 
         if(!Done_Tip)
         {
-            Status_Box(tipoftheday);
+            Status_Box(tipoftheday, FALSE);
             Done_Tip = TRUE;
         }
         else
         {
-            Status_Box("Feeling Groovy.");
+            Status_Box(NULL, FALSE);
         }
 
         Gui_Draw_Button_Box(0, 6, 16, 16, "\011", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
@@ -2256,7 +2288,7 @@ int Screen_Update(void)
     if(Check_Requester(&Exit_Requester) == 1)
     {
         Song_Stop();
-        Status_Box("Seppuku...");
+        Status_Box("Seppuku...", FALSE);
         return(FALSE);
     }
 
@@ -2466,7 +2498,7 @@ void Load_File(int Freeindex, const char *str)
                (extension_AIFF[0] == FormID &&
                 extension_AIFF[2] == AifcID))
             {
-                Status_Box("Attempting To Load An Audio IFF File...");
+                Status_Box("Attempting To Load An Audio IFF File...", TRUE);
                 if(AIFF_File.Open(FileName))
                 {
                     int bits = AIFF_File.BitsPerSample();
@@ -2474,7 +2506,7 @@ void Load_File(int Freeindex, const char *str)
 
                     if(channels != 1 && channels != 2)
                     {
-                        Status_Box(TITLE " Can Only Load Mono Or Stereo Samples.");
+                        Status_Box(TITLE " Can Only Load Mono Or Stereo Samples.", TRUE);
                     }
                     else
                     {
@@ -2485,7 +2517,7 @@ void Load_File(int Freeindex, const char *str)
                            bits != 32 &&
                            bits != 64)
                         {
-                            Status_Box(TITLE " Can Only Load 8, 12, 16, 24, 32 Or 64 Bit Samples.");
+                            Status_Box(TITLE " Can Only Load 8, 12, 16, 24, 32 Or 64 Bit Samples.", TRUE);
                         }
                         else
                         {
@@ -2543,22 +2575,22 @@ void Load_File(int Freeindex, const char *str)
                             switch(bits)
                             {
                                 case 64:
-                                    Status_Box("64 Bit Audio IFF PCM Converted Into 16 Bit Format.");
+                                    Status_Box("64 Bit Audio IFF PCM Converted Into 16 Bit Format.", TRUE);
                                     break;
                                 case 32:
-                                    Status_Box("32 Bit Audio IFF PCM Converted Into 16 Bit Format.");
+                                    Status_Box("32 Bit Audio IFF PCM Converted Into 16 Bit Format.", TRUE);
                                     break;
                                 case 24:
-                                    Status_Box("24 Bit Audio IFF PCM Converted Into 16 Bit Format.");
+                                    Status_Box("24 Bit Audio IFF PCM Converted Into 16 Bit Format.", TRUE);
                                     break;
                                 case 12:
-                                    Status_Box("12 Bit Audio IFF PCM Converted Into 16 Bit Format.");
+                                    Status_Box("12 Bit Audio IFF PCM Converted Into 16 Bit Format.", TRUE);
                                     break;
                                 case 8:
-                                    Status_Box("8 Bit Audio IFF PCM Converted Into 16 Bit Format.");
+                                    Status_Box("8 Bit Audio IFF PCM Converted Into 16 Bit Format.", TRUE);
                                     break;
                                 default:
-                                    Status_Box("16 Bit Audio IFF PCM Loaded.");
+                                    Status_Box("16 Bit Audio IFF PCM Loaded.", TRUE);
                                     break;
                             }
                             Unlock_Audio_Thread();
@@ -2569,12 +2601,12 @@ void Load_File(int Freeindex, const char *str)
                 }
                 else
                 {
-                    Status_Box("Corrupted Or Unsupported Audio IFF File.");
+                    Status_Box("Corrupted Or Unsupported Audio IFF File.", TRUE);
                 }
             }
             else
             {
-                Status_Box("Attempting to Load A RIFF File...");
+                Status_Box("Attempting to Load A RIFF File...", TRUE);
 
                 // We need the length
                 if(Wav_File.OpenForRead(FileName) == DDC_SUCCESS)
@@ -2583,7 +2615,7 @@ void Load_File(int Freeindex, const char *str)
                     int channels = Wav_File.NumChannels();
                     if(channels != 1 && channels != 2)
                     {
-                        Status_Box(TITLE " Can Only Load Mono Or Stereo Samples.");
+                        Status_Box(TITLE " Can Only Load Mono Or Stereo Samples.", TRUE);
                     }
                     else
                     {
@@ -2594,7 +2626,7 @@ void Load_File(int Freeindex, const char *str)
                            bits != 32 &&
                            bits != 64)
                         {
-                            Status_Box(TITLE " Can Only Load 8, 12, 16, 24, 32 Or 64 Bit Samples.");
+                            Status_Box(TITLE " Can Only Load 8, 12, 16, 24, 32 Or 64 Bit Samples.", TRUE);
                         }
                         else
                         {
@@ -2647,22 +2679,22 @@ void Load_File(int Freeindex, const char *str)
                             switch(bits)
                             {
                                 case 64:
-                                    Status_Box("64 Bit WAV PCM Converted Into 16 Bit Format.");
+                                    Status_Box("64 Bit WAV PCM Converted Into 16 Bit Format.", TRUE);
                                     break;
                                 case 32:
-                                    Status_Box("32 Bit WAV PCM Converted Into 16 Bit Format.");
+                                    Status_Box("32 Bit WAV PCM Converted Into 16 Bit Format.", TRUE);
                                     break;
                                 case 24:
-                                    Status_Box("24 Bit WAV PCM Converted Into 16 Bit Format.");
+                                    Status_Box("24 Bit WAV PCM Converted Into 16 Bit Format.", TRUE);
                                     break;
                                 case 12:
-                                    Status_Box("12 Bit WAV PCM Converted Into 16 Bit Format.");
+                                    Status_Box("12 Bit WAV PCM Converted Into 16 Bit Format.", TRUE);
                                     break;
                                 case 8:
-                                    Status_Box("8 Bit WAV PCM Converted Into 16 Bit Format.");
+                                    Status_Box("8 Bit WAV PCM Converted Into 16 Bit Format.", TRUE);
                                     break;
                                 default:
-                                    Status_Box("16 Bit WAV PCM Loaded.");
+                                    Status_Box("16 Bit WAV PCM Loaded.", TRUE);
                                     break;
                             }
                             Unlock_Audio_Thread();
@@ -2673,15 +2705,16 @@ void Load_File(int Freeindex, const char *str)
                 }
                 else
                 {
-                    Status_Box("Invalid File Format. I Only Accept '.wav' '.aiff' '.aifc' '.ptk' '.pti' '.303' '.pts' '.ppb' '.prv' '.mod' '.dbm' Or '.ft' Files.");
+                    Status_Box("Invalid File Format. I Only Accept '.wav' '.aiff' '.aifc' '.ptk' '.pti' '.303' '.pts' '.ppb' '.prv' '.mod' '.dbm' Or '.ft' Files.", TRUE);
                 }
             }
         }
         fclose(in);
+        Status_Box("File Loaded Successfully.", TRUE);
     }
     else
     {
-        Status_Box("File Loading Error. (Possible Cause: File Not Found)");
+        Status_Box("File Loading Error. (Possible Cause: File Not Found)", TRUE);
     }
     gui_action = GUI_CMD_NONE;
     Actualize_DiskIO_Ed(0);
@@ -2793,14 +2826,14 @@ void Notify_Play(void)
             Gui_Draw_Button_Box(8, 28, 39, 16, "\04", BUTTON_PUSHED | BUTTON_RIGHT_MOUSE | BUTTON_TEXT_CENTERED);
             Gui_Draw_Button_Box(49, 28, 39, 16, "\253", BUTTON_NORMAL | BUTTON_RIGHT_MOUSE | BUTTON_TEXT_CENTERED);
             Switch_Cmd_Playing();
-            Status_Box("Playing Song...");
+            Status_Box("Playing Song...", TRUE);
         }
         else
         {
             Gui_Draw_Button_Box(8, 28, 39, 16, "\04", BUTTON_NORMAL | BUTTON_RIGHT_MOUSE | BUTTON_TEXT_CENTERED);
             Gui_Draw_Button_Box(49, 28, 39, 16, "\253", BUTTON_PUSHED | BUTTON_RIGHT_MOUSE | BUTTON_TEXT_CENTERED);
             Switch_Cmd_Playing();
-            Status_Box("Playing Pattern...");
+            Status_Box("Playing Pattern...", TRUE);
         }
     }
     else
@@ -2817,7 +2850,7 @@ void Song_Stop(void)
     Ptk_Stop();
     Gui_Draw_Button_Box(8, 28, 39, 16, "\04", BUTTON_NORMAL | BUTTON_RIGHT_MOUSE | BUTTON_TEXT_CENTERED);
     Gui_Draw_Button_Box(49, 28, 39, 16, "\253", BUTTON_NORMAL | BUTTON_RIGHT_MOUSE | BUTTON_TEXT_CENTERED);
-    Status_Box("Feeling Groovy.");
+    Status_Box("Feeling Groovy.", TRUE);
     // Make sure the visuals stay
     Song_Position = Song_Position_Visual;
     Pattern_Line = Pattern_Line_Visual;
@@ -2993,7 +3026,7 @@ void New_Mod(void)
 
     Draw_Scope();
 
-    Status_Box("Zzaapp Done.");
+    Status_Box("Zzaapp Done.", TRUE);
 
     Refresh_UI_Context();
 
@@ -3212,7 +3245,7 @@ void Wav_Renderizer()
                     if(RF[j].OpenForWrite(buffer_name, 44100, rawrender_32float ? 32 : 16, 2) != DDC_SUCCESS)
                     {
                         sprintf(buffer, "Can't Open '%s' File.", buffer_name);
-                        Status_Box(buffer);
+                        Status_Box(buffer, TRUE);
                         return;
                     }
                     if(rawrender_range)
@@ -3241,7 +3274,7 @@ void Wav_Renderizer()
                     }
                     break;
             }
-            Status_Box(buffer);
+            Status_Box(buffer, TRUE);
 
             rawrender = TRUE;
 
@@ -3437,7 +3470,6 @@ Stop_WavRender:
                             float(filesize / 1048576.0f), minutes, seconds);
             break;
     }
-    Status_Box(buffer);
 
     // Return to the start as all the values will be trashed anyway.
     Pattern_Line = 0;
@@ -3451,7 +3483,7 @@ Stop_WavRender:
     Read_SMPT();
     Actualize_Files_List(0);
 
-    Status_Box(buffer);
+    Status_Box(buffer, TRUE);
     Update_Pattern(0);
 }
 
@@ -3479,7 +3511,7 @@ void Delete_Instrument(void)
         Actualize_Master(0);
         Final_Mod_Length = 0;
         Actualize_Synth_Ed(UPDATE_SYNTH_ED_ALL);
-        Status_Box("Synth Deleted.");
+        Status_Box("Synth Deleted.", TRUE);
     }
 
     if(ZzaappOMatic == ZZAAPP_SPLIT)
@@ -3496,7 +3528,7 @@ void Delete_Instrument(void)
             Synthprg[Current_Instrument] = 1;
         }
         Renew_Sample_Ed();
-        Status_Box("Instrument Deleted.");
+        Status_Box("Instrument Deleted.", TRUE);
         Refresh_Sample();
         Actualize_Master(0);
     }
@@ -3515,7 +3547,7 @@ void Delete_Instrument(void)
             Synthprg[Current_Instrument] = 1;
         }
         Renew_Sample_Ed();
-        Status_Box("Instrument Deleted.");
+        Status_Box("Instrument Deleted.", TRUE);
         Refresh_Sample();
         Actualize_Master(0);
     }
@@ -3637,7 +3669,7 @@ void ShowInfo(void)
                  nbr_samp, samp_size,
                  nbr_synth, 
                  nPatterns, patt_size);
-    Status_Box(tmp);
+    Status_Box(tmp, TRUE);
 }
 
 // ------------------------------------------------------
@@ -3648,6 +3680,15 @@ Uint32 Timer_CallBack(Uint32 interval, void *param)
     {
         Req_Timer++;
         if(Req_Timer > Req_TimeOut) Req_Pressed_Button = 1;
+    }
+
+    if(!Status_Box_Wait && Status_Box_Wait_Done == 0)
+    {
+        Status_Box_Wait_Done = 1;
+    }
+    if(Status_Box_Wait)
+    {
+        Status_Box_Wait--;
     }
 
     // Don't save during a requester

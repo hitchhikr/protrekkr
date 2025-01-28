@@ -104,6 +104,8 @@ int Startup_Height;
 int Resize_Width;
 int Resize_Height;
 int Burn_Title = FALSE;
+int global_argc;
+char global_argv[MAX_PATH];
 
 SDL_sem *thread_sema;
 SDL_Surface *Main_Screen;
@@ -696,18 +698,13 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
     }
 #endif
 
+    global_argc = argc;
+
     // Check if there's an argument
+    global_argv[0] = 0;
     if(argc != 1)
     {
-        Load_File(0, argv[1]);
-    }
-    else
-    {
-        // Nope: check if auto reload was turned on
-        if(AutoReload)
-        {
-            Load_File(0, Last_Used_Ptk);
-        }
+        strcpy(global_argv, argv[1]);
     }
 
     Resize_Width = Cur_Width;

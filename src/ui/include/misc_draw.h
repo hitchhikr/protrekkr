@@ -236,7 +236,7 @@ void Gui_Clear_Array(int x, int y, int sx, int sy);
 void bjbox(int x, int y, int sx, int sy);
 
 void Draw_Editors_Bar(int Highlight);
-void Status_Box(char const *str);
+void Status_Box(char const *str, int refresh);
 
 void Real_Slider(int x, int y, int val, int Enabled);
 void Real_Slider_Size(int x, int y, int size, int val, int Enabled);

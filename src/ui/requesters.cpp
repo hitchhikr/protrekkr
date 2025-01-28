@@ -66,6 +66,7 @@ GLuint Req_Picture_GL = -1;
 int Req_TimeOut;
 int Req_Timer;
 extern SDL_Event Events[MAX_EVENTS];
+extern int Burned_Title;
 
 // ------------------------------------------------------
 // Functions
@@ -440,4 +441,5 @@ void Kill_Requester(void)
     Env_Change = TRUE;
     Mouse.button = 0;
     Mouse.button_oneshot = 0;
+    Burned_Title = TRUE;
 }
