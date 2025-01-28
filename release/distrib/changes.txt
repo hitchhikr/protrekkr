@@ -6,15 +6,15 @@ v2.8.1
 
 - Channels LFO carriers are now properly reseted at playing start.
 - Channels LFO data can now be sent to the channel filter, volume and panning.
-- Added a channel LFO frequency multiplier.
+- Added a channel LFO frequency scale.
 - Added these effects:
   - 43: Set channel LFO frequency.
   - 44: Set channel LFO frequency scale ratio.
   - 45: Set channel LFO amount to send to the channel filter.
   - 46: Set channel LFO amount to send to the channel volume.
   - 47: Set channel LFO amount to send to the channel panning.
-- Fixed a very old bug where LFO values sent to the channels filter were lost 
-  because they were too big and clamped.
+- Fixed a very old NoiseTrekker bug where LFO values sent to the channels
+  filter were lost because they were too big and clamped.
 
 v2.8.0
 
