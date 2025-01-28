@@ -161,17 +161,17 @@ void Actualize_Track_Fx_Ed(char gode)
         // ----------------------
         if(gode == 0 || gode == 18 || gode == 15)
         {
-            if(LFO_RATE_MUL[Track_Under_Caret] < 1.0f) LFO_RATE_MUL[Track_Under_Caret] = 1.0f;
-            if(LFO_RATE_MUL[Track_Under_Caret] > 16.0f) LFO_RATE_MUL[Track_Under_Caret] = 16.0f;
+            if(LFO_RATE_SCALE[Track_Under_Caret] < 1.0f) LFO_RATE_SCALE[Track_Under_Caret] = 1.0f;
+            if(LFO_RATE_SCALE[Track_Under_Caret] > 16.0f) LFO_RATE_SCALE[Track_Under_Caret] = 16.0f;
             Real_Slider_Horiz(96 - 40 + 20, 
                               (Cur_Height - 134),
-                              (int) LFO_RATE_MUL[Track_Under_Caret],
+                              (int) LFO_RATE_SCALE[Track_Under_Caret],
                               2,
                               18,
                               62,
                               LFO_ON[Track_Under_Caret]);
             outfloat_small(96 - 40 + 20, (Cur_Height - 134), 
-                           LFO_RATE_MUL[Track_Under_Caret], 9,
+                           LFO_RATE_SCALE[Track_Under_Caret], 9,
                            62,
                            BUTTON_NORMAL | BUTTON_NO_BORDER | BUTTON_TEXT_CENTERED);
         }
@@ -182,7 +182,7 @@ void Actualize_Track_Fx_Ed(char gode)
             if(LFO_RATE[Track_Under_Caret] > 0.0078125f) LFO_RATE[Track_Under_Caret] = 0.0078125f;
             Real_Slider_Tiny(74, (Cur_Height - 116), 128, 10, (int) (LFO_RATE[Track_Under_Caret] * 16384.0f), LFO_ON[Track_Under_Caret]);
 
-            float tmprate = (8.1632653f / LFO_RATE[Track_Under_Caret]) * LFO_RATE_MUL[Track_Under_Caret];
+            float tmprate = (8.1632653f / LFO_RATE[Track_Under_Caret]) * LFO_RATE_SCALE[Track_Under_Caret];
             Print_Long(76, (Cur_Height - 68), (long) tmprate, 2);
             tmprate = 1000.0f / tmprate;
             outfloat(138, (Cur_Height - 68), tmprate, 3);
@@ -288,9 +288,9 @@ void Mouse_Sliders_Track_Fx_Ed(void)
         // LFO rate multiplier
         if(Check_Mouse(96 - 40 + 20, (Cur_Height - 134), 62, 16) && LFO_ON[Track_Under_Caret])
         {
-            LFO_RATE_MUL[Track_Under_Caret] = float(float(Mouse.x - (96 - 40 + 20 + 5)) / 3.0f);
-            if(LFO_RATE_MUL[Track_Under_Caret] < 1.0f) LFO_RATE_MUL[Track_Under_Caret] = 1.0f;
-            if(LFO_RATE_MUL[Track_Under_Caret] > 16.0f) LFO_RATE_MUL[Track_Under_Caret] = 16.0f;
+            LFO_RATE_SCALE[Track_Under_Caret] = float(float(Mouse.x - (96 - 40 + 20 + 5)) / 3.0f);
+            if(LFO_RATE_SCALE[Track_Under_Caret] < 1.0f) LFO_RATE_SCALE[Track_Under_Caret] = 1.0f;
+            if(LFO_RATE_SCALE[Track_Under_Caret] > 16.0f) LFO_RATE_SCALE[Track_Under_Caret] = 16.0f;
             gui_action = GUI_CMD_UPDATE_TRACK_FX_ED;
             teac = 18;
         }

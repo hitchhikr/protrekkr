@@ -569,7 +569,7 @@ float Cutoff(int v);
 float Reonance(float v);
 float Bandwidth(int v);
 float Apply_Lfo_To_Filter(float value, int channel);
-float Apply_Lfo_To_Volume(float value, int channel);
+float Apply_Lfo_To_Volume(int channel);
 float Apply_Lfo_To_Panning(float value, int channel);
 int Get_Free_Wave(void);
 char Check_Mouse_No_Button(int x, int y, int xs, int ys);

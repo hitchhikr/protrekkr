@@ -388,7 +388,7 @@ extern int Chan_Midi_Prg[MAX_TRACKS];
 
 extern char LFO_ON[MAX_TRACKS];
 extern float LFO_RATE[MAX_TRACKS];
-extern float LFO_RATE_MUL[MAX_TRACKS];
+extern float LFO_RATE_SCALE[MAX_TRACKS];
 extern float LFO_AMPL_FILTER[MAX_TRACKS];
 extern float LFO_AMPL_VOLUME[MAX_TRACKS];
 extern float LFO_AMPL_PANNING[MAX_TRACKS];

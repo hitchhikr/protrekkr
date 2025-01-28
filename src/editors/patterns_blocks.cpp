@@ -2595,7 +2595,7 @@ void Reset_Track(int Position, int Track)
 
     LFO_ON[Track] = 0;
     LFO_RATE[Track] = 0.0001f;
-    LFO_RATE_MUL[Track] = 1.0f;
+    LFO_RATE_SCALE[Track] = 1.0f;
     LFO_AMPL_FILTER[Track] = 0.0f;
     LFO_AMPL_VOLUME[Track] = 0.0f;
     LFO_AMPL_PANNING[Track] = 0.0f;
@@ -2709,7 +2709,7 @@ void Copy_Track(int Position, int Track_Src, int Track_Dst)
 
     LFO_ON[Track_Dst] = LFO_ON[Track_Src];
     LFO_RATE[Track_Dst] = LFO_RATE[Track_Src];
-    LFO_RATE_MUL[Track_Dst] = LFO_RATE_MUL[Track_Src];
+    LFO_RATE_SCALE[Track_Dst] = LFO_RATE_SCALE[Track_Src];
     LFO_AMPL_FILTER[Track_Dst] = LFO_AMPL_FILTER[Track_Src];
     LFO_AMPL_VOLUME[Track_Dst] = LFO_AMPL_VOLUME[Track_Src];
     LFO_AMPL_PANNING[Track_Dst] = LFO_AMPL_PANNING[Track_Src];

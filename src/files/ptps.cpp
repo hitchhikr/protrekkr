@@ -232,7 +232,7 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
     int Store_FX_ResetFilterLfo = FALSE;
     
     int Store_FX_SetLfoRate = FALSE;
-    int Store_FX_SetLfoMultiplier = FALSE;
+    int Store_FX_SetLfoScale = FALSE;
     int Store_FX_SetFilterLfo = FALSE;
     int Store_FX_SetVolumeLfo = FALSE;
     int Store_FX_SetPanningLfo = FALSE;
@@ -958,7 +958,7 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
 
                                 // $44 Set channel lfo multiplier value
                                 case 0x44:
-                                    Store_FX_SetLfoMultiplier = TRUE;
+                                    Store_FX_SetLfoScale = TRUE;
                                     break;
 
                                 // $45 Set channel filter lfo value
@@ -1082,7 +1082,7 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                               Store_FX_TranceGlider |
                               Store_FX_ResetFilterLfo |
                               Store_FX_SetLfoRate |
-                              Store_FX_SetLfoMultiplier |
+                              Store_FX_SetLfoScale |
                               Store_FX_SetFilterLfo |
                               Store_FX_SetVolumeLfo |
                               Store_FX_SetPanningLfo
@@ -1136,7 +1136,7 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
     Save_Constant("PTK_FX_RESETFILTERLFO", Store_FX_ResetFilterLfo);
 
     Save_Constant("PTK_FX_SETLFORATE", Store_FX_SetLfoRate);
-    Save_Constant("PTK_FX_SETLFOMULTIPLIER", Store_FX_SetLfoMultiplier);
+    Save_Constant("PTK_FX_SETLFOSCALE", Store_FX_SetLfoScale);
     Save_Constant("PTK_FX_SETFILTERLFO", Store_FX_SetFilterLfo);
     Save_Constant("PTK_FX_SETVOLUMELFO", Store_FX_SetVolumeLfo);
     Save_Constant("PTK_FX_SETPANNINGLFO", Store_FX_SetPanningLfo);
@@ -1967,7 +1967,7 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                 Write_Mod_Data(&LFO_AMPL_FILTER[twrite], sizeof(float), 1, in);
                 Write_Mod_Data(&LFO_AMPL_VOLUME[twrite], sizeof(float), 1, in);
                 Write_Mod_Data(&LFO_AMPL_PANNING[twrite], sizeof(float), 1, in);
-                Write_Mod_Data(&LFO_RATE_MUL[twrite], sizeof(float), 1, in);
+                Write_Mod_Data(&LFO_RATE_SCALE[twrite], sizeof(float), 1, in);
             }
         }
     }

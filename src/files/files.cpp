@@ -712,7 +712,7 @@ Read_Mod_File:
             {
                 Read_Mod_Data_Swap(&LFO_AMPL_VOLUME[twrite], sizeof(float), 1, in);
                 Read_Mod_Data_Swap(&LFO_AMPL_PANNING[twrite], sizeof(float), 1, in);
-                Read_Mod_Data_Swap(&LFO_RATE_MUL[twrite], sizeof(float), 1, in);
+                Read_Mod_Data_Swap(&LFO_RATE_SCALE[twrite], sizeof(float), 1, in);
             }
         }
         for(twrite = 0; twrite < MAX_TRACKS; twrite++)
@@ -1525,7 +1525,7 @@ int Save_Ptk(char *FileName, int NewFormat, int Simulate, Uint8 *Memory)
                 Write_Mod_Data_Swap(&LFO_AMPL_FILTER[twrite], sizeof(float), 1, in);
                 Write_Mod_Data_Swap(&LFO_AMPL_VOLUME[twrite], sizeof(float), 1, in);
                 Write_Mod_Data_Swap(&LFO_AMPL_PANNING[twrite], sizeof(float), 1, in);
-                Write_Mod_Data_Swap(&LFO_RATE_MUL[twrite], sizeof(float), 1, in);
+                Write_Mod_Data_Swap(&LFO_RATE_SCALE[twrite], sizeof(float), 1, in);
             }
 
             for(twrite = 0; twrite < MAX_TRACKS; twrite++)

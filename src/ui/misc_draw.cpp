@@ -1620,7 +1620,7 @@ void outfloat_small(int x, int y, float cant, int mode, int size, int flags)
         case 3: sprintf(xstr, "%.3f Hz", cant); break;
         case 5: sprintf(xstr, "%.3f K.", cant); break;
         case 8: sprintf(xstr, "%.1f Tk", cant); break;
-        case 9: sprintf(xstr, "x%.2f", cant); break;
+        case 9: sprintf(xstr, "%.2f", cant); break;
     }
     Gui_Draw_Button_Box(x, y, size - 1, 16, xstr, flags);
 }
