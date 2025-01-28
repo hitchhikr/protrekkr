@@ -26,11 +26,11 @@
 #include "../../include/sdl_draw.h"
 #endif
 
-#define SDL_DRAW_PUTPIXEL memset(p, color, x1-x0+1);
+#define SDL_DRAW_PUTPIXEL memset(p, color, x1 - x0 + 1);
 
 void STDCALL Draw_HLine(SDL_Surface *super,
-                      Sint16 x0,Sint16 y0, Sint16 x1,
-                      Uint32 color)
+                        Sint16 x0, Sint16 y0, Sint16 x1,
+                        Uint32 color)
 {
     Uint8 *p;
     Sint16 i;
@@ -41,25 +41,26 @@ void STDCALL Draw_HLine(SDL_Surface *super,
         x1 = x0; 
         x0 = i;
     }
-    p = (Uint8*) super->pixels + y0 * super->pitch + x0 * SDL_DRAW_BPP;
+    p = (Uint8 *) super->pixels + y0 * super->pitch + x0 * SDL_DRAW_BPP;
 
     /* Lock surface */
-    if(SDL_MUSTLOCK(super))
+/*    if(SDL_MUSTLOCK(super))
     {
         if(SDL_LockSurface(super) < 0)
         {
             return;
         }
     }
-  
+*/
     SDL_DRAW_PUTPIXEL
 
     /* Unlock surface */
-    if(SDL_MUSTLOCK(super))
+/*    if(SDL_MUSTLOCK(super))
     {
         SDL_UnlockSurface(super);
     }
-  
+*/
+
 }/*Draw_HLine*/
 
 #undef SDL_DRAW_PUTPIXEL
