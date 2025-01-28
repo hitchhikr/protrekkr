@@ -359,6 +359,7 @@ extern char Sample_Channels[MAX_INSTRS][MAX_INSTRS_SPLITS];         // Mono / St
 extern float TCut[MAX_TRACKS];
 extern float ICut[MAX_TRACKS];
 extern float TPan[MAX_TRACKS];
+extern float old_TPan[MAX_TRACKS];
 extern int FType[MAX_TRACKS];
 extern int FRez[MAX_TRACKS];
 extern float DThreshold[MAX_TRACKS];

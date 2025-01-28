@@ -56,6 +56,7 @@
 #endif
 
 int SamplesPerTick;
+float SQRT[1025];   // Sqrt float-precalculated table.
 
 #if !defined(__STAND_ALONE__) || defined(__WINAMP__)
     int Beats_Per_Min = 125;
@@ -158,6 +159,7 @@ float Default_Pan[MAX_TRACKS] =
 #endif
 
 float TPan[MAX_TRACKS];
+float old_TPan[MAX_TRACKS];
 int old_note[MAX_TRACKS][MAX_POLYPHONY];
 
 s_access sp_Position[MAX_TRACKS][MAX_POLYPHONY];
@@ -1256,6 +1258,12 @@ int STDCALL Ptk_InitDriver(void)
         SIN[i] = (float) sinf(i * 0.0174532f);
     }
 
+    // Initializing work panning
+    for(i = 0; i < 1025; i++)
+    {
+        SQRT[i] = (float) sqrtf(i / 1024.0f);
+    }
+
     #if defined(__STAND_ALONE__) && !defined(__WINAMP__)
         #if defined(PTK_USE_SPLINE)
             Spline_Init();
@@ -2274,6 +2282,7 @@ void Pre_Song_Init(void)
         FLANGER_OFFSET[ini] = 8192;
 
         TPan[ini] = Default_Pan[ini];
+        old_TPan[ini] = TPan[ini];
         TCut[ini] = 126.0f;
         ICut[ini] = 0.0039062f;
         FType[ini] = 4;
@@ -2434,6 +2443,7 @@ void Post_Song_Init(void)
 
         }
 
+        old_TPan[i] = TPan[i];
         sp_Tvol_Mod[i] = 1.0f;
 
         Player_FD[i] = 0.0f;
@@ -4064,7 +4074,7 @@ ByPass_Wav:
             All_Signal_R = -All_Signal_R;
         }
 
-        Compute_Stereo(c);
+        Compute_Stereo_Quick(c);
 
         All_Signal_L *= LVol[c];
         All_Signal_R *= RVol[c];
@@ -5929,25 +5939,17 @@ float Apply_Lfo_To_Panning(float value, int channel)
 {
     float temp_value;
 
-    if(LFO_ON[channel] == 1)
-    {
-        if(LFO_AMPL_PANNING[channel] != 0.0f)
-        {
-            // [-0.5f..0.5f]
-            value -= 0.5f;
-            // [-1.0f..1.0f]
-            value *= 2.0f;
-            temp_value = SIN[(int) (LFO_CARRIER_PANNING[channel])] * LFO_AMPL_PANNING[channel];
-            temp_value /= 128.0f;
-            value *= temp_value;
-            // [-0.5f..0.5f]
-            value *= 0.5f;
-            // [0.0f..1.0f]
-            value += 0.5f;
-        }
-        LFO_CARRIER_PANNING[channel] += LFO_RATE[channel] * LFO_RATE_SCALE[channel];
-        if(LFO_CARRIER_PANNING[channel] >= 360.0f) LFO_CARRIER_PANNING[channel] -= 360.0f;
-    }
+    // [-0.5f..0.5f]
+    value -= 0.5f;
+    // [-1.0f..1.0f]
+    value *= 2.0f;
+    temp_value = SIN[(int) (LFO_CARRIER_PANNING[channel])] * LFO_AMPL_PANNING[channel];
+    temp_value /= 128.0f;
+    value *= temp_value;
+    // [-0.5f..0.5f]
+    value *= 0.5f;
+    // [0.0f..1.0f]
+    value += 0.5f;
 
     if(value < 0.0f) value = 0.0f;
     if(value > 1.0f) value = 1.0f;
@@ -5956,17 +5958,47 @@ float Apply_Lfo_To_Panning(float value, int channel)
 #endif
 
 // ------------------------------------------------------
+// Set stereo panning only when necessary
+void Compute_Stereo_Quick(int channel)
+{
+    float pan_value;
+    int changed = FALSE;
+
+    pan_value = TPan[channel];
+    if(old_TPan[channel] != TPan[channel])
+    {
+        old_TPan[channel] = TPan[channel];
+        changed = TRUE;
+    }
+
+#if defined(PTK_LFO)
+    if(LFO_ON[channel] == 1)
+    {
+        // Check if not 'Off'
+        if(LFO_AMPL_PANNING[channel] != 0.0f)
+        {
+            pan_value = Apply_Lfo_To_Panning(pan_value, channel);
+            LFO_CARRIER_PANNING[channel] += LFO_RATE[channel] * LFO_RATE_SCALE[channel];
+            if(LFO_CARRIER_PANNING[channel] >= 360.0f) LFO_CARRIER_PANNING[channel] -= 360.0f;
+            changed = TRUE;
+        }
+    }
+#endif
+    
+    if(changed)
+    {
+        Old_LVol[channel] = SQRT[(int) ((1.0f - pan_value) * 1024.0f)];
+        Old_RVol[channel] = SQRT[(int) (pan_value * 1024.0f)];
+    }
+
+}
+
+// ------------------------------------------------------
 // Set stereo panning
 void Compute_Stereo(int channel)
 {
-    float pan_value;
-#if defined(PTK_LFO)
-    pan_value = Apply_Lfo_To_Panning(TPan[channel], channel);
-#else
-    pan_value = TPan[channel];
-#endif
-    Old_LVol[channel] = sqrtf((1.0f - pan_value));
-    Old_RVol[channel] = sqrtf((pan_value));
+    Old_LVol[channel] = SQRT[(int) ((1.0f - TPan[channel]) * 1024.0f)];
+    Old_RVol[channel] = SQRT[(int) (TPan[channel] * 1024.0f)];
 }
 
 // ------------------------------------------------------
@@ -7475,6 +7507,11 @@ float Process_Sample(short *Data, int c, int i, unsigned int res_dec)
 }
 
 #if defined(USE_FASTPOW)
+void ToFloat(int *dest, int val)
+{
+    *dest = val;
+}
+
 #if defined(__PSP__)
 float FastPow2(float x)
 {
@@ -7487,41 +7524,7 @@ float FastPow2(float x)
 	: "=r"(result) : "r"(x));
 	return result;
 }
-void ToFloat(int *dest, int val)
-{
-    *dest = val;
-}
-float FastLog(float i)
-{
-	float x;
-	float y;
-	x = (float) (*(int *) &i);
-	x *= 1.0f / (1 << 23);
-	x = x - 127;
-	y = x - floorf(x);
-	y = (y - y * y) * 0.346607f;
-	return x + y;
-}
-float FastPow(float a, float b)
-{
-    return FastPow2(b * FastLog(a));
-}
 #else
-void ToFloat(int *dest, int val)
-{
-    *dest = val;
-}
-float FastLog(float i)
-{
-	float x;
-	float y;
-	x = (float) (*(int *) &i);
-	x *= 1.0f / (1 << 23);
-	x = x - 127;
-	y = x - floorf(x);
-	y = (y - y * y) * 0.346607f;
-	return x + y;
-}
 float FastPow2(float i)
 {
 	float x;
@@ -7532,11 +7535,23 @@ float FastPow2(float i)
 	ToFloat((int *) &x, (int) x);
     return x;
 }
+#endif
+
+float FastLog(float i)
+{
+	float x;
+	float y;
+	x = (float) (*(int *) &i);
+	x *= 1.0f / (1 << 23);
+	x = x - 127;
+	y = x - floorf(x);
+	y = (y - y * y) * 0.346607f;
+	return x + y;
+}
 float FastPow(float a, float b)
 {
     return FastPow2(b * FastLog(a));
 }
-#endif
 #endif
 
 #if defined(PTK_TRACK_EQ)

@@ -2580,6 +2580,7 @@ void Reset_Track(int Position, int Track)
     Channels_Effects[Track] = 1;
 
     TPan[Track] = Default_Pan[Track];
+    old_TPan[Track] = TPan[Track];
 
     TCut[Track] = 126.0f;
     ICut[Track] = 0.0039062f;
@@ -2685,6 +2686,7 @@ void Copy_Track(int Position, int Track_Src, int Track_Dst)
     mas_comp_ratio_Track[Track_Dst] = mas_comp_ratio_Track[Track_Src];
 
     TPan[Track_Dst] = TPan[Track_Src];
+    old_TPan[Track_Dst] = old_TPan[Track_Src];
     TCut[Track_Dst] = TCut[Track_Src];
     ICut[Track_Dst] = ICut[Track_Src];
     FType[Track_Dst] = FType[Track_Src];

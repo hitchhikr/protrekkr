@@ -578,6 +578,7 @@ char Check_Mouse(int x, int y, int xs, int ys);
 void Init_Synth_Params_Names(void);
 void UpSynth(int peac,int number);
 void Compute_Stereo(int channel);
+void Compute_Stereo_Quick(int channel);
 void Fix_Stereo(int channel);
 void Keyboard_Handler(void);
 void Mouse_Handler(void);
