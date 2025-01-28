@@ -2839,9 +2839,12 @@ void Sanitize_Sliders_Block(void)
                 case EFFECT4DATHI:
                     data = Get_Column_Data_With_Track(Channels_MultiNotes, Channels_Effects, Get_Song_Position(),
                                                       Track_Under_Caret, Column_Under_Caret - 2, Pattern_Line);
-                    if(data != 0)
+                    if((data != 0x31 && data != 0x32))
                     {
-                        Column_Under_Caret++;
+                        if(data != 0)
+                        {
+                            Column_Under_Caret++;
+                        }
                     }
                     break;
             }
@@ -2929,7 +2932,10 @@ void Set_Slider_Value(int delta)
                                 case EFFECT4DATHI:
                                     fx = Get_Pattern_Column(Position, xbc - 2, ybc) & 0xf0;
                                     fx |= Get_Pattern_Column(Position, xbc - 1, ybc) & 0xf;
-                                    if(!fx) goto No_Update;
+                                    if(!fx || (fx == 0x31) || (fx == 0x32))
+                                    {
+                                        goto No_Update;
+                                    }
                                     data += delta;
                                     if(data > 0xff) data = 0xff;
                                     break;
@@ -2993,7 +2999,10 @@ No_Update:;
             case EFFECT4DATHI:
                 fx = Get_Column_Data_With_Track(Channels_MultiNotes, Channels_Effects, Get_Song_Position(),
                                                 Track_Under_Caret, Current_Column - 2, Pattern_Line);
-                if(!fx) goto No_Up_Line;
+                if(!fx || (fx == 0x31) || (fx == 0x32))
+                {
+                    goto No_Up_Line;
+                }
                 data += delta;
                 if(data > 0xff) data = 0xff;
                 break;

@@ -1023,6 +1023,10 @@ Done_Vol_Slider:;
                 // Third nibble
                 if(pattern_sliders)
                 {
+                    if((p_e[i] == 0x31 || p_e[i] == 0x32))
+                    {
+                        goto No_Slider_Effect_Hi;
+                    }
                     if(p_d != 255 && ((p_d | p_dh) > 0x80) && ((p_d | p_dh) != 0x90))
                     {
                         goto No_Slider_Effect_Hi;
@@ -1070,6 +1074,10 @@ No_Slider_Effect_Hi:
                 // Fourth nibble
                 if(pattern_sliders)
                 {
+                    if((p_e[i] == 0x31 || p_e[i] == 0x32))
+                    {
+                        goto No_Slider_Effect_Lo;
+                    }
                     if(p_d != 255 && ((p_d | p_dh) > 0x80) && ((p_d | p_dh) != 0x90))
                     {
                         goto No_Slider_Effect_Lo;
@@ -1726,6 +1734,10 @@ Done_Panning_Sliders:
 
                 if(pattern_sliders && p_e[i])
                 {
+                    if((p_e[i] == 0x31 || p_e[i] == 0x32))
+                    {
+                        goto No_Slider_Effect;
+                    }
                     if(p_d != 255 && ((p_d | p_dh) > 0x80) && ((p_d | p_dh) != 0x90))
                     {
                         goto No_Slider_Effect;
@@ -4117,9 +4129,12 @@ void Goto_Previous_Column(void)
             case EFFECT4DATLO:
                 data = Get_Column_Data_With_Track(Channels_MultiNotes, Channels_Effects, Get_Song_Position(),
                                                   Track_Under_Caret, Column_Under_Caret - 3, Pattern_Line);
-                if(data != 0)
+                if((data != 0x31 && data != 0x32))
                 {
-                    Column_Under_Caret--;
+                    if(data != 0)
+                    {
+                        Column_Under_Caret--;
+                    }
                 }
                 break;
         }
@@ -4165,9 +4180,12 @@ void Goto_Next_Column(void)
             case EFFECT4DATHI:
                 data = Get_Column_Data_With_Track(Channels_MultiNotes, Channels_Effects, Get_Song_Position(),
                                                   Track_Under_Caret, Column_Under_Caret - 2, Pattern_Line);
-                if(data != 0)
+                if((data != 0x31 && data != 0x32))
                 {
-                    Column_Under_Caret++;
+                    if(data != 0)
+                    {
+                        Column_Under_Caret++;
+                    }
                 }
                 break;
         }
@@ -4522,11 +4540,14 @@ void Set_Slider_Value_By_Mouse(int track, int column, int column_x_coords, int l
                     // Check the effect number (can't set a value if there's no effect)
                     data = Get_Column_Data_With_Track(Channels_MultiNotes, Channels_Effects, Get_Song_Position(),
                                                       track, column - 2, line_number);
-                    if(data)
+                    if((data != 0x31 && data != 0x32))
                     {
-                        Set_Column_Data_With_Track(Channels_MultiNotes, Channels_Effects, Get_Song_Position(), track,
-                                                   column, line_number, (int) slider_offset);
-                        Update_Pattern(0);
+                        if(data)
+                        {
+                            Set_Column_Data_With_Track(Channels_MultiNotes, Channels_Effects, Get_Song_Position(), track,
+                                                       column, line_number, (int) slider_offset);
+                            Update_Pattern(0);
+                        }
                     }
                 }
             }

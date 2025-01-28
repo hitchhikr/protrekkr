@@ -7376,7 +7376,7 @@ void Draw_Scope(void)
     if(Scopish == SCOPE_ZONE_SCOPE)
     {
         SetColor(COL_BACKGROUND);
-        Fillrect(394, 42, Cur_Width, 179);
+        Fillrect(394, 42, Cur_Width - 1, 179);
 
         cur_pos_x = 0;
         if(Scopish_LeftRight)
@@ -7566,7 +7566,7 @@ void Draw_VuMeters(void)
     int start_pos_x;
 
     SetColor(COL_BACKGROUND);
-    Fillrect(394, 42, Cur_Width, 179);
+    Fillrect(394, 42, Cur_Width - 1, 179);
 
     // Tracks
     ptrTbl_Dat = &Scope_Table_Dats[Scope_Table[Song_Tracks].offset];
@@ -7716,6 +7716,7 @@ void Draw_Scope_Files_Button(void)
             Gui_Draw_Button_Box(394, 24, Cur_Width - 522, 16, NULL, BUTTON_NORMAL | BUTTON_DISABLED);
             Gui_Draw_Button_Box(Cur_Width - 72, 6, 16, 16, "\215", BUTTON_PUSHED | BUTTON_TEXT_CENTERED);
             Gui_Draw_Button_Box(Cur_Width - 54, 6, 16, 16, "\255", BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
+            
             Display_Dirs_Icons(0);
             break;
 

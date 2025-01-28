@@ -657,7 +657,9 @@ void Dump_Files_List(int xr, int yr)
         case SCOPE_ZONE_MIDICFG_DIR:
         case SCOPE_ZONE_SAMPLE_DIR:
             SetColor(COL_BACKGROUND);
-            bjbox(xr - 1, yr + 1, Cur_Width - 412, 137);
+            bjbox(xr - 1, yr + 1, Cur_Width - 413, 137);
+            SetColor(COL_BLACK);
+            bjbox(Cur_Width - 19, yr + 1, 1, 137);
 
             // Current dir background
             Gui_Draw_Button_Box(394, 24, Cur_Width - 522, 16, NULL, BUTTON_NORMAL | BUTTON_DISABLED);
@@ -699,7 +701,7 @@ void Dump_Files_List(int xr, int yr)
                         if(y + counter == lt_curr[Scopish])
                         {
                             SetColor(COL_PUSHED_MED);
-                            bjbox(xr - 1, yr + (counter * space) + 2, (Cur_Width - 413), space);
+                            bjbox(xr, yr + (counter * space) + 2, (Cur_Width - 415), space);
                         }
 
                         switch(Get_FileType(rel_val))
