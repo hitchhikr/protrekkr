@@ -55,6 +55,8 @@
     extern SDL_sem *thread_sema;
 #endif
 
+void Compute_Stereo_Quick(int channel);
+
 int SamplesPerTick;
 float SQRT[1025];   // Sqrt float-precalculated table.
 
@@ -5984,7 +5986,7 @@ void Compute_Stereo_Quick(int channel)
         }
     }
 #endif
-    
+
     if(changed)
     {
         Old_LVol[channel] = SQRT[(int) ((1.0f - pan_value) * 1024.0f)];

@@ -1,0 +1,28 @@
+CC = g++
+AS = as
+AR = ar
+STRIP = strip
+LIBS = -lptkreplay -lpthread
+FLAGS = -Ofast -fno-strict-aliasing -Wno-multichar -ffast-math -D __AMIGAOS4__ -D __BIG_ENDIAN__ -D __GCC__ \
+        -D __MOT_SWAP__ -D __STAND_ALONE__
+EXEOBJS = test.o module.o
+
+all: ptkreplay replaytest
+clean: remobj
+
+remobj:
+	-rm -f $(EXEOBJS)
+
+replaytest: $(EXEOBJS)
+	$(CC) -o $(@) -L./ $(FLAGS) $(EXEOBJS) $(LIBS)
+	$(STRIP) --strip-unneeded $(@)
+	-rm -f $(EXEOBJS)
+
+test.o: test/test_aos4.cpp
+	$(CC) -c -o $(@) $(FLAGS) test/test_aos4.cpp
+
+module.o: test/module.s
+	$(AS) -o $(@) test/module.s
+
+# the library itself #
+include lib/makefile.aos4

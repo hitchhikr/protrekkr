@@ -34,6 +34,8 @@
 
 // ------------------------------------------------------
 // Includes
+#include <exec/exec.h>
+#include <exec/memory.h>
 #include <devices/ahi.h>
 #include <proto/exec.h>
 #include <stdio.h>
