@@ -1,6 +1,6 @@
 CXX = g++ -mcrt=newlib
 
-LIBS = -lSDL -lsdldraw -lz -lpthread -lunix
+LIBS = -lSDL -lz -lpthread -lunix
 
 FLAGS = -Ofast -w -fno-strict-aliasing -ffast-math -fno-rtti -fno-exceptions -Lsrc/extralibs/sdl_draw -Lsrc/extralibs/zlib-1.2.3 \
         -D __AMIGAOS4__ -D __GCC__ -D __BIG_ENDIAN__ -D __MOT_SWAP__ -D __NO_MIDI__
@@ -19,7 +19,7 @@ EXEOBJS = ptk.o \
           misc_draw.o draw_primitives.o requesters.o \
           samples_ops.o aiff.o riff.o \
           spline.o tb_303.o wavpack.o samples_unpack.o replay.o synth.o endianness.o \
-          sounddriver_aos4.o
+          sounddriver_aos4.o draw_hline.o draw_pixel.o draw_vline.o
 LIBOBJS = midi.o \
           spline.o tb_303.o wavpack.o samples_unpack.o replay.o synth.o endianness.o \
           sounddriver_aos4.o
@@ -190,3 +190,12 @@ wputils.o: src/samples/wavpack/wputils.cpp
 
 tinypack.o: src/samples/wavpack/tinypack.cpp
 	$(CXX) -c -o $(@) $(FLAGS) $<
+
+draw_hline.o: src/extralibs/sdl_draw/src/draw_hline.cpp
+	$(CXX) -c -o $(@) -D__GCC__ -D __LINUX__ $(FLAGS) $<
+
+draw_pixel.o: src/extralibs/sdl_draw/src/draw_pixel.cpp
+	$(CXX) -c -o $(@) -D__GCC__ -D __LINUX__ $(FLAGS) $<
+
+draw_vline.o: src/extralibs/sdl_draw/src/draw_vline.cpp
+	$(CXX) -c -o $(@) -D__GCC__ -D __LINUX__ $(FLAGS) $<

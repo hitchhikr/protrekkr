@@ -26,33 +26,30 @@
 #include "../../include/sdl_draw.h"
 #endif
 
-#define SDL_DRAW_PUTPIXEL_BPP(A, B, C)  \
-*(A(B(Uint8*)super->pixels + y*super->pitch + x*SDL_DRAW_BPP))=C;
+#define SDL_DRAW_PUTPIXEL_BPP(A, B, C) *(A(B(Uint8*)super->pixels + y*super->pitch + x*SDL_DRAW_BPP))=C;
 
-#if SDL_DRAW_BPP == 1
 #define SDL_DRAW_PUTPIXEL SDL_DRAW_PUTPIXEL_BPP(0+,0+,(Uint8)color)
 
-#elif SDL_DRAW_BPP == 4
-#define SDL_DRAW_PUTPIXEL SDL_DRAW_PUTPIXEL_BPP((Uint32*),0+,color)
-
-#endif /*SDL_DRAW_BPP*/
-
-void STDCALL Draw_Pixel(SDL_Surface *super,
-                      Sint16 x, Sint16 y, Uint32 color)
+void STDCALL Draw_Pixel(SDL_Surface *super, Sint16 x, Sint16 y, Uint32 color)
 {
-  /* Lock surface */
-  if (SDL_MUSTLOCK(super)) {
-      if (SDL_LockSurface(super) < 0)  { return; }
-  }
+    /* Lock surface */
+    if (SDL_MUSTLOCK(super))
+    {
+        if(SDL_LockSurface(super) < 0)
+        {
+            return; 
+        }
+    }
   
-  SDL_DRAW_PUTPIXEL
+    SDL_DRAW_PUTPIXEL
 
-  /* Unlock surface */
-  if (SDL_MUSTLOCK(super))  { SDL_UnlockSurface(super); }
+    /* Unlock surface */
+    if (SDL_MUSTLOCK(super))
+    { 
+        SDL_UnlockSurface(super);
+    }
   
 }/*Draw_Pixel*/
 
-
 #undef SDL_DRAW_PUTPIXEL
 #undef SDL_DRAW_PUTPIXEL_BPP
-

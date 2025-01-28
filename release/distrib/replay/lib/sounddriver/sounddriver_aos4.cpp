@@ -160,7 +160,7 @@ int AUDIO_Init_Driver(void (*Mixer)(Uint8 *, Uint32))
                                                              ASOIOR_Size, sizeof(struct AHIRequest),
                                                              TAG_END);
     join = NULL;
-    if(!AHIio || !AHIio2)
+    if (!AHIio || !AHIio2)
     {
 
 #if !defined(__STAND_ALONE__) && !defined(__WINAMP__)
@@ -172,7 +172,7 @@ int AUDIO_Init_Driver(void (*Mixer)(Uint8 *, Uint32))
     AHIio->ahir_Version = 4;
 
     // Open ahi AHI_NO_UNIT
-    if(IExec->OpenDevice(AHINAME, AHI_DEFAULT_UNIT, (struct IORequest *) AHIio, 0))
+    if (IExec->OpenDevice(AHINAME, AHI_DEFAULT_UNIT, (struct IORequest *) AHIio, 0))
     {
         AHIio->ahir_Std.io_Device = NULL;
 
@@ -208,7 +208,7 @@ int AUDIO_Create_Sound_Buffer(int milliseconds)
     AHIbuf = (short *) IExec->AllocVecTags(AUDIO_SoundBuffer_Size << 1, AVT_Type, MEMF_SHARED, TAG_END);
     AHIbuf2 = (short *) IExec->AllocVecTags(AUDIO_SoundBuffer_Size << 1, AVT_Type, MEMF_SHARED, TAG_END);
     
-    if(!AHIbuf || !AHIbuf2)
+    if (!AHIbuf || !AHIbuf2)
     {
 
 #if !defined(__STAND_ALONE__) && !defined(__WINAMP__)
@@ -217,6 +217,9 @@ int AUDIO_Create_Sound_Buffer(int milliseconds)
 
         return(FALSE);
     }
+
+    memset(AHIbuf, 0, AUDIO_SoundBuffer_Size << 1);
+    memset(AHIbuf2, 0, AUDIO_SoundBuffer_Size << 1);
     
     Thread_Running = 1;
 
@@ -349,7 +352,7 @@ void AUDIO_Stop_Driver(void)
 {
     AUDIO_Stop_Sound_Buffer();
 
-    if(AHIio && AHIio->ahir_Std.io_Device)
+    if (AHIio && AHIio->ahir_Std.io_Device)
     {
         IExec->CloseDevice((struct IORequest *) AHIio);
     }

@@ -26,66 +26,40 @@
 #include "../../include/sdl_draw.h"
 #endif
 
-#if SDL_DRAW_BPP == 1
-#define SDL_DRAW_PUTPIXEL \
-  memset(p, color, x1-x0+1);
-
-#elif SDL_DRAW_BPP == 4
-
-#ifdef __LINUX__
-#define SDL_DRAW_WMEMSET_START \
-if (sizeof(wchar_t) == sizeof(Uint32)) { \
-  wmemset((wchar_t*)p, color, x1-x0+1);  \
-} else {
-#define SDL_DRAW_WMEMSET_END }
-#else
-#define SDL_DRAW_WMEMSET_START
-#define SDL_DRAW_WMEMSET_END
-#endif
-
-#define SDL_DRAW_PUTPIXEL \
-SDL_DRAW_WMEMSET_START                   \
-  i = x1-x0+1;                           \
-  switch( i % 4 ) {                      \
-    do{                                  \
-      case 0: *(Uint32*)p = color; p+=4; \
-      case 3: *(Uint32*)p = color; p+=4; \
-      case 2: *(Uint32*)p = color; p+=4; \
-      case 1: *(Uint32*)p = color; p+=4; \
-    }while( (i-=4) > 0 );                \
-  }                                      \
-SDL_DRAW_WMEMSET_END
-
-#endif /*SDL_DRAW_BPP*/
-
+#define SDL_DRAW_PUTPIXEL memset(p, color, x1-x0+1);
 
 void STDCALL Draw_HLine(SDL_Surface *super,
                       Sint16 x0,Sint16 y0, Sint16 x1,
                       Uint32 color)
 {
+    Uint8 *p;
+    Sint16 i;
 
-  Uint8 *p;
-  Sint16 i;
+    if(x0 > x1)
+    {
+        i = x1;
+        x1 = x0; 
+        x0 = i;
+    }
+    p = (Uint8*) super->pixels + y0 * super->pitch + x0 * SDL_DRAW_BPP;
 
-  if (x0 > x1) { i=x1; x1=x0; x0=i; }
-  p = (Uint8*) super->pixels + y0 * super->pitch + x0 * SDL_DRAW_BPP;
-
-  /* Lock surface */
-  if(SDL_MUSTLOCK(super)) {
-      if(SDL_LockSurface(super) < 0)  { return; }
-  }
+    /* Lock surface */
+    if(SDL_MUSTLOCK(super))
+    {
+        if(SDL_LockSurface(super) < 0)
+        {
+            return;
+        }
+    }
   
-  SDL_DRAW_PUTPIXEL
+    SDL_DRAW_PUTPIXEL
 
-  /* Unlock surface */
-  if (SDL_MUSTLOCK(super))  { SDL_UnlockSurface(super); }
+    /* Unlock surface */
+    if(SDL_MUSTLOCK(super))
+    {
+        SDL_UnlockSurface(super);
+    }
   
 }/*Draw_HLine*/
 
-
 #undef SDL_DRAW_PUTPIXEL
-#undef SDL_DRAW_PUTPIXEL_BPP_3_AUX
-
-#undef SDL_DRAW_WMEMSET_START
-#undef SDL_DRAW_WMEMSET_END
-

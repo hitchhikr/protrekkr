@@ -26,7 +26,6 @@
 #include "../../include/sdl_draw.h"
 #endif
 
-#if SDL_DRAW_BPP == 1
 #define SDL_DRAW_PUTPIXEL  \
   i = y1-y0+1;                             \
   switch( i % 4 ) {                        \
@@ -38,43 +37,40 @@
     }while( (i-=4) > 0 );                  \
   }
 
-#elif SDL_DRAW_BPP == 4
-#define SDL_DRAW_PUTPIXEL \
-  i = y1-y0+1;                                      \
-  switch( i % 4 ) {                                 \
-    do{                                             \
-      case 0: *(Uint32*)p = color; p+=super->pitch; \
-      case 3: *(Uint32*)p = color; p+=super->pitch; \
-      case 2: *(Uint32*)p = color; p+=super->pitch; \
-      case 1: *(Uint32*)p = color; p+=super->pitch; \
-    }while( (i-=4) > 0 );                           \
-  }
-
-#endif /*SDL_DRAW_BPP*/
-
-
 void STDCALL Draw_VLine(SDL_Surface *super,
                       Sint16 x0,Sint16 y0, Sint16 y1,
                       Uint32 color)
 {
-  Uint8 *p;
-  Sint16 i;
+    Uint8 *p;
+    Sint16 i;
 
-  if (y0 > y1)  { i=y1; y1=y0; y0=i; }
-  p = (Uint8*)super->pixels + y0 * super->pitch + x0 * SDL_DRAW_BPP;
-
-  /* Lock surface */
-  if (SDL_MUSTLOCK(super)) {
-      if (SDL_LockSurface(super) < 0)  { return; }
-  }
+    if(y0 > y1)
+    {
+        i = y1;
+        y1 = y0; 
+        y0 = i;
+    }
   
-  SDL_DRAW_PUTPIXEL
+    p = (Uint8 *) super->pixels + y0 * super->pitch + x0 * SDL_DRAW_BPP;
 
-  /* Unlock surface */
-  if (SDL_MUSTLOCK(super))  { SDL_UnlockSurface(super); }
+    /* Lock surface */
+    if(SDL_MUSTLOCK(super))
+    {
+        if(SDL_LockSurface(super) < 0)
+        { 
+            return; 
+        }
+    }
+  
+    SDL_DRAW_PUTPIXEL
+
+    /* Unlock surface */
+    if(SDL_MUSTLOCK(super))
+    { 
+        SDL_UnlockSurface(super); 
+    }
   
 }/*Draw_VLine*/
-
 
 #undef SDL_DRAW_PUTPIXEL
 #undef SDL_DRAW_PUTPIXEL_BPP_3_AUX

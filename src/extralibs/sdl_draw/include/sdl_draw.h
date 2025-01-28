@@ -35,11 +35,7 @@
 #endif
 
 void STDCALL Draw_Pixel(SDL_Surface *super, Sint16 x, Sint16 y, Uint32 color);
-
-void STDCALL Draw_HLine(SDL_Surface *super, Sint16 x0,Sint16 y0, Sint16 x1,
-Uint32 color);
-
-void STDCALL Draw_VLine(SDL_Surface *super, Sint16 x0,Sint16 y0, Sint16 y1,
-Uint32 color);
+void STDCALL Draw_HLine(SDL_Surface *super, Sint16 x0,Sint16 y0, Sint16 x1, Uint32 color);
+void STDCALL Draw_VLine(SDL_Surface *super, Sint16 x0,Sint16 y0, Sint16 y1, Uint32 color);
 
 #endif /* SDL_DRAW_H */
