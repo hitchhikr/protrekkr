@@ -3156,7 +3156,6 @@ int Must_Render_Track(int Idx)
 void Wav_Renderizer()
 {
     play_pattern = FALSE;
-    reset_carriers = TRUE;
     char buffer[MAX_PATH];
     char buffer_name[MAX_PATH];
     int Save_Chan_Mute_State[MAX_TRACKS];
@@ -3243,8 +3242,6 @@ void Wav_Renderizer()
                     break;
             }
             Status_Box(buffer);
-            SDL_UpdateRect(Main_Screen, 0, 0, 0, 0);
-            SDL_Delay(10);
 
             rawrender = TRUE;
 
@@ -3275,6 +3272,7 @@ void Wav_Renderizer()
             {
                 Chan_Mute_State[j] = FALSE;
             }
+            reset_carriers = TRUE;
 
             switch(rawrender_target)
             {
@@ -3387,6 +3385,8 @@ void Wav_Renderizer()
 
 Stop_WavRender:
     Song_Stop();
+    reset_carriers = TRUE;
+
     Post_Song_Init();
     Song_Playing = FALSE;
 

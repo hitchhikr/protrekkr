@@ -1111,6 +1111,41 @@ int Redraw_Screen(void)
 }
 
 // ------------------------------------------------------
+// Redraw the screen quickly (this is used to update the status box)
+void Redraw_Screen_Quick(void)
+{
+
+#if !defined(__USE_OPENGL__)
+        // Flush all pending blits
+        if(Nbr_Update_Rects)
+        {
+           SDL_UpdateRects(Main_Screen, Nbr_Update_Rects, Update_Stack);
+        }
+        Nbr_Update_Rects = 0;
+#endif
+
+#if defined(__USE_OPENGL__)
+        Leave_2d_Mode();
+
+#if !defined(__WIN32__) && !defined(__AROS__)
+        glDrawBuffer(GL_FRONT);
+        glRasterPos2f(-1.0f, -1.0f);
+        glCopyPixels(0, 0, Cur_Width, Cur_Height, GL_COLOR);
+        glDrawBuffer(GL_BACK);
+        glFinish();
+#else
+        SDL_GL_SwapBuffers();
+#endif
+
+#endif
+
+#if defined(__USE_OPENGL__)
+        Enter_2D_Mode(Cur_Width, Cur_Height);
+#endif
+
+}
+
+// ------------------------------------------------------
 // Swap window/fullscreen mode
 int Switch_FullScreen(int Width, int Height, int Refresh, int Force_Window_Mode)
 {
