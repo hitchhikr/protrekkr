@@ -478,9 +478,7 @@ extern int delay_time;
 extern int DelayType;
 #endif
 
-#if defined(PTK_TRACK_EQ)
 extern EQSTATE EqDat[MAX_TRACKS];
-#endif
 
 // ------------------------------------------------------
 // Functions

@@ -142,9 +142,7 @@ int64 Vstep1[MAX_TRACKS][MAX_POLYPHONY];
     int64 glidestep[MAX_TRACKS];
 #endif
 
-#if defined(PTK_TRACK_EQ)
 EQSTATE EqDat[MAX_TRACKS];
-#endif
 
 #if !defined(__STAND_ALONE__)
 float Default_Pan[MAX_TRACKS] =
