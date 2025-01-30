@@ -35,7 +35,9 @@
 #include "include/files_list.h"
 
 #if defined(__WIN32__)
+#if !defined(__GCC__)
 #include <shlwapi.h>
+#endif
 #elif defined(__AMIGAOS4__) || defined(__AROS__) || defined(__MORPHOS__)
 #include <dos/dosextens.h>
 #include <proto/dos.h>

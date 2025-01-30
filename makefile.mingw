@@ -1,10 +1,10 @@
 CXX = g++
 
-LIBS = -lmingw32 -lsdlmain -lSDL -ldsound -lmsacm32 -lwinmm -lsdldraw -lz
+LIBS = -lopengl32 -lmingw32 -ldsound -lmsacm32 -lwinmm -lsdldraw -lz -lsdlmain -lSDL
 
-FLAGS = -mwindows -fno-strict-aliasing -O3 -fno-rtti -fpermissive -fexceptions -Lsrc/extralibs/sdl_draw -Lsrc/extralibs/zlib-1.2.3 \
+FLAGS = -g -mwindows -fno-strict-aliasing -Ofast -fno-rtti -fpermissive -Wno-write-strings -Wno-multichar -fexceptions -Lsrc/extralibs/sdl_draw -Lsrc/extralibs/zlib-1.2.3 \
         -D G_OS_WIN32 -D __WIN32__ -D __GCC__ -D __WINDOWS_MM__ -D __MOT_SWAP__ \
-        -D __MP3_CODEC__ -D __AT3_CODEC__ -D __GSM_CODEC__ -D __ADPCM_CODEC__ -D __TRUESPEECH_CODEC__ -D __USE_OPENGL__
+        -D __MP3_CODEC__ -D __AT3_CODEC__ -D __GSM_CODEC__ -D __ADPCM_CODEC__ -D __TRUESPEECH_CODEC__
 
 EXEOBJS = ptk.o \
           editor_303.o editor_pattern.o editor_sequencer.o editor_track.o editor_track_fx.o \
@@ -25,14 +25,15 @@ all: ProTrekkr
 clean: RemObj
 
 RemObj:
-	-rm -f $(EXEOBJS)
+	-rm -f $(EXEOBJS) src/support/resources.o
 
 ProTrekkr: $(EXEOBJS)
+	-rm -f ./release/distrib/ptk_win.exe
 	(cd src/extralibs/sdl_draw; make.exe -f makefile.mingw)
 	(cd src/extralibs/zlib-1.2.3; make.exe)
-	$(CXX) -o ./release/distrib/ptk_win.exe -L./ $(FLAGS) $(EXEOBJS) $(LIBS)
+	windres -i src/support/resources.rc -o src/support/resources.o
+	$(CXX) -o ./release/distrib/ptk_win.exe -L./ $(FLAGS) $(EXEOBJS) src/support/resources.o $(LIBS)
 	strip -s -x ./release/distrib/ptk_win.exe
-	-rm -f $(EXEOBJS)
 	
 ptk.o: src/ptk.cpp
 	$(CXX) -c -o $(@) $(FLAGS) $<

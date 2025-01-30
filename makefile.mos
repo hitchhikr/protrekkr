@@ -33,6 +33,7 @@ RemObj:
 	-rm -f $(EXEOBJS)
 
 protrekkr: $(EXEOBJS)
+	-rm -f ./release/distrib/ptk_mos
 	(cd src/extralibs/sdl_draw; make -f makefile.mos)
 	$(CXX) -o ./release/distrib/ptk_mos -L./ $(FLAGS) $(EXEOBJS) $(LIBS)
 	$(STRIP) -R.comment ./release/distrib/ptk_mos

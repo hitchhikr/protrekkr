@@ -27,6 +27,7 @@ RemObj:
 	-rm -f $(EXEOBJS)
 
 protrekkr: $(EXEOBJS)
+	-rm -f ./release/distrib/ptk_netbsd
 	(cd src/extralibs/sdl_draw; gmake -f makefile.netbsd)
 	(cd src/extralibs/zlib-1.2.3; gmake)
 	$(CXX) -o ./release/distrib/ptk_netbsd -L./ $(FLAGS) $(EXEOBJS) $(LIBS)

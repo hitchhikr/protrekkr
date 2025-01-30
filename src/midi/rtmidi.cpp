@@ -1865,7 +1865,7 @@ static void CALLBACK midiInputCallback(HMIDIOUT hmin,
     }
     else
     {   // Sysex message (MIM_LONGDATA or MIM_LONGERROR)
-        MIDIHDR *sysex = (MIDIHDR *) midiMessage; 
+        MIDIHDR *sysex = (MIDIHDR *) midiMessage;
         if(!(data->ignoreFlags & 0x01) && inputStatus != MIM_LONGERROR)
         {
             // Sysex message and we're not ignoring it

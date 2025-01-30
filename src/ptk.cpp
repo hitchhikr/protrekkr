@@ -7682,7 +7682,7 @@ void Draw_VuMeters(void)
         {
             i_MaxLevel_R = bottom_line;
         }
-    
+
         for(j = 0; j < i_MaxLevel_L + 1; j += 2)
         {
             if(j > peak_line)

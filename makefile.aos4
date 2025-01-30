@@ -32,6 +32,7 @@ RemObj:
 	-rm -f $(EXEOBJS)
 
 protrekkr: $(EXEOBJS)
+	-rm -f ./release/distrib/ptk_aos4
 	$(CXX) -o ./release/distrib/ptk_aos4 -L./ $(FLAGS) $(EXEOBJS) $(LIBS)
 	strip -R.comment ./release/distrib/ptk_aos4
 

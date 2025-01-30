@@ -33,6 +33,7 @@ RemObj:
 	-rm -f $(EXEOBJS)
 
 protrekkr: $(EXEOBJS)
+	-rm -f ./release/distrib/ptk_aros
 	(cd src/extralibs/sdl_draw; make -f makefile.aros)
 	(cd src/extralibs/zlib-1.2.3; make)
 	$(CXX) -o ./release/distrib/ptk_aros -L./ $(FLAGS) $(EXEOBJS) $(LIBS)

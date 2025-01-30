@@ -29,6 +29,7 @@ RemObj:
 	-rm -f $(EXEOBJS_PPC)
 
 protrekkr_ppc: $(EXEOBJS_PPC)
+	-rm -f ./release/distrib/protrekkr_ppc.app/Contents/MacOS/Protrekkr
 	(cd src/extralibs/sdl_draw; make -f makefile.macosx_ppc)
 	(cd src/extralibs/zlib-1.2.3; make -f makefile.macosx_ppc)
 	(cd src/extralibs/bin2c; make -f makefile.macosx_ppc)

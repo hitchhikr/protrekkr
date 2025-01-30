@@ -27,12 +27,12 @@ RemObj:
 	-rm -f $(EXEOBJS)
 
 protrekkr: $(EXEOBJS)
+	-rm -f ./release/distrib/ptk_freebsd
 	(cd src/extralibs/sdl_draw; gmake -f makefile.freebsd)
 	(cd src/extralibs/zlib-1.2.3; gmake)
 	$(CXX) -o ./release/distrib/ptk_freebsd -L./ $(FLAGS) $(EXEOBJS) $(LIBS)
 	strip -s -x ./release/distrib/ptk_freebsd
 	chmod +x ./release/distrib/ptk_freebsd
-#	-rm -f $(EXEOBJS)
 	
 ptk.o: src/ptk.cpp
 	$(CXX) -c -o $(@) $(FLAGS) $<

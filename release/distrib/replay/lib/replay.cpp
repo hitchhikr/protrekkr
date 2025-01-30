@@ -980,20 +980,14 @@ float absf(float x)
     return(x);
 }
 
-inline float denormal(float sample)
+__inline float denormal(float sample)
 {
     unsigned int isample;
     
     *(unsigned int *) &isample = *(unsigned int *) &sample;
-
     unsigned int exponent = isample & 0x7F800000;
-
-    // exponent < 0x7F800000 is 0 if NaN or Infinity, otherwise 1
-    // exponent > 0 is 0 if denormalized, otherwise 1
-
     int aNaN = exponent < 0x7F800000;
     int aDen = exponent > 0;
-
     return sample * (aNaN & aDen);
 }
 // ------------------------------------------------------
@@ -3983,6 +3977,9 @@ ByPass_Wav:
                                                        FLANGER_AMOUNT[c] +
                                                        roldspawn[c] *
                                                        FLANGER_FEEDBACK[c];
+            FLANGE_LEFTBUFFER[c][FLANGER_OFFSET[c]] = denormal(FLANGE_LEFTBUFFER[c][FLANGER_OFFSET[c]]);
+            FLANGE_RIGHTBUFFER[c][FLANGER_OFFSET[c]] = denormal(FLANGE_RIGHTBUFFER[c][FLANGER_OFFSET[c]]);
+            
             float fstep1;
             float fstep2;
             float gr_value = FLANGER_GR[c] / 6.283185f;
@@ -3992,6 +3989,8 @@ ByPass_Wav:
                 de_value -= 6.283185f;
             }
             de_value = ((de_value / 6.283185f));
+            gr_value = denormal(gr_value);
+            de_value = denormal(de_value);
             fstep1 = POWF2(SIN[(int) (gr_value * 359.0f)] * FLANGER_AMPL[c]);
             fstep2 = POWF2(SIN[(int) (de_value * 359.0f)] * FLANGER_AMPL[c]);
             
@@ -4139,8 +4138,8 @@ ByPass_Wav:
 #if !defined(__STAND_ALONE__)
         if(!Chan_Mute_State[c])
         {
-            Scope_Dats_L[c][pos_scope] = All_Signal_L / 32767.0f;
-            Scope_Dats_R[c][pos_scope] = All_Signal_R / 32767.0f;
+            Scope_Dats_L[c][pos_scope] = denormal(All_Signal_L / 32767.0f);
+            Scope_Dats_R[c][pos_scope] = denormal(All_Signal_R / 32767.0f);
         }
         else
         {
@@ -6064,12 +6063,12 @@ void Get_Player_Values(void)
     right_float += right_reverb;
 #endif
 
-    left_float = denormal(left_float);
-    right_float = denormal(right_float);
-    
     left_float /= 32767.0f;
     right_float /= 32767.0f;
 
+    left_float = denormal(left_float);
+    right_float = denormal(right_float);
+    
 #if defined(PTK_LIMITER_MASTER)
 #if !defined(__STAND_ALONE__) || defined(__WINAMP__)
     if(mas_comp_ratio_Master > 0.01f)
@@ -6138,17 +6137,17 @@ void Get_Player_Values(void)
     {
         if(!Chan_Mute_State[c])
         {
-            Scope_Dats_L[c][pos_scope] = ((((Scope_Dats_L[c][pos_scope]
+            Scope_Dats_L[c][pos_scope] = denormal(((((Scope_Dats_L[c][pos_scope]
                                          ) * left_compress
                                          ) * mas_vol
                                          ) * local_curr_mas_vol
-                                         ) * local_curr_ramp_vol;
+                                         ) * local_curr_ramp_vol);
 
-            Scope_Dats_R[c][pos_scope] = ((((Scope_Dats_R[c][pos_scope]
+            Scope_Dats_R[c][pos_scope] = denormal(((((Scope_Dats_R[c][pos_scope]
                                          ) * right_compress
                                          ) * mas_vol
                                          ) * local_curr_mas_vol
-                                         ) * local_curr_ramp_vol;
+                                         ) * local_curr_ramp_vol);
 
             Scope_Dats[c][pos_scope] = (Scope_Dats_L[c][pos_scope] + Scope_Dats_R[c][pos_scope]) * 1.2f;
         }
@@ -7191,7 +7190,8 @@ void Reverb_work(void)
             }
             nev_l *= Reverb_Damp;
             nev_r *= Reverb_Damp;
-
+            nev_l = denormal(nev_l);
+            nev_r = denormal(nev_r);
             if(++counters_L[i] > 99999) counters_L[i] -= 99999;
             if(++counters_R[i] > 99999) counters_R[i] -= 99999;
             delay_left_buffer[i][counters_L[i]] = nev_l;
@@ -7205,6 +7205,8 @@ void Reverb_work(void)
         {
             l_rout = allpass_filter(allBuffer_L[i], l_rout, delayedCounterL[i]);
             r_rout = allpass_filter(allBuffer_R[i], r_rout, delayedCounterR[i]);
+            l_rout = denormal(l_rout);
+            r_rout = denormal(r_rout);
             if(++delayedCounterL[i] > 5759) delayedCounterL[i] -= 5759;
             if(++delayedCounterR[i] > 5759) delayedCounterR[i] -= 5759;
         }

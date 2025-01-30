@@ -17,11 +17,17 @@
 
 #include "../lib/include/ptkreplay.h"
 
+#if defined(__GCC__)
+#define MODULE PTK_MODULE
+#else
+#define MODULE _PTK_MODULE
+#endif
+
 #ifdef __cplusplus
 extern "C"
 #endif
 {
-    extern unsigned int _PTK_MODULE;
+    extern unsigned int MODULE;
 #ifdef __cplusplus
 }
 #endif
@@ -35,7 +41,7 @@ int main(void)
     if(!Ptk_InitDriver(GetConsoleWindow(), LATENCY)) return(0);
 
     // Load it
-    if(!Ptk_InitModule((unsigned char *) &_PTK_MODULE, 0))
+    if(!Ptk_InitModule((unsigned char *) &MODULE, 0))
     {
         Ptk_ReleaseDriver();
         return(0);

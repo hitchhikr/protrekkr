@@ -56,7 +56,9 @@
 
 #if defined(__WIN32__)
 #include <windows.h>
+#if !defined(__GCC__)
 #include <shlwapi.h>
+#endif
 #endif
 
 #if defined(__MACOSX_PPC__) || defined(__MACOSX_X86__)
@@ -1312,8 +1314,8 @@ int Switch_FullScreen(int Width, int Height, int Refresh, int Force_Window_Mode)
         hIcon = LoadIcon(ApphInstance, MAKEINTRESOURCE(IDI_ICON));
         hIconSmall = LoadIcon(ApphInstance, MAKEINTRESOURCE(IDI_ICONSMALL));
         // Set the icon of the window
-        SendMessage(Main_Window, WM_SETICON, ICON_BIG, (LONG) hIcon);
-        SendMessage(Main_Window, WM_SETICON, ICON_SMALL, (LONG) hIconSmall);
+        SendMessage(Main_Window, WM_SETICON, ICON_BIG, (LPARAM) hIcon);
+        SendMessage(Main_Window, WM_SETICON, ICON_SMALL, (LPARAM) hIconSmall);
     }
 #endif
 

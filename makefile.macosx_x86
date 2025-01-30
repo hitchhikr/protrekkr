@@ -29,6 +29,7 @@ RemObj:
 	-rm -f $(EXEOBJS_X86)
 
 protrekkr_x86: $(EXEOBJS_X86)
+	-rm -f ./release/distrib/protrekkr_x86.app/Contents/MacOS/Protrekkr
 	(cd src/extralibs/sdl_draw; make -f makefile.macosx_x86)
 	(cd src/extralibs/zlib-1.2.3; make -f makefile.macosx_x86)
 	(cd src/extralibs/bin2c; make -f makefile.macosx_x86)
