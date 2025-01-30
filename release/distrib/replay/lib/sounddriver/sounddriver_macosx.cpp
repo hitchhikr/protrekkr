@@ -177,7 +177,7 @@ int AUDIO_Create_Sound_Buffer(int milliseconds)
         Desc.mBytesPerPacket = Desc.mBytesPerFrame * Desc.mFramesPerPacket;
 
 #if defined(__BIG_ENDIAN__)
-            Desc.mFormatFlags |= kLinearPCMFormatFlagIsBigEndian;
+        Desc.mFormatFlags |= kLinearPCMFormatFlagIsBigEndian;
 #endif
 
         if(AudioDeviceSetProperty(AUDIO_Device,
