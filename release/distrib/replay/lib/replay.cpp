@@ -976,7 +976,7 @@ void Reset_Values(void);
 // -----------------------------------------------------------------------------
 float absf(float x) 
 {
-    *(long *) &x &= 0x7fffffff;
+    *(unsigned int *) &x &= 0x7fffffff;
     return(x);
 }
 
