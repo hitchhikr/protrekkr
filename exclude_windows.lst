@@ -1,6 +1,7 @@
 *.svn*
 *.DS_Store*
 *.cfg*
+*.kkm*
 *.linux*
 *.macosx*
 *ia64*
@@ -11,6 +12,7 @@
 *.o*
 *.obj*
 *.a
+*.aos4
 *.exp*
 *.ptp*
 *.psm*

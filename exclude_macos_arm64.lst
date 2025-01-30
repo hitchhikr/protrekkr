@@ -1,6 +1,7 @@
 *.svn*
 *.DS_Store*
 *.dll
+*.kkm*
 *install*
 *.mingw*
 *.freebsd*
@@ -22,6 +23,7 @@
 *.o*
 *.obj*
 *.a
+*.aos4
 *.lib*
 *.ptp*
 *.psm*
