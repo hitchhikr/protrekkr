@@ -51,7 +51,14 @@ short *AHIbuf2;
 int volatile Thread_Running;
 int32 old_sigbit;
 void *old_sigtask;
+
+#if defined(USE_SDL_THREADS)
+#include <SDL/SDL_thread.h>
+SDL_Thread *hThread;
+#else
+#include <pthread.h>
 pthread_t hThread;
+#endif
 
 int AUDIO_SoundBuffer_Size;
 int AUDIO_Latency;
@@ -68,18 +75,25 @@ void AUDIO_Synth_Play(void);
 // ------------------------------------------------------
 // Name: AUDIO_Thread()
 // Desc: Audio rendering
+#if defined(USE_SDL_THREADS)
+int AUDIO_Thread(void *arg)
+#else
 void *AUDIO_Thread(void *arg)
+#endif
 {
+
+#if !defined(USE_SDL_THREADS)
     struct sched_param p;
     
+    memset(&p, 0, sizeof(p));
+    p.sched_priority = 1;
+    pthread_setschedparam(pthread_self(), SCHED_FIFO, &p);
+#endif
+
     old_sigbit = AHImp->mp_SigBit;
     old_sigtask = AHImp->mp_SigTask;
     AHImp->mp_SigBit = IExec->AllocSignal(-1);
     AHImp->mp_SigTask = IExec->FindTask(NULL);
-
-    memset(&p, 0, sizeof(p));
-    p.sched_priority = 1;
-    pthread_setschedparam(pthread_self(), SCHED_FIFO, &p);
 
     while(Thread_Running)
     {
@@ -87,17 +101,6 @@ void *AUDIO_Thread(void *arg)
         {
             struct AHIRequest *io = AHIio;
             short *buf = AHIbuf;
-    
-            if(AUDIO_Play_Flag)
-            {
-                AUDIO_Mixer((Uint8 *) buf, AUDIO_SoundBuffer_Size);
-                AUDIO_Acknowledge = FALSE;
-            }
-            else
-            {
-                memset(buf, 0, AUDIO_SoundBuffer_Size << 1);
-                AUDIO_Acknowledge = TRUE;
-            }
 
             io->ahir_Std.io_Message.mn_Node.ln_Pri = 0;
             io->ahir_Std.io_Command = CMD_WRITE;
@@ -109,21 +112,32 @@ void *AUDIO_Thread(void *arg)
             io->ahir_Volume = 0x10000;
             io->ahir_Position = 0x8000;
             io->ahir_Link = join;
-            IExec->SendIO((struct IORequest *) io);
-            if(join)
-            {
-                IExec->WaitIO((struct IORequest *) join);
-            }
-            join = io;
+            IExec->SendIO((struct IORequest *) AHIio);
+
+            // Swap
+			join = io;
             AHIio = AHIio2;
             AHIio2 = io;
             AHIbuf = AHIbuf2;
             AHIbuf2 = buf;
+    
+            if(AUDIO_Play_Flag)
+            {
+                AUDIO_Mixer((Uint8 *) buf, AUDIO_SoundBuffer_Size);
+                AUDIO_Acknowledge = FALSE;
+            }
+            else
+            {
+                memset(buf, 0, AUDIO_SoundBuffer_Size);
+                AUDIO_Acknowledge = TRUE;
+            }
 
             AUDIO_Samples += AUDIO_SoundBuffer_Size;
             AUDIO_Timer = ((((float) AUDIO_Samples) * (1.0f / (float) AUDIO_Latency)) * 1000.0f);
+
+			IExec->Wait(1 << AHImp->mp_SigBit);
+         	IExec->WaitIO((struct IORequest *) join);
         }
-        usleep(10);
     }
     Thread_Running = 1;
     return(NULL);
@@ -167,7 +181,7 @@ int AUDIO_Init_Driver(void (*Mixer)(Uint8 *, Uint32))
     }
     AHIio->ahir_Version = 4;
 
-    // Open ahi AHI_NO_UNIT
+    // Open ahi
     if(IExec->OpenDevice(AHINAME, AHI_DEFAULT_UNIT, (struct IORequest *) AHIio, 0))
     {
         AHIio->ahir_Std.io_Device = NULL;
@@ -201,31 +215,39 @@ int AUDIO_Create_Sound_Buffer(int milliseconds)
     AUDIO_SoundBuffer_Size = frag_size << 2;
     AUDIO_Latency = AUDIO_SoundBuffer_Size;
     
-    AHIbuf = (short *) IExec->AllocVecTags(AUDIO_SoundBuffer_Size << 1, AVT_Type, MEMF_SHARED, TAG_END);
-    AHIbuf2 = (short *) IExec->AllocVecTags(AUDIO_SoundBuffer_Size << 1, AVT_Type, MEMF_SHARED, TAG_END);
+    AHIbuf = (short *) IExec->AllocVecTags(AUDIO_SoundBuffer_Size, AVT_Type, MEMF_SHARED, TAG_END);
+    AHIbuf2 = (short *) IExec->AllocVecTags(AUDIO_SoundBuffer_Size, AVT_Type, MEMF_SHARED, TAG_END);
     
     if(!AHIbuf || !AHIbuf2)
     {
 
 #if !defined(__STAND_ALONE__) && !defined(__WINAMP__)
-        Message_Error("Error while calling IExec->AllocVecTagList()");
+        Message_Error("Error while calling IExec->AllocVecTags()");
 #endif
 
         return(FALSE);
     }
 
-    memset(AHIbuf, 0, AUDIO_SoundBuffer_Size << 1);
-    memset(AHIbuf2, 0, AUDIO_SoundBuffer_Size << 1);
+    memset(AHIbuf, 0, AUDIO_SoundBuffer_Size);
+    memset(AHIbuf2, 0, AUDIO_SoundBuffer_Size);
     
     Thread_Running = 1;
 
+#if defined(USE_SDL_THREADS)
+    if(hThread = SDL_CreateThread(AUDIO_Thread, NULL))
+#else
     if(pthread_create(&hThread, NULL, AUDIO_Thread, NULL) == 0)
+#endif
     {
         return(TRUE);
     }
 
 #if !defined(__STAND_ALONE__) && !defined(__WINAMP__)
+#if defined(USE_SDL_THREADS)
+    Message_Error("Error while calling SDL_CreateThread()");
+#else
     Message_Error("Error while calling pthread_create()");
+#endif
 #endif
 
     Thread_Running = 0;
@@ -326,10 +348,15 @@ void AUDIO_Stop_Sound_Buffer(void)
             usleep(10);
         }
         hThread = 0;
+        if(AHIio)
+        {
+            IExec->AbortIO((struct IORequest *) AHIio);
+            IExec->WaitIO((struct IORequest *) AHIio);
+        }
         if(join)
         {
-            IExec->AbortIO((struct IORequest *) join);
-            IExec->WaitIO((struct IORequest *) join);
+            IExec->AbortIO((struct IORequest *) AHIio2);
+            IExec->WaitIO((struct IORequest *) AHIio2);
         }
         IExec->FreeSignal(AHImp->mp_SigBit);
         AHImp->mp_SigBit = old_sigbit;

@@ -11,8 +11,6 @@
          to avoid lags and stuttering.
 */
 
-#include <unistd.h>
-#include <stdio.h>
 #include <libraries/dos.h>
 #include <proto/exec.h>
 
@@ -32,7 +30,11 @@ extern "C"
 
 int main(void)
 {
-    if(!Ptk_InitDriver(LATENCY)) return(0);
+    if(!Ptk_InitDriver(LATENCY))
+    {
+        Ptk_ReleaseDriver();
+        return(0);
+    }
     // Load it
     if(!Ptk_InitModule((unsigned char *) &_PTK_MODULE, 0))
     {
@@ -45,11 +47,10 @@ int main(void)
     // Ctrl+C to quit
     while(1)
     {
-        if(IExec->SetSignal(0, SIGBREAKF_CTRL_C) & SIGBREAKF_CTRL_C)
+        if(IExec->Wait(SIGBREAKF_CTRL_C) & SIGBREAKF_CTRL_C)
         {
             break;
         }
-        usleep(10);
     }
 
     Ptk_Stop();

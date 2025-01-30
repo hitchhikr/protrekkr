@@ -5,13 +5,16 @@ DEBUG =
 FLAGS_IA64 = $(DEBUG) -Os -arch x86_64 -fomit-frame-pointer -fno-rtti -fno-strict-aliasing -ffast-math -w -D __MACOSX_X86__ -D __GCC__ -D __STAND_ALONE__
 EXEOBJS_IA64 = test_ia64.o module_ia64.o
 
-all: module ptkreplay replaytest
+all: remreplaytest module ptkreplay replaytest
 clean: remobj remlibobj
+
+remreplaytest:
+	-rm -f libptkreplay_ia64.a
+	-rm -f replaytest
 
 remobj:
 	-rm -f module.cpp
 	-rm -f $(EXEOBJS_IA64)
-	-rm -f replaytest
 
 replaytest: $(EXEOBJS_IA64)
 	g++ -o replaytest -L./ $(FLAGS_IA64) $(EXEOBJS_IA64) $(LIBS_IA64)

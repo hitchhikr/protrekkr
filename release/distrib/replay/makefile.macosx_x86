@@ -5,13 +5,16 @@ DEBUG =
 FLAGS_X86 = $(DEBUG) -Os -arch i386 -fomit-frame-pointer -fno-rtti -fno-strict-aliasing -ffast-math -D __MACOSX_X86__ -D __GCC__ -D __STAND_ALONE__
 EXEOBJS_X86 = test_x86.o module_x86.o
 
-all: module ptkreplay replaytest
+all: remreplaytest module ptkreplay replaytest
 clean: remobj remlibobj
+
+remreplaytest:
+	-rm -f libptkreplay_x86.a
+	-rm -f replaytest
 
 remobj:
 	-rm -f module.cpp
 	-rm -f $(EXEOBJS_X86)
-	-rm -f replaytest
 
 replaytest: $(EXEOBJS_X86)
 	g++ -o replaytest -L./ $(FLAGS_X86) $(EXEOBJS_X86) $(LIBS_X86)

@@ -7,8 +7,12 @@ FLAGS = -Os -ffast-math -mms-bitfields -fno-strict-aliasing -fno-rtti -fno-excep
         -D __MP3_CODEC__ -D __AT3_CODEC__ -D __GSM_CODEC__ -D __ADPCM_CODEC__ -D __TRUESPEECH_CODEC__
 EXEOBJS = test.o module.o
 
-all: ptkreplay replaytest
+all: remreplaytest ptkreplay replaytest
 clean: remobj
+
+remreplaytest:
+	-rm -f libptkreplay.a
+	-rm -f replaytest
 
 remobj:
 	-rm -f $(EXEOBJS)
@@ -16,7 +20,6 @@ remobj:
 replaytest: $(EXEOBJS)
 	$(CC) -o $(@) -L./ $(FLAGS) $(EXEOBJS) $(LIBS)
 	$(STRIP) -s -x $(@).exe
-	-rm -f $(EXEOBJS)
 
 test.o: test/test_windows.cpp
 	$(CC) -c -o $(@) $(FLAGS) test/test_windows.cpp

@@ -11,7 +11,6 @@ remlibobj:
 ptkreplay: $(LIBOBJS)
 	$(AR) -d libptkreplay.a
 	$(AR) -r libptkreplay.a $(LIBOBJS)
-	-rm -f $(LIBOBJS)
 
 sounddriver_linux.o: lib/sounddriver/sounddriver_linux.cpp
 	$(CC) -o $(@) $(LIBFLAGS) $(FLAGS) lib/sounddriver/sounddriver_linux.cpp

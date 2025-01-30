@@ -71,7 +71,6 @@ SceInt32 AUDIO_Thread(SceSize args, ScePVoid argp)
     for(;;)
     {
         volatile short *ptrBuffer;
-        volatile int i;
 
         if(AUDIO_FlipFlop)
         {
@@ -102,10 +101,7 @@ SceInt32 AUDIO_Thread(SceSize args, ScePVoid argp)
         }
         else
         {
-            for(i = 0; i < (AUDIO_SoundBuffer_Size >> 1); i++)
-            {
-                ptrBuffer[i] = 0;
-            }
+            memset(ptrBuffer, 0, AUDIO_SoundBuffer_Size);
         }
         sceKernelDelayThread(10);
     }
@@ -159,7 +155,6 @@ int AUDIO_Create_Sound_Buffer(int milliseconds)
     if((int) ptrAudio_BufferPlay1)
     {
         memset((void *) ptrAudio_BufferPlay1, 0, buf_size);
-        buf_size = AUDIO_SoundBuffer_Size;
         ptrAudio_BufferPlay2 = (short *) (((int) AUDIO_malloc_64(&buf_size)));
         sceKernelDcacheWritebackInvalidateAll();
 

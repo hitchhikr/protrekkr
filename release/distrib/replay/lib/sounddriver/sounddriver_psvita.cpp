@@ -74,13 +74,7 @@ SceInt32 AUDIO_Thread(SceSize args, ScePVoid argp)
             }
             else
             {
-                int i;
-
-                char *pSamples = (char *) AUDIO_SoundBuffer[AUDIO_FlipFlop];
-                for(i = 0; i < AUDIO_SoundBuffer_Size; i++)
-                {
-                    pSamples[i] = 0;
-                }
+                memset(AUDIO_SoundBuffer[AUDIO_FlipFlop], 0, AUDIO_SoundBuffer_Size);
             }
             sceAudioOutOutput(AUDIO_HWChannel, (void *) AUDIO_SoundBuffer[AUDIO_FlipFlop]);
             sceAudioOutSetVolume(AUDIO_HWChannel, (SceAudioOutChannelFlag) (SCE_AUDIO_VOLUME_FLAG_L_CH | SCE_AUDIO_VOLUME_FLAG_R_CH), volumes);

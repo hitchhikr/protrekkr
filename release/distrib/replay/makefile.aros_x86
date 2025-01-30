@@ -6,8 +6,12 @@ LIBS = -lptkreplay -lpthread
 FLAGS = -Os -fno-strict-aliasing -Wno-multichar -ffast-math -D __AROS__ -D __GCC__ -D __STAND_ALONE__
 EXEOBJS = test.o module.o
 
-all: ptkreplay replaytest
+all: remreplaytest ptkreplay replaytest
 clean: remobj
+
+remreplaytest:
+	-rm -f libptkreplay.a
+	-rm -f replaytest
 
 remobj:
 	-rm -f $(EXEOBJS)
@@ -15,7 +19,6 @@ remobj:
 replaytest: $(EXEOBJS)
 	$(CC) -o $(@) -L./ $(FLAGS) $(EXEOBJS) $(LIBS)
 	$(STRIP) --strip-unneeded $(@)
-	-rm -f $(EXEOBJS)
 
 test.o: test/test_aros.cpp
 	$(CC) -c -o $(@) $(FLAGS) test/test_aros.cpp

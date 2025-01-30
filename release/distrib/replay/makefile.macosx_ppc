@@ -6,13 +6,16 @@ FLAGS_PPC = $(DEBUG) -O3 -arch ppc -mcpu=G4 -fomit-frame-pointer -fno-strict-ali
             -mtune=G4 -fno-rtti -D __MACOSX_PPC__ -D __GCC__ -D __STAND_ALONE__ -D __BIG_ENDIAN__
 EXEOBJS_PPC = test_ppc.o module_ppc.o
 
-all: module ptkreplay replaytest
+all: remreplaytest module ptkreplay replaytest
 clean: remobj remlibobj
+
+remreplaytest:
+	-rm -f libptkreplay_ppc.a
+	-rm -f replaytest
 
 remobj:
 	-rm -f module.cpp
 	-rm -f $(EXEOBJS_PPC)
-	-rm -f replaytest
 	
 replaytest: $(EXEOBJS_PPC)
 	g++ -o replaytest -s -L./ $(FLAGS_PPC) $(EXEOBJS_PPC) $(LIBS_PPC)

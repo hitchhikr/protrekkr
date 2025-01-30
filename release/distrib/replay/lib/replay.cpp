@@ -980,6 +980,22 @@ float absf(float x)
     return(x);
 }
 
+inline float denormal(float sample)
+{
+    unsigned int isample;
+    
+    *(unsigned int *) &isample = *(unsigned int *) &sample;
+
+    unsigned int exponent = isample & 0x7F800000;
+
+    // exponent < 0x7F800000 is 0 if NaN or Infinity, otherwise 1
+    // exponent > 0 is 0 if denormalized, otherwise 1
+
+    int aNaN = exponent < 0x7F800000;
+    int aDen = exponent > 0;
+
+    return sample * (aNaN & aDen);
+}
 // ------------------------------------------------------
 // Audio mixer
 #if !defined(BZR2)
@@ -1040,7 +1056,7 @@ Uint32 STDCALL Mixer(Uint8 *Buffer, Uint32 Len)
                 break;
             }
             
-#endif 
+#endif
 
             Get_Player_Values();
 
@@ -1081,7 +1097,7 @@ Uint32 STDCALL Mixer(Uint8 *Buffer, Uint32 Len)
 #endif
 #endif
 
-#if defined(__MACOSX_PPC__) || defined(__MACOSX_X86__) || defined (BZR2)
+#if defined(__MACOSX_PPC__) || defined(__MACOSX_X86__) || defined(BZR2)
             *pSamples_flt++ = left_float;
             *pSamples_flt++ = right_float;
 #else
@@ -1141,6 +1157,7 @@ Uint32 STDCALL Mixer(Uint8 *Buffer, Uint32 Len)
 // ------------------------------------------------------
 // Init the replayer driver
 #if !defined(__WINAMP__)
+
 #if defined(__WIN32__)
 int STDCALL Ptk_InitDriver(HWND hWnd, int milliseconds)
 {
@@ -1150,12 +1167,16 @@ int STDCALL Ptk_InitDriver(int milliseconds)
 {
     AUDIO_Milliseconds = milliseconds;
 #endif
+
 #else
 int STDCALL Ptk_InitDriver(void)
 {
-#endif
+#endif // !defined(__WINAMP__)
 
     int i;
+
+    left_value = 0;
+    right_value = 0;
 
 #if defined(PTK_SYNTH)
     // Create the stock waveforms
@@ -1289,11 +1310,11 @@ int STDCALL Ptk_InitDriver(void)
 
     AUDIO_Play();
 
-#else  // __WINAMP__
+#else  // !defined(__WINAMP__)
 
     Pre_Song_Init();
 
-#endif // __WINAMP__
+#endif // defined(__WINAMP__)
 
     return(TRUE);
 }
@@ -1907,48 +1928,8 @@ int PTKEXPORT Ptk_InitModule(Uint8 *Module, int start_position)
 // Release the replayer driver
 void PTKEXPORT Ptk_ReleaseDriver(void)
 {
-#if !defined(__STAND_ALONE__)
-    int i;
-#endif
-
 #if !defined(__WINAMP__)
     AUDIO_Stop_Driver();
-#endif
-
-#if !defined(__STAND_ALONE__)
-    for(i = 0; i < MAX_TRACKS; i++)
-    {  
-        // ---
-        if(Scope_Dats[i])
-        {
-            free(Scope_Dats[i]);
-        }
-        Scope_Dats[i] = NULL;
-
-        // ---
-        if(Scope_Dats_L[i])
-        {
-            free(Scope_Dats_L[i]);
-        }
-        Scope_Dats_L[i] = NULL;
-        
-        // ---
-        if(Scope_Dats_R[i])
-        {
-            free(Scope_Dats_R[i]);
-        }
-        Scope_Dats_R[i] = NULL;
-    }
-    if(Scope_Dats_LeftRight[0])
-    {
-        free(Scope_Dats_LeftRight[0]);
-    }
-    Scope_Dats_LeftRight[0] = NULL;
-    if(Scope_Dats_LeftRight[1])
-    {
-        free(Scope_Dats_LeftRight[1]);
-    }
-    Scope_Dats_LeftRight[1] = NULL;
 #endif
 
 #if defined(__STAND_ALONE__) && !defined(__WINAMP__)
@@ -1960,7 +1941,6 @@ void PTKEXPORT Ptk_ReleaseDriver(void)
 #endif
     RawPatterns = NULL;
 #endif
-
 
 }
 
@@ -2237,7 +2217,6 @@ void Pre_Song_Init(void)
         }
 
         Track_Volume[ini] = 1.0f;
-
         Track_Surround[ini] = FALSE;
 
 #if defined(PTK_TRACK_EQ)
@@ -2325,6 +2304,7 @@ void Pre_Song_Init(void)
 
 #if defined(PTK_LIMITER_TRACKS)
     int j;
+
     for(j = 0; j < MAX_TRACKS; j++)
     {
         mas_comp_threshold_Track[j] = 100.0f;
@@ -3669,6 +3649,8 @@ ByPass_Wav:
 #endif // PTK_SYNTH
 
             // Gather the signals of all the sub channels
+            Curr_Signal_L[i] = denormal(Curr_Signal_L[i]);
+            Curr_Signal_R[i] = denormal(Curr_Signal_R[i]);
             All_Signal_L += Curr_Signal_L[i];
             All_Signal_R += Curr_Signal_R[i];
         }
@@ -3752,6 +3734,9 @@ ByPass_Wav:
             Segue_SamplesL[c] = All_Signal_L;
             Segue_SamplesR[c] = All_Signal_R;
         }
+
+        All_Signal_L = denormal(All_Signal_L);
+        All_Signal_R = denormal(All_Signal_R);
 
         // -----------------------------------------------
 
@@ -4044,6 +4029,9 @@ ByPass_Wav:
         }
 #endif
 
+        All_Signal_L = denormal(All_Signal_L);
+        All_Signal_R = denormal(All_Signal_R);
+
 #if defined(PTK_LIMITER_TRACKS)
         // Compress the track signal
         if(Compress_Track[c])
@@ -4070,10 +4058,14 @@ ByPass_Wav:
             All_Signal_R = Do_Equ(&EqDat[c], All_Signal_R, 1);
         }
 #endif
+
         if(Track_Surround[c])
         {
             All_Signal_R = -All_Signal_R;
         }
+
+        All_Signal_L = denormal(All_Signal_L);
+        All_Signal_R = denormal(All_Signal_R);
 
         Compute_Stereo_Quick(c);
 
@@ -6057,18 +6049,23 @@ void Get_Player_Values(void)
     rbuff_chorus[rchorus_counter] = right_chorus + rbuff_chorus[rchorus_counter2] * rchorus_feedback;
     if(++lchorus_counter2 > (MIX_RATE * 2)) lchorus_counter2 = MIX_RATE;
     if(++rchorus_counter2 > (MIX_RATE * 2)) rchorus_counter2 = MIX_RATE;
+
+    lbuff_chorus[lchorus_counter2] = denormal(lbuff_chorus[lchorus_counter2]);
+    rbuff_chorus[lchorus_counter2] = denormal(rbuff_chorus[lchorus_counter2]);
+
     float rchore = lbuff_chorus[lchorus_counter2];
     float lchore = rbuff_chorus[rchorus_counter2];
     left_float += lchore;
     right_float += rchore;
-    lchore /= 32767.0f;
-    rchore /= 32767.0f;
 
 #if defined(PTK_COMPRESSOR)
     Reverb_work();
     left_float += left_reverb;
     right_float += right_reverb;
 #endif
+
+    left_float = denormal(left_float);
+    right_float = denormal(right_float);
     
     left_float /= 32767.0f;
     right_float /= 32767.0f;
@@ -6141,19 +6138,13 @@ void Get_Player_Values(void)
     {
         if(!Chan_Mute_State[c])
         {
-            Scope_Dats_L[c][pos_scope] = ((((Scope_Dats_L[c][pos_scope]// + lchore
-#if defined(PTK_COMPRESSOR)
-//                                         + left_reverb
-#endif
+            Scope_Dats_L[c][pos_scope] = ((((Scope_Dats_L[c][pos_scope]
                                          ) * left_compress
                                          ) * mas_vol
                                          ) * local_curr_mas_vol
                                          ) * local_curr_ramp_vol;
 
-            Scope_Dats_R[c][pos_scope] = ((((Scope_Dats_R[c][pos_scope] //+ rchore
-#if defined(PTK_COMPRESSOR)
-//                                         + right_reverb
-#endif
+            Scope_Dats_R[c][pos_scope] = ((((Scope_Dats_R[c][pos_scope]
                                          ) * right_compress
                                          ) * mas_vol
                                          ) * local_curr_mas_vol

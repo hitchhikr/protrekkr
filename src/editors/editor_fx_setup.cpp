@@ -117,7 +117,7 @@ void Actualize_Fx_Ed(char gode)
         if(gode == 0 || gode == 5)
         {
             if(lchorus_feedback > 0.95f) lchorus_feedback = 0.95f;
-            if(lchorus_feedback < 0) lchorus_feedback = 0;
+            if(lchorus_feedback < 0.0f) lchorus_feedback = 0.0f;
             Real_Slider(307, (Cur_Height - 84), (int) (lchorus_feedback * 127.0f), TRUE);
             Print_Long(458, (Cur_Height - 84), (int) (lchorus_feedback * 100.0f), 1);
         }
@@ -125,7 +125,7 @@ void Actualize_Fx_Ed(char gode)
         if(gode == 0 || gode == 6)
         {
             if(rchorus_feedback > 0.95f) rchorus_feedback = 0.95f;
-            if(rchorus_feedback < 0) rchorus_feedback = 0;
+            if(rchorus_feedback < 0.0f) rchorus_feedback = 0.0f;
             Real_Slider(307, (Cur_Height - 66), (int) (rchorus_feedback * 127), TRUE);
             Print_Long(458, (Cur_Height - 66), (int) (rchorus_feedback * 100), 1);
         }

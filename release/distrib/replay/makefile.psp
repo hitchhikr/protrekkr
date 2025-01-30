@@ -36,7 +36,11 @@ LIBS     := $(LIBS) $(PSPSDK_LIBS) -lc -lpsputility -lpspuser -lpspkernel
 # the library itself
 include lib/makefile.psp
 
-all: $(TARGET).prx
+all: remreplaytest $(TARGET).prx
+
+remreplaytest:
+	-rm -f libptkreplay.a
+	-rm -f $(TARGET).prx
 
 $(TARGET).prx: $(OBJS) $(EXPORT_OBJ)
 	$(LINK.c) -g -Wl,-Map=fuck.map  $^ $(LIBS) -o $@
@@ -44,4 +48,4 @@ $(TARGET).prx: $(OBJS) $(EXPORT_OBJ)
 	$(PRXGEN) $@ BOOT.BIN
 
 clean:
-	-rm -f $(TARGET).prx $(OBJS) BOOT.BIN
+	-rm -f $(OBJS) BOOT.BIN

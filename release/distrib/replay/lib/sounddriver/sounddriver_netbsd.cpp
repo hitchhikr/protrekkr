@@ -76,12 +76,7 @@ void *AUDIO_Thread(void *arg)
             }
             else
             {
-                unsigned int i;
-                char *pSamples = (char *) AUDIO_SoundBuffer[AUDIO_FlipFlop];
-                for(i = 0; i < AUDIO_SoundBuffer_Size; i++)
-                {
-                    pSamples[i] = 0;
-                }
+                memset(AUDIO_SoundBuffer[AUDIO_FlipFlop], 0, AUDIO_SoundBuffer_Size);
                 AUDIO_Acknowledge = TRUE;
             }
             write(AUDIO_Device, AUDIO_SoundBuffer[AUDIO_FlipFlop], AUDIO_SoundBuffer_Size);

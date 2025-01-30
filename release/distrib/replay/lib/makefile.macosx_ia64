@@ -11,7 +11,6 @@ remlibobj:
 ptkreplay: $(LIBOBJS_IA64)
 	-rm libptkreplay_ia64.a
 	ar -s -r libptkreplay_ia64.a $(LIBOBJS_IA64)
-	-rm -f $(LIBOBJS_IA64)
 
 sounddriver_macosx_ia64.o: lib/sounddriver/sounddriver_macosx.cpp
 	g++ -o $(@) $(LIBFLAGS) $(FLAGS_IA64) lib/sounddriver/sounddriver_macosx.cpp

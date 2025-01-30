@@ -44,8 +44,13 @@ LIBS     := $(LIBS)
 # the library itself
 include lib/makefile.psvita
 
-all: $(TARGET).vpk
+all: remreplaytest $(TARGET).vpk
 #$(VITASDK)/arm-vita-eabi/lib/crt0.o
+
+remreplaytest:
+	-rm -f libptkreplay.a
+	-rm -f $(TARGET).vpk
+
 $(TARGET).vpk: $(OBJS) $(EXPORT_OBJ)
 	$(LINK.c) $^ $(LIBS) -o $(TARGET).elf
 	$(CREATE_VELF) -s $(TARGET).elf $(TARGET).velf
@@ -54,4 +59,4 @@ $(TARGET).vpk: $(OBJS) $(EXPORT_OBJ)
 	$(PACK_VPK) -s param.sfo -b EBOOT.BIN $(TARGET).vpk
 
 clean:
-	-rm -f $(TARGET).vpk $(TARGET).velf $(TARGET).velf.tmp $(TARGET).elf param.sfo $(OBJS) EBOOT.BIN
+	-rm -f $(TARGET).velf $(TARGET).velf.tmp $(TARGET).elf param.sfo $(OBJS) EBOOT.BIN

@@ -616,7 +616,6 @@ int Init_Context(void)
     if(!Ptk_InitDriver(AUDIO_Milliseconds))
 #endif
     {
-        Ptk_ReleaseDriver();
         return(FALSE);
     }
 
@@ -639,6 +638,8 @@ int Init_Context(void)
 extern int volatile AUDIO_Acknowledge;
 void Destroy_Context(void)
 {
+    int i;
+
     if(Timer)
     {
         while(SDL_RemoveTimer(Timer) == FALSE)
@@ -662,14 +663,41 @@ void Destroy_Context(void)
 
     Free_Samples();
 
-    // Freeing Allocated Patterns
-    if(RawPatterns)
-    {
-        free(RawPatterns);
-    }
-    RawPatterns = NULL;
-
     Destroy_UI();
+
+    for(i = 0; i < MAX_TRACKS; i++)
+    {  
+        // ---
+        if(Scope_Dats[i])
+        {
+            free(Scope_Dats[i]);
+        }
+        Scope_Dats[i] = NULL;
+
+        // ---
+        if(Scope_Dats_L[i])
+        {
+            free(Scope_Dats_L[i]);
+        }
+        Scope_Dats_L[i] = NULL;
+        
+        // ---
+        if(Scope_Dats_R[i])
+        {
+            free(Scope_Dats_R[i]);
+        }
+        Scope_Dats_R[i] = NULL;
+    }
+    if(Scope_Dats_LeftRight[0])
+    {
+        free(Scope_Dats_LeftRight[0]);
+    }
+    Scope_Dats_LeftRight[0] = NULL;
+    if(Scope_Dats_LeftRight[1])
+    {
+        free(Scope_Dats_LeftRight[1]);
+    }
+    Scope_Dats_LeftRight[1] = NULL;
 
 #if defined(__USE_OPENGL__)
     if(RGBTexture)
@@ -677,6 +705,13 @@ void Destroy_Context(void)
         free(RGBTexture);
     }
 #endif
+
+    // Freeing Allocated Patterns
+    if(RawPatterns)
+    {
+        free(RawPatterns);
+    }
+    RawPatterns = NULL;
 
     SDL_Quit();
 }

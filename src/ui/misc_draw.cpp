@@ -3565,27 +3565,27 @@ void Set_Pictures_And_Palettes(int LogoPalette)
     // ---
     if(!Temp_PFONT)
     {
-        Temp_PFONT = SDL_AllocSurface(SDL_SWSURFACE, 320, 87 * 2, 8, 0, 0, 0, 0xff);
+        Temp_PFONT = SDL_AllocSurface(SDL_SWSURFACE, 320, 87 * 4, 8, 0, 0, 0, 0xff);
     }
     if(!Temp_LARGEPFONT)
     {
-        Temp_LARGEPFONT = SDL_AllocSurface(SDL_SWSURFACE, 320, 87 * 2, 8, 0, 0, 0, 0xff);
+        Temp_LARGEPFONT = SDL_AllocSurface(SDL_SWSURFACE, 320, 87 * 4, 8, 0, 0, 0, 0xff);
     }
     if(!Temp_SMALLPFONT)
     {
-        Temp_SMALLPFONT = SDL_AllocSurface(SDL_SWSURFACE, 320, 87 * 2, 8, 0, 0, 0, 0xff);
+        Temp_SMALLPFONT = SDL_AllocSurface(SDL_SWSURFACE, 320, 87 * 4, 8, 0, 0, 0, 0xff);
     }
     if(!Temp_NOTEPFONT)
     {
-        Temp_NOTEPFONT = SDL_AllocSurface(SDL_SWSURFACE, 320, 87 * 2, 8, 0, 0, 0, 0xff);
+        Temp_NOTEPFONT = SDL_AllocSurface(SDL_SWSURFACE, 320, 87 * 4, 8, 0, 0, 0, 0xff);
     }
     if(!Temp_NOTELARGEPFONT)
     {
-        Temp_NOTELARGEPFONT = SDL_AllocSurface(SDL_SWSURFACE, 320, 87 * 2, 8, 0, 0, 0, 0xff);
+        Temp_NOTELARGEPFONT = SDL_AllocSurface(SDL_SWSURFACE, 320, 87 * 4, 8, 0, 0, 0, 0xff);
     }
     if(!Temp_NOTESMALLPFONT)
     {
-        Temp_NOTESMALLPFONT = SDL_AllocSurface(SDL_SWSURFACE, 320, 87 * 2, 8, 0, 0, 0, 0xff);
+        Temp_NOTESMALLPFONT = SDL_AllocSurface(SDL_SWSURFACE, 320, 87 * 4, 8, 0, 0, 0, 0xff);
     }
     // ---
     if(!Temp_PFONT_DOUBLE)

@@ -1,10 +1,10 @@
-CXX = ppc-morphos-g++-9 -noixemul
+CXX = ppc-morphos-g++
+STRIP = ppc-morphos-strip
 
-LIBS = -lSDL -I/usr/local/lib -lsdldraw -lz_shared -lpthread 
+LIBS = -noixemul -lSDL -I/usr/local/lib -lz_shared -lpthread -lGL -lc -lm
 
-FLAGS = -O3 -I/usr/local/include -fno-strict-aliasing -ffast-math -fno-rtti -fno-exceptions -Lsrc/extralibs/sdl_draw  \
-		-D__GCC__ -D__BIG_ENDIAN__ -D__MOT_SWAP__ -D__NO_MIDI__ -D__MORPHOS_SHAREDLIBS -DUSE_SDL_THREADS \
-		-fno-strict-aliasing -Wno-write-strings -Wno-multichar -Wno-narrowing
+FLAGS = -noixemul -Ofast -I/usr/local/include -w -fno-strict-aliasing -fomit-frame-pointer -ffast-math -fno-rtti -fno-exceptions -Lsrc/extralibs/sdl_draw  \
+		-D__GCC__ -D__BIG_ENDIAN__ -D__MOT_SWAP__ -D__NO_MIDI__ -D__MORPHOS_SHAREDLIBS -DUSE_SDL_THREADS -D__AIFF__  \
 
 CXXFLAGS = $(FLAGS)
 
@@ -20,7 +20,7 @@ EXEOBJS = ptk.o \
           misc_draw.o draw_primitives.o requesters.o \
           samples_ops.o aiff.o riff.o \
           spline.o tb_303.o wavpack.o samples_unpack.o replay.o synth.o endianness.o \
-          sounddriver_aros.o
+          sounddriver_aros.o draw_hline.o draw_pixel.o draw_vline.o
 LIBOBJS = midi.o \
           spline.o tb_303.o wavpack.o samples_unpack.o replay.o synth.o endianness.o \
           sounddriver_aros.o
@@ -35,7 +35,7 @@ RemObj:
 protrekkr: $(EXEOBJS)
 	(cd src/extralibs/sdl_draw; make -f makefile.mos)
 	$(CXX) -o ./release/distrib/ptk_mos -L./ $(FLAGS) $(EXEOBJS) $(LIBS)
-	strip -R.comment ./release/distrib/ptk_mos
+	$(STRIP) -R.comment ./release/distrib/ptk_mos
 
 libptkreplay: $(LIBOBJS)
 	$(AR) -crv libptkreplay.a $(LIBOBJS)
@@ -192,3 +192,12 @@ wputils.o: src/samples/wavpack/wputils.cpp
 
 tinypack.o: src/samples/wavpack/tinypack.cpp
 	$(CXX) -c -o $(@) $(FLAGS) $<
+
+draw_hline.o: src/extralibs/sdl_draw/src/draw_hline.cpp
+	$(CXX) -c -o $(@) -D__GCC__ -D __LINUX__ $(FLAGS) $<
+
+draw_pixel.o: src/extralibs/sdl_draw/src/draw_pixel.cpp
+	$(CXX) -c -o $(@) -D__GCC__ -D __LINUX__ $(FLAGS) $<
+
+draw_vline.o: src/extralibs/sdl_draw/src/draw_vline.cpp
+	$(CXX) -c -o $(@) -D__GCC__ -D __LINUX__ $(FLAGS) $<

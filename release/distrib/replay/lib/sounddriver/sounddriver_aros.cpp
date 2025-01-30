@@ -41,6 +41,7 @@ int AUDIO_Play_Flag;
 float AUDIO_Timer;
 
 int volatile AUDIO_Acknowledge;
+
 struct MsgPort *AHImp;
 struct AHIRequest *AHIio;
 struct AHIRequest *AHIio2;
@@ -93,17 +94,6 @@ void *AUDIO_Thread(void *arg)
             struct AHIRequest *io = AHIio;
             short *buf = AHIbuf;
         
-            if(AUDIO_Play_Flag)
-            {
-                AUDIO_Mixer((Uint8 *) buf, AUDIO_SoundBuffer_Size);
-                AUDIO_Acknowledge = FALSE;
-            }
-            else
-            {
-                memset(buf, 0, AUDIO_SoundBuffer_Size << 1);
-                AUDIO_Acknowledge = TRUE;
-            }
-    
             io->ahir_Std.io_Message.mn_Node.ln_Pri = 0;
             io->ahir_Std.io_Command = CMD_WRITE;
             io->ahir_Std.io_Data = buf;
@@ -115,20 +105,31 @@ void *AUDIO_Thread(void *arg)
             io->ahir_Position = 0x8000;
             io->ahir_Link = join;
             SendIO((struct IORequest *) io);
-            if(join)
-            {
-                WaitIO((struct IORequest *) join);
-            }
+
+            // Swap
             join = io;
             AHIio = AHIio2;
             AHIio2 = io;
             AHIbuf = AHIbuf2;
             AHIbuf2 = buf;
         
+            if(AUDIO_Play_Flag)
+            {
+                AUDIO_Mixer((Uint8 *) buf, AUDIO_SoundBuffer_Size);
+                AUDIO_Acknowledge = FALSE;
+            }
+            else
+            {
+                memset(buf, 0, AUDIO_SoundBuffer_Size);
+                AUDIO_Acknowledge = TRUE;
+            }
+    
             AUDIO_Samples += AUDIO_SoundBuffer_Size;
             AUDIO_Timer = ((((float) AUDIO_Samples) * (1.0f / (float) AUDIO_Latency)) * 1000.0f);
+
+            Wait(1 << AHImp->mp_SigBit);
+            WaitIO((struct IORequest *) join);
         }
-        usleep(10);
     }
     Thread_Running = 1;
     return(NULL);
@@ -155,7 +156,6 @@ int AUDIO_Init_Driver(void (*Mixer)(Uint8 *, Uint32))
     AHIio2 = (struct AHIRequest *) CreateIORequest(AHImp, sizeof(struct AHIRequest));
     join = NULL;
     
-    // Check ahiios are allocated
     if(!AHIio || !AHIio2)
     {
 
@@ -165,11 +165,10 @@ int AUDIO_Init_Driver(void (*Mixer)(Uint8 *, Uint32))
 
         return(FALSE);
     }
-    
     AHIio->ahir_Version = 4;
     
     // Open ahi
-    if(OpenDevice("ahi.device", 0, (struct IORequest *) AHIio, 0))
+    if(OpenDevice("ahi.device", AHI_DEFAULT_UNIT, (struct IORequest *) AHIio, 0))
     {
         AHIio->ahir_Std.io_Device = NULL;
 
@@ -199,23 +198,24 @@ int AUDIO_Create_Sound_Buffer(int milliseconds)
 
     frag_size = (int) (AUDIO_PCM_FREQ * (milliseconds / 1000.0f));
 
-	AUDIO_SoundBuffer_Size = frag_size << 2;
+    AUDIO_SoundBuffer_Size = frag_size << 2;
     AUDIO_Latency = AUDIO_SoundBuffer_Size;
 
-	AHIbuf = (short *) AllocVec(AUDIO_SoundBuffer_Size << 1, MEMF_ANY);
-	AHIbuf2 = (short *) AllocVec(AUDIO_SoundBuffer_Size << 1, MEMF_ANY);
-	if (!AHIbuf || !AHIbuf2)
+    AHIbuf = (short *) AllocVec(AUDIO_SoundBuffer_Size, MEMF_ANY);
+    AHIbuf2 = (short *) AllocVec(AUDIO_SoundBuffer_Size, MEMF_ANY);
+    
+    if(!AHIbuf || !AHIbuf2)
     {
 
 #if !defined(__STAND_ALONE__) && !defined(__WINAMP__)
         Message_Error("Error while calling AllocVec()");
 #endif
 
-		return(FALSE);
-	}
+        return(FALSE);
+    }
 
-    memset(AHIbuf, 0, AUDIO_SoundBuffer_Size << 1);
-    memset(AHIbuf2, 0, AUDIO_SoundBuffer_Size << 1);
+    memset(AHIbuf, 0, AUDIO_SoundBuffer_Size);
+    memset(AHIbuf2, 0, AUDIO_SoundBuffer_Size);
 
     Thread_Running = 1;
     
@@ -334,10 +334,15 @@ void AUDIO_Stop_Sound_Buffer(void)
             usleep(10);
         }
         hThread = 0;
+        if(AHIio)
+        {
+            AbortIO((struct IORequest *) AHIio);
+            WaitIO((struct IORequest *) AHIio);
+        }
         if(join)
         {
-            AbortIO((struct IORequest *) join);
-            WaitIO((struct IORequest *) join);
+            AbortIO((struct IORequest *) AHIio2);
+            WaitIO((struct IORequest *) AHIio2);
         }
         FreeSignal(AHImp->mp_SigBit);
         AHImp->mp_SigBit = old_sigbit;
@@ -356,7 +361,7 @@ void AUDIO_Stop_Driver(void)
 {
     AUDIO_Stop_Sound_Buffer();
 
-    if (AHIio && AHIio->ahir_Std.io_Device)
+    if(AHIio && AHIio->ahir_Std.io_Device)
     {
         CloseDevice((struct IORequest *) AHIio);
     }

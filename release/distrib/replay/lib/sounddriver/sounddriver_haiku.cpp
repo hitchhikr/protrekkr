@@ -69,12 +69,7 @@ static void AUDIO_Callback(void *cookie, void *inBuffer, size_t byteCount, BStre
     }
     else
     {
-        unsigned int i;
-        char *pSamples = (char *) inBuffer;
-        for(i = 0; i < byteCount; i++)
-        {
-            pSamples[i] = 0;
-        }
+        memset(inBuffer, 0, byteCount);
     }
     AUDIO_Samples += byteCount;
     AUDIO_Timer = ((((float) AUDIO_Samples) * (1.0f / (float) AUDIO_Latency)) * 1000.0f);
