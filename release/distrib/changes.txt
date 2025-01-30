@@ -2,7 +2,7 @@
 ProTrekkr releases history
 ===============================================================================
 
-v2.8.1 PRE
+v2.8.1
 
 - Channels LFO carriers are now properly reseted at playing start.
 - Channels LFO data can now be sent to the channel filter cutoff, 
@@ -16,6 +16,7 @@ v2.8.1 PRE
   - 47: Set channel LFO amount to send to the channel panning.
 - Fixed a very old NoiseTrekker bug where LFO values sent to the channels
   filter were lost because they were too big and clamped.
+- Fixed a nasty regression that occurred in 64 bit compiled versions.
 
 v2.8.0
 
