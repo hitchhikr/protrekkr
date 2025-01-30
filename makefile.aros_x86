@@ -39,6 +39,8 @@ protrekkr: $(EXEOBJS)
 	$(CXX) -o ./release/distrib/ptk_aros -L./ $(FLAGS) $(EXEOBJS) $(LIBS)
 	strip --strip-unneeded ./release/distrib/ptk_aros
 	cp ptk_aros.info ./release/distrib/ptk_aros.info
+	-rm -f $(EXEOBJS)
+	(make -f makefile.aros_x86_ogl)
 
 libptkreplay: $(LIBOBJS)
 	$(AR) -crv libptkreplay.a $(LIBOBJS)
