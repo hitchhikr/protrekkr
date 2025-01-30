@@ -20,7 +20,7 @@
 *.o*
 *.obj*
 *.a*
-*.aos4
+*aos4*
 *.lib*
 *.ptp*
 *.psm*

@@ -12,7 +12,7 @@
 *.o*
 *.obj*
 *.a
-*.aos4
+*aos4*
 *.exp*
 *.ptp*
 *.psm*
