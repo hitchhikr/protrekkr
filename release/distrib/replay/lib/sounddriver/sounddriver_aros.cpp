@@ -94,6 +94,17 @@ void *AUDIO_Thread(void *arg)
             struct AHIRequest *io = AHIio;
             short *buf = AHIbuf;
         
+             if(AUDIO_Play_Flag)
+            {
+                AUDIO_Mixer((Uint8 *) buf, AUDIO_SoundBuffer_Size);
+                AUDIO_Acknowledge = FALSE;
+            }
+            else
+            {
+                memset(buf, 0, AUDIO_SoundBuffer_Size);
+                AUDIO_Acknowledge = TRUE;
+            }
+            
             io->ahir_Std.io_Message.mn_Node.ln_Pri = 0;
             io->ahir_Std.io_Command = CMD_WRITE;
             io->ahir_Std.io_Data = buf;
@@ -105,31 +116,23 @@ void *AUDIO_Thread(void *arg)
             io->ahir_Position = 0x8000;
             io->ahir_Link = join;
             SendIO((struct IORequest *) io);
-
+            
+            if(join)
+            {
+                WaitIO((struct IORequest *) join);
+            }
+            
             // Swap
             join = io;
             AHIio = AHIio2;
             AHIio2 = io;
             AHIbuf = AHIbuf2;
             AHIbuf2 = buf;
-        
-            if(AUDIO_Play_Flag)
-            {
-                AUDIO_Mixer((Uint8 *) buf, AUDIO_SoundBuffer_Size);
-                AUDIO_Acknowledge = FALSE;
-            }
-            else
-            {
-                memset(buf, 0, AUDIO_SoundBuffer_Size);
-                AUDIO_Acknowledge = TRUE;
-            }
     
             AUDIO_Samples += AUDIO_SoundBuffer_Size;
             AUDIO_Timer = ((((float) AUDIO_Samples) * (1.0f / (float) AUDIO_Latency)) * 1000.0f);
-
-            Wait(1 << AHImp->mp_SigBit);
-            WaitIO((struct IORequest *) join);
         }
+        usleep(10);
     }
     Thread_Running = 1;
     return(NULL);
