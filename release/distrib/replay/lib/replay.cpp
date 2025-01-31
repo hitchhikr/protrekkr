@@ -1036,7 +1036,7 @@ float FastPow2(float i)
 {
 	float x;
 #if defined(__GCC__)
-	float y = i - FastFloor(i);
+    float y = i - FastFloor(i);
 #else
     float y = i - floorf(i);
 #endif
@@ -1056,9 +1056,9 @@ float FastLog(float i)
 	x *= 1.0f / (1 << 23);
 	x = x - 127;
 #if defined(__GCC__)
-	y = x - FastFloor(x);
+    y = x - FastFloor(x);
 #else
-	y = x - floorf(x);
+    y = x - floorf(x);
 #endif
     y = (y - y * y) * 0.346607f;
 	return x + y;
