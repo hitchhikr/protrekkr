@@ -980,6 +980,9 @@ float absf(float x)
     return(x);
 }
 
+#define DENORMAL 0
+
+#if DENORMAL
 __inline float denormal(float sample)
 {
     unsigned int isample;
@@ -990,6 +993,82 @@ __inline float denormal(float sample)
     int aDen = exponent > 0;
     return sample * (aNaN & aDen);
 }
+#endif
+
+#if defined(USE_FASTPOW)
+void ToFloat(int *dest, int val)
+{
+    *dest = val;
+}
+
+#if defined(__GCC__)
+static __inline__ float FastFloor(float f)
+{
+    float b, c, d, e, g, h, t;
+
+    c = (f >= 0.0f) ? -8388608.0f: 8388608.0f;
+    b = absf(f); 
+    d = f - c;
+    e = b - 8388608.0f;
+    __asm__("" : "+f" (d));	
+    d = d + c;
+    g = f - d;
+    h = (g >= 0.0f) ? 0.0f: 1.0f;
+    t = d - h;
+    return (e >= 0.0f) ? f: t;
+}
+#endif
+
+#if defined(__PSP__)
+float FastPow2(float x)
+{
+	float result;
+
+	__asm__ volatile(
+		"mtv      %1, S000\n"
+		"vexp2.s  S000, S000\n"
+		"mfv      %0, S000\n"
+	: "=r"(result) : "r"(x));
+	return result;
+}
+#else
+float FastPow2(float i)
+{
+	float x;
+#if defined(__GCC__)
+	float y = i - FastFloor(i);
+#else
+    float y = i - floorf(i);
+#endif
+    y = (y - y * y) * 0.33971f;
+	x = i + 127 - y;
+	x *= (1 << 23);
+	ToFloat((int *) &x, (int) x);
+    return x;
+}
+#endif
+
+float FastLog(float i)
+{
+	float x;
+	float y;
+	x = (float) (*(int *) &i);
+	x *= 1.0f / (1 << 23);
+	x = x - 127;
+#if defined(__GCC__)
+	y = x - FastFloor(x);
+#else
+	y = x - floorf(x);
+#endif
+    y = (y - y * y) * 0.346607f;
+	return x + y;
+}
+float FastPow(float a, float b)
+{
+    return FastPow2(b * FastLog(a));
+}
+#endif
+
 // ------------------------------------------------------
 // Audio mixer
 #if !defined(BZR2)
@@ -3643,8 +3722,12 @@ ByPass_Wav:
 #endif // PTK_SYNTH
 
             // Gather the signals of all the sub channels
+
+#if DENORMAL
             Curr_Signal_L[i] = denormal(Curr_Signal_L[i]);
             Curr_Signal_R[i] = denormal(Curr_Signal_R[i]);
+#endif
+
             All_Signal_L += Curr_Signal_L[i];
             All_Signal_R += Curr_Signal_R[i];
         }
@@ -3729,8 +3812,10 @@ ByPass_Wav:
             Segue_SamplesR[c] = All_Signal_R;
         }
 
+#if DENORMAL
         All_Signal_L = denormal(All_Signal_L);
         All_Signal_R = denormal(All_Signal_R);
+#endif
 
         // -----------------------------------------------
 
@@ -3977,8 +4062,11 @@ ByPass_Wav:
                                                        FLANGER_AMOUNT[c] +
                                                        roldspawn[c] *
                                                        FLANGER_FEEDBACK[c];
+
+#if DENORMAL
             FLANGE_LEFTBUFFER[c][FLANGER_OFFSET[c]] = denormal(FLANGE_LEFTBUFFER[c][FLANGER_OFFSET[c]]);
             FLANGE_RIGHTBUFFER[c][FLANGER_OFFSET[c]] = denormal(FLANGE_RIGHTBUFFER[c][FLANGER_OFFSET[c]]);
+#endif
             
             float fstep1;
             float fstep2;
@@ -3989,8 +4077,12 @@ ByPass_Wav:
                 de_value -= 6.283185f;
             }
             de_value = ((de_value / 6.283185f));
+
+#if DENORMAL
             gr_value = denormal(gr_value);
             de_value = denormal(de_value);
+#endif
+
             fstep1 = POWF2(SIN[(int) (gr_value * 359.0f)] * FLANGER_AMPL[c]);
             fstep2 = POWF2(SIN[(int) (de_value * 359.0f)] * FLANGER_AMPL[c]);
             
@@ -4028,8 +4120,10 @@ ByPass_Wav:
         }
 #endif
 
+#if DENORMAL
         All_Signal_L = denormal(All_Signal_L);
         All_Signal_R = denormal(All_Signal_R);
+#endif
 
 #if defined(PTK_LIMITER_TRACKS)
         // Compress the track signal
@@ -4063,8 +4157,10 @@ ByPass_Wav:
             All_Signal_R = -All_Signal_R;
         }
 
+#if DENORMAL
         All_Signal_L = denormal(All_Signal_L);
         All_Signal_R = denormal(All_Signal_R);
+#endif
 
         Compute_Stereo_Quick(c);
 
@@ -4138,8 +4234,13 @@ ByPass_Wav:
 #if !defined(__STAND_ALONE__)
         if(!Chan_Mute_State[c])
         {
+#if DENORMAL
             Scope_Dats_L[c][pos_scope] = denormal(All_Signal_L / 32767.0f);
             Scope_Dats_R[c][pos_scope] = denormal(All_Signal_R / 32767.0f);
+#else
+            Scope_Dats_L[c][pos_scope] = All_Signal_L / 32767.0f;
+            Scope_Dats_R[c][pos_scope] = All_Signal_R / 32767.0f;
+#endif
         }
         else
         {
@@ -6049,8 +6150,10 @@ void Get_Player_Values(void)
     if(++lchorus_counter2 > (MIX_RATE * 2)) lchorus_counter2 = MIX_RATE;
     if(++rchorus_counter2 > (MIX_RATE * 2)) rchorus_counter2 = MIX_RATE;
 
+#if DENORMAL
     lbuff_chorus[lchorus_counter2] = denormal(lbuff_chorus[lchorus_counter2]);
     rbuff_chorus[lchorus_counter2] = denormal(rbuff_chorus[lchorus_counter2]);
+#endif
 
     float rchore = lbuff_chorus[lchorus_counter2];
     float lchore = rbuff_chorus[rchorus_counter2];
@@ -6066,8 +6169,10 @@ void Get_Player_Values(void)
     left_float /= 32767.0f;
     right_float /= 32767.0f;
 
+#if DENORMAL
     left_float = denormal(left_float);
     right_float = denormal(right_float);
+#endif
     
 #if defined(PTK_LIMITER_MASTER)
 #if !defined(__STAND_ALONE__) || defined(__WINAMP__)
@@ -6137,17 +6242,17 @@ void Get_Player_Values(void)
     {
         if(!Chan_Mute_State[c])
         {
-            Scope_Dats_L[c][pos_scope] = denormal(((((Scope_Dats_L[c][pos_scope]
+            Scope_Dats_L[c][pos_scope] = ((((Scope_Dats_L[c][pos_scope]
                                          ) * left_compress
                                          ) * mas_vol
                                          ) * local_curr_mas_vol
-                                         ) * local_curr_ramp_vol);
+                                         ) * local_curr_ramp_vol;
 
-            Scope_Dats_R[c][pos_scope] = denormal(((((Scope_Dats_R[c][pos_scope]
+            Scope_Dats_R[c][pos_scope] = ((((Scope_Dats_R[c][pos_scope]
                                          ) * right_compress
                                          ) * mas_vol
                                          ) * local_curr_mas_vol
-                                         ) * local_curr_ramp_vol);
+                                         ) * local_curr_ramp_vol;
 
             Scope_Dats[c][pos_scope] = (Scope_Dats_L[c][pos_scope] + Scope_Dats_R[c][pos_scope]) * 1.2f;
         }
@@ -7190,8 +7295,12 @@ void Reverb_work(void)
             }
             nev_l *= Reverb_Damp;
             nev_r *= Reverb_Damp;
+
+#if DENORMAL
             nev_l = denormal(nev_l);
             nev_r = denormal(nev_r);
+#endif
+
             if(++counters_L[i] > 99999) counters_L[i] -= 99999;
             if(++counters_R[i] > 99999) counters_R[i] -= 99999;
             delay_left_buffer[i][counters_L[i]] = nev_l;
@@ -7205,8 +7314,12 @@ void Reverb_work(void)
         {
             l_rout = allpass_filter(allBuffer_L[i], l_rout, delayedCounterL[i]);
             r_rout = allpass_filter(allBuffer_R[i], r_rout, delayedCounterR[i]);
+
+#if DENORMAL
             l_rout = denormal(l_rout);
             r_rout = denormal(r_rout);
+#endif
+            
             if(++delayedCounterL[i] > 5759) delayedCounterL[i] -= 5759;
             if(++delayedCounterR[i] > 5759) delayedCounterR[i] -= 5759;
         }
@@ -7499,54 +7612,6 @@ float Process_Sample(short *Data, int c, int i, unsigned int res_dec)
     }
 #endif
 }
-
-#if defined(USE_FASTPOW)
-void ToFloat(int *dest, int val)
-{
-    *dest = val;
-}
-
-#if defined(__PSP__)
-float FastPow2(float x)
-{
-	float result;
-
-	__asm__ volatile(
-		"mtv      %1, S000\n"
-		"vexp2.s  S000, S000\n"
-		"mfv      %0, S000\n"
-	: "=r"(result) : "r"(x));
-	return result;
-}
-#else
-float FastPow2(float i)
-{
-	float x;
-	float y = i - floorf(i);
-	y = (y - y * y) * 0.33971f;
-	x = i + 127 - y;
-	x *= (1 << 23);
-	ToFloat((int *) &x, (int) x);
-    return x;
-}
-#endif
-
-float FastLog(float i)
-{
-	float x;
-	float y;
-	x = (float) (*(int *) &i);
-	x *= 1.0f / (1 << 23);
-	x = x - 127;
-	y = x - floorf(x);
-	y = (y - y * y) * 0.346607f;
-	return x + y;
-}
-float FastPow(float a, float b)
-{
-    return FastPow2(b * FastLog(a));
-}
-#endif
 
 #if defined(PTK_TRACK_EQ)
 // Public domain stuff from Neil C. / Etanza Systems
