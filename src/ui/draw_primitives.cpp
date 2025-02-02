@@ -355,7 +355,7 @@ void Copy_No_Refresh(SDL_Surface *Source,
     Src_Rect.h = Dst_Rect.h;
 
 #if defined(__USE_OPENGL__)
-    Draw_Tx_Quad(x, y,
+    Draw_Tx_Quad(dest_x, dest_y,
                  source_start_x, source_start_y,
                  Dst_Rect.w, 
                  Dst_Rect.h,
