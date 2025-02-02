@@ -1005,7 +1005,11 @@ static __inline__ float FastFloor(float f)
     b = absf(f); 
     d = f - c;
     e = b - 8388608.0f;
-    __asm__("" : "+f" (d));	
+#if defined(__LINUX__)
+    __asm__("" : "+mf" (d));
+#else
+    __asm__("" : "+f" (d));
+#endif
     d = d + c;
     g = f - d;
     h = (g >= 0.0f) ? 0.0f: 1.0f;
@@ -1036,9 +1040,9 @@ float FastPow2(float i)
     float y = i - floorf(i);
 #endif
     y = (y - y * y) * 0.33971f;
-	x = i + 127 - y;
-	x *= (1 << 23);
-	ToFloat((int *) &x, (int) x);
+    x = i + 127 - y;
+    x *= (1 << 23);
+    ToFloat((int *) &x, (int) x);
     return x;
 }
 #endif
