@@ -1784,11 +1784,12 @@ void RtMidiOut :: openPort(unsigned int portNumber, char *portName)
     receiver.client = snd_seq_port_info_get_client(pinfo);
     receiver.port = snd_seq_port_info_get_port(pinfo);
     sender.client = snd_seq_client_id(data->seq);
+    data->portNum = sender.client;
 
     if(data->vport < 0)
     {
         data->vport = snd_seq_create_simple_port(data->seq, portName,
-                                                 SND_SEQ_PORT_CAP_READ | SND_SEQ_POR_CAP_WRITE,
+                                                 SND_SEQ_PORT_CAP_READ | SND_SEQ_PORT_CAP_WRITE,
                                                  SND_SEQ_PORT_TYPE_APPLICATION );
         if(data->vport < 0)
         {
@@ -1910,7 +1911,7 @@ void RtMidiOut :: sendMessage(std::vector<unsigned char> *message)
         snd_seq_ev_set_direct(&ev);
         
         snd_seq_ev_set_source(&ev, data->vport);
-        snd_seq_ev_set_dest(&ev, sender.client, data->vport);
+        snd_seq_ev_set_dest(&ev, data->portNum, data->vport);
         
         snd_seq_ev_set_subs(&ev);
         
