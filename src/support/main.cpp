@@ -778,7 +778,6 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
                     Symbol = Events[i].key.keysym.sym;
 
                     Uni_Trans = Events[i].key.keysym.unicode;
-                        printf("RIGHTO %d\n", Uni_Trans);
 
                     if(Uni_Trans < 512)
                     {
@@ -787,78 +786,78 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
                         //  be accessed by pressing shift).
                         // Otherwise it doesn't work under Mac OSX
                         Keys_Unicode[Uni_Trans] = TRUE;
+                    }
 
 #if !defined(__MACOSX_PPC__) && !defined(__MACOSX_X86__)
-                        if(!Uni_Trans)
-                        {
-                            Uni_Trans = Symbol;
-                        }
-#else
+                    if(!Uni_Trans)
+                    {
                         Uni_Trans = Symbol;
+                    }
+#else
+                    Uni_Trans = Symbol;
 #endif
 
-                        Keys[Uni_Trans] = TRUE;
+                    Keys[Uni_Trans] = TRUE;
 
-                        if(!In_Requester)
+                    if(!In_Requester)
+                    {
+                        Scancode = Translate_Locale_Key(Symbol);
+
+                        Keys_Raw[Scancode] = TRUE;
+                        Keys_Raw_Off[Scancode] = FALSE;
+                        Keys_Raw_Repeat[Scancode] = TRUE;
+
+                        if(!is_recording_2 && is_editing)
                         {
-                            Scancode = Translate_Locale_Key(Symbol);
-
-                            Keys_Raw[Scancode] = TRUE;
-                            Keys_Raw_Off[Scancode] = FALSE;
-                            Keys_Raw_Repeat[Scancode] = TRUE;
-
-                            if(!is_recording_2 && is_editing)
+                            in_note = FALSE;
+                            for(j = 0; j < Channels_MultiNotes[Track_Under_Caret]; j++)
                             {
-                                in_note = FALSE;
-                                for(j = 0; j < Channels_MultiNotes[Track_Under_Caret]; j++)
+                                if(Column_Under_Caret == (j * 3))
                                 {
-                                    if(Column_Under_Caret == (j * 3))
-                                    {
-                                        in_note = TRUE;
-                                        break;
-                                    }
-                                }
-                                if(in_note)
-                                {
-                                    if(!Get_LCtrl() && !Get_LShift() && !Get_LAlt())
-                                    {
-                                        Send_Note(Scancode, FALSE, TRUE);
-                                    }
+                                    in_note = TRUE;
+                                    break;
                                 }
                             }
-
-                            if((Keys[SDLK_RETURN] || Keys[SDLK_KP_ENTER]) && Enter_Notification == FALSE &&
-                                !Get_LAlt() && !Get_RAlt() && !Get_LCtrl() && !Get_RCtrl()
-                               )
+                            if(in_note)
                             {
-                                Enter_Notification = TRUE;
-                                Enter_Notified = TRUE;
-                                Enter_Notified_Play_Pattern = TRUE;
-                                if(Get_LShift())
+                                if(!Get_LCtrl() && !Get_LShift() && !Get_LAlt())
                                 {
-                                    Enter_Notified_Play_Pattern = FALSE;
+                                    Send_Note(Scancode, FALSE, TRUE);
                                 }
-                            }
-
-                            RShift_Notification = FALSE;
-                            if(Get_RShift())
-                            {
-                                RShift_Notification = TRUE;
-                                RShift_Notified = TRUE;
                             }
                         }
 
-                        Keys_Sym[Symbol] = TRUE;
-
-                        if(key_on != 2) key_on = 1;
-
-                        if(SDL_GetModState() & KMOD_LALT)
+                        if((Keys[SDLK_RETURN] || Keys[SDLK_KP_ENTER]) && Enter_Notification == FALSE &&
+                            !Get_LAlt() && !Get_RAlt() && !Get_LCtrl() && !Get_RCtrl()
+                           )
                         {
-                            if(Keys[SDLK_RETURN] && !Get_LCtrl() && !Get_RCtrl())
+                            Enter_Notification = TRUE;
+                            Enter_Notified = TRUE;
+                            Enter_Notified_Play_Pattern = TRUE;
+                            if(Get_LShift())
                             {
-                                FullScreen ^= TRUE;
-                                Switch_FullScreen(Cur_Width, Cur_Height, TRUE, FullScreen ? FALSE : TRUE);
+                                Enter_Notified_Play_Pattern = FALSE;
                             }
+                        }
+
+                        RShift_Notification = FALSE;
+                        if(Get_RShift())
+                        {
+                            RShift_Notification = TRUE;
+                            RShift_Notified = TRUE;
+                        }
+                    }
+
+                    Keys_Sym[Symbol] = TRUE;
+
+                    if(key_on != 2) key_on = 1;
+
+                    if(SDL_GetModState() & KMOD_LALT)
+                    {
+                        if(Keys[SDLK_RETURN] && !Get_LCtrl() && !Get_RCtrl())
+                        {
+                            FullScreen ^= TRUE;
+                            Switch_FullScreen(Cur_Width, Cur_Height, TRUE, FullScreen ? FALSE : TRUE);
                         }
                     }
                     break;
