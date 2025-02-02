@@ -928,7 +928,7 @@ void RtMidiOut :: sendMessage(std::vector<unsigned char> *message)
         return;
     }
 
-    MIDITimeStamp timeStamp = 0;//AudioGetCurrentHostTime();
+    MIDITimeStamp timeStamp = AudioGetCurrentHostTime();
     CoreMidiData *data = static_cast<CoreMidiData *> (apiData_);
     OSStatus result;
 
