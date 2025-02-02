@@ -786,11 +786,11 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
                         // Otherwise it doesn't work under Mac OSX
                         Keys_Unicode[Uni_Trans] = TRUE;
 
-#if !defined(__MACOSX_PPC__) && !defined(__MACOSX_X86__)
+//#if !defined(__MACOSX_PPC__) && !defined(__MACOSX_X86__)
                         if(!Uni_Trans) Uni_Trans = Symbol;
-#else
-                        Uni_Trans = Symbol;
-#endif
+//#else
+  //                      Uni_Trans = Symbol;
+//#endif
 
                         Keys[Uni_Trans] = TRUE;
                     if(Keys[SDLK_RIGHT])
