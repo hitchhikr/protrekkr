@@ -54,7 +54,6 @@ RtMidi :: RtMidi() : apiData_(0), connected_(false)
 
 void RtMidi :: error(RtError::Type type)
 {
-    printf("%s\n", errorString_);
 }
 
 //*********************************************************************//
@@ -1932,7 +1931,7 @@ void RtMidiOut :: sendMessage(std::vector<unsigned char> *message)
         result = snd_seq_event_output(data->seq, &ev);
         if(result < 0)
         {
-            sprintf(errorString_, "RtMidiOut::sendMessage: error sending MIDI message to port.");
+            sprintf(errorString_, "RtMidiOut::sendMessage: error sending MIDI message to port (%d).", result);
             error(RtError::WARNING);
             return;
         }
@@ -2276,6 +2275,7 @@ RtMidiIn :: ~RtMidiIn()
     WinMidiData *data = static_cast<WinMidiData *> (apiData_);
     DeleteCriticalSection(&data->_mutex);
     delete data;
+    data = 0;
 }
 
 unsigned int RtMidiIn :: getPortCount()
