@@ -798,11 +798,6 @@ float xi0[2][MAX_TRACKS];
 float xi1[2][MAX_TRACKS];
 float xi2[2][MAX_TRACKS];
 
-#if !defined(__STAND_ALONE__) && !defined(__WINAMP__)
-extern int gui_thread_action;
-extern int gui_bpm_action;
-#endif
-
 #if !defined(__STAND_ALONE__) || defined(__WINAMP__)
     float lchorus_feedback = 0.6f;
     float rchorus_feedback = 0.5f;
@@ -2171,10 +2166,6 @@ void Reset_Values(void)
         Done_Reset = TRUE;
 #endif
 
-#if !defined(__STAND_ALONE__) && !defined(__WINAMP__)
-        gui_thread_action = TRUE;
-#endif
-
     }
 }
 
@@ -2646,7 +2637,21 @@ void Post_Song_Init(void)
     PosInTick = 0;
     PosInTick_Delay = 0;
     SamplesPerSub = SamplesPerTick / 6;
+    Delay_Sound_Buffer = 0;
     Cur_Delay_Sound_Buffer = 0;
+    Song_Playing_Pattern = FALSE;
+    
+    for(i = 0; i < 256; i++)
+    {
+        Delays_Pos_Sound_Buffer[i].Line = 0;
+        Delays_Pos_Sound_Buffer[i].Pos = 0;
+        Delays_Pos_Sound_Buffer[i].SamplesPerTick = 0;
+
+#if defined(PTK_SHUFFLE)
+        Delays_Pos_Sound_Buffer[i].shufflestep = 0;
+#endif
+
+    }
 
     Pattern_Line_Visual = Pattern_Line;
     Song_Position_Visual = Song_Position;
@@ -2669,26 +2674,16 @@ void Post_Song_Init(void)
         Fix_Stereo(spl);
     }
 
-    Song_Playing_Pattern = 0;
     AUDIO_ResetTimer();
-    Delay_Sound_Buffer = 0;
-    for(i = 0; i < 256; i++)
-    {
-        Delays_Pos_Sound_Buffer[i].Line = 0;
-        Delays_Pos_Sound_Buffer[i].Pos = 0;
-        Delays_Pos_Sound_Buffer[i].SamplesPerTick = 0;
-
-#if defined(PTK_SHUFFLE)
-        Delays_Pos_Sound_Buffer[i].shufflestep = 0;
-#endif
-
-    }
 }
 
 // ------------------------------------------------------
 // Record and set the visual patterns lines and song positions
 void Record_Delay_Event()
 {
+    Cur_Delay_Sound_Buffer++;
+    if(Cur_Delay_Sound_Buffer >= 512) Cur_Delay_Sound_Buffer = 0;
+
     // Record a complete sequence for latency calibration
 #if defined(PTK_SHUFFLE)
     Delays_Pos_Sound_Buffer[Cur_Delay_Sound_Buffer].shufflestep = shufflestep;
@@ -2697,8 +2692,6 @@ void Record_Delay_Event()
     Delays_Pos_Sound_Buffer[Cur_Delay_Sound_Buffer].SamplesPerTick = SamplesPerTick;
     Delays_Pos_Sound_Buffer[Cur_Delay_Sound_Buffer].Line = Pattern_Line;
     Delays_Pos_Sound_Buffer[Cur_Delay_Sound_Buffer].Pos = Song_Position;
-    Cur_Delay_Sound_Buffer++;
-    if(Cur_Delay_Sound_Buffer >= 512) Cur_Delay_Sound_Buffer = 0;
 }
 
 // ------------------------------------------------------
@@ -3009,7 +3002,7 @@ void Sp_Player(void)
 #if defined(PTK_SYNTH)
                         if(!glide)
                         {
-                            Synthesizer[ct][j].NoteOff();
+                            Synthesizer[ct][j].Note_Off();
                             sp_Stage[ct][j] = PLAYING_SAMPLE_NOTEOFF;
                         }
                         else
@@ -3021,7 +3014,7 @@ void Sp_Player(void)
 #if !defined(__NO_MIDI__)
                         if(Midi_Current_Notes[Chan_Midi_Prg[ct]][j])
                         {
-                            Midi_NoteOff(ct, Midi_Current_Notes[Chan_Midi_Prg[ct]][j]);
+                            Midi_Note_Off(ct, Midi_Current_Notes[Chan_Midi_Prg[ct]][j]);
                             Midi_Current_Notes[Chan_Midi_Prg[ct]][j] = 0;
                         }
 #endif
@@ -3113,7 +3106,7 @@ void Sp_Player(void)
 #endif
 
 #if defined(PTK_SYNTH)
-                            Synthesizer[ct][j].NoteOff();
+                            Synthesizer[ct][j].Note_Off();
                             sp_Stage[ct][j] = PLAYING_SAMPLE_NOTEOFF;
 #endif
                             Reserved_Sub_Channels[ct][i] = -1;
@@ -3123,7 +3116,7 @@ void Sp_Player(void)
 #if !defined(__NO_MIDI__)
                             if(Midi_Current_Notes[Chan_Midi_Prg[ct]][i])
                             {
-                                Midi_NoteOff(ct, Midi_Current_Notes[Chan_Midi_Prg[ct]][i]);
+                                Midi_Note_Off(ct, Midi_Current_Notes[Chan_Midi_Prg[ct]][i]);
                                 Midi_Current_Notes[Chan_Midi_Prg[ct]][i] = 0;
                             }
 #endif
@@ -3366,7 +3359,10 @@ void Sp_Player(void)
         }
 
         // Replay the recorded song sequence with the sound card latency delay
-        if(Song_Playing_Pattern) Proc_Next_Visual_Line();
+        if(Song_Playing_Pattern)
+        {
+            Proc_Next_Visual_Line();
+        }
     }
 
     // -------------------------------------------
@@ -3776,7 +3772,7 @@ ByPass_Wav:
 #endif
 
 #if defined(PTK_SYNTH)
-                Synthesizer[c][i].NoteOff();
+                Synthesizer[c][i].Note_Off();
 #endif
             }
 
@@ -3786,7 +3782,7 @@ ByPass_Wav:
 
 #if !defined(__STAND_ALONE__)
     #if !defined(__NO_MIDI__)
-            Midi_NoteOff(c, -1);
+            Midi_Note_Off(c, -1);
     #endif
 #endif
 
@@ -4383,6 +4379,7 @@ void Play_Instrument(int channel, int sub_channel)
     int sample;
     float vol;
     float vol_synth;
+    float channel_vol;
     unsigned int offset;
     int glide;
     int Play_Selection;
@@ -4399,6 +4396,8 @@ void Play_Instrument(int channel, int sub_channel)
     int no_retrig_adsr = FALSE;
     int no_retrig_note = FALSE;
 
+
+    channel_vol = sp_Tvol_Mod[channel];
     Cur_Position = Song_Position;
 
     // Check if the channel have to be played
@@ -4878,7 +4877,7 @@ void Play_Instrument(int channel, int sub_channel)
                 // Remove the previous note
                 if(midi_sub_channel >= 1 && Midi_Current_Notes[Chan_Midi_Prg[channel]][midi_sub_channel - 1])
                 {
-                    Midi_NoteOff(channel, Midi_Current_Notes[Chan_Midi_Prg[channel]][midi_sub_channel - 1]);
+                    Midi_Note_Off(channel, Midi_Current_Notes[Chan_Midi_Prg[channel]][midi_sub_channel - 1]);
                     Midi_Current_Notes[Chan_Midi_Prg[channel]][midi_sub_channel - 1] = 0;
                 }
 
@@ -4891,7 +4890,7 @@ void Play_Instrument(int channel, int sub_channel)
                 }
 
                 // Send the note to the midi device
-                float veloc = vol * mas_vol * local_mas_vol * local_ramp_vol;
+                float veloc = vol * channel_vol * mas_vol * local_mas_vol * local_ramp_vol;
 
                 Midi_Send(0x90 + Chan_Midi_Prg[channel], mnote, (int) (veloc * 127));
                 if(midi_sub_channel < 0) Midi_Current_Notes[Chan_Midi_Prg[channel]][(-midi_sub_channel) - 1] = mnote;
@@ -4971,11 +4970,6 @@ void Do_Effects_Tick_0(void)
                 case 0x25:
                     shuffle_amount = (int) ((float) pltr_dat_row[j] * 0.39216f);
                     Update_Shuffle();
-
-#if !defined(__STAND_ALONE__) && !defined(__WINAMP__)
-                    gui_bpm_action = TRUE;
-#endif
-
                     break;
 #endif
 
@@ -5172,11 +5166,6 @@ void Do_Effects_Tick_0(void)
                         SamplesPerTick = (int) ((60 * MIX_RATE) / (Beats_Per_Min * Ticks_Per_Beat));
                         SamplesPerSub = SamplesPerTick / 6;
                     }
-
-#if !defined(__STAND_ALONE__) && !defined(__WINAMP__)
-                    gui_bpm_action = TRUE;
-#endif
-
                     break;
 #endif
 
@@ -5204,9 +5193,6 @@ void Do_Effects_Tick_0(void)
                     Update_Shuffle();
 #endif
 
-#if !defined(__STAND_ALONE__) && !defined(__WINAMP__)
-                    gui_bpm_action = TRUE;
-#endif
                     break;
 #endif
 
@@ -5370,14 +5356,14 @@ void Do_Effects_Ticks_X(void)
 #endif
 
 #if defined(PTK_SYNTH)
-                        Synthesizer[trackef][i].NoteOff();
+                        Synthesizer[trackef][i].Note_Off();
 #endif
 
 #if !defined(__STAND_ALONE__)
 #if !defined(__NO_MIDI__)
                         if(Midi_Current_Notes[Chan_Midi_Prg[trackef]][i])
                         {
-                            Midi_NoteOff(trackef, Midi_Current_Notes[Chan_Midi_Prg[trackef]][i]);
+                            Midi_Note_Off(trackef, Midi_Current_Notes[Chan_Midi_Prg[trackef]][i]);
                             Midi_Current_Notes[Chan_Midi_Prg[trackef]][i] = 0;
                         }
 #endif
@@ -5753,14 +5739,14 @@ void Do_Effects_Ticks_X(void)
 #endif
 
 #if defined(PTK_SYNTH)
-                                Synthesizer[trackef][j].NoteOff();
+                                Synthesizer[trackef][j].Note_Off();
 #endif
 
 #if !defined(__STAND_ALONE__)
 #if !defined(__NO_MIDI__)
                                 if(Midi_Current_Notes[Chan_Midi_Prg[trackef]][j])
                                 {
-                                    Midi_NoteOff(trackef, Midi_Current_Notes[Chan_Midi_Prg[trackef]][j]);
+                                    Midi_Note_Off(trackef, Midi_Current_Notes[Chan_Midi_Prg[trackef]][j]);
                                     Midi_Current_Notes[Chan_Midi_Prg[trackef]][j] = 0;
                                 }
 #endif
@@ -6130,7 +6116,7 @@ void Get_Player_Values(void)
     // Wait for the audio latency before starting to play
     if(Song_Playing)
     {
-        if(Song_Playing_Pattern == 0)
+        if(!Song_Playing_Pattern)
         {
             int Max_Latency = AUDIO_Latency;
             if(AUDIO_GetSamples() >= Max_Latency)
@@ -6138,7 +6124,7 @@ void Get_Player_Values(void)
                 // Start from the top of the buffer
                 Delay_Sound_Buffer = 0;
                 PosInTick_Delay = 0;
-                Song_Playing_Pattern = 1;
+                Song_Playing_Pattern = TRUE;
             }
         }
     }

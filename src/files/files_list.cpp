@@ -669,25 +669,25 @@ void Dump_Files_List(int xr, int yr)
             switch(Scopish)
             {
                 case SCOPE_ZONE_MOD_DIR:
-                    PrintString(398, 26, USE_FONT, Dir_Mods, (Cur_Width - 522));
+                    Print_String(398, 26, USE_FONT, Dir_Mods, (Cur_Width - 522));
                     break;
                 case SCOPE_ZONE_INSTR_DIR:
-                    PrintString(398, 26, USE_FONT, Dir_Instrs, (Cur_Width - 522));
+                    Print_String(398, 26, USE_FONT, Dir_Instrs, (Cur_Width - 522));
                     break;
                 case SCOPE_ZONE_PRESET_DIR:
-                    PrintString(398, 26, USE_FONT, Dir_Presets, (Cur_Width - 522));
+                    Print_String(398, 26, USE_FONT, Dir_Presets, (Cur_Width - 522));
                     break;
                 case SCOPE_ZONE_REVERB_DIR:
-                    PrintString(398, 26, USE_FONT, Dir_Reverbs, (Cur_Width - 522));
+                    Print_String(398, 26, USE_FONT, Dir_Reverbs, (Cur_Width - 522));
                     break;
                 case SCOPE_ZONE_MIDICFG_DIR:
-                    PrintString(398, 26, USE_FONT, Dir_MidiCfg, (Cur_Width - 522));
+                    Print_String(398, 26, USE_FONT, Dir_MidiCfg, (Cur_Width - 522));
                     break;
                 case SCOPE_ZONE_PATTERN_DIR:
-                    PrintString(398, 26, USE_FONT, Dir_Patterns, (Cur_Width - 522));
+                    Print_String(398, 26, USE_FONT, Dir_Patterns, (Cur_Width - 522));
                     break;
                 case SCOPE_ZONE_SAMPLE_DIR:
-                    PrintString(398, 26, USE_FONT, Dir_Samples, (Cur_Width - 522));
+                    Print_String(398, 26, USE_FONT, Dir_Samples, (Cur_Width - 522));
                     break;
             }
 
@@ -709,11 +709,11 @@ void Dump_Files_List(int xr, int yr)
                         switch(Get_FileType(rel_val))
                         {
                             case _A_SUBDIR:
-                                PrintString(xr, yr + (counter * space), USE_FONT_LOW, Get_FileName(rel_val), Cur_Width - 504);
-                                PrintString(xr + (Cur_Width - 436), yr + (counter * space) + 1, USE_FONT_LOW, "<Dir>");
+                                Print_String(xr, yr + (counter * space), USE_FONT_LOW, Get_FileName(rel_val), Cur_Width - 504);
+                                Print_String(xr + (Cur_Width - 436), yr + (counter * space) + 1, USE_FONT_LOW, "<Dir>");
                                 break;
                             case _A_FILE:
-                                PrintString(xr, yr + (counter * space) + 1, USE_FONT, Get_FileName(rel_val), Cur_Width - 504);
+                                Print_String(xr, yr + (counter * space) + 1, USE_FONT, Get_FileName(rel_val), Cur_Width - 504);
                                 File = fopen(Get_FileName(rel_val), "rb");
                                 if(File)
                                 {
@@ -724,12 +724,12 @@ void Dump_Files_List(int xr, int yr)
                                     }
                                     else sprintf(Size_String, "%9.d", Size);
                                     int pos = (xr + (Cur_Width - 415)) - Get_Size_Text(Size_String);
-                                    PrintString(pos, yr + (counter * space) + 1, USE_FONT, Size_String);
+                                    Print_String(pos, yr + (counter * space) + 1, USE_FONT, Size_String);
                                     fclose(File);
                                 }
                                 else
                                 {
-                                    PrintString(xr + (Cur_Width - 460), yr + (counter * space) + 1, USE_FONT_LOW, "<Locked>");
+                                    Print_String(xr + (Cur_Width - 460), yr + (counter * space) + 1, USE_FONT_LOW, "<Locked>");
                                 }
                                 break;
                             case _A_SEP:
@@ -742,7 +742,7 @@ void Dump_Files_List(int xr, int yr)
             }
             else
             {
-                PrintString(xr, yr, USE_FONT_LOW, Get_FileName(0));
+                Print_String(xr, yr, USE_FONT_LOW, Get_FileName(0));
             }
             break;
     }

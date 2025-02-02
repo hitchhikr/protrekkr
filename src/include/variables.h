@@ -560,7 +560,7 @@ void Sp_Player(void);
 void Pre_Song_Init(void);
 void Reverb_work(void);
 void Start_Rec(void);
-void Notify_Edit(void);
+void Notify_Edit(int After_Song_Stop);
 void Notify_Play(void);
 void ComputeCoefs(int freq, int r, int t);
 void live303(int pltr_eff_row, int pltr_dat_row);
@@ -626,7 +626,7 @@ void Draw_Scope(void);
 int Init_Scopes_VuMeters_Buffers(void);
 
 void Remove_Title(void);
-void Switch_Cmd_Playing(void);
+void Switch_Cmd_Playing(int After_Song_Stop);
 
 void Lock_Audio_Thread(void);
 void Unlock_Audio_Thread(void);

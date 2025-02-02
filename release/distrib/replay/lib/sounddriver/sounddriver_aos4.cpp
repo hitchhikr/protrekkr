@@ -102,25 +102,6 @@ void *AUDIO_Thread(void *arg)
             struct AHIRequest *io = AHIio;
             short *buf = AHIbuf;
 
-            io->ahir_Std.io_Message.mn_Node.ln_Pri = 0;
-            io->ahir_Std.io_Command = CMD_WRITE;
-            io->ahir_Std.io_Data = buf;
-            io->ahir_Std.io_Length = AUDIO_SoundBuffer_Size;
-            io->ahir_Std.io_Offset = 0;
-            io->ahir_Frequency = AUDIO_PCM_FREQ;
-            io->ahir_Type = AHIST_S16S;
-            io->ahir_Volume = 0x10000;
-            io->ahir_Position = 0x8000;
-            io->ahir_Link = join;
-            IExec->SendIO((struct IORequest *) AHIio);
-
-            // Swap
-			join = io;
-            AHIio = AHIio2;
-            AHIio2 = io;
-            AHIbuf = AHIbuf2;
-            AHIbuf2 = buf;
-    
             if(AUDIO_Play_Flag)
             {
                 AUDIO_Mixer((Uint8 *) buf, AUDIO_SoundBuffer_Size);
@@ -132,11 +113,33 @@ void *AUDIO_Thread(void *arg)
                 AUDIO_Acknowledge = TRUE;
             }
 
+            if(join)
+            {
+                IExec->WaitIO((struct IORequest *) join);
+            }
+
+            io->ahir_Std.io_Message.mn_Node.ln_Pri = 0;
+            io->ahir_Std.io_Command = CMD_WRITE;
+            io->ahir_Std.io_Data = buf;
+            io->ahir_Std.io_Flags = IOF_QUICK;
+            io->ahir_Std.io_Length = AUDIO_SoundBuffer_Size;
+            io->ahir_Std.io_Offset = 0;
+            io->ahir_Frequency = AUDIO_PCM_FREQ;
+            io->ahir_Type = AHIST_S16S;
+            io->ahir_Volume = 0x10000;
+            io->ahir_Position = 0x8000;
+            io->ahir_Link = 0;
+            IExec->SendIO((struct IORequest *) io);
+          
+            // Swap
+            join = io;
+            AHIio = AHIio2;
+            AHIio2 = io;
+            AHIbuf = AHIbuf2;
+            AHIbuf2 = buf;
+
             AUDIO_Samples += AUDIO_SoundBuffer_Size;
             AUDIO_Timer = ((((float) AUDIO_Samples) * (1.0f / (float) AUDIO_Latency)) * 1000.0f);
-
-			IExec->Wait(1 << AHImp->mp_SigBit);
-         	IExec->WaitIO((struct IORequest *) join);
         }
     }
     Thread_Running = 1;
@@ -207,7 +210,7 @@ int AUDIO_Create_Sound_Buffer(int milliseconds)
 {
     int frag_size;
 
-    if(milliseconds < 10) milliseconds = 10;
+    if(milliseconds < 20) milliseconds = 20;
     if(milliseconds > 250) milliseconds = 250;
 
     frag_size = (int) (AUDIO_PCM_FREQ * (milliseconds / 1000.0f));
@@ -230,7 +233,7 @@ int AUDIO_Create_Sound_Buffer(int milliseconds)
 
     memset(AHIbuf, 0, AUDIO_SoundBuffer_Size);
     memset(AHIbuf2, 0, AUDIO_SoundBuffer_Size);
-    
+
     Thread_Running = 1;
 
 #if defined(USE_SDL_THREADS)

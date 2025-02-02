@@ -59,7 +59,7 @@ extern int Font_Size[256];
 extern int pattern_double;
 int FgColor;
 #if defined(__USE_OPENGL__)
-unsigned int *RGBTexture;
+unsigned int RGBTexture[TEXTURES_SIZE * TEXTURES_SIZE * sizeof(unsigned int)];
 SDL_Color GLPalette[256];
 extern GLuint FONT_GL;
 extern GLuint FONT_LOW_GL;
@@ -323,6 +323,49 @@ void SetColor(int color)
 }
 
 // ------------------------------------------------------
+// Copy a surface onto the main screen without recording the rect
+#if defined(__USE_OPENGL__)
+void Copy_No_Refresh(GLuint Source,
+#else
+void Copy_No_Refresh(SDL_Surface *Source,
+#endif
+          int dest_x, int dest_y,
+          int source_start_x, int source_start_y,
+          int src_end_x, int src_end_y,
+          int remainder)
+{
+    SDL_Rect Src_Rect;
+    SDL_Rect Dst_Rect;
+
+    if(pattern_double)
+    {
+        source_start_y <<= 1;
+        src_end_y <<= 1;
+        src_end_y += remainder;
+    }
+
+    Dst_Rect.x = dest_x;
+    Dst_Rect.y = dest_y;
+    Dst_Rect.w = (src_end_x - source_start_x) + 1;
+    Dst_Rect.h = (src_end_y - source_start_y) + 1;
+
+    Src_Rect.x = source_start_x;
+    Src_Rect.y = source_start_y;
+    Src_Rect.w = Dst_Rect.w;
+    Src_Rect.h = Dst_Rect.h;
+
+#if defined(__USE_OPENGL__)
+    Draw_Tx_Quad(x, y,
+                 source_start_x, source_start_y,
+                 Dst_Rect.w, 
+                 Dst_Rect.h,
+                 Source, FALSE);
+#else
+    SDL_BlitSurface(Source, &Src_Rect, Main_Screen, &Dst_Rect);
+#endif
+}
+
+// ------------------------------------------------------
 // Fill a rectangle with the current color
 void Fillrect(int x1, int y1, int x2, int y2)
 {
@@ -339,6 +382,145 @@ void Fillrect(int x1, int y1, int x2, int y2)
     Push_Update_Rect(x1, y1, x2 - x1, y2 - y1);
 #endif
 
+}
+
+// ------------------------------------------------------
+// Copy a surface onto the main screen
+#if defined(__USE_OPENGL__)
+void Copy(GLuint Source,
+#else
+void Copy(SDL_Surface *Source,
+#endif
+          int x, int y,
+          int x1, int y1,
+          int x2, int y2)
+{
+    SDL_Rect Src_Rect;
+    SDL_Rect Dst_Rect;
+
+    Dst_Rect.x = x;
+    Dst_Rect.y = y;
+    Dst_Rect.w = (x2 - x1) + 1;
+    Dst_Rect.h = (y2 - y1) + 1;
+
+    Src_Rect.x = x1;
+    Src_Rect.y = y1;
+    Src_Rect.w = Dst_Rect.w;
+    Src_Rect.h = Dst_Rect.h;
+
+#if defined(__USE_OPENGL__)
+    Draw_Tx_Quad(x, y,
+                 x1, y1,
+                 Dst_Rect.w,
+                 Dst_Rect.h,
+                 Source, FALSE);
+#else
+    SDL_BlitSurface(Source, &Src_Rect, Main_Screen, &Dst_Rect);
+    Push_Update_Rect(x, y, Dst_Rect.w, Dst_Rect.h);
+#endif
+
+}
+
+// ------------------------------------------------------
+// Copy a rectangle onto a given surface
+// (Only used to create the fonts and destroy the requesters)
+void Copy_To_Surface(SDL_Surface *Source, SDL_Surface *dest,
+                     int dest_x, int dest_y, int src_start_x, int src_start_y, int src_end_x, int src_end_y)
+{
+    SDL_Rect Src_Rect;
+    SDL_Rect Dst_Rect;
+
+    Src_Rect.x = src_start_x;
+    Src_Rect.y = src_start_y;
+    Src_Rect.w = (src_end_x - src_start_x);
+    Src_Rect.h = (src_end_y - src_start_y);
+
+    Dst_Rect.x = dest_x;
+    Dst_Rect.y = dest_y;
+    Dst_Rect.w = (src_end_x - src_start_x);
+    Dst_Rect.h = (src_end_y - src_start_y);
+
+    SDL_BlitSurface(Source, &Src_Rect, dest, &Dst_Rect);
+    Push_Update_Rect(dest_x, dest_y, src_end_x - src_start_x, src_end_y - src_start_y);
+}
+
+// ------------------------------------------------------
+// Print a string on the screen
+void Print_String(int x,
+                  int y,
+                  int Font_Type,
+                  char *String,
+                  int max_x)
+{
+    int Idx;
+    int Idx2;
+    int i;
+    int pos_x;
+    int start_x;
+    int early_exit = FALSE;
+    SDL_Rect Src_Rect;
+    SDL_Rect Dst_Rect;
+
+    /* FIX: this should be compensated by the gadget class */
+    y += 2;
+
+    Dst_Rect.y = y;
+    Dst_Rect.h = Font_Height;
+    Src_Rect.y = 0;
+    Src_Rect.h = Font_Height;
+
+    start_x = x;
+
+    for(i = 0; i < (int) strlen(String); i++)
+    {
+        Idx = Get_Char_Position(Font_Ascii, Nbr_Letters, String[i]);
+        pos_x = x;
+        
+        if(max_x != -1)
+        {
+            Idx2 = Get_Char_Position(Font_Ascii, Nbr_Letters, '\015');
+            if((pos_x + Font_Size[Idx2]) >= ((start_x + max_x) - (Font_Size[Idx2]) - 4))
+            {
+                Idx = Idx2;
+                early_exit = TRUE;
+            }
+        }
+
+        Src_Rect.x = Font_Pos[Idx];
+        Src_Rect.w = Font_Size[Idx];
+        Dst_Rect.x = pos_x;
+        Dst_Rect.w = Src_Rect.w;
+
+#if !defined(__USE_OPENGL__)
+        if(Font_Type == USE_FONT)
+        {
+            SDL_BlitSurface(FONT, &Src_Rect, Main_Screen, &Dst_Rect);
+        }
+        else
+        {
+            SDL_BlitSurface(FONT_LOW, &Src_Rect, Main_Screen, &Dst_Rect);
+        }
+#else
+        if(Font_Type == USE_FONT)
+        {
+            Draw_Tx_Quad(Dst_Rect.x, Dst_Rect.y,
+                         Src_Rect.x, Src_Rect.y,
+                         Dst_Rect.w, Dst_Rect.h,
+                         FONT_GL, TRUE);
+        }
+        else
+        {
+            Draw_Tx_Quad(Dst_Rect.x, Dst_Rect.y,
+                         Src_Rect.x, Src_Rect.y,
+                         Dst_Rect.w, Dst_Rect.h,
+                         FONT_LOW_GL, TRUE);
+        }
+
+#endif
+
+        x += Font_Size[Idx];
+        if(early_exit) break;
+    }
 }
 
 // ------------------------------------------------------
@@ -421,187 +603,6 @@ void UISetPalette(SDL_Color *Palette, int Amount)
     }
 #endif
 
-}
-
-// ------------------------------------------------------
-// Copy a surface onto the main screen
-#if defined(__USE_OPENGL__)
-void Copy(GLuint Source,
-#else
-void Copy(SDL_Surface *Source,
-#endif
-          int x, int y,
-          int x1, int y1,
-          int x2, int y2)
-{
-    SDL_Rect Src_Rect;
-    SDL_Rect Dst_Rect;
-
-    Dst_Rect.x = x;
-    Dst_Rect.y = y;
-    Dst_Rect.w = (x2 - x1) + 1;
-    Dst_Rect.h = (y2 - y1) + 1;
-
-    Src_Rect.x = x1;
-    Src_Rect.y = y1;
-    Src_Rect.w = Dst_Rect.w;
-    Src_Rect.h = Dst_Rect.h;
-
-#if defined(__USE_OPENGL__)
-    Draw_Tx_Quad(x, y,
-                 x1, y1,
-                 Dst_Rect.w,
-                 Dst_Rect.h,
-                 Source, FALSE);
-#else
-    SDL_BlitSurface(Source, &Src_Rect, Main_Screen, &Dst_Rect);
-    Push_Update_Rect(x, y, Dst_Rect.w, Dst_Rect.h);
-#endif
-
-}
-
-// ------------------------------------------------------
-// Copy a surface onto the main screen without recording the rect
-#if defined(__USE_OPENGL__)
-void Copy_No_Refresh(GLuint Source,
-#else
-void Copy_No_Refresh(SDL_Surface *Source,
-#endif
-          int x, int y,
-          int x1, int y1,
-          int x2, int y2,
-          int remainder)
-{
-    SDL_Rect Src_Rect;
-    SDL_Rect Dst_Rect;
-
-    if(pattern_double)
-    {
-        y1 <<= 1;
-        y2 <<= 1;
-        y2 += remainder;
-    }
-
-    Dst_Rect.x = x;
-    Dst_Rect.y = y;
-    Dst_Rect.w = (x2 - x1) + 1;
-    Dst_Rect.h = (y2 - y1) + 1;
-
-    Src_Rect.x = x1;
-    Src_Rect.y = y1;
-    Src_Rect.w = Dst_Rect.w;
-    Src_Rect.h = Dst_Rect.h;
-
-#if defined(__USE_OPENGL__)
-    Draw_Tx_Quad(x, y,
-                 x1, y1,
-                 Dst_Rect.w, 
-                 Dst_Rect.h,
-                 Source, FALSE);
-#else
-    SDL_BlitSurface(Source, &Src_Rect, Main_Screen, &Dst_Rect);
-#endif
-}
-
-// ------------------------------------------------------
-// Copy a rectangle onto a given surface
-void Copy_To_Surface(SDL_Surface *Source, SDL_Surface *dest,
-                     int dest_x, int dest_y, int src_start_x, int src_start_y, int src_end_x, int src_end_y)
-{
-    SDL_Rect Src_Rect;
-    SDL_Rect Dst_Rect;
-
-    Src_Rect.x = src_start_x;
-    Src_Rect.y = src_start_y;
-    Src_Rect.w = (src_end_x - src_start_x);
-    Src_Rect.h = (src_end_y - src_start_y);
-
-    Dst_Rect.x = dest_x;
-    Dst_Rect.y = dest_y;
-    Dst_Rect.w = (src_end_x - src_start_x);
-    Dst_Rect.h = (src_end_y - src_start_y);
-
-    SDL_BlitSurface(Source, &Src_Rect, dest, &Dst_Rect);
-    Push_Update_Rect(dest_x, dest_y, src_end_x - src_start_x, src_end_y - src_start_y);
-}
-
-// ------------------------------------------------------
-// Print a string on the screen
-void PrintString(int x,
-                 int y,
-                 int Font_Type,
-                 char *String,
-                 int max_x)
-{
-    int Idx;
-    int Idx2;
-    int i;
-    int pos_x;
-    int start_x;
-    int early_exit = FALSE;
-    SDL_Rect Src_Rect;
-    SDL_Rect Dst_Rect;
-
-    /* FIX: this should be compensated by the gadget class */
-    y += 2;
-
-    Dst_Rect.y = y;
-    Dst_Rect.h = Font_Height;
-    Src_Rect.y = 0;
-    Src_Rect.h = Font_Height;
-
-    start_x = x;
-
-    for(i = 0; i < (int) strlen(String); i++)
-    {
-        Idx = Get_Char_Position(Font_Ascii, Nbr_Letters, String[i]);
-        pos_x = x;
-        
-        if(max_x != -1)
-        {
-            Idx2 = Get_Char_Position(Font_Ascii, Nbr_Letters, '\015');
-            if((pos_x + Font_Size[Idx2]) >= ((start_x + max_x) - (Font_Size[Idx2]) - 4))
-            {
-                Idx = Idx2;
-                early_exit = TRUE;
-            }
-        }
-
-        Src_Rect.x = Font_Pos[Idx];
-        Src_Rect.w = Font_Size[Idx];
-        Dst_Rect.x = pos_x;
-        Dst_Rect.w = Src_Rect.w;
-
-#if !defined(__USE_OPENGL__)
-        if(Font_Type == USE_FONT)
-        {
-            SDL_BlitSurface(FONT, &Src_Rect, Main_Screen, &Dst_Rect);
-        }
-        else
-        {
-            SDL_BlitSurface(FONT_LOW, &Src_Rect, Main_Screen, &Dst_Rect);
-        }
-#else
-        if(Font_Type == USE_FONT)
-        {
-            Draw_Tx_Quad(Dst_Rect.x, Dst_Rect.y,
-                         Src_Rect.x, Src_Rect.y,
-                         Dst_Rect.w, Dst_Rect.h,
-                         FONT_GL, TRUE);
-        }
-        else
-        {
-            Draw_Tx_Quad(Dst_Rect.x, Dst_Rect.y,
-                         Src_Rect.x, Src_Rect.y,
-                         Dst_Rect.w, Dst_Rect.h,
-                         FONT_LOW_GL, TRUE);
-        }
-
-#endif
-
-        x += Font_Size[Idx];
-        if(early_exit) break;
-    }
 }
 
 // ------------------------------------------------------

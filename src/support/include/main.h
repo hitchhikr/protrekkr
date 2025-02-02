@@ -75,10 +75,10 @@ typedef struct
 extern unsigned short Keys[SDLK_LAST];
 extern unsigned short Keys_Sym[SDLK_LAST];
 extern int Key_Unicode;
-extern unsigned short Keys_Raw[65535];
-extern unsigned short Keys_Raw_Off[65535];
-extern unsigned short Keys_Raw_Repeat[65535];
-extern unsigned short Keys_Unicode[65535];
+extern unsigned short Keys_Raw[512];
+extern unsigned short Keys_Raw_Off[512];
+extern unsigned short Keys_Raw_Repeat[512];
+extern unsigned short Keys_Unicode[512];
 extern int Keyboard_Nbr_Events;
 extern int Keyboard_Events[256];
 extern int Keyboard_Notes_Type[256];

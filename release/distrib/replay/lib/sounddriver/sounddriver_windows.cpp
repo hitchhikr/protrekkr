@@ -66,7 +66,12 @@ DWORD AUDIO_ThreadId;
 HANDLE AUDIO_hReplayThread;
 
 int AUDIO_Latency;
+
+#if defined(__AMIGAOS4__)
+int AUDIO_Milliseconds = 20;
+#else
 int AUDIO_Milliseconds = 10;
+#endif
 
 // ------------------------------------------------------
 // Functions

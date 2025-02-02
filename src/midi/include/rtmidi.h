@@ -206,6 +206,8 @@ class RtMidiIn : public RtMidi
             void *userCallback;
             void *userData;
             bool continueSysex;
+            unsigned int bufferSize;
+            unsigned int bufferCount;
 
             // Default constructor.
             RtMidiInData() : queueLimit(1024),

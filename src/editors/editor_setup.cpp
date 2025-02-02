@@ -155,7 +155,13 @@ void Actualize_Master_Ed(char gode)
         // Latency
         if(gode == 0 || gode == 5)
         {
+
+#if defined(__AMIGAOS4__)
+            if(AUDIO_Milliseconds < 20) AUDIO_Milliseconds = 20;
+#else
             if(AUDIO_Milliseconds < 10) AUDIO_Milliseconds = 10;
+#endif
+
             if(AUDIO_Milliseconds > 250) AUDIO_Milliseconds = 250;
             Gui_Draw_Arrows_Number_Box(8 + 112, (Cur_Height - 105), AUDIO_Milliseconds, BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
         }
@@ -562,7 +568,13 @@ void Mouse_Left_Master_Ed(void)
         // Latency
         if(Check_Mouse(8 + 112, (Cur_Height - 105), 16, 16))
         {
+
+#if defined(__AMIGAOS4__)
+            if(AUDIO_Milliseconds > 20)
+#else
             if(AUDIO_Milliseconds > 10)
+#endif
+
             {
                 AUDIO_Milliseconds -= 10;
                 gui_action = GUI_CMD_UPDATE_SETUP_ED;

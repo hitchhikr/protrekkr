@@ -37,11 +37,6 @@
 
 // ------------------------------------------------------
 // Variables
-SDL_Surface *SKIN303;
-#if defined(__USE_OPENGL__)
-GLuint SKIN303_GL = -1;
-#endif
-
 int Current_copy_buffer;
 int Copied_Buffer[4];
 
@@ -1216,11 +1211,6 @@ void Mouse_Sliders_303_Ed(void)
             livevalue = tempz << 1;
         }
     }
-}
-
-void Copy_303_Skin(int xd, int yd, int xs, int ys, int w, int h)
-{
-    Copy(GET_SURFACE(SKIN303), xd, yd, xs, ys, xs + w, ys + h);
 }
 
 void tb303_copy_pattern(void)

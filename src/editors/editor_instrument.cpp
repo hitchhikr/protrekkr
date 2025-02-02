@@ -1269,12 +1269,12 @@ void Dump_Instruments_Synths_List(int xr, int yr)
                             if(Nbr_Splits) Font = USE_FONT;
 
                             sprintf(Line, "%.2x:", rel_val);
-                            PrintString(xr + 1, yr + (counter * 12), Font, Line);
+                            Print_String(xr + 1, yr + (counter * 12), Font, Line);
                             sprintf(Line, "%s", nameins[rel_val]);
-                            PrintString(xr + 19, yr + (counter * 12), Font, Line);
+                            Print_String(xr + 19, yr + (counter * 12), Font, Line);
         
                             sprintf(Line, "%s", nameins[rel_val]);
-                            PrintString(xr + 19, yr + (counter * 12), Font, Line);
+                            Print_String(xr + 19, yr + (counter * 12), Font, Line);
                             switch(Nbr_Splits)
                             {
                                 case 0:
@@ -1303,7 +1303,7 @@ void Dump_Instruments_Synths_List(int xr, int yr)
                                     }
                                     break;
                             }
-                            PrintString(xr + (Cur_Width - 632), yr + (counter * 12), Font, Line);
+                            Print_String(xr + (Cur_Width - 632), yr + (counter * 12), Font, Line);
 
                             if(Nbr_Splits)
                             {
@@ -1312,53 +1312,53 @@ void Dump_Instruments_Synths_List(int xr, int yr)
 #if defined(__GSM_CODEC__)
                                     case SMP_PACK_GSM:
                                         sprintf(Line, "Pck: Gsm");
-                                        PrintString(xr + (Cur_Width - 560), yr + (counter * 12), Font, Line);
+                                        Print_String(xr + (Cur_Width - 560), yr + (counter * 12), Font, Line);
                                         break;
 #endif
 #if defined(__MP3_CODEC__)
                                     case SMP_PACK_MP3:
                                         sprintf(Line, "Pck: Mp3 (%d)", Type_Mp3_BitRate[Mp3_BitRate[rel_val]]);
-                                        PrintString(xr + (Cur_Width - 560), yr + (counter * 12), Font, Line);
+                                        Print_String(xr + (Cur_Width - 560), yr + (counter * 12), Font, Line);
                                         break;
 #endif
                                     case SMP_PACK_ADPCM:
                                         sprintf(Line, "Pck: ADPCM");
-                                        PrintString(xr + (Cur_Width - 560), yr + (counter * 12), Font, Line);
+                                        Print_String(xr + (Cur_Width - 560), yr + (counter * 12), Font, Line);
                                         break;
 #if defined(__AT3_CODEC__)
                                     case SMP_PACK_AT3:
                                         sprintf(Line, "Pck: At3 (%d)", Type_At3_BitRate[At3_BitRate[rel_val]]);
-                                        PrintString(xr + (Cur_Width - 560), yr + (counter * 12), Font, Line);
+                                        Print_String(xr + (Cur_Width - 560), yr + (counter * 12), Font, Line);
                                         break;
 #endif
                                     case SMP_PACK_8BIT:
                                         sprintf(Line, "Pck: 8 Bit");
-                                        PrintString(xr + (Cur_Width - 560), yr + (counter * 12), Font, Line);
+                                        Print_String(xr + (Cur_Width - 560), yr + (counter * 12), Font, Line);
                                         break;
                                     case SMP_PACK_NONE:
                                         sprintf(Line, "Pck: None");
-                                        PrintString(xr + (Cur_Width - 560), yr + (counter * 12), Font, Line);
+                                        Print_String(xr + (Cur_Width - 560), yr + (counter * 12), Font, Line);
                                         break;
                                     case SMP_PACK_WAVPACK:
                                         sprintf(Line, "Pck: WavPac");
-                                        PrintString(xr + (Cur_Width - 560), yr + (counter * 12), Font, Line);
+                                        Print_String(xr + (Cur_Width - 560), yr + (counter * 12), Font, Line);
                                         break;
                                 }
                             }
                             else
                             {
-                                PrintString(xr + (Cur_Width - 560), yr + (counter * 12), Font, "Pck: -");
+                                Print_String(xr + (Cur_Width - 560), yr + (counter * 12), Font, "Pck: -");
                             }
 
                             if(Midiprg[rel_val] == -1)
                             {
                                 sprintf(Line, "Midi prog.: -");
-                                PrintString(xr + (Cur_Width - 480), yr + (counter * 12), Font, Line);
+                                Print_String(xr + (Cur_Width - 480), yr + (counter * 12), Font, Line);
                             }
                             else
                             {
                                 sprintf(Line, "Midi prog.: %.3d", Midiprg[rel_val] + 1);
-                                PrintString(xr + (Cur_Width - 480), yr + (counter * 12), USE_FONT, Line);
+                                Print_String(xr + (Cur_Width - 480), yr + (counter * 12), USE_FONT, Line);
                             }
                             break;
 
@@ -1372,10 +1372,10 @@ void Dump_Instruments_Synths_List(int xr, int yr)
                             }
                             
                             sprintf(Line, "%.2x:", rel_val);
-                            PrintString(xr + 1, yr + (counter * 12), Font, Line);
+                            Print_String(xr + 1, yr + (counter * 12), Font, Line);
 
                             sprintf(Line, "%s", PARASynth[rel_val].Preset_Name);
-                            PrintString(xr + 19, yr + (counter * 12), Font, Line);
+                            Print_String(xr + 19, yr + (counter * 12), Font, Line);
 
                             int instr_to_search = Synthprg[rel_val];
                             if(instr_to_search == 0)
@@ -1409,22 +1409,22 @@ void Dump_Instruments_Synths_List(int xr, int yr)
                                         break;
                                 }
                             }
-                            PrintString(xr + (Cur_Width - 632), yr + (counter * 12), Font, Line);
+                            Print_String(xr + (Cur_Width - 632), yr + (counter * 12), Font, Line);
 
                             if(Synthprg[rel_val] == 0)
                             {
                                 sprintf(Line, "No Instr.");
-                                PrintString(xr + (Cur_Width - 540), yr + (counter * 12), Font, Line);
+                                Print_String(xr + (Cur_Width - 540), yr + (counter * 12), Font, Line);
                             }
                             else if(Synthprg[rel_val] == 1)
                             {
                                 sprintf(Line, "Rel. Instr.: Curr");
-                                PrintString(xr + (Cur_Width - 540), yr + (counter * 12), USE_FONT, Line);
+                                Print_String(xr + (Cur_Width - 540), yr + (counter * 12), USE_FONT, Line);
                             }
                             else
                             {
                                 sprintf(Line, "Rel. Instr.: %.2x", Synthprg[rel_val] - 2);
-                                PrintString(xr + (Cur_Width - 540), yr + (counter * 12), USE_FONT, Line);
+                                Print_String(xr + (Cur_Width - 540), yr + (counter * 12), USE_FONT, Line);
                             }
                             break;
                     }
@@ -1504,7 +1504,7 @@ void Actualize_Instruments_Synths_List(int modeac)
                         }
                     }
                     sprintf(Line, "Instruments List (%d)", Nbr_Entries);
-                    PrintString(398, 26, USE_FONT, Line);
+                    Print_String(398, 26, USE_FONT, Line);
                     break;
 
                 case SCOPE_ZONE_SYNTH_LIST:
@@ -1517,7 +1517,7 @@ void Actualize_Instruments_Synths_List(int modeac)
                         }
                     }
                     sprintf(Line, "Synths List (%d)", Nbr_Entries);
-                    PrintString(398, 26, USE_FONT, Line);
+                    Print_String(398, 26, USE_FONT, Line);
                     break;
             }
 

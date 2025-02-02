@@ -48,13 +48,11 @@
 // Variables
 extern int snamesel;
 extern SDL_Surface *Main_Screen;
-
-extern SDL_Surface *SKIN303;
-
 extern gear303 tb303engine[2];
 extern para303 tb303[2];
 extern unsigned char sl3;
 extern int Refresh_Unit;
+extern void Copy_303_Skin(int xd, int yd, int xs, int ys, int w, int h);
 
 // ------------------------------------------------------
 // Functions

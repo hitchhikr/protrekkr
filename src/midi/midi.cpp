@@ -42,7 +42,7 @@
 
 // ------------------------------------------------------
 // Variables
-extern int Nbr_Sub_NoteOff;
+extern int Nbr_Sub_Note_Off;
 extern int key_record_first_time;
 extern int old_key_Pattern_Line;
 extern int pos_scope;
@@ -132,7 +132,7 @@ void Midi_CallBackIn(double deltatime,
         {
             // Start recording
             is_recording_2 = 1;
-            Nbr_Sub_NoteOff = 0;
+            Nbr_Sub_Note_Off = 0;
             is_record_key = FALSE;
             is_editing = TRUE;
             L_MaxLevel = 0;
@@ -140,7 +140,7 @@ void Midi_CallBackIn(double deltatime,
             Pattern_Line_Visual = Pattern_Line;
             key_record_first_time = FALSE;
             old_key_Pattern_Line = Pattern_Line_Visual;
-            Notify_Edit();
+            Notify_Edit(FALSE);
             Clear_Midi_Channels_Pool();
             player_pos = -1;
             metronome_rows_counter = 0;
@@ -229,7 +229,7 @@ void Midi_AllNotesOff(void)
     {
         for(int no_track = 0; no_track < MAX_TRACKS; no_track++)
         {
-            Midi_NoteOff(no_track, -1);
+            Midi_Note_Off(no_track, -1);
         }
     }
 }
@@ -272,7 +272,7 @@ void Midi_Send(int nbr_track, int eff_dat, int row_dat)
 
 // ------------------------------------------------------
 // Turn a midi channel off
-void Midi_NoteOff(int channel, int note)
+void Midi_Note_Off(int channel, int note)
 {
     int i;
 

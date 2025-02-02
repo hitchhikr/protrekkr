@@ -224,7 +224,7 @@ void CSynth::Reset(void)
 
 // ------------------------------------------------------
 // This function is for internal use only. Makes the LFO's run.
-void CSynth::LfoAdvance(void)
+void CSynth::Lfo_Advance(void)
 {
 #if defined(PTK_SYNTH_LFO_1)
     LFO_1_SUBGRCOUNTER++;
@@ -520,7 +520,7 @@ void CSynth::NoteOn(int note, float speed, int Looping, unsigned int Length,
 
 // ------------------------------------------------------
 // Envelopes run function
-void CSynth::EnvRun(int *track, int *track2)
+void CSynth::Env_Run(int *track, int *track2)
 {
     /* ENV_1 */
     switch(ENV_1_STAGE)
@@ -682,7 +682,7 @@ void CSynth::EnvRun(int *track, int *track2)
 
 // ------------------------------------------------------
 // 'Note Off' message for CSynth class objects
-void CSynth::NoteOff(void)
+void CSynth::Note_Off(void)
 {
     if(ENV_1_STAGE > PLAYING_NOSAMPLE && ENV_1_STAGE < SYNTH_RELEASE)
     {
@@ -832,7 +832,7 @@ float CSynth::GetSample(short *Left_Samples,
 #if defined(PTK_SYNTH_ENV_2_PITCH)
                             + ENV_2_VALUE * Data.ENV_2_OSC_1_PITCH
 #endif
-                           ) * 4294967296.0);
+                           ) * 4294967296.0f);
 #endif
 
                 osc_speed2 = OSC_1_SPEED;
@@ -1148,7 +1148,7 @@ float CSynth::GetSample(short *Left_Samples,
 #if defined(PTK_SYNTH_ENV_2_PITCH)
                                 + ENV_2_VALUE * Data.ENV_2_OSC_1_PITCH
 #endif
-                               ) * 4294967296.0)) / 2;
+                               ) * 4294967296.0f)) / 2;
 #endif
 
 #if defined(PTK_INSTRUMENTS)
@@ -1400,8 +1400,8 @@ float CSynth::GetSample(short *Left_Samples,
         {
             if(*track2)
             {
-                osc_speed_tune = osc_speed + (int64) ((double) Data.OSC_2_FINETUNE * 536870912.0)
-                                           + (int64) ((double) Data.OSC_2_DETUNE * 536870912.0);
+                osc_speed_tune = osc_speed + (int64) ((double) Data.OSC_2_FINETUNE * 536870912.0f)
+                                           + (int64) ((double) Data.OSC_2_DETUNE * 536870912.0f);
                 if(Data.PTC_GLIDE_64 != 0 && OSC_2_SPEED != 0)
                 {
                     if(osc_speed_tune > OSC_2_SPEED)
@@ -1786,7 +1786,7 @@ float CSynth::GetSample(short *Left_Samples,
         if(FILT_RESO > 0.98f) FILT_RESO = 0.98f;
         FILT_A = float(1.0f - FILT_CUTO); 
         FILT_B = float(FILT_RESO * (1.0f + (1.0f / FILT_A)));
-        GS_VAL = FilterL();
+        GS_VAL = Filter_L();
     }
 
 #if defined(PTK_SYNTH_FILTER_MOOG_LO) || defined(PTK_SYNTH_FILTER_MOOG_BAND)
@@ -1826,7 +1826,7 @@ float CSynth::GetSample(short *Left_Samples,
             if(FILT_CUTO > 1.55f) FILT_CUTO = 1.55f;
             if(FILT_RESO < 0.0f) FILT_RESO = 0.0f;
             if(FILT_RESO > 1.0f) FILT_RESO = 1.0f;
-            GS_VAL = MoogFilterL();
+            GS_VAL = Moog_Filter_L();
     }
 #endif      // defined(PTK_SYNTH_FILTER_MOOG)
 
@@ -1867,12 +1867,12 @@ float CSynth::GetSample(short *Left_Samples,
 #if defined(PTK_SYNTH_FILTER)
         if(Data.VCF_TYPE < 2)
         {
-            GS_VAL2 = FilterR();
+            GS_VAL2 = Filter_R();
         }
 #if defined(PTK_SYNTH_FILTER_MOOG_LO) || defined(PTK_SYNTH_FILTER_MOOG_BAND)
         else if(Data.VCF_TYPE > 2)
         {
-            GS_VAL2 = MoogFilterR();
+            GS_VAL2 = Moog_Filter_R();
         }
 #endif
 #endif
@@ -1882,8 +1882,8 @@ float CSynth::GetSample(short *Left_Samples,
     }
 
     // Advance all, oscillator, envelopes, and lfo's
-    EnvRun(track, track2);
-    LfoAdvance();
+    Env_Run(track, track2);
+    Lfo_Advance();
 
     // Return value
     return GS_VAL * vol;
@@ -1980,7 +1980,7 @@ void CSynth::ChangeParameters(Synth_Parameters TSP)
     Data.OSC_3_SWITCH =         TSP.osc_3_switch;
 
     Data.PTC_GLIDE =            ((float) TSP.ptc_glide * (float) TSP.ptc_glide) * 0.0000015625f;
-    Data.PTC_GLIDE_64 =         (int64) ((double) Data.PTC_GLIDE * 4294967296.0);
+    Data.PTC_GLIDE_64 =         (int64) ((double) Data.PTC_GLIDE * 4294967296.0f);
 
     Data.DISTO =                ((float) TSP.disto - 64) * 0.015625f;
 
@@ -2003,7 +2003,7 @@ void CSynth::ChangeParameters(Synth_Parameters TSP)
 #if defined(PTK_SYNTH_FILTER)
 #if defined(PTK_SYNTH_FILTER_LO) || defined(PTK_SYNTH_FILTER_HI)
 
-float CSynth::FilterL(void)
+float CSynth::Filter_L(void)
 {
 //    GS_VAL++;
     sbuf0L = FILT_A * sbuf0L + FILT_CUTO * (GS_VAL + FILT_B * (sbuf0L - sbuf1L)); 
@@ -2020,7 +2020,7 @@ float CSynth::FilterL(void)
 #endif
 }
 
-float CSynth::FilterR(void)
+float CSynth::Filter_R(void)
 {
   //  GS_VAL2++;
     sbuf0R = FILT_A * sbuf0R + FILT_CUTO * (GS_VAL2 + FILT_B * (sbuf0R - sbuf1R));
@@ -2039,7 +2039,7 @@ float CSynth::FilterR(void)
 #endif      // defined(PTK_SYNTH_FILTER_LO) || defined(PTK_SYNTH_FILTER_HI)
 
 #if defined(PTK_SYNTH_FILTER_MOOG_LO) || defined(PTK_SYNTH_FILTER_MOOG_BAND)
-float CSynth::MoogFilterL(void)
+float CSynth::Moog_Filter_L(void)
 {
     float f;
     float p;
@@ -2077,7 +2077,7 @@ float CSynth::MoogFilterL(void)
 #endif
 }
 
-float CSynth::MoogFilterR(void)
+float CSynth::Moog_Filter_R(void)
 {
     float f;
     float p;

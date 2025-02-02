@@ -2044,7 +2044,7 @@ void Update_Pattern(int modac)
     if(is_editing > 1)
     {
         is_editing = FALSE;
-        Notify_Edit();
+        Notify_Edit(FALSE);
     }
 
     if(!Song_Playing)

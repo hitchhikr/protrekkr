@@ -38,7 +38,6 @@
 
 // ------------------------------------------------------
 // Variables
-extern int gui_bpm_action;
 extern int player_line;
 
 // ------------------------------------------------------
@@ -67,7 +66,6 @@ void Midi_Song_Set_BPM(int Data)
         liveparam = LIVE_PARAM_SONG_BPM;
         livevalue = Beats_Per_Min;
     }
-    gui_bpm_action = TRUE;
 }
 
 // ------------------------------------------------------

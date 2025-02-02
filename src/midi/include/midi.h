@@ -62,7 +62,7 @@ void Midi_CloseIn(void);
 void Midi_InitOut(void);
 void Midi_CloseOut(void);
 
-void Midi_NoteOff(int channel, int note);
+void Midi_Note_Off(int channel, int note);
 void Midi_Send(int nbr_track, int eff_dat, int row_dat);
 
 char *Midi_GetInName(void);

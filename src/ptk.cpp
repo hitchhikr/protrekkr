@@ -63,7 +63,7 @@ extern int Song_Playing_Pattern;
 extern short *Player_WL[MAX_TRACKS][MAX_POLYPHONY];
 extern short *Player_WR[MAX_TRACKS][MAX_POLYPHONY];
 
-extern VISUAL_DELAY_DAT Delays_Pos_Sound_Buffer[256];
+extern VISUAL_DELAY_DAT Delays_Pos_Sound_Buffer[512];
 extern int Delay_Sound_Buffer;
 extern int Cur_Delay_Sound_Buffer;
 extern int Subicounter;
@@ -75,6 +75,7 @@ extern int RShift_Notified;
 int Enter_Notification;
 int Enter_Notified;
 int Enter_Notified_Play_Pattern;
+SDL_sem *thread_sema;
 
 #if defined(PTK_SHUFFLE)
 extern int shufflestep;
@@ -103,6 +104,11 @@ extern char Last_Used_Ptk[MAX_PATH];
 
 #if defined(__USE_OPENGL__)
 extern unsigned int *RGBTexture;
+#endif
+
+#if defined(__AMIGAOS4__)
+extern struct Library *GfxBase;
+extern struct GraphicsIFace *IGraphics;
 #endif
 
 extern float sp_Tvol_Mod[MAX_TRACKS];
@@ -310,8 +316,8 @@ int gui_thread_can_act = FALSE;
 int gui_bpm_action = FALSE;
 
 int Keyboard_Events_Channels[256];
-JAZZ_KEY Sub_Channels_NoteOff[MAX_TRACKS][MAX_POLYPHONY];
-int Nbr_Sub_NoteOff;
+JAZZ_KEY Sub_Channels_Note_Off[MAX_TRACKS][MAX_POLYPHONY];
+int Nbr_Sub_Note_Off;
 
 REQUESTER_BUTTON Requester_Btn_Cancel =
 {
@@ -546,6 +552,8 @@ int Init_Context(void)
     sprintf(artist, "Somebody");
     sprintf(style, "Anything goes");
 
+    thread_sema = SDL_CreateSemaphore(1);
+
     namesize = 8;
     Init_Synth_Params_Names();
 
@@ -597,14 +605,6 @@ int Init_Context(void)
     {
         return(FALSE);
     }
-
-#if defined(__USE_OPENGL__)
-    RGBTexture = (unsigned int *) malloc(TEXTURES_SIZE * TEXTURES_SIZE * sizeof(unsigned int));
-    if(!RGBTexture)
-    {
-        return(FALSE);
-    }
-#endif
 
     SDL_SetColorKey(FONT, SDL_SRCCOLORKEY, 0);
     SDL_SetColorKey(FONT_LOW, SDL_SRCCOLORKEY, 0);
@@ -699,19 +699,28 @@ void Destroy_Context(void)
     }
     Scope_Dats_LeftRight[1] = NULL;
 
-#if defined(__USE_OPENGL__)
-    if(RGBTexture)
-    {
-        free(RGBTexture);
-    }
-#endif
-
     // Freeing Allocated Patterns
     if(RawPatterns)
     {
         free(RawPatterns);
     }
     RawPatterns = NULL;
+
+    if(thread_sema)
+    {
+        SDL_DestroySemaphore(thread_sema);
+    }
+
+#if defined(__AMIGAOS4__)
+    if(IGraphics)
+    {
+        IExec->DropInterface((struct Interface*) IGraphics);
+    }
+    if(GfxBase)
+    {
+        IExec->CloseLibrary(GfxBase);
+    }
+#endif
 
     SDL_Quit();
 }
@@ -1286,12 +1295,12 @@ int Screen_Update(void)
 
         if(gui_action == GUI_CMD_STOP_SONG)
         {
+            Song_Stop();
             is_recording = 0;
             is_recording_2 = 0;
-            Nbr_Sub_NoteOff = 0;
+            Nbr_Sub_Note_Off = 0;
             is_editing = FALSE;
-            Notify_Edit();
-            Song_Stop();
+            Notify_Edit(TRUE);
         }
 
         if(gui_action == GUI_CMD_RECORD_303)
@@ -1304,10 +1313,10 @@ int Screen_Update(void)
             is_recording = 0;
             is_editing ^= TRUE;
             is_recording_2 = 0;
-            Nbr_Sub_NoteOff = 0;
+            Nbr_Sub_Note_Off = 0;
             Song_Stop();
             Update_Pattern(0);
-            Notify_Edit();
+            Notify_Edit(TRUE);
         }
 
         if(gui_action == GUI_CMD_RECORD_MODE)
@@ -1315,12 +1324,12 @@ int Screen_Update(void)
             Song_Stop();
             is_recording ^= 1;
             is_recording_2 = 0;
-            Nbr_Sub_NoteOff = 0;
+            Nbr_Sub_Note_Off = 0;
             is_editing = FALSE;
             key_record_first_time = TRUE;
             Clear_Midi_Channels_Pool();
             Update_Pattern(0);
-            Notify_Edit();
+            Notify_Edit(TRUE);
         }
 
         if(gui_action == GUI_CMD_CHANGE_BPM_TICKS_NBR)
@@ -1851,7 +1860,7 @@ int Screen_Update(void)
 
         if(gui_action == GUI_CMD_GOTO_START_POSITION)
         {
-            Song_Position = .0;
+            Song_Position = 0;
             Bound_Patt_Pos();
             Actualize_Sequencer();
             Update_Pattern(0);
@@ -1994,7 +2003,7 @@ int Screen_Update(void)
         Gui_Draw_Button_Box(262, 46, 60, 16, "Beats/Min.", BUTTON_NORMAL | BUTTON_DISABLED);
         Gui_Draw_Button_Box(262, 64, 60, 16, "Ticks/Beat", BUTTON_NORMAL | BUTTON_DISABLED);
         Display_Beat_Time();
-        Notify_Edit();
+        Notify_Edit(FALSE);
 
         Gui_Draw_Button_Box(0, 104, 392, 42, NULL, BUTTON_NORMAL | BUTTON_DISABLED);
         Gui_Draw_Button_Box(8, 108, 80, 16, "Instrument", BUTTON_NORMAL | BUTTON_DISABLED);
@@ -2808,7 +2817,7 @@ void Start_Rec(void)
 
 // ------------------------------------------------------
 // Display editing status
-void Notify_Edit(void)
+void Notify_Edit(int After_Song_Stop)
 {
     if(is_editing && !is_recording)
     {
@@ -2823,15 +2832,16 @@ void Notify_Edit(void)
         Gui_Draw_Button_Box(8, 82, 62, 16, "Edit/Rec.", BUTTON_NORMAL | BUTTON_RIGHT_MOUSE | BUTTON_TEXT_CENTERED);
     }
     Gui_Draw_Button_Box(72, 82, 16, 16, NULL, BUTTON_DISABLED);
-    Switch_Cmd_Playing();
+    Switch_Cmd_Playing(After_Song_Stop);
     Actualize_Sequencer();
     gui_action_metronome = GUI_CMD_FLASH_METRONOME_OFF;
 }
 
 // ------------------------------------------------------
 // Switch the command that can't be modified during playing
-void Switch_Cmd_Playing(void)
+void Switch_Cmd_Playing(int After_Song_Stop)
 {
+    int Was_Song_Playing;
     can_modify_song = 0;
     if(is_editing)
     {
@@ -2841,11 +2851,18 @@ void Switch_Cmd_Playing(void)
             can_modify_song = 0;
         }
     }
+    
+    Was_Song_Playing = Song_Playing;
+    // Fix synchro problem...
+    if(After_Song_Stop)
+    {
+        Was_Song_Playing = FALSE;
+    }
 
     Gui_Draw_Button_Box(302, 28, 9, 16, I_, BUTTON_NORMAL | (can_modify_song ^ BUTTON_DISABLED) | BUTTON_TEXT_CENTERED | BUTTON_SMALL_FONT);
     Gui_Draw_Button_Box(313, 28, 9, 16, D_, BUTTON_NORMAL | (can_modify_song ^ BUTTON_DISABLED) | BUTTON_TEXT_CENTERED | BUTTON_SMALL_FONT);
-    Gui_Draw_Arrows_Number_Box(324, 46, Beats_Per_Min, BUTTON_NORMAL | (!Song_Playing ? 0 : BUTTON_DISABLED) | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
-    Gui_Draw_Arrows_Number_Box2(324, 64, Ticks_Per_Beat, BUTTON_NORMAL | (!Song_Playing ? 0 : BUTTON_DISABLED) | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
+    Gui_Draw_Arrows_Number_Box(324, 46, Beats_Per_Min, BUTTON_NORMAL | (!Was_Song_Playing ? 0 : BUTTON_DISABLED) | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
+    Gui_Draw_Arrows_Number_Box2(324, 64, Ticks_Per_Beat, BUTTON_NORMAL | (!Was_Song_Playing ? 0 : BUTTON_DISABLED) | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
     Gui_Draw_Arrows_Number_Box2(324, 28, Song_Tracks, BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE | (can_modify_song ^ BUTTON_DISABLED));
     Gui_Draw_Arrows_Number_Box2(324, 28, Song_Tracks, BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE | (can_modify_song ^ BUTTON_DISABLED));
 }
@@ -2860,14 +2877,14 @@ void Notify_Play(void)
         {
             Gui_Draw_Button_Box(8, 28, 39, 16, "\04", BUTTON_PUSHED | BUTTON_RIGHT_MOUSE | BUTTON_TEXT_CENTERED);
             Gui_Draw_Button_Box(49, 28, 39, 16, "\253", BUTTON_NORMAL | BUTTON_RIGHT_MOUSE | BUTTON_TEXT_CENTERED);
-            Switch_Cmd_Playing();
+            Switch_Cmd_Playing(FALSE);
             Status_Box("Playing Song...", TRUE);
         }
         else
         {
             Gui_Draw_Button_Box(8, 28, 39, 16, "\04", BUTTON_NORMAL | BUTTON_RIGHT_MOUSE | BUTTON_TEXT_CENTERED);
             Gui_Draw_Button_Box(49, 28, 39, 16, "\253", BUTTON_PUSHED | BUTTON_RIGHT_MOUSE | BUTTON_TEXT_CENTERED);
-            Switch_Cmd_Playing();
+            Switch_Cmd_Playing(FALSE);
             Status_Box("Playing Pattern...", TRUE);
         }
     }
@@ -4783,7 +4800,7 @@ void Keyboard_Handler(void)
             {
                 // Start recording
                 is_recording_2 = 1;
-                Nbr_Sub_NoteOff = 0;
+                Nbr_Sub_Note_Off = 0;
                 is_record_key = FALSE;
                 is_editing = TRUE;
                 L_MaxLevel = 0;
@@ -4791,7 +4808,7 @@ void Keyboard_Handler(void)
                 Pattern_Line_Visual = Pattern_Line;
                 key_record_first_time = FALSE;
                 old_key_Pattern_Line = Pattern_Line;
-                Notify_Edit();
+                Notify_Edit(FALSE);
                 Clear_Midi_Channels_Pool();
                 player_pos = -1;
                 metronome_rows_counter = 0;
@@ -4894,7 +4911,7 @@ void Keyboard_Handler(void)
                 Enter_Notified = FALSE;
                 is_recording = 0;
                 is_recording_2 = 0;
-                Nbr_Sub_NoteOff = 0;
+                Nbr_Sub_Note_Off = 0;
                 Song_Stop();
             }
         }
@@ -5678,25 +5695,25 @@ Cannot_Modify_Even:;
                             if(is_recording_2 || is_editing)
                             {
                                 // Store the note column where it was entered
-                                Sub_Channels_NoteOff[Track_Under_Caret][Nbr_Sub_NoteOff].Note = ((tmp_note + 1) << 8);
-                                Sub_Channels_NoteOff[Track_Under_Caret][Nbr_Sub_NoteOff].Channel = Track_Under_Caret;
+                                Sub_Channels_Note_Off[Track_Under_Caret][Nbr_Sub_Note_Off].Note = ((tmp_note + 1) << 8);
+                                Sub_Channels_Note_Off[Track_Under_Caret][Nbr_Sub_Note_Off].Channel = Track_Under_Caret;
                                 if(Keyboard_Notes_Bound[i])
                                 {
                                     pos = (Column_Under_Caret / 3);
                                 }
                                 else
                                 {
-                                    pos = (Column_Under_Caret / 3) + Nbr_Sub_NoteOff;
+                                    pos = (Column_Under_Caret / 3) + Nbr_Sub_Note_Off;
                                 }
-                                Sub_Channels_NoteOff[Track_Under_Caret][Nbr_Sub_NoteOff].Sub_Channel = pos;
+                                Sub_Channels_Note_Off[Track_Under_Caret][Nbr_Sub_Note_Off].Sub_Channel = pos;
 
-                                if(Nbr_Sub_NoteOff < (Channels_MultiNotes[Track_Under_Caret] - 1))
+                                if(Nbr_Sub_Note_Off < (Channels_MultiNotes[Track_Under_Caret] - 1))
                                 {
-                                    Nbr_Sub_NoteOff++;
+                                    Nbr_Sub_Note_Off++;
                                 }
                                 else
                                 {
-                                    Nbr_Sub_NoteOff = 0;
+                                    Nbr_Sub_Note_Off = 0;
                                 }
                             }
 
@@ -5719,7 +5736,7 @@ Cannot_Modify_Even:;
                         // Note off
                         if(is_recording_2 || is_editing)
                         {
-                            LPJAZZ_KEY Channel = Get_Jazz_Key_Off(Sub_Channels_NoteOff, (tmp_note + 1) << 8);
+                            LPJAZZ_KEY Channel = Get_Jazz_Key_Off(Sub_Channels_Note_Off, (tmp_note + 1) << 8);
                             if(Channel)
                             {
                                 if(is_recording_2)
@@ -5735,8 +5752,8 @@ Cannot_Modify_Even:;
                                     *(RawPatterns + xoffseted + PATTERN_INSTR1) = NO_INSTR;
                                 }
                                 // Now discard any remaining note off for that channel/sub channel
-                                Nbr_Sub_NoteOff -= Discard_Key_Note_Off(Sub_Channels_NoteOff, Channel->Channel, Channel->Sub_Channel);
-                                if(Nbr_Sub_NoteOff < 0) Nbr_Sub_NoteOff = 0;
+                                Nbr_Sub_Note_Off -= Discard_Key_Note_Off(Sub_Channels_Note_Off, Channel->Channel, Channel->Sub_Channel);
+                                if(Nbr_Sub_Note_Off < 0) Nbr_Sub_Note_Off = 0;
                             }
                         }
                         if(is_recording_2)
@@ -6993,7 +7010,7 @@ void Display_Beat_Time(void)
     char String[64];
     sprintf(String, "1/4 Beat Time: %d ms.", (int) (15000.0f / (float) Beats_Per_Min));
     Gui_Clear_Array(268, 86, 120, 16);
-    PrintString(268, 86, USE_FONT, String);
+    Print_String(268, 86, USE_FONT, String);
 }
 
 // ------------------------------------------------------
@@ -7097,7 +7114,7 @@ void Actualize_Master(char gode)
     {
         if(Beats_Per_Min < 20) Beats_Per_Min = 20;
         if(Beats_Per_Min > 255) Beats_Per_Min = 255;
-        Switch_Cmd_Playing();
+        Switch_Cmd_Playing(FALSE);
     }
 
     if(gode == 0 || gode == 2)
@@ -7117,7 +7134,7 @@ void Actualize_Master(char gode)
             Actualize_Fx_Ed(10);
             Actualize_Fx_Ed(11);
         }
-        Switch_Cmd_Playing();
+        Switch_Cmd_Playing(FALSE);
     }
 
     SamplesPerTick = (int) ((60 * MIX_RATE) / (Beats_Per_Min * Ticks_Per_Beat));
@@ -7126,7 +7143,7 @@ void Actualize_Master(char gode)
 
     if(gode == 5)
     {
-        Switch_Cmd_Playing();
+        Switch_Cmd_Playing(FALSE);
     }
 
     if(gode == 0)
@@ -7426,10 +7443,10 @@ void Draw_Scope(void)
                     nibble_pos = 0;
                     cur_pos_x = 394;
                 }
-                PrintString(cur_pos_x + 4,
-                        44 + (ptrTbl_Dat->y_pos - ptrTbl_Dat->y_large),
-                        USE_FONT,
-                        table_channels_scopes[i + MAX_TRACKS]);
+                Print_String(cur_pos_x + 4,
+                             44 + (ptrTbl_Dat->y_pos - ptrTbl_Dat->y_large),
+                             USE_FONT,
+                             table_channels_scopes[i + MAX_TRACKS]);
                 x_max = max_right / ptrTbl_Dat->x_max;
                 if(nibble_pos)
                 {
@@ -7464,16 +7481,16 @@ void Draw_Scope(void)
                 // Print the number of the track
                 if(Chan_Active_State[scope_pos][i])
                 {
-                    PrintString(cur_pos_x + 4, 44 + (ptrTbl_Dat->y_pos - ptrTbl_Dat->y_large),
-                                USE_FONT, table_channels_scopes[i]);
+                    Print_String(cur_pos_x + 4, 44 + (ptrTbl_Dat->y_pos - ptrTbl_Dat->y_large),
+                                 USE_FONT, table_channels_scopes[i]);
                     active_channel = TRUE;
                 }
                 else
                 {
-                    PrintString(cur_pos_x + 4,
-                                44 + (ptrTbl_Dat->y_pos - ptrTbl_Dat->y_large),
-                                USE_FONT_LOW,
-                                table_channels_scopes[i]);
+                    Print_String(cur_pos_x + 4,
+                                 44 + (ptrTbl_Dat->y_pos - ptrTbl_Dat->y_large),
+                                 USE_FONT_LOW,
+                                 table_channels_scopes[i]);
                     active_channel = FALSE;
                 }
                 x_max = max_right / ptrTbl_Dat->x_max;
@@ -7619,15 +7636,15 @@ void Draw_VuMeters(void)
         // Print the number of the track
         if(Chan_Active_State[scope_pos][i])
         {
-            PrintString(cur_pos_x + 4, 44 + (ptrTbl_Dat->y_pos - ptrTbl_Dat->y_large),
-                        USE_FONT, table_channels_scopes[i]);
+            Print_String(cur_pos_x + 4, 44 + (ptrTbl_Dat->y_pos - ptrTbl_Dat->y_large),
+                         USE_FONT, table_channels_scopes[i]);
             active_channel = TRUE;
         }
         else
         {
-            PrintString(cur_pos_x + 4, 44 + (ptrTbl_Dat->y_pos - ptrTbl_Dat->y_large),
-                        USE_FONT_LOW,
-                        table_channels_scopes[i]);
+            Print_String(cur_pos_x + 4, 44 + (ptrTbl_Dat->y_pos - ptrTbl_Dat->y_large),
+                         USE_FONT_LOW,
+                         table_channels_scopes[i]);
             active_channel = FALSE;
         }
         x_max = max_right / ptrTbl_Dat->x_max;
@@ -7901,7 +7918,7 @@ void Note_Jazz_Off(int note)
     {
         if(Jazz_Edit || is_recording_2 || !is_editing)
         {
-            Synthesizer[Channel->Channel][Channel->Sub_Channel].NoteOff();
+            Synthesizer[Channel->Channel][Channel->Sub_Channel].Note_Off();
             if(sp_Stage[Channel->Channel][Channel->Sub_Channel] == PLAYING_SAMPLE)
             {
                 sp_Stage[Channel->Channel][Channel->Sub_Channel] = PLAYING_SAMPLE_NOTEOFF;
@@ -7918,7 +7935,7 @@ void Note_Jazz_Off(int note)
 #if !defined(__NO_MIDI__)
     if(Jazz_Edit || is_recording_2 || !is_editing)
     {
-        Midi_NoteOff(Track_Under_Caret, note);
+        Midi_Note_Off(Track_Under_Caret, note);
     }
 #endif
 #endif

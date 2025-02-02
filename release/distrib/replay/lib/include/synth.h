@@ -353,13 +353,13 @@ class CSynth
 #endif
                     , int glide
                    );
-        void NoteOff(void);
+        void Note_Off(void);
 
-        float FilterL(void);
-        float FilterR(void);
+        float Filter_L(void);
+        float Filter_R(void);
 
-        float MoogFilterL(void);
-        float MoogFilterR(void);
+        float Moog_Filter_L(void);
+        float Moog_Filter_R(void);
 
         char ENV_1_LOOP_BACKWARD;
         char ENV_2_LOOP_BACKWARD;
@@ -369,8 +369,8 @@ class CSynth
 
         /* Internal Use */
 
-        void LfoAdvance(void);
-        void EnvRun(int *track, int *track2);
+        void Lfo_Advance(void);
+        void Env_Run(int *track, int *track2);
         float Math_Func(float in_old, float in_new);
 
         /* Synthesizer properties */

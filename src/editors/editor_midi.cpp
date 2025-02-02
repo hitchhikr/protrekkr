@@ -339,7 +339,7 @@ void Mouse_Left_Midi_Ed(void)
 #if !defined(__NO_MIDI__)
         if(Check_Mouse(12, (Cur_Height - 99), 82, 16) == 1 && c_midiout != -1)
         {
-            Midi_NoteOff(Track_Under_Caret, -1);
+            Midi_Note_Off(Track_Under_Caret, -1);
             int i;
             for(i = 0; i < MAX_POLYPHONY; i++)
             {

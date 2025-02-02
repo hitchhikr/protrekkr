@@ -292,9 +292,9 @@ int Check_Requester(LPREQUESTER Requester)
 
         for(i = 0; i < Nbr_Lines; i++)
         {
-            PrintString(Pos_X + Req_Txt_Pos_X[i],
-                    Pos_Y + ((i + 1) * (Font_Height + 1)) + (Font_Height / 2),
-                    USE_FONT, Req_Txt_Lines[i]);
+            Print_String(Pos_X + Req_Txt_Pos_X[i],
+                         Pos_Y + ((i + 1) * (Font_Height + 1)) + (Font_Height / 2),
+                         USE_FONT, Req_Txt_Lines[i]);
         }
 
         for(i = 0; i < Nbr_Buttons; i++)

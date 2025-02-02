@@ -66,6 +66,8 @@ SDL_Surface *Temp_NOTESMALLPFONT_DOUBLE;
 // ---
 SDL_Surface *Note_Surface;
 SDL_Surface *Note_Alt_Surface;
+SDL_Surface *SKIN303;
+
 #if defined(__USE_OPENGL__)
 // ---
 GLuint Ptr_Temp_PFONT_GL;
@@ -93,8 +95,9 @@ GLuint Note_Surface_GL = -1;
 GLuint Note_Alt_Surface_GL = -1;
 GLuint FONT_GL = -1;
 GLuint FONT_LOW_GL = -1;
-extern GLuint SKIN303_GL;
+GLuint SKIN303_GL = -1;
 #endif
+
 int Beveled = 1;
 char Use_Shadows = TRUE;
 char Status_Box_Text[MAX_PATH * 2];
@@ -446,7 +449,7 @@ SDL_Color Default_Palette1[] =
     { 0x00, 0x00, 0x00, 0x00 },      // 56 RGB double input buttons (calculated)
     { 0x00, 0x00, 0x00, 0x00 },      // 57 RGB double input buttons shadow (calculated)
 
-    { 0x00, 0x00, 0x00, 0x00 },      // 58 Phony always black
+    { 0x00, 0x00, 0x00, 0x00 },      // 58 Phony always black (fixed)
 };
 
 int Default_Beveled2 = 1;
@@ -1165,7 +1168,7 @@ void Blit_note(int x, int y, int note, int y1, int y2, int size, int acc);
 
 void out_decchar(int x, int y, int number, char smith)
 {
-    PrintString(x, y, USE_FONT, DecChar[number]);
+    Print_String(x, y, USE_FONT, DecChar[number]);
 }
 
 void Get_Phony_Palette(void)
@@ -1786,7 +1789,7 @@ void Print_String(char *str, int x, int y, int size_x, int flags)
     {
         x += (size_x - Get_Size_Text(str)) / 2;
     }
-    PrintString(x, y, USE_FONT, (char *) str);
+    Print_String(x, y, USE_FONT, (char *) str);
 }
 
 // ------------------------------------------------------
@@ -1882,11 +1885,11 @@ void Gui_Draw_Button_Box(int x, int y, int sx, int sy, const char *str, int flag
         if(flags & BUTTON_TEXT_CENTERED)
         {
             x += ((sx + 1) - Get_Size_Text((char *) str)) / 2;
-            PrintString(x, y + y_center, flags & BUTTON_LOW_FONT ? USE_FONT_LOW : USE_FONT, (char *) str);
+            Print_String(x, y + y_center, flags & BUTTON_LOW_FONT ? USE_FONT_LOW : USE_FONT, (char *) str);
         }
         else
         {
-            PrintString(x + 4, y + y_center, flags & BUTTON_LOW_FONT ? USE_FONT_LOW : USE_FONT, (char *) str);
+            Print_String(x + 4, y + y_center, flags & BUTTON_LOW_FONT ? USE_FONT_LOW : USE_FONT, (char *) str);
         }
     }
 }
@@ -1908,7 +1911,7 @@ void Gui_Draw_Flat_Box(const char *str)
     Fillrect(2, (Cur_Height - 150), Cur_Width - 6, (Cur_Height - 24));
     if(str)
     {
-        PrintString(4, (Cur_Height - 151), USE_FONT, (char *) str);
+        Print_String(4, (Cur_Height - 151), USE_FONT, (char *) str);
     }
 }
 
@@ -2994,22 +2997,22 @@ void out_nibble(int x, int y, int Font_Type, int number)
 {
     switch(number)
     {
-        case 0: PrintString(x, y, Font_Type, "0"); break;
-        case 1: PrintString(x, y, Font_Type, "1"); break;
-        case 2: PrintString(x, y, Font_Type, "2"); break;
-        case 3: PrintString(x, y, Font_Type, "3"); break;
-        case 4: PrintString(x, y, Font_Type, "4"); break;
-        case 5: PrintString(x, y, Font_Type, "5"); break;
-        case 6: PrintString(x, y, Font_Type, "6"); break;
-        case 7: PrintString(x, y, Font_Type, "7"); break;
-        case 8: PrintString(x, y, Font_Type, "8"); break;
-        case 9: PrintString(x, y, Font_Type, "9"); break;
-        case 10: PrintString(x, y, Font_Type, "A"); break;
-        case 11: PrintString(x, y, Font_Type, "B"); break;
-        case 12: PrintString(x, y, Font_Type, "C"); break;
-        case 13: PrintString(x, y, Font_Type, "D"); break;
-        case 14: PrintString(x, y, Font_Type, "E"); break;
-        case 15: PrintString(x, y, Font_Type, "F"); break;
+        case 0: Print_String(x, y, Font_Type, "0"); break;
+        case 1: Print_String(x, y, Font_Type, "1"); break;
+        case 2: Print_String(x, y, Font_Type, "2"); break;
+        case 3: Print_String(x, y, Font_Type, "3"); break;
+        case 4: Print_String(x, y, Font_Type, "4"); break;
+        case 5: Print_String(x, y, Font_Type, "5"); break;
+        case 6: Print_String(x, y, Font_Type, "6"); break;
+        case 7: Print_String(x, y, Font_Type, "7"); break;
+        case 8: Print_String(x, y, Font_Type, "8"); break;
+        case 9: Print_String(x, y, Font_Type, "9"); break;
+        case 10: Print_String(x, y, Font_Type, "A"); break;
+        case 11: Print_String(x, y, Font_Type, "B"); break;
+        case 12: Print_String(x, y, Font_Type, "C"); break;
+        case 13: Print_String(x, y, Font_Type, "D"); break;
+        case 14: Print_String(x, y, Font_Type, "E"); break;
+        case 15: Print_String(x, y, Font_Type, "F"); break;
     }
 }
 
@@ -3956,4 +3959,9 @@ int Get_Note_Ascii(int note, char *snote, int *octave, int tiret)
     }
     sprintf(snote, "%s", anote);
     return note;
+}
+
+void Copy_303_Skin(int xd, int yd, int xs, int ys, int w, int h)
+{
+    Copy(GET_SURFACE(SKIN303), xd, yd, xs, ys, xs + w, ys + h);
 }

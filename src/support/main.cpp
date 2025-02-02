@@ -70,6 +70,15 @@
 #endif
 
 #if defined(__AMIGAOS4__) || defined(__AROS__) || defined(__MORPHOS__)
+
+#if defined(__AMIGAOS4__)
+#include <exec/libraries.h>
+#include <proto/graphics.h>
+#include <graphics/rastport.h>
+struct Library *GfxBase;
+struct GraphicsIFace *IGraphics;
+#endif
+
 const char *AMIGA_VERSION = "\0$VER: " TITLE " " VER_VER "." VER_REV "." VER_REVSMALL "\0";
 #endif
 
@@ -108,8 +117,8 @@ int Resize_Height;
 int Burn_Title = FALSE;
 int global_argc;
 char global_argv[MAX_PATH];
+int delay_ms = 0;
 
-SDL_sem *thread_sema;
 SDL_Surface *Main_Screen;
 
 #if defined(__WIN32__)
@@ -119,10 +128,10 @@ SDL_SysWMinfo WMInfo;
 MOUSE Mouse;
 unsigned short Keys[SDLK_LAST];
 unsigned short Keys_Sym[SDLK_LAST];
-unsigned short Keys_Raw_Off[65535];
-unsigned short Keys_Raw_Repeat[65535];
-unsigned short Keys_Raw[65535];
-unsigned short Keys_Unicode[65535];
+unsigned short Keys_Raw_Off[512];
+unsigned short Keys_Raw_Repeat[512];
+unsigned short Keys_Raw[512];
+unsigned short Keys_Unicode[512];
 int Keyboard_Nbr_Events;
 int Keyboard_Events[256];
 int Keyboard_Notes_Type[256];
@@ -145,8 +154,6 @@ int key_on = 0;
 float delay_refresh;
 float delay_refresh2;
 
-extern int gui_thread_action;
-extern int gui_thread_can_act;
 extern int Nbr_Update_Rects;
 extern SDL_Rect Update_Stack[UPDATE_STACK_SIZE];
 
@@ -398,11 +405,11 @@ void Load_Keyboard_Def(char *FileName)
 #if defined(__WIN32__)
 extern SDL_NEED int SDL_main(int argc, char *argv[])
 #else
-	#if defined(__LINUX__)
-		int main(int argc, char *argv[])
-	#else
-		extern "C" int main(int argc, char *argv[])
-	#endif
+    #if defined(__LINUX__)
+        int main(int argc, char *argv[])
+    #else
+        extern "C" int main(int argc, char *argv[])
+    #endif
 #endif
 
 {
@@ -420,6 +427,21 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
     int in_note;
     char Win_Coords[64];
     Uint32 ExePath_Size = MAX_PATH;
+
+#if defined(__AMIGAOS4__)
+    GfxBase = IExec->OpenLibrary("graphics.library", 50);
+    if(!GfxBase)
+    {
+        Message_Error("Can't open graphics.library.");
+        exit(0);
+    }
+    IGraphics = (struct GraphicsIFace *) IExec->GetInterface(GfxBase, "main", 1, NULL);
+    if(!IGraphics)
+    {
+        Message_Error("Can't obtain graphics.library interface.");
+        exit(0);
+    }
+#endif
 
 #if defined(__MACOSX_PPC__) || defined(__MACOSX_X86__)
     Uint32 Path_Length;
@@ -499,8 +521,8 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
     #endif
 
 #elif defined(__HAIKU__)
-	chdir(dirname(argv[0]));
-	GETCWD(ExePath, MAX_PATH);
+    chdir(dirname(argv[0]));
+    GETCWD(ExePath, MAX_PATH);
 
 #elif defined(__AMIGAOS4__) || defined(__AROS__) || defined(__MORPHOS__)
     CHDIR("/PROGDIR/");
@@ -663,7 +685,6 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
 
     SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
     SDL_EnableUNICODE(TRUE);
-    thread_sema = SDL_CreateSemaphore(1);
 
 #if !defined(__NO_MIDI__)
     // Load midi devices infos
@@ -679,7 +700,6 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
 
 #if defined(__AMIGAOS4__) || defined(__AROS__) || defined(__MORPHOS__)
     char *env_var;
-    int delay_ms = 0;
 
     env_var = getenv("PROTREKKR_MAIN_LOOP_DELAY");
     if(env_var)
@@ -725,7 +745,12 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
         memset(Keys_Unicode, 0, sizeof(Keys_Raw));
 
         SDL_PumpEvents();
-        int Nbr_Events = SDL_PeepEvents(Events, MAX_EVENTS, SDL_GETEVENT, 0xffffff);
+        int Nbr_Events = SDL_PeepEvents(Events, MAX_EVENTS, SDL_GETEVENT, 
+                                        SDL_EVENTMASK(SDL_KEYDOWN) | SDL_EVENTMASK(SDL_KEYUP) |
+                                        SDL_EVENTMASK(SDL_MOUSEBUTTONUP) | SDL_EVENTMASK(SDL_MOUSEBUTTONDOWN) |
+                                        SDL_EVENTMASK(SDL_MOUSEMOTION) | SDL_EVENTMASK(SDL_QUIT) |
+                                        SDL_EVENTMASK(SDL_VIDEORESIZE) | SDL_EVENTMASK(SDL_ACTIVEEVENT)
+                                       );
         int Symbol;
         int Scancode;
 
@@ -751,9 +776,10 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
                     Key_Unicode = Events[i].key.keysym.unicode;
 
                     Symbol = Events[i].key.keysym.sym;
-                    if(Symbol != SDLK_KP_DIVIDE)
+
+                    Uni_Trans = Events[i].key.keysym.unicode;
+                    if(Uni_Trans < 512)
                     {
-                        Uni_Trans = Events[i].key.keysym.unicode;
                         // This is only used for the digits on all systems
                         // (especially on kb configs where they can only
                         //  be accessed by pressing shift).
@@ -816,19 +842,18 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
                                 RShift_Notified = TRUE;
                             }
                         }
-                    }
 
-                    // Only used for SDLK_KP_DIVIDE and SDLK_KP_MULTIPLY
-                    Keys_Sym[Symbol] = TRUE;
+                        Keys_Sym[Symbol] = TRUE;
 
-                    if(key_on != 2) key_on = 1;
+                        if(key_on != 2) key_on = 1;
 
-                    if(SDL_GetModState() & KMOD_LALT)
-                    {
-                        if(Keys[SDLK_RETURN] && !Get_LCtrl() && !Get_RCtrl())
+                        if(SDL_GetModState() & KMOD_LALT)
                         {
-                            FullScreen ^= TRUE;
-                            Switch_FullScreen(Cur_Width, Cur_Height, TRUE, FullScreen ? FALSE : TRUE);
+                            if(Keys[SDLK_RETURN] && !Get_LCtrl() && !Get_RCtrl())
+                            {
+                                FullScreen ^= TRUE;
+                                Switch_FullScreen(Cur_Width, Cur_Height, TRUE, FullScreen ? FALSE : TRUE);
+                            }
                         }
                     }
                     break;
@@ -847,6 +872,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
                         Keys_Sym[Symbol] = FALSE;
 
                         Scancode = Translate_Locale_Key(Symbol);
+                        
                         Keys_Raw_Off[Scancode] = TRUE;
                         Keys_Raw_Repeat[Scancode] = FALSE;
 
@@ -996,7 +1022,6 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
                     {
                         memset(Keys, 0, sizeof(Keys));
                         memset(Keys_Sym, 0, sizeof(Keys_Sym));
-                        memset(Keys_Unicode, 0, sizeof(Keys_Raw));
                         SDL_Event event;
                         while(SDL_PollEvent(&event));
                     }
@@ -1004,7 +1029,6 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
                     {
                         memset(Keys, 0, sizeof(Keys));
                         memset(Keys_Sym, 0, sizeof(Keys_Sym));
-                        memset(Keys_Unicode, 0, sizeof(Keys_Raw));
                     }
                     break;
 
@@ -1023,28 +1047,13 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
         {
             break;
         }
-
-#if defined(__AMIGAOS4__) || defined(__AROS__) || defined(__MORPHOS__)
-        SDL_Delay(delay_ms);
-#else
-        SDL_Delay(10);
-#endif
-        gui_thread_can_act = TRUE;
     }
 
-#if defined(__USE_OPENGL__)
-    glFlush();
-#endif
-        
     Save_Config();
 
     if(ExePath)
     {
         free(ExePath);
-    }
-    if(thread_sema)
-    {
-        SDL_DestroySemaphore(thread_sema);
     }
     exit(0);
 }
@@ -1057,53 +1066,74 @@ void Message_Error(char *Message)
 }
 
 // ------------------------------------------------------
+// Flush the data onto the screen
+void Flush_Screen(void)
+{
+
+#if !defined(__USE_OPENGL__)
+    // Flush all pending blits
+    if(Nbr_Update_Rects)
+    {
+       SDL_UpdateRects(Main_Screen, Nbr_Update_Rects, Update_Stack);
+    }
+    Nbr_Update_Rects = 0;
+#endif
+
+    // Display the title requester once
+    if(!Burn_Title && SplashScreen)
+    {
+        Display_Requester(&Title_Requester, GUI_CMD_REFRESH_PALETTE, NULL, TRUE);
+        Burn_Title = TRUE;
+    }
+    if(!Burn_Title && !SplashScreen)
+    {
+        Burn_Title = TRUE;
+        Kill_Requester();
+    }
+
+#if defined(__USE_OPENGL__)
+    Leave_2d_Mode();
+
+#if !defined(__WIN32__) && !defined(__AROS__)
+    glDrawBuffer(GL_FRONT);
+    glRasterPos2f(-1.0f, -1.0f);
+    glCopyPixels(0, 0, Cur_Width, Cur_Height, GL_COLOR);
+    glDrawBuffer(GL_BACK);
+    glFinish();
+#else
+    SDL_GL_SwapBuffers();
+#endif
+
+#endif
+
+}
+
+// ------------------------------------------------------
 // Redraw the screen
 int Redraw_Screen(void)
 {
 
 #if defined(__USE_OPENGL__)
-        Enter_2D_Mode(Cur_Width, Cur_Height);
+    Enter_2D_Mode(Cur_Width, Cur_Height);
 #endif
 
-        if(!Screen_Update())
-        {
-            return FALSE;
-        }
+    if(!Screen_Update())
+    {
+        return FALSE;
+    }
 
-#if !defined(__USE_OPENGL__)
-        // Flush all pending blits
-        if(Nbr_Update_Rects)
-        {
-           SDL_UpdateRects(Main_Screen, Nbr_Update_Rects, Update_Stack);
-        }
-        Nbr_Update_Rects = 0;
-#endif
+    Flush_Screen();
 
-        // Display the title requester once
-        if(!Burn_Title && SplashScreen)
-        {
-            Display_Requester(&Title_Requester, GUI_CMD_REFRESH_PALETTE, NULL, TRUE);
-            Burn_Title = TRUE;
-        }
-        if(!Burn_Title && !SplashScreen)
-        {
-            Burn_Title = TRUE;
-            Kill_Requester();
-        }
+#if defined(__AMIGAOS4__) || defined(__AROS__) || defined(__MORPHOS__)
 
-#if defined(__USE_OPENGL__)
-        Leave_2d_Mode();
-
-#if !defined(__WIN32__) && !defined(__AROS__)
-        glDrawBuffer(GL_FRONT);
-        glRasterPos2f(-1.0f, -1.0f);
-        glCopyPixels(0, 0, Cur_Width, Cur_Height, GL_COLOR);
-        glDrawBuffer(GL_BACK);
-        glFinish();
+#if defined(__AMIGAOS4__)
+    IGraphics->WaitTOF();
 #else
-        SDL_GL_SwapBuffers();
+    SDL_Delay(delay_ms);
 #endif
 
+#else
+    SDL_Delay(10);
 #endif
 
     return TRUE;
@@ -1111,35 +1141,13 @@ int Redraw_Screen(void)
 
 // ------------------------------------------------------
 // Redraw the screen quickly (this is used to update the status box)
+// (We're already in 2D mode here in OpenGL mode)
 void Redraw_Screen_Quick(void)
 {
-
-#if !defined(__USE_OPENGL__)
-        // Flush all pending blits
-        if(Nbr_Update_Rects)
-        {
-           SDL_UpdateRects(Main_Screen, Nbr_Update_Rects, Update_Stack);
-        }
-        Nbr_Update_Rects = 0;
-#endif
+    Flush_Screen();
 
 #if defined(__USE_OPENGL__)
-        Leave_2d_Mode();
-
-#if !defined(__WIN32__) && !defined(__AROS__) && !defined(__AMIGAOS4__)
-        glDrawBuffer(GL_FRONT);
-        glRasterPos2f(-1.0f, -1.0f);
-        glCopyPixels(0, 0, Cur_Width, Cur_Height, GL_COLOR);
-        glDrawBuffer(GL_BACK);
-        glFinish();
-#else
-        SDL_GL_SwapBuffers();
-#endif
-
-#endif
-
-#if defined(__USE_OPENGL__)
-        Enter_2D_Mode(Cur_Width, Cur_Height);
+    Enter_2D_Mode(Cur_Width, Cur_Height);
 #endif
 
 }
@@ -1168,8 +1176,7 @@ int Switch_FullScreen(int Width, int Height, int Refresh, int Force_Window_Mode)
             }
         }
     }
-    gui_thread_can_act = FALSE;
-    gui_thread_action = FALSE;
+
     Env_Change = TRUE;
     if(Width < SCREEN_WIDTH) Width = SCREEN_WIDTH;
     if(Height < SCREEN_HEIGHT) Height = SCREEN_HEIGHT;
@@ -1182,17 +1189,19 @@ int Switch_FullScreen(int Width, int Height, int Refresh, int Force_Window_Mode)
     }
 #endif
 
-#if defined(__LINUX__) || defined(__MACOSX_PPC__) || defined(__MACOSX_X86__) || defined(__WIN32__) || defined(__AROS__)
+#if defined(__LINUX__) || defined(__MACOSX_PPC__) || defined(__MACOSX_X86__) || defined(__WIN32__) || defined(__AROS__) || defined(__AMIGAOS4__)
     Real_FullScreen = SDL_FULLSCREEN;
 #endif
 
 #if defined(__USE_OPENGL__)
+
 #if !defined(__LINUX__)
     SDL_GL_SetAttribute(SDL_GL_ACCUM_RED_SIZE, 8);
     SDL_GL_SetAttribute(SDL_GL_ACCUM_GREEN_SIZE, 8);
     SDL_GL_SetAttribute(SDL_GL_ACCUM_BLUE_SIZE, 8);
     SDL_GL_SetAttribute(SDL_GL_ACCUM_ALPHA_SIZE, 8);
 #endif
+    
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1);
