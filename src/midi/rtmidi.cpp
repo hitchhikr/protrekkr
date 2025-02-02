@@ -1784,7 +1784,7 @@ void RtMidiOut :: openPort(unsigned int portNumber, char *portName)
     receiver.client = snd_seq_port_info_get_client(pinfo);
     receiver.port = snd_seq_port_info_get_port(pinfo);
     sender.client = snd_seq_client_id(data->seq);
-    data->portNum = sender.client;
+    data->portNum = receiver.client;
 
     if(data->vport < 0)
     {
