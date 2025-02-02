@@ -954,7 +954,7 @@ void RtMidiOut :: sendMessage(std::vector<unsigned char> *message)
         // MIDIPacket. Here, we reuse the memory allocated above on the stack for all.
         ByteCount bytesForPacket = remainingBytes > 65535 ? 65535 : remainingBytes;
 
-        packet = MIDIPacketListAdd(packetList, listSize, packet, timeStamp, bytesForPacket, &buffer[nBytes - remainingBytes]);
+        packet = MIDIPacketListAdd(packetList, listSize, packet, timeStamp, bytesForPacket, buffer + (nBytes - remainingBytes));
 
         if(!packet)
         {
