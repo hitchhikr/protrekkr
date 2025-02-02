@@ -7,6 +7,12 @@ v2.8.2
 - Patterns wouldn't scroll sometimes when starting to play, fixed.
 - Note volume from channels (volume columns and effect 03) are now handled
   in the velocity sent to midi output.
+- Changed LCTRL + F1 / F2 (Decrease / Increase editing step) to
+  LCTRL + F2 / F4 due to Mac OS interfering.
+- Fixed the Midi handling on Linux and Mac OS.
+- Fixed the keyboard shortcuts on Mac OS.
+- Typos in the manual: Transpose to 1 octave higher shortcuts are
+  LCTRL + K and LCTRL + LSHIFT + K.
 
 v2.8.1
 

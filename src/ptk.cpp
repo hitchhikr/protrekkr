@@ -4165,7 +4165,7 @@ void Keyboard_Handler(void)
             gui_action = GUI_CMD_NEXT_PATT;
         }
 
-        if(Keys[SDLK_INSERT] && can_modify_song)
+        if(Keys[SDLK_INSERT] && can_modify_song && !Get_LCtrl())
         {
             // INSERT
             if(Get_LShift())
@@ -4180,7 +4180,7 @@ void Keyboard_Handler(void)
 
         if(snamesel == INPUT_NONE)
         {
-            if(Keys[SDLK_BACKSPACE] && can_modify_song)
+            if(Keys[SDLK_BACKSPACE] && can_modify_song  && !Get_LCtrl())
             {
                 // BACKSPACE
                 if(Get_LShift())
