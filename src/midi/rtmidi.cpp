@@ -916,16 +916,10 @@ RtMidiOut :: ~RtMidiOut()
 
 void RtMidiOut :: sendMessage(std::vector<unsigned char> *message)
 {
-    int i;
     // The CoreMidi documentation indicates a maximum PackList size of
     // 64K, so we may need to break long sysex messages into pieces and
     // send via separate lists.
     unsigned int nBytes = message->size();
-        for(i = 0; i < nBytes; i++)
-        {
-            printf("%x ", (int) ((unsigned char) message[i]));
-        }
-        printf("\n");
         
     if(nBytes == 0)
     {
@@ -945,19 +939,20 @@ void RtMidiOut :: sendMessage(std::vector<unsigned char> *message)
   
     ByteCount remainingBytes = nBytes;
 
+    for(unsigned int i = 0; i < nBytes; i++)
+    {
+        buffer[i] = message->at(i);
+    }
+
     while(remainingBytes)
     {
         MIDIPacket *packet = MIDIPacketListInit(packetList);
-        
         // A MIDIPacketList can only contain a maximum of 64K of data, so if our message is longer,
         // break it up into chunks of 64K or less and send out as a MIDIPacketList with only one
         // MIDIPacket. Here, we reuse the memory allocated above on the stack for all.
         ByteCount bytesForPacket = remainingBytes > 65535 ? 65535 : remainingBytes;
-        unsigned char *dataStartPtr = (unsigned char *) &message[nBytes - remainingBytes];
-//        printf("TEST %d %d %d\n", nBytes, remainingBytes, bytesForPacket);
-        packet = MIDIPacketListAdd(packetList, listSize, packet, timeStamp, bytesForPacket, dataStartPtr);
-        remainingBytes -= bytesForPacket;
-  //      printf("REM %d\n", remainingBytes);
+
+        packet = MIDIPacketListAdd(packetList, listSize, packet, timeStamp, bytesForPacket, &buffer[nBytes - remainingBytes]);
 
         if(!packet)
         {
@@ -966,6 +961,20 @@ void RtMidiOut :: sendMessage(std::vector<unsigned char> *message)
             return;
         }
 
+        remainingBytes -= bytesForPacket;
+
+        // And send to an explicit destination port if we're connected.
+        if(connected_)
+        {
+            result = MIDISend(data->port, data->destinationId, packetList);
+            if(result != noErr)
+            {
+                sprintf(errorString_, "RtMidiOut::sendMessage: error sending MIDI message to port.");
+                error(RtError::WARNING);
+            }
+        }
+    }
+    
         // Send to any destinations that may have connected to us.
 /*        if(data->endpoint)
         {
@@ -977,16 +986,6 @@ void RtMidiOut :: sendMessage(std::vector<unsigned char> *message)
             }
         }
 */
-        // And send to an explicit destination port if we're connected.
-        if(connected_)
-        {
-            result = MIDISend(data->port, data->destinationId, packetList);
-            if(result != noErr)
-            {
-                sprintf(errorString_, "RtMidiOut::sendMessage: error sending MIDI message to port.");
-                error(RtError::WARNING);
-            }
-        }
     }
 }
 
