@@ -933,7 +933,7 @@ void RtMidiOut :: sendMessage(std::vector<unsigned char> *message)
     OSStatus result;
 
     ByteCount bufsize = nBytes > 65535 ? 65535 : nBytes;
-    Byte buffer[bufsize + 16]; // pad for other struct members
+    Byte buffer[bufsize + 1024]; // pad for other struct members
     ByteCount listSize = sizeof(buffer);
     MIDIPacketList *packetList = (MIDIPacketList *) buffer;
   
@@ -948,9 +948,10 @@ void RtMidiOut :: sendMessage(std::vector<unsigned char> *message)
         // MIDIPacket. Here, we reuse the memory allocated above on the stack for all.
         ByteCount bytesForPacket = remainingBytes > 65535 ? 65535 : remainingBytes;
         const Byte *dataStartPtr = (const Byte *) &message[nBytes - remainingBytes];
-//            printf("%d %d\n", remainingBytes, bytesForPacket);
+        printf("%c\n", *dataStartPtr);
         packet = MIDIPacketListAdd(packetList, listSize, packet, timeStamp, bytesForPacket, dataStartPtr);
         remainingBytes -= bytesForPacket;
+        printf("REM %d\n", remainingBytes);
 
         if(!packet)
         {
