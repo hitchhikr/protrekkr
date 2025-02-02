@@ -948,6 +948,7 @@ void RtMidiOut :: sendMessage(std::vector<unsigned char> *message)
         // MIDIPacket. Here, we reuse the memory allocated above on the stack for all.
         ByteCount bytesForPacket = remainingBytes > 65535 ? 65535 : remainingBytes;
         const Byte *dataStartPtr = (const Byte *) &message[nBytes - remainingBytes];
+            printf("%d %d\n", remainingBytes, bytesForPacket);
         packet = MIDIPacketListAdd(packetList, listSize, packet, timeStamp, bytesForPacket, dataStartPtr);
         remainingBytes -= bytesForPacket;
 
@@ -970,8 +971,10 @@ void RtMidiOut :: sendMessage(std::vector<unsigned char> *message)
         }
 
         // And send to an explicit destination port if we're connected.
+            printf("TEST1\n");
         if(connected_)
         {
+            printf("TEST\n");
             result = MIDISend(data->port, data->destinationId, packetList);
             if(result != noErr)
             {
