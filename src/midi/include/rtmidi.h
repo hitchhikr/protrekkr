@@ -117,7 +117,7 @@ class RtMidiIn : public RtMidi
           Otherwise, the default or first port found is opened.
         */
         void openPort(unsigned int portNumber = 0,
-                      char *Portname = "RtMidi Input");
+                      char *portName = "RtMidi Input");
 
         //! Create a virtual input port, with optional name, to allow software connections (OS X and ALSA only).
         /*!

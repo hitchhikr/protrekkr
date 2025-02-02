@@ -1764,6 +1764,7 @@ void RtMidiOut :: openPort(unsigned int portNumber, char *portName)
 
     snd_seq_port_info_t *pinfo;
     snd_seq_port_info_alloca(&pinfo);
+
     AlsaMidiData *data = static_cast<AlsaMidiData *> (apiData_);
     if(portInfo(data->seq,
                 pinfo,
@@ -1785,7 +1786,7 @@ void RtMidiOut :: openPort(unsigned int portNumber, char *portName)
         data->vport = snd_seq_create_simple_port(data->seq,
                                                  portName,
                                                  SND_SEQ_PORT_CAP_READ | SND_SEQ_PORT_CAP_SUBS_READ,
-                                                 SND_SEQ_PORT_TYPE_MIDI_GENERIC);
+                                                 SND_SEQ_PORT_TYPE_MIDI_GENERIC | SND_SEQ_PORT_TYPE_APPLICATION);
         if(data->vport < 0)
         {
             sprintf(errorString_, "RtMidiOut::openPort: ALSA error creating output port.");
@@ -1838,7 +1839,7 @@ void RtMidiOut :: openVirtualPort(char *portName)
     {
         data->vport = snd_seq_create_simple_port(data->seq, portName,
                                                  SND_SEQ_PORT_CAP_READ | SND_SEQ_PORT_CAP_SUBS_READ,
-                                                 SND_SEQ_PORT_TYPE_MIDI_GENERIC);
+                                                 SND_SEQ_PORT_TYPE_MIDI_GENERIC | SND_SEQ_PORT_TYPE_APPLICATION);
 
         if(data->vport < 0)
         {
@@ -1872,7 +1873,7 @@ void RtMidiOut :: sendMessage(std::vector<unsigned char> *message)
     if(nBytes > data->bufferSize)
     {
         data->bufferSize = nBytes;
-        result = snd_midi_event_resize_buffer ( data->coder, nBytes);
+        result = snd_midi_event_resize_buffer(data->coder, nBytes);
         if(result != 0)
         {
             sprintf(errorString_, "RtMidiOut::sendMessage: ALSA error resizing MIDI event buffer.");
