@@ -923,7 +923,7 @@ void RtMidiOut :: sendMessage(std::vector<unsigned char> *message)
     unsigned int nBytes = message->size();
         for(i = 0; i < nBytes; i++)
         {
-            printf("%x ", (int) *((unsigned char *) &message[i] ) );
+            printf("%x ", (int) ((unsigned char) message[i]));
         }
         printf("\n");
         

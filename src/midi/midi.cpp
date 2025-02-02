@@ -424,6 +424,7 @@ void _Midi_Send(int nbr_track, int eff_dat, int row_dat)
 {
     if(eff_dat != -1)
     {
+        out_message.clear();
         printf("SEND: %x %x %x\n", nbr_track, eff_dat, row_dat);
         out_message.push_back(nbr_track);
         out_message.push_back(eff_dat);
