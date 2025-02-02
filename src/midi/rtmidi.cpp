@@ -931,22 +931,20 @@ void RtMidiOut :: sendMessage(std::vector<unsigned char> *message)
     MIDITimeStamp timeStamp = AudioGetCurrentHostTime();
     CoreMidiData *data = static_cast<CoreMidiData *> (apiData_);
     OSStatus result;
-#define MESSAGESIZE 3
-    nBytes = MESSAGESIZE;
     ByteCount bufsize = nBytes > 65535 ? 65535 : nBytes;
     unsigned char buffer[bufsize + 1024]; // pad for other struct members
-   Byte noteon[MESSAGESIZE] = {0x90, 60, 90};
+    unsigned char data[nBytes + 16];
     ByteCount listSize = sizeof(buffer);
     MIDIPacketList *packetList = (MIDIPacketList *) buffer;
   
     ByteCount remainingBytes = nBytes;
 
-/*    for(unsigned int i = 0; i < nBytes; i++)
+    for(unsigned int i = 0; i < nBytes; i++)
     {
-        buffer[i] = message->at(i);
-        printf("%x ", (int) buffer[i]);
-    }*/
-    printf("\n");
+        data[i] = message->at(i);
+//        printf("%x ", (int) buffer[i]);
+    }
+//    printf("\n");
 
     while(remainingBytes)
     {
@@ -956,7 +954,7 @@ void RtMidiOut :: sendMessage(std::vector<unsigned char> *message)
         // MIDIPacket. Here, we reuse the memory allocated above on the stack for all.
         ByteCount bytesForPacket = remainingBytes > 65535 ? 65535 : remainingBytes;
 
-        packet = MIDIPacketListAdd(packetList, listSize, packet, timeStamp, bytesForPacket, noteon);
+        packet = MIDIPacketListAdd(packetList, listSize, packet, timeStamp, bytesForPacket, data + (nBytes - remainingBytes));
 
         if(!packet)
         {
