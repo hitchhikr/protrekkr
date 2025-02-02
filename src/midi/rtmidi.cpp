@@ -1787,32 +1787,15 @@ void RtMidiOut :: openPort(unsigned int portNumber, char *portName)
 
     if(data->vport < 0)
     {
-        snd_seq_port_info_set_client(pinfo, 0);
-        snd_seq_port_info_set_port(pinfo, 0);
-        snd_seq_port_info_set_capability(pinfo,
-                                         SND_SEQ_PORT_CAP_WRITE |
-                                         SND_SEQ_PORT_CAP_SUBS_WRITE);
-        snd_seq_port_info_set_type(pinfo,
-                                   SND_SEQ_PORT_TYPE_MIDI_GENERIC |
-                                   SND_SEQ_PORT_TYPE_APPLICATION);
-        snd_seq_port_info_set_midi_channels(pinfo, 16);
-
-#ifndef AVOID_TIMESTAMPING
-        snd_seq_port_info_set_timestamping(pinfo, 1);
-        snd_seq_port_info_set_timestamp_real(pinfo, 1);    
-        snd_seq_port_info_set_timestamp_queue(pinfo, data->queue_id);
-#endif
-
-        snd_seq_port_info_set_name(pinfo, portName);
-        data->vport = snd_seq_create_port(data->seq, pinfo);
-  
+        data->vport = snd_seq_create_simple_port(data->seq, portName,
+                                                 SND_SEQ_PORT_CAP_READ | SND_SEQ_POR_CAP_WRITE,
+                                                 SND_SEQ_PORT_TYPE_APPLICATION );
         if(data->vport < 0)
         {
-            sprintf(errorString_, "RtMidiIn::openPort: ALSA error making port connection.");
-            error(RtError::DRIVER_ERROR);
+            errorString_ = "MidiOutAlsa::openPort: ALSA error creating output port.";
+            error(RtMidiError::DRIVER_ERROR);
             return;
         }
-        data->vport = snd_seq_port_info_get_port(pinfo);
     }
 
     sender.port = data->vport;
@@ -1861,8 +1844,8 @@ void RtMidiOut :: openVirtualPort(char *portName)
     if(data->vport < 0)
     {
         data->vport = snd_seq_create_simple_port(data->seq, portName,
-                                                 SND_SEQ_PORT_CAP_READ | SND_SEQ_PORT_CAP_SUBS_READ,
-                                                 SND_SEQ_PORT_TYPE_MIDI_GENERIC | SND_SEQ_PORT_TYPE_APPLICATION);
+                                                 SND_SEQ_PORT_CAP_READ | SND_SEQ_PORT_CAP_SUBS_WRITE,
+                                                 SND_SEQ_PORT_TYPE_APPLICATION);
 
         if(data->vport < 0)
         {
@@ -1924,9 +1907,13 @@ void RtMidiOut :: sendMessage(std::vector<unsigned char> *message)
     {
         snd_seq_event_t ev;
         snd_seq_ev_clear(&ev);
-        snd_seq_ev_set_source(&ev, data->vport);
-        snd_seq_ev_set_subs(&ev);
         snd_seq_ev_set_direct(&ev);
+        
+        snd_seq_ev_set_source(&ev, data->vport);
+        snd_seq_ev_set_dest(&ev, sender.client, data->vport);
+        
+        snd_seq_ev_set_subs(&ev);
+        
         result = snd_midi_event_encode(data->coder, data->buffer + offset, (long) (nBytes - offset), &ev);
         if(result < 0)
         {
