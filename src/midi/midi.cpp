@@ -286,6 +286,7 @@ void Midi_Note_Off(int channel, int note)
             {
                 if(Midi_Notes_History[Chan_Midi_Prg[channel]][i] == note)
                 {
+                    printf("SEND: %x %x %x\n", 0x80 + Chan_Midi_Prg[channel], (note - 1), 127);
                     _Midi_Send(0x80 + Chan_Midi_Prg[channel], (note - 1), 127);
                     Midi_Notes_History[Chan_Midi_Prg[channel]][i] = 0;
                     break;
@@ -296,6 +297,7 @@ void Midi_Note_Off(int channel, int note)
         {
             for(i = 0; i < 256; i++)
             {
+                printf("SEND: %x %x %x\n", 0x80 + Chan_Midi_Prg[channel], (Midi_Notes_History[Chan_Midi_Prg[channel]][i] - 1), 127);
                 _Midi_Send(0x80 + Chan_Midi_Prg[channel], (Midi_Notes_History[Chan_Midi_Prg[channel]][i] - 1), 127);
                 Midi_Notes_History[Chan_Midi_Prg[channel]][i] = 0;
             }
