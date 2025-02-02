@@ -966,7 +966,7 @@ void RtMidiOut :: sendMessage(std::vector<unsigned char> *message)
         // And send to an explicit destination port if we're connected.
         if(connected_)
         {
-            printf("SEND: %d %d\n", nBytes - remainingBytes, listSize);
+            printf("SENDING: %d %d\n", nBytes - remainingBytes, listSize);
             result = MIDISend(data->port, data->destinationId, packetList);
             if(result != noErr)
             {
