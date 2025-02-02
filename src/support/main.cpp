@@ -844,6 +844,10 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
                         }
 
                         Keys_Sym[Symbol] = TRUE;
+                    if(Keys[SDLK_RIGHT])
+                    {
+            printf("RIGHTO\n");
+                    }
 
                         if(key_on != 2) key_on = 1;
 

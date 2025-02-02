@@ -54,7 +54,6 @@ RtMidi :: RtMidi() : apiData_(0), connected_(false)
 
 void RtMidi :: error(RtError::Type type)
 {
-    printf("%s\n",errorString_);
 }
 
 //*********************************************************************//
