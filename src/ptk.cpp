@@ -3919,18 +3919,18 @@ void Keyboard_Handler(void)
     int validating_input = FALSE;
 
     // Exit tracker
-    if(Get_LAlt() && Keys[SDLK_F4]) gui_action = GUI_CMD_EXIT;
+    if(Get_LAlt() && !Get_LCtrl() && Keys[SDLK_F4]) gui_action = GUI_CMD_EXIT;
     // Lower octave
-    if(!Get_LShift() && Keys[SDLK_F1]) gui_action = GUI_CMD_LOWER_OCTAVE;
+    if(!Get_LShift() && !Get_LCtrl() && Keys[SDLK_F1]) gui_action = GUI_CMD_LOWER_OCTAVE;
     // Higher octave
-    if(!Get_LShift() && Keys[SDLK_F2]) gui_action = GUI_CMD_HIGHER_OCTAVE;
+    if(!Get_LShift() && !Get_LCtrl() && Keys[SDLK_F2]) gui_action = GUI_CMD_HIGHER_OCTAVE;
     // Helper
-    if(!Get_LShift() && Keys[SDLK_F3]) gui_action = GUI_CMD_GET_HELP;
+    if(!Get_LShift() && !Get_LCtrl() && Keys[SDLK_F3]) gui_action = GUI_CMD_GET_HELP;
 
-    if(Get_LCtrl() && Keys[SDLK_F1]) gui_action = GUI_CMD_DECREASE_STEP_ADD;
-    if(Get_LCtrl() && Keys[SDLK_F2]) gui_action = GUI_CMD_INCREASE_STEP_ADD;
+    if(Get_LCtrl() && !Get_LShift() && Keys[SDLK_F1]) gui_action = GUI_CMD_DECREASE_STEP_ADD;
+    if(Get_LCtrl() && !Get_LShift() && Keys[SDLK_F2]) gui_action = GUI_CMD_INCREASE_STEP_ADD;
 
-    if(Get_LShift())
+    if(Get_LShift() && !Get_LCtrl())
     {
         if(Keys[SDLK_ESCAPE])
         {
