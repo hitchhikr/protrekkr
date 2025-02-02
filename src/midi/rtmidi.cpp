@@ -928,7 +928,7 @@ void RtMidiOut :: sendMessage(std::vector<unsigned char> *message)
         return;
     }
 
-    MIDITimeStamp timeStamp = AudioGetCurrentHostTime();
+    MIDITimeStamp timeStamp = 0;//AudioGetCurrentHostTime();
     CoreMidiData *data = static_cast<CoreMidiData *> (apiData_);
     OSStatus result;
 
@@ -948,7 +948,7 @@ void RtMidiOut :: sendMessage(std::vector<unsigned char> *message)
         // MIDIPacket. Here, we reuse the memory allocated above on the stack for all.
         ByteCount bytesForPacket = remainingBytes > 65535 ? 65535 : remainingBytes;
         const Byte *dataStartPtr = (const Byte *) &message[nBytes - remainingBytes];
-            printf("%d %d\n", remainingBytes, bytesForPacket);
+//            printf("%d %d\n", remainingBytes, bytesForPacket);
         packet = MIDIPacketListAdd(packetList, listSize, packet, timeStamp, bytesForPacket, dataStartPtr);
         remainingBytes -= bytesForPacket;
 
@@ -960,7 +960,7 @@ void RtMidiOut :: sendMessage(std::vector<unsigned char> *message)
         }
 
         // Send to any destinations that may have connected to us.
-/*        if(data->endpoint)
+        if(data->endpoint)
         {
             result = MIDIReceived(data->endpoint, packetList);
             if(result != noErr)
@@ -969,7 +969,7 @@ void RtMidiOut :: sendMessage(std::vector<unsigned char> *message)
                 error(RtError::WARNING);
             }
         }
-*/
+
         // And send to an explicit destination port if we're connected.
         if(connected_)
         {
