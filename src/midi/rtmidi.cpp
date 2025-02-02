@@ -1707,7 +1707,7 @@ void RtMidiOut :: initialize(char *clientName)
     snd_seq_t *seq;
     int result = snd_seq_open(&seq,
                               "default",
-                              SND_SEQ_OPEN_OUTPUT,
+                              SND_SEQ_OPEN_DUPLEX,
                               SND_SEQ_NONBLOCK);
 
     if(result < 0)
@@ -1780,13 +1780,10 @@ void RtMidiOut :: openPort(unsigned int portNumber, char *portName)
         return;
     }
 
-
-
-
     snd_seq_addr_t sender, receiver;
-    sender.client = snd_seq_port_info_get_client(pinfo);
-    sender.port = snd_seq_port_info_get_port(pinfo);
-    receiver.client = snd_seq_client_id(data->seq);
+    receiver.client = snd_seq_port_info_get_client(pinfo);
+    receiver.port = snd_seq_port_info_get_port(pinfo);
+    sender.client = snd_seq_client_id(data->seq);
 
     if(data->vport < 0)
     {
@@ -1818,7 +1815,7 @@ void RtMidiOut :: openPort(unsigned int portNumber, char *portName)
         data->vport = snd_seq_port_info_get_port(pinfo);
     }
 
-    receiver.port = data->vport;
+    sender.port = data->vport;
 
     if(!data->subscription)
     {
