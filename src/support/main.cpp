@@ -778,6 +778,8 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
                     Symbol = Events[i].key.keysym.sym;
 
                     Uni_Trans = Events[i].key.keysym.unicode;
+                        printf("RIGHTO %d\n", Uni_Trans);
+
                     if(Uni_Trans < 512)
                     {
                         // This is only used for the digits on all systems
@@ -796,10 +798,6 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
 #endif
 
                         Keys[Uni_Trans] = TRUE;
-//                    if(Keys[SDLK_RIGHT])
-                    {
-            printf("RIGHTO %d\n", Uni_Trans);
-                    }
 
                         if(!In_Requester)
                         {
