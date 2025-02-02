@@ -951,9 +951,9 @@ void RtMidiOut :: sendMessage(std::vector<unsigned char> *message)
         unsigned char *dataStartPtr = (unsigned char *) &message[nBytes - remainingBytes];
         for(i = 0; i < remainingBytes; i++)
         {
-            printf("%d ", (int) dataStartPtr[i]);
+            printf("%x ", (int) dataStartPtr[i]);
         }
-        printf("TEST %d %d\n", nBytes, remainingBytes);
+        printf("TEST %d %d %d\n", nBytes, remainingBytes, bytesForPacket);
         packet = MIDIPacketListAdd(packetList, listSize, packet, timeStamp, bytesForPacket, dataStartPtr);
         remainingBytes -= bytesForPacket;
         printf("REM %d\n", remainingBytes);
