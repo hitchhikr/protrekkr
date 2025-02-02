@@ -4096,14 +4096,12 @@ void Keyboard_Handler(void)
         // Previous column or previous track
         if(Keys[SDLK_LEFT] && !Get_LCtrl() && !Get_LAlt() && !Get_RShift())
         {
-            printf("LEFT\n");
             Goto_Previous_Column();
         }
 
         // Next column or next track
         if(Keys[SDLK_RIGHT] && !Get_LCtrl() && !Get_LAlt() && !Get_RShift())
         {
-            printf("RIGHT\n");
             Goto_Next_Column();
         }
 
@@ -4134,14 +4132,12 @@ void Keyboard_Handler(void)
         // Previous row
         if(Keys[SDLK_UP] && !Song_Playing && !Get_RShift())
         {
-            printf("UP\n");
             Goto_Previous_Row(TRUE);
         }
 
         // Next row
         if(Keys[SDLK_DOWN] && !Song_Playing && !Get_RShift())
         {
-            printf("DOWN\n");
             Goto_Next_Row(TRUE);
         }
 
@@ -5047,6 +5043,7 @@ void Keyboard_Handler(void)
                     // Solo track
                     if(Keys[SDLK_m - UNICODE_OFFSET2])
                     {
+                        printf("TEST\n");
                         Solo_Track(Track_Under_Caret);
                         // Will unmute the correct track
                         if(Chan_Mute_State[Track_Under_Caret] == 0) Chan_Mute_State[Track_Under_Caret] = 1;
