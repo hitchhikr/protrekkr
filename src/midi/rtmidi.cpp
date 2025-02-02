@@ -932,9 +932,10 @@ void RtMidiOut :: sendMessage(std::vector<unsigned char> *message)
     CoreMidiData *data = static_cast<CoreMidiData *> (apiData_);
     OSStatus result;
 #define MESSAGESIZE 3
+    nBytes = MESSAGESIZE;
     ByteCount bufsize = nBytes > 65535 ? 65535 : nBytes;
-//    unsigned char buffer[bufsize + 1024]; // pad for other struct members
-    Byte buffer[MESSAGESIZE] = {0x90, 60, 90};
+    unsigned char buffer[bufsize + 1024]; // pad for other struct members
+   Byte noteon[MESSAGESIZE] = {0x90, 60, 90};
     ByteCount listSize = sizeof(buffer);
     MIDIPacketList *packetList = (MIDIPacketList *) buffer;
   
@@ -955,7 +956,7 @@ void RtMidiOut :: sendMessage(std::vector<unsigned char> *message)
         // MIDIPacket. Here, we reuse the memory allocated above on the stack for all.
         ByteCount bytesForPacket = remainingBytes > 65535 ? 65535 : remainingBytes;
 
-        packet = MIDIPacketListAdd(packetList, listSize, packet, timeStamp, bytesForPacket, buffer + (nBytes - remainingBytes));
+        packet = MIDIPacketListAdd(packetList, listSize, packet, timeStamp, bytesForPacket, noteon);
 
         if(!packet)
         {
