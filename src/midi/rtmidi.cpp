@@ -1014,7 +1014,7 @@ void RtMidiOut :: sendMessage(std::vector<unsigned char> *message)
 struct AlsaMidiData
 {
     snd_seq_t *seq;
-    unsigned int portNum;
+    unsigned int client_id;
     int vport;
     snd_seq_port_subscribe_t *subscription;
     snd_midi_event_t *coder;
@@ -1278,7 +1278,7 @@ void RtMidiIn :: initialize(char *clientName)
     AlsaMidiData *data = (AlsaMidiData *) new AlsaMidiData;
     data->seq = seq;
     data->bufferSize = 32;
-    data->portNum = -1;
+    data->client_id = -1;
     data->vport = -1;
     data->subscription = 0;
     data->dummy_thread_id = pthread_self();
@@ -1723,7 +1723,7 @@ void RtMidiOut :: initialize(char *clientName)
     // Save our api-specific connection information.
     AlsaMidiData *data = (AlsaMidiData *) new AlsaMidiData;
     data->seq = seq;
-    data->portNum = -1;
+    data->client_id = -1;
     data->vport = -1;
     data->bufferSize = 32;
     data->coder = 0;
@@ -1784,7 +1784,7 @@ void RtMidiOut :: openPort(unsigned int portNumber, char *portName)
     receiver.client = snd_seq_port_info_get_client(pinfo);
     receiver.port = snd_seq_port_info_get_port(pinfo);
     sender.client = snd_seq_client_id(data->seq);
-    data->portNum = receiver.client;
+    data->client_id = receiver.client;
 
     if(data->vport < 0)
     {
@@ -1909,11 +1909,7 @@ void RtMidiOut :: sendMessage(std::vector<unsigned char> *message)
         snd_seq_event_t ev;
         snd_seq_ev_clear(&ev);
         snd_seq_ev_set_direct(&ev);
-        
-//        snd_seq_ev_set_source(&ev, data->vport);
-printf("%d %d\n", data->portNum, data->vport);
-        snd_seq_ev_set_dest(&ev, data->portNum, data->vport);
-        
+        snd_seq_ev_set_dest(&ev, data->client_id, data->vport);
         snd_seq_ev_set_subs(&ev);
         
         result = snd_midi_event_encode(data->coder, data->buffer + offset, (long) (nBytes - offset), &ev);
