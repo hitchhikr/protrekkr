@@ -1794,7 +1794,7 @@ void RtMidiOut :: openPort(unsigned int portNumber, char *portName)
         if(data->vport < 0)
         {
             sprintf(errorString_, "MidiOutAlsa::openPort: ALSA error creating output port.");
-            error(RtMidiError::DRIVER_ERROR);
+            error(RtError::DRIVER_ERROR);
             return;
         }
     }
