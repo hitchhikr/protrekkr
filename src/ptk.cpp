@@ -3928,7 +3928,7 @@ void Keyboard_Handler(void)
     if(!Get_LShift() && !Get_LCtrl() && Keys[SDLK_F3]) gui_action = GUI_CMD_GET_HELP;
 
     if(Get_LCtrl() && !Get_LShift() && Keys[SDLK_F2]) gui_action = GUI_CMD_DECREASE_STEP_ADD;
-    if(Get_LCtrl() && !Get_LShift() && Keys[SDLK_F3]) gui_action = GUI_CMD_INCREASE_STEP_ADD;
+    if(Get_LCtrl() && !Get_LShift() && Keys[SDLK_F4]) gui_action = GUI_CMD_INCREASE_STEP_ADD;
 
     if(Get_LShift() && !Get_LCtrl())
     {
