@@ -1299,8 +1299,8 @@ void Randomize_Block(int Position, int step)
     int value;
     int value2;
     COLUMN_TYPE type;
-    int max_columns = Get_Max_Nibble_All_Tracks();
 
+    int max_columns = Get_Max_Nibble_All_Tracks();
     SELECTION Sel = Get_Real_Selection(TRUE);
 
     if(step)

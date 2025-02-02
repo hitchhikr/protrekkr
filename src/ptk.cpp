@@ -4659,7 +4659,7 @@ void Keyboard_Handler(void)
         }
     }
 
-    if(snamesel == INPUT_NONE && !reelletter)
+    if(snamesel == INPUT_NONE && !reelletter && !Get_LCtrl())
     {
         // Data columns
         if(Keys_Unicode[SDLK_0]) retvalue = 0;
