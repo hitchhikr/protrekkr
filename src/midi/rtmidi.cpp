@@ -933,7 +933,7 @@ void RtMidiOut :: sendMessage(std::vector<unsigned char> *message)
     OSStatus result;
 
     ByteCount bufsize = nBytes > 65535 ? 65535 : nBytes;
-    Byte buffer[bufsize + 1024]; // pad for other struct members
+    unsigned char buffer[bufsize + 1024]; // pad for other struct members
     ByteCount listSize = sizeof(buffer);
     MIDIPacketList *packetList = (MIDIPacketList *) buffer;
   
@@ -966,7 +966,7 @@ void RtMidiOut :: sendMessage(std::vector<unsigned char> *message)
         // And send to an explicit destination port if we're connected.
         if(connected_)
         {
-            printf("SEND: %d\n", nBytes - remainingBytes);
+            printf("SEND: %d %d\n", nBytes - remainingBytes, listSize);
             result = MIDISend(data->port, data->destinationId, packetList);
             if(result != noErr)
             {
