@@ -948,7 +948,7 @@ void RtMidiOut :: sendMessage(std::vector<unsigned char> *message)
         // break it up into chunks of 64K or less and send out as a MIDIPacketList with only one
         // MIDIPacket. Here, we reuse the memory allocated above on the stack for all.
         ByteCount bytesForPacket = remainingBytes > 65535 ? 65535 : remainingBytes;
-        const Byte *dataStartPtr = (const Byte *) &message[nBytes - remainingBytes];
+        unsigned char *dataStartPtr = (unsigned char *) &message[nBytes - remainingBytes];
         for(i = 0; i < remainingBytes; i++)
         {
             printf("%d ", (int) dataStartPtr[i]);
