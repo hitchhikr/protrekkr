@@ -787,15 +787,18 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
                         Keys_Unicode[Uni_Trans] = TRUE;
 
 #if !defined(__MACOSX_PPC__) && !defined(__MACOSX_X86__)
-                        if(!Uni_Trans) Uni_Trans = Symbol;
+                        if(!Uni_Trans)
+                        {
+                            Uni_Trans = Symbol;
+                        }
 #else
                         Uni_Trans = Symbol;
 #endif
 
                         Keys[Uni_Trans] = TRUE;
-                    if(Keys[SDLK_RIGHT])
+//                    if(Keys[SDLK_RIGHT])
                     {
-            printf("RIGHTO\n");
+            printf("RIGHTO %d\n", Uni_Trans);
                     }
 
                         if(!In_Requester)

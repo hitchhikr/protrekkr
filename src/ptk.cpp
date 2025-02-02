@@ -2903,9 +2903,6 @@ void Song_Stop(void)
     Gui_Draw_Button_Box(8, 28, 39, 16, "\04", BUTTON_NORMAL | BUTTON_RIGHT_MOUSE | BUTTON_TEXT_CENTERED);
     Gui_Draw_Button_Box(49, 28, 39, 16, "\253", BUTTON_NORMAL | BUTTON_RIGHT_MOUSE | BUTTON_TEXT_CENTERED);
     Status_Box("Feeling Groovy.", TRUE);
-    PosInTick = 0;
-    Pattern_Line_Visual = Delays_Pos_Sound_Buffer[Delay_Sound_Buffer].Line;
-    Song_Position_Visual = Delays_Pos_Sound_Buffer[Delay_Sound_Buffer].Pos;
     Song_Position = Song_Position_Visual;
     Pattern_Line = Pattern_Line_Visual;
     Actualize_Master(5);
