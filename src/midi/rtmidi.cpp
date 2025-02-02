@@ -1276,6 +1276,7 @@ void RtMidiIn :: initialize(char *clientName)
     // Save our api-specific connection information.
     AlsaMidiData *data = (AlsaMidiData *) new AlsaMidiData;
     data->seq = seq;
+    data->bufferSize = 32;
     data->portNum = -1;
     data->vport = -1;
     data->subscription = 0;
@@ -1283,7 +1284,6 @@ void RtMidiIn :: initialize(char *clientName)
     data->thread = data->dummy_thread_id;
     data->trigger_fds[0] = -1;
     data->trigger_fds[1] = -1;
-    data->bufferSize = inputData_.bufferSize;
   
     apiData_ = (void *) data;
     inputData_.apiData = (void *) data;
@@ -1638,10 +1638,6 @@ std::string RtMidiIn :: getPortName(unsigned int portNumber, char *Name)
         
         std::ostringstream os;
         os << snd_seq_client_info_get_name(cinfo);
-        os << ":";
-        os << snd_seq_port_info_get_name(pinfo);
-        os << " ";                                      // These lines added to make sure devices are listed
-        os << snd_seq_port_info_get_client(pinfo);      // with full portnames added to ensure individual device names
         os << ":";
         os << snd_seq_port_info_get_port(pinfo);
         std::string stringName = os.str();
