@@ -986,7 +986,6 @@ void RtMidiOut :: sendMessage(std::vector<unsigned char> *message)
             }
         }
 */
-    }
 }
 
 #endif  // __MACOSX_CORE__
