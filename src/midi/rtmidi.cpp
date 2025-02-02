@@ -942,9 +942,7 @@ void RtMidiOut :: sendMessage(std::vector<unsigned char> *message)
     for(unsigned int i = 0; i < nBytes; i++)
     {
         midi_data[i] = message->at(i);
-//        printf("%x ", (int) buffer[i]);
     }
-//    printf("\n");
 
     while(remainingBytes)
     {
@@ -963,6 +961,17 @@ void RtMidiOut :: sendMessage(std::vector<unsigned char> *message)
             return;
         }
 
+        // Send to any destinations that may have connected to us.
+        if(data->endpoint)
+        {
+            result = MIDIReceived(data->endpoint, packetList);
+            if(result != noErr)
+            {
+                sprintf(errorString_, "RtMidiOut::sendMessage: error sending MIDI to virtual destinations.");
+                error(RtError::WARNING);
+            }
+        }
+
         // And send to an explicit destination port if we're connected.
         if(connected_)
         {
@@ -977,18 +986,6 @@ void RtMidiOut :: sendMessage(std::vector<unsigned char> *message)
 
         remainingBytes -= bytesForPacket;
     }
-    
-        // Send to any destinations that may have connected to us.
-/*        if(data->endpoint)
-        {
-            result = MIDIReceived(data->endpoint, packetList);
-            if(result != noErr)
-            {
-                sprintf(errorString_, "RtMidiOut::sendMessage: error sending MIDI to virtual destinations.");
-                error(RtError::WARNING);
-            }
-        }
-*/
 }
 
 #endif  // __MACOSX_CORE__
