@@ -921,9 +921,9 @@ void RtMidiOut :: sendMessage(std::vector<unsigned char> *message)
     // 64K, so we may need to break long sysex messages into pieces and
     // send via separate lists.
     unsigned int nBytes = message->size();
-        for(i = 0; i < remainingBytes; i++)
+        for(i = 0; i < nBytes; i++)
         {
-            printf("%x ", (int) *((unsigned char *) &message[i])));
+            printf("%x ", (int) *((unsigned char *) &message[i] ) );
         }
         printf("\n");
         
