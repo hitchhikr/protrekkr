@@ -960,7 +960,7 @@ void RtMidiOut :: sendMessage(std::vector<unsigned char> *message)
         }
 
         // Send to any destinations that may have connected to us.
-        if(data->endpoint)
+/*        if(data->endpoint)
         {
             result = MIDIReceived(data->endpoint, packetList);
             if(result != noErr)
@@ -969,12 +969,10 @@ void RtMidiOut :: sendMessage(std::vector<unsigned char> *message)
                 error(RtError::WARNING);
             }
         }
-
+*/
         // And send to an explicit destination port if we're connected.
-            printf("TEST1\n");
         if(connected_)
         {
-            printf("TEST\n");
             result = MIDISend(data->port, data->destinationId, packetList);
             if(result != noErr)
             {
