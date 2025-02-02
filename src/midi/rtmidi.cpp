@@ -1793,8 +1793,8 @@ void RtMidiOut :: openPort(unsigned int portNumber, char *portName)
         snd_seq_port_info_set_client(pinfo, 0);
         snd_seq_port_info_set_port(pinfo, 0);
         snd_seq_port_info_set_capability(pinfo,
-                                         SND_SEQ_PORT_CAP_READ |
-                                         SND_SEQ_PORT_CAP_SUBS_READ);
+                                         SND_SEQ_PORT_CAP_WRITE |
+                                         SND_SEQ_PORT_CAP_SUBS_WRITE);
         snd_seq_port_info_set_type(pinfo,
                                    SND_SEQ_PORT_TYPE_MIDI_GENERIC |
                                    SND_SEQ_PORT_TYPE_APPLICATION);
@@ -1818,7 +1818,7 @@ void RtMidiOut :: openPort(unsigned int portNumber, char *portName)
         data->vport = snd_seq_port_info_get_port(pinfo);
     }
 
-    sender.port = data->vport;
+    receiver.port = data->vport;
 
     if(!data->subscription)
     {
