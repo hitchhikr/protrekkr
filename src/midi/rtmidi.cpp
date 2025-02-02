@@ -916,6 +916,7 @@ RtMidiOut :: ~RtMidiOut()
 
 void RtMidiOut :: sendMessage(std::vector<unsigned char> *message)
 {
+    int i;
     // The CoreMidi documentation indicates a maximum PackList size of
     // 64K, so we may need to break long sysex messages into pieces and
     // send via separate lists.
@@ -948,7 +949,11 @@ void RtMidiOut :: sendMessage(std::vector<unsigned char> *message)
         // MIDIPacket. Here, we reuse the memory allocated above on the stack for all.
         ByteCount bytesForPacket = remainingBytes > 65535 ? 65535 : remainingBytes;
         const Byte *dataStartPtr = (const Byte *) &message[nBytes - remainingBytes];
-        printf("%c\n", *dataStartPtr);
+        for(i = 0; i < remainingBytes; i++)
+        {
+            printf("%d ", message[i]);
+        }
+        printf("\n");
         packet = MIDIPacketListAdd(packetList, listSize, packet, timeStamp, bytesForPacket, dataStartPtr);
         remainingBytes -= bytesForPacket;
         printf("REM %d\n", remainingBytes);
