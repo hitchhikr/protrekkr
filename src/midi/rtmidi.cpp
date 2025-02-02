@@ -921,7 +921,12 @@ void RtMidiOut :: sendMessage(std::vector<unsigned char> *message)
     // 64K, so we may need to break long sysex messages into pieces and
     // send via separate lists.
     unsigned int nBytes = message->size();
-    
+        for(i = 0; i < remainingBytes; i++)
+        {
+            printf("%x ", (int) *((unsigned char *) &message[i])));
+        }
+        printf("\n");
+        
     if(nBytes == 0)
     {
         sprintf(errorString_, "RtMidiOut::sendMessage: no data in message argument!");
@@ -949,14 +954,10 @@ void RtMidiOut :: sendMessage(std::vector<unsigned char> *message)
         // MIDIPacket. Here, we reuse the memory allocated above on the stack for all.
         ByteCount bytesForPacket = remainingBytes > 65535 ? 65535 : remainingBytes;
         unsigned char *dataStartPtr = (unsigned char *) &message[nBytes - remainingBytes];
-        for(i = 0; i < remainingBytes; i++)
-        {
-            printf("%x ", (int) dataStartPtr[i]);
-        }
-        printf("TEST %d %d %d\n", nBytes, remainingBytes, bytesForPacket);
+//        printf("TEST %d %d %d\n", nBytes, remainingBytes, bytesForPacket);
         packet = MIDIPacketListAdd(packetList, listSize, packet, timeStamp, bytesForPacket, dataStartPtr);
         remainingBytes -= bytesForPacket;
-        printf("REM %d\n", remainingBytes);
+  //      printf("REM %d\n", remainingBytes);
 
         if(!packet)
         {
