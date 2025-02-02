@@ -1005,7 +1005,7 @@ static __inline__ float FastFloor(float f)
     b = absf(f); 
     d = f - c;
     e = b - 8388608.0f;
-#if defined(__LINUX__) && !(__MACOSX_X86__)
+#if defined(__LINUX__)
     __asm__("" : "+mf" (d));
 #else
     __asm__("" : "+f" (d));
@@ -1054,7 +1054,7 @@ float FastLog(float i)
 	x = (float) (*(int *) &i);
 	x *= 1.0f / (1 << 23);
 	x = x - 127;
-#if defined(__GCC__)
+#if defined(__GCC__) && !(__MACOSX_X86__)
     y = x - FastFloor(x);
 #else
     y = x - floorf(x);
