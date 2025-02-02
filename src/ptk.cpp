@@ -5043,7 +5043,6 @@ void Keyboard_Handler(void)
                     // Solo track
                     if(Keys[SDLK_m - UNICODE_OFFSET2])
                     {
-                        printf("TEST\n");
                         Solo_Track(Track_Under_Caret);
                         // Will unmute the correct track
                         if(Chan_Mute_State[Track_Under_Caret] == 0) Chan_Mute_State[Track_Under_Caret] = 1;

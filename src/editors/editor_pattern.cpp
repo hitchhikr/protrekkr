@@ -3973,6 +3973,7 @@ void Solo_Track(int track_to_solo)
     }
     else
     {
+                        printf("TEST\n");
         // Else mute all
         for(int solify = 0; solify < MAX_TRACKS; solify++)
         {
