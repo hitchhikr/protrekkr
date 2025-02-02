@@ -5047,6 +5047,7 @@ void Keyboard_Handler(void)
                         // Will unmute the correct track
                         if(Chan_Mute_State[Track_Under_Caret] == 0) Chan_Mute_State[Track_Under_Caret] = 1;
                         else Chan_Mute_State[Track_Under_Caret] = 0;
+                        printf("STAT: %d %d\n", Chan_Mute_State[Track_Under_Caret], Track_Under_Caret);
                         if(userscreen == USER_SCREEN_TRACK_EDIT) Actualize_Track_Ed(10);
                         Update_Pattern(0);
                     }

@@ -3955,7 +3955,7 @@ void Solo_Track(int track_to_solo)
         }
         if(!Was_Solo)
         {
-        printf("TEST3\n");
+        printf("TEST3 %d\n", track_to_solo);
             // Unmute all
             for(int solify = 0; solify < MAX_TRACKS; solify++)
             {
@@ -3965,7 +3965,7 @@ void Solo_Track(int track_to_solo)
         }
         else
         {
-        printf("TEST1\n");
+        printf("TEST1 %d\n", track_to_solo);
             // Else mute all
             for(int solify = 0; solify < MAX_TRACKS; solify++)
             {
@@ -3975,7 +3975,7 @@ void Solo_Track(int track_to_solo)
     }
     else
     {
-        printf("TEST2\n");
+        printf("TEST2 %d\n", track_to_solo);
         // Else mute all
         for(int solify = 0; solify < MAX_TRACKS; solify++)
         {
