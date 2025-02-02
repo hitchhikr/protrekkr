@@ -778,7 +778,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
                     Symbol = Events[i].key.keysym.sym;
 
                     Uni_Trans = Events[i].key.keysym.unicode;
-//                    if(Uni_Trans < 512)
+                    if(Uni_Trans < 512)
                     {
                         // This is only used for the digits on all systems
                         // (especially on kb configs where they can only
