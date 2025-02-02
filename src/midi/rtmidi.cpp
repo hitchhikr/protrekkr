@@ -1910,7 +1910,8 @@ void RtMidiOut :: sendMessage(std::vector<unsigned char> *message)
         snd_seq_ev_clear(&ev);
         snd_seq_ev_set_direct(&ev);
         
-        snd_seq_ev_set_source(&ev, data->vport);
+//        snd_seq_ev_set_source(&ev, data->vport);
+printf("%d %d\n", data->portNum, data->vport);
         snd_seq_ev_set_dest(&ev, data->portNum, data->vport);
         
         snd_seq_ev_set_subs(&ev);
