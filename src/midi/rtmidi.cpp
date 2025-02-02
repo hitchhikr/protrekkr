@@ -953,7 +953,7 @@ void RtMidiOut :: sendMessage(std::vector<unsigned char> *message)
         {
             printf("%d ", (int) dataStartPtr[i]);
         }
-        printf("\n");
+        printf("TEST %d %d\n", nBytes, remainingBytes);
         packet = MIDIPacketListAdd(packetList, listSize, packet, timeStamp, bytesForPacket, dataStartPtr);
         remainingBytes -= bytesForPacket;
         printf("REM %d\n", remainingBytes);
