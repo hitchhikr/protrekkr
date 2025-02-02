@@ -3941,6 +3941,7 @@ void Mouse_Right_Pattern_Ed(void)
 void Solo_Track(int track_to_solo)
 {
     // Unmute all if the user clicked on a solo track
+        printf("TEST? %d %d\n", Chan_Mute_State[track_to_solo], track_to_solo);
     if(Chan_Mute_State[track_to_solo] == 0)
     {
         int Was_Solo = FALSE;
