@@ -54,6 +54,7 @@ RtMidi :: RtMidi() : apiData_(0), connected_(false)
 
 void RtMidi :: error(RtError::Type type)
 {
+    printf("%s\n", errorString_);
 }
 
 //*********************************************************************//
@@ -1248,7 +1249,7 @@ extern "C" void *alsaMidiHandler(void *ptr)
     {
         free(buffer);
     }
-    snd_midi_event_free( apiData->coder );
+    snd_midi_event_free(apiData->coder);
     apiData->coder = 0;
     apiData->thread = apiData->dummy_thread_id;
     return 0;
@@ -1410,11 +1411,13 @@ void RtMidiIn :: openPort(unsigned int portNumber, char *portName)
                                    SND_SEQ_PORT_TYPE_MIDI_GENERIC |
                                    SND_SEQ_PORT_TYPE_APPLICATION);
         snd_seq_port_info_set_midi_channels(pinfo, 16);
+
 #ifndef AVOID_TIMESTAMPING
         snd_seq_port_info_set_timestamping(pinfo, 1);
         snd_seq_port_info_set_timestamp_real(pinfo, 1);    
         snd_seq_port_info_set_timestamp_queue(pinfo, data->queue_id);
 #endif
+
         snd_seq_port_info_set_name(pinfo, portName);
         data->vport = snd_seq_create_port(data->seq, pinfo);
   
@@ -1742,6 +1745,7 @@ void RtMidiOut :: initialize(char *clientName)
         return;
     }
     snd_midi_event_init(data->coder);
+    snd_midi_event_no_status(data->coder, 1);
     apiData_ = (void *) data;
 }
 
@@ -1776,47 +1780,69 @@ void RtMidiOut :: openPort(unsigned int portNumber, char *portName)
         return;
     }
 
+
+
+
     snd_seq_addr_t sender, receiver;
-    receiver.client = snd_seq_port_info_get_client(pinfo);
-    receiver.port = snd_seq_port_info_get_port(pinfo);
-    sender.client = snd_seq_client_id(data->seq);
+    sender.client = snd_seq_port_info_get_client(pinfo);
+    sender.port = snd_seq_port_info_get_port(pinfo);
+    receiver.client = snd_seq_client_id(data->seq);
 
     if(data->vport < 0)
     {
-        data->vport = snd_seq_create_simple_port(data->seq,
-                                                 portName,
-                                                 SND_SEQ_PORT_CAP_READ | SND_SEQ_PORT_CAP_SUBS_READ,
-                                                 SND_SEQ_PORT_TYPE_MIDI_GENERIC | SND_SEQ_PORT_TYPE_APPLICATION);
+        snd_seq_port_info_set_client(pinfo, 0);
+        snd_seq_port_info_set_port(pinfo, 0);
+        snd_seq_port_info_set_capability(pinfo,
+                                         SND_SEQ_PORT_CAP_WRITE |
+                                         SND_SEQ_PORT_CAP_SUBS_WRITE);
+        snd_seq_port_info_set_type(pinfo,
+                                   SND_SEQ_PORT_TYPE_MIDI_GENERIC |
+                                   SND_SEQ_PORT_TYPE_APPLICATION);
+        snd_seq_port_info_set_midi_channels(pinfo, 16);
+
+#ifndef AVOID_TIMESTAMPING
+        snd_seq_port_info_set_timestamping(pinfo, 1);
+        snd_seq_port_info_set_timestamp_real(pinfo, 1);    
+        snd_seq_port_info_set_timestamp_queue(pinfo, data->queue_id);
+#endif
+
+        snd_seq_port_info_set_name(pinfo, portName);
+        data->vport = snd_seq_create_port(data->seq, pinfo);
+  
         if(data->vport < 0)
         {
-            sprintf(errorString_, "RtMidiOut::openPort: ALSA error creating output port.");
+            sprintf(errorString_, "RtMidiIn::openPort: ALSA error making port connection.");
+            error(RtError::DRIVER_ERROR);
+            return;
+        }
+        data->vport = snd_seq_port_info_get_port(pinfo);
+    }
+
+    sender.port = data->vport;
+
+    if(!data->subscription)
+    {
+        // Make subscription
+        if(snd_seq_port_subscribe_malloc(&data->subscription) < 0)
+        {
+            sprintf(errorString_, "RtMidiIn::openPort: ALSA error allocation port subscription.");
+            error(RtError::DRIVER_ERROR);
+            return;
+        }
+        snd_seq_port_subscribe_set_sender(data->subscription, &sender);
+        snd_seq_port_subscribe_set_dest(data->subscription, &receiver);
+        snd_seq_port_subscribe_set_time_update(data->subscription, 1);
+        snd_seq_port_subscribe_set_time_real(data->subscription, 1);
+        if(snd_seq_subscribe_port(data->seq, data->subscription))
+        {
+            snd_seq_port_subscribe_free(data->subscription);
+            data->subscription = 0;
+            sprintf(errorString_, "RtMidiOut::openPort: ALSA error making port connection.");
             error(RtError::DRIVER_ERROR);
             return;
         }
     }
 
-    sender.port = data->vport;
-
-    // Make subscription
-    if(snd_seq_port_subscribe_malloc(&data->subscription) < 0)
-    {
-        snd_seq_port_subscribe_free( data->subscription );
-        sprintf(errorString_, "RtMidiOut::openPort: ALSA error allocating port subscription.");
-        error(RtError::DRIVER_ERROR);
-        return;
-    }
-    
-    snd_seq_port_subscribe_set_sender(data->subscription, &sender);
-    snd_seq_port_subscribe_set_dest(data->subscription, &receiver);
-    snd_seq_port_subscribe_set_time_update(data->subscription, 1);
-    snd_seq_port_subscribe_set_time_real(data->subscription, 1);
-    if(snd_seq_subscribe_port(data->seq, data->subscription))
-    {
-        snd_seq_port_subscribe_free(data->subscription);
-        sprintf(errorString_, "RtMidiOut::openPort: ALSA error making port connection.");
-        error(RtError::DRIVER_ERROR);
-        return;
-    }
     connected_ = true;
 }
 
