@@ -2,7 +2,7 @@
 // Protrekkr
 // Based on Juan Antonio Arguelles Rius's NoiseTrekker.
 //
-// Copyright (C) 2008-2024 Franck Charlet.
+// Copyright (C) 2008-2025 Franck Charlet.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -109,7 +109,7 @@ void config(HWND hwndParent)
 void about(HWND hwndParent)
 {
         MessageBox(hwndParent,"Protrekkr Modules Player v" VER_VER "." VER_REV "." VER_REVSMALL "\n\n"
-                              "(C) Copyright 2008-2024 Franck \"hitchhikr\" Charlet",
+                              "(C) Copyright 2008-2025 Franck \"hitchhikr\" Charlet",
                                   "About",
                                   MB_OK | MB_ICONINFORMATION);
 }

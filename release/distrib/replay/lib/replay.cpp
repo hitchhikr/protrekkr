@@ -2,7 +2,7 @@
 // Protrekkr
 // Based on Juan Antonio Arguelles Rius's NoiseTrekker.
 //
-// Copyright (C) 2008-2024 Franck Charlet.
+// Copyright (C) 2008-2025 Franck Charlet.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -47,6 +47,10 @@
 #include "../../../../src/midi/include/midi.h"
 #include "../../../../src/include/variables.h"
 #include "../../../../src/include/ptk.h"
+#endif
+
+#if defined(BZR2)
+#include <cstdio>
 #endif
 
 // ------------------------------------------------------
@@ -2266,7 +2270,7 @@ void Pre_Song_Init(void)
 
     glide = 0;
 
-#if !defined(__STAND_ALONE__)
+#if !defined(__STAND_ALONE__) || defined(BZR2)
     sprintf(artist, "Somebody");
     sprintf(style, "Anything Goes");
 #endif
