@@ -22,7 +22,7 @@
 *lame*
 *.o*
 *.obj*
-*.a*
+*.a
 *.lib*
 *.ptp*
 *.psm*
