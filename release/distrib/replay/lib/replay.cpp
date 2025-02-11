@@ -1293,7 +1293,7 @@ int STDCALL Ptk_InitDriver(void)
 
 #if defined(PTK_SYNTH_SAW)
         // There's a problem with fmodf->signed short in mingw here
-        temp_saw = (unsigned short) (fmodf(x / 360.0f, 64.0f) * 32767.0f) * 2.0f;
+        temp_saw = (unsigned short) ((fmodf(x / 360.0f, 64.0f) * 32767.0f) * 2.0f);
         *wav_saw++ = (short) (((float) (short) temp_saw));
 #endif
 
@@ -1302,7 +1302,7 @@ int STDCALL Ptk_InitDriver(void)
         {
             tri_carrier_step = -tri_carrier_step;
         }
-        *wav_tri++ = (short) ((((float) tri_carrier / 180.0f) + 0.5f) * 32767.0f) * 2.0f;
+        *wav_tri++ = (short) (((((float) tri_carrier / 180.0f) + 0.5f) * 32767.0f) * 2.0f);
         tri_carrier += tri_carrier_step;
 #endif
 

@@ -18,6 +18,7 @@ v2.8.2
 - Added a function hard sync OSC 1 to OSC 2.
 - Inserting or deleting a track wouldn't modify the other patterns data,
   only the current one.
+- Fixed a visual bug when changing colors (added Mute / Play color selector).
 
 v2.8.1
 
