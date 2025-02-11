@@ -14,6 +14,7 @@
 *haiku*
 *aos4*
 *windows*
+*mos*
 *.dsw*
 *.dsp*
 *.sln*
@@ -43,3 +44,8 @@
 *Debug*
 *release*
 *Release*
+*keyboards.txt*
+*kbde.txt*
+*kben.txt*
+*kbfr.txt*
+*dsound.h*

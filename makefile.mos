@@ -20,10 +20,10 @@ EXEOBJS = ptk.o \
           misc_draw.o draw_primitives.o requesters.o \
           samples_ops.o aiff.o riff.o \
           spline.o tb_303.o wavpack.o samples_unpack.o replay.o synth.o endianness.o \
-          sounddriver_aros.o draw_hline.o draw_pixel.o draw_vline.o
+          sounddriver_mos.o draw_hline.o draw_pixel.o draw_vline.o
 LIBOBJS = midi.o \
           spline.o tb_303.o wavpack.o samples_unpack.o replay.o synth.o endianness.o \
-          sounddriver_aros.o
+          sounddriver_mos.o
 
 all: protrekkr
 
@@ -176,7 +176,7 @@ synth.o: release/distrib/replay/lib/synth.cpp
 endianness.o: release/distrib/replay/lib/endianness.cpp
 	$(CXX) -c -o $(@) $(FLAGS) $<
 
-sounddriver_aros.o: release/distrib/replay/lib/sounddriver/sounddriver_aros.cpp
+sounddriver_mos.o: release/distrib/replay/lib/sounddriver/sounddriver_mos.cpp
 	$(CXX) -c -o $(@) $(FLAGS) $<
 	
 bits.o: src/samples/wavpack/bits.cpp

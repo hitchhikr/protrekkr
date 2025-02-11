@@ -2,7 +2,7 @@
    How to use:
 
    1. Copy the .ptp and the Ptk_Properties.h file into the "Replay" directory.
-   2. Edit the module.macosx file and replace the YOUR_MODULE.PTP with
+   2. Edit the module.macosx file and replace the module filename with
       the filename of your module file.
    3. Compile the replay routine (which will be fine tuned for your module).
    4. Compile this test example.

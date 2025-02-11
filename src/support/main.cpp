@@ -475,7 +475,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
     }
 
 #if defined(__USE_OPENGL__)
-    strcat(Window_Title, " - (OpenGL)");
+    strcat(Window_Title, " - (Using OpenGL)");
 #endif
 
     SDL_WM_SetCaption(Window_Title, NULL);
@@ -550,7 +550,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
         while(!Found_File)
         {
             CHDIR(ExePath);
-            FILE *Test_File = fopen("skins/keyboards.txt", "rb");
+            FILE *Test_File = fopen("skins/keyboards_macosx.txt", "rb");
             if(Test_File)
             {
                 Found_File = TRUE;
@@ -589,7 +589,12 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
     strcpy(Keyboards_FileName, ExePath);
     strcat(Keyboards_FileName, "/skins/");
 #endif
+
+#if defined(__MACOSX_PPC__) || defined(__MACOSX_X86__)
+    strcat(Keyboards_FileName, "keyboards_macosx.txt");
+#else
     strcat(Keyboards_FileName, "keyboards.txt");
+#endif
 
     AllKbsFile = fopen(Keyboards_FileName, "r");
     if(AllKbsFile != NULL)

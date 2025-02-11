@@ -11,6 +11,7 @@
 *haiku*
 *aos4*
 *windows*
+*mos*
 *.dsw*
 *.dsp*
 *.sln*
@@ -42,3 +43,4 @@
 *Debug*
 *release*
 *Release*
+*dsound.h*

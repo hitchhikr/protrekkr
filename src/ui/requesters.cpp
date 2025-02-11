@@ -446,6 +446,9 @@ void Kill_Requester(void)
 
     Current_Requester = NULL;
     Req_TimeOut = 0;
+    SetColor(COL_BLACK);
+    Fillrect(Pos_X, Pos_Y, Pos_X + Size_X + 1, Pos_Y + Size_Y + 1);
+
     Env_Change = TRUE;
     Mouse.button = 0;
     Mouse.button_oneshot = 0;

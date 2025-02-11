@@ -9,6 +9,7 @@
 *haiku*
 *aos4*
 *netbsd*
+*mos*
 *.o*
 *.obj*
 *.a

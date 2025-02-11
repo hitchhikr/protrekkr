@@ -335,7 +335,7 @@ char *Labels_Palette[] =
     "Note Sel Foregnd",
     "Track Off / Mute",
     "Track On / Play",
-    "Track Mute / Play"
+    "Track Head Foregnd"
 };
 
 // Real colors
