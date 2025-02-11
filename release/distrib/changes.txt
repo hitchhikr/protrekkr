@@ -2,7 +2,7 @@
 ProTrekkr releases history
 ===============================================================================
 
-v2.8.2
+v2.8.2 PRE 1
 
 - Patterns wouldn't scroll sometimes when starting to play, fixed.
 - Note volume from channels (volume columns and effects 03) are now handled
