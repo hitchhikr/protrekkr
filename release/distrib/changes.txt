@@ -18,7 +18,7 @@ v2.8.2 PRE 1
 - Added a function to hard sync OSC 1 to OSC 2.
 - Inserting or deleting a track didn't modify the other patterns data.
 - Fixed an ugly visual bug that occured when changing colors during playing.
-- Added Mute / Play color modifier.
+- Added tracks header foreground color modifier.
 
 v2.8.1
 
