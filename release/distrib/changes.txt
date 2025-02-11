@@ -17,7 +17,7 @@ v2.8.2
 - White noise is now twice as loud to be on par with other waveforms loudness.
 - Added a function to hard sync OSC 1 to OSC 2.
 - Inserting or deleting a track didn't modify the other patterns data.
-- Fixed an ugly visual bug when changing colors.
+- Fixed an ugly visual bug that occured when changing colors during playing.
 - Added Mute / Play color modifier.
 
 v2.8.1

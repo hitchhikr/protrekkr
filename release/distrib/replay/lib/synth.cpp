@@ -78,21 +78,21 @@ void CSynth::Reset(void)
     T_OSC_1_VOLUME = 0;
     T_OSC_2_VOLUME = 0;
 
-    Data.OSC_2_DETUNE = 0;        /* No Semitone Detune */
-    Data.OSC_2_FINETUNE = 0.1f;   /* 1/10 Semitone detune */
+    Data.OSC_2_DETUNE = 0;                  /* No Semitone Detune */
+    Data.OSC_2_FINETUNE = 0.1f;             /* 1/10 Semitone detune */
 
-    Data.VCF_CUTOFF = 0.5f;      /* 10000Hz Cutoff */
-    Data.VCF_RESONANCE = 0.5f;   /* Not very weird =] */
-    Data.VCF_TYPE = 0;           /* LowPass filter */
+    Data.VCF_CUTOFF = 0.5f;                 /* 10000Hz Cutoff */
+    Data.VCF_RESONANCE = 0.5f;              /* Not very weird =] */
+    Data.VCF_TYPE = 0;                      /* LowPass filter */
 
     Data.ENV_1_ATTACK = 0.0f;
     Data.ENV_1_DECAY = 0.1f;
-    Data.ENV_1_SUSTAIN = 0.3f;    /* Sustain volume at 1/3 */
+    Data.ENV_1_SUSTAIN = 0.3f;              /* Sustain volume at 1/3 */
     Data.ENV_1_RELEASE = 0.0f;
 
     Data.ENV_2_ATTACK = 0.0f;
     Data.ENV_2_DECAY = 0.1f;
-    Data.ENV_2_SUSTAIN = 0.3f;    /* Sustain volume at 1/3 */
+    Data.ENV_2_SUSTAIN = 0.3f;              /* Sustain volume at 1/3 */
     Data.ENV_2_RELEASE = 0.0f;
 
     Data.LFO_1_PERIOD = 16;

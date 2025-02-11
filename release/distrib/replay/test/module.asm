@@ -3,4 +3,4 @@
 
                 global  __PTK_MODULE
 
-__PTK_MODULE:   incbin  "303 test.ptp"
+__PTK_MODULE:   incbin  "1.ptp"

@@ -64,6 +64,7 @@ int Load_Ptk(char *FileName);
 int Calc_Length(void);
 int Alloc_Patterns_Pool(void);
 extern float mas_vol;
+extern int AUDIO_Samples;
 
 char modname[MAX_PATH];
 char artist[20];
@@ -116,6 +117,7 @@ void about(HWND hwndParent)
 
 // ------------------------------------------------------
 // Reset the channels polyphonies  to their default state
+// (imported from ptk.cpp)
 void Set_Default_Channels_Polyphony(void)
 {
     int i;
@@ -392,6 +394,8 @@ int get_576_samples(char *buf)
 {
     int l = 576 * NCH * (BPS / 8);
     Mixer((BYTE *) buf, l);
+    // We need that for the instruments scheduler
+    AUDIO_Samples += 576;
 
     return l;
 }

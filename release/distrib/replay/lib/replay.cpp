@@ -233,7 +233,7 @@ float delay_left_final;
 float delay_right_final;
 int PosInTick;
 
-#if !defined(__STAND_ALONE__) || defined(__WINAMP__)
+#if !defined(__STAND_ALONE__)
     char rawrender;
     char rawrender_32float;
     char rawrender_multi;
@@ -241,6 +241,9 @@ int PosInTick;
     int rawrender_range;
     int rawrender_from;
     int rawrender_to;
+#endif
+
+#if !defined(__STAND_ALONE__) || defined(__WINAMP__)
     float mas_vol = 1.0f;
 #else
     float mas_vol;

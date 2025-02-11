@@ -1666,7 +1666,7 @@ Uint8 *Pack_Data(Uint8 *Memory, int *Size)
     *Size = c_stream.total_out;
     return(Final_Mem_Out);
 }
-#endif // __WINAMP__
+#endif // !defined(__WINAMP__)
 
 // ------------------------------------------------------
 // Depack a compressed module
@@ -2218,7 +2218,7 @@ void Clear_Instrument_Dat(int n_index, int split, int lenfir)
         Synthprg[n_index] = SYNTH_WAVE_OFF;
         Beat_Sync[n_index] = FALSE;
 
-        // Internal is default compression
+        // Internal wavpack is default compression
 #if !defined(__WINAMP__)
         SampleCompression[n_index] = SMP_PACK_WAVPACK;
         SamplesSwap[n_index] = FALSE;

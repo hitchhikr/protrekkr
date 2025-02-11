@@ -5,7 +5,7 @@
 // Copyright (C) 2008-2025 Franck Charlet.
 // All rights reserved.
 //
-// This file is :
+// This file is:
 // Copyright (c) 1998-2007 Conifer Software.
 // All right reserved.
 //
