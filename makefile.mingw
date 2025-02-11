@@ -2,7 +2,7 @@ CXX = g++
 
 LIBS = -lopengl32 -lmingw32 -ldsound -lmsacm32 -lwinmm -lsdldraw -lz -lsdlmain -lSDL
 
-FLAGS = -g -mwindows -fno-strict-aliasing -Ofast -fno-rtti -fpermissive -Wno-write-strings -Wno-multichar -fexceptions -Lsrc/extralibs/sdl_draw -Lsrc/extralibs/zlib-1.2.3 \
+FLAGS = -g -mwindows -fsigned-char -fno-strict-aliasing -Ofast -fno-rtti -fpermissive -Wno-write-strings -Wno-multichar -fexceptions -Lsrc/extralibs/sdl_draw -Lsrc/extralibs/zlib-1.2.3 \
         -D G_OS_WIN32 -D __WIN32__ -D __GCC__ -D __WINDOWS_MM__ -D __MOT_SWAP__ \
         -D __MP3_CODEC__ -D __AT3_CODEC__ -D __GSM_CODEC__ -D __ADPCM_CODEC__ -D __TRUESPEECH_CODEC__
 

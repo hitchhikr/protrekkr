@@ -973,7 +973,7 @@ float absf(float x)
 __inline float denormal(float sample)
 {
     unsigned int isample;
-    
+
     *(unsigned int *) &isample = *(unsigned int *) &sample;
     unsigned int exponent = isample & 0x7F800000;
     int aNaN = exponent < 0x7F800000;
@@ -988,7 +988,7 @@ void ToFloat(int *dest, int val)
     *dest = val;
 }
 
-#if defined(__GCC__) && !(__MACOSX_X86__)
+#if defined(__GCC__) && !(__MACOSX_X86__) && !(__LINUX__)
 static __inline__ float FastFloor(float f)
 {
     float b, c, d, e, g, h, t;
@@ -1020,9 +1020,9 @@ float FastPow2(float x)
 	float result;
 
 	__asm__ volatile(
-		"mtv      %1, S000\n"
-		"vexp2.s  S000, S000\n"
-		"mfv      %0, S000\n"
+    "mtv      %1, S000\n"
+	"vexp2.s  S000, S000\n"
+	"mfv      %0, S000\n"
 	: "=r"(result) : "r"(x));
 	return result;
 }
@@ -1030,7 +1030,7 @@ float FastPow2(float x)
 float FastPow2(float i)
 {
 	float x;
-#if defined(__GCC__) && !(__MACOSX_X86__)
+#if defined(__GCC__) && !(__MACOSX_X86__) && !(__LINUX__)
     float y = i - FastFloor(i);
 #else
     float y = i - floorf(i);
@@ -1045,18 +1045,18 @@ float FastPow2(float i)
 
 float FastLog(float i)
 {
-	float x;
-	float y;
-	x = (float) (*(int *) &i);
-	x *= 1.0f / (1 << 23);
-	x = x - 127;
-#if defined(__GCC__) && !(__MACOSX_X86__)
+    float x;
+    float y;
+    x = (float) (*(int *) &i);
+    x *= 1.0f / (1 << 23);
+    x = x - 127;
+#if defined(__GCC__) && !(__MACOSX_X86__) && !(__LINUX__)
     y = x - FastFloor(x);
 #else
     y = x - floorf(x);
 #endif
     y = (y - y * y) * 0.346607f;
-	return x + y;
+    return x + y;
 }
 float FastPow(float a, float b)
 {
@@ -1123,7 +1123,6 @@ Uint32 STDCALL Mixer(Uint8 *Buffer, Uint32 Len)
                 }
                 break;
             }
-            
 #endif
 
             Get_Player_Values();

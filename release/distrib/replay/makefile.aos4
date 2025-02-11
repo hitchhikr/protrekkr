@@ -3,7 +3,7 @@ AS = as
 AR = ar
 STRIP = strip
 LIBS = -lptkreplay -lpthread
-FLAGS = -Ofast -mcpu=440fp -fomit-frame-pointer -fno-exceptions -fno-strict-aliasing -Wno-multichar -ffast-math -D __AMIGAOS4__ -D __BIG_ENDIAN__ -D __GCC__ \
+FLAGS = -Ofast -fsigned-char -mcpu=440fp -fomit-frame-pointer -fno-exceptions -fno-strict-aliasing -Wno-multichar -ffast-math -D __AMIGAOS4__ -D __BIG_ENDIAN__ -D __GCC__ \
         -D __MOT_SWAP__ -D __STAND_ALONE__
 EXEOBJS = test.o module.o
 

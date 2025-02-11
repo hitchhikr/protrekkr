@@ -313,7 +313,7 @@ void Load_Amiga_Mod(char *Name, const char *FileName, int channels, int digiboos
     int last_speed;
     int last_tempo;
 
-    char FineTune_Table[] =
+    int FineTune_Table[] =
     {
          0,   16,  32,  48,  64,  80,  96, 112,
        -112, -96, -80, -64, -48, -32, -24, -16

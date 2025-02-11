@@ -3,7 +3,7 @@ STRIP = ppc-morphos-strip
 
 LIBS = -noixemul -lSDL -I/usr/local/lib -lz_shared -lpthread -lGL -lc -lm
 
-FLAGS = -noixemul -Ofast -I/usr/local/include -w -fno-strict-aliasing -fomit-frame-pointer -ffast-math -fno-rtti -fno-exceptions -Lsrc/extralibs/sdl_draw  \
+FLAGS = -noixemul -Ofast -fsigned-char -I/usr/local/include -w -fno-strict-aliasing -fomit-frame-pointer -ffast-math -fno-rtti -fno-exceptions -Lsrc/extralibs/sdl_draw  \
 		-D__GCC__ -D__BIG_ENDIAN__ -D__MOT_SWAP__ -D__NO_MIDI__ -D__MORPHOS_SHAREDLIBS -DUSE_SDL_THREADS -D__AIFF__  \
 
 CXXFLAGS = $(FLAGS)

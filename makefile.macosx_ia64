@@ -4,7 +4,7 @@ LIBS_IA64 = -lsdldraw_ia64 -lz -framework CoreAudio -framework CoreMidi -framewo
 
 DEBUG = 
 
-FLAGS_IA64 = $(DEBUG) -O3 -arch x86_64 -ffast-math -fomit-frame-pointer -fno-rtti -I/opt/local/include \
+FLAGS_IA64 = $(DEBUG) -O3 -fsigned-char -arch x86_64 -ffast-math -fomit-frame-pointer -fno-rtti -I/opt/local/include \
             -fno-strict-aliasing -w -D __MACOSX_X86__ -D __GCC__ -D __MACOSX_CORE__ -D __MOT_SWAP__ -D __AIFF__
 
 EXEOBJS_IA64 = ptk_ia64.o \
