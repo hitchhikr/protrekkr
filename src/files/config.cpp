@@ -75,7 +75,7 @@ void Save_Config(void)
     char KeyboardName[MAX_PATH];
     signed char phony = -1;
 
-    sprintf(extension, "PROTCFGK");
+    sprintf(extension, "PROTCFGL");
     Status_Box("Saving 'ptk.cfg'...", FALSE);
 
     SET_FILENAME;
@@ -195,7 +195,9 @@ void Load_Config(void)
     int dbl = TRUE;
     int sliders = TRUE;
     int leading_z = TRUE;
+    int added_color = TRUE;
     int Real_Palette_Idx;
+    int Max_Colors;
     char FileName[MAX_PATH];
     char KeyboardName[MAX_PATH];
     signed char phony = -1;
@@ -214,24 +216,29 @@ void Load_Config(void)
 
         Read_Data(extension, sizeof(char), 9, in);
         ok_cfg = TRUE;
-        if(strcmp(extension, "PROTCFGK") != 0)
+
+        if(strcmp(extension, "PROTCFGL") != 0)
         {
-            leading_z = FALSE;
-            if(strcmp(extension, "PROTCFGJ") != 0)
+            added_color = FALSE;
+            if(strcmp(extension, "PROTCFGK") != 0)
             {
-                sliders = FALSE;
-                if(strcmp(extension, "PROTCFGI") != 0)
+                leading_z = FALSE;
+                if(strcmp(extension, "PROTCFGJ") != 0)
                 {
-                    dbl = FALSE;
-                    if(strcmp(extension, "PROTCFGH") != 0)
+                    sliders = FALSE;
+                    if(strcmp(extension, "PROTCFGI") != 0)
                     {
-                        if(strcmp(extension, "PROTCFGG") == 0)
+                        dbl = FALSE;
+                        if(strcmp(extension, "PROTCFGH") != 0)
                         {
-                            older_cfg = TRUE;
-                        }
-                        else
-                        {
-                            ok_cfg = FALSE;
+                            if(strcmp(extension, "PROTCFGG") == 0)
+                            {
+                                older_cfg = TRUE;
+                            }
+                            else
+                            {
+                                ok_cfg = FALSE;
+                            }
                         }
                     }
                 }
@@ -259,7 +266,12 @@ void Load_Config(void)
             Read_Data(&Rows_Decimal, sizeof(Rows_Decimal), 1, in);
             Read_Data(&FullScreen, sizeof(FullScreen), 1, in);
 
-            for(i = 0; i < NUMBER_COLORS; i++)
+            Max_Colors = OLD_NUMBER_COLORS;
+            if(added_color)
+            {
+                Max_Colors = NUMBER_COLORS;
+            }
+            for(i = 0; i < Max_Colors; i++)
             {
                 Real_Palette_Idx = Idx_Palette[i];
                 Read_Data(&Ptk_Palette[Real_Palette_Idx].r, sizeof(char), 1, in);

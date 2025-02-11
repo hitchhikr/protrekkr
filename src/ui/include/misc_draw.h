@@ -108,7 +108,8 @@
 
 #define COL_BLACK 58
 
-#define NUMBER_COLORS 20
+#define OLD_NUMBER_COLORS 20
+#define NUMBER_COLORS 21
 
 #define BUTTON_NORMAL 1
 #define BUTTON_PUSHED 2

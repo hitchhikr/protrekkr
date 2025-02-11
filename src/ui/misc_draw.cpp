@@ -103,6 +103,7 @@ char Use_Shadows = TRUE;
 char Status_Box_Text[MAX_PATH * 2];
 int Status_Box_Wait;
 int Status_Box_Wait_Done = 10;
+int Refreshing_Palette;
 
 extern int pattern_double;
 extern int Burn_Title;
@@ -333,35 +334,42 @@ char *Labels_Palette[] =
     "Note Hi Foregnd",
     "Note Sel Foregnd",
     "Track Off / Mute",
-    "Track On / Play"
+    "Track On / Play",
+    "Track Mute / Play"
 };
 
 // Real colors
 int Idx_Palette[] =
 {
-    1,
-    3,
-    6,
-    9,
-    12,
-    14,
-    15,
-    16,
-    17,
+    1,  // background
+    3,  // foreground
     
-    19,
-    20,
-    21,
-    22,
-    23,
-    24,
+    6,  // buttons
+    9,  // pushed button
+    12, // sliders
     
-    26,
-    28,
-    30,
+    14, // vumeter
+    15, // vumeter peak / caret
+    16, // scopes / samples
     
-    31,
-    32
+    17, // font hi
+    
+    19, // pattern lo background
+    20, // pattern lo foreground
+
+    21, // pattern hi background
+    22, // pattern hi foreground
+    
+    23, // pattern sel background
+    24, // pattern sel foreground
+    
+    26, // note lo foreground
+    28, // note hi foreground
+    30, // note sel foreground
+    
+    31, // mute
+    32, // play
+    33  // mute/play highlight
 };
 
 int Default_Beveled1 = 1;
@@ -369,26 +377,26 @@ SDL_Color Default_Palette1[] =
 {
     { 0x00, 0x00, 0x00, 0x00 },      // 0 lists/samples/vumeters background/sequencer (calculated)
 
-    { 0x00, 0x00, 0x00, 0x00 },      // 1
+    { 0x00, 0x00, 0x00, 0x00 },      // 1 background
 
     { 0x00, 0x00, 0x00, 0x00 },      // 2 static highlight (calculated)
-    { 0x4a, 0x58, 0x6c, 0x00 },      // 3
+    { 0x4a, 0x58, 0x6c, 0x00 },      // 3 foreground
     { 0x00, 0x00, 0x00, 0x00 },      // 4 (calculated)
 
     { 0x00, 0x00, 0x00, 0x00 },      // 5 interactive parts highlight (calculated)
-    { 0x3c, 0x62, 0x88, 0x00 },      // 6
+    { 0x3c, 0x62, 0x88, 0x00 },      // 6 button
     { 0x00, 0x00, 0x00, 0x00 },      // 7 (calculated)
 
     { 0x00, 0x00, 0x00, 0x00 },      // 8 pushed button highlight (calculated)
-    { 0x00, 0x34, 0x66, 0x00 },      // 9
+    { 0x00, 0x34, 0x66, 0x00 },      // 9 pushed button
     { 0x00, 0x00, 0x00, 0x00 },      // 10 (calculated)
 
     { 0x00, 0x00, 0x00, 0x00 },      // 11 slider highlight (calculated)
-    { 0x40, 0x4c, 0x7c, 0x00 },      // 12
+    { 0x40, 0x4c, 0x7c, 0x00 },      // 12 sliders
     { 0x00, 0x00, 0x00, 0x00 },      // 13 (calculated)
 
     { 0x10, 0xea, 0xb0, 0x00 },      // 14 vumeter
-    { 0xff, 0x88, 0x5e, 0x00 },      // 15 vumeter peak / Caret
+    { 0xff, 0x88, 0x5e, 0x00 },      // 15 vumeter peak / caret
     { 0x88, 0xd0, 0xff, 0x00 },      // 16 scopes / samples
 
     { 0xdc, 0xf2, 0xff, 0x00 },      // 17 Font hi
@@ -415,7 +423,7 @@ SDL_Color Default_Palette1[] =
     { 0xff, 0x4a, 0x00, 0x00 },      // 31 mute
     { 0x00, 0x92, 0xb4, 0x00 },      // 32 play
 
-    { 0xff, 0xff, 0xff, 0x00 },      // 33 mute/play highlight (fixed)
+    { 0xff, 0xff, 0xff, 0x00 },      // 33 mute/play highlight
 
     { 0x00, 0x00, 0x00, 0x00 },      // 34 Shadow Pattern lo background (calculated)
     { 0x00, 0x00, 0x00, 0x00 },      // 35 Shadow Pattern lo foreground (calculated)
@@ -3449,6 +3457,9 @@ void Set_Pictures_And_Palettes(int LogoPalette)
     unsigned char *Pix;
     int was_locked;
 
+    Refreshing_Palette = TRUE;
+    Lock_Audio_Thread();
+
     SDL_Palette *Pic_Palette;
     int min_idx = sizeof(Default_Palette2) / sizeof(SDL_Color);
 
@@ -3632,8 +3643,6 @@ void Set_Pictures_And_Palettes(int LogoPalette)
     Ptk_Palette[0].b = 0;
     UISetPalette(Ptk_Palette, 256);
 
-    Env_Change = TRUE;
-
     // Fill the surfaces
     Create_Pattern_font(PFONT, Temp_PFONT, 0, COL_PATTERN_LO_FORE, COL_PATTERN_SEL_FORE, COL_PATTERN_HI_FORE, 8);
     Create_Pattern_font(PFONT, Temp_LARGEPFONT, 15, COL_PATTERN_LO_FORE, COL_PATTERN_SEL_FORE, COL_PATTERN_HI_FORE, 8);
@@ -3701,6 +3710,9 @@ void Set_Pictures_And_Palettes(int LogoPalette)
     {
         Set_Pattern_Size();
     }
+
+    Refreshing_Palette = FALSE;
+    Unlock_Audio_Thread();
 }
 
 #if defined(__USE_OPENGL__)
