@@ -988,7 +988,7 @@ void ToFloat(int *dest, int val)
     *dest = val;
 }
 
-#if defined(__GCC__)
+#if defined(__GCC__) && !(__MACOSX_X86__)
 static __inline__ float FastFloor(float f)
 {
     float b, c, d, e, g, h, t;
