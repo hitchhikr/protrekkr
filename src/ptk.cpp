@@ -7427,7 +7427,7 @@ void Draw_Scope(void)
     if(Scopish == SCOPE_ZONE_SCOPE)
     {
         SetColor(COL_BACKGROUND);
-        Fillrect(394, 41, Cur_Width - 1, 180);
+        Fillrect(394, 42, Cur_Width - 1, 179);
 
         cur_pos_x = 0;
         if(Scopish_LeftRight)
