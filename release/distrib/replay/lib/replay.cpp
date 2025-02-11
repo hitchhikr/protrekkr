@@ -1000,7 +1000,11 @@ static __inline__ float FastFloor(float f)
 #if defined(__LINUX__)
     __asm__("" : "+mf" (d));
 #else
+#if defined(__AROS__)
+    __asm__("" : "+d" (d));
+#else
     __asm__("" : "+f" (d));
+#endif
 #endif
     d = d + c;
     g = f - d;
