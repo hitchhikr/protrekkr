@@ -195,6 +195,7 @@ int Load_Ptk(CustomFile customFile)
     int Track_Srnd = FALSE;
     int Long_Midi_Prg = FALSE;
     int Var_Disto = FALSE;
+    int Osc_Sync = FALSE;
     char Comp_Flag;
     int i;
     int j;
@@ -255,6 +256,8 @@ int Load_Ptk(CustomFile customFile)
 
         switch(extension[7])
         {
+            case 'U':
+                Osc_Sync = TRUE;
             case 'T':
                 extended_LFO = TRUE;
             case 'S':
@@ -534,9 +537,11 @@ Read_Mod_File:
             PARASynth[swrite].lfo_2_sustain = 128;
             PARASynth[swrite].lfo_2_release = 0x10000;
 
+            PARASynth[swrite].osc_sync = FALSE;
+
             Read_Synth_Params(Read_Mod_Data, Read_Mod_Data_Swap, in, swrite,
                               new_disto, New_adsr, Portable, Env_Modulation,
-                              New_Env, Ntk_Beta, Combine, Var_Disto);
+                              New_Env, Ntk_Beta, Combine, Var_Disto, Osc_Sync);
 
             // Fix some very old Ntk bugs
             if(PARASynth[swrite].lfo_1_period > 128) PARASynth[swrite].lfo_1_period = 128;
@@ -1776,7 +1781,7 @@ int Pack_Module(char *FileName)
     output = fopen(Temph, "wb");
     if(output)
     {
-        sprintf(extension, "PROTREKT");
+        sprintf(extension, "PROTREKU");
         Write_Data(extension, sizeof(char), 9, output);
         Write_Data_Swap(&Depack_Size, sizeof(int), 1, output);
         Write_Data(Final_Mem_Out, sizeof(char), Len, output);

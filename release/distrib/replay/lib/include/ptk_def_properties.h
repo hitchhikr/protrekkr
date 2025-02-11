@@ -103,6 +103,7 @@
 #define PTK_SYNTH_ENV_1_PITCH
 #define PTK_SYNTH_ENV_2_PITCH
 #define PTK_SYNTH_PITCH
+#define PTK_SYNTH_SYNC
 #define PTK_SYNTH_DISTO
 #define PTK_SYNTH_OSC_2
 #define PTK_SYNTH_OSC_3
@@ -115,7 +116,7 @@
 #define PTK_SYNTH_SAW
 #define PTK_SYNTH_PULSE
 #define PTK_SYNTH_WHITE
-#define PTK_SYNTH_PINK
+#define PTK_SYNTH_TRI
 #define PTK_GSM
 #define PTK_MP3
 #define PTK_AT3

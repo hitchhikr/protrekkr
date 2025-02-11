@@ -515,6 +515,7 @@ void Draw_Wave_PlayBack_Pos(void)
                 }
 
             } // If Stereo
+            Push_Update_Rect(WAVE_LEFT, (Cur_Height - 150), LARGE_SMP_VIEW + WAVE_LEFT + 1, (Cur_Height - 150) + SAMPLE_HEIGHT);
 
         } // IF CHECK SAMPLE
 

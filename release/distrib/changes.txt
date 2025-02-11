@@ -13,6 +13,11 @@ v2.8.2
 - Fixed the keyboard shortcuts on Mac OS.
 - Typos in the manual: Transpose to 1 octave higher shortcuts are
   LCTRL + K and LCTRL + LSHIFT + K.
+- Replaced pink noise with triangle waveform in synth 
+- White noise is now twice as loud to be on par with other waveforms loudness.
+- Added a function hard sync OSC 1 to OSC 2.
+- Inserting or deleting a track wouldn't modify the other patterns data,
+  only the current one.
 
 v2.8.1
 

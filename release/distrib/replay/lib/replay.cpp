@@ -893,21 +893,6 @@ int delay_time;
     unsigned char nPatterns;
 #endif
 
-#if defined(PTK_SYNTH_PINK)
-unsigned int dice[7];
-static unsigned long ctz[64] =
-{
-    6, 0, 1, 0, 2, 0, 1, 0,
-    3, 0, 1, 0, 2, 0, 1, 0,
-    4, 0, 1, 0, 2, 0, 1, 0,
-    3, 0, 1, 0, 2, 0, 1, 0,
-    5, 0, 1, 0, 2, 0, 1, 0,
-    3, 0, 1, 0, 2, 0, 1, 0,
-    4, 0, 1, 0, 2, 0, 1, 0,
-    3, 0, 1, 0, 2, 0, 1, 0,
-};
-#endif
-
 #if !defined(__STAND_ALONE__)
 #if !defined(__NO_MIDI__)
 extern int Midi_Notes_History[MAX_TRACKS][256];
@@ -1256,8 +1241,8 @@ int STDCALL Ptk_InitDriver(void)
 
 #if defined(PTK_SYNTH)
     // Create the stock waveforms
-    float incr = 1.0f / fMIX_RATE;
-    float stop = 2.0f;
+    float incr = 1.0f / 360.0f;
+    float stop = 1.0f;
     float x;
 
 #if defined(PTK_SYNTH_SAW)
@@ -1276,17 +1261,12 @@ int STDCALL Ptk_InitDriver(void)
     short *wav_pul = STOCK_PULSE;
 #endif
 
-#if defined(PTK_SYNTH_WHITE)
-    short *wav_wit = STOCK_WHITE;
-#endif
-
-#if defined(PTK_SYNTH_PINK)
-    short *wav_pin = STOCK_PINK;
-    unsigned int newrand;
-    unsigned int prevrand;
-    unsigned int k;
-    unsigned int seed = 0x12345678;
-    unsigned int total = 0;
+#if defined(PTK_SYNTH_TRI)
+    int tri_carrier;
+    int tri_carrier_step;
+    short *wav_tri = STOCK_TRI;
+    tri_carrier = 0;
+    tri_carrier_step = 1;
 #endif
 
 #if !defined(__STAND_ALONE__) || defined(__WINAMP__)
@@ -1302,11 +1282,9 @@ int STDCALL Ptk_InitDriver(void)
 #endif
 
     SIZE_WAVEFORMS = 0;
-    for(x = 0; x < (stop - incr / 2); x += incr)
+    for(x = 0; x < 360.0f; x += 1.0f)
     {
-        float value = (float) ((PI * 2.0f) * x);
-        //      float value2 = (float) ((PI * 2.0f) * (x * 2.0f));
-        //    value2 = sinf(value + sinf(value2));
+        float value = x * 0.0174532f;
 
 #if defined(PTK_SYNTH_PULSE)
         if(sinf(value) < 0.0f) *wav_pul++ = 32767;
@@ -1315,38 +1293,40 @@ int STDCALL Ptk_InitDriver(void)
 
 #if defined(PTK_SYNTH_SAW)
         // There's a problem with fmodf->signed short in mingw here
-        temp_saw = (unsigned short) (fmodf(x * 2.0f, 64.0f) * 32767.0f);
+        temp_saw = (unsigned short) (fmodf(x / 360.0f, 64.0f) * 32767.0f) * 2.0f;
         *wav_saw++ = (short) (((float) (short) temp_saw));
 #endif
 
-        //*wav_pul++ = (short) (value2 * 16384.0f);
-        //value = (float) ((PI * 2.0) * x);
-        //value2 = sinf(value + sinf(value));
-        //*wav_saw++ = (short) (value2 * 16384.0f);
+#if defined(PTK_SYNTH_TRI)
+        if((((int) x) % 180) == 0)
+        {
+            tri_carrier_step = -tri_carrier_step;
+        }
+        *wav_tri++ = (short) ((((float) tri_carrier / 180.0f) + 0.5f) * 32767.0f) * 2.0f;
+        tri_carrier += tri_carrier_step;
+#endif
 
 #if defined(PTK_SYNTH_SIN)
         *wav_sin++ = (unsigned short) (sinf(value) * 32767.0f);
 #endif
 
-#if defined(PTK_SYNTH_WHITE)
-        *wav_wit++ = (short) (rand() - 16384);
-#endif
-
-#if defined(PTK_SYNTH_PINK)
-        // McCartney pink noise generator
-        k = ctz[SIZE_WAVEFORMS & 63];
-        prevrand = dice[k];
-        seed = 1664525 * seed + 1013904223;
-        newrand = seed >> 3;
-        dice[k] = newrand;
-        total += (newrand - prevrand);
-        seed = 1103515245 * seed + 12345;
-        newrand = seed >> 3;
-        *wav_pin++ = (short) ((((total + newrand) * (1.0f / (3 << 29)) - 1) - .25f) * 16384.0f);
-#endif
-
         SIZE_WAVEFORMS++;
     }
+
+#if defined(PTK_SYNTH_WHITE)
+    short *wav_wit = STOCK_WHITE;
+    int carrier;
+    
+    incr = 1.0f / fMIX_RATE;
+    stop = 2.0f;
+    carrier = 0;
+
+    for(x = 0; x < (stop - incr / 2); x += incr)
+    {
+        *wav_wit++ = (short) (rand() - 16384) * 2;
+    }
+#endif
+
 #endif // PTK_SYNTH
 
     // Initializing work SINETABLE
@@ -4353,6 +4333,7 @@ void Schedule_Instrument(int channel,
         Instrument_Schedule_Dat[channel][sub_channel].inote = inote;
         Instrument_Schedule_Dat[channel][sub_channel].sample = sample;
         Instrument_Schedule_Dat[channel][sub_channel].vol = Sample_Vol[sample] * vol;
+
 #if defined(PTK_SYNTH)
 #if defined(__STAND_ALONE__) && !defined(__WINAMP__)
         Instrument_Schedule_Dat[channel][sub_channel].vol_synth = PARASynth[sample].GLB_VOLUME * vol;
@@ -4360,11 +4341,12 @@ void Schedule_Instrument(int channel,
         Instrument_Schedule_Dat[channel][sub_channel].vol_synth = (PARASynth[sample].glb_volume * 0.0078125f) * vol;
 #endif
 #endif
+
         Instrument_Schedule_Dat[channel][sub_channel].offset = offset;
         Instrument_Schedule_Dat[channel][sub_channel].glide = glide;
         Instrument_Schedule_Dat[channel][sub_channel].Play_Selection = Play_Selection;
         Instrument_Schedule_Dat[channel][sub_channel].midi_sub_channel = midi_sub_channel;
-        Instrument_Schedule_Dat[channel][sub_channel].age = (Pos << 8) | Row;
+        Instrument_Schedule_Dat[channel][sub_channel].age = AUDIO_GetSamples();
 
         sp_Cvol_Ramp_Dest[channel][sub_channel] = 10.0f;
 
@@ -4403,7 +4385,6 @@ void Play_Instrument(int channel, int sub_channel)
     int associated_sample;
     int no_retrig_adsr = FALSE;
     int no_retrig_note = FALSE;
-
 
     channel_vol = sp_Tvol_Mod[channel];
     Cur_Position = Song_Position;
@@ -4457,6 +4438,7 @@ void Play_Instrument(int channel, int sub_channel)
 
         if(associated_sample != 255)
         {
+
 #if defined(PTK_INSTRUMENTS)
             for(int revo = 0; revo < MAX_INSTRS_SPLITS; revo++)
             {
@@ -4481,6 +4463,7 @@ void Play_Instrument(int channel, int sub_channel)
 #if defined(PTK_SYNTH_OSC_3)
                         sp_Position_osc_3[channel][sub_channel].absolu = 0;
 #endif
+
                     }
 
                 }
@@ -4524,11 +4507,13 @@ void Play_Instrument(int channel, int sub_channel)
                 }
                 if(Synthprg[sample])
                 {
+
 #if defined(__STAND_ALONE__) && !defined(__WINAMP__)
                     Synthesizer[channel][sub_channel].ChangeParameters(&PARASynth[sample]);
 #else
                     Synthesizer[channel][sub_channel].ChangeParameters(PARASynth[sample]);
 #endif
+
                     Synthesizer[channel][sub_channel].NoteOn(note2,
                                                              vol,
                                                              LoopType[associated_sample][split],
@@ -7064,6 +7049,7 @@ void Reset_Synth_Parameters(Synth_Parameters *TSP)
     TSP->osc_1_waveform = WAVEFORM_SAW;
     TSP->osc_2_waveform = WAVEFORM_PULSE;
     TSP->osc_combine = COMBINE_ADD;
+    TSP->osc_sync = FALSE;
     TSP->osc_1_pw = 256;
 
     TSP->osc_2_pw = 256;
@@ -7486,7 +7472,8 @@ void Set_Spline_Boundaries(unsigned int Position,
                            unsigned int LoopWay,
                            unsigned int Length,
                            unsigned int LoopEnd,
-                           unsigned int LoopStart)
+                           unsigned int LoopStart
+                          )
 {
     Boundaries[0] = Position;
     Boundaries[3] = 0;

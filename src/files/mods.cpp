@@ -609,7 +609,7 @@ void Load_Amiga_Mod(char *Name, const char *FileName, int channels, int digiboos
                 }
 
                 Sample_Amplify[swrite][0] = 0.5f;
-                Basenote[swrite][0] = DEFAULT_BASE_NOTE - 5 + 12 + 12 + 12 + 12 - 2;
+                Basenote[swrite][0] = DEFAULT_BASE_NOTE - 7 + 12 + 12 + 12 + 12;
                 if(LoopEnd[swrite][0] > 2)
                 {
                     LoopEnd[swrite][0] = LoopStart[swrite][0] + LoopEnd[swrite][0];

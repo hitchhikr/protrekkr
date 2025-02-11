@@ -249,7 +249,7 @@ typedef struct
     int Play_Selection;
     int midi_sub_channel;
     int start_backward;
-    int age;
+    float age;
 } INSTR_SCHEDULE, *LPINSTR_SCHEDULE;
 
 typedef struct

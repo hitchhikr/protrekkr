@@ -296,7 +296,7 @@ void DrawHLine(int y, int x1, int x2, int Color)
     Draw_HLine_(x1, y, (x2 - x1) + 1, Color);
 #else
     Draw_HLine(Main_Screen, x1, y, x2, Color);
-    Push_Update_Rect(x1, y, x2 - x1, y + 1);
+  //  Push_Update_Rect(x1, y, x2 - x1, y + 1);
 #endif
 
 }
@@ -310,7 +310,7 @@ void DrawVLine(int x, int y1, int y2, int Color)
     Draw_VLine_(x, y1, (y2 - y1) + 1, Color);
 #else
     Draw_VLine(Main_Screen, x, y1, y2, Color);
-    Push_Update_Rect(x, y1, x + 1, y2 - y1);
+//    Push_Update_Rect(x, y1, x + 1, y2 - y1);
 #endif
 
 }

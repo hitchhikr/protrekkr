@@ -48,6 +48,7 @@
 #define WAVEFORM_NONE 4
 #define WAVEFORM_WAV 5
 #define WAVEFORM_PINK 6
+#define WAVEFORM_TRI 6
 
 #define COMBINE_ADD 0
 #define COMBINE_SUB 1
@@ -79,6 +80,15 @@ extern float SIN[360];
 /* Struct used to store/update synthesizer parameters */
 
 #if !defined(__STAND_ALONE__) || defined(__WINAMP__)
+
+#if defined(__STAND_ALONE__) && !defined(__WINAMP__)
+    #if !defined(__GCC__)
+    #pragma pack(push)
+    #pragma pack(1)
+    #else
+    #pragma pack(push, 1)
+    #endif
+#endif
 
 struct Synth_Parameters
 {
@@ -173,7 +183,13 @@ struct Synth_Parameters
     unsigned char lfo_2_disto;
     unsigned char env_1_disto;
     unsigned char env_2_disto;
+
+    unsigned char osc_sync;
 };
+
+#if defined(__STAND_ALONE__) && !defined(__WINAMP__)
+    #pragma pack(pop)
+#endif
 
 #endif      // !defined(__STAND_ALONE__) || defined(__WINAMP__)
 
@@ -198,8 +214,8 @@ extern short STOCK_PULSE[SIZE_WAVEFORMS_SPACE];
 extern short STOCK_WHITE[SIZE_WAVEFORMS_SPACE];
 #endif
 
-#if defined(PTK_SYNTH_PINK)
-    extern short STOCK_PINK[SIZE_WAVEFORMS_SPACE];
+#if defined(PTK_SYNTH_TRI)
+extern short STOCK_TRI[SIZE_WAVEFORMS_SPACE];
 #endif
 
 extern int SIZE_WAVEFORMS;
@@ -300,6 +316,7 @@ typedef struct
         float LFO_2_RELEASE;
 
         char OSC_COMBINE;
+        char OSC_SYNC;
 } SYNTH_DATA, *LPSYNTH_DATA;
 
 #if defined(__STAND_ALONE__) && !defined(__WINAMP__)
@@ -481,8 +498,8 @@ class CSynth
         float sbuf0R;
         float sbuf1R;
 
-        float GS_VAL;
-        float GS_VAL2;
+        float GS_VAL_L;
+        float GS_VAL_R;
 };
 
 #endif // PTK_SYNTH

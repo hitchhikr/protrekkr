@@ -301,7 +301,7 @@ void Actualize_Synth_Ed(char gode)
             Gui_Draw_Button_Box(49, (Cur_Height - 95) - 1, 23, 16, "saw", Allow_Button | BUTTON_TEXT_CENTERED);
             Gui_Draw_Button_Box(74, (Cur_Height - 95) - 1, 23, 16, "pul", Allow_Button | BUTTON_TEXT_CENTERED);
             Gui_Draw_Button_Box(99, (Cur_Height - 95) - 1, 23, 16, "whit", Allow_Button | BUTTON_TEXT_CENTERED);
-            Gui_Draw_Button_Box(124, (Cur_Height - 95) - 1, 23, 16, "pink", Allow_Button | BUTTON_TEXT_CENTERED);
+            Gui_Draw_Button_Box(124, (Cur_Height - 95) - 1, 23, 16, "tri", Allow_Button | BUTTON_TEXT_CENTERED);
             Gui_Draw_Button_Box(149, (Cur_Height - 95) - 1, 23, 16, "instr", Allow_Button | BUTTON_TEXT_CENTERED);
             Gui_Draw_Button_Box(174, (Cur_Height - 95) - 1, 23, 16, "off", Allow_Button | BUTTON_TEXT_CENTERED);
             switch(PARASynth[Current_Instrument].osc_1_waveform)
@@ -310,7 +310,7 @@ void Actualize_Synth_Ed(char gode)
                 case 1:Gui_Draw_Button_Box(49, (Cur_Height - 95) - 1, 23, 16, "saw", Allow_Button_Pushed | BUTTON_TEXT_CENTERED); break;
                 case 2:Gui_Draw_Button_Box(74, (Cur_Height - 95) - 1, 23, 16, "pul", Allow_Button_Pushed | BUTTON_TEXT_CENTERED); break;
                 case 3:Gui_Draw_Button_Box(99, (Cur_Height - 95) - 1, 23, 16, "whit", Allow_Button_Pushed | BUTTON_TEXT_CENTERED); break;
-                case 6:Gui_Draw_Button_Box(124, (Cur_Height - 95) - 1, 23, 16, "pink", Allow_Button_Pushed | BUTTON_TEXT_CENTERED); break;
+                case 6:Gui_Draw_Button_Box(124, (Cur_Height - 95) - 1, 23, 16, "tri", Allow_Button_Pushed | BUTTON_TEXT_CENTERED); break;
                 case 5:Gui_Draw_Button_Box(149, (Cur_Height - 95) - 1, 23, 16, "instr", Allow_Button_Pushed | BUTTON_TEXT_CENTERED); break;
                 case 4:Gui_Draw_Button_Box(174, (Cur_Height - 95) - 1, 23, 16, "off", Allow_Button_Pushed | BUTTON_TEXT_CENTERED); break;
             }
@@ -324,7 +324,7 @@ void Actualize_Synth_Ed(char gode)
             Gui_Draw_Button_Box(49, (Cur_Height - 41) - 1, 23, 16, "saw", Allow_Button | BUTTON_TEXT_CENTERED);
             Gui_Draw_Button_Box(74, (Cur_Height - 41) - 1, 23, 16, "pul", Allow_Button | BUTTON_TEXT_CENTERED);
             Gui_Draw_Button_Box(99, (Cur_Height - 41) - 1, 23, 16, "whit", Allow_Button | BUTTON_TEXT_CENTERED);
-            Gui_Draw_Button_Box(124, (Cur_Height - 41) - 1, 23, 16, "pink", Allow_Button | BUTTON_TEXT_CENTERED);
+            Gui_Draw_Button_Box(124, (Cur_Height - 41) - 1, 23, 16, "tri", Allow_Button | BUTTON_TEXT_CENTERED);
             Gui_Draw_Button_Box(149, (Cur_Height - 41) - 1, 23, 16, "instr", Allow_Button | BUTTON_TEXT_CENTERED);
             Gui_Draw_Button_Box(174, (Cur_Height - 41) - 1, 23, 16, "off", Allow_Button | BUTTON_TEXT_CENTERED);
             switch(PARASynth[Current_Instrument].osc_2_waveform)
@@ -333,7 +333,7 @@ void Actualize_Synth_Ed(char gode)
                 case 1: Gui_Draw_Button_Box(49, (Cur_Height - 41) - 1, 23, 16, "saw", Allow_Button_Pushed | BUTTON_TEXT_CENTERED); break;
                 case 2: Gui_Draw_Button_Box(74, (Cur_Height - 41) - 1, 23, 16, "pul", Allow_Button_Pushed | BUTTON_TEXT_CENTERED); break;
                 case 3: Gui_Draw_Button_Box(99, (Cur_Height - 41) - 1, 23, 16, "whit", Allow_Button_Pushed | BUTTON_TEXT_CENTERED); break;
-                case 6: Gui_Draw_Button_Box(124, (Cur_Height - 41) - 1, 23, 16, "pink", Allow_Button_Pushed | BUTTON_TEXT_CENTERED); break;
+                case 6: Gui_Draw_Button_Box(124, (Cur_Height - 41) - 1, 23, 16, "tri", Allow_Button_Pushed | BUTTON_TEXT_CENTERED); break;
                 case 5: Gui_Draw_Button_Box(149, (Cur_Height - 41) - 1, 23, 16, "instr", Allow_Button_Pushed | BUTTON_TEXT_CENTERED); break;
                 case 4: Gui_Draw_Button_Box(174, (Cur_Height - 41) - 1, 23, 16, "off", Allow_Button_Pushed | BUTTON_TEXT_CENTERED); break;
             }
@@ -355,7 +355,6 @@ void Actualize_Synth_Ed(char gode)
                 case COMBINE_DIV: Gui_Draw_Button_Box(4, (Cur_Height - 95) - 1 + (18 * 3), 17, 16, "/", Allow_Button_Pushed | BUTTON_TEXT_CENTERED); break;
             }
         }
-
 
         // Instrument number
         if(gode == UPDATE_SYNTH_ED_ALL || gode == UPDATE_SYNTH_ED_VALUES)
@@ -619,6 +618,20 @@ void Actualize_Synth_Ed(char gode)
                     Gui_Draw_Button_Box(349 + 18, (Cur_Height - 150), 64, 16, "Moog Band", Allow_Button | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
                     break;
             }
+        }
+
+        if(gode == UPDATE_SYNTH_ED_ALL ||
+           gode == UPDATE_SYNTH_ED_SYNC)
+        {
+            if(PARASynth[Current_Instrument].osc_sync)
+            {
+                Gui_Draw_Button_Box(208, (Cur_Height - 41) - 1, 30, 16, "Sync", Allow_Button_Pushed | BUTTON_TEXT_CENTERED);
+            }
+            else
+            {
+                Gui_Draw_Button_Box(208, (Cur_Height - 41) - 1, 30, 16, "Sync", Allow_Button | BUTTON_TEXT_CENTERED);
+            }
+
         }
     }
 }
@@ -1063,6 +1076,7 @@ void Mouse_Left_Synth_Ed(void)
 {
     if(userscreen == USER_SCREEN_SYNTH_EDIT)
     {
+        // Select
         if(Check_Mouse(228, (Cur_Height - 150), 17, 16))
         {
             if(Synthprg[Current_Instrument])
@@ -1081,290 +1095,299 @@ void Mouse_Left_Synth_Ed(void)
             teac = UPDATE_SYNTH_ED_ALL;
             gui_action = GUI_CMD_UPDATE_SYNTH_ED;
         }
+    }
+
+    if(userscreen == USER_SCREEN_SYNTH_EDIT && Allow_All)
+    {
+        // Save the data
+        if(Check_Mouse(758, (Cur_Height - 150), 34, 16))
+        {
+            if(File_Exist_Req("%s" SLASH "%s.pts", Dir_Presets, PARASynth[Current_Instrument].Preset_Name))
+            {
+                Display_Requester(&Overwrite_Requester, GUI_CMD_SAVE_SYNTH, NULL, TRUE);
+            }
+            else
+            {
+                gui_action = GUI_CMD_SAVE_SYNTH;
+            }
         }
 
-        if(userscreen == USER_SCREEN_SYNTH_EDIT && Allow_All)
+        // Start synth name input
+        if(Check_Mouse(592, (Cur_Height - 150), 164, 16) && snamesel == INPUT_NONE)
         {
-            // Save the data
-            if(Check_Mouse(758, (Cur_Height - 150), 34, 16))
-            {
-                if(File_Exist_Req("%s" SLASH "%s.pts", Dir_Presets, PARASynth[Current_Instrument].Preset_Name))
-                {
-                    Display_Requester(&Overwrite_Requester, GUI_CMD_SAVE_SYNTH, NULL, TRUE);
-                }
-                else
-                {
-                    gui_action = GUI_CMD_SAVE_SYNTH;
-                }
-            }
+            snamesel = INPUT_SYNTH_NAME;
+            strcpy(cur_input_name, PARASynth[Current_Instrument].Preset_Name);
+            namesize = 0;
+            sprintf(PARASynth[Current_Instrument].Preset_Name, "");
+            teac = UPDATE_SYNTH_CHANGE_NAME;
+            gui_action = GUI_CMD_UPDATE_SYNTH_ED;
+        }
 
-            // Start synth name input
-            if(Check_Mouse(592, (Cur_Height - 150), 164, 16) && snamesel == INPUT_NONE)
-            {
-                snamesel = INPUT_SYNTH_NAME;
-                strcpy(cur_input_name, PARASynth[Current_Instrument].Preset_Name);
-                namesize = 0;
-                sprintf(PARASynth[Current_Instrument].Preset_Name, "");
-                teac = UPDATE_SYNTH_CHANGE_NAME;
-                gui_action = GUI_CMD_UPDATE_SYNTH_ED;
-            }
+        if(Check_Mouse(254, (Cur_Height - 131) - 1, 34, 16)) Rand_OSC_1();
+        if(Check_Mouse(254, (Cur_Height - 77) - 1, 34, 16)) Rand_OSC_2();
+        if(Check_Mouse(506, (Cur_Height - 131) - 1, 34, 16)) Rand_VCF();
+        if(Check_Mouse(506, (Cur_Height - 95) - 1, 34, 16)) Rand_LFO_1();
+        if(Check_Mouse(506, (Cur_Height - 59) - 1, 34, 16)) Rand_LFO_2();
+        if(Check_Mouse(755, (Cur_Height - 131) - 1, 34, 16)) Rand_ENV_1();
+        if(Check_Mouse(755, (Cur_Height - 95) - 1, 34, 16)) Rand_ENV_2();
+        if(Check_Mouse(755, (Cur_Height - 59) - 1, 34, 16)) Rand_Misc();
 
-            if(Check_Mouse(254, (Cur_Height - 131) - 1, 34, 16)) Rand_OSC_1();
-            if(Check_Mouse(254, (Cur_Height - 77) - 1, 34, 16)) Rand_OSC_2();
-            if(Check_Mouse(506, (Cur_Height - 131) - 1, 34, 16)) Rand_VCF();
-            if(Check_Mouse(506, (Cur_Height - 95) - 1, 34, 16)) Rand_LFO_1();
-            if(Check_Mouse(506, (Cur_Height - 59) - 1, 34, 16)) Rand_LFO_2();
-            if(Check_Mouse(755, (Cur_Height - 131) - 1, 34, 16)) Rand_ENV_1();
-            if(Check_Mouse(755, (Cur_Height - 95) - 1, 34, 16)) Rand_ENV_2();
-            if(Check_Mouse(755, (Cur_Height - 59) - 1, 34, 16)) Rand_Misc();
+        Check_Sliders_Arrows(1);
 
-            Check_Sliders_Arrows(1);
+        Check_Parameters_Arrows(1);
 
-            Check_Parameters_Arrows(1);
+        // Center OSC_1
+        if(Check_Mouse(272, (Cur_Height - 113) - 1, 16, 16))
+        {
+            if(Allow_Phase_Distortion_OSC_1 || Pos_Tbl_Synth_OSC_1 != 0)
+            {
+                Center_SynthParam_OSC_1();
+                gui_action = GUI_CMD_UPDATE_SYNTH_ED;
+                teac = UPDATE_SYNTH_ED_OSC_1_PARAMS;
+            }
+        }  
 
-            // Center OSC_1
-            if(Check_Mouse(272, (Cur_Height - 113) - 1, 16, 16))
+        // Center OSC_2
+        if(Check_Mouse(272, (Cur_Height - 59) - 1, 16, 16))
+        {
+            if(Allow_Phase_Distortion_OSC_2 || Pos_Tbl_Synth_OSC_2 != 0)
             {
-                if(Allow_Phase_Distortion_OSC_1 || Pos_Tbl_Synth_OSC_1 != 0)
-                {
-                    Center_SynthParam_OSC_1();
-                    gui_action = GUI_CMD_UPDATE_SYNTH_ED;
-                    teac = UPDATE_SYNTH_ED_OSC_1_PARAMS;
-                }
-            }  
+                Center_SynthParam_OSC_2();
+                gui_action = GUI_CMD_UPDATE_SYNTH_ED;
+                teac = UPDATE_SYNTH_ED_OSC_2_PARAMS;
+            }
+        }  
 
-            // Center OSC_2
-            if(Check_Mouse(272, (Cur_Height - 59) - 1, 16, 16))
-            {
-                if(Allow_Phase_Distortion_OSC_2 || Pos_Tbl_Synth_OSC_2 != 0)
-                {
-                    Center_SynthParam_OSC_2();
-                    gui_action = GUI_CMD_UPDATE_SYNTH_ED;
-                    teac = UPDATE_SYNTH_ED_OSC_2_PARAMS;
-                }
-            }  
+        // Center VCF
+        if(Check_Mouse(524, (Cur_Height - 113) - 1, 16, 16))
+        {
+            Center_SynthParam_VCF();
+            gui_action = GUI_CMD_UPDATE_SYNTH_ED;
+            teac = UPDATE_SYNTH_ED_VCF_PARAMS;
+        }  
 
-            // Center VCF
-            if(Check_Mouse(524, (Cur_Height - 113) - 1, 16, 16))
+        // Center LFO_1
+        if(Check_Mouse(524, (Cur_Height - 77) - 1, 16, 16))
+        {
+            if(!Allow_Phase_Distortion_OSC_1 && (Pos_Tbl_Synth_LFO_1 == 1) ||
+               !Allow_Phase_Distortion_OSC_2 && (Pos_Tbl_Synth_LFO_1 == 2))
             {
-                Center_SynthParam_VCF();
+            }
+            else
+            {
+                Center_SynthParam_LFO_1();
                 gui_action = GUI_CMD_UPDATE_SYNTH_ED;
-                teac = UPDATE_SYNTH_ED_VCF_PARAMS;
-            }  
+                teac = UPDATE_SYNTH_ED_LFO_1_PARAMS;
+            }
+        }  
 
-            // Center LFO_1
-            if(Check_Mouse(524, (Cur_Height - 77) - 1, 16, 16))
+        // Center LFO_2
+        if(Check_Mouse(524, (Cur_Height - 41) - 1, 16, 16))
+        {
+            if(!Allow_Phase_Distortion_OSC_1 && (Pos_Tbl_Synth_LFO_2 == 1) ||
+               !Allow_Phase_Distortion_OSC_2 && (Pos_Tbl_Synth_LFO_2 == 2))
             {
-                if(!Allow_Phase_Distortion_OSC_1 && (Pos_Tbl_Synth_LFO_1 == 1) ||
-                   !Allow_Phase_Distortion_OSC_2 && (Pos_Tbl_Synth_LFO_1 == 2))
-                {
-                }
-                else
-                {
-                    Center_SynthParam_LFO_1();
-                    gui_action = GUI_CMD_UPDATE_SYNTH_ED;
-                    teac = UPDATE_SYNTH_ED_LFO_1_PARAMS;
-                }
-            }  
+            }
+            else
+            {
+                Center_SynthParam_LFO_2();
+                gui_action = GUI_CMD_UPDATE_SYNTH_ED;
+                teac = UPDATE_SYNTH_ED_LFO_2_PARAMS;
+            }
+        }  
 
-            // Center LFO_2
-            if(Check_Mouse(524, (Cur_Height - 41) - 1, 16, 16))
+        // Center ENV_1
+        if(Check_Mouse(776, (Cur_Height - 113) - 1, 16, 16))
+        {
+            if(!Allow_Phase_Distortion_OSC_1 && (Pos_Tbl_Synth_ENV_1 == 0) ||
+               !Allow_Phase_Distortion_OSC_2 && (Pos_Tbl_Synth_ENV_1 == 1))
             {
-                if(!Allow_Phase_Distortion_OSC_1 && (Pos_Tbl_Synth_LFO_2 == 1) ||
-                   !Allow_Phase_Distortion_OSC_2 && (Pos_Tbl_Synth_LFO_2 == 2))
-                {
-                }
-                else
-                {
-                    Center_SynthParam_LFO_2();
-                    gui_action = GUI_CMD_UPDATE_SYNTH_ED;
-                    teac = UPDATE_SYNTH_ED_LFO_2_PARAMS;
-                }
-            }  
+            }
+            else
+            {
+                Center_SynthParam_ENV_1();
+                gui_action = GUI_CMD_UPDATE_SYNTH_ED;
+                teac = UPDATE_SYNTH_ED_ENV_1_PARAMS;
+            }
+        }  
 
-            // Center ENV_1
-            if(Check_Mouse(776, (Cur_Height - 113) - 1, 16, 16))
+        // Center ENV_2
+        if(Check_Mouse(776, (Cur_Height - 77) - 1, 16, 16))
+        {
+            if(!Allow_Phase_Distortion_OSC_1 && (Pos_Tbl_Synth_ENV_2 == 0) ||
+               !Allow_Phase_Distortion_OSC_2 && (Pos_Tbl_Synth_ENV_2 == 1))
             {
-                if(!Allow_Phase_Distortion_OSC_1 && (Pos_Tbl_Synth_ENV_1 == 0) ||
-                   !Allow_Phase_Distortion_OSC_2 && (Pos_Tbl_Synth_ENV_1 == 1))
-                {
-                }
-                else
-                {
-                    Center_SynthParam_ENV_1();
-                    gui_action = GUI_CMD_UPDATE_SYNTH_ED;
-                    teac = UPDATE_SYNTH_ED_ENV_1_PARAMS;
-                }
-            }  
+            }
+            else
+            {
+                Center_SynthParam_ENV_2();
+                gui_action = GUI_CMD_UPDATE_SYNTH_ED;
+                teac = UPDATE_SYNTH_ED_ENV_2_PARAMS;
+            }
+        }  
 
-            // Center ENV_2
-            if(Check_Mouse(776, (Cur_Height - 77) - 1, 16, 16))
+        // Center Misc
+        if(Check_Mouse(776, (Cur_Height - 41) - 1, 16, 16))
+        {
+            if((Allow_Phase_Distortion_OSC_1 || Allow_Phase_Distortion_OSC_2) ||
+               Pos_Tbl_Synth_Misc > 0)
             {
-                if(!Allow_Phase_Distortion_OSC_1 && (Pos_Tbl_Synth_ENV_2 == 0) ||
-                   !Allow_Phase_Distortion_OSC_2 && (Pos_Tbl_Synth_ENV_2 == 1))
-                {
-                }
-                else
-                {
-                    Center_SynthParam_ENV_2();
-                    gui_action = GUI_CMD_UPDATE_SYNTH_ED;
-                    teac = UPDATE_SYNTH_ED_ENV_2_PARAMS;
-                }
-            }  
+                Center_SynthParam_Misc();
+                gui_action = GUI_CMD_UPDATE_SYNTH_ED;
+                teac = UPDATE_SYNTH_ED_Misc_PARAMS;
+            }
+        }  
 
-            // Center Misc
-            if(Check_Mouse(776, (Cur_Height - 41) - 1, 16, 16))
-            {
-                if((Allow_Phase_Distortion_OSC_1 || Allow_Phase_Distortion_OSC_2) ||
-                   Pos_Tbl_Synth_Misc > 0)
-                {
-                    Center_SynthParam_Misc();
-                    gui_action = GUI_CMD_UPDATE_SYNTH_ED;
-                    teac = UPDATE_SYNTH_ED_Misc_PARAMS;
-                }
-            }  
+        // OSC_1 Waveform
+        if(Check_Mouse(24, (Cur_Height - 95) - 1, 23, 16))
+        {
+            PARASynth[Current_Instrument].osc_1_waveform = 0;
+            teac = UPDATE_SYNTH_ED_ALL;
+            gui_action = GUI_CMD_UPDATE_SYNTH_ED;
+        }
+        if(Check_Mouse(49, (Cur_Height - 95) - 1, 23, 16))
+        {
+            PARASynth[Current_Instrument].osc_1_waveform = 1;
+            teac = UPDATE_SYNTH_ED_ALL;
+            gui_action = GUI_CMD_UPDATE_SYNTH_ED;
+        }
+        if(Check_Mouse(74, (Cur_Height - 95) - 1, 23, 16))
+        {
+            PARASynth[Current_Instrument].osc_1_waveform = 2;
+            teac = UPDATE_SYNTH_ED_ALL;
+            gui_action = GUI_CMD_UPDATE_SYNTH_ED;
+        }
+        if(Check_Mouse(99, (Cur_Height - 95) - 1, 23, 16))
+        {
+            PARASynth[Current_Instrument].osc_1_waveform = 3;
+            teac = UPDATE_SYNTH_ED_ALL;
+            gui_action = GUI_CMD_UPDATE_SYNTH_ED;
+        }
+        if(Check_Mouse(124, (Cur_Height - 95) - 1, 23, 16))
+        {
+            PARASynth[Current_Instrument].osc_1_waveform = 6;
+            teac = UPDATE_SYNTH_ED_ALL;
+            gui_action = GUI_CMD_UPDATE_SYNTH_ED;
+        }
+        if(Check_Mouse(149, (Cur_Height - 95) - 1, 23, 16))
+        {
+            PARASynth[Current_Instrument].osc_1_waveform = 5;
+            teac = UPDATE_SYNTH_ED_ALL;
+            gui_action = GUI_CMD_UPDATE_SYNTH_ED;
+        }
+        if(Check_Mouse(174, (Cur_Height - 95) - 1, 23, 16))
+        {
+            PARASynth[Current_Instrument].osc_1_waveform = 4;
+            teac = UPDATE_SYNTH_ED_ALL;
+            gui_action = GUI_CMD_UPDATE_SYNTH_ED;
+        }
 
-            // OSC_1 Waveform
-            if(Check_Mouse(24, (Cur_Height - 95) - 1, 23, 16))
-            {
-                PARASynth[Current_Instrument].osc_1_waveform = 0;
-                teac = UPDATE_SYNTH_ED_ALL;
-                gui_action = GUI_CMD_UPDATE_SYNTH_ED;
-            }
-            if(Check_Mouse(49, (Cur_Height - 95) - 1, 23, 16))
-            {
-                PARASynth[Current_Instrument].osc_1_waveform = 1;
-                teac = UPDATE_SYNTH_ED_ALL;
-                gui_action = GUI_CMD_UPDATE_SYNTH_ED;
-            }
-            if(Check_Mouse(74, (Cur_Height - 95) - 1, 23, 16))
-            {
-                PARASynth[Current_Instrument].osc_1_waveform = 2;
-                teac = UPDATE_SYNTH_ED_ALL;
-                gui_action = GUI_CMD_UPDATE_SYNTH_ED;
-            }
-            if(Check_Mouse(99, (Cur_Height - 95) - 1, 23, 16))
-            {
-                PARASynth[Current_Instrument].osc_1_waveform = 3;
-                teac = UPDATE_SYNTH_ED_ALL;
-                gui_action = GUI_CMD_UPDATE_SYNTH_ED;
-            }
-            if(Check_Mouse(124, (Cur_Height - 95) - 1, 23, 16))
-            {
-                PARASynth[Current_Instrument].osc_1_waveform = 6;
-                teac = UPDATE_SYNTH_ED_ALL;
-                gui_action = GUI_CMD_UPDATE_SYNTH_ED;
-            }
-            if(Check_Mouse(149, (Cur_Height - 95) - 1, 23, 16))
-            {
-                PARASynth[Current_Instrument].osc_1_waveform = 5;
-                teac = UPDATE_SYNTH_ED_ALL;
-                gui_action = GUI_CMD_UPDATE_SYNTH_ED;
-            }
-            if(Check_Mouse(174, (Cur_Height - 95) - 1, 23, 16))
-            {
-                PARASynth[Current_Instrument].osc_1_waveform = 4;
-                teac = UPDATE_SYNTH_ED_ALL;
-                gui_action = GUI_CMD_UPDATE_SYNTH_ED;
-            }
+        // OSC_2 Waveform
+        if(Check_Mouse(24, (Cur_Height - 41) - 1, 23, 16))
+        {
+            PARASynth[Current_Instrument].osc_2_waveform = 0;
+            teac = UPDATE_SYNTH_ED_ALL;
+            gui_action = GUI_CMD_UPDATE_SYNTH_ED;
+        }
+        if(Check_Mouse(49, (Cur_Height - 41) - 1, 23, 16))
+        {
+            PARASynth[Current_Instrument].osc_2_waveform = 1;
+            teac = UPDATE_SYNTH_ED_ALL;
+            gui_action = GUI_CMD_UPDATE_SYNTH_ED;
+        }
+        if(Check_Mouse(74, (Cur_Height - 41) - 1, 23, 16))
+        {
+            PARASynth[Current_Instrument].osc_2_waveform = 2;
+            teac = UPDATE_SYNTH_ED_ALL;
+            gui_action = GUI_CMD_UPDATE_SYNTH_ED;
+        }
+        if(Check_Mouse(99, (Cur_Height - 41) - 1, 23, 16))
+        {
+            PARASynth[Current_Instrument].osc_2_waveform = 3;
+            teac = UPDATE_SYNTH_ED_ALL;
+            gui_action = GUI_CMD_UPDATE_SYNTH_ED;
+        }
+        if(Check_Mouse(124, (Cur_Height - 41) - 1, 23, 16))
+        {
+            PARASynth[Current_Instrument].osc_2_waveform = 6;
+            teac = UPDATE_SYNTH_ED_ALL;
+            gui_action = GUI_CMD_UPDATE_SYNTH_ED;
+        }
+        if(Check_Mouse(149, (Cur_Height - 41) - 1, 23, 16))
+        {
+            PARASynth[Current_Instrument].osc_2_waveform = 5;
+            teac = UPDATE_SYNTH_ED_ALL;
+            gui_action = GUI_CMD_UPDATE_SYNTH_ED;
+        }
+        if(Check_Mouse(174, (Cur_Height - 41) - 1, 23, 16))
+        {
+            PARASynth[Current_Instrument].osc_2_waveform = 4;
+            teac = UPDATE_SYNTH_ED_ALL;
+            gui_action = GUI_CMD_UPDATE_SYNTH_ED;
+        }
 
-            // OSC_2 Waveform
-            if(Check_Mouse(24, (Cur_Height - 41) - 1, 23, 16))
-            {
-                PARASynth[Current_Instrument].osc_2_waveform = 0;
-                teac = UPDATE_SYNTH_ED_ALL;
-                gui_action = GUI_CMD_UPDATE_SYNTH_ED;
-            }
-            if(Check_Mouse(49, (Cur_Height - 41) - 1, 23, 16))
-            {
-                PARASynth[Current_Instrument].osc_2_waveform = 1;
-                teac = UPDATE_SYNTH_ED_ALL;
-                gui_action = GUI_CMD_UPDATE_SYNTH_ED;
-            }
-            if(Check_Mouse(74, (Cur_Height - 41) - 1, 23, 16))
-            {
-                PARASynth[Current_Instrument].osc_2_waveform = 2;
-                teac = UPDATE_SYNTH_ED_ALL;
-                gui_action = GUI_CMD_UPDATE_SYNTH_ED;
-            }
-            if(Check_Mouse(99, (Cur_Height - 41) - 1, 23, 16))
-            {
-                PARASynth[Current_Instrument].osc_2_waveform = 3;
-                teac = UPDATE_SYNTH_ED_ALL;
-                gui_action = GUI_CMD_UPDATE_SYNTH_ED;
-            }
-            if(Check_Mouse(124, (Cur_Height - 41) - 1, 23, 16))
-            {
-                PARASynth[Current_Instrument].osc_2_waveform = 6;
-                teac = UPDATE_SYNTH_ED_ALL;
-                gui_action = GUI_CMD_UPDATE_SYNTH_ED;
-            }
-            if(Check_Mouse(149, (Cur_Height - 41) - 1, 23, 16))
-            {
-                PARASynth[Current_Instrument].osc_2_waveform = 5;
-                teac = UPDATE_SYNTH_ED_ALL;
-                gui_action = GUI_CMD_UPDATE_SYNTH_ED;
-            }
-            if(Check_Mouse(174, (Cur_Height - 41) - 1, 23, 16))
-            {
-                PARASynth[Current_Instrument].osc_2_waveform = 4;
-                teac = UPDATE_SYNTH_ED_ALL;
-                gui_action = GUI_CMD_UPDATE_SYNTH_ED;
-            }
+        // Oscillators combiner
+        if(Check_Mouse(4, (Cur_Height - 95) - 1 + (18 * 0), 17, 16))
+        {
+            PARASynth[Current_Instrument].osc_combine = COMBINE_ADD;
+            teac = UPDATE_SYNTH_ED_ALL;
+            gui_action = GUI_CMD_UPDATE_SYNTH_ED;
+        }
+        if(Check_Mouse(4, (Cur_Height - 95) - 1 + (18 * 1), 17, 16))
+        {
+            PARASynth[Current_Instrument].osc_combine = COMBINE_SUB;
+            teac = UPDATE_SYNTH_ED_ALL;
+            gui_action = GUI_CMD_UPDATE_SYNTH_ED;
+        }
+        if(Check_Mouse(4, (Cur_Height - 95) - 1 + (18 * 2), 17, 16))
+        {
+            PARASynth[Current_Instrument].osc_combine = COMBINE_MUL;
+            teac = UPDATE_SYNTH_ED_ALL;
+            gui_action = GUI_CMD_UPDATE_SYNTH_ED;
+        }
+        if(Check_Mouse(4, (Cur_Height - 95) - 1 + (18 * 3), 17, 16))
+        {
+            PARASynth[Current_Instrument].osc_combine = COMBINE_DIV;
+            teac = UPDATE_SYNTH_ED_ALL;
+            gui_action = GUI_CMD_UPDATE_SYNTH_ED;
+        }
 
-            // Oscillators combiner
-            if(Check_Mouse(4, (Cur_Height - 95) - 1 + (18 * 0), 17, 16))
-            {
-                PARASynth[Current_Instrument].osc_combine = COMBINE_ADD;
-                teac = UPDATE_SYNTH_ED_ALL;
-                gui_action = GUI_CMD_UPDATE_SYNTH_ED;
-            }
-            if(Check_Mouse(4, (Cur_Height - 95) - 1 + (18 * 1), 17, 16))
-            {
-                PARASynth[Current_Instrument].osc_combine = COMBINE_SUB;
-                teac = UPDATE_SYNTH_ED_ALL;
-                gui_action = GUI_CMD_UPDATE_SYNTH_ED;
-            }
-            if(Check_Mouse(4, (Cur_Height - 95) - 1 + (18 * 2), 17, 16))
-            {
-                PARASynth[Current_Instrument].osc_combine = COMBINE_MUL;
-                teac = UPDATE_SYNTH_ED_ALL;
-                gui_action = GUI_CMD_UPDATE_SYNTH_ED;
-            }
-            if(Check_Mouse(4, (Cur_Height - 95) - 1 + (18 * 3), 17, 16))
-            {
-                PARASynth[Current_Instrument].osc_combine = COMBINE_DIV;
-                teac = UPDATE_SYNTH_ED_ALL;
-                gui_action = GUI_CMD_UPDATE_SYNTH_ED;
-            }
+        // Sub oscillator switch
+        if(Check_Mouse(237, (Cur_Height - 95) - 1, 24, 16))
+        {
+            PARASynth[Current_Instrument].osc_3_switch = TRUE;
+            teac = UPDATE_SYNTH_ED_OSC_3_SWITCH;
+            gui_action = GUI_CMD_UPDATE_SYNTH_ED;
+        }
+        if(Check_Mouse(264, (Cur_Height - 95) - 1, 24, 16))
+        {
+            PARASynth[Current_Instrument].osc_3_switch = FALSE;
+            teac = UPDATE_SYNTH_ED_OSC_3_SWITCH;
+            gui_action = GUI_CMD_UPDATE_SYNTH_ED;
+        }
 
-            // Sub oscillator switch
-            if(Check_Mouse(237, (Cur_Height - 95) - 1, 24, 16))
-            {
-                PARASynth[Current_Instrument].osc_3_switch = TRUE;
-                teac = UPDATE_SYNTH_ED_OSC_3_SWITCH;
-                gui_action = GUI_CMD_UPDATE_SYNTH_ED;
-            }
-            if(Check_Mouse(264, (Cur_Height - 95) - 1, 24, 16))
-            {
-                PARASynth[Current_Instrument].osc_3_switch = FALSE;
-                teac = UPDATE_SYNTH_ED_OSC_3_SWITCH;
-                gui_action = GUI_CMD_UPDATE_SYNTH_ED;
-            }
+        // VCF Type
+        if(Check_Mouse(349, (Cur_Height - 150), 17, 16) && PARASynth[Current_Instrument].vcf_type > 0)
+        {
+            PARASynth[Current_Instrument].vcf_type = filter_vcf_type_minus[PARASynth[Current_Instrument].vcf_type];
+            teac = UPDATE_SYNTH_ED_VCF_TYPE;
+            gui_action = GUI_CMD_UPDATE_SYNTH_ED;
+        }
+        if(Check_Mouse(349 + 84, (Cur_Height - 150), 17, 16) && PARASynth[Current_Instrument].vcf_type <= 4)
+        {
+            PARASynth[Current_Instrument].vcf_type = filter_vcf_type_plus[PARASynth[Current_Instrument].vcf_type];
+            teac = UPDATE_SYNTH_ED_VCF_TYPE;
+            gui_action = GUI_CMD_UPDATE_SYNTH_ED;
+        }
 
-            // VCF Type
-            if(Check_Mouse(349, (Cur_Height - 150), 17, 16) && PARASynth[Current_Instrument].vcf_type > 0)
-            {
-                PARASynth[Current_Instrument].vcf_type = filter_vcf_type_minus[PARASynth[Current_Instrument].vcf_type];
-                teac = 7;
-                gui_action = GUI_CMD_UPDATE_SYNTH_ED;
-            }
-            if(Check_Mouse(349 + 84, (Cur_Height - 150), 17, 16) && PARASynth[Current_Instrument].vcf_type <= 4)
-            {
-                PARASynth[Current_Instrument].vcf_type = filter_vcf_type_plus[PARASynth[Current_Instrument].vcf_type];
-                teac = 7;
-                gui_action = GUI_CMD_UPDATE_SYNTH_ED;
-            }
+        // OSC sync
+        if(Check_Mouse(208, (Cur_Height - 41), 31, 16))
+        {
+            PARASynth[Current_Instrument].osc_sync ^= TRUE;
+            teac = UPDATE_SYNTH_ED_SYNC;
+            gui_action = GUI_CMD_UPDATE_SYNTH_ED;
+
+        }   
     }
 }
 

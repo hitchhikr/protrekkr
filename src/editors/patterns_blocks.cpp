@@ -2560,21 +2560,27 @@ int Are_Columns_Compatible(int type_src, int type_dst)
     return 0;
 }
 
+
 // ------------------------------------------------------
-// Reset a track to it's initial structure
-void Reset_Track(int Position, int Track)
+// Reset the data of a track  of a pattern to it's initial structure
+void Reset_Pattern(int Pattern, int Track)
 {
     int i;
     int offset;
-    int pattern;
 
-    pattern = pSequence[Position];
-
-    for(i = 0 ; i < patternLines[pattern]; i++)
+    for(i = 0 ; i < patternLines[Pattern]; i++)
     {
-        offset = Get_Pattern_Offset(pattern, Track, i);
+        offset = Get_Pattern_Offset(Pattern, Track, i);
         Clear_Track_Data(offset);
     }
+}
+
+// ------------------------------------------------------
+// Reset a track to it's initial structure
+void Reset_Track(int Track)
+{
+    int i;
+
     Channels_Polyphony[Track] = 1;
     Channels_MultiNotes[Track] = 1;
     Channels_Effects[Track] = 1;
@@ -2644,21 +2650,17 @@ void Reset_Track(int Position, int Track)
 }
 
 // ------------------------------------------------------
-// Copy the data & structure of a track into another
-void Copy_Track(int Position, int Track_Src, int Track_Dst)
+// Copy the data of track of a pattern into another
+void Copy_Pattern(int Pattern, int Track_Src, int Track_Dst)
 {
     int i;
     int j;
     int offset_src;
     int offset_dst;
-    int pattern;
-
-    pattern = pSequence[Position];
-
-    for(i = 0 ; i < patternLines[pattern]; i++)
+    for(i = 0 ; i < patternLines[Pattern]; i++)
     {
-        offset_src = Get_Pattern_Offset(pattern, Track_Src, i);
-        offset_dst = Get_Pattern_Offset(pattern, Track_Dst, i);
+        offset_src = Get_Pattern_Offset(Pattern, Track_Src, i);
+        offset_dst = Get_Pattern_Offset(Pattern, Track_Dst, i);
 
         for(j = 0; j < MAX_POLYPHONY; j++)
         {
@@ -2676,6 +2678,14 @@ void Copy_Track(int Position, int Track_Src, int Track_Dst)
         *(RawPatterns + offset_dst + PATTERN_FX4) = *(RawPatterns + offset_src + PATTERN_FX4);
         *(RawPatterns + offset_dst + PATTERN_FXDATA4) = *(RawPatterns + offset_src + PATTERN_FXDATA4);
     }
+}
+
+// ------------------------------------------------------
+// Copy the data & structure of a track into another
+void Copy_Track(int Track_Src, int Track_Dst)
+{
+    int i;
+
     Channels_Polyphony[Track_Dst] = Channels_Polyphony[Track_Src];
     Channels_MultiNotes[Track_Dst] = Channels_MultiNotes[Track_Src];
     Channels_Effects[Track_Dst] = Channels_Effects[Track_Src];
@@ -2747,12 +2757,17 @@ void Copy_Track(int Position, int Track_Src, int Track_Dst)
 void Delete_Track(void)
 {
     int i;
+    int j;
 
-    for(i = Track_Under_Caret; i < Song_Tracks; i++)
+    // Copy to the left
+    for(j = Track_Under_Caret; j < Song_Tracks; j++)
     {
-        Copy_Track(Song_Position, i + 1, i);
+        for(i = 0; i < MAX_PATTERNS; i++)
+        {
+            Copy_Pattern(i, j + 1, j);
+        }
+        Copy_Track(j + 1, j);
     }
-    Reset_Track(Song_Position, Song_Tracks);
     Column_Under_Caret = 0;
 }
 
@@ -2761,14 +2776,21 @@ void Delete_Track(void)
 void Insert_Track(void)
 {
     int i;
+    int j;
 
     if(Song_Tracks < 16)
     {
-        for(i = Song_Tracks - 1; i > Track_Under_Caret; i--)
+        // Copy to the right
+        for(j = Song_Tracks - 1; j > Track_Under_Caret; j--)
         {
-            Copy_Track(Song_Position, i - 1, i);
+            for(i = 0; i < MAX_PATTERNS; i++)
+            {
+                Copy_Pattern(i, j - 1, j);
+                Reset_Pattern(i, j - 1);
+            }
+            // Create a new one
         }
-        Reset_Track(Song_Position, Track_Under_Caret);
+        Reset_Track(Track_Under_Caret);
         Column_Under_Caret = 0;
     }
 }

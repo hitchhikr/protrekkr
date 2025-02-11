@@ -293,7 +293,7 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
     int Store_Synth_Saw = FALSE;
     int Store_Synth_Pulse = FALSE;
     int Store_Synth_WhiteNoise = FALSE;
-    int Store_Synth_PinkNoise = FALSE;
+    int Store_Synth_Tri = FALSE;
 
     int Empty_Fx = FALSE;
     int Number_Fx = 0;
@@ -1215,8 +1215,8 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                 if(PARASynth[swrite].osc_2_waveform == WAVEFORM_PULSE) Store_Synth_Pulse = TRUE;
                 if(PARASynth[swrite].osc_1_waveform == WAVEFORM_WHITE) Store_Synth_WhiteNoise = TRUE;
                 if(PARASynth[swrite].osc_2_waveform == WAVEFORM_WHITE) Store_Synth_WhiteNoise = TRUE;
-                if(PARASynth[swrite].osc_1_waveform == WAVEFORM_PINK) Store_Synth_PinkNoise = TRUE;
-                if(PARASynth[swrite].osc_2_waveform == WAVEFORM_PINK) Store_Synth_PinkNoise = TRUE;
+                if(PARASynth[swrite].osc_1_waveform == WAVEFORM_TRI) Store_Synth_Tri = TRUE;
+                if(PARASynth[swrite].osc_2_waveform == WAVEFORM_TRI) Store_Synth_Tri = TRUE;
 
                 if(PARASynth[swrite].osc_2_waveform != WAVEFORM_NONE) Store_Synth_Osc_2 = TRUE;
 
@@ -1482,6 +1482,7 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
 
                 Write_Mod_Data(&PARASynth[swrite].osc_combine, sizeof(char), 1, in);
+                Write_Mod_Data(&PARASynth[swrite].osc_sync, sizeof(char), 1, in);
             }
 
             // Compression type
@@ -1697,7 +1698,7 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
     Save_Constant("PTK_SYNTH_SAW", Store_Synth_Saw);
     Save_Constant("PTK_SYNTH_PULSE", Store_Synth_Pulse);
     Save_Constant("PTK_SYNTH_WHITE", Store_Synth_WhiteNoise);
-    Save_Constant("PTK_SYNTH_PINK", Store_Synth_PinkNoise);
+    Save_Constant("PTK_SYNTH_TRI", Store_Synth_Tri);
 
     //Save_Constant("PTK_WAVEFORM", Store_Instr_Waveform_Osc_1 | Store_Instr_Waveform_Osc_2);
     //Save_Constant("PTK_WAVEFORM_OSC_1", Store_Instr_Waveform_Osc_1);

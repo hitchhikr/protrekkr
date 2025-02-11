@@ -829,6 +829,11 @@ int Screen_Update(void)
     {
         Rt_vu_Peak = MAX_VUMETER - 2;
     }
+    
+    // Clear
+    SetColor(COL_BACKGROUND);
+    Fillrect(Lt_vu_Peak, 10, MAX_VUMETER - 1, 14);
+    Fillrect(Rt_vu_Peak, 15, MAX_VUMETER - 1, 19);
 
     // Draw the vu meters
     for(i = MIN_VUMETER; i < Lt_vu; i += 2)
@@ -848,16 +853,7 @@ int Screen_Update(void)
         DrawVLine(i, 15, 18, COL_VUMETERPEAK);
     }
 
-    // Clear
-    DrawHLine(10, Lt_vu_Peak, MAX_VUMETER - 2, COL_BACKGROUND);
-    DrawHLine(11, Lt_vu_Peak, MAX_VUMETER - 2, COL_BACKGROUND);
-    DrawHLine(12, Lt_vu_Peak, MAX_VUMETER - 2, COL_BACKGROUND);
-    DrawHLine(13, Lt_vu_Peak, MAX_VUMETER - 2, COL_BACKGROUND);
-
-    DrawHLine(15, Rt_vu_Peak, MAX_VUMETER - 2, COL_BACKGROUND);
-    DrawHLine(16, Rt_vu_Peak, MAX_VUMETER - 2, COL_BACKGROUND);
-    DrawHLine(17, Rt_vu_Peak, MAX_VUMETER - 2, COL_BACKGROUND);
-    DrawHLine(18, Rt_vu_Peak, MAX_VUMETER - 2, COL_BACKGROUND);
+    Push_Update_Rect(MIN_VUMETER, 10, Rt_vu_Peak, 18);
 
     if(actuloop)
     {
@@ -2480,7 +2476,8 @@ void Load_File(int Freeindex, const char *str)
                 strcmp(extension, "PROTREKQ") == 0 ||
                 strcmp(extension, "PROTREKR") == 0 ||
                 strcmp(extension, "PROTREKS") == 0 ||
-                strcmp(extension, "PROTREKT") == 0)
+                strcmp(extension, "PROTREKT") == 0 ||
+                strcmp(extension, "PROTREKU") == 0)
         {
             sprintf(name, "%s", FileName);
             Song_Stop();
@@ -6301,7 +6298,11 @@ void Mouse_Handler(void)
             {
                 Song_Tracks = 1;
                 // Just clear it
-                Reset_Track(pSequence[Song_Position], Track_Under_Caret);
+                for(i = 0; i < MAX_PATTERNS; i++)
+                {
+                    Reset_Pattern(i, Track_Under_Caret);
+                }
+                Reset_Track(Track_Under_Caret);
             }
             else
             {
@@ -7066,12 +7067,12 @@ void Display_Shuffle(void)
 
     if(shuffle_amount > 100) shuffle_amount = 100;
     if(shuffle_amount < 0) shuffle_amount = 0;
-    Gui_Draw_Button_Box(570, 6, 40, 16, "Shuffle", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
+    Gui_Draw_Button_Box(570, 6, 38, 16, "Shuffle", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
 
-    Real_Slider_Size(570 + 40, 6, 100, shuffle_amount, TRUE);
+    Real_Slider_Size(570 + 38, 6, 100, shuffle_amount, TRUE);
     sprintf(string, "%d%%", shuffle_amount);
-    Print_String(string, 570 + 40, 8, 116, BUTTON_TEXT_CENTERED);
-    Gui_Draw_Button_Box(730, 6, Cur_Width - 802, 16, NULL, BUTTON_NORMAL | BUTTON_DISABLED);
+    Print_String(string, 570 + 38, 8, 116, BUTTON_TEXT_CENTERED);
+    Gui_Draw_Button_Box(728, 6, Cur_Width - 802, 16, NULL, BUTTON_NORMAL | BUTTON_DISABLED);
 }
 
 // ------------------------------------------------------
@@ -7428,7 +7429,7 @@ void Draw_Scope(void)
     if(Scopish == SCOPE_ZONE_SCOPE)
     {
         SetColor(COL_BACKGROUND);
-        Fillrect(394, 42, Cur_Width - 1, 179);
+        Fillrect(394, 41, Cur_Width - 1, 180);
 
         cur_pos_x = 0;
         if(Scopish_LeftRight)
@@ -7511,7 +7512,7 @@ void Draw_Scope(void)
                     {
                         data = 1.0f;
                     }
-                    int y = 42 + ptrTbl_Dat->y_pos + (int) (data * (ptrTbl_Dat->y_large ));
+                    int y = 42 + ptrTbl_Dat->y_pos + (int) (data * (ptrTbl_Dat->y_large));
                     DrawPixel(cur_pos_x, y, pixel_color);
                     cur_pos_x++;
                 }
