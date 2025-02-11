@@ -2894,6 +2894,7 @@ void Notify_Play(void)
 // Stop replaying
 void Song_Stop(void)
 {
+    Song_Playing = FALSE;
     Ptk_Stop();
     Gui_Draw_Button_Box(8, 28, 39, 16, "\04", BUTTON_NORMAL | BUTTON_RIGHT_MOUSE | BUTTON_TEXT_CENTERED);
     Gui_Draw_Button_Box(49, 28, 39, 16, "\253", BUTTON_NORMAL | BUTTON_RIGHT_MOUSE | BUTTON_TEXT_CENTERED);
@@ -7153,7 +7154,6 @@ void Actualize_Master(char gode)
     if(gode == 4)
     {
         Gui_Draw_Arrows_Number_Box2(324, 28, Song_Tracks, BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE | (can_modify_song ^ BUTTON_DISABLED));
-
         Actualize_Seq_Ed(0);
         Update_Pattern(0);
     }
