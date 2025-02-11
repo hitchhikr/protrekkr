@@ -154,7 +154,6 @@ int key_on = 0;
 float delay_refresh;
 float delay_refresh2;
 
-extern int Refreshing_Palette;
 extern int Nbr_Update_Rects;
 extern SDL_Rect Update_Stack[UPDATE_STACK_SIZE];
 
@@ -1075,33 +1074,25 @@ void Message_Error(char *Message)
 void Flush_Screen(void)
 {
 
-    if(!Refreshing_Palette)
-    {
-
 #if !defined(__USE_OPENGL__)
-        // Flush all pending blits
-        if(Nbr_Update_Rects)
-        {
-           SDL_UpdateRects(Main_Screen, Nbr_Update_Rects, Update_Stack);
-        }
-        Nbr_Update_Rects = 0;
+    // Flush all pending blits
+    if(Nbr_Update_Rects)
+    {
+       SDL_UpdateRects(Main_Screen, Nbr_Update_Rects, Update_Stack);
+    }
+    Nbr_Update_Rects = 0;
 #endif
 
-        // Display the title requester once
-        if(!Burn_Title && SplashScreen)
-        {
-            Display_Requester(&Title_Requester, GUI_CMD_REFRESH_PALETTE, NULL, TRUE);
-            Burn_Title = TRUE;
-        }
-        if(!Burn_Title && !SplashScreen)
-        {
-            Burn_Title = TRUE;
-            Kill_Requester();
-        }
-    }
-    else
+    // Display the title requester once
+    if(!Burn_Title && SplashScreen)
     {
-        Nbr_Update_Rects = 0;
+        Display_Requester(&Title_Requester, GUI_CMD_REFRESH_PALETTE, NULL, TRUE);
+        Burn_Title = TRUE;
+    }
+    if(!Burn_Title && !SplashScreen)
+    {
+        Burn_Title = TRUE;
+        Kill_Requester();
     }
 
 #if defined(__USE_OPENGL__)

@@ -808,53 +808,6 @@ int Screen_Update(void)
     // Sample ed. stuff
     Draw_Wave_Data();
 
-    int Lt_vu = (int) (MIN_VUMETER + (((float) L_MaxLevel / 32767.0f) * LARG_VUMETER));
-    int Rt_vu = (int) (MIN_VUMETER + (((float) R_MaxLevel / 32767.0f) * LARG_VUMETER));
-    int Lt_vu_Peak = Lt_vu;
-    int Rt_vu_Peak = Rt_vu;
-
-    if(Lt_vu > MIN_PEAK)
-    {
-        Lt_vu = MIN_PEAK;
-    }
-    if(Rt_vu > MIN_PEAK)
-    {
-        Rt_vu = MIN_PEAK;
-    }
-    if(Lt_vu_Peak > MAX_VUMETER - 2)
-    {
-        Lt_vu_Peak = MAX_VUMETER - 2;
-    }
-    if(Rt_vu_Peak > MAX_VUMETER - 2)
-    {
-        Rt_vu_Peak = MAX_VUMETER - 2;
-    }
-    
-    // Clear
-    SetColor(COL_BACKGROUND);
-    Fillrect(Lt_vu_Peak, 10, MAX_VUMETER - 1, 14);
-    Fillrect(Rt_vu_Peak, 15, MAX_VUMETER - 1, 19);
-
-    // Draw the vu meters
-    for(i = MIN_VUMETER; i < Lt_vu; i += 2)
-    {
-        DrawVLine(i, 10, 13, COL_VUMETER);
-    }
-    for(i = MIN_VUMETER; i < Rt_vu; i += 2)
-    {
-        DrawVLine(i, 15, 18, COL_VUMETER);
-    }
-    for(i = Lt_vu + 1; i < Lt_vu_Peak; i += 2)
-    {
-        DrawVLine(i, 10, 13, COL_VUMETERPEAK);
-    }
-    for(i = Rt_vu + 1; i < Rt_vu_Peak; i += 2)
-    {
-        DrawVLine(i, 15, 18, COL_VUMETERPEAK);
-    }
-
-    Push_Update_Rect(MIN_VUMETER, 10, Rt_vu_Peak, 18);
-
     if(actuloop)
     {
         Display_Fine_Loop_Data();
@@ -1952,9 +1905,6 @@ int Screen_Update(void)
     // Draw the main windows layout
     if(redraw_everything)
     {
-        SetColor(COL_BLACK);
-        Fillrect(0, 0, CONSOLE_WIDTH, CONSOLE_HEIGHT);
-
         last_index = -1;
         // Box around the vu-meters
         Gui_Draw_Button_Box(MIN_VUMETER - 4, 6, (MAX_VUMETER - MIN_VUMETER) + 6, 16, NULL, BUTTON_NORMAL | BUTTON_DISABLED);
@@ -2044,7 +1994,55 @@ int Screen_Update(void)
         Draw_Pattern_Right_Stuff();
         Update_Pattern(0);
         redraw_everything = FALSE;
+        Push_Update_Rect(0, 0, CONSOLE_WIDTH, CONSOLE_HEIGHT);
     }
+    
+    int Lt_vu = (int) (MIN_VUMETER + (((float) L_MaxLevel / 32767.0f) * LARG_VUMETER));
+    int Rt_vu = (int) (MIN_VUMETER + (((float) R_MaxLevel / 32767.0f) * LARG_VUMETER));
+    int Lt_vu_Peak = Lt_vu;
+    int Rt_vu_Peak = Rt_vu;
+
+    if(Lt_vu > MIN_PEAK)
+    {
+        Lt_vu = MIN_PEAK;
+    }
+    if(Rt_vu > MIN_PEAK)
+    {
+        Rt_vu = MIN_PEAK;
+    }
+    if(Lt_vu_Peak > MAX_VUMETER - 2)
+    {
+        Lt_vu_Peak = MAX_VUMETER - 2;
+    }
+    if(Rt_vu_Peak > MAX_VUMETER - 2)
+    {
+        Rt_vu_Peak = MAX_VUMETER - 2;
+    }
+    
+    // Clear
+    SetColor(COL_BACKGROUND);
+    Fillrect(Lt_vu_Peak, 10, MAX_VUMETER - 1, 14);
+    Fillrect(Rt_vu_Peak, 15, MAX_VUMETER - 1, 19);
+
+    // Draw the vu meters
+    for(i = MIN_VUMETER; i < Lt_vu; i += 2)
+    {
+        DrawVLine(i, 10, 13, COL_VUMETER);
+    }
+    for(i = MIN_VUMETER; i < Rt_vu; i += 2)
+    {
+        DrawVLine(i, 15, 18, COL_VUMETER);
+    }
+    for(i = Lt_vu + 1; i < Lt_vu_Peak; i += 2)
+    {
+        DrawVLine(i, 10, 13, COL_VUMETERPEAK);
+    }
+    for(i = Rt_vu + 1; i < Rt_vu_Peak; i += 2)
+    {
+        DrawVLine(i, 15, 18, COL_VUMETERPEAK);
+    }
+
+    Push_Update_Rect(MIN_VUMETER, 10, Rt_vu_Peak, 18);
 
     if(gui_thread_action && gui_thread_can_act)
     {

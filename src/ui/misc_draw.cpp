@@ -101,9 +101,9 @@ GLuint SKIN303_GL = -1;
 int Beveled = 1;
 char Use_Shadows = TRUE;
 char Status_Box_Text[MAX_PATH * 2];
+const char *Old_Status_Box_Text;
 int Status_Box_Wait;
 int Status_Box_Wait_Done = 10;
-int Refreshing_Palette;
 
 extern int pattern_double;
 extern int Burn_Title;
@@ -1941,9 +1941,13 @@ void Status_Box(char const *str, int refresh)
     Status_Box_Wait = 5;
     Status_Box_Wait_Done = 0;
     Gui_Draw_Button_Box(0, CONSOLE_HEIGHT - 21, fsize, 18, Status_Box_Text, BUTTON_RIGHT_MOUSE);
-    if(refresh)
+    if(refresh && (Old_Status_Box_Text != str))
     {
         Redraw_Screen_Quick();
+    }
+    if(str != NULL)
+    {
+        Old_Status_Box_Text = str;
     }
 }
       
@@ -3457,9 +3461,6 @@ void Set_Pictures_And_Palettes(int LogoPalette)
     unsigned char *Pix;
     int was_locked;
 
-    Refreshing_Palette = TRUE;
-    Lock_Audio_Thread();
-
     SDL_Palette *Pic_Palette;
     int min_idx = sizeof(Default_Palette2) / sizeof(SDL_Color);
 
@@ -3711,8 +3712,10 @@ void Set_Pictures_And_Palettes(int LogoPalette)
         Set_Pattern_Size();
     }
 
-    Refreshing_Palette = FALSE;
-    Unlock_Audio_Thread();
+#if defined(__USE_OPENGL__)
+    Env_Change = TRUE;
+#endif
+    
 }
 
 #if defined(__USE_OPENGL__)

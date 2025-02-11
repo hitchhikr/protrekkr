@@ -77,12 +77,13 @@ void Kill_Requester(void);
 int Display_Requester(LPREQUESTER Requester, int Action, char *Text, int Center)
 {
     int i;
+    
     // Inhibit main actions
     In_Requester = TRUE;
 
     Current_Requester = Requester;
 
-    // Minim mum size
+    // Minimum size
     Size_X = 0;
     Size_Y = 0;
 
@@ -273,8 +274,15 @@ int Check_Requester(LPREQUESTER Requester)
         int i;
         if(Req_Picture)
         {
-            SetColor(COL_BLACK);
             // Display the picture
+            Gui_Draw_Button_Box(Pos_X, Pos_Y, Size_X, Size_Y, NULL, BUTTON_NORMAL | BUTTON_DISABLED);
+            Gui_Draw_Button_Box(Pos_X + BEVEL_SIZE - 1, Pos_Y + BEVEL_SIZE - 1,
+                                Size_X - ((BEVEL_SIZE - 1) * 2), Size_Y - ((BEVEL_SIZE - 1) * 2),
+                                NULL, BUTTON_PUSHED | BUTTON_DISABLED);
+            Gui_Draw_Button_Box(Pos_X + (BEVEL_SIZE + 1), Pos_Y + (BEVEL_SIZE + 1),
+                                Size_X - ((BEVEL_SIZE + 1) * 2), Size_Y - ((BEVEL_SIZE + 1) * 2),
+                                NULL, BUTTON_NORMAL | BUTTON_DISABLED);
+            SetColor(COL_PATTERN_HI_BACK);
             Copy(GET_SURFACE(Req_Picture), Pos_X + BEVEL_SIZE + 1, Pos_Y + BEVEL_SIZE + 1,
                  0, 0, Req_Picture->w - 1, Req_Picture->h - 2);
         }

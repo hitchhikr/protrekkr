@@ -103,14 +103,16 @@ void Draw_Midi_Ed(void)
     Gui_Draw_Button_Box(12, (Cur_Height - 117), 56, 16, middev, BUTTON_NORMAL | BUTTON_DISABLED);
 
     Gui_Draw_Button_Box(12, (Cur_Height - 99), 82, 16, "Track Notes Off", BUTTON_NORMAL | BUTTON_TEXT_CENTERED
+
 #if defined(__NO_MIDI__)
-    | BUTTON_DISABLED
+        | BUTTON_DISABLED
 #endif
     );
     Gui_Draw_Button_Box(12, (Cur_Height - 81), 82, 16, "Song Notes Off", BUTTON_NORMAL | BUTTON_TEXT_CENTERED
 #if defined(__NO_MIDI__)
-    | BUTTON_DISABLED
+        | BUTTON_DISABLED
 #endif
+
     );
 
 
