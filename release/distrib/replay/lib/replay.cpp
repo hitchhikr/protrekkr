@@ -7425,7 +7425,7 @@ float Mas_Compressor_Track(int Track, float input, float *rms_sum, float *buffer
     gain = 1.0f;
     if(*env > mas_threshold_Track[Track])
     {
-        gain = expf((FastLog(mas_threshold_Track[Track]) - FastLog(*env)) * mas_ratio_Track[Track]);
+        gain = expf((LOG(mas_threshold_Track[Track]) - LOG(*env)) * mas_ratio_Track[Track]);
     }
     return input * gain;
 }
@@ -7457,7 +7457,7 @@ float Mas_Compressor_Master(float input, float *rms_sum, float *buffer, float *e
     gain = 1.0f;
     if(*env > mas_threshold_Master)
     {
-        gain = expf((FastLog(mas_threshold_Master) - FastLog(*env)) * mas_ratio_Master);
+        gain = expf((LOG(mas_threshold_Master) - LOG(*env)) * mas_ratio_Master);
     }
     return gain;
 }

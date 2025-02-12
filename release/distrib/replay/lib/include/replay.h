@@ -199,9 +199,11 @@ float FastPow2(float a);
 float FastLog(float i);
 #define POWF(x, y) FastPow(x, y)
 #define POWF2(x) FastPow2(x)
+#define LOG(x) FastLog(x)
 #else
 #define POWF(x, y) powf(x, y)
 #define POWF2(x) powf(2.0f, x)
+#define LOG(x) logf(x)
 #endif
 
 #if !defined(__STAND_ALONE__) || defined(__WINAMP__)
