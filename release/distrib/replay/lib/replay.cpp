@@ -774,7 +774,7 @@ short *RawSamples[MAX_INSTRS][2][MAX_INSTRS_SPLITS];
     int currentCounter;
     int delayedCounterL[10];
     int delayedCounterR[10];
-    float reverb_threshold_delay[] = 
+    float reverb_threshold_delay[] =
     {
         44.1f, 50.1f, 60.1f, 70.1f, 73.1f, 79.1f, 64.0f, 55.0f, 20.0f, 32.0f
     };
@@ -961,7 +961,7 @@ void Reset_Values(void);
 // -----------------------------------------------------------------------------
 // Return the absolute value of a floating point
 // -----------------------------------------------------------------------------
-float absf(float x) 
+float absf(float x)
 {
     *(unsigned int *) &x &= 0x7fffffff;
     return(x);
@@ -994,7 +994,7 @@ static __inline__ float FastFloor(float f)
     float b, c, d, e, g, h, t;
 
     c = (f >= 0.0f) ? -8388608.0f: 8388608.0f;
-    b = absf(f); 
+    b = absf(f);
     d = f - c;
     e = b - 8388608.0f;
 #if defined(__LINUX__)
@@ -1017,19 +1017,19 @@ static __inline__ float FastFloor(float f)
 #if defined(__PSP__)
 float FastPow2(float x)
 {
-	float result;
+    float result;
 
-	__asm__ volatile(
+    __asm__ volatile(
     "mtv      %1, S000\n"
-	"vexp2.s  S000, S000\n"
-	"mfv      %0, S000\n"
-	: "=r"(result) : "r"(x));
-	return result;
+    "vexp2.s  S000, S000\n"
+    "mfv      %0, S000\n"
+    : "=r"(result) : "r"(x));
+    return result;
 }
 #else
 float FastPow2(float i)
 {
-	float x;
+    float x;
 #if defined(__GCC__) && !(__MACOSX_X86__) && !(__LINUX__)
     float y = i - FastFloor(i);
 #else
@@ -1313,7 +1313,7 @@ int STDCALL Ptk_InitDriver(void)
 #endif
 
 #if defined(PTK_SYNTH_SIN)
-        *wav_sin++ = (unsigned short) (sinf(value) * 32767.0f);
+        *wav_sin++ = (short) (sinf(value) * 32767.0f);
 #endif
 
         SIZE_WAVEFORMS++;
