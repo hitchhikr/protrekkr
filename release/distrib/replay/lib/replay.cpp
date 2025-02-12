@@ -1257,14 +1257,17 @@ int STDCALL Ptk_InitDriver(void)
 
 #if defined(PTK_SYNTH_SIN)
     short *wav_sin = STOCK_SIN;
+    memset(STOCK_SIN, 0, sizeof(STOCK_SIN));
 #endif
 
 #if defined(PTK_SYNTH_SAW)
     short *wav_saw = STOCK_SAW;
+    memset(STOCK_SAW, 0, sizeof(STOCK_SAW));
 #endif
 
 #if defined(PTK_SYNTH_PULSE)
     short *wav_pul = STOCK_PULSE;
+    memset(STOCK_PULSE, 0, sizeof(STOCK_PULSE));
 #endif
 
 #if defined(PTK_SYNTH_TRI)
@@ -1273,6 +1276,7 @@ int STDCALL Ptk_InitDriver(void)
     short *wav_tri = STOCK_TRI;
     tri_carrier = 0;
     tri_carrier_step = 1;
+    memset(STOCK_TRI, 0, sizeof(STOCK_TRI));
 #endif
 
 #if !defined(__STAND_ALONE__) || defined(__WINAMP__)
@@ -1286,6 +1290,7 @@ int STDCALL Ptk_InitDriver(void)
     }
 #endif
 #endif
+
 
     SIZE_WAVEFORMS = 0;
     for(x = 0; x < 360.0f; x += 1.0f)
@@ -1323,6 +1328,7 @@ int STDCALL Ptk_InitDriver(void)
     short *wav_wit = STOCK_WHITE;
     int carrier;
     
+    memset(STOCK_WHITE, 0, sizeof(STOCK_WHITE));
     incr = 1.0f / fMIX_RATE;
     stop = 2.0f;
     carrier = 0;
