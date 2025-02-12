@@ -988,7 +988,7 @@ void ToFloat(int *dest, int val)
     *dest = val;
 }
 
-#if defined(__GCC__) && !(__MACOSX_X86__) && !(__LINUX__)
+#if defined(__GCC__) && !(__MACOSX_X86__) && !(__LINUX__)  && !(__HAIKU__)
 static __inline__ float FastFloor(float f)
 {
     float b, c, d, e, g, h, t;
@@ -1030,7 +1030,7 @@ float FastPow2(float x)
 float FastPow2(float i)
 {
     float x;
-#if defined(__GCC__) && !(__MACOSX_X86__) && !(__LINUX__)
+#if defined(__GCC__) && !(__MACOSX_X86__) && !(__LINUX__) && !(__HAIKU__)
     float y = i - FastFloor(i);
 #else
     float y = i - floorf(i);
@@ -1050,7 +1050,7 @@ float FastLog(float i)
     x = (float) (*(int *) &i);
     x *= 1.0f / (1 << 23);
     x = x - 127;
-#if defined(__GCC__) && !(__MACOSX_X86__) && !(__LINUX__)
+#if defined(__GCC__) && !(__MACOSX_X86__) && !(__LINUX__) && !(__HAIKU__)
     y = x - FastFloor(x);
 #else
     y = x - floorf(x);
