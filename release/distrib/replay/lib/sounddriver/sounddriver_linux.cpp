@@ -51,7 +51,7 @@ snd_pcm_t *playback_handle;
 snd_pcm_sframes_t latency;
 
 int AUDIO_Latency;
-int AUDIO_Milliseconds = 40;
+int AUDIO_Milliseconds = 30;
 
 // ------------------------------------------------------
 // Functions
@@ -66,8 +66,10 @@ void AUDIO_Synth_Play(void);
 // Desc: Audio rendering
 void *AUDIO_Thread(void *arg)
 {
-    int32_t volatile insize;
-    int32_t volatile frames_to_deliver;
+    struct sched_param p;
+
+    p.sched_priority = 1;
+    pthread_setschedparam(pthread_self(), SCHED_FIFO, &p);
 
     while(Thread_Running)
     {
@@ -101,12 +103,7 @@ void *AUDIO_Thread(void *arg)
 // Desc: Init the audio driver
 int AUDIO_Init_Driver(void (*Mixer)(Uint8 *, Uint32))
 {
-    struct sched_param p;
-
     AUDIO_Mixer = Mixer;
-
-    p.sched_priority = 1;
-    pthread_setschedparam(pthread_self(), SCHED_FIFO, &p);
 
     return(AUDIO_Create_Sound_Buffer(AUDIO_Milliseconds));
 }
@@ -136,7 +133,7 @@ int AUDIO_Create_Sound_Buffer(int milliseconds)
         return(FALSE);
     }
     
-    if(milliseconds < 40) milliseconds = 40;
+    if(milliseconds < 30) milliseconds = 30;
     if(milliseconds > 250) milliseconds = 250;
     // US = MS * 1000
     frag_size = (int) (AUDIO_PCM_FREQ * (milliseconds / 1000.0f));
@@ -277,7 +274,6 @@ void AUDIO_Stop_Sound_Buffer(void)
     }
     if(playback_handle)
     {
-        snd_pcm_drain(playback_handle);
         snd_pcm_close(playback_handle);
         playback_handle = NULL;
     }
@@ -289,5 +285,4 @@ void AUDIO_Stop_Sound_Buffer(void)
 void AUDIO_Stop_Driver(void)
 {
     AUDIO_Stop_Sound_Buffer();
-    playback_handle = NULL;
 }
