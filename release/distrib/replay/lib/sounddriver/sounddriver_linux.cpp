@@ -51,7 +51,7 @@ snd_pcm_t *playback_handle;
 snd_pcm_sframes_t latency;
 
 int AUDIO_Latency;
-int AUDIO_Milliseconds = 10;
+int AUDIO_Milliseconds = 40;
 
 // ------------------------------------------------------
 // Functions
@@ -136,7 +136,7 @@ int AUDIO_Create_Sound_Buffer(int milliseconds)
         return(FALSE);
     }
     
-    if(milliseconds < 30) milliseconds = 30;
+    if(milliseconds < 40) milliseconds = 40;
     if(milliseconds > 250) milliseconds = 250;
     // US = MS * 1000
     frag_size = (int) (AUDIO_PCM_FREQ * (milliseconds / 1000.0f));
