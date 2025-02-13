@@ -28,6 +28,7 @@ v2.8.2
 - Saving a pattern without any currently selected block
   will save the entire pattern into the file.
 - New logo !
+- Fixed Linux audio driver.
 
 v2.8.1
 
