@@ -1073,6 +1073,18 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
     {
         free(ExePath);
     }
+
+#if defined(__AMIGAOS4__)
+    if(IGraphics)
+    {
+        IExec->DropInterface((struct Interface *) IGraphics);
+    }
+    if(GfxBase)
+    {
+        IExec->CloseLibrary((struct Library *) GfxBase);
+    }
+#endif
+
     exit(0);
 }
 
