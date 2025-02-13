@@ -6247,7 +6247,8 @@ void Get_Player_Values(void)
                                             ) * local_curr_mas_vol
                                             ) * local_curr_ramp_vol;
 
-            Scope_Dats[c][pos_scope] = (VuMeters_Dats_L[c][pos_scope] + VuMeters_Dats_R[c][pos_scope]) * 1.2f;
+            Scope_Dats[c][pos_scope] = (VuMeters_Dats_L[c][pos_scope] + 
+                                        VuMeters_Dats_R[c][pos_scope]) * 1.2f;
             
             if(absf(VuMeters_Dats_L[c][pos_scope]) > VuMeters_Level_Dats_L[c])
             {

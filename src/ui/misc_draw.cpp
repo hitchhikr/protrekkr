@@ -3067,6 +3067,144 @@ int Get_Font_Height(void)
 }
 
 // ------------------------------------------------------
+// Set the main palette with a default one
+void Restore_Default_Palette(SDL_Color *Def, int DefBevel)
+{
+    int i;
+    for(i = 0; i < sizeof(Default_Palette2) / sizeof(SDL_Color); i++)
+    {
+        Ptk_Palette[i].r = Def[i].r;
+        Ptk_Palette[i].g = Def[i].g;
+        Ptk_Palette[i].b = Def[i].b;
+        Ptk_Palette[i].unused = Def[i].unused;
+    }
+    Beveled = DefBevel;
+}
+
+// ------------------------------------------------------
+// Negate the current palette
+void Negate_Palette(void)
+{
+    int i;
+    
+    for(i = 0; i < sizeof(Default_Palette2) / sizeof(SDL_Color); i++)
+    {
+        if(i != 58)
+        {
+            Ptk_Palette[i].r = 0xff - Ptk_Palette[i].r;
+            Ptk_Palette[i].g = 0xff - Ptk_Palette[i].g;
+            Ptk_Palette[i].b = 0xff - Ptk_Palette[i].b;
+        }
+    }
+}
+
+// ------------------------------------------------------
+// Rotate the current palette components to the left
+void Rotate_Palette_Left(void)
+{
+    int i;
+    int red;
+    int green;
+    int blue;
+
+    for(i = 0; i < sizeof(Default_Palette2) / sizeof(SDL_Color); i++)
+    {
+        if(i != 58)
+        {
+            red = Ptk_Palette[i].r;
+            green = Ptk_Palette[i].g;
+            blue = Ptk_Palette[i].b;
+            Ptk_Palette[i].r = green;
+            Ptk_Palette[i].g = blue;
+            Ptk_Palette[i].b = red;
+        }
+    }
+}
+
+// ------------------------------------------------------
+// Rotate the current palette components to the right
+void Rotate_Palette_Right(void)
+{
+    int i;
+    int red;
+    int green;
+    int blue;
+    
+    for(i = 0; i < sizeof(Default_Palette2) / sizeof(SDL_Color); i++)
+    {
+        if(i != 58)
+        {
+            red = Ptk_Palette[i].r;
+            green = Ptk_Palette[i].g;
+            blue = Ptk_Palette[i].b;
+            Ptk_Palette[i].r = blue;
+            Ptk_Palette[i].g = red;
+            Ptk_Palette[i].b = green;
+        }
+    }
+}
+
+void Set_Main_Palette(void)
+{
+    int i;
+
+    for(i = 0; i < max_colors_303; i++)
+    {
+        Ptk_Palette[i + bare_color_idx].r = Palette_303[i].r;
+        Ptk_Palette[i + bare_color_idx].g = Palette_303[i].g;
+        Ptk_Palette[i + bare_color_idx].b = Palette_303[i].b;
+        Ptk_Palette[i + bare_color_idx].unused = Palette_303[i].unused;
+    }
+}
+
+void Set_Logo_Palette(void)
+{
+    int i;
+
+    for(i = 0; i < max_colors_logo; i++)
+    {
+        Ptk_Palette[i + bare_color_idx].r = Palette_Logo[i].r;
+        Ptk_Palette[i + bare_color_idx].g = Palette_Logo[i].g;
+        Ptk_Palette[i + bare_color_idx].b = Palette_Logo[i].b;
+        Ptk_Palette[i + bare_color_idx].unused = Palette_Logo[i].unused;
+    }
+}
+
+// ------------------------------------------------------
+// Get the ascii & octave of a note
+int Get_Note_Ascii(int note, char *snote, int *octave, int tiret)
+{
+    char *anote;
+
+    *octave = note / 12;
+    note = note % 12;
+    switch(note)
+    {
+        case 0: anote = (char *) (tiret ? "C-" : "C"); break;
+        case 1: anote = (char *) (Accidental ? "Db" : "C#"); break;
+        case 2: anote = (char *) (tiret ? "D-" : "D"); break;
+        case 3: anote = (char *) (Accidental ? "Eb" : "D#"); break;
+        case 4: anote = (char *) (tiret ? "E-" : "E"); break;
+        case 5: anote = (char *) (tiret ? "F-" : "F"); break;
+        case 6: anote = (char *) (Accidental ? "Gb" : "F#"); break;
+        case 7: anote = (char *) (tiret ? "G-" : "G"); break;
+        case 8: anote = (char *) (Accidental ? "Ab" : "G#"); break;
+        case 9: anote = (char *) (tiret ? "A-" : "A"); break;
+        case 10: anote = (char *) (Accidental ? "Bb" : "A#"); break;
+        case 11: anote = (char *) (tiret ? "B-" : "B"); break;
+        default:
+            anote = (char *) "C"; break;
+    }
+    sprintf(snote, "%s", anote);
+    return note;
+}
+
+void Copy_303_Skin(int xd, int yd, int xs, int ys, int w, int h)
+{
+    Copy(GET_SURFACE(SKIN303), xd, yd, xs, ys, xs + w, ys + h);
+}
+
+// ------------------------------------------------------
 // Load a .bmp picture into a SDL surface
 SDL_Surface *Load_Picture(char *FileName)
 {
@@ -3374,84 +3512,6 @@ void Create_Pattern_font(SDL_Surface *Source, SDL_Surface *Dest, int offset,
 
     // Markers arrows
     Copy_To_Surface(Source, Dest, 0, Height * Height, 0, Height, 320, Height + (Height - (Height == 16 ? 2 : 1)));
-}
-
-// ------------------------------------------------------
-// Set the main palette with a default one
-void Restore_Default_Palette(SDL_Color *Def, int DefBevel)
-{
-    int i;
-    for(i = 0; i < sizeof(Default_Palette2) / sizeof(SDL_Color); i++)
-    {
-        Ptk_Palette[i].r = Def[i].r;
-        Ptk_Palette[i].g = Def[i].g;
-        Ptk_Palette[i].b = Def[i].b;
-        Ptk_Palette[i].unused = Def[i].unused;
-    }
-    Beveled = DefBevel;
-}
-
-// ------------------------------------------------------
-// Negate the current palette
-void Negate_Palette(void)
-{
-    int i;
-    
-    for(i = 0; i < sizeof(Default_Palette2) / sizeof(SDL_Color); i++)
-    {
-        if(i != 58)
-        {
-            Ptk_Palette[i].r = 0xff - Ptk_Palette[i].r;
-            Ptk_Palette[i].g = 0xff - Ptk_Palette[i].g;
-            Ptk_Palette[i].b = 0xff - Ptk_Palette[i].b;
-        }
-    }
-}
-
-// ------------------------------------------------------
-// Rotate the current palette components to the left
-void Rotate_Palette_Left(void)
-{
-    int i;
-    int red;
-    int green;
-    int blue;
-
-    for(i = 0; i < sizeof(Default_Palette2) / sizeof(SDL_Color); i++)
-    {
-        if(i != 58)
-        {
-            red = Ptk_Palette[i].r;
-            green = Ptk_Palette[i].g;
-            blue = Ptk_Palette[i].b;
-            Ptk_Palette[i].r = green;
-            Ptk_Palette[i].g = blue;
-            Ptk_Palette[i].b = red;
-        }
-    }
-}
-
-// ------------------------------------------------------
-// Rotate the current palette components to the right
-void Rotate_Palette_Right(void)
-{
-    int i;
-    int red;
-    int green;
-    int blue;
-    
-    for(i = 0; i < sizeof(Default_Palette2) / sizeof(SDL_Color); i++)
-    {
-        if(i != 58)
-        {
-            red = Ptk_Palette[i].r;
-            green = Ptk_Palette[i].g;
-            blue = Ptk_Palette[i].b;
-            Ptk_Palette[i].r = blue;
-            Ptk_Palette[i].g = red;
-            Ptk_Palette[i].b = green;
-        }
-    }
 }
 
 // ------------------------------------------------------
@@ -3816,32 +3876,6 @@ void Destroy_Textures()
 }
 #endif
 
-void Set_Main_Palette(void)
-{
-    int i;
-
-    for(i = 0; i < max_colors_303; i++)
-    {
-        Ptk_Palette[i + bare_color_idx].r = Palette_303[i].r;
-        Ptk_Palette[i + bare_color_idx].g = Palette_303[i].g;
-        Ptk_Palette[i + bare_color_idx].b = Palette_303[i].b;
-        Ptk_Palette[i + bare_color_idx].unused = Palette_303[i].unused;
-    }
-}
-
-void Set_Logo_Palette(void)
-{
-    int i;
-
-    for(i = 0; i < max_colors_logo; i++)
-    {
-        Ptk_Palette[i + bare_color_idx].r = Palette_Logo[i].r;
-        Ptk_Palette[i + bare_color_idx].g = Palette_Logo[i].g;
-        Ptk_Palette[i + bare_color_idx].b = Palette_Logo[i].b;
-        Ptk_Palette[i + bare_color_idx].unused = Palette_Logo[i].unused;
-    }
-}
-
 // ------------------------------------------------------
 // Free the allocated resources
 void Destroy_UI(void)
@@ -3946,38 +3980,4 @@ void Destroy_UI(void)
         SDL_FreeSurface(FONT_LOW);
         FONT_LOW = NULL;
     }
-}
-
-// ------------------------------------------------------
-// Get the ascii & octave of a note
-int Get_Note_Ascii(int note, char *snote, int *octave, int tiret)
-{
-    char *anote;
-
-    *octave = note / 12;
-    note = note % 12;
-    switch(note)
-    {
-        case 0: anote = (char *) (tiret ? "C-" : "C"); break;
-        case 1: anote = (char *) (Accidental ? "Db" : "C#"); break;
-        case 2: anote = (char *) (tiret ? "D-" : "D"); break;
-        case 3: anote = (char *) (Accidental ? "Eb" : "D#"); break;
-        case 4: anote = (char *) (tiret ? "E-" : "E"); break;
-        case 5: anote = (char *) (tiret ? "F-" : "F"); break;
-        case 6: anote = (char *) (Accidental ? "Gb" : "F#"); break;
-        case 7: anote = (char *) (tiret ? "G-" : "G"); break;
-        case 8: anote = (char *) (Accidental ? "Ab" : "G#"); break;
-        case 9: anote = (char *) (tiret ? "A-" : "A"); break;
-        case 10: anote = (char *) (Accidental ? "Bb" : "A#"); break;
-        case 11: anote = (char *) (tiret ? "B-" : "B"); break;
-        default:
-            anote = (char *) "C"; break;
-    }
-    sprintf(snote, "%s", anote);
-    return note;
-}
-
-void Copy_303_Skin(int xd, int yd, int xs, int ys, int w, int h)
-{
-    Copy(GET_SURFACE(SKIN303), xd, yd, xs, ys, xs + w, ys + h);
 }

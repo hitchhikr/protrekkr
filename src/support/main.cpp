@@ -712,7 +712,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
         exit(0);
     }
 
-#if defined(__AMIGAOS4__) || defined(__AROS__) || defined(__MORPHOS__)
+#if defined(__AROS__) || defined(__MORPHOS__)
     char *env_var;
 
     env_var = getenv("PROTREKKR_MAIN_LOOP_DELAY");
@@ -788,9 +788,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
             {
                 case SDL_KEYDOWN:
                     Key_Unicode = Events[i].key.keysym.unicode;
-
                     Symbol = Events[i].key.keysym.sym;
-
                     Uni_Trans = Events[i].key.keysym.unicode;
 
                     if(Uni_Trans < 512)

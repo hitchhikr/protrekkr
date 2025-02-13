@@ -492,7 +492,7 @@ void Read_SMPT(void)
 #define LockDosList(f) IDOS->LockDosList(f)
 #define NextDosEntry(d,f) IDOS->NextDosEntry(d, f)
 #define CopyStringBSTRToC(bin,sout,len) IDOS->CopyStringBSTRToC(bin, sout, len)
-#define	UnLockDosList(f) IDOS->UnLockDosList(f)
+#define UnLockDosList(f) IDOS->UnLockDosList(f)
 #endif
 
     if (!strcmp(Dir_Act, "/"))
@@ -505,7 +505,11 @@ void Read_SMPT(void)
         while ((dl = NextDosEntry(dl, flags)) != NULL)
         {
             // Convert it first
+#if defined(__AMIGAOS4__)
             CopyStringBSTRToC(dl->dol_Name, (unsigned char *) BString, sizeof(BString));
+#else
+            CopyStringBSTRToC(dl->dol_Name, (STRPTR) BString, sizeof(BString));
+#endif
             Add_Entry(BString, _A_SUBDIR);
         }
         UnLockDosList(flags);
@@ -514,9 +518,9 @@ void Read_SMPT(void)
     {
 
 #if defined(__AROS__) || defined(__MORPHOS__)
-		struct stat status;
-		static char full_filename[MAXLEN] = { 0 };
-		static char split[2] = { PATH_SEPARATOR[0], 0 };
+        struct stat status;
+        static char full_filename[MAXLEN] = { 0 };
+        static char split[2] = { PATH_SEPARATOR[0], 0 };
 #endif
 
         DIR *dirp;
@@ -530,29 +534,29 @@ void Read_SMPT(void)
             {
 
 #if defined(__AROS__) || defined(__MORPHOS__)
-				full_filename[0] = 0;
-				strncpy(full_filename, Dir_Act, MAXLEN);
-			
-				if (strlen(full_filename) > 0 && full_filename[strlen(full_filename) - 1] != ':' &&
+                full_filename[0] = 0;
+                strncpy(full_filename, Dir_Act, MAXLEN);
+            
+                if (strlen(full_filename) > 0 && full_filename[strlen(full_filename) - 1] != ':' &&
                     full_filename[strlen(full_filename) - 1] != '/')
                 {
-					strncat(full_filename, PATH_SEPARATOR, MAXLEN - 1);
+                    strncat(full_filename, PATH_SEPARATOR, MAXLEN - 1);
                 }
-				
-				strncpy(full_filename, dp->d_name, MAXLEN);
+                
+                strncpy(full_filename, dp->d_name, MAXLEN);
 
-				if (stat(full_filename, &status) == 0)
-				{
-					if (S_ISDIR(status.st_mode) > 0) 
-					{
-						nbr_dirs++;
-						Add_Entry(dp->d_name, _A_SUBDIR);
-					}
+                if (stat(full_filename, &status) == 0)
+                {
+                    if (S_ISDIR(status.st_mode) > 0) 
+                    {
+                        nbr_dirs++;
+                        Add_Entry(dp->d_name, _A_SUBDIR);
+                    }
                     else
                     {
-						Add_Entry(dp->d_name, 0);
-					}
-				}
+                        Add_Entry(dp->d_name, 0);
+                    }
+                }
 #else
                 struct stat st;
                 if(dp->d_type == DT_UNKNOWN &&
