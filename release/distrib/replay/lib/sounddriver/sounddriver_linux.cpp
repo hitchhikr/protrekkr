@@ -51,7 +51,7 @@ snd_pcm_t *playback_handle;
 snd_pcm_sframes_t latency;
 
 int AUDIO_Latency;
-int AUDIO_Milliseconds = 30;
+int AUDIO_Milliseconds = 20;
 
 // ------------------------------------------------------
 // Functions
@@ -86,10 +86,13 @@ void *AUDIO_Thread(void *arg)
                 AUDIO_Acknowledge = TRUE;
             }
 
-            snd_pcm_writei(playback_handle, AUDIO_SoundBuffer, AUDIO_SoundBuffer_Size >> 2);
-            
             AUDIO_Samples += AUDIO_SoundBuffer_Size;
             AUDIO_Timer = ((((float) AUDIO_Samples) * (1.0f / (float) AUDIO_Latency)) * 1000.0f);
+
+            if(snd_pcm_writei(playback_handle, AUDIO_SoundBuffer, AUDIO_SoundBuffer_Size >> 2) < 0)
+            {
+                snd_pcm_prepare(playback_handle);
+            }
         }
         usleep(10);
     }
@@ -133,7 +136,7 @@ int AUDIO_Create_Sound_Buffer(int milliseconds)
         return(FALSE);
     }
     
-    if(milliseconds < 30) milliseconds = 30;
+    if(milliseconds < 20) milliseconds = 20;
     if(milliseconds > 250) milliseconds = 250;
     // US = MS * 1000
     frag_size = (int) (AUDIO_PCM_FREQ * (milliseconds / 1000.0f));
@@ -158,6 +161,7 @@ int AUDIO_Create_Sound_Buffer(int milliseconds)
     AUDIO_SoundBuffer = (short *) malloc(AUDIO_SoundBuffer_Size);
 
     Thread_Running = 1;
+    hThread = 0;
     if(pthread_create(&hThread, NULL, AUDIO_Thread, NULL) == 0)
     {
         return(TRUE);

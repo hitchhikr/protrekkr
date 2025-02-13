@@ -160,7 +160,7 @@ void Actualize_Master_Ed(char gode)
             if(AUDIO_Milliseconds < 20) AUDIO_Milliseconds = 20;
 #else
 #if defined(__LINUX_ALSASEQ__)
-            if(AUDIO_Milliseconds < 30) AUDIO_Milliseconds = 30;
+            if(AUDIO_Milliseconds < 20) AUDIO_Milliseconds = 20;
 #else
             if(AUDIO_Milliseconds < 10) AUDIO_Milliseconds = 10;
 #endif
@@ -577,7 +577,7 @@ void Mouse_Left_Master_Ed(void)
             if(AUDIO_Milliseconds > 20)
 #else
 #if defined(__LINUX_ALSASEQ__)
-            if(AUDIO_Milliseconds > 30)
+            if(AUDIO_Milliseconds > 20)
 #else
             if(AUDIO_Milliseconds > 10)
 #endif
