@@ -137,7 +137,7 @@ int AUDIO_Create_Sound_Buffer(int milliseconds)
 
     int Dsp_Val;
 
-	frag_size = 10 + (int) (logf((float) (frag_size >> 9)) / logf(2.0f));
+    frag_size = 10 + (int) (logf((float) (frag_size >> 9)) / logf(2.0f));
 
     Dsp_Val = (num_fragments << 16) | frag_size;
     ioctl(AUDIO_Device, SNDCTL_DSP_SETFRAGMENT, &Dsp_Val);

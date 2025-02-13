@@ -2432,10 +2432,10 @@ void Load_File(int Freeindex, const char *str)
            strcmp(extension, "TWNNINS4") == 0 ||
            strcmp(extension, "TWNNINS5") == 0 ||
            strcmp(extension, "TWNNINS6") == 0 ||
-           strcmp(extension, "TWNNINS7") == 0 ||
+           strcmp(extension, "TWNNINS7") == 0 ||*/
            strcmp(extension, "TWNNINS8") == 0 ||
            strcmp(extension, "TWNNINS9") == 0 ||
-           strcmp(extension, "TWNNINS9") == 0 ||*/
+           strcmp(extension, "TWNNINS9") == 0 ||
            strcmp(extension, "PROTINSA") == 0 ||
            strcmp(extension, "PROTINSB") == 0 ||
            strcmp(extension, "PROTINSC") == 0 ||
@@ -2489,12 +2489,12 @@ void Load_File(int Freeindex, const char *str)
             Unlock_Audio_Thread();
             AUDIO_Play();
         }
-        else if(/*strcmp(extension, "TWNNSYN0") == 0 ||
+        else if(strcmp(extension, "TWNNSYN0") == 0 ||
                 strcmp(extension, "TWNNSYN1") == 0 ||
                 strcmp(extension, "TWNNSYN2") == 0 ||
                 strcmp(extension, "TWNNSYN3") == 0 ||
                 strcmp(extension, "TWNNSYN4") == 0 ||
-                strcmp(extension, "TWNNSYN5") == 0 ||*/
+                strcmp(extension, "TWNNSYN5") == 0 ||
                 strcmp(extension, "TWNNSYN6") == 0 ||
                 strcmp(extension, "TWNNSYN7") == 0 ||
                 strcmp(extension, "PROTSYN8") == 0)
