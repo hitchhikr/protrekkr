@@ -274,6 +274,7 @@ void AUDIO_Stop_Sound_Buffer(void)
     }
     if(playback_handle)
     {
+        snd_pcm_drain(playback_handle);
         snd_pcm_close(playback_handle);
         playback_handle = NULL;
     }

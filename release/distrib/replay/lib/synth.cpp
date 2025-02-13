@@ -172,6 +172,12 @@ void CSynth::Reset(void)
 
     Data.PTC_GLIDE_64 = 0;
 
+    Data.GLB_VOLUME = 1.0f;
+    Data.OSC_COMBINE = COMBINE_ADD;
+
+    Data.OSC_SYNC = FALSE;
+    Data.OSC_3_INTERVAL = 12;
+
 #endif
 
 #if defined(PTK_SYNTH_LFO_1)
