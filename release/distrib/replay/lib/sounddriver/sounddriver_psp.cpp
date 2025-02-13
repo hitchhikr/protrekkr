@@ -132,13 +132,11 @@ void *AUDIO_malloc_64(int *size)
 // Desc: Create an audio buffer of given milliseconds
 int AUDIO_Create_Sound_Buffer(int milliseconds)
 {
-    int num_fragments;
     int frag_size;
 
     if(milliseconds < 10) milliseconds = 10;
     if(milliseconds > 250) milliseconds = 250;
 
-    num_fragments = 6;
     frag_size = (int) (AUDIO_PCM_FREQ * (milliseconds / 1000.0f));
 
     AUDIO_SoundBuffer_Size = frag_size * ((AUDIO_DBUF_RESOLUTION * AUDIO_DBUF_CHANNELS) >> 3);

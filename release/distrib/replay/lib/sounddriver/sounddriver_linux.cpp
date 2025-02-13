@@ -84,16 +84,10 @@ void *AUDIO_Thread(void *arg)
                 AUDIO_Acknowledge = TRUE;
             }
 
-            insize = snd_pcm_bytes_to_frames(playback_handle, AUDIO_SoundBuffer_Size);
-            snd_pcm_writei(playback_handle, AUDIO_SoundBuffer, insize);
-            snd_pcm_delay(playback_handle, &latency);
-            AUDIO_Latency = latency;
-            if(AUDIO_Latency <= 0)
-            {
-                AUDIO_Latency = 1;
-            }
-            AUDIO_Samples += insize;
-            AUDIO_Timer = ((float) AUDIO_Latency);
+            snd_pcm_writei(playback_handle, AUDIO_SoundBuffer, AUDIO_SoundBuffer_Size >> 2);
+            
+            AUDIO_Samples += AUDIO_SoundBuffer_Size;
+            AUDIO_Timer = ((((float) AUDIO_Samples) * (1.0f / (float) AUDIO_Latency)) * 1000.0f);
         }
         usleep(10);
     }
@@ -142,21 +136,29 @@ int AUDIO_Create_Sound_Buffer(int milliseconds)
         return(FALSE);
     }
     
-    if(milliseconds < 10) milliseconds = 10;
+    if(milliseconds < 30) milliseconds = 30;
     if(milliseconds > 250) milliseconds = 250;
     // US = MS * 1000
-    frag_size = (int) (AUDIO_PCM_FREQ * (milliseconds / 100.0f));
-    snd_pcm_set_params(playback_handle,
-                       SND_PCM_FORMAT_S16_LE,
-                       SND_PCM_ACCESS_RW_INTERLEAVED,
-                       AUDIO_DBUF_CHANNELS,
-                       AUDIO_PCM_FREQ,
-                       1,
-                       milliseconds * 10000);
+    frag_size = (int) (AUDIO_PCM_FREQ * (milliseconds / 1000.0f));
+    if(snd_pcm_set_params(playback_handle,
+                          SND_PCM_FORMAT_S16_LE,
+                          SND_PCM_ACCESS_RW_INTERLEAVED,
+                          AUDIO_DBUF_CHANNELS,
+                          AUDIO_PCM_FREQ,
+                          0,
+                          milliseconds * 1000) < 0)
+    {
 
-    AUDIO_SoundBuffer_Size = frag_size;
+#if !defined(__STAND_ALONE__) && !defined(__WINAMP__)
+        Message_Error("Error while calling snd_pcm_set_params()");
+#endif
+
+        return(FALSE);
+    }
+
+    AUDIO_SoundBuffer_Size = frag_size * ((AUDIO_DBUF_RESOLUTION * AUDIO_DBUF_CHANNELS) >> 3);
     AUDIO_Latency = AUDIO_SoundBuffer_Size;
-    AUDIO_SoundBuffer = (short *) malloc(AUDIO_SoundBuffer_Size << 1);
+    AUDIO_SoundBuffer = (short *) malloc(AUDIO_SoundBuffer_Size);
 
     Thread_Running = 1;
     if(pthread_create(&hThread, NULL, AUDIO_Thread, NULL) == 0)

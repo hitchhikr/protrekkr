@@ -159,7 +159,11 @@ void Actualize_Master_Ed(char gode)
 #if defined(__AMIGAOS4__)
             if(AUDIO_Milliseconds < 20) AUDIO_Milliseconds = 20;
 #else
+#if defined(__LINUX_ALSASEQ__)
+            if(AUDIO_Milliseconds < 30) AUDIO_Milliseconds = 30;
+#else
             if(AUDIO_Milliseconds < 10) AUDIO_Milliseconds = 10;
+#endif
 #endif
 
             if(AUDIO_Milliseconds > 250) AUDIO_Milliseconds = 250;
@@ -572,7 +576,11 @@ void Mouse_Left_Master_Ed(void)
 #if defined(__AMIGAOS4__)
             if(AUDIO_Milliseconds > 20)
 #else
+#if defined(__LINUX_ALSASEQ__)
+            if(AUDIO_Milliseconds > 30)
+#else
             if(AUDIO_Milliseconds > 10)
+#endif
 #endif
 
             {
