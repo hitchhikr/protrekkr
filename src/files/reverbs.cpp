@@ -104,6 +104,7 @@ void Load_Reverb(char *FileName)
         fread(extension, sizeof(char), 9, in);
 
         if(strcmp(extension, "TWNNREV1") == 0 ||
+           strcmp(extension, "PROTREV1") == 0 ||
            strcmp(extension, "PROTREV2") == 0
           )
         {
@@ -116,12 +117,10 @@ void Load_Reverb(char *FileName)
 
             // Ok, extension matched!
             Status_Box("Loading Reverb Data...", TRUE);
-
             Read_Data(Reverb_Name, sizeof(char), 20, in);
             Load_Reverb_Data(Read_Data, Read_Data_Swap, in, New_Reverb);
             Initreverb();
             Actualize_Reverb_Ed(0);
-
             Status_Box("Reverb Data Loaded Successfully.", TRUE);
         }
         else
@@ -144,7 +143,7 @@ void Save_Reverb(void)
     char Temph[96];
     char extension[10];
 
-    sprintf(extension, "TWNNREV1");
+    sprintf(extension, "PROTREV1");
     sprintf(Temph, "Saving '%s.prv' Data In Reverbs Directory...", Reverb_Name);
     Status_Box(Temph, TRUE);
     sprintf(Temph, "%s" SLASH "%s.prv", Dir_Reverbs, Reverb_Name);

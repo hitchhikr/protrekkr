@@ -52,6 +52,7 @@ int csynth_slv_LFO_2;
 int csynth_slv_ENV_1;
 int csynth_slv_ENV_2;
 int csynth_slv_Misc;
+int temp_osc_3_interval;
 
 int Allow_All;
 int Allow_Button;
@@ -107,10 +108,11 @@ int Tbl_Synth_OSC_1[] =
     9, /* ENV_1_Sustain */
     10, /* ENV_1_Release */
     49, /* OSC_3 volume */
+    49, /* OSC_3 interval */
 };
 int Pos_Tbl_Synth_OSC_1;
 int Size_Tbl_Synth_OSC_1 = (sizeof(Tbl_Synth_OSC_1) / sizeof(int)) - 1;
-char Names_Tbl_Synth_OSC_1[(sizeof(Tbl_Synth_OSC_1) / sizeof(int))][24];
+char Names_Tbl_Synth_OSC_1[(sizeof(Tbl_Synth_OSC_1) / sizeof(int))][32];
 
 int Tbl_Synth_OSC_2[] =
 {
@@ -124,7 +126,7 @@ int Tbl_Synth_OSC_2[] =
 };
 int Pos_Tbl_Synth_OSC_2;
 int Size_Tbl_Synth_OSC_2 = (sizeof(Tbl_Synth_OSC_2) / sizeof(int)) - 1;
-char Names_Tbl_Synth_OSC_2[(sizeof(Tbl_Synth_OSC_2) / sizeof(int))][24];
+char Names_Tbl_Synth_OSC_2[(sizeof(Tbl_Synth_OSC_2) / sizeof(int))][32];
 
 int Tbl_Synth_VCF[] =
 {
@@ -133,7 +135,7 @@ int Tbl_Synth_VCF[] =
 };
 int Pos_Tbl_Synth_VCF;
 int Size_Tbl_Synth_VCF = (sizeof(Tbl_Synth_VCF) / sizeof(int)) - 1;
-char Names_Tbl_Synth_VCF[(sizeof(Tbl_Synth_VCF) / sizeof(int))][24];
+char Names_Tbl_Synth_VCF[(sizeof(Tbl_Synth_VCF) / sizeof(int))][32];
 
 int Tbl_Synth_LFO_1[] =
 {
@@ -154,7 +156,7 @@ int Tbl_Synth_LFO_1[] =
 };
 int Pos_Tbl_Synth_LFO_1;
 int Size_Tbl_Synth_LFO_1 = (sizeof(Tbl_Synth_LFO_1) / sizeof(int)) - 1;
-char Names_Tbl_Synth_LFO_1[(sizeof(Tbl_Synth_LFO_1) / sizeof(int))][24];
+char Names_Tbl_Synth_LFO_1[(sizeof(Tbl_Synth_LFO_1) / sizeof(int))][32];
 
 int Tbl_Synth_LFO_2[] =
 {
@@ -175,7 +177,7 @@ int Tbl_Synth_LFO_2[] =
 };
 int Pos_Tbl_Synth_LFO_2;
 int Size_Tbl_Synth_LFO_2 = (sizeof(Tbl_Synth_LFO_2) / sizeof(int)) - 1;
-char Names_Tbl_Synth_LFO_2[(sizeof(Tbl_Synth_LFO_2) / sizeof(int))][24];
+char Names_Tbl_Synth_LFO_2[(sizeof(Tbl_Synth_LFO_2) / sizeof(int))][32];
 
 int Tbl_Synth_ENV_1[] =
 {
@@ -191,7 +193,7 @@ int Tbl_Synth_ENV_1[] =
 };
 int Pos_Tbl_Synth_ENV_1;
 int Size_Tbl_Synth_ENV_1 = (sizeof(Tbl_Synth_ENV_1) / sizeof(int)) - 1;
-char Names_Tbl_Synth_ENV_1[(sizeof(Tbl_Synth_ENV_1) / sizeof(int))][24];
+char Names_Tbl_Synth_ENV_1[(sizeof(Tbl_Synth_ENV_1) / sizeof(int))][32];
 
 int Tbl_Synth_ENV_2[] =
 {
@@ -207,7 +209,7 @@ int Tbl_Synth_ENV_2[] =
 };
 int Pos_Tbl_Synth_ENV_2;
 int Size_Tbl_Synth_ENV_2 = (sizeof(Tbl_Synth_ENV_2) / sizeof(int)) - 1;
-char Names_Tbl_Synth_ENV_2[(sizeof(Tbl_Synth_ENV_2) / sizeof(int))][24];
+char Names_Tbl_Synth_ENV_2[(sizeof(Tbl_Synth_ENV_2) / sizeof(int))][32];
 
 int Tbl_Synth_Misc[] =
 {
@@ -217,7 +219,7 @@ int Tbl_Synth_Misc[] =
 };
 int Pos_Tbl_Synth_Misc;
 int Size_Tbl_Synth_Misc = (sizeof(Tbl_Synth_Misc) / sizeof(int)) - 1;
-char Names_Tbl_Synth_Misc[(sizeof(Tbl_Synth_Misc) / sizeof(int))][24];
+char Names_Tbl_Synth_Misc[(sizeof(Tbl_Synth_Misc) / sizeof(int))][32];
 
 void Draw_Synth_Ed(void)
 {
@@ -394,8 +396,7 @@ void Actualize_Synth_Ed(char gode)
             Actualize_Synth_Params_Sliders();
         }
 
-        if(gode == UPDATE_SYNTH_ED_ALL ||
-           gode == UPDATE_SYNTH_ED_OSC_1_PARAMS)
+        if(gode == UPDATE_SYNTH_ED_ALL || gode == UPDATE_SYNTH_ED_OSC_1_PARAMS)
         {
             if(Pos_Tbl_Synth_OSC_1 < 0) Pos_Tbl_Synth_OSC_1 = 0;
             if(Pos_Tbl_Synth_OSC_1 > Size_Tbl_Synth_OSC_1) Pos_Tbl_Synth_OSC_1 = Size_Tbl_Synth_OSC_1;
@@ -1448,6 +1449,12 @@ void Actualize_Synth_Params_Sliders(void)
             outfloat_small(208, (Cur_Height - 113) - 1, ((float) Cur_SynthParam->osc_3_volume - 64.0f) * 1.5625f, 1, 63, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_OSC_1 = Cur_SynthParam->osc_3_volume;
             break;
+
+        case 6: /* OSC_3 interval */
+            Real_Slider(41, (Cur_Height - 113) - 1, (int) ((float) Cur_SynthParam->osc_3_interval / 12.0f * 128.0f), Allow_All);
+            Print_Long_Small(208, (Cur_Height - 113) - 1, Cur_SynthParam->osc_3_interval, 13, 63, BUTTON_NORMAL | BUTTON_DISABLED);
+            csynth_slv_OSC_1 = temp_osc_3_interval;
+            break;
     }
     // -----------------------------
 
@@ -1983,6 +1990,15 @@ void Center_SynthParam_OSC_1(void)
             Cur_SynthParam->osc_3_volume = 64;
             csynth_slv_OSC_1 = Cur_SynthParam->osc_3_volume;
             break;
+
+        case 6: /* OSC_3 interval */
+            temp_osc_3_interval = 64;
+            Cur_SynthParam->osc_3_interval = (int) (((float) temp_osc_3_interval / 128.0f) * 12.0f);
+            if(Cur_SynthParam->osc_3_interval < 0) Cur_SynthParam->osc_3_interval = 0;
+            if(Cur_SynthParam->osc_3_interval > 12) Cur_SynthParam->osc_3_interval = 12;
+            csynth_slv_OSC_1 = temp_osc_3_interval;
+            break;
+
     }
 }
 
@@ -2360,6 +2376,13 @@ void CParcha_OSC_1(int cpar)
         case 5: /* OSC_3 volume */
             PARASynth[Current_Instrument].osc_3_volume = cpar;
             break;
+
+        case 6: /* OSC_3 interval */
+            temp_osc_3_interval = cpar;
+            PARASynth[Current_Instrument].osc_3_interval = (int) (((float) temp_osc_3_interval / 128.0f) * 12.0f);
+            if(PARASynth[Current_Instrument].osc_3_interval < 0) PARASynth[Current_Instrument].osc_3_interval = 0;
+            if(PARASynth[Current_Instrument].osc_3_interval > 12) PARASynth[Current_Instrument].osc_3_interval = 12;
+            break;
     }
 }
 
@@ -2649,6 +2672,10 @@ void Rand_OSC_1()
     PARASynth[Current_Instrument].env_1_sustain = rand() & 0x7f;
     PARASynth[Current_Instrument].env_1_release = rand() & 0xffff;
     PARASynth[Current_Instrument].osc_3_volume = rand() & 0x7f;
+    temp_osc_3_interval = (rand() & 0x7f);
+    PARASynth[Current_Instrument].osc_3_interval = (int) (((float) temp_osc_3_interval / 128.0f) * 12.0f);
+    if(PARASynth[Current_Instrument].osc_3_interval < 0) PARASynth[Current_Instrument].osc_3_interval = 0;
+    if(PARASynth[Current_Instrument].osc_3_interval > 12) PARASynth[Current_Instrument].osc_3_interval = 12;
     Actualize_Synth_Ed(UPDATE_SYNTH_ED_VALUES);
 }
 
@@ -2790,6 +2817,7 @@ void Init_Synth_Params_Names(void)
     sprintf(Names_Tbl_Synth_OSC_1[3], "Sustain Level");
     sprintf(Names_Tbl_Synth_OSC_1[4], "Release");
     sprintf(Names_Tbl_Synth_OSC_1[5], "Sub-Oscillator Volume");
+    sprintf(Names_Tbl_Synth_OSC_1[6], "Sub-Oscillator Interval");
 
     sprintf(Names_Tbl_Synth_OSC_2[0], "Pulse Phase");
     sprintf(Names_Tbl_Synth_OSC_2[1], "Detune");

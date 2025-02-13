@@ -49,6 +49,7 @@ void Load_Inst(char *FileName)
     int Long_Midi_Prg = FALSE;
     int Var_Disto = FALSE;
     int Osc_Sync = FALSE;
+    int Osc_3_Interval = FALSE;
 
     Status_Box("Attempting To Load An Instrument File...", TRUE);
     FILE *in;
@@ -62,6 +63,8 @@ void Load_Inst(char *FileName)
 
         switch(extension[7])
         {
+            case 'D':
+                Osc_3_Interval = TRUE;
             case 'C':
                 Osc_Sync = TRUE;
             case 'B':
@@ -129,7 +132,9 @@ void Load_Inst(char *FileName)
 
         Read_Synth_Params(Read_Data, Read_Data_Swap, in, swrite,
                           !old_bug, new_adsr, tight,
-                          Env_Modulation, New_Env, FALSE, Combine, Var_Disto, Osc_Sync);
+                          Env_Modulation, New_Env, FALSE, Combine, Var_Disto,
+                          Osc_Sync, Osc_3_Interval);
+        
         // Gsm by default
         if(Pack_Scheme)
         {
@@ -224,7 +229,7 @@ void Save_Inst(void)
     char synth_prg;
     int synth_save;
 
-    sprintf(extension, "PROTINSC");
+    sprintf(extension, "PROTINSD");
 
     if(!strlen(nameins[Current_Instrument])) sprintf(nameins[Current_Instrument], "Untitled");
     sprintf (Temph, "Saving '%s.pti' Instrument In Instruments Directory...", nameins[Current_Instrument]);

@@ -59,7 +59,8 @@ void Read_Synth_Params(int (*Read_Function)(void *, int ,int, CustomFile &),
                        int Ntk_Beta,
                        int Combine,
                        int Var_Disto,
-                       int Sync
+                       int Sync,
+                       int Osc_3_Interval
                       );
 void Write_Synth_Params(int (*Write_Function)(void *, int ,int, FILE *),
                         int (*Write_Function_Swap)(void *, int ,int, FILE *),

@@ -1483,6 +1483,7 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
 
                 Write_Mod_Data(&PARASynth[swrite].osc_combine, sizeof(char), 1, in);
                 Write_Mod_Data(&PARASynth[swrite].osc_sync, sizeof(char), 1, in);
+                Write_Mod_Data(&PARASynth[swrite].osc_3_interval, sizeof(char), 1, in);
             }
 
             // Compression type

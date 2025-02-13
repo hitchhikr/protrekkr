@@ -874,8 +874,10 @@ int delay_time;
     int R_MaxLevel;
     extern int Chan_Midi_Prg[MAX_TRACKS];
     float *Scope_Dats[MAX_TRACKS];
-    float *Scope_Dats_L[MAX_TRACKS];
-    float *Scope_Dats_R[MAX_TRACKS];
+    float *VuMeters_Dats_L[MAX_TRACKS];
+    float *VuMeters_Dats_R[MAX_TRACKS];
+    float VuMeters_Level_Dats_L[MAX_TRACKS];
+    float VuMeters_Level_Dats_R[MAX_TRACKS];
     float *Scope_Dats_LeftRight[2];
     int pos_scope;
     int pos_scope_latency;
@@ -2298,7 +2300,7 @@ void Pre_Song_Init(void)
 #endif
 
 #if !defined(__STAND_ALONE__) || defined(__WINAMP__)
-        Chan_Mute_State[ini] = 0;
+        Chan_Mute_State[ini] = FALSE;
 #endif
 
 #if defined(PTK_LFO)
@@ -4231,17 +4233,17 @@ ByPass_Wav:
         if(!Chan_Mute_State[c])
         {
 #if DENORMAL
-            Scope_Dats_L[c][pos_scope] = denormal(All_Signal_L / 32767.0f);
-            Scope_Dats_R[c][pos_scope] = denormal(All_Signal_R / 32767.0f);
+            VuMeters_Dats_L[c][pos_scope] = denormal(All_Signal_L / 32767.0f);
+            VuMeters_Dats_R[c][pos_scope] = denormal(All_Signal_R / 32767.0f);
 #else
-            Scope_Dats_L[c][pos_scope] = All_Signal_L / 32767.0f;
-            Scope_Dats_R[c][pos_scope] = All_Signal_R / 32767.0f;
+            VuMeters_Dats_L[c][pos_scope] = All_Signal_L / 32767.0f;
+            VuMeters_Dats_R[c][pos_scope] = All_Signal_R / 32767.0f;
 #endif
         }
         else
         {
-            Scope_Dats_L[c][pos_scope] = 0.0f;
-            Scope_Dats_R[c][pos_scope] = 0.0f;
+            VuMeters_Dats_L[c][pos_scope] = 0.0f;
+            VuMeters_Dats_R[c][pos_scope] = 0.0f;
         }
 #endif
     } // Song_Tracks
@@ -4875,7 +4877,7 @@ void Play_Instrument(int channel, int sub_channel)
 
 #if !defined(__STAND_ALONE__)
 #if !defined(__NO_MIDI__)
-            if(Chan_Mute_State[channel] == 0 &&
+            if(Chan_Mute_State[channel] == FALSE &&
                c_midiout != -1 &&
                Midiprg[associated_sample] != -1)
             {
@@ -6233,28 +6235,53 @@ void Get_Player_Values(void)
     {
         if(!Chan_Mute_State[c])
         {
-            Scope_Dats_L[c][pos_scope] = ((((Scope_Dats_L[c][pos_scope]
-                                         ) * left_compress
-                                         ) * mas_vol
-                                         ) * local_curr_mas_vol
-                                         ) * local_curr_ramp_vol;
+            VuMeters_Dats_L[c][pos_scope] = ((((VuMeters_Dats_L[c][pos_scope]
+                                            ) * left_compress
+                                            ) * mas_vol
+                                            ) * local_curr_mas_vol
+                                            ) * local_curr_ramp_vol;
 
-            Scope_Dats_R[c][pos_scope] = ((((Scope_Dats_R[c][pos_scope]
-                                         ) * right_compress
-                                         ) * mas_vol
-                                         ) * local_curr_mas_vol
-                                         ) * local_curr_ramp_vol;
+            VuMeters_Dats_R[c][pos_scope] = ((((VuMeters_Dats_R[c][pos_scope]
+                                            ) * right_compress
+                                            ) * mas_vol
+                                            ) * local_curr_mas_vol
+                                            ) * local_curr_ramp_vol;
 
-            Scope_Dats[c][pos_scope] = (Scope_Dats_L[c][pos_scope] + Scope_Dats_R[c][pos_scope]) * 1.2f;
+            Scope_Dats[c][pos_scope] = (VuMeters_Dats_L[c][pos_scope] + VuMeters_Dats_R[c][pos_scope]) * 1.2f;
+            
+            if(absf(VuMeters_Dats_L[c][pos_scope]) > VuMeters_Level_Dats_L[c])
+            {
+                VuMeters_Level_Dats_L[c] = absf(VuMeters_Dats_L[c][pos_scope]);
+            }
+            if(absf(VuMeters_Dats_R[c][pos_scope]) > VuMeters_Level_Dats_R[c])
+            {
+                VuMeters_Level_Dats_R[c] = absf(VuMeters_Dats_R[c][pos_scope]);
+            }
         }
         else
         {
-            Scope_Dats_L[c][pos_scope] = 0.0f;
-            Scope_Dats_R[c][pos_scope] = 0.0f;
+            VuMeters_Dats_L[c][pos_scope] = 0.0f;
+            VuMeters_Dats_R[c][pos_scope] = 0.0f;
+            VuMeters_Level_Dats_L[c] = 0.0f;
+            VuMeters_Level_Dats_R[c] = 0.0f;
             Scope_Dats[c][pos_scope] = 0.0f;
         }
-
-
+        if(VuMeters_Level_Dats_L[c] > 0.0f) 
+        {
+            VuMeters_Level_Dats_L[c] -= 0.00002f;
+        }
+        else
+        {
+            VuMeters_Level_Dats_L[c] = 0.0f;
+        }
+        if(VuMeters_Level_Dats_R[c] > 0.0f) 
+        {
+            VuMeters_Level_Dats_R[c] -= 0.00002f;
+        }
+        else
+        {
+            VuMeters_Level_Dats_R[c] = 0.0f;
+        }
     }
 #endif
 
@@ -7062,6 +7089,8 @@ void Reset_Synth_Parameters(Synth_Parameters *TSP)
     TSP->osc_2_waveform = WAVEFORM_PULSE;
     TSP->osc_combine = COMBINE_ADD;
     TSP->osc_sync = FALSE;
+    TSP->osc_3_interval = 12;
+
     TSP->osc_1_pw = 256;
 
     TSP->osc_2_pw = 256;

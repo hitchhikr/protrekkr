@@ -2,7 +2,7 @@
 ProTrekkr releases history
 ===============================================================================
 
-v2.8.2 PRE 1
+v2.8.2
 
 - Patterns wouldn't scroll sometimes when starting to play, fixed.
 - Note volume from channels (volume columns and effects 03) are now handled
@@ -19,6 +19,15 @@ v2.8.2 PRE 1
 - Inserting or deleting a track didn't modify the other patterns data.
 - Fixed an ugly visual bug that occured when changing colors during playing.
 - Added tracks header foreground color modifier.
+- Sub oscillator can now be scaled from oscillator 1 by semitones.
+- Maths combiner functions are also used for sub oscillator.
+- Fixed various bugs here and there.
+- VU meters are now displayed on a single line and a much less sensitive.
+- Removed support for antediluvian NoiseTrekker 1/2 modules & instruments, 
+  they were only supported for salvage and conversion purposes.
+- Saving a pattern without any currently selected block
+  will save the entire pattern into the file.
+- New logo !
 
 v2.8.1
 

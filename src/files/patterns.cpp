@@ -34,6 +34,10 @@
 #include "include/patterns.h"
 
 // ------------------------------------------------------
+// Variables
+extern int block_in_selection[NBR_COPY_BLOCKS];
+
+// ------------------------------------------------------
 // Load the data from a pattern file
 void Load_Pattern_Data(int (*Read_Function)(void *, int ,int, FILE *),
                       int (*Read_Function_Swap)(void *, int ,int, FILE *),
@@ -83,10 +87,18 @@ void Save_Pattern_Data(int (*Write_Function)(void *, int ,int, FILE *),
                       FILE *in)
 {
     int Cur_Position = Get_Song_Position();
+    int was_empty = FALSE;
 
     int Old_Curr_Buff_Block = Curr_Buff_Block;
 
+    if(block_in_selection[Curr_Buff_Block] == FALSE)
+    {
+        Select_Pattern_Block();
+        was_empty = TRUE;
+    }
+
     Copy_Buff(NBR_COPY_BLOCKS - 1, Curr_Buff_Block);
+    
     Curr_Buff_Block = NBR_COPY_BLOCKS - 1;
     Copy_Selection_To_Buffer(Cur_Position);
 
@@ -107,6 +119,10 @@ void Save_Pattern_Data(int (*Write_Function)(void *, int ,int, FILE *),
         free(Final_Mem_Out);
     }
     Curr_Buff_Block = Old_Curr_Buff_Block;
+    if(was_empty)
+    {
+        Unselect_Selection();
+    }
     Update_Pattern(0);
 }
 
@@ -137,7 +153,6 @@ void Load_Pattern(char *FileName)
         {
             // Ok, extension matched!
             Status_Box("Loading Pattern Data...", TRUE);
-
             Read_Data(Selection_Name, sizeof(char), 20, in);
             Load_Pattern_Data(Read_Data, Read_Data_Swap, in, version);
             Update_Pattern(0);
@@ -173,9 +188,7 @@ void Save_Pattern(void)
     {
         Write_Data(extension, sizeof(char), 9, in);
         Write_Data(Selection_Name, sizeof(char), 20, in);
-
         Save_Pattern_Data(Write_Data, Write_Data_Swap, in);
-
         fclose(in);
         Read_SMPT();
         last_index = -1;

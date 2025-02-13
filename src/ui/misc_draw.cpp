@@ -1576,6 +1576,7 @@ void Print_Long_Small(int x, int y, int value, int mode, int size, int flags)
         case 10: sprintf(xstr, "S: %d", value); break;
         case 11: sprintf(xstr, "E: %d", value); break;
         case 12: sprintf(xstr, "L: %d", value); break;
+        case 13: sprintf(xstr, "%d STones", value); break;
     }
     Gui_Draw_Button_Box(x, y, size - 1, 16, xstr, flags);
 }

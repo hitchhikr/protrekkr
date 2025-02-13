@@ -86,7 +86,6 @@ void Load_Midi_Cfg(char *FileName)
             Read_Data(Midi_Name, sizeof(char), 20, in);
             Load_Midi_Cfg_Data(Read_Data, Read_Data_Swap, in);
             Actualize_Midi_Ed(0);
-
             Status_Box("Midi Config Data Loaded Successfully.", TRUE);
         }
         else

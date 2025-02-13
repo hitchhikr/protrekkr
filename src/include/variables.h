@@ -484,8 +484,10 @@ extern unsigned int SamplesPerSub;
 extern char sas;
 
 extern float *Scope_Dats[MAX_TRACKS];
-extern float *Scope_Dats_L[MAX_TRACKS];
-extern float *Scope_Dats_R[MAX_TRACKS];
+extern float *VuMeters_Dats_L[MAX_TRACKS];
+extern float *VuMeters_Dats_R[MAX_TRACKS];
+extern float VuMeters_Level_Dats_L[MAX_TRACKS];
+extern float VuMeters_Level_Dats_R[MAX_TRACKS];
 extern float *Scope_Dats_LeftRight[2];
 
 #if !defined(BZR2)

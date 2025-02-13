@@ -54,14 +54,15 @@ void Read_Synth_Params(int (*Read_Function)(void *, int, int, CustomFile &),
                        int Ntk_Beta,
                        int Combine,
                        int Var_Disto,
-                       int Sync
+                       int Sync,
+                       int Osc_3_Interval
                       )
 {
     if(!new_version)
     {
         if(read_disto && read_lfo_adsr)
         {
-            Read_Function(&PARASynth[idx], sizeof(Synth_Parameters) - 4 - 1, 1, in);
+            Read_Function(&PARASynth[idx], sizeof(Synth_Parameters) - 4 - 2, 1, in);
             PARASynth[idx].disto /= 2;
             PARASynth[idx].disto += 64;
             PARASynth[idx].glb_volume = 0x7f;
@@ -70,7 +71,7 @@ void Read_Synth_Params(int (*Read_Function)(void *, int, int, CustomFile &),
         {
             if(read_disto)
             {
-                Read_Function(&PARASynth[idx], sizeof(Synth_Parameters) - 32 - 4 - 1, 1, in);
+                Read_Function(&PARASynth[idx], sizeof(Synth_Parameters) - 32 - 4 - 2, 1, in);
             }
             else
             {
@@ -163,7 +164,7 @@ void Read_Synth_Params(int (*Read_Function)(void *, int, int, CustomFile &),
                 }
                 else
                 {
-                    Read_Function(&PARASynth[idx], sizeof(Synth_Parameters) - 4 - 32 - 4 - 1, 1, in);
+                    Read_Function(&PARASynth[idx], sizeof(Synth_Parameters) - 4 - 32 - 4 - 2, 1, in);
                 }
             }
         }
@@ -311,6 +312,11 @@ void Read_Synth_Params(int (*Read_Function)(void *, int, int, CustomFile &),
             Read_Function(&PARASynth[idx].osc_sync, sizeof(char), 1, in);
         }
 
+        if(Osc_3_Interval)
+        {
+            Read_Function(&PARASynth[idx].osc_3_interval, sizeof(char), 1, in);
+        }
+
     }
 
     if(!Env_Modulation)
@@ -441,6 +447,7 @@ void Write_Synth_Params(int (*Write_Function)(void *, int ,int, FILE *),
 
     Write_Function(&PARASynth[idx].osc_combine, sizeof(char), 1, in);
     Write_Function(&PARASynth[idx].osc_sync, sizeof(char), 1, in);
+    Write_Function(&PARASynth[idx].osc_3_interval, sizeof(char), 1, in);
 }
 
 // ------------------------------------------------------
@@ -455,6 +462,7 @@ void Load_Synth(char *FileName)
     int Combine = FALSE;
     int Disto = FALSE;
     int Sync = FALSE;
+    int Osc_3_Interval = FALSE;
 
     in = fopen(FileName, "rb");
 
@@ -466,6 +474,9 @@ void Load_Synth(char *FileName)
 
         switch(extension[7])
         {
+            case '8':
+                Osc_3_Interval = TRUE;
+            case '7':
             case '6':
                 Sync = TRUE;
             case '5':
@@ -500,7 +511,8 @@ void Load_Synth(char *FileName)
 
         Read_Synth_Params(Read_Data, Read_Data_Swap, in, Current_Instrument,
                           TRUE, TRUE, new_version,
-                          Env_Modulation, New_Env, FALSE, Combine, Disto, Sync);
+                          Env_Modulation, New_Env, FALSE, Combine, Disto,
+                          Sync, Osc_3_Interval);
 
         // Fix some old Ntk bugs
         if(PARASynth[Current_Instrument].lfo_1_period > 128) PARASynth[Current_Instrument].lfo_1_period = 128;
@@ -530,7 +542,7 @@ void Save_Synth(void)
     char Temph[MAX_PATH];
     char extension[10];
 
-    sprintf(extension, "TWNNSYN6");
+    sprintf(extension, "PROTSYN8");
     sprintf (Temph, "Saving '%s.pts' Synthesizer Program In Presets Directory...", PARASynth[Current_Instrument].Preset_Name);
     Status_Box(Temph, TRUE);
 

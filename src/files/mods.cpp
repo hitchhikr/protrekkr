@@ -327,6 +327,8 @@ void Load_Amiga_Mod(char *Name, const char *FileName, int channels, int digiboos
         last_vol_fade[i] = 0;
     }
 
+    Status_Box("Attempting To Convert The Module File...", TRUE);
+
     in = fopen(FileName, "rb");
     if(in != NULL)
     {
@@ -1171,7 +1173,7 @@ void Load_Amiga_Mod(char *Name, const char *FileName, int channels, int digiboos
 
             Load_Old_Reverb_Presets(0);
             Init_Tracker_Context_After_ModLoad();
-
+            Status_Box("Module Converted Successfully.", TRUE);
         }
         else
         {

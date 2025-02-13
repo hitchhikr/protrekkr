@@ -196,6 +196,7 @@ int Load_Ptk(CustomFile customFile)
     int Long_Midi_Prg = FALSE;
     int Var_Disto = FALSE;
     int Osc_Sync = FALSE;
+    int Osc_3_Interval = FALSE;
     char Comp_Flag;
     int i;
     int j;
@@ -245,7 +246,7 @@ int Load_Ptk(CustomFile customFile)
     {
 
 #if !defined(__WINAMP__)
-        Status_Box("Attempting To Load The Song File...", TRUE);
+        Status_Box("Attempting To Load The Module File...", TRUE);
 #endif
 
         Song_Playing = FALSE;
@@ -256,6 +257,8 @@ int Load_Ptk(CustomFile customFile)
 
         switch(extension[7])
         {
+            case 'V':
+                Osc_3_Interval = TRUE;
             case 'U':
                 Osc_Sync = TRUE;
             case 'T':
@@ -538,10 +541,12 @@ Read_Mod_File:
             PARASynth[swrite].lfo_2_release = 0x10000;
 
             PARASynth[swrite].osc_sync = FALSE;
+            PARASynth[swrite].osc_3_interval = 12;
 
             Read_Synth_Params(Read_Mod_Data, Read_Mod_Data_Swap, in, swrite,
                               new_disto, New_adsr, Portable, Env_Modulation,
-                              New_Env, Ntk_Beta, Combine, Var_Disto, Osc_Sync);
+                              New_Env, Ntk_Beta, Combine, Var_Disto,
+                              Osc_Sync, Osc_3_Interval);
 
             // Fix some very old Ntk bugs
             if(PARASynth[swrite].lfo_1_period > 128) PARASynth[swrite].lfo_1_period = 128;
@@ -1781,7 +1786,7 @@ int Pack_Module(char *FileName)
     output = fopen(Temph, "wb");
     if(output)
     {
-        sprintf(extension, "PROTREKU");
+        sprintf(extension, "PROTREKV");
         Write_Data(extension, sizeof(char), 9, output);
         Write_Data_Swap(&Depack_Size, sizeof(int), 1, output);
         Write_Data(Final_Mem_Out, sizeof(char), Len, output);

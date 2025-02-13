@@ -248,7 +248,7 @@ extern int Continuous_Scroll;
 void Draw_Scope(void);
 void Draw_Scope_Files_Button(void);
 void Display_Tracks_To_Render(void);
-void Solo_Track(int track_to_solo);
+void Mute_Track(int track_to_solo);
 void Display_RShift_Status(void);
 
 JAZZ_KEY Sub_Channels_Jazz[MAX_TRACKS][MAX_POLYPHONY];
@@ -675,18 +675,18 @@ void Destroy_Context(void)
         Scope_Dats[i] = NULL;
 
         // ---
-        if(Scope_Dats_L[i])
+        if(VuMeters_Dats_L[i])
         {
-            free(Scope_Dats_L[i]);
+            free(VuMeters_Dats_L[i]);
         }
-        Scope_Dats_L[i] = NULL;
+        VuMeters_Dats_L[i] = NULL;
         
         // ---
-        if(Scope_Dats_R[i])
+        if(VuMeters_Dats_R[i])
         {
-            free(Scope_Dats_R[i]);
+            free(VuMeters_Dats_R[i]);
         }
-        Scope_Dats_R[i] = NULL;
+        VuMeters_Dats_R[i] = NULL;
     }
     if(Scope_Dats_LeftRight[0])
     {
@@ -1188,8 +1188,8 @@ int Screen_Update(void)
         {
             int tmp_track = Get_Track_Over_Mouse(Mouse.x, NULL, FALSE);
 
-            if(Chan_Mute_State[tmp_track] == 0) Chan_Mute_State[tmp_track] = 1;
-            else Chan_Mute_State[tmp_track] = 0;
+            if(Chan_Mute_State[tmp_track] == FALSE) Chan_Mute_State[tmp_track] = TRUE;
+            else Chan_Mute_State[tmp_track] = FALSE;
 
             if(userscreen == USER_SCREEN_TRACK_EDIT) Actualize_Track_Ed(10);
             Update_Pattern(0);
@@ -2425,7 +2425,7 @@ void Load_File(int Freeindex, const char *str)
         //fseek(in, 8, SEEK_SET);
         //fread(rebext, sizeof(char), 4, in);
 
-        if(strcmp(extension, "TWNNINS0") == 0 ||
+        if(/*strcmp(extension, "TWNNINS0") == 0 ||
            strcmp(extension, "TWNNINS1") == 0 ||
            strcmp(extension, "TWNNINS2") == 0 ||
            strcmp(extension, "TWNNINS3") == 0 ||
@@ -2435,9 +2435,11 @@ void Load_File(int Freeindex, const char *str)
            strcmp(extension, "TWNNINS7") == 0 ||
            strcmp(extension, "TWNNINS8") == 0 ||
            strcmp(extension, "TWNNINS9") == 0 ||
-           strcmp(extension, "TWNNINS9") == 0 ||
+           strcmp(extension, "TWNNINS9") == 0 ||*/
            strcmp(extension, "PROTINSA") == 0 ||
-           strcmp(extension, "PROTINSB") == 0)
+           strcmp(extension, "PROTINSB") == 0 ||
+           strcmp(extension, "PROTINSC") == 0 ||
+           strcmp(extension, "PROTINSD") == 0)
         {
             sprintf(instrname, "%s", FileName);
             Lock_Audio_Thread();
@@ -2446,7 +2448,7 @@ void Load_File(int Freeindex, const char *str)
             Renew_Sample_Ed();
             Unlock_Audio_Thread();
         }
-        else if(strcmp(extension, "TWNNSNG1") == 0 ||   // For salvage purpose
+        else if(/*strcmp(extension, "TWNNSNG1") == 0 ||   // For salvage purpose
                 strcmp(extension, "TWNNSNG2") == 0 ||
                 strcmp(extension, "TWNNSNG3") == 0 ||
                 strcmp(extension, "TWNNSNG4") == 0 ||
@@ -2464,7 +2466,7 @@ void Load_File(int Freeindex, const char *str)
                 strcmp(extension, "TWNNSNGG") == 0 ||
                 strcmp(extension, "TWNNSNGH") == 0 ||
                 strcmp(extension, "TWNNSNGI") == 0 ||
-                strcmp(extension, "TWNNSNGJ") == 0 ||
+                strcmp(extension, "TWNNSNGJ") == 0 ||*/
                 strcmp(extension, "PROTREKK") == 0 ||
                 strcmp(extension, "PROTREKL") == 0 ||
                 strcmp(extension, "PROTREKM") == 0 ||
@@ -2475,7 +2477,8 @@ void Load_File(int Freeindex, const char *str)
                 strcmp(extension, "PROTREKR") == 0 ||
                 strcmp(extension, "PROTREKS") == 0 ||
                 strcmp(extension, "PROTREKT") == 0 ||
-                strcmp(extension, "PROTREKU") == 0)
+                strcmp(extension, "PROTREKU") == 0 ||
+                strcmp(extension, "PROTREKV") == 0)
         {
             sprintf(name, "%s", FileName);
             Song_Stop();
@@ -2486,12 +2489,15 @@ void Load_File(int Freeindex, const char *str)
             Unlock_Audio_Thread();
             AUDIO_Play();
         }
-        else if(strcmp(extension, "TWNNSYN0") == 0 ||
+        else if(/*strcmp(extension, "TWNNSYN0") == 0 ||
                 strcmp(extension, "TWNNSYN1") == 0 ||
                 strcmp(extension, "TWNNSYN2") == 0 ||
                 strcmp(extension, "TWNNSYN3") == 0 ||
                 strcmp(extension, "TWNNSYN4") == 0 ||
-                strcmp(extension, "TWNNSYN5") == 0)
+                strcmp(extension, "TWNNSYN5") == 0 ||*/
+                strcmp(extension, "TWNNSYN6") == 0 ||
+                strcmp(extension, "TWNNSYN7") == 0 ||
+                strcmp(extension, "PROTSYN8") == 0)
         {
             sprintf(synthname, "%s", FileName);
             Lock_Audio_Thread();
@@ -2499,15 +2505,17 @@ void Load_File(int Freeindex, const char *str)
             Load_Synth(synthname);
             Unlock_Audio_Thread();
         }
-        else if(strcmp(extension, "TWNN3030") == 0 ||
-                strcmp(extension, "TWNN3031") == 0)
+        else if(strcmp(extension, "TWNN3031") == 0 ||
+                strcmp(extension, "PROT3031") == 0)
         {
             sprintf(name303, "%s", FileName);
             Lock_Audio_Thread();
             Load_303(name303);
             Unlock_Audio_Thread();
         }
-        else if(strcmp(extension, "TWNNREV1") == 0)
+        else if(strcmp(extension, "TWNNREV1") == 0 ||
+                strcmp(extension, "PROTREV1") == 0 ||
+                strcmp(extension, "PROTREV2") == 0)
         {
             sprintf(namerev, "%s", FileName);
             Lock_Audio_Thread();
@@ -2635,8 +2643,8 @@ void Load_File(int Freeindex, const char *str)
                             Unlock_Audio_Thread();
                         }
                     }
-
                     AIFF_File.Close();
+                    Status_Box("File Loaded Successfully.", TRUE);
                 }
                 else
                 {
@@ -2739,8 +2747,8 @@ void Load_File(int Freeindex, const char *str)
                             Unlock_Audio_Thread();
                         }
                     }
-
                     Wav_File.Close();
+                    Status_Box("File Loaded Successfully.", TRUE);
                 }
                 else
                 {
@@ -2749,7 +2757,6 @@ void Load_File(int Freeindex, const char *str)
             }
         }
         fclose(in);
-        Status_Box("File Loaded Successfully.", TRUE);
     }
     else
     {
@@ -4962,8 +4969,8 @@ void Keyboard_Handler(void)
             {
                 if(Keys[SDLK_m - UNICODE_OFFSET1])
                 {
-                    if(Chan_Mute_State[Track_Under_Caret] == 0) Chan_Mute_State[Track_Under_Caret] = 1;
-                    else Chan_Mute_State[Track_Under_Caret] = 0;
+                    if(Chan_Mute_State[Track_Under_Caret] == FALSE) Chan_Mute_State[Track_Under_Caret] = TRUE;
+                    else Chan_Mute_State[Track_Under_Caret] = FALSE;
                     if(userscreen == USER_SCREEN_TRACK_EDIT) Actualize_Track_Ed(10);
                     Update_Pattern(0);
                 }
@@ -5039,10 +5046,10 @@ void Keyboard_Handler(void)
                     // Solo track
                     if(Keys[SDLK_m - UNICODE_OFFSET2])
                     {
-                        Solo_Track(Track_Under_Caret);
+                        Mute_Track(Track_Under_Caret);
                         // Will unmute the correct track
-                        if(Chan_Mute_State[Track_Under_Caret] == 0) Chan_Mute_State[Track_Under_Caret] = 1;
-                        else Chan_Mute_State[Track_Under_Caret] = 0;
+                        if(Chan_Mute_State[Track_Under_Caret] == FALSE) Chan_Mute_State[Track_Under_Caret] = TRUE;
+                        else Chan_Mute_State[Track_Under_Caret] = FALSE;
                         if(userscreen == USER_SCREEN_TRACK_EDIT) Actualize_Track_Ed(10);
                         Update_Pattern(0);
                     }
@@ -7181,54 +7188,55 @@ typedef struct
 
 POS_SCOPE Scope_Table[] =
 {
-    { 0, 0 },
-    { 1, 0 },
-    { 2, 1 },
-    { 3, 3 },
-    { 4, 6 },
-    { 5, 10 },
-    { 6, 15 },
-    { 7, 21 },
-    { 8, 28 },
-    { 9, 36 },
-    { 10, 45 },
-    { 11, 55 },
-    { 12, 66 },
-    { 13, 78 },
-    { 14, 91 },
-    { 15, 105 },
-    { 16, 120 },
+    { 0, 0 },       // 0
+    { 1, 0 },       // 1
+    { 2, 1 },       // 2
+    { 3, 3 },       // 3
+    { 4, 6 },       // 4
+    { 5, 10 },      // 5
+
+    { 6, 15 },      // 3/3
+    { 7, 21 },      // 4/3
+    { 8, 28 },      // 4/4
+    { 9, 36 },      // 5/4
+    { 10, 45 },     // 5/5
+    { 11, 55 },     // 4/4/3
+    { 12, 66 },     // 4/4/4
+    { 13, 78 },     // 5/4/4
+    { 14, 91 },     // 5/5/4
+    { 15, 105 },    // 5/5/5
+    { 16, 120 },    // 4/4/4/4
 };
 
 DAT_POS_SCOPE Scope_Table_Dats[] =
 {
     // ---
-    { 394, 0, 0, 135 / 2, 135 / 2, 1 },                     // 0
+    { 394, 0, 0, 135 / 2, 135 / 2, 1 },                     // 0 1
 
     // ---
-    { 394, 0, 0, 135 / 2, 135 / 2, 2 },                     // 1
+    { 394, 0, 0, 135 / 2, 135 / 2, 2 },                     // 1 2
     { 394, 2, 1, 135 / 2, 135 / 2, 2 },                     // 2
 
     // ---
-    { 394, 0, 0, 135 / 2, 135 / 2, 3 },                     // 3
+    { 394, 0, 0, 135 / 2, 135 / 2, 3 },                     // 3 3
     { 394, 3, 1, 135 / 2, 135 / 2, 3 },                     // 4
     { 394, 3, 2, 135 / 2, 135 / 2, 3 },                     // 5
 
     // ---
-    { 394, 0, 0, 135 / 2, 135 / 2, 4 },                     // 6
-    { 394, 4, 1, 135 / 2, 135 / 2, 4 },                     // 7
+    { 394, 0, 0, 135 / 2, 135 / 2, 4 },                     // 6 4
+    { 394, 4, 1, 135 / 2, 135 / 2, 4 },                     // 7 
     { 394, 4, 2, 135 / 2, 135 / 2, 4 },                     // 8
     { 394, 4, 3, 135 / 2, 135 / 2, 4 },                     // 9
 
     // ---
-    { 394, 0, 0, 135 / 2, 135 / 2, 5 },                     // 10
+    { 394, 0, 0, 135 / 2, 135 / 2, 5 },                     // 10 5
     { 394, 5, 1, 135 / 2, 135 / 2, 5 },                     // 11
     { 394, 5, 2, 135 / 2, 135 / 2, 5 },                     // 12
     { 394, 5, 3, 135 / 2, 135 / 2, 5 },                     // 13
     { 394, 5, 4, 135 / 2, 135 / 2, 5 },                     // 14
 
     // ---
-    { 394, 0, 0, 135 / 4, 135 / 4, 3 },                     // 15
+    { 394, 0, 0, 135 / 4, 135 / 4, 3 },                     // 15 3/3
     { 394, 3, 1, 135 / 4, 135 / 4, 3 },                     // 16
     { 394, 3, 2, 135 / 4, 135 / 4, 3 },                     // 17
     { 394, 0, 0, (135 / 2) + (135 / 4) + 1, 135 / 4, 3 },   // 18
@@ -7236,7 +7244,7 @@ DAT_POS_SCOPE Scope_Table_Dats[] =
     { 394, 3, 2, (135 / 2) + (135 / 4) + 1, 135 / 4, 3 },   // 20
 
     // ---
-    { 394, 0, 0, 135 / 4, 135 / 4, 4 },                     // 21
+    { 394, 0, 0, 135 / 4, 135 / 4, 4 },                     // 21 4/3
     { 394, 4, 1, 135 / 4, 135 / 4, 4 },                     // 22
     { 394, 4, 2, 135 / 4, 135 / 4, 4 },                     // 23
     { 394, 4, 3, 135 / 4, 135 / 4, 4 },                     // 24
@@ -7245,7 +7253,7 @@ DAT_POS_SCOPE Scope_Table_Dats[] =
     { 394, 3, 2, (135 / 2) + (135 / 4) + 1, 135 / 4, 3 },   // 27
 
     // ---
-    { 394, 0, 0, 135 / 4, 135 / 4, 4 },                     // 28
+    { 394, 0, 0, 135 / 4, 135 / 4, 4 },                     // 28 4/4
     { 394, 4, 1, 135 / 4, 135 / 4, 4 },                     // 29
     { 394, 4, 2, 135 / 4, 135 / 4, 4 },                     // 30
     { 394, 4, 3, 135 / 4, 135 / 4, 4 },                     // 31
@@ -7255,7 +7263,7 @@ DAT_POS_SCOPE Scope_Table_Dats[] =
     { 394, 4, 3, (135 / 2) + (135 / 4) + 1, 135 / 4, 4 },   // 35
 
     // ---
-    { 394, 0, 0, 135 / 4, 135 / 4, 5 },                     // 36
+    { 394, 0, 0, 135 / 4, 135 / 4, 5 },                     // 36 5/4
     { 394, 5, 1, 135 / 4, 135 / 4, 5 },                     // 37
     { 394, 5, 2, 135 / 4, 135 / 4, 5 },                     // 38
     { 394, 5, 3, 135 / 4, 135 / 4, 5 },                     // 39
@@ -7266,7 +7274,7 @@ DAT_POS_SCOPE Scope_Table_Dats[] =
     { 394, 4, 3, (135 / 2) + (135 / 4) + 1, 135 / 4, 4 },   // 44
 
     // ---
-    { 394, 0, 0, 135 / 4, 135 / 4, 5 },                     // 45
+    { 394, 0, 0, 135 / 4, 135 / 4, 5 },                     // 45 5/5
     { 394, 5, 1, 135 / 4, 135 / 4, 5 },                     // 46
     { 394, 5, 2, 135 / 4, 135 / 4, 5 },                     // 47
     { 394, 5, 3, 135 / 4, 135 / 4, 5 },                     // 48
@@ -7278,84 +7286,74 @@ DAT_POS_SCOPE Scope_Table_Dats[] =
     { 394, 5, 4, (135 / 2) + (135 / 4) + 1, 135 / 4, 5 },   // 54
 
     // ---
-    { 394, 0, 0, 135 / 6, 135 / 6, 4 },                     // 55
+    { 394, 0, 0, 135 / 6, 135 / 6, 4 },                     // 55 4/4/3
     { 394, 4, 1, 135 / 6, 135 / 6, 4 },                     // 56
     { 394, 4, 2, 135 / 6, 135 / 6, 4 },                     // 57
     { 394, 4, 3, 135 / 6, 135 / 6, 4 },                     // 58
-
     { 394, 0, 0, (135 / 2) + 1, 135 / 6, 4 },               // 59
     { 394, 4, 1, (135 / 2) + 1, 135 / 6, 4 },               // 60
     { 394, 4, 2, (135 / 2) + 1, 135 / 6, 4 },               // 61
     { 394, 4, 3, (135 / 2) + 1, 135 / 6, 4 },               // 62
-
     { 394, 0, 0, (135 / 2) + (135 / 3), 135 / 6, 3 },       // 63
     { 394, 3, 1, (135 / 2) + (135 / 3), 135 / 6, 3 },       // 64
     { 394, 3, 2, (135 / 2) + (135 / 3), 135 / 6, 3 },       // 65
 
     // ---
-    { 394, 0, 0, 135 / 6, 135 / 6, 4 },                     // 66
+    { 394, 0, 0, 135 / 6, 135 / 6, 4 },                     // 66 4/4/4 
     { 394, 4, 1, 135 / 6, 135 / 6, 4 },                     // 67
     { 394, 4, 2, 135 / 6, 135 / 6, 4 },                     // 68
     { 394, 4, 3, 135 / 6, 135 / 6, 4 },                     // 69
-
     { 394, 0, 0, (135 / 2) + 1, 135 / 6, 4 },               // 70
     { 394, 4, 1, (135 / 2) + 1, 135 / 6, 4 },               // 71
     { 394, 4, 2, (135 / 2) + 1, 135 / 6, 4 },               // 72
     { 394, 4, 3, (135 / 2) + 1, 135 / 6, 4 },               // 73
-
     { 394, 0, 0, (135 / 2) + (135 / 3), 135 / 6, 4 },       // 74
     { 394, 4, 1, (135 / 2) + (135 / 3), 135 / 6, 4 },       // 75
     { 394, 4, 2, (135 / 2) + (135 / 3), 135 / 6, 4 },       // 76
     { 394, 4, 3, (135 / 2) + (135 / 3), 135 / 6, 4 },       // 77
 
     // ---
-    { 394, 0, 0, 135 / 6, 135 / 6, 5 },                     // 78
+    { 394, 0, 0, 135 / 6, 135 / 6, 5 },                     // 78 5/4/4
     { 394, 5, 1, 135 / 6, 135 / 6, 5 },                     // 79
     { 394, 5, 2, 135 / 6, 135 / 6, 5 },                     // 80
     { 394, 5, 3, 135 / 6, 135 / 6, 5 },                     // 81
     { 394, 5, 4, 135 / 6, 135 / 6, 5 },                     // 82
-
     { 394, 0, 0, (135 / 2) + 1, 135 / 6, 4 },               // 83
     { 394, 4, 1, (135 / 2) + 1, 135 / 6, 4 },               // 84
     { 394, 4, 2, (135 / 2) + 1, 135 / 6, 4 },               // 85
     { 394, 4, 3, (135 / 2) + 1, 135 / 6, 4 },               // 86
-
     { 394, 0, 0, (135 / 2) + (135 / 3), 135 / 6, 4 },       // 87
     { 394, 4, 1, (135 / 2) + (135 / 3), 135 / 6, 4 },       // 88
     { 394, 4, 2, (135 / 2) + (135 / 3), 135 / 6, 4 },       // 89
     { 394, 4, 3, (135 / 2) + (135 / 3), 135 / 6, 4 },       // 90
 
     // ---
-    { 394, 0, 0, 135 / 6, 135 / 6, 5 },                     // 91
+    { 394, 0, 0, 135 / 6, 135 / 6, 5 },                     // 91 5/5/4
     { 394, 5, 1, 135 / 6, 135 / 6, 5 },                     // 92
     { 394, 5, 2, 135 / 6, 135 / 6, 5 },                     // 93
     { 394, 5, 3, 135 / 6, 135 / 6, 5 },                     // 94
     { 394, 5, 4, 135 / 6, 135 / 6, 5 },                     // 95
-
     { 394, 0, 0, (135 / 2) + 1, 135 / 6, 5 },               // 96
     { 394, 5, 1, (135 / 2) + 1, 135 / 6, 5 },               // 97
     { 394, 5, 2, (135 / 2) + 1, 135 / 6, 5 },               // 98
     { 394, 5, 3, (135 / 2) + 1, 135 / 6, 5 },               // 99
     { 394, 5, 4, (135 / 2) + 1, 135 / 6, 5 },               // 100
-
     { 394, 0, 0, (135 / 2) + (135 / 3), 135 / 6, 4 },       // 101
     { 394, 4, 1, (135 / 2) + (135 / 3), 135 / 6, 4 },       // 102
     { 394, 4, 2, (135 / 2) + (135 / 3), 135 / 6, 4 },       // 103
     { 394, 4, 3, (135 / 2) + (135 / 3), 135 / 6, 4 },       // 104
 
     // ---
-    { 394, 0, 0, 135 / 6, 135 / 6, 5 },                     // 105
+    { 394, 0, 0, 135 / 6, 135 / 6, 5 },                     // 105 5/5/5
     { 394, 5, 1, 135 / 6, 135 / 6, 5 },                     // 106
     { 394, 5, 2, 135 / 6, 135 / 6, 5 },                     // 107
     { 394, 5, 3, 135 / 6, 135 / 6, 5 },                     // 108
     { 394, 5, 4, 135 / 6, 135 / 6, 5 },                     // 109
-
     { 394, 0, 0, (135 / 2) + 1, 135 / 6, 5 },               // 110
     { 394, 5, 1, (135 / 2) + 1, 135 / 6, 5 },               // 111
     { 394, 5, 2, (135 / 2) + 1, 135 / 6, 5 },               // 112
     { 394, 5, 3, (135 / 2) + 1, 135 / 6, 5 },               // 113
     { 394, 5, 4, (135 / 2) + 1, 135 / 6, 5 },               // 114
-
     { 394, 0, 0, (135 / 2) + (135 / 3), 135 / 6, 5 },       // 115
     { 394, 5, 1, (135 / 2) + (135 / 3), 135 / 6, 5 },       // 116
     { 394, 5, 2, (135 / 2) + (135 / 3), 135 / 6, 5 },       // 117
@@ -7363,25 +7361,22 @@ DAT_POS_SCOPE Scope_Table_Dats[] =
     { 394, 5, 4, (135 / 2) + (135 / 3), 135 / 6, 5 },       // 119
 
     // ---
-    { 394, 0, 0, 135 / 8, 135 / 8, 4 },                     // 120
+    { 394, 0, 0, 135 / 8, 135 / 8, 4 },                     // 120 4/4/4/4
     { 394, 4, 1, 135 / 8, 135 / 8, 4 },                     // 121
     { 394, 4, 2, 135 / 8, 135 / 8, 4 },                     // 122
     { 394, 4, 3, 135 / 8, 135 / 8, 4 },                     // 123
-
-    { 394, 0, 0, (135 / 3) + 4, 135 / 8, 4 },               // 125
-    { 394, 4, 1, (135 / 3) + 4, 135 / 8, 4 },               // 126
-    { 394, 4, 2, (135 / 3) + 4, 135 / 8, 4 },               // 127
-    { 394, 4, 3, (135 / 3) + 4, 135 / 8, 4 },               // 128
-
-    { 394, 0, 0, (135 / 3) + (135 / 4) + 3, 135 / 8, 4 },   // 130
-    { 394, 4, 1, (135 / 3) + (135 / 4) + 3, 135 / 8, 4 },   // 131
-    { 394, 4, 2, (135 / 3) + (135 / 4) + 3, 135 / 8, 4 },   // 132
-    { 394, 4, 3, (135 / 3) + (135 / 4) + 3, 135 / 8, 4 },   // 133
-
-    { 394, 0, 0, (135 / 3) + (135 / 2) + 2, 135 / 8, 4 },   // 134
-    { 394, 4, 1, (135 / 3) + (135 / 2) + 2, 135 / 8, 4 },   // 135
-    { 394, 4, 2, (135 / 3) + (135 / 2) + 2, 135 / 8, 4 },   // 136
-    { 394, 4, 3, (135 / 3) + (135 / 2) + 2, 135 / 8, 4 },   // 137
+    { 394, 0, 0, (135 / 3) + 4, 135 / 8, 4 },               // 124
+    { 394, 4, 1, (135 / 3) + 4, 135 / 8, 4 },               // 125
+    { 394, 4, 2, (135 / 3) + 4, 135 / 8, 4 },               // 126
+    { 394, 4, 3, (135 / 3) + 4, 135 / 8, 4 },               // 127
+    { 394, 0, 0, (135 / 3) + (135 / 4) + 3, 135 / 8, 4 },   // 128
+    { 394, 4, 1, (135 / 3) + (135 / 4) + 3, 135 / 8, 4 },   // 129
+    { 394, 4, 2, (135 / 3) + (135 / 4) + 3, 135 / 8, 4 },   // 130
+    { 394, 4, 3, (135 / 3) + (135 / 4) + 3, 135 / 8, 4 },   // 131
+    { 394, 0, 0, (135 / 3) + (135 / 2) + 2, 135 / 8, 4 },   // 132
+    { 394, 4, 1, (135 / 3) + (135 / 2) + 2, 135 / 8, 4 },   // 133
+    { 394, 4, 2, (135 / 3) + (135 / 2) + 2, 135 / 8, 4 },   // 134
+    { 394, 4, 3, (135 / 3) + (135 / 2) + 2, 135 / 8, 4 },   // 135
 };
 
 char *table_channels_scopes[] =
@@ -7402,8 +7397,202 @@ char *table_channels_scopes[] =
     "D",
     "E",
     "F",
+    // ---
     "L",
     "R",
+};
+
+POS_SCOPE VuMeters_Table[] =
+{
+    { 0, 0 },       // 0
+    { 1, 0 },       // 1
+    { 2, 1 },       // 2
+    { 3, 3 },       // 3
+    { 4, 6 },       // 4
+    { 5, 10 },      // 5
+
+    { 6, 15 },      // 6
+    { 7, 21 },      // 7
+    { 8, 28 },      // 8
+    { 9, 36 },      // 9
+    { 10, 45 },     // 10
+    { 11, 55 },     // 11
+    { 12, 66 },     // 12
+    { 13, 78 },     // 13
+    { 14, 91 },     // 14
+    { 15, 105 },    // 15
+    { 16, 120 },    // 16
+};
+
+DAT_POS_SCOPE VuMeters_Table_Dats[] =
+{
+    // ---
+    { 394, 0, 0, 135 / 2, 135 / 2, 1 },                     // 0 1
+
+    // ---
+    { 394, 0, 0, 135 / 2, 135 / 2, 2 },                     // 1 2
+    { 394, 2, 1, 135 / 2, 135 / 2, 2 },                     // 2
+
+    // ---
+    { 394, 0, 0, 135 / 2, 135 / 2, 3 },                     // 3 3
+    { 394, 3, 1, 135 / 2, 135 / 2, 3 },                     // 4
+    { 394, 3, 2, 135 / 2, 135 / 2, 3 },                     // 5
+
+    // ---
+    { 394, 0, 0, 135 / 2, 135 / 2, 4 },                     // 6 4
+    { 394, 4, 1, 135 / 2, 135 / 2, 4 },                     // 7 
+    { 394, 4, 2, 135 / 2, 135 / 2, 4 },                     // 8
+    { 394, 4, 3, 135 / 2, 135 / 2, 4 },                     // 9
+
+    // ---
+    { 394, 0, 0, 135 / 2, 135 / 2, 5 },                     // 10 5
+    { 394, 5, 1, 135 / 2, 135 / 2, 5 },                     // 11
+    { 394, 5, 2, 135 / 2, 135 / 2, 5 },                     // 12
+    { 394, 5, 3, 135 / 2, 135 / 2, 5 },                     // 13
+    { 394, 5, 4, 135 / 2, 135 / 2, 5 },                     // 14
+
+    // ---
+    { 394, 0, 0, 135 / 2, 135 / 2, 6 },                     // 15 6
+    { 394, 6, 1, 135 / 2, 135 / 2, 6 },                     // 16
+    { 394, 6, 2, 135 / 2, 135 / 2, 6 },                     // 17
+    { 394, 6, 3, 135 / 2, 135 / 2, 6 },                     // 18
+    { 394, 6, 4, 135 / 2, 135 / 2, 6 },                     // 19
+    { 394, 6, 5, 135 / 2, 135 / 2, 6 },                     // 20
+
+    // ---
+    { 394, 0, 0, 135 / 2, 135 / 2, 7 },                     // 21 7
+    { 394, 7, 1, 135 / 2, 135 / 2, 7 },                     // 22
+    { 394, 7, 2, 135 / 2, 135 / 2, 7 },                     // 23
+    { 394, 7, 3, 135 / 2, 135 / 2, 7 },                     // 24
+    { 394, 7, 4, 135 / 2, 135 / 2, 7 },                     // 25
+    { 394, 7, 5, 135 / 2, 135 / 2, 7 },                     // 26
+    { 394, 7, 6, 135 / 2, 135 / 2, 7 },                     // 27
+
+    // ---
+    { 394, 0, 0, 135 / 2, 135 / 2, 8 },                     // 28 8
+    { 394, 8, 1, 135 / 2, 135 / 2, 8 },                     // 29
+    { 394, 8, 2, 135 / 2, 135 / 2, 8 },                     // 30
+    { 394, 8, 3, 135 / 2, 135 / 2, 8 },                     // 31
+    { 394, 8, 4, 135 / 2, 135 / 2, 8 },                     // 32
+    { 394, 8, 5, 135 / 2, 135 / 2, 8 },                     // 33
+    { 394, 8, 6, 135 / 2, 135 / 2, 8 },                     // 32
+    { 394, 8, 7, 135 / 2, 135 / 2, 8 },                     // 35
+
+    // ---
+    { 394, 0, 0, 135 / 2, 135 / 2, 9 },                     // 36 9
+    { 394, 9, 1, 135 / 2, 135 / 2, 9 },                     // 37
+    { 394, 9, 2, 135 / 2, 135 / 2, 9 },                     // 38
+    { 394, 9, 3, 135 / 2, 135 / 2, 9 },                     // 39
+    { 394, 9, 4, 135 / 2, 135 / 2, 9 },                     // 40
+    { 394, 9, 5, 135 / 2, 135 / 2, 9 },                     // 41
+    { 394, 9, 6, 135 / 2, 135 / 2, 9 },                     // 42
+    { 394, 9, 7, 135 / 2, 135 / 2, 9 },                     // 43
+    { 394, 9, 8, 135 / 2, 135 / 2, 9 },                     // 44
+
+    // ---
+    { 394, 0, 0, 135 / 2, 135 / 2, 10 },                    // 45 10
+    { 394, 10, 1, 135 / 2, 135 / 2, 10 },                   // 46
+    { 394, 10, 2, 135 / 2, 135 / 2, 10 },                   // 47
+    { 394, 10, 3, 135 / 2, 135 / 2, 10 },                   // 48
+    { 394, 10, 4, 135 / 2, 135 / 2, 10 },                   // 49
+    { 394, 10, 5, 135 / 2, 135 / 2, 10 },                   // 50
+    { 394, 10, 6, 135 / 2, 135 / 2, 10 },                   // 51
+    { 394, 10, 7, 135 / 2, 135 / 2, 10 },                   // 52
+    { 394, 10, 8, 135 / 2, 135 / 2, 10 },                   // 53
+    { 394, 10, 9, 135 / 2, 135 / 2, 10 },                   // 54
+
+    // ---
+    { 394, 0, 0, 135 / 2, 135 / 2, 11 },                    // 55 11
+    { 394, 11, 1, 135 / 2, 135 / 2, 11 },                   // 56
+    { 394, 11, 2, 135 / 2, 135 / 2, 11 },                   // 57
+    { 394, 11, 3, 135 / 2, 135 / 2, 11 },                   // 58
+    { 394, 11, 4, 135 / 2, 135 / 2, 11 },                   // 59
+    { 394, 11, 5, 135 / 2, 135 / 2, 11 },                   // 60
+    { 394, 11, 6, 135 / 2, 135 / 2, 11 },                   // 61
+    { 394, 11, 7, 135 / 2, 135 / 2, 11 },                   // 62
+    { 394, 11, 8, 135 / 2, 135 / 2, 11 },                   // 63
+    { 394, 11, 9, 135 / 2, 135 / 2, 11 },                   // 64
+    { 394, 11, 10, 135 / 2, 135 / 2, 11 },                  // 65
+
+    // ---
+    { 394, 0, 0, 135 / 2, 135 / 2, 12 },                    // 66 12
+    { 394, 12, 1, 135 / 2, 135 / 2, 12 },                   // 67
+    { 394, 12, 2, 135 / 2, 135 / 2, 12 },                   // 68
+    { 394, 12, 3, 135 / 2, 135 / 2, 12 },                   // 69
+    { 394, 12, 4, 135 / 2, 135 / 2, 12 },                   // 70
+    { 394, 12, 5, 135 / 2, 135 / 2, 12 },                   // 71
+    { 394, 12, 6, 135 / 2, 135 / 2, 12 },                   // 72
+    { 394, 12, 7, 135 / 2, 135 / 2, 12 },                   // 73
+    { 394, 12, 8, 135 / 2, 135 / 2, 12 },                   // 74
+    { 394, 12, 9, 135 / 2, 135 / 2, 12 },                   // 75
+    { 394, 12, 10, 135 / 2, 135 / 2, 12 },                  // 76
+    { 394, 12, 11, 135 / 2, 135 / 2, 12 },                  // 77
+
+    // ---
+    { 394, 0, 0, 135 / 2, 135 / 2, 13 },                    // 78 13
+    { 394, 13, 1, 135 / 2, 135 / 2, 13 },                   // 79
+    { 394, 13, 2, 135 / 2, 135 / 2, 13 },                   // 80
+    { 394, 13, 3, 135 / 2, 135 / 2, 13 },                   // 81
+    { 394, 13, 4, 135 / 2, 135 / 2, 13 },                   // 82
+    { 394, 13, 5, 135 / 2, 135 / 2, 13 },                   // 83
+    { 394, 13, 6, 135 / 2, 135 / 2, 13 },                   // 84
+    { 394, 13, 7, 135 / 2, 135 / 2, 13 },                   // 85
+    { 394, 13, 8, 135 / 2, 135 / 2, 13 },                   // 86
+    { 394, 13, 9, 135 / 2, 135 / 2, 13 },                   // 87
+    { 394, 13, 10, 135 / 2, 135 / 2, 13 },                  // 88
+    { 394, 13, 11, 135 / 2, 135 / 2, 13 },                  // 89
+    { 394, 13, 12, 135 / 2, 135 / 2, 13 },                  // 90
+
+    // ---
+    { 394, 0, 0, 135 / 2, 135 / 2, 14 },                    // 91 14
+    { 394, 14, 1, 135 / 2, 135 / 2, 14 },                   // 92
+    { 394, 14, 2, 135 / 2, 135 / 2, 14 },                   // 93
+    { 394, 14, 3, 135 / 2, 135 / 2, 14 },                   // 94
+    { 394, 14, 4, 135 / 2, 135 / 2, 14 },                   // 95
+    { 394, 14, 5, 135 / 2, 135 / 2, 14 },                   // 96
+    { 394, 14, 6, 135 / 2, 135 / 2, 14 },                   // 97
+    { 394, 14, 7, 135 / 2, 135 / 2, 14 },                   // 98
+    { 394, 14, 8, 135 / 2, 135 / 2, 14 },                   // 99
+    { 394, 14, 9, 135 / 2, 135 / 2, 14 },                   // 100
+    { 394, 14, 10, 135 / 2, 135 / 2, 14 },                  // 101
+    { 394, 14, 11, 135 / 2, 135 / 2, 14 },                  // 102
+    { 394, 14, 12, 135 / 2, 135 / 2, 14 },                  // 103
+    { 394, 14, 13, 135 / 2, 135 / 2, 14 },                  // 104
+
+    // ---
+    { 394, 0, 0, 135 / 2, 135 / 2, 15 },                    // 105 15
+    { 394, 15, 1, 135 / 2, 135 / 2, 15 },                   // 106
+    { 394, 15, 2, 135 / 2, 135 / 2, 15 },                   // 107
+    { 394, 15, 3, 135 / 2, 135 / 2, 15 },                   // 108
+    { 394, 15, 4, 135 / 2, 135 / 2, 15 },                   // 109
+    { 394, 15, 5, 135 / 2, 135 / 2, 15 },                   // 110
+    { 394, 15, 6, 135 / 2, 135 / 2, 15 },                   // 111
+    { 394, 15, 7, 135 / 2, 135 / 2, 15 },                   // 112
+    { 394, 15, 8, 135 / 2, 135 / 2, 15 },                   // 113
+    { 394, 15, 9, 135 / 2, 135 / 2, 15 },                   // 114
+    { 394, 15, 10, 135 / 2, 135 / 2, 15 },                  // 115
+    { 394, 15, 11, 135 / 2, 135 / 2, 15 },                  // 116
+    { 394, 15, 12, 135 / 2, 135 / 2, 15 },                  // 117
+    { 394, 15, 13, 135 / 2, 135 / 2, 15 },                  // 118
+    { 394, 15, 14, 135 / 2, 135 / 2, 15 },                  // 119
+
+    // ---
+    { 394, 0, 0, 135 / 2, 135 / 2, 16 },                    // 120 16
+    { 394, 16, 1, 135 / 2, 135 / 2, 16 },                   // 121
+    { 394, 16, 2, 135 / 2, 135 / 2, 16 },                   // 122
+    { 394, 16, 3, 135 / 2, 135 / 2, 16 },                   // 123
+    { 394, 16, 4, 135 / 2, 135 / 2, 16 },                   // 124
+    { 394, 16, 5, 135 / 2, 135 / 2, 16 },                   // 125
+    { 394, 16, 6, 135 / 2, 135 / 2, 16 },                   // 126
+    { 394, 16, 7, 135 / 2, 135 / 2, 16 },                   // 127
+    { 394, 16, 8, 135 / 2, 135 / 2, 16 },                   // 128
+    { 394, 16, 9, 135 / 2, 135 / 2, 16 },                   // 129
+    { 394, 16, 10, 135 / 2, 135 / 2, 16 },                  // 130
+    { 394, 16, 11, 135 / 2, 135 / 2, 16 },                  // 131
+    { 394, 16, 12, 135 / 2, 135 / 2, 16 },                  // 132
+    { 394, 16, 13, 135 / 2, 135 / 2, 16 },                  // 133
+    { 394, 16, 14, 135 / 2, 135 / 2, 16 },                  // 134
+    { 394, 16, 15, 135 / 2, 135 / 2, 16 },                  // 135
 };
 
 void Draw_Scope(void)
@@ -7481,7 +7670,8 @@ void Draw_Scope(void)
                 if(Chan_Active_State[scope_pos][i])
                 {
                     Print_String(cur_pos_x + 4, 44 + (ptrTbl_Dat->y_pos - ptrTbl_Dat->y_large),
-                                 USE_FONT, table_channels_scopes[i]);
+                                 USE_FONT,
+                                 table_channels_scopes[i]);
                     active_channel = TRUE;
                 }
                 else
@@ -7542,28 +7732,28 @@ int Init_Scopes_VuMeters_Buffers(void)
         memset(Scope_Dats[i], 0, ((AUDIO_Latency + 1) + (512 * 4)) * 2 * sizeof(float));
 
         // ---
-        if(Scope_Dats_L[i])
+        if(VuMeters_Dats_L[i])
         {
-            free(Scope_Dats_L[i]);
+            free(VuMeters_Dats_L[i]);
         }
-        Scope_Dats_L[i] = (float *) malloc(((AUDIO_Latency + 1) + (512 * 4)) * 2 * sizeof(float));
-        if(!Scope_Dats_L[i])
+        VuMeters_Dats_L[i] = (float *) malloc(((AUDIO_Latency + 1) + (512 * 4)) * 2 * sizeof(float));
+        if(!VuMeters_Dats_L[i])
         {
             return(FALSE);
         }
-        memset(Scope_Dats_L[i], 0, ((AUDIO_Latency + 1) + (512 * 4)) * 2 * sizeof(float));
+        memset(VuMeters_Dats_L[i], 0, ((AUDIO_Latency + 1) + (512 * 4)) * 2 * sizeof(float));
 
         // ---
-        if(Scope_Dats_R[i])
+        if(VuMeters_Dats_R[i])
         {
-            free(Scope_Dats_R[i]);
+            free(VuMeters_Dats_R[i]);
         }
-        Scope_Dats_R[i] = (float *) malloc(((AUDIO_Latency + 1) + (512 * 4)) * 2 * sizeof(float));
-        if(!Scope_Dats_R[i])
+        VuMeters_Dats_R[i] = (float *) malloc(((AUDIO_Latency + 1) + (512 * 4)) * 2 * sizeof(float));
+        if(!VuMeters_Dats_R[i])
         {
             return(FALSE);
         }
-        memset(Scope_Dats_R[i], 0, ((AUDIO_Latency + 1) + (512 * 4)) * 2 * sizeof(float));
+        memset(VuMeters_Dats_R[i], 0, ((AUDIO_Latency + 1) + (512 * 4)) * 2 * sizeof(float));
     }
 
     if(Scope_Dats_LeftRight[0])
@@ -7596,7 +7786,6 @@ void Draw_VuMeters(void)
     int i;
     int j;
     LPDAT_POS_SCOPE ptrTbl_Dat;
-    float pos_in_line;
     float data;
     float MaxLevel_L;
     float MaxLevel_R;
@@ -7608,9 +7797,10 @@ void Draw_VuMeters(void)
     int x_max;
     int x_max_half;
     int x_max_half_start;
+    int spread_remainder;
     int nibble_pos;
     int active_channel;
-    int max_right = Cur_Width - 395;
+    int max_right = Cur_Width - 394;
     int cur_pos_x = 394;
     int pixel_color = COL_SCOPESSAMPLES;
     int scope_pos = Get_Song_Position();
@@ -7620,8 +7810,9 @@ void Draw_VuMeters(void)
     Fillrect(394, 42, Cur_Width - 1, 179);
 
     // Tracks
-    ptrTbl_Dat = &Scope_Table_Dats[Scope_Table[Song_Tracks].offset];
-    for(i = 0; i < Scope_Table[Song_Tracks].nbr; i++)
+    ptrTbl_Dat = &VuMeters_Table_Dats[VuMeters_Table[Song_Tracks].offset];
+    spread_remainder = 0;
+    for(i = 0; i < VuMeters_Table[Song_Tracks].nbr; i++)
     {
         if(ptrTbl_Dat->x_div)
         {
@@ -7636,7 +7827,8 @@ void Draw_VuMeters(void)
         if(Chan_Active_State[scope_pos][i])
         {
             Print_String(cur_pos_x + 4, 44 + (ptrTbl_Dat->y_pos - ptrTbl_Dat->y_large),
-                         USE_FONT, table_channels_scopes[i]);
+                         USE_FONT,
+                         table_channels_scopes[i]);
             active_channel = TRUE;
         }
         else
@@ -7649,7 +7841,7 @@ void Draw_VuMeters(void)
         x_max = max_right / ptrTbl_Dat->x_max;
         if(!nibble_pos)
         {
-            x_max += max_right % ptrTbl_Dat->x_max;
+            spread_remainder = (max_right % ptrTbl_Dat->x_max) / VuMeters_Table[Song_Tracks].nbr;
         }
         MaxLevel_L = 0.0f;  
         MaxLevel_R = 0.0f;
@@ -7657,33 +7849,26 @@ void Draw_VuMeters(void)
         x_max_half = x_max >> 2;
         x_max_half_start = x_max_half;
 
-        for(int s = 0; s < x_max; s++)
+        data = VuMeters_Level_Dats_L[i];
+        if(data > 1.0f)
         {
-            // [0..1]
-            pos_in_line = ((float) s) / (float) x_max;
-
-            data = Scope_Dats_L[i][offset_scope + (int) (pos_in_line * 128)];
-            data = absf(data);
-            if(data > 1.0f)
-            {
-                data = 1.0f;
-            }
-            if(data > MaxLevel_L)
-            {
-                MaxLevel_L = data;
-            }
-
-            data = Scope_Dats_R[i][offset_scope + (int) (pos_in_line * 128)];
-            data = absf(data);
-            if(data > 1.0f)
-            {
-                data = 1.0f;
-            }
-            if(data > MaxLevel_R)
-            {
-                MaxLevel_R = data;
-            }
+            data = 1.0f;
         }
+        if(data > MaxLevel_L)
+        {
+            MaxLevel_L = data;
+        }
+
+        data = VuMeters_Level_Dats_R[i];
+        if(data > 1.0f)
+        {
+            data = 1.0f;
+        }
+        if(data > MaxLevel_R)
+        {
+            MaxLevel_R = data;
+        }
+
         MaxLevel_R *= (float) (ptrTbl_Dat->y_large << 1);
         MaxLevel_L *= (float) (ptrTbl_Dat->y_large << 1);
         peak_line = (ptrTbl_Dat->y_large << 1) - (ptrTbl_Dat->y_large >> 1);
@@ -7703,11 +7888,11 @@ void Draw_VuMeters(void)
         {
             if(j > peak_line)
             {
-                DrawHLine(bottom_line - j, start_pos_x + x_max_half_start + 2, start_pos_x + x_max_half_start + x_max_half - 4, COL_VUMETERPEAK);
+                DrawHLine(bottom_line - j, start_pos_x + x_max_half_start - 2, start_pos_x + x_max_half_start + x_max_half - 1, COL_VUMETERPEAK);
             }
             else
             {
-                DrawHLine(bottom_line - j, start_pos_x  + x_max_half_start + 2, start_pos_x  + x_max_half_start + x_max_half - 4, COL_VUMETER);
+                DrawHLine(bottom_line - j, start_pos_x  + x_max_half_start - 2, start_pos_x  + x_max_half_start + x_max_half  - 1, COL_VUMETER);
             }
         }
 
@@ -7715,13 +7900,14 @@ void Draw_VuMeters(void)
         {
             if(j > peak_line)
             {
-                DrawHLine(bottom_line - j, start_pos_x  + x_max_half_start + x_max_half + 2, start_pos_x  + x_max_half_start + x_max_half + x_max_half - 4, COL_VUMETERPEAK);
+                DrawHLine(bottom_line - j, start_pos_x + x_max_half_start + x_max_half + 1, start_pos_x  + x_max_half_start + x_max_half + x_max_half + 2, COL_VUMETERPEAK);
             }
             else
             {
-                DrawHLine(bottom_line - j, start_pos_x  + x_max_half_start + x_max_half + 2, start_pos_x  + x_max_half_start + x_max_half + x_max_half - 4, COL_VUMETER);
+                DrawHLine(bottom_line - j, start_pos_x + x_max_half_start + x_max_half + 1, start_pos_x  + x_max_half_start + x_max_half + x_max_half + 2, COL_VUMETER);
             }
         }
+        x_max += spread_remainder;
         cur_pos_x += x_max;
         ptrTbl_Dat++;
         pixel_color = COL_SCOPESSAMPLES;
@@ -8019,11 +8205,11 @@ void Display_Patterns_Sliders_Status(void)
     }
     if(pattern_sliders)
     {
-        Gui_Draw_Button_Box(350, 108, 16, 16, "S", BUTTON_PUSHED | BUTTON_TEXT_CENTERED);
+        Gui_Draw_Button_Box(350, 108, 16, 16, "Sli", BUTTON_PUSHED | BUTTON_TEXT_CENTERED);
     }
     else
     {
-        Gui_Draw_Button_Box(350, 108, 16, 16, "S", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
+        Gui_Draw_Button_Box(350, 108, 16, 16, "Sli", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
     }
     Gui_Draw_Button_Box(320, 126, 10, 16, NULL, BUTTON_DISABLED);
     Sanitize_Sliders_Block();

@@ -96,7 +96,7 @@ struct Synth_Parameters
 
     unsigned char osc_1_waveform;
     unsigned char osc_2_waveform;
-    unsigned char osc_combine;
+    char osc_combine;
 
     int osc_1_pw;
     int osc_2_pw;
@@ -184,7 +184,8 @@ struct Synth_Parameters
     unsigned char env_1_disto;
     unsigned char env_2_disto;
 
-    unsigned char osc_sync;
+    char osc_sync;
+    char osc_3_interval;
 };
 
 #if defined(__STAND_ALONE__) && !defined(__WINAMP__)
@@ -238,7 +239,7 @@ typedef struct
         float OSC_2_PW; 
         
         float OSC_2_DETUNE;
-        float OSC_2_FINETUNE; 
+        float OSC_2_FINETUNE;
         
         float VCF_CUTOFF;
         float VCF_RESONANCE;
@@ -317,6 +318,8 @@ typedef struct
 
         char OSC_COMBINE;
         char OSC_SYNC;
+        char OSC_3_INTERVAL;
+
 } SYNTH_DATA, *LPSYNTH_DATA;
 
 #if defined(__STAND_ALONE__) && !defined(__WINAMP__)
@@ -401,7 +404,7 @@ class CSynth
         float T_OSC_PW;
         float T_OSC_1_VOLUME;
         float T_OSC_2_VOLUME;
-
+        
         int64 OSC_1_SPEED;
         int64 OSC_2_SPEED;
         int64 OSC_3_SPEED;

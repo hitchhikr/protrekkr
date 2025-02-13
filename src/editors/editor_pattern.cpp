@@ -281,7 +281,7 @@ int Get_Nibble_Color_Slider(int In_Prev_Next, int row, int column, int multi, in
 int Get_Nibble_Color_Highlight(int row, int column);
 int Get_Nibble_Color_Highlight_Slider(int row, int column);
 void Display_Patt_Line(int In_Prev_Next, int Shadow_Pattern, int y, int rel, int track, int tVisible_Columns, int pattern);
-void Solo_Track(int track_to_solo);
+void Mute_Track(int track_to_solo);
 void Set_Font_Normal(void);
 void Record_Live_Fx(int Track,
                     int Pattern,
@@ -3900,7 +3900,7 @@ void Mouse_Right_Pattern_Ed(void)
         if(Check_Mouse(start_mute_check_x + Cur_Char_size[i], 184 - 1, 28, chars_height))
         {
             int tmp_track = Get_Track_Over_Mouse(Mouse.x, NULL, FALSE);
-            Solo_Track(tmp_track);
+            Mute_Track(tmp_track);
             // Will unmute the correct track
             gui_action = GUI_CMD_SWITCH_TRACK_MUTE_STATE;
         }
@@ -3913,7 +3913,7 @@ void Mouse_Right_Pattern_Ed(void)
     for(i = gui_track; i < gui_track + tracks; i++)
     {
         if(start_mute_check_x + Cur_Char_size[i] >= MAX_PATT_SCREEN_X) break;
-        if(Check_Mouse(start_mute_check_x + Cur_Char_size[i], 184 - 1, 28, chars_height))
+        if(Check_Mouse(start_mute_check_x + Cur_Char_size[i], 184 - 1, 28, chars_height) && can_modify_song)
         {
             int Cur_Position = Get_Song_Position();
             int tmp_track = Get_Track_Over_Mouse(Mouse.x, NULL, FALSE);
@@ -3938,45 +3938,68 @@ void Mouse_Right_Pattern_Ed(void)
 
 // ------------------------------------------------------
 // Mute all tracks but a given one
-void Solo_Track(int track_to_solo)
+void Mute_Track(int track_to_mute)
 {
+    int Was_Muted = FALSE;
+    
     // Unmute all if the user clicked on a solo track
-    if(Chan_Mute_State[track_to_solo] == 0)
+    if(Chan_Mute_State[track_to_mute] == FALSE)
     {
-        int Was_Solo = FALSE;
-        
         // Check if all other tracks are muted
         for(int solify = 0; solify < MAX_TRACKS; solify++)
         {
-            if((solify != track_to_solo) && Chan_Mute_State[solify] == 0)
+            if((solify != track_to_mute) && Chan_Mute_State[solify] == FALSE)
             {
-                Was_Solo = TRUE;
+                Was_Muted = TRUE;
             }
         }
-        if(!Was_Solo)
+        if(!Was_Muted)
         {
             // Unmute all
             for(int solify = 0; solify < MAX_TRACKS; solify++)
             {
-                Chan_Mute_State[solify] = 0;
+                Chan_Mute_State[solify] = FALSE;
             }
-            Chan_Mute_State[track_to_solo] = 1;
+            Chan_Mute_State[track_to_mute] = TRUE;
         }
         else
         {
             // Else mute all
             for(int solify = 0; solify < MAX_TRACKS; solify++)
             {
-                Chan_Mute_State[solify] = 1;
+                Chan_Mute_State[solify] = TRUE;
             }
         }
     }
     else
     {
-        // Else mute all
+        // Check if all other tracks are muted
         for(int solify = 0; solify < MAX_TRACKS; solify++)
         {
-            Chan_Mute_State[solify] = 1;
+            if((solify != track_to_mute) && Chan_Mute_State[solify] == FALSE)
+            {
+                Was_Muted = TRUE;
+            }
+        }
+        if(!Was_Muted)
+        {
+            // Else unmute all
+            for(int solify = 0; solify < MAX_TRACKS; solify++)
+            {
+                Chan_Mute_State[solify] = FALSE;
+            }
+            // (It will be reversed)
+            Chan_Mute_State[track_to_mute] = TRUE;
+        }
+        else
+        {
+            // Else mute all
+            for(int solify = 0; solify < MAX_TRACKS; solify++)
+            {
+                Chan_Mute_State[solify] = TRUE;
+            }
+            // (It will be reversed)
+            Chan_Mute_State[track_to_mute] = TRUE;
         }
     }
 }

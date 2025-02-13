@@ -1289,11 +1289,31 @@ void Solo_Track_On_Off(int posindex, int seqindex)
         }
         else
         {
-            // Solo it
+            Already_Solo = 0;
             for(int alphac = 0; alphac < Song_Tracks; alphac++)
             {
-                Chan_Active_State[posindex][alphac] = FALSE;
-                Chan_History_State[posindex][alphac] = FALSE;
+                if(Chan_Active_State[posindex][alphac] == TRUE) Already_Solo++;
+            }
+            if(!Already_Solo)
+            {
+                // Active all
+                for(int alphac = 0; alphac < Song_Tracks; alphac++)
+                {
+                    Chan_Active_State[posindex][alphac] = TRUE;
+                    Chan_History_State[posindex][alphac] = FALSE;
+                }
+                Update_Pattern(0);
+                gui_action = GUI_CMD_UPDATE_SEQUENCER;
+                return;
+            }
+            else
+            {
+                // Solo it
+                for(int alphac = 0; alphac < Song_Tracks; alphac++)
+                {
+                    Chan_Active_State[posindex][alphac] = FALSE;
+                    Chan_History_State[posindex][alphac] = FALSE;
+                }
             }
         }
         // Active it
