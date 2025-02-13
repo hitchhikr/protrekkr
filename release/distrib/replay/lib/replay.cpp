@@ -6268,7 +6268,7 @@ void Get_Player_Values(void)
         }
         if(VuMeters_Level_Dats_L[c] > 0.0f) 
         {
-            VuMeters_Level_Dats_L[c] -= 0.00002f;
+            VuMeters_Level_Dats_L[c] -= 0.000025f;
         }
         else
         {
@@ -6276,7 +6276,7 @@ void Get_Player_Values(void)
         }
         if(VuMeters_Level_Dats_R[c] > 0.0f) 
         {
-            VuMeters_Level_Dats_R[c] -= 0.00002f;
+            VuMeters_Level_Dats_R[c] -= 0.000025f;
         }
         else
         {
