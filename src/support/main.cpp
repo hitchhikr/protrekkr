@@ -429,13 +429,13 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
     Uint32 ExePath_Size = MAX_PATH;
 
 #if defined(__AMIGAOS4__)
-    GfxBase = IExec->OpenLibrary("graphics.library", 50);
+    GfxBase = IExec->OpenLibrary((CONST_STRPTR) "graphics.library", 50);
     if(!GfxBase)
     {
         Message_Error("Can't open graphics.library.");
         exit(0);
     }
-    IGraphics = (struct GraphicsIFace *) IExec->GetInterface(GfxBase, "main", 1, NULL);
+    IGraphics = (struct GraphicsIFace *) IExec->GetInterface(GfxBase, (CONST_STRPTR) "main", 1, NULL);
     if(!IGraphics)
     {
         Message_Error("Can't obtain graphics.library interface.");

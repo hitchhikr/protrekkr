@@ -113,11 +113,6 @@ void *AUDIO_Thread(void *arg)
                 AUDIO_Acknowledge = TRUE;
             }
 
-            if(join)
-            {
-                IExec->WaitIO((struct IORequest *) join);
-            }
-
             io->ahir_Std.io_Message.mn_Node.ln_Pri = 0;
             io->ahir_Std.io_Command = CMD_WRITE;
             io->ahir_Std.io_Data = buf;
@@ -128,9 +123,14 @@ void *AUDIO_Thread(void *arg)
             io->ahir_Type = AHIST_S16S;
             io->ahir_Volume = 0x10000;
             io->ahir_Position = 0x8000;
-            io->ahir_Link = 0;
+            io->ahir_Link = join;
             IExec->SendIO((struct IORequest *) io);
           
+            if(join)
+            {
+                IExec->WaitIO((struct IORequest *) join);
+            }
+
             // Swap
             join = io;
             AHIio = AHIio2;
@@ -185,7 +185,7 @@ int AUDIO_Init_Driver(void (*Mixer)(Uint8 *, Uint32))
     AHIio->ahir_Version = 4;
 
     // Open ahi
-    if(IExec->OpenDevice(AHINAME, AHI_DEFAULT_UNIT, (struct IORequest *) AHIio, 0))
+    if(IExec->OpenDevice((CONST_STRPTR) AHINAME, AHI_DEFAULT_UNIT, (struct IORequest *) AHIio, 0))
     {
         AHIio->ahir_Std.io_Device = NULL;
 
@@ -215,7 +215,7 @@ int AUDIO_Create_Sound_Buffer(int milliseconds)
 
     frag_size = (int) (AUDIO_PCM_FREQ * (milliseconds / 1000.0f));
 
-    AUDIO_SoundBuffer_Size = frag_size << 2;
+    AUDIO_SoundBuffer_Size = frag_size * ((AUDIO_DBUF_RESOLUTION * AUDIO_DBUF_CHANNELS) >> 3);
     AUDIO_Latency = AUDIO_SoundBuffer_Size;
     
     AHIbuf = (short *) IExec->AllocVecTags(AUDIO_SoundBuffer_Size, AVT_Type, MEMF_SHARED, TAG_END);

@@ -505,7 +505,7 @@ void Read_SMPT(void)
         while ((dl = NextDosEntry(dl, flags)) != NULL)
         {
             // Convert it first
-            CopyStringBSTRToC(dl->dol_Name, BString, sizeof(BString));
+            CopyStringBSTRToC(dl->dol_Name, (unsigned char *) BString, sizeof(BString));
             Add_Entry(BString, _A_SUBDIR);
         }
         UnLockDosList(flags);

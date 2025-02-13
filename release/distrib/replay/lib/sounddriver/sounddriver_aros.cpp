@@ -94,7 +94,7 @@ void *AUDIO_Thread(void *arg)
             struct AHIRequest *io = AHIio;
             short *buf = AHIbuf;
         
-             if(AUDIO_Play_Flag)
+            if(AUDIO_Play_Flag)
             {
                 AUDIO_Mixer((Uint8 *) buf, AUDIO_SoundBuffer_Size);
                 AUDIO_Acknowledge = FALSE;
