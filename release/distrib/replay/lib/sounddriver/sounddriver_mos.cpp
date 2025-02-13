@@ -94,7 +94,7 @@ void *AUDIO_Thread(void *arg)
             struct AHIRequest *io = AHIio;
             short *buf = AHIbuf;
         
-             if(AUDIO_Play_Flag)
+            if(AUDIO_Play_Flag)
             {
                 AUDIO_Mixer((Uint8 *) buf, AUDIO_SoundBuffer_Size);
                 AUDIO_Acknowledge = FALSE;
@@ -108,6 +108,7 @@ void *AUDIO_Thread(void *arg)
             io->ahir_Std.io_Message.mn_Node.ln_Pri = 0;
             io->ahir_Std.io_Command = CMD_WRITE;
             io->ahir_Std.io_Data = buf;
+            io->ahir_Std.io_Flags = IOF_QUICK;
             io->ahir_Std.io_Length = AUDIO_SoundBuffer_Size;
             io->ahir_Std.io_Offset = 0;
             io->ahir_Frequency = AUDIO_PCM_FREQ;
@@ -201,7 +202,7 @@ int AUDIO_Create_Sound_Buffer(int milliseconds)
 
     frag_size = (int) (AUDIO_PCM_FREQ * (milliseconds / 1000.0f));
 
-    AUDIO_SoundBuffer_Size = frag_size << 2;
+    AUDIO_SoundBuffer_Size = frag_size * ((AUDIO_DBUF_RESOLUTION * AUDIO_DBUF_CHANNELS) >> 3);
     AUDIO_Latency = AUDIO_SoundBuffer_Size;
 
     AHIbuf = (short *) AllocVec(AUDIO_SoundBuffer_Size, MEMF_ANY);
