@@ -566,8 +566,13 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
 #endif
 
     // Default values
+#if defined(__MACOSX_PPC__) || defined(__MACOSX_X86__)
+    sprintf(Keyboard_Name, "%s", "kben_macosx.txt");
+    sprintf(Keyboard_FileNames[0], "%s", "kben_macosx.txt");
+#else
     sprintf(Keyboard_Name, "%s", "kben.txt");
     sprintf(Keyboard_FileNames[0], "%s", "kben.txt");
+#endif
     sprintf(Keyboard_Labels[0], "%s", "English");
     Nbr_Keyboards = 1;
     Cur_Keyboard = Default_Keyboard;
@@ -578,7 +583,11 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
 
     if(!strlen(Keyboard_Name))
     {
+#if defined(__MACOSX_PPC__) || defined(__MACOSX_X86__)
+        sprintf(Keyboard_Name, "%s", "kben_macosx.txt");
+#else
         sprintf(Keyboard_Name, "%s", "kben.txt");
+#endif
     }
 
     // All keyboards name
