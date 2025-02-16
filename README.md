@@ -25,8 +25,8 @@ The executable will be created in the release/distrib directory.
 
 Notice that you'll need SDL 1 (only to compile the tracker, the replay routines themselves have no dependencies).<br>
 > [!CAUTION]
-> **When compiling for Linux or Mac OS: Use libSDL12 and NOT libSDL12-compat.**<br><br>
-> **On Linux use libsdl12-dev and on Mac OS use libsdl from Mac Ports.**<br><br>
+> **When compiling for Linux or Mac OS: Use libsdl1.2 and NOT libsdl1.2-compat.**<br><br>
+> **On Linux use libsdl1.2-dev and on Mac OS use libsdl from Mac Ports.**<br><br>
 > **If your Linux distribution doesn't include SDL 1.2 then try your luck here:<br>https://github.com/libsdl-org/SDL-1.2**<br><br>
 > **"ptk_vx.x.x_macosx_ia64_ogl.zip" may be problematic on some 64 bit versions of Mac OS (ulterior to Catalina), on those you should use "ptk_vx.x.x_macosx_ia64.zip" instead.**
 
