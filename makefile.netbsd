@@ -2,7 +2,7 @@ CXX = g++
 
 LIBS = -lGL -lSDL -lsdldraw -lz -lpthread
 
-FLAGS = -O3 -fsigned-char -fno-strict-aliasing -ffast-math -fno-rtti -fno-exceptions -w -I/usr/pkg/include -I/usr/X11R7/include -L/usr/X11R7/lib -L/usr/pkg/lib -Lsrc/extralibs/sdl_draw -Lsrc/extralibs/zlib-1.2.3 \
+FLAGS = -Ofast -fsigned-char -fno-strict-aliasing -ffast-math -fno-rtti -fno-exceptions -w -I/usr/pkg/include -I/usr/X11R7/include -L/usr/X11R7/lib -L/usr/pkg/lib -Lsrc/extralibs/sdl_draw -Lsrc/extralibs/zlib-1.2.3 \
         -D __LINUX__ -D __GCC__ -D __NO_MIDI__ -D __NETBSD__ -D __MOT_SWAP__ -D __USE_OPENGL__
 
 EXEOBJS = ptk.o \

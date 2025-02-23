@@ -4,7 +4,7 @@ LIBS_X86 = -lsdldraw_x86 -lz -framework CoreAudio -framework CoreMidi -framework
 
 DEBUG = 
 
-FLAGS_X86 = $(DEBUG) -O3 -fsigned-char -arch i386 -ffast-math -fomit-frame-pointer -fno-rtti -I/usr/local/include \
+FLAGS_X86 = $(DEBUG) -Ofast -fsigned-char -arch i386 -ffast-math -fomit-frame-pointer -fno-rtti -I/usr/local/include \
             -fno-strict-aliasing -w -D __MACOSX_X86__ -D __GCC__ -D __MACOSX_CORE__ -D __MOT_SWAP__ -D __AIFF__ -D __USE_OPENGL__
 
 EXEOBJS_X86 = ptk_x86.o \
