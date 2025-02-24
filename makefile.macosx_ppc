@@ -1,4 +1,5 @@
-CXX = gcc
+CC = gcc
+CXX = g++
 
 LIBS_PPC = -lsdldraw_ppc -lz -framework CoreAudio -framework CoreMidi -framework AudioUnit -framework Cocoa -framework OpenGL -lSDL
 
@@ -40,163 +41,163 @@ protrekkr_ppc: $(EXEOBJS_PPC)
 	install_name_tool ./release/distrib/protrekkr_ppc.app/Contents/MacOS/Protrekkr -change /usr/local/lib/libSDL-1.2.0.dylib @executable_path/libSDL-1.2.0.dylib
 	
 ptk_ppc.o: src/ptk.cpp
-	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
+	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
 editor_303_ppc.o: src/editors/editor_303.cpp
-	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
+	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
 editor_pattern_ppc.o: src/editors/editor_pattern.cpp
-	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
+	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
 editor_sequencer_ppc.o: src/editors/editor_sequencer.cpp
-	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
+	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
 editor_track_ppc.o: src/editors/editor_track.cpp
-	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
+	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
 editor_track_fx_ppc.o: src/editors/editor_track_fx.cpp
-	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
+	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
 patterns_blocks_ppc.o: src/editors/patterns_blocks.cpp
-	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
+	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
 editor_synth_ppc.o: src/editors/editor_synth.cpp
-	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
+	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
 editor_sample_ppc.o: src/editors/editor_sample.cpp
-	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
+	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
 editor_fx_setup_ppc.o: src/editors/editor_fx_setup.cpp
-	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
+	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
 editor_setup_ppc.o: src/editors/editor_setup.cpp
-	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
+	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
 editor_diskio_ppc.o: src/editors/editor_diskio.cpp
-	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
+	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
 editor_reverb_ppc.o: src/editors/editor_reverb.cpp
-	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
+	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
 editor_instrument_ppc.o: src/editors/editor_instrument.cpp
-	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
+	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
 editor_midi_ppc.o: src/editors/editor_midi.cpp
-	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
+	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
 samples_pack_ppc.o: src/samples/samples_pack.cpp
-	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
+	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
 files_list_ppc.o: src/files/files_list.cpp
-	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
+	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
 files_ppc.o: src/files/files.cpp
-	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
+	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
 mods_ppc.o: src/files/mods.cpp
-	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
+	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
 patterns_ppc.o: src/files/patterns.cpp
-	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
+	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
 reverbs_ppc.o: src/files/reverbs.cpp
-	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
+	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
 midi_cfg_ppc.o: src/files/midi_cfg.cpp
-	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
+	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
 config_ppc.o: src/files/config.cpp
-	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
+	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
 303s_ppc.o: src/files/303s.cpp
-	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
+	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
 synths_ppc.o: src/files/synths.cpp
-	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
+	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
 insts_ppc.o: src/files/insts.cpp
-	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
+	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
 ptps_ppc.o: src/files/ptps.cpp
-	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
+	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
 midi_ppc.o: src/midi/midi.cpp
-	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
+	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
 rtmidi_ppc.o: src/midi/rtmidi.cpp
 	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
 
 midi_dispatch_ppc.o: src/midi/midi_dispatch.cpp
-	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
+	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
 timer_ppc.o: src/support/timer.cpp
-	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
+	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
 main_ppc.o: src/support/main.cpp
-	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
+	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
 sdlmain_ppc.o: src/support/sdlmain.m
-	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
+	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
 misc_draw_ppc.o: src/ui/misc_draw.cpp
-	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
+	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
 draw_primitives_ppc.o: src/ui/draw_primitives.cpp
-	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
+	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
 requesters_ppc.o: src/ui/requesters.cpp
-	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
+	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
 samples_ops_ppc.o: src/samples/samples_ops.cpp
-	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
+	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
 aiff_ppc.o: src/samples/aiff/aiff.cpp
-	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
+	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
 aiff_interface_ppc.o: src/samples/aiff/aiff_interface.cpp
 	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
 
 riff_ppc.o: src/samples/wav/riff.cpp
-	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
+	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
 riff_interface_ppc.o: src/samples/wav/riff_interface.cpp
 	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
 
 spline_ppc.o: release/distrib/replay/lib/spline.cpp
-	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
+	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
 tb_303_ppc.o: release/distrib/replay/lib/tb_303.cpp
-	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
+	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
 wavpack_ppc.o: release/distrib/replay/lib/wavpack.cpp
-	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
+	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
 samples_unpack_ppc.o: release/distrib/replay/lib/samples_unpack.cpp
-	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
+	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
 replay_ppc.o: release/distrib/replay/lib/replay.cpp
-	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
+	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
 synth_ppc.o: release/distrib/replay/lib/synth.cpp
-	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
+	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
 endianness_ppc.o: release/distrib/replay/lib/endianness.cpp
-	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
+	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
 sounddriver_macosx_ppc.o: release/distrib/replay/lib/sounddriver/sounddriver_macosx.cpp
-	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
+	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
 bits_ppc.o: src/samples/wavpack/bits.cpp
-	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
+	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
 pack_ppc.o: src/samples/wavpack/pack.cpp
-	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
+	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
 words_ppc.o: src/samples/wavpack/words.cpp
-	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
+	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
 wputils_ppc.o: src/samples/wavpack/wputils.cpp
-	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
+	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
 tinypack_ppc.o: src/samples/wavpack/tinypack.cpp
-	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
+	$(CC) -c -o $(@) $(FLAGS_PPC) $<
