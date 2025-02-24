@@ -31,7 +31,7 @@ protrekkr: $(EXEOBJS)
 	-rm -f ./release/distrib/ptk_linux
 	(cd src/extralibs/sdl_draw; make -f makefile.linux)
 	(cd src/extralibs/zlib-1.2.3; make)
-	$(CC) -o ./release/distrib/ptk_linux -L./ $(FLAGS) $(EXEOBJS) $(LIBS)
+	$(CXX) -o ./release/distrib/ptk_linux -L./ $(FLAGS) $(EXEOBJS) $(LIBS)
 	strip -s -x ./release/distrib/ptk_linux
 
 ptk.o: src/ptk.cpp
