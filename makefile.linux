@@ -1,4 +1,4 @@
-CXX = g++
+CXX = gcc
 
 LIBS = -lGL -lasound -lSDL -lsdldraw -lz -lpthread -lm
 

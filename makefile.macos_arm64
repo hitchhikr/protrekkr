@@ -1,4 +1,4 @@
-CXX = g++
+CXX = gcc
 
 LIBS_ARM64 = -lsdldraw_arm64 -lz -framework CoreAudio -framework CoreMidi -framework AudioUnit -framework Cocoa -framework OpenGL -lSDL
 

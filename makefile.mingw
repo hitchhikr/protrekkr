@@ -1,4 +1,4 @@
-CXX = g++
+CXX = gcc
 
 LIBS = -lopengl32 -lmingw32 -ldsound -lmsacm32 -lwinmm -lsdldraw -lz -lsdlmain -lSDL
 

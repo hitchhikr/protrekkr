@@ -1,4 +1,4 @@
-CXX = ppc-morphos-g++
+CXX = ppc-morphos-gcc
 STRIP = ppc-morphos-strip
 
 LIBS = -noixemul -lSDL -I/usr/local/lib -lz_shared -lpthread -lGL -lc -lm

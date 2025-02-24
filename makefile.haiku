@@ -1,4 +1,4 @@
-CXX = g++
+CXX = gcc
 
 LIBS = -lGL -lSDL -lsdldraw -lz -lstdc++ -lsupc++ -lgame
 
