@@ -17,7 +17,7 @@ EXEOBJS_PPC = ptk_ppc.o \
               midi_ppc.o rtmidi_ppc.o midi_dispatch_ppc.o \
               timer_ppc.o main_ppc.o sdlmain_ppc.o \
               misc_draw_ppc.o draw_primitives_ppc.o requesters_ppc.o \
-              samples_ops_ppc.o aiff_ppc.o riff_ppc.o \
+              samples_ops_ppc.o aiff_ppc.o aiff_interface_ppc.o riff_ppc.o riff_interface_ppc.o \
               spline_ppc.o tb_303_ppc.o wavpack_ppc.o samples_unpack_ppc.o replay_ppc.o synth_ppc.o endianness_ppc.o \
               sounddriver_macosx_ppc.o
 
@@ -153,7 +153,13 @@ samples_ops_ppc.o: src/samples/samples_ops.cpp
 aiff_ppc.o: src/samples/aiff/aiff.cpp
 	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
 
+aiff_interface_ppc.o: src/samples/aiff/aiff_interface.cpp
+	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
+
 riff_ppc.o: src/samples/wav/riff.cpp
+	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
+
+riff_interface_ppc.o: src/samples/wav/riff_interface.cpp
 	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
 
 spline_ppc.o: release/distrib/replay/lib/spline.cpp

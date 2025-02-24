@@ -15,7 +15,7 @@ EXEOBJS = ptk.o \
           midi.o midi_dispatch.o \
           timer.o main.o \
           misc_draw.o draw_primitives.o requesters.o \
-          samples_ops.o aiff.o riff.o \
+          samples_ops.o aiff.o aiff_interface.o riff.o riff_interface.o \
           spline.o tb_303.o wavpack.o samples_unpack.o replay.o synth.o endianness.o \
           sounddriver_haiku.o
 
@@ -145,7 +145,13 @@ samples_ops.o: src/samples/samples_ops.cpp
 aiff.o: src/samples/aiff/aiff.cpp
 	$(CXX) -c -o $(@) $(FLAGS) $<
 
+aiff_interface.o: src/samples/aiff/aiff_interface.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<
+
 riff.o: src/samples/wav/riff.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<
+
+riff_interface.o: src/samples/wav/riff_interface.cpp
 	$(CXX) -c -o $(@) $(FLAGS) $<
 
 spline.o: release/distrib/replay/lib/spline.cpp
