@@ -148,18 +148,18 @@ class AIFFFile
     public:
         AIFFFile();
         ~AIFFFile();
-        int Open(const char *Filename);
-        void Close();
-        int BitsPerSample();
-        int NumChannels();
-        unsigned long NumSamples();
-        int BaseNote();
-        int LoopType();
-        unsigned long LoopStart();
-        unsigned long LoopEnd();
+        int AIFF_Open(const char *Filename);
+        void AIFF_Close();
+        int AIFF_BitsPerSample();
+        int AIFF_NumChannels();
+        unsigned long AIFF_NumSamples();
+        int AIFF_BaseNote();
+        int AIFF_LoopType();
+        unsigned long AIFF_LoopStart();
+        unsigned long AIFF_LoopEnd();
 
-        int ReadMonoSample(short *Sample);
-        int ReadStereoSample(short *L, short *R);
+        int AIFF_ReadMonoSample(short *Sample);
+        int AIFF_ReadStereoSample(short *L, short *R);
 
     private:
         unsigned long FourCC(const char *ChunkName);

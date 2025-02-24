@@ -33,6 +33,9 @@
 // Includes
 #include "include/aiff.h"
 
+extern "C"
+{
+
 AIFFFile::AIFFFile()
 {
     file = NULL;
@@ -45,7 +48,7 @@ AIFFFile::AIFFFile()
 
 AIFFFile::~AIFFFile()
 {
-    Close();
+    AIFF_Close();
 }
 
 unsigned long AIFFFile::FourCC(const char *ChunkName)
@@ -104,7 +107,7 @@ int AIFFFile::SeekChunk(const char *ChunkName)
     return(0);
 }
 
-int AIFFFile::Open(const char *Filename)
+int AIFFFile::AIFF_Open(const char *Filename)
 {
     int chunk_size;
     int Padding;
@@ -216,48 +219,48 @@ int AIFFFile::Read(void *Data, unsigned NumBytes)
     return fread(Data, NumBytes, 1, file);
 }
 
-void AIFFFile::Close()
+void AIFFFile::AIFF_Close()
 {
     if(file) fclose(file);
     file = NULL;
 }
 
-int AIFFFile::BitsPerSample()
+int AIFFFile::AIFF_BitsPerSample()
 {
     return CommDat.sampleSize;
 }
 
-int AIFFFile::NumChannels()
+int AIFFFile::AIFF_NumChannels()
 {
     return CommDat.numChannels;
 }
 
-unsigned long AIFFFile::LoopStart()
+unsigned long AIFFFile::AIFF_LoopStart()
 {
     return Loop_Start;
 }
 
-unsigned long AIFFFile::LoopEnd()
+unsigned long AIFFFile::AIFF_LoopEnd()
 {
     return Loop_End;
 }
 
-unsigned long AIFFFile::NumSamples()
+unsigned long AIFFFile::AIFF_NumSamples()
 {
     return CommDat.numSampleFrames;
 }
 
-int AIFFFile::BaseNote()
+int AIFFFile::AIFF_BaseNote()
 {
     return Base_Note;
 }
 
-int AIFFFile::LoopType()
+int AIFFFile::AIFF_LoopType()
 {
     return SustainLoop.PlayMode;
 }
 
-int AIFFFile::ReadMonoSample(short *Sample)
+int AIFFFile::AIFF_ReadMonoSample(short *Sample)
 {
     int retcode;
     float y;
@@ -316,7 +319,7 @@ int AIFFFile::ReadMonoSample(short *Sample)
     return retcode;
 }
 
-int AIFFFile::ReadStereoSample(short *L, short *R)
+int AIFFFile::AIFF_ReadStereoSample(short *L, short *R)
 {
     int retcode = 0;
     unsigned char x[2];
@@ -441,4 +444,6 @@ void AIFFFile::IntToFloat(int *Dest, int Source)
 void AIFFFile::Int64ToDouble(Uint64 *Dest, Uint64 Source)
 {
     *Dest = Source;
+}
+
 }

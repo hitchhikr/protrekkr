@@ -536,6 +536,10 @@ SOURCE=.\src\midi\rtmidi.cpp
 
 SOURCE=.\src\samples\aiff\include\aiff.h
 # End Source File
+# Begin Source File
+
+SOURCE=.\src\samples\aiff\include\aiff_interface.h
+# End Source File
 # End Group
 # Begin Source File
 
@@ -556,10 +560,18 @@ SOURCE=.\src\samples\wav\include\ddc.h
 
 SOURCE=.\src\samples\wav\include\riff.h
 # End Source File
+# Begin Source File
+
+SOURCE=.\src\samples\wav\include\riff_interface.h
+# End Source File
 # End Group
 # Begin Source File
 
 SOURCE=.\src\samples\wav\riff.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\samples\wav\riff_interface.cpp
 # End Source File
 # End Group
 # Begin Group "samples include"

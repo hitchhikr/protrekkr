@@ -41,7 +41,9 @@
 #endif
 
 #include "../samples/wav/include/riff.h"
+#include "../samples/wav/include/riff_interface.h"
 #include "../samples/aiff/include/aiff.h"
+#include "../samples/aiff/include/aiff_interface.h"
 #include "../include/variables.h"
 
 #if !defined(BZR2)

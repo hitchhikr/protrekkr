@@ -21,6 +21,7 @@
 #ifndef _RIFF_H_
 #define _RIFF_H_
 
+#include <stdio.h>
 #include "ddc.h"
 
 #include "../../../../release/distrib/replay/lib/include/endianness.h"
@@ -254,25 +255,22 @@ class WaveFile: private RiffFile
 
         WaveFile();
 
-        DDCRET OpenForWrite(const char  *Filename,
-                            UINT32 SamplingRate = 44100,
-                            UINT16 BitsPerSample = 16,
-                            UINT16 NumChannels = 2
+        DDCRET OpenForWrite(const char *Filename,
+                            UINT32 SamplingRate,
+                            UINT16 BitsPerSample,
+                            UINT16 NumChannels
                            );
 
         DDCRET OpenForRead(const char *Filename);
 
         DDCRET SeekToSample(unsigned long SampleIndex);
 
-        DDCRET WriteData(const void *data, UINT32 numData);
-
-        DDCRET WriteData(const INT32 *data, UINT32 numData);
-
+        DDCRET WriteData_void(const void *data, UINT32 numData);
+        DDCRET WriteData_int32(const INT32 *data, UINT32 numData);
         // The following work only with 16-bit audio
-        DDCRET WriteData(const INT16 *data, UINT32 numData);
-
+        DDCRET WriteData_int16(const INT16 *data, UINT32 numData);
         // The following work only with 8-bit audio
-        DDCRET WriteData(const UINT8 *data, UINT32 numData);
+        DDCRET WriteData_uint8(const UINT8 *data, UINT32 numData);
 
         DDCRET WriteMonoSample(INT16 ChannelData);
         DDCRET WriteStereoSample(INT16 LeftChannelData, INT16 RightChannelData);
@@ -283,30 +281,18 @@ class WaveFile: private RiffFile
 
         DDCRET Close();
 
-        UINT32   SamplingRate() const;    // [Hz]
-        UINT16   BitsPerSample() const;
-        UINT16   NumChannels() const;
-        UINT32   NumSamples() const;
-        UINT16   SampleFormat() const; // one of WAVE_FORMAT_IEEE_FLOAT, WAVE_FORMAT_PCM
+        UINT32   SamplingRate();    // [Hz]
+        UINT16   BitsPerSample();
+        UINT16   NumChannels();
+        UINT32   NumSamples();
 
-        UINT32   LoopType() const;
-        UINT32   LoopStart() const;
-        UINT32   LoopEnd() const;
+        UINT32   Wave_LoopType();
+        UINT32   Wave_LoopStart();
+        UINT32   Wave_LoopEnd();
 
        // Open for write using another wave file's parameters...
 
-        DDCRET OpenForWrite(const char *Filename,
-                             WaveFile &OtherWave
-                           )
-        {
-            return OpenForWrite(Filename,
-                                OtherWave.SamplingRate(),
-                                OtherWave.BitsPerSample(),
-                                OtherWave.NumChannels()
-                               );
-        }
-
-        long CurrentFilePosition() const
+        long CurrentFilePosition()
         {
             return RiffFile::CurrentFilePosition();
         }
@@ -322,4 +308,4 @@ class WaveFile: private RiffFile
 
 #pragma pack(pop)
 
-#endif /* __DDC_RIFF_H */
+#endif /* _RIFF_H_ */

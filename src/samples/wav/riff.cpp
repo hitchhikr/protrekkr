@@ -326,6 +326,9 @@ int RiffFile::SeekChunk(const char *ChunkName)
 }
 
 // ------------------------------------------------------
+extern "C"
+{
+
 WaveFile::WaveFile()
 {
     pcm_data.ckID = FourCC("data");
@@ -764,65 +767,65 @@ DDCRET WaveFile::SeekToSample(unsigned long SampleIndex)
     return rc;
 }
 
-UINT32 WaveFile::SamplingRate() const
+UINT32 WaveFile::SamplingRate()
 {
     return wave_format.data.nSamplesPerSec;
 }
 
-UINT16 WaveFile::BitsPerSample() const
+UINT16 WaveFile::BitsPerSample()
 {
     return wave_format.data.nBitsPerSample;
 }
 
-UINT16 WaveFile::NumChannels() const
+UINT16 WaveFile::NumChannels()
 {
     return wave_format.data.nChannels;
 }
 
-UINT32 WaveFile::NumSamples() const
+UINT32 WaveFile::NumSamples()
 {
     return num_samples;
 }
 
 // Simple or none
-UINT32 WaveFile::LoopType() const
+UINT32 WaveFile::Wave_LoopType()
 {
     return wave_Smpl.data.Num_Sample_Loops != 0 ? 1 : 0;
 }
 
-UINT32 WaveFile::LoopStart() const
+UINT32 WaveFile::Wave_LoopStart()
 {
     return wave_Smpl.data.Start;
 }
 
-UINT32 WaveFile::LoopEnd() const
+UINT32 WaveFile::Wave_LoopEnd()
 {
     return wave_Smpl.data.End;
 }
 
 // PATCH THAT
 
-DDCRET WaveFile::WriteData(const void *data, UINT32 numData)
+DDCRET WaveFile::WriteData_void(const void *data, UINT32 numData)
 {
     UINT32 extraBytes = numData;
     return RiffFile::Write(data, extraBytes);
 }
 
-DDCRET WaveFile::WriteData(const INT32 *data, UINT32 numData)
+DDCRET WaveFile::WriteData_int32(const INT32 *data, UINT32 numData)
 {
     UINT32 extraBytes = numData * sizeof(INT32);
     pcm_data.ckSize += extraBytes;
     return RiffFile::Write(data, extraBytes);
 }
 
-DDCRET WaveFile::WriteData(const INT16 *data, UINT32 numData)
+DDCRET WaveFile::WriteData_int16(const INT16 *data, UINT32 numData)
 {
     UINT32 extraBytes = numData * sizeof(INT16);
     pcm_data.ckSize += extraBytes;
     return RiffFile::Write(data, extraBytes);
 }
 
-DDCRET WaveFile::WriteData(const UINT8 *data, UINT32 numData)
+DDCRET WaveFile::WriteData_uint8(const UINT8 *data, UINT32 numData)
 {
     pcm_data.ckSize += numData;
     return RiffFile::Write(data, numData);
@@ -841,4 +844,6 @@ int WaveFile::FloatToInt(int *Source)
 void WaveFile::Int64ToDouble(Uint64 *Dest, Uint64 Source)
 {
     *Dest = Source;
+}
+
 }

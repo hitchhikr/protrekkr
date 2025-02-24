@@ -1537,7 +1537,7 @@ int Screen_Update(void)
                     break;
             }
 
-            WaveFile RF;
+            WaveHandle RF = create_wave();
 
             if(strlen(SampleName[Current_Instrument][Current_Instrument_Split]))
             {
@@ -1548,7 +1548,7 @@ int Screen_Update(void)
                 sprintf(wav_filename, "%s" SLASH "Untitled.wav", Dir_Samples);
             }
 
-            RF.OpenForWrite(wav_filename,
+            OpenForWrite(RF, wav_filename,
                             44100,
                             16,
                             Sample_Channels[Current_Instrument][Current_Instrument_Split]);
@@ -1588,8 +1588,8 @@ int Screen_Update(void)
 
             while(woff < wend)
             {
-                if(t_stereo) RF.WriteStereoSample(*eSamples++, *erSamples++);
-                else RF.WriteMonoSample(*eSamples++);
+                if(t_stereo) WriteStereoSample(RF, *eSamples++, *erSamples++);
+                else WriteMonoSample(RF, *eSamples++);
                 woff++;
             }
 
@@ -1624,11 +1624,12 @@ int Screen_Update(void)
                     data.Start = Swap_32(data.Start);
                     data.End = Swap_32(data.End);
 
-                    RF.WriteData((void *) &header, sizeof(header));
-                    RF.WriteData((void *) &data, sizeof(data));
+                    WriteData_void(RF, (void *) &header, sizeof(header));
+                    WriteData_void(RF, (void *) &data, sizeof(data));
                 }
             }
-            RF.Close();
+            Close(RF);
+            free_wave(RF);
             if(strlen(SampleName[Current_Instrument][Current_Instrument_Split])) sprintf(buffer, "File '%s' Saved.", SampleName[Current_Instrument][Current_Instrument_Split]);
             else sprintf(buffer, "File 'Untitled.wav' Saved.");
             Status_Box(buffer, TRUE);
@@ -2358,8 +2359,8 @@ void Load_File(int Freeindex, const char *str)
     int ld3 = 0;
     int Freeindex2 = 0;
     FILE *in;
-    WaveFile Wav_File;
-    AIFFFile AIFF_File;
+    WaveHandle Wav_File;
+    AIFFHandle AIFF_File;
     float save_sample_vol;
 
     int rate = 0;
@@ -2560,10 +2561,11 @@ void Load_File(int Freeindex, const char *str)
                 extension_AIFF[2] == AifcID))
             {
                 Status_Box("Attempting To Load An Audio IFF File...", TRUE);
-                if(AIFF_File.Open(FileName))
+                AIFF_File = create_aiff();
+                if(AIFF_Open(AIFF_File, FileName))
                 {
-                    int bits = AIFF_File.BitsPerSample();
-                    int channels = AIFF_File.NumChannels();
+                    int bits = AIFF_BitsPerSample(AIFF_File);
+                    int channels = AIFF_NumChannels(AIFF_File);
 
                     if(channels != 1 && channels != 2)
                     {
@@ -2590,21 +2592,21 @@ void Load_File(int Freeindex, const char *str)
                             switch(channels)
                             {
                                 case 1:
-                                    Allocate_Wave(Freeindex, Current_Instrument_Split, AIFF_File.NumSamples(), 1, TRUE, NULL, NULL);
+                                    Allocate_Wave(Freeindex, Current_Instrument_Split, AIFF_NumSamples(AIFF_File), 1, TRUE, NULL, NULL);
                                     csamples = RawSamples[Freeindex][0][Current_Instrument_Split];
-                                    for(i = 0; i < AIFF_File.NumSamples(); i++)
+                                    for(i = 0; i < AIFF_NumSamples(AIFF_File); i++)
                                     {
-                                        AIFF_File.ReadMonoSample(&csamples[i]);
+                                        AIFF_ReadMonoSample(AIFF_File, &csamples[i]);
                                     }
                                     break;
 
                                 case 2:
-                                    Allocate_Wave(Freeindex, Current_Instrument_Split, AIFF_File.NumSamples(), 2, TRUE, NULL, NULL);
+                                    Allocate_Wave(Freeindex, Current_Instrument_Split, AIFF_NumSamples(AIFF_File), 2, TRUE, NULL, NULL);
                                     csamples = RawSamples[Freeindex][0][Current_Instrument_Split];
                                     csamples2 = RawSamples[Freeindex][1][Current_Instrument_Split];
-                                    for(i = 0; i < AIFF_File.NumSamples(); i++)
+                                    for(i = 0; i < AIFF_NumSamples(AIFF_File); i++)
                                     {
-                                        AIFF_File.ReadStereoSample(&csamples[i], &csamples2[i]);
+                                        AIFF_ReadStereoSample(AIFF_File, &csamples[i], &csamples2[i]);
                                     }
                                     break;
                             }
@@ -2617,16 +2619,16 @@ void Load_File(int Freeindex, const char *str)
                                 Sample_Vol[Freeindex] = save_sample_vol;
                             }
 
-                            if(AIFF_File.BaseNote())
+                            if(AIFF_BaseNote(AIFF_File))
                             {
-                                Basenote[Freeindex][Current_Instrument_Split] = AIFF_File.BaseNote();
+                                Basenote[Freeindex][Current_Instrument_Split] = AIFF_BaseNote(AIFF_File);
                             }
 
-                            if(AIFF_File.LoopType())
+                            if(AIFF_LoopType(AIFF_File))
                             {
-                                LoopType[Freeindex][Current_Instrument_Split] = AIFF_File.LoopType();
-                                LoopStart[Freeindex][Current_Instrument_Split] = AIFF_File.LoopStart();
-                                LoopEnd[Freeindex][Current_Instrument_Split] = AIFF_File.LoopEnd();
+                                LoopType[Freeindex][Current_Instrument_Split] = AIFF_LoopType(AIFF_File);
+                                LoopStart[Freeindex][Current_Instrument_Split] = AIFF_LoopStart(AIFF_File);
+                                LoopEnd[Freeindex][Current_Instrument_Split] = AIFF_LoopEnd(AIFF_File);
                             }
 
                             sprintf(SampleName[Freeindex][Current_Instrument_Split], "%s", FileName);
@@ -2657,7 +2659,8 @@ void Load_File(int Freeindex, const char *str)
                             Unlock_Audio_Thread();
                         }
                     }
-                    AIFF_File.Close();
+                    AIFF_Close(AIFF_File);
+                    free_aiff(AIFF_File);
                     Status_Box("File Loaded Successfully.", TRUE);
                 }
                 else
@@ -2669,11 +2672,12 @@ void Load_File(int Freeindex, const char *str)
             {
                 Status_Box("Attempting to Load A RIFF File...", TRUE);
 
+                Wav_File = create_wave();
                 // We need the length
-                if(Wav_File.OpenForRead(FileName) == DDC_SUCCESS)
+                if(OpenForRead(Wav_File, FileName) == DDC_SUCCESS)
                 {
-                    int bits = Wav_File.BitsPerSample();
-                    int channels = Wav_File.NumChannels();
+                    int bits = BitsPerSample(Wav_File);
+                    int channels = NumChannels(Wav_File);
                     if(channels != 1 && channels != 2)
                     {
                         Status_Box(TITLE " Can Only Load Mono Or Stereo Samples.", TRUE);
@@ -2699,21 +2703,21 @@ void Load_File(int Freeindex, const char *str)
                             switch(channels)
                             {
                                 case 1:
-                                    Allocate_Wave(Freeindex, Current_Instrument_Split, Wav_File.NumSamples(), 1, TRUE, NULL, NULL);
+                                    Allocate_Wave(Freeindex, Current_Instrument_Split, NumSamples(Wav_File), 1, TRUE, NULL, NULL);
                                     csamples = RawSamples[Freeindex][0][Current_Instrument_Split];
-                                    for(i = 0; i < Wav_File.NumSamples(); i++)
+                                    for(i = 0; i < NumSamples(Wav_File); i++)
                                     {
-                                        Wav_File.ReadMonoSample(&csamples[i]);
+                                        ReadMonoSample(Wav_File, &csamples[i]);
                                     }
                                     break;
 
                                 case 2:
-                                    Allocate_Wave(Freeindex, Current_Instrument_Split, Wav_File.NumSamples(), 2, TRUE, NULL, NULL);
+                                    Allocate_Wave(Freeindex, Current_Instrument_Split, NumSamples(Wav_File), 2, TRUE, NULL, NULL);
                                     csamples = RawSamples[Freeindex][0][Current_Instrument_Split];
                                     csamples2 = RawSamples[Freeindex][1][Current_Instrument_Split];
-                                    for(i = 0; i < Wav_File.NumSamples(); i++)
+                                    for(i = 0; i < NumSamples(Wav_File); i++)
                                     {
-                                        Wav_File.ReadStereoSample(&csamples[i], &csamples2[i]);
+                                        ReadStereoSample(Wav_File, &csamples[i], &csamples2[i]);
                                     }
                                     break;
                             }
@@ -2726,11 +2730,11 @@ void Load_File(int Freeindex, const char *str)
                                 Sample_Vol[Freeindex] = save_sample_vol;
                             }
 
-                            if(Wav_File.LoopType())
+                            if(Wave_LoopType(Wav_File))
                             {
-                                LoopType[Freeindex][Current_Instrument_Split] = Wav_File.LoopType();
-                                LoopStart[Freeindex][Current_Instrument_Split] = Wav_File.LoopStart();
-                                LoopEnd[Freeindex][Current_Instrument_Split] = Wav_File.LoopEnd();
+                                LoopType[Freeindex][Current_Instrument_Split] = Wave_LoopType(Wav_File);
+                                LoopStart[Freeindex][Current_Instrument_Split] = Wave_LoopStart(Wav_File);
+                                LoopEnd[Freeindex][Current_Instrument_Split] = Wave_LoopEnd(Wav_File);
                             }
 
                             sprintf(SampleName[Freeindex][Current_Instrument_Split], "%s", FileName);
@@ -2761,7 +2765,8 @@ void Load_File(int Freeindex, const char *str)
                             Unlock_Audio_Thread();
                         }
                     }
-                    Wav_File.Close();
+                    Close(Wav_File);
+                    free_wave(Wav_File);
                     Status_Box("File Loaded Successfully.", TRUE);
                 }
                 else
@@ -3265,7 +3270,7 @@ void Wav_Renderizer()
     int j;
     int max_tracks_to_render;
     int Max_Position;
-    WaveFile RF[MAX_TRACKS];
+    WaveHandle RF[MAX_TRACKS];
     short *Sample_Buffer[2];
     int Pos_In_Memory;
     int Mem_Buffer_Size;
@@ -3295,6 +3300,7 @@ void Wav_Renderizer()
 
     for(j = 0; j < max_tracks_to_render; j++)
     {
+        RF[j] = create_wave();
         if(Must_Render_Track(j))
         {
             rendered_track++;
@@ -3311,7 +3317,7 @@ void Wav_Renderizer()
             switch(rawrender_target)
             {
                 case RENDER_TO_FILE:
-                    if(RF[j].OpenForWrite(buffer_name, 44100, rawrender_32float ? 32 : 16, 2) != DDC_SUCCESS)
+                    if(OpenForWrite(RF[j], buffer_name, 44100, rawrender_32float ? 32 : 16, 2) != DDC_SUCCESS)
                     {
                         sprintf(buffer, "Can't Open '%s' File.", buffer_name);
                         Status_Box(buffer, TRUE);
@@ -3386,16 +3392,16 @@ void Wav_Renderizer()
                         if(rawrender_32float)
                         {
                             // [-1.0..1.0]
-                            RF[j].WriteStereoFloatSample(left_float_render, right_float_render);
+                            WriteStereoFloatSample(RF[j], left_float_render, right_float_render);
                             filesize += 8;
                         }
                         else
                         {
-                            RF[j].WriteStereoSample(left_value, right_value);
+                            WriteStereoSample(RF[j], left_value, right_value);
                             filesize += 4;
                         }
                     }
-                    RF[j].Close();
+                    Close(RF[j]);
                     break;
 
                 case RENDER_TO_STEREO:
@@ -3483,6 +3489,7 @@ void Wav_Renderizer()
                 Chan_Mute_State[j] = TRUE;
             }
         }
+        free_wave(RF[j]);
     }
 
 Stop_WavRender:
