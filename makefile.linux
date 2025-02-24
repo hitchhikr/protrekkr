@@ -1,6 +1,6 @@
 CXX = g++
 
-LIBS = -lGL -lasound -lSDL -lsdldraw -lz -lpthread
+LIBS = -lGL -lasound -lSDL -lsdldraw -lz -lpthread -lm
 
 FLAGS = -Ofast -fsigned-char -fno-strict-aliasing -ffast-math -fno-rtti -fexceptions -Wno-write-strings -Wno-multichar -Lsrc/extralibs/sdl_draw -Lsrc/extralibs/zlib-1.2.3 \
         -D __LINUX__ -D __GCC__ -D __LINUX_ALSASEQ__ -D __MOT_SWAP__
