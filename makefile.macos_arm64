@@ -18,7 +18,7 @@ EXEOBJS_ARM64 = ptk_arm64.o \
               midi_arm64.o rtmidi_arm64.o midi_dispatch_arm64.o \
               timer_arm64.o main_arm64.o sdlmain_arm64.o \
               misc_draw_arm64.o draw_primitives_arm64.o requesters_arm64.o \
-              samples_ops_arm64.o aiff_arm64.o aiff_interface_arm64.o riff_interface_arm64.o \
+              samples_ops_arm64.o aiff_arm64.o aiff_interface_arm64.o riff_arm64.o riff_interface_arm64.o \
               spline_arm64.o tb_303_arm64.o wavpack_arm64.o samples_unpack_arm64.o replay_arm64.o synth_arm64.o endianness_arm64.o \
               sounddriver_macosx_arm64.o
 
