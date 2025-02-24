@@ -1,4 +1,4 @@
-CC = g++
+CC = gcc
 AS = as
 AR = ar
 STRIP = strip

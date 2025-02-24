@@ -12,7 +12,7 @@ ptkreplay: $(LIBOBJS)
 	$(AR) -d libptkreplay.a
 	$(AR) -r libptkreplay.a $(LIBOBJS)
 
-sounddriver_linux.o: lib/sounddriver/sounddriver_netbsd.cpp
+sounddriver_netbsd.o: lib/sounddriver/sounddriver_netbsd.cpp
 	$(CC) -o $(@) $(LIBFLAGS) $(FLAGS) lib/sounddriver/sounddriver_netbsd.cpp
 
 samples_unpack.o: lib/samples_unpack.cpp

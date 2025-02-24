@@ -13,25 +13,25 @@ ptkreplay: $(LIBOBJS_X86)
 	ar -s -r libptkreplay_x86.a $(LIBOBJS_X86)
 
 sounddriver_macosx_x86.o: lib/sounddriver/sounddriver_macosx.cpp
-	g++ -o $(@) $(LIBFLAGS) $(FLAGS_X86) lib/sounddriver/sounddriver_macosx.cpp
+	$(CC) -o $(@) $(LIBFLAGS) $(FLAGS_X86) lib/sounddriver/sounddriver_macosx.cpp
 
 spline_x86.o: lib/spline.cpp
-	g++ -o $(@) $(LIBFLAGS) $(FLAGS_X86) lib/spline.cpp
+	$(CC) -o $(@) $(LIBFLAGS) $(FLAGS_X86) lib/spline.cpp
 
 samples_unpack_x86.o: lib/samples_unpack.cpp
-	g++ -o $(@) $(LIBFLAGS) $(FLAGS_X86) lib/samples_unpack.cpp
+	$(CC) -o $(@) $(LIBFLAGS) $(FLAGS_X86) lib/samples_unpack.cpp
 
 tb_303_x86.o: lib/tb_303.cpp
-	g++ -o $(@) $(LIBFLAGS) $(FLAGS_X86) lib/tb_303.cpp
+	$(CC) -o $(@) $(LIBFLAGS) $(FLAGS_X86) lib/tb_303.cpp
 
 synth_x86.o: lib/synth.cpp
-	g++ -o $(@) $(LIBFLAGS) $(FLAGS_X86) lib/synth.cpp
+	$(CC) -o $(@) $(LIBFLAGS) $(FLAGS_X86) lib/synth.cpp
 
 replay_x86.o: lib/replay.cpp
-	g++ -o $(@) $(LIBFLAGS) $(FLAGS_X86) lib/replay.cpp
+	$(CC) -o $(@) $(LIBFLAGS) $(FLAGS_X86) lib/replay.cpp
 
 endianness_x86.o: lib/endianness.cpp
-	g++ -o $(@) $(LIBFLAGS) $(FLAGS_X86) lib/endianness.cpp
+	$(CC) -o $(@) $(LIBFLAGS) $(FLAGS_X86) lib/endianness.cpp
 
 wavpack_x86.o: lib/wavpack.cpp
 	$(CC) -o $(@) $(LIBFLAGS) $(FLAGS_X86) lib/wavpack.cpp

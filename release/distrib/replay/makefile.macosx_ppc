@@ -1,3 +1,7 @@
+CC = gcc
+AS = as
+AR = ar
+STRIP = strip
 include test/module.macosx
 
 LIBS_PPC = -lptkreplay_ppc -framework CoreAudio -framework AudioUnit -framework Cocoa 
@@ -18,15 +22,15 @@ remobj:
 	-rm -f $(EXEOBJS_PPC)
 	
 replaytest: $(EXEOBJS_PPC)
-	g++ -o replaytest -s -L./ $(FLAGS_PPC) $(EXEOBJS_PPC) $(LIBS_PPC)
-	strip -x -X -S replaytest
+	$(CC) -o replaytest -s -L./ $(FLAGS_PPC) $(EXEOBJS_PPC) $(LIBS_PPC)
+	$(STRIP) -x -X -S replaytest
 	-rm -f module.cpp
 
 test_ppc.o: test/test_macosx.cpp
-	g++ -c -o $(@) $(FLAGS_PPC) test/test_macosx.cpp
+	$(CC) -c -o $(@) $(FLAGS_PPC) test/test_macosx.cpp
 
 module_ppc.o: module.cpp
-	g++ -c -o $(@) -arch ppc module.cpp
+	$(CC) -c -o $(@) -arch ppc module.cpp
 
 module:
 	chmod +x ./bin2c

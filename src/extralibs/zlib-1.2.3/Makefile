@@ -67,7 +67,7 @@ test: all
 	  echo '		*** zlib test FAILED ***'; \
 	fi
 
-libz.a: $(OBJS) $(OBJA)
+libz.a: clean $(OBJS) $(OBJA)
 	$(AR) $@ $(OBJS) $(OBJA)
 	-@ ($(RANLIB) $@)
 
@@ -120,9 +120,7 @@ uninstall:
 
 mostlyclean: clean
 clean:
-	rm -f *.o *~ example$(EXE) minigzip$(EXE) \
-	   libz.* foo.gz so_locations \
-	   _match.s maketree contrib/infback9/*.o
+	-rm -f *.o libz.* _match.s 
 
 maintainer-clean: distclean
 distclean: clean

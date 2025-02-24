@@ -107,6 +107,7 @@ extern unsigned int *RGBTexture;
 #endif
 
 #if defined(__AMIGAOS4__)
+#include <exec/libraries.h>
 extern struct Library *GfxBase;
 extern struct GraphicsIFace *IGraphics;
 #endif
@@ -712,14 +713,27 @@ void Destroy_Context(void)
     }
 
 #if defined(__AMIGAOS4__)
+#if defined(__CROSS__)
     if(IGraphics)
     {
-        IExec->DropInterface((struct Interface*) IGraphics);
+        
+        IExec->DropInterface(IExec, (struct Interface *) IGraphics);
+    }
+    if(GfxBase)
+    {
+        IExec->CloseLibrary(IExec, GfxBase);
+    }
+#else
+    if(IGraphics)
+    {
+        
+        IExec->DropInterface((struct Interface *) IGraphics);
     }
     if(GfxBase)
     {
         IExec->CloseLibrary(GfxBase);
     }
+#endif
 #endif
 
     SDL_Quit();

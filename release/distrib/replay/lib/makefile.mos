@@ -1,5 +1,5 @@
 LIBFLAGS = -c
-LIBOBJS = replay.o synth.o tb_303.o spline.o wavpack.o samples_unpack.o sounddriver_mos.o
+LIBOBJS = endianness.o replay.o synth.o tb_303.o spline.o wavpack.o samples_unpack.o sounddriver_mos.o
 
 all: ptkreplay
 clean: remlibobj
@@ -32,3 +32,6 @@ spline.o: lib/spline.cpp
 
 wavpack.o: lib/wavpack.cpp
 	$(CC) -o $(@) $(LIBFLAGS) $(FLAGS) lib/wavpack.cpp
+
+endianness.o: lib/endianness.cpp
+	$(CC) -o $(@) $(LIBFLAGS) $(FLAGS) lib/endianness.cpp

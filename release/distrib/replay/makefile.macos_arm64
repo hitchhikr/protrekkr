@@ -1,3 +1,7 @@
+CC = gcc
+AS = as
+AR = ar
+STRIP = strip
 include test/module.macosx
 
 LIBS_ARM64 = -lptkreplay_arm64 -framework CoreAudio -framework AudioUnit -framework Cocoa
@@ -17,15 +21,15 @@ remobj:
 	-rm -f $(EXEOBJS_ARM64)
 
 replaytest: $(EXEOBJS_ARM64)
-	g++ -o replaytest -L./ $(FLAGS_ARM64) $(EXEOBJS_ARM64) $(LIBS_ARM64)
-	strip -x -X -S replaytest
+	$(CC) -o replaytest -L./ $(FLAGS_ARM64) $(EXEOBJS_ARM64) $(LIBS_ARM64)
+	$(STRIP) -x -X -S replaytest
 	-rm -f module.cpp
 
 test_arm64.o: test/test_macosx.cpp
-	g++ -c -o $(@) $(FLAGS_ARM64) test/test_macosx.cpp
+	$(CC) -c -o $(@) $(FLAGS_ARM64) test/test_macosx.cpp
 
 module_arm64.o: module.cpp
-	g++ -c -o $(@) -arch arm64 module.cpp
+	$(CC) -c -o $(@) -arch arm64 module.cpp
 
 module:
 	chmod +x ./bin2c

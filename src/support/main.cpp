@@ -77,6 +77,18 @@
 #include <graphics/rastport.h>
 struct Library *GfxBase;
 struct GraphicsIFace *IGraphics;
+#if defined(__CROSS__)
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+void __eabi(void)
+{ 
+}
+#ifdef __cplusplus
+}
+#endif
+#endif
 #endif
 
 const char *AMIGA_VERSION = "\0$VER: " TITLE " " VER_VER "." VER_REV "." VER_REVSMALL "\0";
@@ -429,13 +441,21 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
     Uint32 ExePath_Size = MAX_PATH;
 
 #if defined(__AMIGAOS4__)
+#if defined(__CROSS__)
+    GfxBase = IExec->OpenLibrary(IExec, (CONST_STRPTR) "graphics.library", 50);
+#else
     GfxBase = IExec->OpenLibrary((CONST_STRPTR) "graphics.library", 50);
+#endif
     if(!GfxBase)
     {
         Message_Error("Can't open graphics.library.");
         exit(0);
     }
+#if defined(__CROSS__)
+    IGraphics = (struct GraphicsIFace *) IExec->GetInterface(IExec, GfxBase, (CONST_STRPTR) "main", 1, NULL);
+#else
     IGraphics = (struct GraphicsIFace *) IExec->GetInterface(GfxBase, (CONST_STRPTR) "main", 1, NULL);
+#endif
     if(!IGraphics)
     {
         Message_Error("Can't obtain graphics.library interface.");
@@ -1073,6 +1093,16 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
     }
 
 #if defined(__AMIGAOS4__)
+#if defined(__CROSS__)
+    if(IGraphics)
+    {
+        IExec->DropInterface(IExec, (struct Interface *) IGraphics);
+    }
+    if(GfxBase)
+    {
+        IExec->CloseLibrary(IExec, (struct Library *) GfxBase);
+    }
+#else
     if(IGraphics)
     {
         IExec->DropInterface((struct Interface *) IGraphics);
@@ -1081,6 +1111,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
     {
         IExec->CloseLibrary((struct Library *) GfxBase);
     }
+#endif
 #endif
 
     exit(0);
@@ -1155,7 +1186,11 @@ int Redraw_Screen(void)
 #if defined(__AMIGAOS4__) || defined(__AROS__) || defined(__MORPHOS__)
 
 #if defined(__AMIGAOS4__)
+#if defined(__CROSS__)
+    IGraphics->WaitTOF(IGraphics);
+#else
     IGraphics->WaitTOF();
+#endif
 #else
     SDL_Delay(delay_ms);
 #endif

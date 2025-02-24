@@ -92,8 +92,13 @@ void *AUDIO_Thread(void *arg)
 
     old_sigbit = AHImp->mp_SigBit;
     old_sigtask = AHImp->mp_SigTask;
+#if defined(__CROSS__)
+    AHImp->mp_SigBit = IExec->AllocSignal(IExec, -1);
+    AHImp->mp_SigTask = IExec->FindTask(IExec, NULL);
+#else
     AHImp->mp_SigBit = IExec->AllocSignal(-1);
     AHImp->mp_SigTask = IExec->FindTask(NULL);
+#endif
 
     while(Thread_Running)
     {
@@ -124,13 +129,19 @@ void *AUDIO_Thread(void *arg)
             io->ahir_Volume = 0x10000;
             io->ahir_Position = 0x8000;
             io->ahir_Link = join;
+#if defined(__CROSS__)
+            IExec->SendIO(IExec, (struct IORequest *) io);
+            if(join)
+            {
+                IExec->WaitIO(IExec, (struct IORequest *) join);
+            }
+#else
             IExec->SendIO((struct IORequest *) io);
-          
             if(join)
             {
                 IExec->WaitIO((struct IORequest *) join);
             }
-
+#endif
             // Swap
             join = io;
             AHIio = AHIio2;
@@ -153,7 +164,11 @@ int AUDIO_Init_Driver(void (*Mixer)(Uint8 *, Uint32))
 {
     AUDIO_Mixer = Mixer;
 
+#if defined(__CROSS__)
+    AHImp = (struct MsgPort *) IExec->AllocSysObject(IExec, ASOT_PORT, NULL);
+#else
     AHImp = (struct MsgPort *) IExec->AllocSysObject(ASOT_PORT, NULL);
+#endif
 
 #if !defined(__STAND_ALONE__) && !defined(__WINAMP__)
     if(!AHImp)
@@ -163,6 +178,16 @@ int AUDIO_Init_Driver(void (*Mixer)(Uint8 *, Uint32))
     }
 #endif
 
+#if defined(__CROSS__)
+    AHIio = (struct AHIRequest *) IExec->AllocSysObjectTags(IExec, ASOT_IOREQUEST,
+                                                            ASOIOR_ReplyPort, AHImp,
+                                                            ASOIOR_Size, sizeof(struct AHIRequest),
+                                                            TAG_END);
+    AHIio2 = (struct AHIRequest *) IExec->AllocSysObjectTags(IExec, ASOT_IOREQUEST,
+                                                             ASOIOR_ReplyPort, AHImp,
+                                                             ASOIOR_Size, sizeof(struct AHIRequest),
+                                                             TAG_END);
+#else
     AHIio = (struct AHIRequest *) IExec->AllocSysObjectTags(ASOT_IOREQUEST,
                                                             ASOIOR_ReplyPort, AHImp,
                                                             ASOIOR_Size, sizeof(struct AHIRequest),
@@ -171,6 +196,7 @@ int AUDIO_Init_Driver(void (*Mixer)(Uint8 *, Uint32))
                                                              ASOIOR_ReplyPort, AHImp,
                                                              ASOIOR_Size, sizeof(struct AHIRequest),
                                                              TAG_END);
+#endif
     join = NULL;
     
     if(!AHIio || !AHIio2)
@@ -185,7 +211,11 @@ int AUDIO_Init_Driver(void (*Mixer)(Uint8 *, Uint32))
     AHIio->ahir_Version = 4;
 
     // Open ahi
+#if defined(__CROSS__)
+    if(IExec->OpenDevice(IExec, (CONST_STRPTR) AHINAME, AHI_DEFAULT_UNIT, (struct IORequest *) AHIio, 0))
+#else
     if(IExec->OpenDevice((CONST_STRPTR) AHINAME, AHI_DEFAULT_UNIT, (struct IORequest *) AHIio, 0))
+#endif
     {
         AHIio->ahir_Std.io_Device = NULL;
 
@@ -197,7 +227,11 @@ int AUDIO_Init_Driver(void (*Mixer)(Uint8 *, Uint32))
     }
 
     // Copy for double buffering
+#if defined(__CROSS__)
+    IExec->CopyMem(IExec, AHIio, AHIio2, sizeof(struct AHIRequest));
+#else
     IExec->CopyMem(AHIio, AHIio2, sizeof(struct AHIRequest));
+#endif
 
     // Create audio buffer
     return(AUDIO_Create_Sound_Buffer(AUDIO_Milliseconds));
@@ -218,8 +252,13 @@ int AUDIO_Create_Sound_Buffer(int milliseconds)
     AUDIO_SoundBuffer_Size = frag_size * ((AUDIO_DBUF_RESOLUTION * AUDIO_DBUF_CHANNELS) >> 3);
     AUDIO_Latency = AUDIO_SoundBuffer_Size;
     
+#if defined(__CROSS__)
+    AHIbuf = (short *) IExec->AllocVecTags(IExec, AUDIO_SoundBuffer_Size, AVT_Type, MEMF_SHARED, TAG_END);
+    AHIbuf2 = (short *) IExec->AllocVecTags(IExec, AUDIO_SoundBuffer_Size, AVT_Type, MEMF_SHARED, TAG_END);
+#else
     AHIbuf = (short *) IExec->AllocVecTags(AUDIO_SoundBuffer_Size, AVT_Type, MEMF_SHARED, TAG_END);
     AHIbuf2 = (short *) IExec->AllocVecTags(AUDIO_SoundBuffer_Size, AVT_Type, MEMF_SHARED, TAG_END);
+#endif
     
     if(!AHIbuf || !AHIbuf2)
     {
@@ -351,6 +390,19 @@ void AUDIO_Stop_Sound_Buffer(void)
             usleep(10);
         }
         hThread = 0;
+#if defined(__CROSS__)
+        if(AHIio)
+        {
+            IExec->AbortIO(IExec, (struct IORequest *) AHIio);
+            IExec->WaitIO(IExec, (struct IORequest *) AHIio);
+        }
+        if(join)
+        {
+            IExec->AbortIO(IExec, (struct IORequest *) AHIio2);
+            IExec->WaitIO(IExec, (struct IORequest *) AHIio2);
+        }
+        IExec->FreeSignal(IExec, AHImp->mp_SigBit);
+#else
         if(AHIio)
         {
             IExec->AbortIO((struct IORequest *) AHIio);
@@ -362,11 +414,17 @@ void AUDIO_Stop_Sound_Buffer(void)
             IExec->WaitIO((struct IORequest *) AHIio2);
         }
         IExec->FreeSignal(AHImp->mp_SigBit);
+#endif
         AHImp->mp_SigBit = old_sigbit;
         AHImp->mp_SigTask = old_sigtask;
     }
+#if defined(__CROSS__)
+    IExec->FreeVec(IExec, AHIbuf);
+    IExec->FreeVec(IExec, AHIbuf2);
+#else
     IExec->FreeVec(AHIbuf);
     IExec->FreeVec(AHIbuf2);
+#endif
     AHIbuf = NULL;
     AHIbuf2 = NULL;
 }
@@ -380,11 +438,19 @@ void AUDIO_Stop_Driver(void)
 
     if(AHIio && AHIio->ahir_Std.io_Device)
     {
+#if defined(__CROSS__)
+        IExec->CloseDevice(IExec, (struct IORequest *) AHIio);
+    }
+    IExec->FreeSysObject(IExec, ASOT_IOREQUEST, AHIio);
+    IExec->FreeSysObject(IExec, ASOT_IOREQUEST, AHIio2);
+    IExec->FreeSysObject(IExec, ASOT_PORT, AHImp);
+#else
         IExec->CloseDevice((struct IORequest *) AHIio);
     }
     IExec->FreeSysObject(ASOT_IOREQUEST, AHIio);
     IExec->FreeSysObject(ASOT_IOREQUEST, AHIio2);
     IExec->FreeSysObject(ASOT_PORT, AHImp);
+#endif
     AHIio = NULL;
     AHIio2 = NULL;
     AHImp = NULL;

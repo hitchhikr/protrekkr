@@ -489,10 +489,17 @@ void Read_SMPT(void)
 #elif defined(__AMIGAOS4__) || defined(__AROS__) || defined(__MORPHOS__)
 
 #if defined(__AMIGAOS4__)
+#if defined(__CROSS__)
+#define LockDosList(f) IDOS->LockDosList(IDOS, f)
+#define NextDosEntry(d,f) IDOS->NextDosEntry(IDOS, d, f)
+#define CopyStringBSTRToC(bin,sout,len) IDOS->CopyStringBSTRToC(IDOS, bin, sout, len)
+#define UnLockDosList(f) IDOS->UnLockDosList(IDOS, f)
+#else
 #define LockDosList(f) IDOS->LockDosList(f)
 #define NextDosEntry(d,f) IDOS->NextDosEntry(d, f)
 #define CopyStringBSTRToC(bin,sout,len) IDOS->CopyStringBSTRToC(bin, sout, len)
 #define UnLockDosList(f) IDOS->UnLockDosList(f)
+#endif
 #endif
 
     if (!strcmp(Dir_Act, "/"))

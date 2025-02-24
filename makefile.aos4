@@ -1,4 +1,4 @@
-CXX = g++ -mcrt=newlib
+CXX = gcc -mcrt=newlib
 
 LIBS = -lSDL -lz -lpthread -lunix
 
