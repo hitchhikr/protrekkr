@@ -1,5 +1,7 @@
+CC = gcc
+AR = ar
 LIBFLAGS = -c
-FLAGS_IA64 = -O3 -arch x86_64 -D __LINUX__ -D __GCC__ -I/opt/local/include
+FLAGS_IA64 = -Ofast -arch x86_64 -D __LINUX__ -D __GCC__ -I/opt/local/include
 LIBOBJS_IA64 = draw_hline_ia64.o draw_pixel_ia64.o draw_vline_ia64.o
 
 all: sdldraw
@@ -10,14 +12,14 @@ RemLibObj:
 	
 sdldraw: $(LIBOBJS_IA64)
 	-rm libsdldraw_ia64.a
-	ar -s -r libsdldraw_ia64.a $(LIBOBJS_IA64)
+	$(AR) -s -r libsdldraw_ia64.a $(LIBOBJS_IA64)
 	-rm -f $(LIBOBJS_IA64)
 
 draw_hline_ia64.o: src/draw_hline.cpp
-	g++ -o $(@) $(LIBFLAGS) $(FLAGS_IA64) src/draw_hline.cpp
+	$(CC) -o $(@) $(LIBFLAGS) $(FLAGS_IA64) src/draw_hline.cpp
 
 draw_pixel_ia64.o: src/draw_pixel.cpp
-	g++ -o $(@) $(LIBFLAGS) $(FLAGS_IA64) src/draw_pixel.cpp
+	$(CC) -o $(@) $(LIBFLAGS) $(FLAGS_IA64) src/draw_pixel.cpp
 
 draw_vline_ia64.o: src/draw_vline.cpp
-	g++ -o $(@) $(LIBFLAGS) $(FLAGS_IA64) src/draw_vline.cpp
+	$(CC) -o $(@) $(LIBFLAGS) $(FLAGS_IA64) src/draw_vline.cpp

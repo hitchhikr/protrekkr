@@ -1,3 +1,5 @@
+CC = gcc
+AR = ar
 LIBFLAGS = -c
 FLAGS = -Ofast -D __LINUX__ -D __GCC__
 LIBOBJS = draw_hline.o draw_pixel.o draw_vline.o
@@ -9,15 +11,15 @@ RemLibObj:
 	-rm -f $(LIBOBJS)
 	
 sdldraw: $(LIBOBJS)
-	ar -d libsdldraw.a
-	ar -r libsdldraw.a $(LIBOBJS)
+	-$(AR) -d libsdldraw.a
+	$(AR) -r libsdldraw.a $(LIBOBJS)
 	-rm -f $(LIBOBJS)
 
 draw_hline.o: src/draw_hline.cpp
-	g++ -o $(@) $(LIBFLAGS) $(FLAGS) src/draw_hline.cpp
+	$(CC) -o $(@) $(LIBFLAGS) $(FLAGS) src/draw_hline.cpp
 
 draw_pixel.o: src/draw_pixel.cpp
-	g++ -o $(@) $(LIBFLAGS) $(FLAGS) src/draw_pixel.cpp
+	$(CC) -o $(@) $(LIBFLAGS) $(FLAGS) src/draw_pixel.cpp
 
 draw_vline.o: src/draw_vline.cpp
-	g++ -o $(@) $(LIBFLAGS) $(FLAGS) src/draw_vline.cpp
+	$(CC) -o $(@) $(LIBFLAGS) $(FLAGS) src/draw_vline.cpp

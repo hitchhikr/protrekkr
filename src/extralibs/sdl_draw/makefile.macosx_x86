@@ -1,5 +1,7 @@
+CC = gcc
+AR = ar
 LIBFLAGS = -c
-FLAGS_X86 = -O3 -arch i386 -D __LINUX__ -D __GCC__
+FLAGS_X86 = -Ofast -arch i386 -D __LINUX__ -D __GCC__
 LIBOBJS_X86 = draw_hline_x86.o draw_pixel_x86.o draw_vline_x86.o
 
 all: sdldraw
@@ -10,14 +12,14 @@ RemLibObj:
 	
 sdldraw: $(LIBOBJS_X86)
 	-rm libsdldraw_x86.a
-	ar -s -r libsdldraw_x86.a $(LIBOBJS_X86)
+	$(AR) -s -r libsdldraw_x86.a $(LIBOBJS_X86)
 	-rm -f $(LIBOBJS_X86)
 
 draw_hline_x86.o: src/draw_hline.cpp
-	g++ -o $(@) $(LIBFLAGS) $(FLAGS_X86) src/draw_hline.cpp
+	$(CC) -o $(@) $(LIBFLAGS) $(FLAGS_X86) src/draw_hline.cpp
 
 draw_pixel_x86.o: src/draw_pixel.cpp
-	g++ -o $(@) $(LIBFLAGS) $(FLAGS_X86) src/draw_pixel.cpp
+	$(CC) -o $(@) $(LIBFLAGS) $(FLAGS_X86) src/draw_pixel.cpp
 
 draw_vline_x86.o: src/draw_vline.cpp
-	g++ -o $(@) $(LIBFLAGS) $(FLAGS_X86) src/draw_vline.cpp
+	$(CC) -o $(@) $(LIBFLAGS) $(FLAGS_X86) src/draw_vline.cpp

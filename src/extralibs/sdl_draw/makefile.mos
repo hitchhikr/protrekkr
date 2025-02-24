@@ -1,6 +1,7 @@
-CXX = ppc-morphos-g++-9
+CC = ppc-morphos-gcc-9
+AR = ar
 LIBFLAGS = -c
-FLAGS = -O3 -noixemul -I/usr/local/include -D G_OS_WIN32 -D __LINUX__ -D __GCC__
+FLAGS = -Ofast -noixemul -I/usr/local/include -D G_OS_WIN32 -D __LINUX__ -D __GCC__
 LIBOBJS = draw_hline.o draw_pixel.o draw_vline.o
 
 all: sdldraw
@@ -10,15 +11,15 @@ RemLibObj:
 	-rm -f $(LIBOBJS)
 	
 sdldraw: $(LIBOBJS)
-	ar -d libsdldraw.a
-	ar -r libsdldraw.a $(LIBOBJS)
+	-$(AR) -d libsdldraw.a
+	$(AR) -r libsdldraw.a $(LIBOBJS)
 	-rm -f $(LIBOBJS)
 
 draw_hline.o: src/draw_hline.cpp
-	$(CXX) -o $(@) $(LIBFLAGS) $(FLAGS) src/draw_hline.cpp
+	$(CC) -o $(@) $(LIBFLAGS) $(FLAGS) src/draw_hline.cpp
 
 draw_pixel.o: src/draw_pixel.cpp
-	$(CXX) -o $(@) $(LIBFLAGS) $(FLAGS) src/draw_pixel.cpp
+	$(CC) -o $(@) $(LIBFLAGS) $(FLAGS) src/draw_pixel.cpp
 
 draw_vline.o: src/draw_vline.cpp
-	$(CXX) -o $(@) $(LIBFLAGS) $(FLAGS) src/draw_vline.cpp
+	$(CC) -o $(@) $(LIBFLAGS) $(FLAGS) src/draw_vline.cpp
