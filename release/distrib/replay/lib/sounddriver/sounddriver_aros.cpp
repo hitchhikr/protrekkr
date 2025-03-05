@@ -129,7 +129,7 @@ void *AUDIO_Thread(void *arg)
             AHIio2 = io;
             AHIbuf = AHIbuf2;
             AHIbuf2 = buf;
-    
+
             AUDIO_Samples += AUDIO_SoundBuffer_Size;
             AUDIO_Timer = ((((float) AUDIO_Samples) * (1.0f / (float) AUDIO_Latency)) * 1000.0f);
         }

@@ -4604,7 +4604,7 @@ void Play_Instrument(int channel, int sub_channel)
 #if defined(PTK_SYNTH)
                 if(Synthprg[sample])
                 {
-                    // Synth + sample if both are != wav
+                    // Synth + sample together if both OSCs are != wav
                     if(Synthesizer[channel][sub_channel].Data.OSC_1_WAVEFORM != WAVEFORM_WAV &&
                        Synthesizer[channel][sub_channel].Data.OSC_2_WAVEFORM != WAVEFORM_WAV)
                     {

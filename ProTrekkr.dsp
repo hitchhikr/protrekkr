@@ -545,6 +545,10 @@ SOURCE=.\src\samples\aiff\include\aiff_interface.h
 
 SOURCE=.\src\samples\aiff\aiff.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=.\src\samples\aiff\aiff_interface.cpp
+# End Source File
 # End Group
 # Begin Group "wav"
 

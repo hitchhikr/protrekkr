@@ -61,6 +61,7 @@ extern int pattern_sliders_numbers;
 extern int leading_zeroes;
 extern int leading_zeroes_char;
 extern int leading_zeroes_char_row;
+extern int Cur_Screen_Mode;
 
 // ------------------------------------------------------
 // Save the configuration file
@@ -75,7 +76,7 @@ void Save_Config(void)
     char KeyboardName[MAX_PATH];
     signed char phony = -1;
 
-    sprintf(extension, "PROTCFGL");
+    sprintf(extension, "PROTCFGM");
     Status_Box("Saving 'ptk.cfg'...", FALSE);
 
     SET_FILENAME;
@@ -176,6 +177,9 @@ void Save_Config(void)
     // Leading zeroes
 	Write_Data_Swap(&leading_zeroes, sizeof(int), 1, out);
 
+    // Fullscreen resolution
+	Write_Data_Swap(&Cur_Screen_Mode, sizeof(int), 1, out);
+    
 	fclose(out);
 
 	Read_SMPT();
@@ -196,6 +200,7 @@ void Load_Config(void)
     int sliders = TRUE;
     int leading_z = TRUE;
     int added_color = TRUE;
+    int fullscreen_reso = TRUE;
     int Real_Palette_Idx;
     int Max_Colors;
     char FileName[MAX_PATH];
@@ -216,28 +221,31 @@ void Load_Config(void)
 
         Read_Data(extension, sizeof(char), 9, in);
         ok_cfg = TRUE;
-
-        if(strcmp(extension, "PROTCFGL") != 0)
+        if(strcmp(extension, "PROTCFGM") != 0)
         {
-            added_color = FALSE;
-            if(strcmp(extension, "PROTCFGK") != 0)
+            fullscreen_reso = FALSE;
+            if(strcmp(extension, "PROTCFGL") != 0)
             {
-                leading_z = FALSE;
-                if(strcmp(extension, "PROTCFGJ") != 0)
+                added_color = FALSE;
+                if(strcmp(extension, "PROTCFGK") != 0)
                 {
-                    sliders = FALSE;
-                    if(strcmp(extension, "PROTCFGI") != 0)
+                    leading_z = FALSE;
+                    if(strcmp(extension, "PROTCFGJ") != 0)
                     {
-                        dbl = FALSE;
-                        if(strcmp(extension, "PROTCFGH") != 0)
+                        sliders = FALSE;
+                        if(strcmp(extension, "PROTCFGI") != 0)
                         {
-                            if(strcmp(extension, "PROTCFGG") == 0)
+                            dbl = FALSE;
+                            if(strcmp(extension, "PROTCFGH") != 0)
                             {
-                                older_cfg = TRUE;
-                            }
-                            else
-                            {
-                                ok_cfg = FALSE;
+                                if(strcmp(extension, "PROTCFGG") == 0)
+                                {
+                                    older_cfg = TRUE;
+                                }
+                                else
+                                {
+                                    ok_cfg = FALSE;
+                                }
                             }
                         }
                     }
@@ -349,6 +357,12 @@ void Load_Config(void)
                     leading_zeroes_char = 21;
                     leading_zeroes_char_row = 20;
                 }
+            }
+
+            Cur_Screen_Mode = -1;
+            if(fullscreen_reso)
+            {
+                Read_Data_Swap(&Cur_Screen_Mode, sizeof(int), 1, in);
             }
 
 #ifndef __MORPHOS__

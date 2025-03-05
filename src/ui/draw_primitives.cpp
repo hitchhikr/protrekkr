@@ -376,6 +376,7 @@ void Fillrect(int x1, int y1, int x2, int y2)
     Dst_Rect.y = y1;
     Dst_Rect.w = x2 - x1;
     Dst_Rect.h = y2 - y1;
+
     SDL_FillRect(Main_Screen, &Dst_Rect, FgColor);
     Push_Update_Rect(x1, y1, x2 - x1, y2 - y1);
 #endif

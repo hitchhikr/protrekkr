@@ -2,6 +2,10 @@
 ProTrekkr releases history
 ===============================================================================
 
+v2.8.3
+
+- Fullscreen resolution can now be selected.
+
 v2.8.2
 
 - Patterns wouldn't scroll sometimes when starting to play, fixed.

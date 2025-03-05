@@ -72,11 +72,6 @@
 #if defined(__AMIGAOS4__) || defined(__AROS__) || defined(__MORPHOS__)
 
 #if defined(__AMIGAOS4__)
-#include <exec/libraries.h>
-#include <proto/graphics.h>
-#include <graphics/rastport.h>
-struct Library *GfxBase;
-struct GraphicsIFace *IGraphics;
 #if defined(__CROSS__)
 #ifdef __cplusplus
 extern "C"
@@ -132,6 +127,9 @@ char global_argv[MAX_PATH];
 int delay_ms = 0;
 
 SDL_Surface *Main_Screen;
+SDL_Rect **Screen_Modes;
+int Cur_Screen_Mode = -1;
+int Max_Screen_Mode = 0;
 
 #if defined(__WIN32__)
 SDL_SysWMinfo WMInfo;
@@ -437,31 +435,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
     FILE *KbFile;
     FILE *AllKbsFile;
     int in_note;
-    char Win_Coords[64];
     Uint32 ExePath_Size = MAX_PATH;
-
-#if defined(__AMIGAOS4__)
-#if defined(__CROSS__)
-    GfxBase = IExec->OpenLibrary(IExec, (CONST_STRPTR) "graphics.library", 50);
-#else
-    GfxBase = IExec->OpenLibrary((CONST_STRPTR) "graphics.library", 50);
-#endif
-    if(!GfxBase)
-    {
-        Message_Error("Can't open graphics.library.");
-        exit(0);
-    }
-#if defined(__CROSS__)
-    IGraphics = (struct GraphicsIFace *) IExec->GetInterface(IExec, GfxBase, (CONST_STRPTR) "main", 1, NULL);
-#else
-    IGraphics = (struct GraphicsIFace *) IExec->GetInterface(GfxBase, (CONST_STRPTR) "main", 1, NULL);
-#endif
-    if(!IGraphics)
-    {
-        Message_Error("Can't obtain graphics.library interface.");
-        exit(0);
-    }
-#endif
 
 #if defined(__MACOSX_PPC__) || defined(__MACOSX_X86__)
     Uint32 Path_Length;
@@ -509,12 +483,15 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
     memset(ExePath, 0, ExePath_Size + 1);
 
     Screen_Info = SDL_GetVideoInfo();
-    Orig_Screen_Width = Screen_Info->current_w;
-    Orig_Screen_Height = Screen_Info->current_h;
-    Startup_Width = Screen_Info->current_w;
-    Startup_Height = Screen_Info->current_h;
-    if(Startup_Width < SCREEN_WIDTH) Startup_Width = SCREEN_WIDTH;
-    if(Startup_Height < SCREEN_HEIGHT) Startup_Height = SCREEN_HEIGHT;
+    Screen_Modes = SDL_ListModes(Screen_Info->vfmt, SDL_SWSURFACE | SDL_FULLSCREEN);
+
+    i = 0;
+    Max_Screen_Mode = 0;
+    while(Screen_Modes[i])
+    {
+        Max_Screen_Mode++;
+        i++;
+    }
 
 #if defined(__LINUX__)
 
@@ -600,6 +577,45 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
     // Set the default palette before loading the config file
     Restore_Default_Palette(Default_Palette1, Default_Beveled1);
     Load_Config();
+
+    if(Cur_Screen_Mode == -1)
+    {
+        Orig_Screen_Width = Screen_Info->current_w;
+        Orig_Screen_Height = Screen_Info->current_h;
+        Startup_Width = Orig_Screen_Width;
+        Startup_Height = Orig_Screen_Height;
+        if(Startup_Width < SCREEN_WIDTH) Startup_Width = SCREEN_WIDTH;
+        if(Startup_Height < SCREEN_HEIGHT) Startup_Height = SCREEN_HEIGHT;
+
+        Cur_Screen_Mode = 0;
+        i = 0;
+        while(Screen_Modes[i])
+        {
+            if(Screen_Modes[i]->w == Screen_Info->current_w &&
+               Screen_Modes[i]->h == Screen_Info->current_h)
+            {
+                // Found it in the list: set
+                Cur_Screen_Mode = i;
+                break;
+            }
+            i++;
+        }
+    }
+    else
+    {
+        Orig_Screen_Width = Screen_Modes[Cur_Screen_Mode]->w;
+        Orig_Screen_Height = Screen_Modes[Cur_Screen_Mode]->h;
+        Startup_Width = Orig_Screen_Width;
+        Startup_Height = Orig_Screen_Height;
+        if(Startup_Width < SCREEN_WIDTH) Startup_Width = SCREEN_WIDTH;
+        if(Startup_Height < SCREEN_HEIGHT) Startup_Height = SCREEN_HEIGHT;
+    }
+
+    if(FullScreen)
+    {
+        Save_Cur_Width = Cur_Width;
+        Save_Cur_Height = Cur_Height;
+    }
 
     if(!strlen(Keyboard_Name))
     {
@@ -707,12 +723,12 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
         exit(0);
     }
 
-    if(FullScreen)
+/*    if(FullScreen)
     {
-        Save_Cur_Width = SCREEN_WIDTH;
-        Save_Cur_Height = SCREEN_HEIGHT;
+        Save_Cur_Width = Startup_Width;
+        Save_Cur_Height = Startup_Height;
     }
-
+*/
     Ptk_Palette[0].r = Save_R;
     Ptk_Palette[0].g = Save_G;
     Ptk_Palette[0].b = Save_B;
@@ -1040,14 +1056,6 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
 
                 case SDL_VIDEORESIZE:
                     // Nullify it
-
-#ifndef __MORPHOS__
-                    if(!FullScreen)
-                    {
-                        sprintf(Win_Coords, "SDL_VIDEO_WINDOW_POS=");
-                        SDL_putenv(Win_Coords);
-                    }
-#endif
                     Resize_Width = Events[i].resize.w;
                     Resize_Height = Events[i].resize.h;
                     do_resize = TRUE;
@@ -1092,28 +1100,6 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
         free(ExePath);
     }
 
-#if defined(__AMIGAOS4__)
-#if defined(__CROSS__)
-    if(IGraphics)
-    {
-        IExec->DropInterface(IExec, (struct Interface *) IGraphics);
-    }
-    if(GfxBase)
-    {
-        IExec->CloseLibrary(IExec, (struct Library *) GfxBase);
-    }
-#else
-    if(IGraphics)
-    {
-        IExec->DropInterface((struct Interface *) IGraphics);
-    }
-    if(GfxBase)
-    {
-        IExec->CloseLibrary((struct Library *) GfxBase);
-    }
-#endif
-#endif
-
     exit(0);
 }
 
@@ -1153,7 +1139,7 @@ void Flush_Screen(void)
 #if defined(__USE_OPENGL__)
     Leave_2d_Mode();
 
-#if !defined(__WIN32__) && !defined(__AROS__)
+#if !defined(__WIN32__) && !defined(__AROS__) && !defined(__AMIGAOS4__)
     glDrawBuffer(GL_FRONT);
     glRasterPos2f(-1.0f, -1.0f);
     glCopyPixels(0, 0, Cur_Width, Cur_Height, GL_COLOR);
@@ -1184,17 +1170,7 @@ int Redraw_Screen(void)
     Flush_Screen();
 
 #if defined(__AMIGAOS4__) || defined(__AROS__) || defined(__MORPHOS__)
-
-#if defined(__AMIGAOS4__)
-#if defined(__CROSS__)
-    IGraphics->WaitTOF(IGraphics);
-#else
-    IGraphics->WaitTOF();
-#endif
-#else
     SDL_Delay(delay_ms);
-#endif
-
 #else
     SDL_Delay(10);
 #endif
@@ -1221,9 +1197,9 @@ int Switch_FullScreen(int Width, int Height, int Refresh, int Force_Window_Mode)
 {
     int Real_FullScreen = 0;
 
-    if(!Force_Window_Mode)
+/*    if(!Force_Window_Mode)
     {
-        if(Width >= Orig_Screen_Width)
+        if(Width > Orig_Screen_Width)
         {
             Width = Orig_Screen_Width;
             Height = Orig_Screen_Height;
@@ -1231,7 +1207,7 @@ int Switch_FullScreen(int Width, int Height, int Refresh, int Force_Window_Mode)
         }
         else
         {
-            if(Height >= Orig_Screen_Height)
+            if(Height > Orig_Screen_Height)
             {
                 Width = Orig_Screen_Width;
                 Height = Orig_Screen_Height;
@@ -1239,19 +1215,16 @@ int Switch_FullScreen(int Width, int Height, int Refresh, int Force_Window_Mode)
             }
         }
     }
+*/
 
+#ifndef __MORPHOS__
+    SDL_putenv("SDL_VIDEO_WINDOW_POS=center");
+#endif
+    
     Env_Change = TRUE;
     if(Width < SCREEN_WIDTH) Width = SCREEN_WIDTH;
     if(Height < SCREEN_HEIGHT) Height = SCREEN_HEIGHT;
-    
-#ifndef __MORPHOS__
-    if(!FullScreen)
-    {
-        SDL_putenv("SDL_VIDEO_WINDOW_POS=center");
-        SDL_putenv("SDL_VIDEO_CENTERED=1");
-    }
-#endif
-
+ 
 #if defined(__LINUX__) || defined(__MACOSX_PPC__) || defined(__MACOSX_X86__) || defined(__WIN32__) || defined(__AROS__) || defined(__AMIGAOS4__)
     Real_FullScreen = SDL_FULLSCREEN;
 #endif
@@ -1281,6 +1254,11 @@ int Switch_FullScreen(int Width, int Height, int Refresh, int Force_Window_Mode)
     {
 
 #if defined(__USE_OPENGL__)
+        SDL_SetVideoMode(Width, Height, SCREEN_BPP, SDL_RESIZABLE | SDL_OPENGL | SDL_HWSURFACE | SDL_HWPALETTE);
+#else
+        SDL_SetVideoMode(Width, Height, SCREEN_BPP, SDL_RESIZABLE | SDL_SWSURFACE | SDL_HWPALETTE);
+#endif
+#if defined(__USE_OPENGL__)
         if((Main_Screen = SDL_SetVideoMode(Startup_Width, Startup_Height,
                                            SCREEN_BPP, SDL_OPENGL | SDL_HWSURFACE | SDL_HWPALETTE  | SDL_NOFRAME | Real_FullScreen)) == NULL)
 #else
@@ -1301,6 +1279,7 @@ int Switch_FullScreen(int Width, int Height, int Refresh, int Force_Window_Mode)
     }
     else
     {
+        // Restore the old window size
         if(Save_Cur_Width != -1)
         {
             Width = Save_Cur_Width;
