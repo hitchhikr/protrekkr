@@ -259,6 +259,10 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
     int Store_FX_RevReso = FALSE;
     int Store_FX_RevDamp = FALSE;
 
+    int Store_FX_SetChorusFilterType = FALSE;
+    int Store_FX_SetChorusFilterCutoff = FALSE;
+    int Store_FX_SetChorusFilterResonance = FALSE;
+
     int Store_Synth = FALSE;
 
     int Store_TrackFilters = FALSE;
@@ -946,11 +950,41 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                                     }
                                     break;
 
+                                // $2a Set track compression threshold
+                                case 0x2a:
+                                    Comp_Flag_Tracks = TRUE;
+                                    break;
+
+                                // $2b Set track compression ratio
+                                case 0x2b:
+                                    Comp_Flag_Tracks = TRUE;
+                                    break;
+
                                 // $2c Set reverb damp
-                                case 0x2C:
+                                case 0x2c:
                                     Store_FX_RevDamp = TRUE;
                                     break;
-                                
+
+                                // $2d Set chorus filter type
+                                case 0x2d:
+                                    if(TmpPatterns_Notes[i + 1] != 4)
+                                    {
+                                        Store_FX_SetChorusFilterType = TRUE;
+                                        Store_FX_SetChorusFilterCutoff = TRUE;
+                                        Store_FX_SetChorusFilterResonance = TRUE;
+                                    }
+                                    break;
+
+                                // $2d Set chorus filter cutoff
+                                case 0x2e:
+                                    Store_FX_SetChorusFilterCutoff = TRUE;
+                                    break;
+                                    
+                                // $2d Set chorus filter resonance
+                                case 0x2f:
+                                    Store_FX_SetChorusFilterResonance = TRUE;
+                                    break;
+
                                 // $43 Set channel lfo frequency value
                                 case 0x43:
                                     Store_FX_SetLfoRate = TRUE;
@@ -1161,6 +1195,10 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
     Save_Constant("PTK_FX_SETREVCUTO", Store_FX_RevCuto);
     Save_Constant("PTK_FX_SETREVRESO", Store_FX_RevReso);
     Save_Constant("PTK_FX_SETREVDAMP", Store_FX_RevDamp);
+
+    Save_Constant("PTK_FX_SETCHORUSFILTERTYPE", Store_FX_SetChorusFilterType);
+    Save_Constant("PTK_FX_SETCHORUSCUTOFF", Store_FX_SetChorusFilterCutoff);
+    Save_Constant("PTK_FX_SETCHORUSRESONANCE", Store_FX_SetChorusFilterResonance);
 
     // Special but only at tick 0
     Save_Constant("PTK_FX_TICK0", Store_FX_Vibrato | Store_FX_Arpeggio |
@@ -2022,6 +2060,10 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
     Write_Mod_Data(&Reverb_Filter_Resonance, sizeof(float), 1, in);
     Write_Mod_Data(&Reverb_Stereo_Amount, sizeof(char), 1, in);
     Write_Mod_Data(&Reverb_Damp, sizeof(float), 1, in);
+
+    Write_Mod_Data(&ChorType, sizeof(int), 1, in);
+    Write_Mod_Data(&ChorCut, sizeof(int), 1, in);
+    Write_Mod_Data(&ChorRez, sizeof(int), 1, in);
 
     Write_Mod_Data(&Store_303_1, sizeof(char), 1, in);
     if(Store_303_1)

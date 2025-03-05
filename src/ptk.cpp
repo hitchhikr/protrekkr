@@ -106,12 +106,6 @@ extern char Last_Used_Ptk[MAX_PATH];
 extern unsigned int *RGBTexture;
 #endif
 
-#if defined(__AMIGAOS4__)
-#include <exec/libraries.h>
-extern struct Library *GfxBase;
-extern struct GraphicsIFace *IGraphics;
-#endif
-
 extern float sp_Tvol_Mod[MAX_TRACKS];
 
 int CONSOLE_WIDTH;
@@ -712,30 +706,6 @@ void Destroy_Context(void)
         SDL_DestroySemaphore(thread_sema);
     }
 
-#if defined(__AMIGAOS4__)
-#if defined(__CROSS__)
-    if(IGraphics)
-    {
-        
-        IExec->DropInterface(IExec, (struct Interface *) IGraphics);
-    }
-    if(GfxBase)
-    {
-        IExec->CloseLibrary(IExec, GfxBase);
-    }
-#else
-    if(IGraphics)
-    {
-        
-        IExec->DropInterface((struct Interface *) IGraphics);
-    }
-    if(GfxBase)
-    {
-        IExec->CloseLibrary(GfxBase);
-    }
-#endif
-#endif
-
     SDL_Quit();
 }
 
@@ -1299,6 +1269,22 @@ int Screen_Update(void)
         {
             Actualize_Master(teac);
             Display_Beat_Time();
+        }
+
+        if(gui_action == GUI_CMD_SET_CHORUS_CUTOFF_FREQ)
+        {
+            ChorCut = Mouse.x - 597;
+            Actualize_Fx_Ed(16);
+            //liveparam = LIVE_PARAM_TRACK_CUTOFF;
+            //livevalue = (Mouse.x - 88) * 2;
+        }
+
+        if(gui_action == GUI_CMD_SET_CHORUS_RESONANCE)
+        {
+            ChorRez = Mouse.x - 597;
+            Actualize_Fx_Ed(16);
+            //liveparam = LIVE_PARAM_TRACK_RESONANCE;
+            //livevalue = (Mouse.x - 88) * 2;
         }
 
         if(gui_action == GUI_CMD_CHANGE_TRACKS_NBR ||
@@ -2115,6 +2101,24 @@ int Screen_Update(void)
                 gui_action_external &= ~GUI_UPDATE_EXTERNAL_DISTO_CLAMP;
             }
 
+            if(gui_action_external & GUI_UPDATE_EXTERNAL_CHORUS_FILTER_TYPE)
+            {
+                Actualize_Fx_Ed(16);
+                gui_action_external &= ~GUI_UPDATE_EXTERNAL_CHORUS_FILTER_TYPE;
+            }
+
+            if(gui_action_external & GUI_UPDATE_EXTERNAL_CHORUS_FILTER_CUTOFF)
+            {
+                Actualize_Fx_Ed(16);
+                gui_action_external &= ~GUI_UPDATE_EXTERNAL_CHORUS_FILTER_CUTOFF;
+            }
+
+            if(gui_action_external & GUI_UPDATE_EXTERNAL_CHORUS_FILTER_RESONANCE)
+            {
+                Actualize_Fx_Ed(16);
+                gui_action_external &= ~GUI_UPDATE_EXTERNAL_CHORUS_FILTER_RESONANCE;
+            }
+
             if(gui_action_external & GUI_UPDATE_EXTERNAL_FILTER_CUTOFF)
             {
                 Actualize_Track_Ed(1);
@@ -2493,7 +2497,8 @@ void Load_File(int Freeindex, const char *str)
                 strcmp(extension, "PROTREKS") == 0 ||
                 strcmp(extension, "PROTREKT") == 0 ||
                 strcmp(extension, "PROTREKU") == 0 ||
-                strcmp(extension, "PROTREKV") == 0)
+                strcmp(extension, "PROTREKV") == 0 ||
+                strcmp(extension, "PROTREKW") == 0)
         {
             sprintf(name, "%s", FileName);
             Song_Stop();

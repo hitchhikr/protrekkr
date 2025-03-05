@@ -190,6 +190,7 @@ int Load_Ptk(CustomFile customFile)
     int Stereo_Reverb = FALSE;
     int Reverb_Resonance = FALSE;
     int Reverb_Damp_On = FALSE;
+    int Chorus_Filters = FALSE;
     int extended_LFO = FALSE;
     int Tb303_Scaling = FALSE;
     int Track_Srnd = FALSE;
@@ -257,6 +258,8 @@ int Load_Ptk(CustomFile customFile)
 
         switch(extension[7])
         {
+            case 'W':
+                Chorus_Filters = TRUE;
             case 'V':
                 Osc_3_Interval = TRUE;
             case 'U':
@@ -785,6 +788,13 @@ Read_Mod_File:
             if(Reverb_Damp_On)
             {
                 Read_Mod_Data_Swap(&Reverb_Damp, sizeof(float), 1, in);
+            }
+
+            if(Chorus_Filters)
+            {
+                Read_Mod_Data_Swap(&ChorType, sizeof(int), 1, in);
+                Read_Mod_Data_Swap(&ChorCut, sizeof(int), 1, in);
+                Read_Mod_Data_Swap(&ChorRez, sizeof(int), 1, in);
             }
 
             for(i = 0; i < MAX_INSTRS; i++)
@@ -1577,6 +1587,10 @@ int Save_Ptk(char *FileName, int NewFormat, int Simulate, Uint8 *Memory)
             Write_Mod_Data_Swap(&Reverb_Filter_Resonance, sizeof(float), 1, in);
             Write_Mod_Data(&Reverb_Stereo_Amount, sizeof(char), 1, in);
             Write_Mod_Data_Swap(&Reverb_Damp, sizeof(float), 1, in);
+
+            Write_Mod_Data_Swap(&ChorType, sizeof(int), 1, in);
+            Write_Mod_Data_Swap(&ChorCut, sizeof(int), 1, in);
+            Write_Mod_Data_Swap(&ChorRez, sizeof(int), 1, in);
             
             for(i = 0; i < MAX_INSTRS; i++)
             {
@@ -1786,7 +1800,7 @@ int Pack_Module(char *FileName)
     output = fopen(Temph, "wb");
     if(output)
     {
-        sprintf(extension, "PROTREKV");
+        sprintf(extension, "PROTREKW");
         Write_Data(extension, sizeof(char), 9, output);
         Write_Data_Swap(&Depack_Size, sizeof(int), 1, output);
         Write_Data(Final_Mem_Out, sizeof(char), Len, output);

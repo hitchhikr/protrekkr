@@ -195,6 +195,9 @@
 #define GUI_CMD_FLASH_METRONOME_ON 137
 #define GUI_CMD_FLASH_METRONOME_OFF 138
 
+#define GUI_CMD_SET_CHORUS_CUTOFF_FREQ 139
+#define GUI_CMD_SET_CHORUS_RESONANCE 140
+
 #define GUI_CMD_UPDATE_SYNTH_ED 150
 
 #define GUI_CMD_MIDI_NOTE_OFF_1_TRACK 151
@@ -252,6 +255,9 @@
 #define GUI_UPDATE_EXTERNAL_LFO (1 << 9)
 #define GUI_UPDATE_EXTERNAL_SET_PANNING (1 << 10)
 #define GUI_UPDATE_EXTERNAL_REVERB_DAMP (1 << 11)
+#define GUI_UPDATE_EXTERNAL_CHORUS_FILTER_TYPE (1 << 12)
+#define GUI_UPDATE_EXTERNAL_CHORUS_FILTER_CUTOFF (1 << 13)
+#define GUI_UPDATE_EXTERNAL_CHORUS_FILTER_RESONANCE (1 << 14)
 
 #define GUI_UPDATE_EXTERNAL_303_1_CUTOFF (1 << 0)
 #define GUI_UPDATE_EXTERNAL_303_2_CUTOFF (1 << 1)
@@ -517,6 +523,7 @@ extern int can_modify_song;
 
 // ------------------------------------------------------
 // Functions
+void Reset_Chorus_Filters(void);
 void Reset_Filters(int tr);
 void Wav_Renderizer();
 void New_Mod(void);
@@ -566,6 +573,7 @@ void Notify_Edit(int After_Song_Stop);
 void Notify_Play(void);
 void ComputeCoefs(int freq, int r, int t);
 void live303(int pltr_eff_row, int pltr_dat_row);
+float Filter_Chorus(int stereo, float x);
 float Filter(int stereo, float x, char i);
 float Cutoff(int v);
 float Reonance(float v);

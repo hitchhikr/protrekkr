@@ -191,6 +191,8 @@ float RVol[MAX_TRACKS];
 float Old_RVol[MAX_TRACKS];
 int FType[MAX_TRACKS];
 int FRez[MAX_TRACKS];
+int ChorType;
+int ChorRez;
 float DThreshold[MAX_TRACKS];
 char Disclap[MAX_TRACKS];
 float DClamp[MAX_TRACKS];
@@ -199,6 +201,7 @@ float lbuff_chorus[131072];
 float rbuff_chorus[131072];
 #if defined(PTK_FILTER_LOHIBAND)
 float coef[5];
+float coef_chorus[5];
 float coeftab[5][128][128][4];
 #endif
 
@@ -737,6 +740,7 @@ char Chan_Active_State[256][MAX_TRACKS];
 #endif
 
 int gco;
+int ChorCut;
 float ramper[MAX_TRACKS];
 char Basenote[MAX_INSTRS][16];
 char SampleType[MAX_INSTRS][16];
@@ -801,6 +805,10 @@ float fx1[2][MAX_TRACKS];
 float fx2[2][MAX_TRACKS];
 float fy1[2][MAX_TRACKS];
 float fy2[2][MAX_TRACKS];
+float fx1_chorus[2];
+float fx2_chorus[2];
+float fy1_chorus[2];
+float fy2_chorus[2];
 float xi0[2][MAX_TRACKS];
 float xi1[2][MAX_TRACKS];
 float xi2[2][MAX_TRACKS];
@@ -1957,6 +1965,10 @@ int PTKEXPORT Ptk_InitModule(Uint8 *Module, int start_position)
         Mod_Dat_Read(&Reverb_Stereo_Amount, sizeof(char));
         Mod_Dat_Read(&Reverb_Damp, sizeof(float));
 
+        Mod_Dat_Read(&ChorType, sizeof(int));
+        Mod_Dat_Read(&ChorCut, sizeof(int));
+        Mod_Dat_Read(&ChorRez, sizeof(int));
+
         char tb303_1_enabled;
         char tb303_2_enabled;
         // Read the 303 data
@@ -2068,6 +2080,8 @@ void Reset_Values(void)
             lbuff_chorus[i] = 0.0f;
             rbuff_chorus[i] = 0.0f;
         }
+
+        Reset_Chorus_Filters();
 
         for(i = 0; i < MAX_TRACKS; i++)
         {
@@ -2345,6 +2359,10 @@ void Pre_Song_Init(void)
         CSend[ini] = 0;
 #endif
     }
+
+    Reset_Chorus_Filters();
+    ChorType = 4;
+    ChorRez = 64;
 
 #if defined(PTK_303)
     tb303engine[0].reset();
@@ -5389,7 +5407,8 @@ void Do_Effects_Ticks_X(void)
     defined(PTK_FX_SENDTODELAYCOMMAND) || defined(PTK_FX_SENDTOREVERBCOMMAND) || \
     defined(PTK_FX_SETDISTORTIONTHRESHOLD) || defined(PTK_FX_SETDISTORTIONCLAMP) || \
     defined(PTK_FX_SETCUTOFF) || defined(PTK_FX_SETFILTERRESONANCE) || defined(PTK_FX_SWITCHFLANGER) || \
-    defined(PTK_FX_TRACK_FILTER_LFO) || defined(PTK_FX_SETFILTERTYPE)
+    defined(PTK_FX_TRACK_FILTER_LFO) || defined(PTK_FX_SETFILTERTYPE) || \
+    defined(PTK_FX_SETCHORUSFILTERTYPE) || defined(PTK_FX_SETCHORUSCUTOFF) || defined(PTK_FX_SETCHORUSRESONANCE)
 
             // Only at tick 0 but after instruments data
             if(PosInTick == 0)
@@ -5568,6 +5587,55 @@ void Do_Effects_Ticks_X(void)
                         }
                         break;
 #endif
+
+#if defined(PTK_FX_SETCHORUSFILTERTYPE)
+                    // $2d Set chorus filter Type
+                    case 0x2d:
+                        if(pltr_dat_row[k] <= MAX_CHORUS_FILTER)
+                        {
+                            ChorType = (int) pltr_dat_row[k];
+
+#if !defined(__STAND_ALONE__)
+                            if(userscreen == USER_SCREEN_TRACK_EDIT)
+                            {
+                                gui_action_external |= GUI_UPDATE_EXTERNAL_CHORUS_FILTER_TYPE;
+                            }
+#endif
+                        
+                        }
+                        break;
+#endif
+
+#if defined(PTK_FX_SETCHORUSCUTOFF)
+                    // $2e Set chorus filter cutoff
+                    case 0x2e:
+                        ChorCut = (int) (pltr_dat_row[k] / 2);
+
+#if !defined(__STAND_ALONE__)
+                        if(userscreen == USER_SCREEN_FX_SETUP_EDIT)
+                        {
+                            gui_action_external |= GUI_UPDATE_EXTERNAL_CHORUS_FILTER_CUTOFF;
+                        }
+#endif
+
+                        break;
+#endif
+
+#if defined(PTK_FX_SETCHORUSRESONANCE)
+                    // $2f Set chorus filter resonance
+                    case 0x2f:
+                        ChorRez = (int) (pltr_dat_row[k] / 2);
+
+#if !defined(__STAND_ALONE__)
+                        if(userscreen == USER_SCREEN_FX_SETUP_EDIT)
+                        {
+                            gui_action_external |= GUI_UPDATE_EXTERNAL_CHORUS_FILTER_RESONANCE;
+                        }
+#endif
+
+                        break;
+#endif
+
 
 
                 }
@@ -5943,6 +6011,20 @@ void Do_Effects_Ticks_X(void)
 }
 
 // ------------------------------------------------------
+// Reset the chorus filters
+void Reset_Chorus_Filters(void)
+{
+    fx1_chorus[0] = 0.0f;
+    fx2_chorus[0] = 0.0f;
+    fy1_chorus[0] = 0.0f;
+    fy2_chorus[0] = 0.0f;
+    fx1_chorus[1] = 0.0f;
+    fx2_chorus[1] = 0.0f;
+    fy1_chorus[1] = 0.0f;
+    fy2_chorus[1] = 0.0f;
+}
+
+// ------------------------------------------------------
 // Reset the tracks filters
 void Reset_Filters(int tr)
 {
@@ -6150,6 +6232,21 @@ void Get_Player_Values(void)
 
     float rchore = lbuff_chorus[lchorus_counter2];
     float lchore = rbuff_chorus[rchorus_counter2];
+
+#if defined(PTK_PROC_FILTER_CHORUS)
+    if(ChorType != 4)
+    {
+        coef_chorus[0] = coeftab[0][ChorCut][ChorRez][ChorType];
+        coef_chorus[1] = coeftab[1][ChorCut][ChorRez][ChorType];
+        coef_chorus[2] = coeftab[2][ChorCut][ChorRez][ChorType];
+        coef_chorus[3] = coeftab[3][ChorCut][ChorRez][ChorType];
+        coef_chorus[4] = coeftab[4][ChorCut][ChorRez][ChorType];
+
+        lchore = Filter_Chorus(0, lchore + 1.0f);
+        rchore = Filter_Chorus(1, rchore + 1.0f);
+    }
+#endif
+    
     left_float += lchore;
     right_float += rchore;
 
@@ -6258,6 +6355,14 @@ void Get_Player_Values(void)
             {
                 VuMeters_Level_Dats_R[c] = absf(VuMeters_Dats_R[c][pos_scope]);
             }
+            if(VuMeters_Level_Dats_L[c] > 1.0f)
+            {
+                VuMeters_Level_Dats_L[c] = 1.0f;
+            }
+            if(VuMeters_Level_Dats_R[c] > 1.0f)
+            {
+                VuMeters_Level_Dats_R[c] = 1.0f;
+            }
         }
         else
         {
@@ -6359,6 +6464,24 @@ void ComputeCoefs(int freq, int r, int t)
 
 // ------------------------------------------------------
 // Filters run
+#if defined(PTK_PROC_FILTER_CHORUS)
+float Filter_Chorus(int stereo, float x)
+{
+    float y;
+
+    y = coef_chorus[0] * x +
+        coef_chorus[1] * fx1_chorus[stereo] +
+        coef_chorus[2] * fx2_chorus[stereo] +
+        coef_chorus[3] * fy1_chorus[stereo] +
+        coef_chorus[4] * fy2_chorus[stereo];
+    fy2_chorus[stereo] = fy1_chorus[stereo];
+    fy1_chorus[stereo] = y;
+    fx2_chorus[stereo] = fx1_chorus[stereo];
+    fx1_chorus[stereo] = x;
+    return y;
+}
+#endif
+
 #if defined(PTK_PROC_FILTER)
 float Filter(int stereo, float x, char i)
 {

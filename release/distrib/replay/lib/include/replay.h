@@ -77,6 +77,7 @@
 #define MAX_TRACKS 16
 #define MAX_POLYPHONY 16
 #define DEFAULT_POLYPHONY 1
+#define MAX_CHORUS_FILTER 4
 #define MAX_FILTER 23
 #define MAX_COMB_FILTERS 10
 #define PI 3.1415926535897932384626433832795
@@ -362,6 +363,9 @@ extern float TCut[MAX_TRACKS];
 extern float ICut[MAX_TRACKS];
 extern float TPan[MAX_TRACKS];
 extern float old_TPan[MAX_TRACKS];
+extern int ChorType;
+extern int ChorCut;
+extern int ChorRez;
 extern int FType[MAX_TRACKS];
 extern int FRez[MAX_TRACKS];
 extern float DThreshold[MAX_TRACKS];
@@ -496,6 +500,7 @@ void Schedule_Instrument(int channel, int sub_channel,
                          int Pos,
                          int Row);
 void Play_Instrument(int channel, int sub_channel);
+void Reset_Chorus_Filters(void);
 void Reset_Filters(int tr);
 void Compute_Stereo(int channel);
 void Fix_Stereo(int channel);

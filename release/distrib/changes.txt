@@ -2,9 +2,14 @@
 ProTrekkr releases history
 ===============================================================================
 
-v2.8.3
+v2.8.3 PRE 1
 
 - Fullscreen resolution can now be selected.
+- Added 4 parametrable filters for stereo delay.
+- New effects:
+  2D: Set stereo filter type.
+  2E: Set stereo filter cutoff.
+  2F: Set stereo filter resonance.
 
 v2.8.2
 
