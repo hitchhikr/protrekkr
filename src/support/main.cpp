@@ -124,7 +124,7 @@ int Resize_Height;
 int Burn_Title = FALSE;
 int global_argc;
 char global_argv[MAX_PATH];
-int delay_ms = 0;
+int delay_ms = 10;
 
 SDL_Surface *Main_Screen;
 SDL_Rect **Screen_Modes;
@@ -723,12 +723,6 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
         exit(0);
     }
 
-/*    if(FullScreen)
-    {
-        Save_Cur_Width = Startup_Width;
-        Save_Cur_Height = Startup_Height;
-    }
-*/
     Ptk_Palette[0].r = Save_R;
     Ptk_Palette[0].g = Save_G;
     Ptk_Palette[0].b = Save_B;
@@ -748,7 +742,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
         exit(0);
     }
 
-#if defined(__AROS__) || defined(__MORPHOS__)
+#if defined(__AROS__) || defined(__MORPHOS__) || defined(__AMIGAOS4__)
     char *env_var;
 
     env_var = getenv("PROTREKKR_MAIN_LOOP_DELAY");
