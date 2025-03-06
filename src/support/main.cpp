@@ -411,6 +411,24 @@ void Load_Keyboard_Def(char *FileName)
 }
 
 // ------------------------------------------------------
+// Retrive the video infos
+void Get_Vid_Infos()
+{
+    int i;
+
+    Screen_Info = SDL_GetVideoInfo();
+    Screen_Modes = SDL_ListModes(Screen_Info->vfmt, SDL_SWSURFACE | SDL_FULLSCREEN);
+
+    i = 0;
+    Max_Screen_Mode = 0;
+    while(Screen_Modes[i])
+    {
+        Max_Screen_Mode++;
+        i++;
+    }
+}
+
+// ------------------------------------------------------
 // Main part of the tracker interface
 #if defined(__WIN32__)
 extern SDL_NEED int SDL_main(int argc, char *argv[])
@@ -482,16 +500,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
     }
     memset(ExePath, 0, ExePath_Size + 1);
 
-    Screen_Info = SDL_GetVideoInfo();
-    Screen_Modes = SDL_ListModes(Screen_Info->vfmt, SDL_SWSURFACE | SDL_FULLSCREEN);
-
-    i = 0;
-    Max_Screen_Mode = 0;
-    while(Screen_Modes[i])
-    {
-        Max_Screen_Mode++;
-        i++;
-    }
+    Get_Vid_Infos();
 
 #if defined(__LINUX__)
 
@@ -1363,6 +1372,8 @@ int Switch_FullScreen(int Width, int Height, int Refresh, int Force_Window_Mode)
         SendMessage(Main_Window, WM_SETICON, ICON_SMALL, (LPARAM) hIconSmall);
     }
 #endif
+
+    Get_Vid_Infos();
 
     if(Refresh)
     {
