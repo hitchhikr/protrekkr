@@ -1215,7 +1215,6 @@ void Seq_Move_Up(int cl)
             value = Chan_Active_State[cl - 1][trk];
             Chan_Active_State[cl - 1][trk] = Chan_Active_State[cl][trk];
             Chan_Active_State[cl][trk] = value;
-
             value = Chan_History_State[cl - 1][trk];
             Chan_History_State[cl - 1][trk] = Chan_History_State[cl][trk];
             Chan_History_State[cl][trk] = value;
@@ -1240,7 +1239,6 @@ void Seq_Move_Down(int cl)
             value = Chan_Active_State[cl + 1][trk];
             Chan_Active_State[cl + 1][trk] = Chan_Active_State[cl][trk];
             Chan_Active_State[cl][trk] = value;
-
             value = Chan_History_State[cl + 1][trk];
             Chan_History_State[cl + 1][trk] = Chan_History_State[cl + 1][trk];
             Chan_History_State[cl][trk] = value;
