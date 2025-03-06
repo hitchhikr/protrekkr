@@ -2213,13 +2213,16 @@ void PTKEXPORT Ptk_Play(void)
 // Send stop notification
 #if !defined(__STAND_ALONE__)
 #if !defined(__NO_MIDI__)
-    if(reset_carriers)
+    if(!Song_Playing)
     {
-        Midi_Send(0xfa, 0, 0);
-    }
-    else
-    {
-        Midi_Send(0xfb, 0, 0);
+        if(reset_carriers)
+        {
+            Midi_Send(0xfa, 0, 0);
+        }
+        else
+        {
+            Midi_Send(0xfb, 0, 0);
+        }
     }
 #endif
 #endif
@@ -5384,7 +5387,7 @@ void Do_Effects_Ticks_X(void)
 
 #if defined(PTK_FX_NOTECUT)
             if((pltr_vol_row & 0xf0) == 0xf0)
-            { // Note Cut: Fx
+            {   // Note Cut: Fx
                 unsigned char kinder = pltr_vol_row & 0xf;
                 if(Subicounter == kinder)
                 {

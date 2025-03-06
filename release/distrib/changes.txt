@@ -4,7 +4,7 @@ ProTrekkr releases history
 
 v2.8.3 PRE 1
 
-- Fullscreen resolution can now be selected.
+- Fullscreen mode resolution can now be selected.
 - Added 4 parametrable filters for stereo delay.
 - New effects:
   2D: Set stereo filter type.

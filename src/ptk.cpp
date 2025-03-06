@@ -2926,10 +2926,11 @@ void Notify_Play(void)
 void Song_Stop(void)
 {
 // Send stop notification
-#if !defined(__STAND_ALONE__)
 #if !defined(__NO_MIDI__)
-    Midi_Send(0xfc, 0, 0);
-#endif
+    if(Song_Playing)
+    {
+        Midi_Send(0xfc, 0, 0);
+    }
 #endif
 
     Song_Playing = FALSE;
