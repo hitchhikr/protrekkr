@@ -1614,7 +1614,7 @@ int Screen_Update(void)
                     WriteData_void(RF, (void *) &data, sizeof(data));
                 }
             }
-            Close(RF);
+            CloseWave(RF);
             free_wave(RF);
             if(strlen(SampleName[Current_Instrument][Current_Instrument_Split])) sprintf(buffer, "File '%s' Saved.", SampleName[Current_Instrument][Current_Instrument_Split]);
             else sprintf(buffer, "File 'Untitled.wav' Saved.");
@@ -2770,7 +2770,7 @@ void Load_File(int Freeindex, const char *str)
                             Unlock_Audio_Thread();
                         }
                     }
-                    Close(Wav_File);
+                    CloseWave(Wav_File);
                     free_wave(Wav_File);
                     Status_Box("File Loaded Successfully.", TRUE);
                 }
@@ -3414,7 +3414,7 @@ void Wav_Renderizer()
                             filesize += 4;
                         }
                     }
-                    Close(RF[j]);
+                    CloseWave(RF[j]);
                     break;
 
                 case RENDER_TO_STEREO:

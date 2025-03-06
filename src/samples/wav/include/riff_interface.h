@@ -70,7 +70,7 @@ DDCRET WriteStereoFloatSample(WaveHandle, float LeftSample, float RightSample);
 DDCRET ReadMonoSample(WaveHandle, INT16 *ChannelData);
 DDCRET ReadStereoSample(WaveHandle, INT16 *LeftSampleData, INT16 *RightSampleData);
 
-DDCRET Close(WaveHandle);
+DDCRET CloseWave(WaveHandle);
 
 UINT32   SamplingRate(WaveHandle);
 UINT16   BitsPerSample(WaveHandle);

@@ -115,7 +115,7 @@ DDCRET ReadStereoSample(WaveHandle p, INT16 *LeftSampleData, INT16 *RightSampleD
     return((WaveFile *) p)->ReadStereoSample(LeftSampleData, RightSampleData);
 }
 
-DDCRET Close(WaveHandle p)
+DDCRET CloseWave(WaveHandle p)
 {
     return((WaveFile *) p)->Close();
 }
