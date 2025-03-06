@@ -259,9 +259,6 @@ float local_curr_mas_vol;
 volatile float local_curr_ramp_vol;
 volatile float local_ramp_vol;
 
-int left_value;
-int right_value;
-
 int Song_Playing_Pattern;
 
 #if !defined(__WINAMP__)
@@ -1156,15 +1153,10 @@ Uint32 STDCALL Mixer(Uint8 *Buffer, Uint32 Len)
                            (Metronome_Dats[(metronome_internal_counter_int * 2)] & 0xff);
                 Right_Dat = Left_Dat;
 
-#if defined(__MACOSX_PPC__) || defined(__MACOSX_X86__)
                 // ([1.0..-1.0f])
                 left_float += (float) (Left_Dat) / 32767.0f;
                 right_float += (float) (Right_Dat) / 32767.0f;
-#else
-                left_value += Left_Dat;
-                right_value += Right_Dat;
-#endif
-
+                
                 metronome_internal_counter_int++;
                 if((metronome_internal_counter_int) == Metronome_Dats_Size)
                 {
@@ -1180,8 +1172,8 @@ Uint32 STDCALL Mixer(Uint8 *Buffer, Uint32 Len)
             *pSamples_flt++ = left_float;
             *pSamples_flt++ = right_float;
 #else
-            *pSamples++ = left_value;
-            *pSamples++ = right_value;
+            *pSamples++ = (short) (left_float * 32767.0f);
+            *pSamples++ = (short) (right_float * 32767.0f);
 #endif
 
 #if !defined(__STAND_ALONE__)
@@ -1253,9 +1245,6 @@ int STDCALL Ptk_InitDriver(void)
 #endif // !defined(__WINAMP__)
 
     int i;
-
-    left_value = 0;
-    right_value = 0;
 
 #if defined(PTK_SYNTH)
     // Create the stock waveforms
@@ -6358,11 +6347,6 @@ void Get_Player_Values(void)
 
 #if !defined(__STAND_ALONE__)
 
-#if defined(PTK_COMPRESSOR)
-    left_reverb /= 32767.0f;
-    right_reverb /= 32767.0f;
-#endif
-
     // Store the data for the tracks scopes now
     for(c = 0; c < Song_Tracks; c++)
     {
@@ -6427,8 +6411,6 @@ void Get_Player_Values(void)
     }
 #endif
 
-    left_value = (int) (left_float * 32767.0f);
-    right_value = (int) (right_float * 32767.0f);
 }
 
 // ------------------------------------------------------

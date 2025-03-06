@@ -3409,7 +3409,7 @@ void Wav_Renderizer()
                         }
                         else
                         {
-                            WriteStereoSample(RF[j], left_value, right_value);
+                            WriteStereoSample(RF[j], (INT16) (left_float_render * 32767.0f), (INT16) (right_float_render * 32767.0f));
                             filesize += 4;
                         }
                     }

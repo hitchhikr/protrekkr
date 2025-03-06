@@ -467,8 +467,6 @@ extern volatile int Song_Playing;
 #else
 extern int Song_Playing;
 #endif
-extern int left_value;
-extern int right_value;
 
 #if defined(PTK_SYNTH)
 #if !defined(__STAND_ALONE__) || defined(__WINAMP__)
