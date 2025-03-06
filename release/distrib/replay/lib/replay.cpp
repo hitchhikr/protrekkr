@@ -62,6 +62,7 @@
 void Compute_Stereo_Quick(int channel);
 
 int SamplesPerTick;
+int SamplesPerTick_Midi;
 float SQRT[1025];   // Sqrt float-precalculated table.
 
 #if !defined(__STAND_ALONE__) || defined(__WINAMP__)
@@ -234,6 +235,7 @@ float left_reverb;
 float right_reverb;
 float delay_left_final;
 float delay_right_final;
+int PosInTick_Midi;
 int PosInTick;
 
 #if !defined(__STAND_ALONE__)
@@ -2219,6 +2221,20 @@ void PTKEXPORT Ptk_Play(void)
     R_MaxLevel = 0;
 #endif
 
+// Send stop notification
+#if !defined(__STAND_ALONE__)
+#if !defined(__NO_MIDI__)
+    if(reset_carriers)
+    {
+        Midi_Send(0xfa, 0, 0);
+    }
+    else
+    {
+        Midi_Send(0xfb, 0, 0);
+    }
+#endif
+#endif
+
     Song_Playing = TRUE;
 
 #if defined(__PSP__)
@@ -2421,6 +2437,15 @@ void Pre_Song_Init(void)
 }
 
 // ------------------------------------------------------
+// Set the tempo
+void Calc_Tempo(void)
+{
+    SamplesPerTick = (int) (((60 * MIX_RATE) / Beats_Per_Min) / Ticks_Per_Beat);
+    SamplesPerTick_Midi = (int) (((60 * MIX_RATE) / Beats_Per_Min) / 24.0f);
+    SamplesPerSub = SamplesPerTick / 6;
+}
+
+// ------------------------------------------------------
 // Init the replayer data
 void Post_Song_Init(void)
 {
@@ -2560,9 +2585,9 @@ void Post_Song_Init(void)
         if(reset_carriers)
         {
 #endif
-        LFO_CARRIER_FILTER[i] = 0.0f;
-        LFO_CARRIER_VOLUME[i] = 0.0f;
-        LFO_CARRIER_PANNING[i] = 0.0f;
+            LFO_CARRIER_FILTER[i] = 0.0f;
+            LFO_CARRIER_VOLUME[i] = 0.0f;
+            LFO_CARRIER_PANNING[i] = 0.0f;
 #if !defined(__STAND_ALONE__)
         }
 #endif
@@ -2653,10 +2678,10 @@ void Post_Song_Init(void)
     lchorus_counter2 = MIX_RATE - lchorus_delay;
     rchorus_counter2 = MIX_RATE - rchorus_delay;
 
-    SamplesPerTick = (int) ((60 * MIX_RATE) / (Beats_Per_Min * Ticks_Per_Beat));
+    Calc_Tempo();
     PosInTick = 0;
+    PosInTick_Midi = SamplesPerTick_Midi;
     PosInTick_Delay = 0;
-    SamplesPerSub = SamplesPerTick / 6;
     Delay_Sound_Buffer = 0;
     Cur_Delay_Sound_Buffer = 0;
     Song_Playing_Pattern = FALSE;
@@ -3181,16 +3206,29 @@ void Sp_Player(void)
             Subicounter++;
         }
 
+        PosInTick_Midi++;
+        if(PosInTick_Midi > (SamplesPerTick_Midi))
+        {
+            // Send midi clock notification
+#if !defined(__STAND_ALONE__)
+#if !defined(__NO_MIDI__)
+            Midi_Send(0xf8, 0, 0);
+#endif
+#endif
+            PosInTick_Midi = 0;
+
+        }
+
         PosInTick++;
 
 #if defined(PTK_SHUFFLE)
-        if(PosInTick > SamplesPerTick + shufflestep)
+        if(PosInTick > ((SamplesPerTick + shufflestep)))
         {
             shuffleswitch = -shuffleswitch;
 
             Update_Shuffle();
 #else
-        if(PosInTick > SamplesPerTick)
+        if(PosInTick > (SamplesPerTick))
         {
 #endif
             SubCounter = 0;
@@ -4909,15 +4947,15 @@ void Play_Instrument(int channel, int sub_channel)
                 // Set the midi program if it was modified
                 if(LastProgram[Chan_Midi_Prg[channel]] != Midiprg[associated_sample])
                 {
-                    Midi_Send(0xb0 + Chan_Midi_Prg[channel], 0, Midiprg[associated_sample] / 128);
-                    Midi_Send(0xc0 + Chan_Midi_Prg[channel], Midiprg[associated_sample] & 0x7f, 127);
+                    Midi_Send(0xb0 + Chan_Midi_Prg[channel], 0, Midiprg[associated_sample] & 0x7f);
+                    Midi_Send(0xc0 + Chan_Midi_Prg[channel], Midiprg[associated_sample] & 0x7f, 127 * 2);
                     LastProgram[Chan_Midi_Prg[channel]] = Midiprg[associated_sample];
                 }
 
                 // Send the note to the midi device
                 float veloc = vol * channel_vol * mas_vol * local_mas_vol * local_ramp_vol;
 
-                Midi_Send(0x90 + Chan_Midi_Prg[channel], mnote, (int) (veloc * 127));
+                Midi_Send(0x90 + Chan_Midi_Prg[channel], mnote, (int) (veloc * 127) * 2);
                 if(midi_sub_channel < 0) Midi_Current_Notes[Chan_Midi_Prg[channel]][(-midi_sub_channel) - 1] = mnote;
                 else Midi_Current_Notes[Chan_Midi_Prg[channel]][midi_sub_channel - 1] = mnote;
             }
@@ -5188,8 +5226,7 @@ void Do_Effects_Tick_0(void)
                     if(pltr_dat_row[j] >= 20)
                     {
                         Beats_Per_Min = (int) pltr_dat_row[j];
-                        SamplesPerTick = (int) ((60 * MIX_RATE) / (Beats_Per_Min * Ticks_Per_Beat));
-                        SamplesPerSub = SamplesPerTick / 6;
+                        Calc_Tempo();
                     }
                     break;
 #endif
@@ -5211,8 +5248,7 @@ void Do_Effects_Tick_0(void)
                     Ticks_Per_Beat = (int) pltr_dat_row[j];
                     if(Ticks_Per_Beat < 1) Ticks_Per_Beat = 1;
                     if(Ticks_Per_Beat > 32) Ticks_Per_Beat = 32;
-                    SamplesPerTick = (int) ((60 * MIX_RATE) / (Beats_Per_Min * Ticks_Per_Beat));
-                    SamplesPerSub = SamplesPerTick / 6;
+                    Calc_Tempo();
 
 #if defined(PTK_SHUFFLE)
                     Update_Shuffle();

@@ -58,9 +58,7 @@ void Midi_Song_Set_Volume(int Data)
 // BPM (LIVE)
 void Midi_Song_Set_BPM(int Data)
 {
-    Beats_Per_Min = (int) ((((float) Data / 127.0f) * 235.0f) + 20.0f);
-    SamplesPerTick = (int) ((60 * MIX_RATE) / (Beats_Per_Min * Ticks_Per_Beat));  
-    SamplesPerSub = SamplesPerTick / 6;
+    Calc_Tempo();
     if(sr_isrecording || is_editing)
     {
         liveparam = LIVE_PARAM_SONG_BPM;

@@ -286,7 +286,7 @@ void Midi_Note_Off(int channel, int note)
             {
                 if(Midi_Notes_History[Chan_Midi_Prg[channel]][i] == note)
                 {
-                    _Midi_Send(0x80 + Chan_Midi_Prg[channel], (note - 1), 127);
+                    _Midi_Send(0x80 + Chan_Midi_Prg[channel], (note - 1), 127 * 2);
                     Midi_Notes_History[Chan_Midi_Prg[channel]][i] = 0;
                     break;
                 }
@@ -296,7 +296,7 @@ void Midi_Note_Off(int channel, int note)
         {
             for(i = 0; i < 256; i++)
             {
-                _Midi_Send(0x80 + Chan_Midi_Prg[channel], (Midi_Notes_History[Chan_Midi_Prg[channel]][i] - 1), 127);
+                _Midi_Send(0x80 + Chan_Midi_Prg[channel], (Midi_Notes_History[Chan_Midi_Prg[channel]][i] - 1), 127 * 2);
                 Midi_Notes_History[Chan_Midi_Prg[channel]][i] = 0;
             }
             Midi_Notes_History_Amount = 0;
@@ -426,6 +426,7 @@ void _Midi_Send(int nbr_track, int eff_dat, int row_dat)
     {
         out_message.push_back(nbr_track);
         out_message.push_back(eff_dat);
+        row_dat = row_dat / 2;
         out_message.push_back(row_dat);
         if(midiout)
         {

@@ -2925,6 +2925,13 @@ void Notify_Play(void)
 // Stop replaying
 void Song_Stop(void)
 {
+// Send stop notification
+#if !defined(__STAND_ALONE__)
+#if !defined(__NO_MIDI__)
+    Midi_Send(0xfc, 0, 0);
+#endif
+#endif
+
     Song_Playing = FALSE;
     Ptk_Stop();
     Gui_Draw_Button_Box(8, 28, 39, 16, "\04", BUTTON_NORMAL | BUTTON_RIGHT_MOUSE | BUTTON_TEXT_CENTERED);
@@ -7170,9 +7177,7 @@ void Actualize_Master(char gode)
         Switch_Cmd_Playing(FALSE);
     }
 
-    SamplesPerTick = (int) ((60 * MIX_RATE) / (Beats_Per_Min * Ticks_Per_Beat));
-    float SamplesPerBeat = (float) MIX_RATE / (((float) Beats_Per_Min * 4) / 60);
-    SamplesPerSub = SamplesPerTick / 6;
+    Calc_Tempo();
 
     if(gode == 5)
     {

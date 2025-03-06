@@ -504,6 +504,7 @@ void Reset_Chorus_Filters(void);
 void Reset_Filters(int tr);
 void Compute_Stereo(int channel);
 void Fix_Stereo(int channel);
+void Calc_Tempo(void);
 void Get_Player_Values(void);
 void Note_Off_303(char strack);
 void Init_Sample_Bank(void);

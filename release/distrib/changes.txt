@@ -10,6 +10,7 @@ v2.8.3 PRE 1
   2D: Set stereo filter type.
   2E: Set stereo filter cutoff.
   2F: Set stereo filter resonance.
+- Midi data range is now correctly scaled: row data of FF will be sent as 127.
 
 v2.8.2
 
