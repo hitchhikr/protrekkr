@@ -157,7 +157,7 @@ void Actualize_Master_Ed(char gode)
 {
     int Real_Palette_Idx;
     int RefreshTex = FALSE;
-    char Modes[32];
+    char Modes[64];
 
     if(userscreen == USER_SCREEN_SETUP_EDIT)
     {
@@ -520,48 +520,51 @@ void Actualize_Master_Ed(char gode)
         // Show screen modes
         if(gode == 0 || gode == 27)
         {
-            if(Changing_Screen_Mode)
+            if(FullScreen)
             {
-                int Try_Screen_Mode = Cur_Screen_Mode;
-                do
-                {
-                    Try_Screen_Mode = Try_Screen_Mode + Changing_Screen_Mode;
-                    if(Try_Screen_Mode < 0)
-                    {
-                        Try_Screen_Mode = 0;
-                        break;
-                    }
-                    if(Try_Screen_Mode >= (Max_Screen_Mode - 1))
-                    {
-                        Try_Screen_Mode = (Max_Screen_Mode - 1);
-                        break;
-                    }
-                } while(Screen_Modes[Try_Screen_Mode]->w < 800 && Screen_Modes[Try_Screen_Mode]->h < 600);
-            
-                if((Screen_Modes[Try_Screen_Mode]->w >= 800 && Screen_Modes[Try_Screen_Mode]->h >= 600))
-                {
-                    Cur_Screen_Mode = Try_Screen_Mode;
-                }
-            
-                Orig_Screen_Width = Screen_Modes[Cur_Screen_Mode]->w;
-                Orig_Screen_Height = Screen_Modes[Cur_Screen_Mode]->h;
-                Startup_Width = Orig_Screen_Width;
-                Startup_Height = Orig_Screen_Height;
-                if(Startup_Width < SCREEN_WIDTH) Startup_Width = SCREEN_WIDTH;
-                if(Startup_Height < SCREEN_HEIGHT) Startup_Height = SCREEN_HEIGHT;
-                Changing_Screen_Mode = 0;
+                Gui_Draw_Button_Box(512 + 64 + 8, (Cur_Height - 145), 16, 16, "\03", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
+                Gui_Draw_Button_Box(520 + 64 + 16 + 2, (Cur_Height - 145), 106, 16, "N/A", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
+                Gui_Draw_Button_Box(520 + 64 + 16 + 2 + 106 + 2, (Cur_Height - 145), 16, 16, "\04", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
             }
-            sprintf(Modes, "%d x %d", Screen_Modes[Cur_Screen_Mode]->w, Screen_Modes[Cur_Screen_Mode]->h);
-            Gui_Draw_Button_Box(512 + 64 + 8, (Cur_Height - 145), 16, 16, "\03", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
-            Gui_Draw_Button_Box(520 + 64 + 16 + 2, (Cur_Height - 145), 106, 16, Modes, BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
-            Gui_Draw_Button_Box(520 + 64 + 16 + 2 + 106 + 2, (Cur_Height - 145), 16, 16, "\04", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
-/*    {
-        for(i=0;fullmodes[i];++i)
-        {
-            printf( "SDL Mode: %d: %d x %d\n", i, fullmodes[i]->w, fullmodes[i]->h);
-        }
-    }
-*/
+            else
+            {
+
+                if(Changing_Screen_Mode)
+                {
+                    int Try_Screen_Mode = Cur_Screen_Mode;
+                    do
+                    {
+                        Try_Screen_Mode = Try_Screen_Mode + Changing_Screen_Mode;
+                        if(Try_Screen_Mode < 0)
+                        {
+                            Try_Screen_Mode = 0;
+                            break;
+                        }
+                        if(Try_Screen_Mode >= (Max_Screen_Mode - 1))
+                        {
+                            Try_Screen_Mode = (Max_Screen_Mode - 1);
+                            break;
+                        }
+                    } while(Screen_Modes[Try_Screen_Mode]->w < 800 && Screen_Modes[Try_Screen_Mode]->h < 600);
+            
+                    if((Screen_Modes[Try_Screen_Mode]->w >= 800 && Screen_Modes[Try_Screen_Mode]->h >= 600))
+                    {
+                        Cur_Screen_Mode = Try_Screen_Mode;
+                    }
+            
+                    Orig_Screen_Width = Screen_Modes[Cur_Screen_Mode]->w;
+                    Orig_Screen_Height = Screen_Modes[Cur_Screen_Mode]->h;
+                    Startup_Width = Orig_Screen_Width;
+                    Startup_Height = Orig_Screen_Height;
+                    if(Startup_Width < SCREEN_WIDTH) Startup_Width = SCREEN_WIDTH;
+                    if(Startup_Height < SCREEN_HEIGHT) Startup_Height = SCREEN_HEIGHT;
+                    Changing_Screen_Mode = 0;
+                }
+                sprintf(Modes, "%d x %d", Screen_Modes[Cur_Screen_Mode]->w, Screen_Modes[Cur_Screen_Mode]->h);
+                Gui_Draw_Button_Box(512 + 64 + 8, (Cur_Height - 145), 16, 16, "\03", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
+                Gui_Draw_Button_Box(520 + 64 + 16 + 2, (Cur_Height - 145), 106, 16, Modes, BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
+                Gui_Draw_Button_Box(520 + 64 + 16 + 2 + 106 + 2, (Cur_Height - 145), 16, 16, "\04", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
+            }
         }
         
         // There was a palette change
@@ -1090,16 +1093,16 @@ void Mouse_Left_Master_Ed(void)
             gui_action = GUI_CMD_UPDATE_SETUP_ED;
         }
 
-        // Keyboard
-        if(Check_Mouse(520 + 62 + 2, (Cur_Height - 145), 16, 16))
+        // Change full screen mode
+        if(Check_Mouse(520 + 62 + 2, (Cur_Height - 145), 16, 16) && !FullScreen)
         {
             Changing_Screen_Mode = -1;
             gui_action = GUI_CMD_UPDATE_SETUP_ED;
             teac = 27;
         }
 
-        // Keyboard
-        if(Check_Mouse(520 + 62 + 2 + 108 + 18, (Cur_Height - 145), 16, 16))
+        // Change full screen mode
+        if(Check_Mouse(520 + 62 + 2 + 108 + 18, (Cur_Height - 145), 16, 16) && !FullScreen)
         {
             Changing_Screen_Mode = 1;
             gui_action = GUI_CMD_UPDATE_SETUP_ED;
