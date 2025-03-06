@@ -11,6 +11,8 @@ v2.8.3 PRE 1
   2E: Set stereo filter cutoff.
   2F: Set stereo filter resonance.
 - Midi data range is now correctly scaled: row data of FF will be sent as 127.
+- Ptk now sends Midi start/cont/stop and Midi clock events.
+- Added 2 functions in sequencer to move a position up or down.
 
 v2.8.2
 

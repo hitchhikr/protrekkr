@@ -86,6 +86,8 @@ int Ext_Track_Switch;
 void Seq_Fill(int st, int en, char n);
 void Seq_Delete(int st);
 void Seq_Insert(int st);
+void Seq_Move_Up(int st);
+void Seq_Move_Down(int st);
 void Seq_Copy(int st);
 void Display_Seq_Buffers(void);
 void Seq_Paste(int st);
@@ -688,6 +690,20 @@ void Mouse_Left_Sequencer_Ed(void)
             gui_action = GUI_CMD_UPDATE_SEQUENCER;
         }
 
+        // Move position up
+        if(Check_Mouse(308, (Cur_Height - 97), 16, 16) && can_modify_song && (Cur_Position != 0))
+        {
+            Seq_Move_Up(Cur_Position);
+            gui_action = GUI_CMD_UPDATE_SEQUENCER;
+        }
+
+        // Move position down
+        if(Check_Mouse(308 + 18, (Cur_Height - 97), 16, 16) && can_modify_song && (Cur_Position < (Song_Length - 1)))
+        {
+            Seq_Move_Down(Cur_Position);
+            gui_action = GUI_CMD_UPDATE_SEQUENCER;
+        }
+
         // Select the copy buffers
         if(Check_Mouse(396, (Cur_Height - 78), 15, 16))
         {
@@ -1144,6 +1160,7 @@ void Seq_Delete(int st)
                 Chan_History_State[cl][trk] = Chan_History_State[cl + 1][trk];
             }
         }
+        // Clean the last entry
         pSequence[cl] = 0;
         for(char trk = 0; trk < Song_Tracks; trk++)
         {
@@ -1152,7 +1169,7 @@ void Seq_Delete(int st)
         }
         Song_Length--;
     }
-}     
+}
 
 // ------------------------------------------------------
 // Insert a position
@@ -1171,6 +1188,7 @@ void Seq_Insert(int st)
                 Chan_History_State[cl + 1][trk] = Chan_History_State[cl][trk];
             }
         }
+        // Insert it at original position
         pSequence[st] = 0;
         for(char trk = 0; trk < Song_Tracks; trk++)
         {
@@ -1179,7 +1197,57 @@ void Seq_Insert(int st)
         }
         Song_Length++;
     }
-}     
+}
+
+// ------------------------------------------------------
+// Move a position up
+void Seq_Move_Up(int cl)
+{
+    int value;
+
+    if(cl > 0)
+    {
+        value = pSequence[cl - 1];
+        pSequence[cl - 1] = pSequence[cl];
+        pSequence[cl] = value;
+        for(char trk = 0; trk < Song_Tracks; trk++)
+        {
+            value = Chan_Active_State[cl - 1][trk];
+            Chan_Active_State[cl - 1][trk] = Chan_Active_State[cl][trk];
+            Chan_Active_State[cl][trk] = value;
+
+            value = Chan_History_State[cl - 1][trk];
+            Chan_History_State[cl - 1][trk] = Chan_History_State[cl][trk];
+            Chan_History_State[cl][trk] = value;
+        }
+        Song_Position--;
+    }
+}
+
+// ------------------------------------------------------
+// Move a position down
+void Seq_Move_Down(int cl)
+{
+    int value;
+
+    if(Song_Length > 1)
+    {
+        value = pSequence[cl + 1];
+        pSequence[cl + 1] = pSequence[cl];
+        pSequence[cl] = value;
+        for(char trk = 0; trk < Song_Tracks; trk++)
+        {
+            value = Chan_Active_State[cl + 1][trk];
+            Chan_Active_State[cl + 1][trk] = Chan_Active_State[cl][trk];
+            Chan_Active_State[cl][trk] = value;
+
+            value = Chan_History_State[cl + 1][trk];
+            Chan_History_State[cl + 1][trk] = Chan_History_State[cl + 1][trk];
+            Chan_History_State[cl][trk] = value;
+        }
+        Song_Position++;
+    }
+}
 
 // ------------------------------------------------------
 // Set pattern number to last position
@@ -1347,9 +1415,14 @@ void Display_Seq_Edit_Buttons(void)
         Gui_Draw_Button_Box(308, (Cur_Height - 78), 80, 16, "Insert Position", BUTTON_NORMAL | BUTTON_RIGHT_MOUSE | BUTTON_TEXT_CENTERED | editing_mode);
         Gui_Draw_Button_Box(308, (Cur_Height - 60), 80, 16, "Delete Position", BUTTON_NORMAL | BUTTON_RIGHT_MOUSE | BUTTON_TEXT_CENTERED | editing_mode);
 
+        Gui_Draw_Button_Box(308, (Cur_Height - 97), 16, 16, "\01", BUTTON_NORMAL | BUTTON_TEXT_CENTERED | editing_mode | (Get_Song_Position() == 0 ? BUTTON_DISABLED : 0));
+        Gui_Draw_Button_Box(308 + 18, (Cur_Height - 97), 16, 16, "\02", BUTTON_NORMAL | BUTTON_TEXT_CENTERED | editing_mode | (Get_Song_Position() < (Song_Length - 1) ? 0 : BUTTON_DISABLED));
+
         Gui_Draw_Button_Box(590, (Cur_Height - 76), 60, 16, "Selection", BUTTON_NORMAL | BUTTON_TEXT_CENTERED | editing_mode);
         Gui_Draw_Button_Box(590, (Cur_Height - 56), 60, 16, "Track", BUTTON_NORMAL | BUTTON_TEXT_CENTERED | editing_mode);
         Gui_Draw_Button_Box(652, (Cur_Height - 76), 60, 16, "Pattern", BUTTON_NORMAL | BUTTON_TEXT_CENTERED | editing_mode);
         Gui_Draw_Button_Box(652, (Cur_Height - 56), 60, 16, "Song", BUTTON_NORMAL | BUTTON_TEXT_CENTERED | editing_mode);
+
+
     }
 }
