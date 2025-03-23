@@ -439,6 +439,10 @@ SOURCE=.\src\files\include\reverbs.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\src\files\include\s3m.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\src\files\include\synths.h
 # End Source File
 # End Group
@@ -481,6 +485,10 @@ SOURCE=.\src\files\ptps.cpp
 # Begin Source File
 
 SOURCE=.\src\files\reverbs.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\files\s3m.cpp
 # End Source File
 # Begin Source File
 

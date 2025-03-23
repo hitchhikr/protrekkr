@@ -645,15 +645,45 @@ void Destroy_Context(void)
 
     Ptk_ReleaseDriver();
 
+#if defined(__MACOSX_PPC__) || defined(__LINUX__) || defined(__AROS__) || defined(__AMIGAOS4__)
+    usleep(10);
+#endif
+#if defined(__WIN32__)
+    Sleep(10);
+#endif
+
+
 #if !defined(__NO_MIDI__)
     // Close any opened midi devices on any exit
     Midi_CloseIn();
+
+#if defined(__MACOSX_PPC__) || defined(__LINUX__) || defined(__AROS__) || defined(__AMIGAOS4__)
+    usleep(100);
+#endif
+#if defined(__WIN32__)
+    Sleep(100);
+#endif
+    
     Midi_CloseOut();
+#endif
+
+#if defined(__MACOSX_PPC__) || defined(__LINUX__) || defined(__AROS__) || defined(__AMIGAOS4__)
+    usleep(100);
+#endif
+#if defined(__WIN32__)
+    Sleep(100);
 #endif
 
 #if !defined(__NO_MIDI__)
     // Free the devices enumeration
     Midi_FreeAll();
+#endif
+
+#if defined(__MACOSX_PPC__) || defined(__LINUX__) || defined(__AROS__) || defined(__AMIGAOS4__)
+    usleep(100);
+#endif
+#if defined(__WIN32__)
+    Sleep(100);
 #endif
 
     Free_Samples();
@@ -2383,13 +2413,15 @@ void Load_File(int Freeindex, const char *str)
         int extension_AIFF[3];
         char extension_digi[21];
         unsigned extension_New;
-        int modext;
-        char found_mod;
+        int mod_tag;
+        int s3m_tag = 0;
+        int found_mod;
+        int found_s3m = 0;
         int i;
         //char rebext[5];
 
         fseek(in, 1080, SEEK_SET);
-        fread(&modext, sizeof(char), 4, in);
+        fread(&mod_tag, sizeof(char), 4, in);
 
         fseek(in, 0, SEEK_SET);
         fread(extension, sizeof(char), 9, in);
@@ -2404,24 +2436,26 @@ void Load_File(int Freeindex, const char *str)
         fseek(in, 0, SEEK_SET);
         fread(&extension_digi, sizeof(char), 20, in);
 
+//        fseek(in, 44, SEEK_SET);
+  //      fread(&s3mtag, sizeof(char), 4, in);
+
         // Look for sound/noise/star/protracker module
-        found_mod = 0;
-        for(i = 0; i < sizeof(mt_tags) / sizeof(int); i++)
-        {
-            if(Swap_32(mt_tags[i]) == modext)
-            {
-                found_mod = mt_channels[i];
-                break;
-            }
-        }
+        found_mod = Check_Mod(mod_tag);
         
-        // Look for a digibooster v1.x module
-        if(strcmp(extension_digi, "DIGI Booster module") == 0)
+        if(!found_mod)
         {
-            digibooster = TRUE;
-            // Retrieve the number of channels
-            fseek(in, 25, SEEK_SET);
-            fread(&found_mod, sizeof(char), 1, in);
+            found_s3m = Check_S3M(s3m_tag);
+            if(!found_s3m)
+            {
+                // Look for a digibooster v1.x module
+                if(strcmp(extension_digi, "DIGI Booster module") == 0)
+                {
+                    digibooster = TRUE;
+                    // Retrieve the number of channels
+                    fseek(in, 25, SEEK_SET);
+                    fread(&found_mod, sizeof(char), 1, in);
+                }
+            }
         }
 
         if(found_mod)
@@ -2431,7 +2465,24 @@ void Load_File(int Freeindex, const char *str)
             Song_Stop();
             AUDIO_Stop();
             Lock_Audio_Thread();
-            Load_Amiga_Mod(name, FileName, found_mod, digibooster);
+            Load_Mod(name, FileName, found_mod, digibooster);
+            Renew_Sample_Ed();
+            fclose(in);
+            gui_action = GUI_CMD_NONE;
+            Actualize_DiskIO_Ed(0);
+            Unlock_Audio_Thread();
+            AUDIO_Play();
+            return;
+        }
+
+        if(found_s3m)
+        {
+            sprintf(name, "%s", FileName);
+            // name / number of channels
+            Song_Stop();
+            AUDIO_Stop();
+            Lock_Audio_Thread();
+            Load_S3M(name, FileName);
             Renew_Sample_Ed();
             fclose(in);
             gui_action = GUI_CMD_NONE;
@@ -2776,7 +2827,7 @@ void Load_File(int Freeindex, const char *str)
                 }
                 else
                 {
-                    Status_Box("Invalid File Format. I Only Accept '.wav' '.aiff' '.aifc' '.ptk' '.pti' '.303' '.pts' '.ppb' '.prv' '.mod' '.dbm' Or '.ft' Files.", TRUE);
+                    Status_Box("Invalid File Format. I Only Accept '.wav' '.aiff' '.aifc' '.ptk' '.pti' '.303' '.pts' '.ppb' '.prv' '.mod' '.dbm' '.s3m' Or '.ft' Files.", TRUE);
                 }
             }
         }

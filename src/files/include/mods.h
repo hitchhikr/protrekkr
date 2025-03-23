@@ -37,6 +37,7 @@
 #include "files.h"
 #include "reverbs.h"
 #include "../../editors/include/patterns_blocks.h"
+#include "../../../release/distrib/replay/lib/include/endianness.h"
 
 #if !defined(BZR2)
 #include "../../midi/include/midi.h"
@@ -49,10 +50,11 @@ typedef struct
 {
     int old_note;
     int new_note;
-} AMIGA_NOTE, *LPAMIGA_NOTE;
+} MOD_NOTE, *LPMOD_NOTE;
 
 // ------------------------------------------------------
 // Functions
-void Load_Amiga_Mod(char *Name, const char *FileName, int channels, int digibooster);
+int Check_Mod(int mod_tag);
+void Load_Mod(char *Name, const char *FileName, int channels, int digibooster);
 
 #endif

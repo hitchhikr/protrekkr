@@ -3230,6 +3230,7 @@ int Get_Line_Over_Mouse(int *Need_Scroll)
 {
     int Cur_Position = Get_Song_Position();
 
+    int mouse_line_scroll;
     int mouse_line = (Mouse.y - (184 + (chars_height * 2)));
     *Need_Scroll = 0;
     // (Highlight line is doubled)
@@ -3240,19 +3241,24 @@ int Get_Line_Over_Mouse(int *Need_Scroll)
     mouse_line /= chars_height;
     mouse_line -= VIEWLINE;
     mouse_line += Pattern_Line;
-    if(mouse_line > (VIEWLINE + Pattern_Line))
+    mouse_line_scroll = mouse_line + (chars_height == 16 ? 1 : 0);
+    if(mouse_line_scroll > (VIEWLINE + Pattern_Line))
     {
-        if(mouse_line >= patternLines[pSequence[Cur_Position]])
+        if(mouse_line_scroll >= patternLines[pSequence[Cur_Position]])
         {
-            mouse_line = patternLines[pSequence[Cur_Position]];
+            mouse_line_scroll = patternLines[pSequence[Cur_Position]];
         }
-        *Need_Scroll = mouse_line - (VIEWLINE + Pattern_Line);
+        *Need_Scroll = mouse_line_scroll - (VIEWLINE + Pattern_Line);
     }
-    if(mouse_line < -(VIEWLINE - Pattern_Line))
+    mouse_line_scroll = (Mouse.y - (184 + (chars_height * 3)));
+    mouse_line_scroll /= chars_height;
+    mouse_line_scroll -= VIEWLINE;
+    mouse_line_scroll += Pattern_Line;
+    if(mouse_line_scroll < -(VIEWLINE - Pattern_Line))
     {
         if((VIEWLINE - Pattern_Line) < 0)
         {
-            *Need_Scroll = -(-(VIEWLINE - Pattern_Line) - mouse_line);
+            *Need_Scroll = -(-(VIEWLINE - Pattern_Line) - (mouse_line_scroll));
         }
     }
     if(mouse_line > patternLines[pSequence[Cur_Position]] - 1)

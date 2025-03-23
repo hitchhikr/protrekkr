@@ -515,7 +515,13 @@ void RtMidiIn :: closePort(void)
     if(connected_)
     {
         CoreMidiData *data = static_cast<CoreMidiData *> (apiData_);
-        MIDIPortDispose(data->port);
+        if(data)
+        {
+            if(data->port)
+            {
+                MIDIPortDispose(data->port);
+            }
+        }
         data->port = 0;
     }
     connected_ = false;
@@ -528,16 +534,19 @@ RtMidiIn :: ~RtMidiIn()
 
     // Cleanup.
     CoreMidiData *data = static_cast<CoreMidiData *> (apiData_);
-    if(data->client)
+    if(data)
     {
-        MIDIClientDispose(data->client);
+        if(data->client)
+        {
+            MIDIClientDispose(data->client);
+        }
+        if(data->endpoint)
+        {
+            MIDIEndpointDispose(data->endpoint);
+            data->endpoint = 0;
+        }
+        delete data;
     }
-    if(data->endpoint)
-    {
-        MIDIEndpointDispose(data->endpoint);
-        data->endpoint = 0;
-    }
-    delete data;
 }
 
 unsigned int RtMidiIn :: getPortCount()
@@ -856,10 +865,13 @@ void RtMidiOut :: closePort(void)
     if(connected_)
     {
         CoreMidiData *data = static_cast<CoreMidiData *> (apiData_);
-        if(data->port)
+        if(data)
         {
-            MIDIPortDispose(data->port);
-            data->port = 0;
+            if(data->port)
+            {
+                MIDIPortDispose(data->port);
+                data->port = 0;
+            }
         }
         connected_ = false;
     }
@@ -901,16 +913,19 @@ RtMidiOut :: ~RtMidiOut()
 
     // Cleanup.
     CoreMidiData *data = static_cast<CoreMidiData *> (apiData_);
-    if(data->client)
+    if(data)
     {
-        MIDIClientDispose(data->client);
-        data->client = 0;
+        if(data->client)
+        {
+            MIDIClientDispose(data->client);
+            data->client = 0;
+        }
+        if(data->endpoint)
+        {
+            MIDIEndpointDispose(data->endpoint);
+        }
+        delete data;
     }
-    if(data->endpoint)
-    {
-        MIDIEndpointDispose(data->endpoint);
-    }
-    delete data;
 }
 
 void RtMidiOut :: sendMessage(std::vector<unsigned char> *message)
@@ -1561,31 +1576,34 @@ void RtMidiIn :: closePort(void)
 {
     AlsaMidiData *data = static_cast<AlsaMidiData *> (apiData_);
    
-    if(connected_)
+    if(data)
     {
-        if(data->subscription)
+        if(connected_)
         {
-            snd_seq_unsubscribe_port(data->seq, data->subscription);
-            snd_seq_port_subscribe_free(data->subscription);
-            data->subscription = 0;
-        }
-        // Stop the input queue
+            if(data->subscription)
+            {
+                snd_seq_unsubscribe_port(data->seq, data->subscription);
+                snd_seq_port_subscribe_free(data->subscription);
+                data->subscription = 0;
+            }
+            // Stop the input queue
 #ifndef AVOID_TIMESTAMPING
-        snd_seq_stop_queue(data->seq, data->queue_id, NULL);
-        snd_seq_drain_output(data->seq);
+            snd_seq_stop_queue(data->seq, data->queue_id, NULL);
+            snd_seq_drain_output(data->seq);
 #endif
-        connected_ = false;
-    }
+            connected_ = false;
+        }
 
-    // Stop thread to avoid triggering the callback, while the port is intended to be closed
-    if(inputData_.doInput)
-    {
-        inputData_.doInput = false;
-        int res = write(data->trigger_fds[1], &inputData_.doInput, sizeof(inputData_.doInput));
-        (void) res;
-        if(!pthread_equal(data->thread, data->dummy_thread_id))
+        // Stop thread to avoid triggering the callback, while the port is intended to be closed
+        if(inputData_.doInput)
         {
-            pthread_join(data->thread, NULL);
+            inputData_.doInput = false;
+            int res = write(data->trigger_fds[1], &inputData_.doInput, sizeof(inputData_.doInput));
+            (void) res;
+            if(!pthread_equal(data->thread, data->dummy_thread_id))
+            {
+                pthread_join(data->thread, NULL);
+            }
         }
     }
 }
@@ -1597,22 +1615,25 @@ RtMidiIn :: ~RtMidiIn()
 
     // Shutdown the input thread.
     AlsaMidiData *data = static_cast<AlsaMidiData *> (apiData_);
-    if(inputData_.doInput)
+    if(data)
     {
-        inputData_.doInput = false;
-        pthread_join(data->thread, NULL);
-    }
+        if(inputData_.doInput)
+        {
+            inputData_.doInput = false;
+            pthread_join(data->thread, NULL);
+        }
 
-    // Cleanup.
-    if (data->vport >= 0)
-    {
-        snd_seq_delete_port(data->seq, data->vport);
-    }
+        // Cleanup.
+        if (data->vport >= 0)
+        {
+            snd_seq_delete_port(data->seq, data->vport);
+        }
 #ifndef AVOID_TIMESTAMPING
-    snd_seq_free_queue(data->seq, data->queue_id);
+        snd_seq_free_queue(data->seq, data->queue_id);
 #endif
-    snd_seq_close(data->seq);
-    delete data;
+        snd_seq_close(data->seq);
+        delete data;
+    }
 }
 
 unsigned int RtMidiIn :: getPortCount()
@@ -1836,9 +1857,15 @@ void RtMidiOut :: closePort(void)
     if(connected_)
     {
         AlsaMidiData *data = static_cast<AlsaMidiData *> (apiData_);
-        snd_seq_unsubscribe_port(data->seq, data->subscription);
-        snd_seq_port_subscribe_free(data->subscription);
-        data->subscription = 0;
+        if(data)
+        {
+            if(data->subscription)
+            {
+                snd_seq_unsubscribe_port(data->seq, data->subscription);
+                snd_seq_port_subscribe_free(data->subscription);
+            }
+            data->subscription = 0;
+        }
         connected_ = false;
     }
 }
@@ -1868,11 +1895,14 @@ RtMidiOut :: ~RtMidiOut()
 
     // Cleanup.
     AlsaMidiData *data = static_cast<AlsaMidiData *> (apiData_);
-    if(data->vport >= 0) snd_seq_delete_port(data->seq, data->vport);
-    if(data->coder) snd_midi_event_free(data->coder);
-    if(data->buffer) free(data->buffer);
-    snd_seq_close(data->seq);
-    delete data;
+    if(data)
+    {
+        if(data->vport >= 0) snd_seq_delete_port(data->seq, data->vport);
+        if(data->coder) snd_midi_event_free(data->coder);
+        if(data->buffer) free(data->buffer);
+        snd_seq_close(data->seq);
+        delete data;
+    }
 }
 
 void RtMidiOut :: sendMessage(std::vector<unsigned char> *message)
@@ -2246,31 +2276,37 @@ void RtMidiIn :: closePort(void)
     if(connected_)
     {
         WinMidiData *data = static_cast<WinMidiData *> (apiData_);
-        EnterCriticalSection(&(data->_mutex));
-        midiInReset(data->inHandle);
-        midiInStop(data->inHandle);
-
-        for(int i = 0; i < RT_SYSEX_BUFFER_COUNT; ++i)
+        if(data)
         {
-            int result = midiInUnprepareHeader(data->inHandle,
-                                               data->sysexBuffer[i],
-                                               sizeof(MIDIHDR));
-            delete []data->sysexBuffer[i]->lpData;
-            delete []data->sysexBuffer[i];
-            if(result != MMSYSERR_NOERROR)
+            EnterCriticalSection(&(data->_mutex));
+            if(data->inHandle)
             {
-                midiInClose(data->inHandle);
-                data->inHandle = 0;
-                sprintf(errorString_, "RtMidiIn::openPort: error closing Windows MM MIDI input port (midiInUnprepareHeader).");
-                error(RtError::DRIVER_ERROR);
-                return;
-            }
-        }
+                midiInReset(data->inHandle);
+                midiInStop(data->inHandle);
 
-        midiInClose(data->inHandle);
-        data->inHandle = 0;
+                for(int i = 0; i < RT_SYSEX_BUFFER_COUNT; ++i)
+                {
+                    int result = midiInUnprepareHeader(data->inHandle,
+                                                       data->sysexBuffer[i],
+                                                       sizeof(MIDIHDR));
+                    delete []data->sysexBuffer[i]->lpData;
+                    delete []data->sysexBuffer[i];
+                    if(result != MMSYSERR_NOERROR)
+                    {
+                        midiInClose(data->inHandle);
+                        data->inHandle = 0;
+                        sprintf(errorString_, "RtMidiIn::openPort: error closing Windows MM MIDI input port (midiInUnprepareHeader).");
+                        error(RtError::DRIVER_ERROR);
+                        return;
+                    }
+                }
+
+                midiInClose(data->inHandle);
+            }
+            data->inHandle = 0;
+            LeaveCriticalSection(&(data->_mutex));
+        }
         connected_ = false;
-        LeaveCriticalSection(&(data->_mutex));
     }
 }
 
@@ -2278,9 +2314,15 @@ RtMidiIn :: ~RtMidiIn()
 {
     // Cleanup.
     WinMidiData *data = static_cast<WinMidiData *> (apiData_);
-    DeleteCriticalSection(&data->_mutex);
-    delete data;
-    data = 0;
+    if(data)
+    {
+        if(&data->_mutex)
+        {
+            DeleteCriticalSection(&data->_mutex);
+        }
+        delete data;
+        data = 0;
+    }
 }
 
 unsigned int RtMidiIn :: getPortCount()
@@ -2473,10 +2515,16 @@ void RtMidiOut :: closePort(void)
     if(connected_)
     {
         WinMidiData *data = static_cast<WinMidiData *> (apiData_);
-        // Disabled because midiOutReset triggers 0x7b (if any note was ON) and 0x79 "Reset All
-        // Controllers" (to all 16 channels) CC messages which is undesirable (see issue #222)
-        // midiOutReset(data->outHandle);
-        midiOutClose(data->outHandle);
+        if(data)
+        {
+            // Disabled because midiOutReset triggers 0x7b (if any note was ON) and 0x79 "Reset All
+            // Controllers" (to all 16 channels) CC messages which is undesirable (see issue #222)
+            // midiOutReset(data->outHandle);
+            if(data->outHandle)
+            {
+                midiOutClose(data->outHandle);
+            }
+        }
         data->outHandle = 0;
         connected_ = false;
     }
@@ -2493,7 +2541,10 @@ RtMidiOut :: ~RtMidiOut()
 {
     // Cleanup.
     WinMidiData *data = static_cast<WinMidiData *> (apiData_);
-    delete data;
+    if(data)
+    {
+        delete data;
+    }
     apiData_ = NULL;
     data = NULL;
 }
@@ -2915,26 +2966,29 @@ void RtMidiIn :: closePort(void)
     if(connected_)
     {
         CAMDMidiData *data = static_cast<CAMDMidiData *> (apiData_);
-//        midiInReset(data->inHandle);
-  //      midiInStop(data->inHandle);
-
-        for(int i = 0; i < RT_SYSEX_BUFFER_COUNT; ++i)
+        if(data)
         {
-    /*        int result = midiInUnprepareHeader(data->inHandle,
-                                               data->sysexBuffer[i],
-                                               sizeof(MIDIHDR));
-            delete []data->sysexBuffer[i]->lpData;
-            delete []data->sysexBuffer[i];
-            if(result != MMSYSERR_NOERROR)
-            {
-                midiInClose(data->inHandle);
-                sprintf(errorString_, "RtMidiIn::openPort: error closing Windows MM MIDI input port (midiInUnprepareHeader).");
-                error(RtError::DRIVER_ERROR);
-                return;
-            }
-        }
+    //        midiInReset(data->inHandle);
+      //      midiInStop(data->inHandle);
 
-        //midiInClose(data->inHandle);*/
+            for(int i = 0; i < RT_SYSEX_BUFFER_COUNT; ++i)
+            {
+        /*        int result = midiInUnprepareHeader(data->inHandle,
+                                                   data->sysexBuffer[i],
+                                                   sizeof(MIDIHDR));
+                delete []data->sysexBuffer[i]->lpData;
+                delete []data->sysexBuffer[i];
+                if(result != MMSYSERR_NOERROR)
+                {
+                    midiInClose(data->inHandle);
+                    sprintf(errorString_, "RtMidiIn::openPort: error closing Windows MM MIDI input port (midiInUnprepareHeader).");
+                    error(RtError::DRIVER_ERROR);
+                    return;
+                }*/
+            }
+
+            //midiInClose(data->inHandle);*/
+        }
         connected_ = false;
     }
 }
@@ -2943,21 +2997,23 @@ RtMidiIn :: ~RtMidiIn()
 {
     // Cleanup.
     CAMDMidiData *data = static_cast<CAMDMidiData *> (apiData_);
-
-    if(data->inHandle)
+    if(data)
     {
-        ICamd->RemoveMidiLink(data->link_in);
-    }  
-    if(data->MidiSig)
-    {
-        FreeSignal(data->MidiSig);
+        if(data->inHandle)
+        {
+            ICamd->RemoveMidiLink(data->link_in);
+        }  
+        if(data->MidiSig)
+        {
+            FreeSignal(data->MidiSig);
+        }
+        data->MidiSig = NULL;
+        if(CamdBase)
+        {
+            CloseLibrary(CamdBase);
+        }
+        delete data;
     }
-    data->MidiSig = NULL;
-    if(CamdBase)
-    {
-        CloseLibrary(CamdBase);
-    }
-    delete data;
     apiData_ = NULL;
     data = NULL;
     CamdBase = NULL;
@@ -3140,9 +3196,12 @@ void RtMidiOut :: closePort(void)
     if(connected_)
     {
         CAMDMidiData *data = static_cast<CAMDMidiData *> (apiData_);
+        if(data)
+        {
 //        midiOutReset(data->outHandle);
   //      midiOutClose(data->outHandle);
-        connected_ = false;
+            connected_ = false;
+        }
     }
 }
 
@@ -3157,7 +3216,10 @@ RtMidiOut :: ~RtMidiOut()
 {
     // Cleanup.
     CAMDMidiData *data = static_cast<CAMDMidiData *> (apiData_);
-    delete data;
+    if(data)
+    {
+        delete data;
+    }
     apiData_ = NULL;
     data = NULL;
 }

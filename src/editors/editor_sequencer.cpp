@@ -51,6 +51,7 @@ typedef struct
 extern REQUESTER Overwrite_Requester;
 
 int transpose_semitones;
+int apply_to = 0;
 int Cur_Seq_Buffer = 0;
 
 char Selection_Name[20];
@@ -118,7 +119,9 @@ void Draw_Sequencer_Ed(void)
     Gui_Draw_Button_Box(480, (Cur_Height - 128), 190, 26, "Save Selection :", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_NO_BORDER | BUTTON_TEXT_VTOP);
     Gui_Draw_Button_Box(745, (Cur_Height - 128), 34, 16, "Save", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
 
-    Gui_Draw_Button_Box(480, (Cur_Height - 99), 306, 64, "Instrument", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_VTOP);
+    Gui_Draw_Button_Box(480, (Cur_Height - 99), 306, 64, "", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_VTOP);
+    Gui_Draw_Button_Box(484, (Cur_Height - 99 + 3), 24, 16, "Inst.", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
+    Gui_Draw_Button_Box(484 + 27, (Cur_Height - 99 + 3), 24, 16, "Eff.", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
     Gui_Draw_Button_Box(538, (Cur_Height - 99 + 3), 42, 16, "Range", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
     Gui_Draw_Button_Box(590, (Cur_Height - 99 + 3), 60, 16, "Remap", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
     Gui_Draw_Button_Box(652, (Cur_Height - 99 + 3), 60, 16, "Swap", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
@@ -241,6 +244,21 @@ void Actualize_Seq_Ed(char gode)
                 Gui_Draw_Button_Box(538, (Cur_Height - 99 + 3), 42, 16, "Range", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
             }
         }
+
+        if(gode == 0 || gode == 7)
+        {
+            if(!apply_to)
+            {
+                Gui_Draw_Button_Box(484, (Cur_Height - 99 + 3), 24, 16, "Inst.", BUTTON_PUSHED | BUTTON_TEXT_CENTERED);
+                Gui_Draw_Button_Box(484 + 27, (Cur_Height - 99 + 3), 24, 16, "Eff.", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
+            }
+            else
+            {
+                Gui_Draw_Button_Box(484, (Cur_Height - 99 + 3), 24, 16, "Inst.", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
+                Gui_Draw_Button_Box(484 + 27, (Cur_Height - 99 + 3), 24, 16, "Eff.",  BUTTON_PUSHED | BUTTON_TEXT_CENTERED);
+            }
+        }
+
     }
     Display_Seq_Edit_Buttons();
 }

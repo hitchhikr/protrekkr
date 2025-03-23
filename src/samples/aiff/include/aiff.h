@@ -82,6 +82,7 @@ typedef unsigned long long Uint64;
 #else
 #pragma pack(push, 1)
 #endif
+
 typedef struct
 {
     unsigned char count;

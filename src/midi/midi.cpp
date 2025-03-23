@@ -346,6 +346,7 @@ void Midi_CloseIn(void)
     {
         if(midiin_port_opened) midiin->cancelCallback();
         midiin->closePort();
+        midiin_port_opened = FALSE;
     }
 }
 
@@ -413,7 +414,9 @@ void Midi_FreeAll(void)
 {
     if(midiin_port_opened) midiin->cancelCallback();
     if(midiin) delete midiin;
+    midiin = NULL;
     if(midiout) delete midiout;
+    midiout = NULL;
 }
 
 // ------------------------------------------------------

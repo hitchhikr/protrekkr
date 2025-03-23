@@ -62,8 +62,8 @@
 // ------------------------------------------------------
 // Variables
 extern int Final_Mod_Length;
-extern int mt_tags[16];
-extern char mt_channels[16];
+extern int mt_tags[17];
+extern char mt_channels[17];
 extern char Dir_Mods[MAX_PATH];
 extern char Dir_Instrs[MAX_PATH];
 extern char Dir_Presets[MAX_PATH];
