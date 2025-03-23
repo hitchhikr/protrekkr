@@ -2,6 +2,10 @@
 ProTrekkr releases history
 ===============================================================================
 
+v2.8.3 PRE 2
+
+- Global volumes of channel are now also used for midi notes.
+
 v2.8.3 PRE 1
 
 - Fullscreen mode resolution can now be selected.

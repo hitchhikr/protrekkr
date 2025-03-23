@@ -2252,6 +2252,7 @@ void PTKEXPORT Ptk_Stop(void)
     {
         *ptr_local_ramp_vol = 0.0f;
     }
+
 #else
 
     Done_Reset = FALSE;
@@ -4939,13 +4940,13 @@ void Play_Instrument(int channel, int sub_channel)
                 // Set the midi program if it was modified
                 if(LastProgram[Chan_Midi_Prg[channel]] != Midiprg[associated_sample])
                 {
-                    Midi_Send(0xb0 + Chan_Midi_Prg[channel], 0, Midiprg[associated_sample] & 0x7f);
+                    Midi_Send(0xb0 + Chan_Midi_Prg[channel], 0, (Midiprg[associated_sample] & 0x7f) * 2);
                     Midi_Send(0xc0 + Chan_Midi_Prg[channel], Midiprg[associated_sample] & 0x7f, 127 * 2);
                     LastProgram[Chan_Midi_Prg[channel]] = Midiprg[associated_sample];
                 }
 
                 // Send the note to the midi device
-                float veloc = vol * channel_vol * mas_vol * local_mas_vol * local_ramp_vol;
+                float veloc = vol * channel_vol * mas_vol * local_mas_vol * local_ramp_vol * Track_Volume[channel];
 
                 Midi_Send(0x90 + Chan_Midi_Prg[channel], mnote, (int) (veloc * 127) * 2);
                 if(midi_sub_channel < 0) Midi_Current_Notes[Chan_Midi_Prg[channel]][(-midi_sub_channel) - 1] = mnote;
