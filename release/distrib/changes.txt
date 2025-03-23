@@ -7,9 +7,6 @@ v2.8.3
 - Global volumes of channel are now also used for midi notes.
 - Added a sequencer function to remap/swap and change effects numbers & values.
 - Fixed a bug with transposing multi-notes channels.
-
-v2.8.3 PRE 1
-
 - Fullscreen mode resolution can now be selected.
 - Added 4 parametrable filters for stereo delay.
 - New effects:
@@ -69,9 +66,6 @@ v2.8.0
 - Added a function to negate the current palette.
 - Added two functions to rotate the current palette on the left or right.
 - Re-arranged bitchbiker.ptk and added it into the official list of modules.
-
-v2.8.0 PRE 2
-
 - Changed the behaviour of the single step mode, plays only stops when
   enter (or return) key is depressed and only the current pattern is played
   (press Left Shift to go into song mode).
@@ -80,9 +74,6 @@ v2.8.0 PRE 2
 - Transposition functions now keep track of last used instruments to be able
   to transpose relevant notes used without instruments.
 - Stopping step mode will keep edit mode intact.
-
-v2.8.0 PRE 1
-
 - Sample "Maximize" (Max) is now called "Normalize" (Norm) in samples editor.
 - More visual feedback for currently played sample in samples editor.
 - Added the option to show/clear leading zeroes digits in patterns.
