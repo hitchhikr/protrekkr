@@ -4,9 +4,6 @@ ProTrekkr releases history
 
 v2.8.3
 
-- Global volumes of channel are now also used for midi notes.
-- Added a sequencer function to remap/swap and change effects numbers & values.
-- Fixed a bug with transposing multi-notes channels.
 - Fullscreen mode resolution can now be selected.
 - Added 4 parametrable filters for stereo delay.
 - New effects:
@@ -16,6 +13,9 @@ v2.8.3
 - Midi data range is now correctly scaled: row data of FF will be sent as 127.
 - Ptk now sends Midi start/cont/stop and Midi clock events.
 - Added 2 functions in sequencer to move a position up or down.
+- Global volumes of channel are now also used for midi notes.
+- Added a sequencer function to remap/swap and change effects numbers & values.
+- Fixed a bug with transposing multi-notes channels.
 
 v2.8.2
 
