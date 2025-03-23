@@ -5154,28 +5154,28 @@ void Keyboard_Handler(void)
                     // Transpose the selection 1 semitone higher
                     if(Keys[SDLK_u - UNICODE_OFFSET2] && can_modify_song)
                     {
-                        Reset_Transpose_Block();
+                        Reset_Transpose_Block(255);
                         Instrument_Semitone_Up_Block(Cur_Position);
                     }
 
                     // Transpose the selection 1 semitone lower
                     if(Keys[SDLK_d - UNICODE_OFFSET2] && can_modify_song)
                     {
-                        Reset_Transpose_Block();
+                        Reset_Transpose_Block(255);
                         Instrument_Semitone_Down_Block(Cur_Position);
                     }
 
                     // Transpose the selection 1 octave higher
                     if(Keys[SDLK_k - UNICODE_OFFSET2] && can_modify_song)
                     {
-                        Reset_Transpose_Block();
+                        Reset_Transpose_Block(255);
                         Instrument_Octave_Up_Block(Cur_Position);
                     }
 
                     // Transpose the selection 1 octave lower
                     if(Keys[SDLK_l - UNICODE_OFFSET2] && can_modify_song)
                     {
-                        Reset_Transpose_Block();
+                        Reset_Transpose_Block(255);
                         Instrument_Octave_Down_Block(Cur_Position);
                     }
 
@@ -5259,28 +5259,28 @@ void Keyboard_Handler(void)
                     // Transpose the selection 1 semitone higher
                     if(Keys[SDLK_u - UNICODE_OFFSET2] && can_modify_song)
                     {
-                        Reset_Transpose_Block();
+                        Reset_Transpose_Block(255);
                         Semitone_Up_Block(Cur_Position);
                     }
 
                     // Transpose the selection 1 semitone lower
                     if(Keys[SDLK_d - UNICODE_OFFSET2] && can_modify_song)
                     {
-                        Reset_Transpose_Block();
+                        Reset_Transpose_Block(255);
                         Semitone_Down_Block(Cur_Position);
                     }
 
                     // Transpose the selection 1 octave higher
                     if(Keys[SDLK_k - UNICODE_OFFSET2] && can_modify_song)
                     {
-                        Reset_Transpose_Block();
+                        Reset_Transpose_Block(255);
                         Octave_Up_Block(Cur_Position);
                     }
 
                     // Transpose the selection 1 octave lower
                     if(Keys[SDLK_l - UNICODE_OFFSET2] && can_modify_song)
                     {
-                        Reset_Transpose_Block();
+                        Reset_Transpose_Block(255);
                         Octave_Down_Block(Cur_Position);
                     }
 
@@ -6620,7 +6620,7 @@ void Mouse_Handler(void)
         {
             if(can_modify_song)
             {
-                Reset_Transpose_Block();
+                Reset_Transpose_Block(255);
                 Semitone_Up_Block(Cur_Position);
             }
         }
@@ -6629,7 +6629,7 @@ void Mouse_Handler(void)
         {
             if(can_modify_song)
             {
-                Reset_Transpose_Block();
+                Reset_Transpose_Block(255);
                 Semitone_Down_Block(Cur_Position);
             }
         }
@@ -6638,7 +6638,7 @@ void Mouse_Handler(void)
         {
             if(can_modify_song)
             {
-                Reset_Transpose_Block();
+                Reset_Transpose_Block(255);
                 Octave_Up_Block(Cur_Position);
             }
         }
@@ -6647,7 +6647,7 @@ void Mouse_Handler(void)
         {
             if(can_modify_song)
             {
-                Reset_Transpose_Block();
+                Reset_Transpose_Block(255);
                 Octave_Down_Block(Cur_Position);
             }
         }
@@ -6885,7 +6885,7 @@ void Mouse_Handler(void)
         {
             if(can_modify_song)
             {
-                Reset_Transpose_Block();
+                Reset_Transpose_Block(255);
                 Instrument_Semitone_Up_Block(Cur_Position);
             }
         }
@@ -6894,7 +6894,7 @@ void Mouse_Handler(void)
         {
             if(can_modify_song)
             {
-                Reset_Transpose_Block();
+                Reset_Transpose_Block(255);
                 Instrument_Semitone_Down_Block(Cur_Position);
             }
         }
@@ -6903,7 +6903,7 @@ void Mouse_Handler(void)
         {
             if(can_modify_song)
             {
-                Reset_Transpose_Block();
+                Reset_Transpose_Block(255);
                 Instrument_Octave_Up_Block(Cur_Position);
             }
         }
@@ -6912,7 +6912,7 @@ void Mouse_Handler(void)
         {
             if(can_modify_song)
             {
-                Reset_Transpose_Block();
+                Reset_Transpose_Block(255);
                 Instrument_Octave_Down_Block(Cur_Position);
             }
         }

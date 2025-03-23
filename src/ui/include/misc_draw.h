@@ -121,6 +121,7 @@
 #define BUTTON_RIGHT_MOUSE 128
 #define BUTTON_INPUT 256
 #define BUTTON_SMALL_FONT 512
+#define BUTTON_CLEAR_BACK 1024
 
 #define A_ "\216"
 #define B_ "\217"

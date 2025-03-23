@@ -75,6 +75,7 @@
 #define USE_FASTPOW
 
 #define MAX_TRACKS 16
+#define MAX_EFFECTS 4
 #define MAX_POLYPHONY 16
 #define DEFAULT_POLYPHONY 1
 #define MAX_CHORUS_FILTER 4

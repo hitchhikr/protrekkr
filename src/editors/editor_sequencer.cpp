@@ -126,9 +126,6 @@ void Draw_Sequencer_Ed(void)
     Gui_Draw_Button_Box(590, (Cur_Height - 99 + 3), 60, 16, "Remap", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
     Gui_Draw_Button_Box(652, (Cur_Height - 99 + 3), 60, 16, "Swap", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
 
-    Gui_Draw_Button_Box(720, (Cur_Height - 99), 60, 18, "Transpose", BUTTON_NO_BORDER | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
-    Gui_Draw_Button_Box(720, (Cur_Height - 56), 60, 18, "Semitones", BUTTON_NO_BORDER | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
-
     Gui_Draw_Button_Box(480, (Cur_Height - 77), 60, 26, "From", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_NO_BORDER | BUTTON_TEXT_VTOP);
     Gui_Draw_Button_Box(480, (Cur_Height - 56), 60, 26, "To", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_NO_BORDER | BUTTON_TEXT_VTOP);
 
@@ -176,17 +173,31 @@ void Actualize_Seq_Ed(char gode)
         Update_Pattern(0);
 
         // From instrument
-        if(gode == 0 || gode == 1)
+        if(gode == 0 || gode == 1 || gode == 6 || gode == 7)
         {
-            if(Remap_From < 0) Remap_From = 0;
+            if(!apply_to)
+            {
+                if(Remap_From < 0) Remap_From = 0;
+            }
+            else
+            {
+                if(Remap_From < 1) Remap_From = 1;
+            }
             if(Remap_From > 0x7f) Remap_From = 0x7f;
             value_box(520, (Cur_Height - 76), Remap_From, BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
         }
 
         // To instrument
-        if(gode == 0 || gode == 2)
+        if(gode == 0 || gode == 2 || gode == 6 || gode == 7)
         {
-            if(Remap_To < 0) Remap_To = 0;
+            if(!apply_to)
+            {
+                if(Remap_To < 0) Remap_To = 0;
+            }
+            else
+            {
+                if(Remap_To < 1) Remap_To = 1;
+            }
             if(Remap_To > 0x7f) Remap_To = 0x7f;
             value_box(520, (Cur_Height - 56), Remap_To, BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
         }
@@ -214,7 +225,7 @@ void Actualize_Seq_Ed(char gode)
             value_box_format(720, (Cur_Height - 76), transpose_semitones, BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE, "%d");
         }
 
-        if(gode == 0 || gode == 5 || gode == 6)
+        if(gode == 0 || gode == 5 || gode == 6 || gode == 7)
         {
             int dis = 0;
             if(Action_Range)
@@ -230,6 +241,16 @@ void Actualize_Seq_Ed(char gode)
             {
                 Gui_Draw_Button_Box(590, (Cur_Height - 99 + 3), 60, 16, "Remap", BUTTON_PUSHED | BUTTON_TEXT_CENTERED | dis);
                 Gui_Draw_Button_Box(652, (Cur_Height - 99 + 3), 60, 16, "Swap", BUTTON_NORMAL | BUTTON_TEXT_CENTERED | dis);
+            }
+            if(!apply_to)
+            {
+                Gui_Draw_Button_Box(720, (Cur_Height - 99 + 2), 60, 18, "Transpose", BUTTON_NO_BORDER | BUTTON_CLEAR_BACK | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
+                Gui_Draw_Button_Box(720, (Cur_Height - 57), 60, 18, "Semitones", BUTTON_NO_BORDER | BUTTON_CLEAR_BACK | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
+            }
+            else
+            {
+                Gui_Draw_Button_Box(720, (Cur_Height - 99 + 2), 60, 18, "Add/Sub", BUTTON_NO_BORDER | BUTTON_CLEAR_BACK | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
+                Gui_Draw_Button_Box(720, (Cur_Height - 57), 60, 18, "To Eff. Data", BUTTON_NO_BORDER | BUTTON_CLEAR_BACK | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
             }
         }
 
@@ -280,25 +301,46 @@ void Mouse_Left_Sequencer_Ed(void)
         {
             if(!Action_Range)
             {
-                Reset_Transpose_Block();
+                Reset_Transpose_Block(apply_to ? 0 : 255);
                 if(transpose_semitones)
                 {
                     if(transpose_semitones > 0)
                     {
                         for(k = 0; k < transpose_semitones; k++)
                         {
-                            Instrument_Semitone_Up_Sel(Cur_Position, Get_Real_Selection(FALSE), 1, Remap_From);
+                            if(!apply_to)
+                            {
+                                Instrument_Semitone_Up_Sel(Cur_Position, Get_Real_Selection(FALSE), 1, Remap_From);
+                            }
+                            else
+                            {
+                                FX_Data_Up_Sel(Cur_Position, Get_Real_Selection(FALSE), 1, Remap_From);
+                            }
                         }
                     }
                     else
                     {
                         for(k = 0; k < -transpose_semitones; k++)
                         {
-                            Instrument_Semitone_Down_Sel(Cur_Position, Get_Real_Selection(FALSE), 1, Remap_From);
+                            if(!apply_to)
+                            {
+                                Instrument_Semitone_Down_Sel(Cur_Position, Get_Real_Selection(FALSE), 1, Remap_From);
+                            }
+                            else
+                            {
+                                FX_Data_Down_Sel(Cur_Position, Get_Real_Selection(FALSE), 1, Remap_From);
+                            }
                         }
                     }
                 }
-                Instrument_Remap_Sel(Cur_Position, Get_Real_Selection(FALSE), Remap_From, Remap_To, Remap_Swap);
+                if(!apply_to)
+                {
+                    Instrument_Remap_Sel(Cur_Position, Get_Real_Selection(FALSE), Remap_From, Remap_To, Remap_Swap);
+                }
+                else
+                {
+                    FX_Remap_Sel(Cur_Position, Get_Real_Selection(FALSE), Remap_From, Remap_To, Remap_Swap);
+                }
                 Update_Pattern(0);
             }
             else
@@ -315,14 +357,21 @@ void Mouse_Left_Sequencer_Ed(void)
                         Trans_From = Remap_From;
                         Trans_To = Remap_To;
                     }
-                    Reset_Transpose_Block();
+                    Reset_Transpose_Block(apply_to ? 0 : 255);
                     if(transpose_semitones > 0)
                     {
                         for(i = Trans_From; i < (Trans_To + 1); i++)
                         {
                             for(k = 0; k < transpose_semitones; k++)
                             {
-                                Instrument_Semitone_Up_Sel(Cur_Position, Get_Real_Selection(FALSE), 1, i);
+                                if(!apply_to)
+                                {
+                                    Instrument_Semitone_Up_Sel(Cur_Position, Get_Real_Selection(FALSE), 1, i);
+                                }
+                                else
+                                {
+                                    FX_Data_Up_Sel(Cur_Position, Get_Real_Selection(FALSE), 1, i);
+                                }
                             }
                         }
                     }
@@ -332,7 +381,14 @@ void Mouse_Left_Sequencer_Ed(void)
                         {
                             for(k = 0; k < -transpose_semitones; k++)
                             {
-                                Instrument_Semitone_Down_Sel(Cur_Position, Get_Real_Selection(FALSE), 1, i);
+                                if(!apply_to)
+                                {
+                                    Instrument_Semitone_Down_Sel(Cur_Position, Get_Real_Selection(FALSE), 1, i);
+                                }
+                                else
+                                {
+                                    FX_Data_Down_Sel(Cur_Position, Get_Real_Selection(FALSE), 1, i);
+                                }
                             }
                         }
                     }
@@ -346,25 +402,46 @@ void Mouse_Left_Sequencer_Ed(void)
         {
             if(!Action_Range)
             {
-                Reset_Transpose_Block();
+                Reset_Transpose_Block(apply_to ? 0 : 255);
                 if(transpose_semitones)
                 {
                     if(transpose_semitones > 0)
                     {
                         for(k = 0; k < transpose_semitones; k++)
                         {
-                            Instrument_Semitone_Up_Sel(Cur_Position, Select_Track(Track_Under_Caret), 1, Remap_From);
+                            if(!apply_to)
+                            {
+                                Instrument_Semitone_Up_Sel(Cur_Position, Select_Track(Track_Under_Caret), 1, Remap_From);
+                            }
+                            else
+                            {
+                                FX_Data_Up_Sel(Cur_Position, Select_Track(Track_Under_Caret), 1, Remap_From);
+                            }
                         }
                     }
                     else
                     {
                         for(k = 0; k < -transpose_semitones; k++)
                         {
-                            Instrument_Semitone_Down_Sel(Cur_Position, Select_Track(Track_Under_Caret), 1, Remap_From);
+                            if(!apply_to)
+                            {
+                                Instrument_Semitone_Down_Sel(Cur_Position, Select_Track(Track_Under_Caret), 1, Remap_From);
+                            }
+                            else
+                            {
+                                FX_Data_Down_Sel(Cur_Position, Select_Track(Track_Under_Caret), 1, Remap_From);
+                            }
                         }
                     }
                 }
-                Instrument_Remap_Sel(Cur_Position, Select_Track(Track_Under_Caret), Remap_From, Remap_To, Remap_Swap);
+                if(!apply_to)
+                {
+                    Instrument_Remap_Sel(Cur_Position, Select_Track(Track_Under_Caret), Remap_From, Remap_To, Remap_Swap);
+                }
+                else
+                {
+                    FX_Remap_Sel(Cur_Position, Select_Track(Track_Under_Caret), Remap_From, Remap_To, Remap_Swap);
+                }
                 Update_Pattern(0);
             }
             else
@@ -381,14 +458,21 @@ void Mouse_Left_Sequencer_Ed(void)
                         Trans_From = Remap_From;
                         Trans_To = Remap_To;
                     }
-                    Reset_Transpose_Block();
+                    Reset_Transpose_Block(apply_to ? 0 : 255);
                     if(transpose_semitones > 0)
                     {
                         for(i = Trans_From; i < (Trans_To + 1); i++)
                         {
                             for(k = 0; k < transpose_semitones; k++)
                             {
-                                Instrument_Semitone_Up_Sel(Cur_Position, Select_Track(Track_Under_Caret), 1, i);
+                                if(!apply_to)
+                                {
+                                    Instrument_Semitone_Up_Sel(Cur_Position, Select_Track(Track_Under_Caret), 1, i);
+                                }
+                                else
+                                {
+                                    FX_Data_Up_Sel(Cur_Position, Select_Track(Track_Under_Caret), 1, i);
+                                }
                             }
                         }
                     }
@@ -398,7 +482,14 @@ void Mouse_Left_Sequencer_Ed(void)
                         {
                             for(k = 0; k < -transpose_semitones; k++)
                             {
-                                Instrument_Semitone_Down_Sel(Cur_Position, Select_Track(Track_Under_Caret), 1, i);
+                                if(!apply_to)
+                                {
+                                    Instrument_Semitone_Down_Sel(Cur_Position, Select_Track(Track_Under_Caret), 1, i);
+                                }
+                                else
+                                {
+                                    FX_Data_Down_Sel(Cur_Position, Select_Track(Track_Under_Caret), 1, i);
+                                }
                             }
                         }
                     }
@@ -412,7 +503,7 @@ void Mouse_Left_Sequencer_Ed(void)
         {
             if(!Action_Range)
             {
-                Reset_Transpose_Block();
+                Reset_Transpose_Block(apply_to ? 0 : 255);
                 for(i = 0; i < Song_Tracks; i++)
                 {
                     if(transpose_semitones)
@@ -421,18 +512,39 @@ void Mouse_Left_Sequencer_Ed(void)
                         {
                             for(k = 0; k < transpose_semitones; k++)
                             {
-                                Instrument_Semitone_Up_Sel(Cur_Position, Select_Track(i), 1, Remap_From);
+                                if(!apply_to)
+                                {
+                                    Instrument_Semitone_Up_Sel(Cur_Position, Select_Track(i), 1, Remap_From);
+                                }
+                                else
+                                {
+                                    FX_Data_Up_Sel(Cur_Position, Select_Track(i), 1, Remap_From);
+                                }
                             }
                         }
                         else
                         {
                             for(k = 0; k < -transpose_semitones; k++)
                             {
-                                Instrument_Semitone_Down_Sel(Cur_Position, Select_Track(i), 1, Remap_From);
+                                if(!apply_to)
+                                {
+                                    Instrument_Semitone_Down_Sel(Cur_Position, Select_Track(i), 1, Remap_From);
+                                }
+                                else
+                                {
+                                    FX_Data_Down_Sel(Cur_Position, Select_Track(i), 1, Remap_From);
+                                }
                             }
                         }
                     }
-                    Instrument_Remap_Sel(Cur_Position, Select_Track(i), Remap_From, Remap_To, Remap_Swap);
+                    if(!apply_to)
+                    {
+                        Instrument_Remap_Sel(Cur_Position, Select_Track(i), Remap_From, Remap_To, Remap_Swap);
+                    }
+                    else
+                    {
+                        FX_Remap_Sel(Cur_Position, Select_Track(i), Remap_From, Remap_To, Remap_Swap);
+                    }
                 }
                 Update_Pattern(0);
             }
@@ -448,7 +560,7 @@ void Mouse_Left_Sequencer_Ed(void)
                     Trans_From = Remap_From;
                     Trans_To = Remap_To;
                 }
-                Reset_Transpose_Block();
+                Reset_Transpose_Block(apply_to ? 0 : 255);
                 for(i = 0; i < Song_Tracks; i++)
                 {
                     if(transpose_semitones)
@@ -459,14 +571,28 @@ void Mouse_Left_Sequencer_Ed(void)
                             {
                                 for(k = 0; k < transpose_semitones; k++)
                                 {
-                                    Instrument_Semitone_Up_Sel(Cur_Position, Select_Track(i), 1, j);
+                                    if(!apply_to)
+                                    {
+                                        Instrument_Semitone_Up_Sel(Cur_Position, Select_Track(i), 1, j);
+                                    }
+                                    else
+                                    {
+                                        FX_Data_Up_Sel(Cur_Position, Select_Track(i), 1, j);
+                                    }
                                 }
                             }
                             else
                             {
                                 for(k = 0; k < -transpose_semitones; k++)
                                 {
-                                    Instrument_Semitone_Down_Sel(Cur_Position, Select_Track(i), 1, j);
+                                    if(!apply_to)
+                                    {
+                                        Instrument_Semitone_Down_Sel(Cur_Position, Select_Track(i), 1, j);
+                                    }
+                                    else
+                                    {
+                                        FX_Data_Down_Sel(Cur_Position, Select_Track(i), 1, j);
+                                    }
                                 }
                             }
                         }
@@ -499,7 +625,7 @@ void Mouse_Left_Sequencer_Ed(void)
                 if(Done_Pattern)
                 {
                     Status_Box("I'm working there...", TRUE);
-                    Reset_Transpose_Block();
+                    Reset_Transpose_Block(apply_to ? 0 : 255);
                     for(j = 0; j < Song_Length; j++)
                     {
                         if(!Done_Pattern[pSequence[j]])
@@ -512,18 +638,39 @@ void Mouse_Left_Sequencer_Ed(void)
                                     {
                                         for(k = 0; k < transpose_semitones; k++)
                                         {
-                                            Instrument_Semitone_Up_Sel(j, Select_Track(i), 1, Remap_From);
+                                            if(!apply_to)
+                                            {
+                                                Instrument_Semitone_Up_Sel(j, Select_Track(i), 1, Remap_From);
+                                            }
+                                            else
+                                            {
+                                                FX_Data_Up_Sel(j, Select_Track(i), 1, Remap_From);
+                                            }
                                         }
                                     }
                                     else
                                     {
                                         for(k = 0; k < -transpose_semitones; k++)
                                         {
-                                            Instrument_Semitone_Down_Sel(j, Select_Track(i), 1, Remap_From);
+                                            if(!apply_to)
+                                            {
+                                                Instrument_Semitone_Down_Sel(j, Select_Track(i), 1, Remap_From);
+                                            }
+                                            else
+                                            {
+                                                FX_Data_Down_Sel(j, Select_Track(i), 1, Remap_From);
+                                            }
                                         }
                                     }
                                 }
-                                Instrument_Remap_Sel(j, Select_Track(i), Remap_From, Remap_To, Remap_Swap);
+                                if(!apply_to)
+                                {
+                                    Instrument_Remap_Sel(j, Select_Track(i), Remap_From, Remap_To, Remap_Swap);
+                                }
+                                else
+                                {
+                                    FX_Remap_Sel(j, Select_Track(i), Remap_From, Remap_To, Remap_Swap);
+                                }
                             }
                             Done_Pattern[pSequence[j]] = TRUE;
                         }
@@ -560,7 +707,7 @@ void Mouse_Left_Sequencer_Ed(void)
                 if(Done_Pattern)
                 {
                     Status_Box("I'm working there...", TRUE);
-                    Reset_Transpose_Block();
+                    Reset_Transpose_Block(apply_to ? 0 : 255);
                     for(j = 0; j < Song_Length; j++)
                     {
                         if(!Done_Pattern[pSequence[j]])
@@ -575,14 +722,28 @@ void Mouse_Left_Sequencer_Ed(void)
                                         {
                                             for(k = 0; k < transpose_semitones; k++)
                                             {
-                                                Instrument_Semitone_Up_Sel(j, Select_Track(i), 1, l);
+                                                if(!apply_to)
+                                                {
+                                                    Instrument_Semitone_Up_Sel(j, Select_Track(i), 1, l);
+                                                }
+                                                else
+                                                {
+                                                    FX_Data_Up_Sel(j, Select_Track(i), 1, l);
+                                                }
                                             }
                                         }
                                         else
                                         {
                                             for(k = 0; k < -transpose_semitones; k++)
                                             {
-                                                Instrument_Semitone_Down_Sel(j, Select_Track(i), 1, l);
+                                                if(!apply_to)
+                                                {
+                                                    Instrument_Semitone_Down_Sel(j, Select_Track(i), 1, l);
+                                                }
+                                                else
+                                                {
+                                                    FX_Data_Down_Sel(j, Select_Track(i), 1, l);
+                                                }
                                             }
                                         }
                                     }
@@ -597,6 +758,23 @@ void Mouse_Left_Sequencer_Ed(void)
             }
         }
 
+        // Act on instruments
+        if(Check_Mouse(484, (Cur_Height - 99 + 3), 24, 16))
+        {
+            apply_to = 0;
+            gui_action = GUI_CMD_UPDATE_SEQUENCER;
+            teac = 7;
+        }
+
+        // Act on effects
+        if(Check_Mouse(484 + 27, (Cur_Height - 99 + 3), 24, 16))
+        {
+            apply_to = 1;
+            gui_action = GUI_CMD_UPDATE_SEQUENCER;
+            teac = 7;
+        }
+
+        // Range on/off
         if(Check_Mouse(538, (Cur_Height - 99 + 3), 42, 16))
         {
             Action_Range ^= TRUE;
@@ -604,6 +782,7 @@ void Mouse_Left_Sequencer_Ed(void)
             teac = 6;
         }
 
+        // Remap
         if(Check_Mouse(590, (Cur_Height - 99 + 3), 60, 16) && !Action_Range)
         {
             Remap_Swap = FALSE;
@@ -611,6 +790,7 @@ void Mouse_Left_Sequencer_Ed(void)
             teac = 5;
         }
 
+        // Swap
         if(Check_Mouse(652, (Cur_Height - 99 + 3), 60, 16) && !Action_Range)
         {
             Remap_Swap = TRUE;

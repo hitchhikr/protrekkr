@@ -401,7 +401,7 @@ void Write_Pattern_Column(int Position, int xbc, int ybc, int data)
         case EFFECT4DATHI:
             data_nibble = Get_Pattern_Column(Position, xbc, ybc);
             data_nibble &= 0x0f;
-            data_nibble |= data;
+            data_nibble |= data & 0xf0;
             Set_Pattern_Column(Position, xbc, ybc, data_nibble);
             break;
         case INSTRLO:
@@ -417,7 +417,7 @@ void Write_Pattern_Column(int Position, int xbc, int ybc, int data)
         case EFFECT4DATLO:
             data_nibble = Get_Pattern_Column(Position, xbc, ybc);
             data_nibble &= 0xf0;
-            data_nibble |= data;
+            data_nibble |= data & 0x0f;
             Set_Pattern_Column(Position, xbc, ybc, data_nibble);
             break;
         default:
@@ -527,7 +527,7 @@ void Write_Buff_Column(int Position, int xbc, int ybc, int data)
         case EFFECT4DATHI:
             data_nibble = Get_Buff_Column(Position, xbc, ybc);
             data_nibble &= 0x0f;
-            data_nibble |= data;
+            data_nibble |= data & 0xf0;
             Set_Buff_Column(Position, xbc, ybc, data_nibble);
             break;
         case INSTRLO:
@@ -543,7 +543,7 @@ void Write_Buff_Column(int Position, int xbc, int ybc, int data)
         case EFFECT4DATLO:
             data_nibble = Get_Buff_Column(Position, xbc, ybc);
             data_nibble &= 0xf0;
-            data_nibble |= data;
+            data_nibble |= data & 0x0f;
             Set_Buff_Column(Position, xbc, ybc, data_nibble);
             break;
         default:
@@ -1444,10 +1444,10 @@ void Fill_Block(int Position, int step)
 
 // ------------------------------------------------------
 // Reset the transposition instruments survery block
-void Reset_Transpose_Block(void)
+void Reset_Transpose_Block(int value)
 {
     // Not sample as start
-    memset(Transpose_Block, 255, sizeof(Transpose_Block));
+    memset(Transpose_Block, value, sizeof(Transpose_Block));
 }
 
 // ------------------------------------------------------
@@ -1608,15 +1608,16 @@ void Instrument_Semitone_Up_Sel(int Position, SELECTION Sel, int Amount, int Ins
                     instrument = Read_Pattern_Column(Position, xbc + 1, ybc);
                     instrument |= Read_Pattern_Column(Position, xbc + 2, ybc);
                     track = Get_Track_From_Nibble(Channels_MultiNotes, Channels_Effects, xbc);
+
+                    // Store the current sample used for this track and nibble;
                     if(instrument != 255)
                     {
-                        // Store the current sample used for this track and nibble;
-                        Transpose_Block[track][Get_Max_Nibble_Track_From_Nibble(Channels_MultiNotes, Channels_Effects, xbc)] = instrument;
+                        Transpose_Block[track][Get_Byte_Type_From_Column_With_Track(Channels_MultiNotes, Channels_Effects, track, xbc) / 2] = instrument;
                     }
                     else
                     {
                         // Restore the current sample used for this track and nibble
-                        instrument = Transpose_Block[track][Get_Max_Nibble_Track_From_Nibble(Channels_MultiNotes, Channels_Effects, xbc)];
+                        instrument = Transpose_Block[track][Get_Byte_Type_From_Column_With_Track(Channels_MultiNotes, Channels_Effects, track, xbc) / 2];
                     }
                     if(instrument == Instr)
                     {
@@ -1628,6 +1629,94 @@ void Instrument_Semitone_Up_Sel(int Position, SELECTION Sel, int Amount, int Ins
                         }
                         Write_Pattern_Column(Position, xbc, ybc, note);
                     }
+                }
+            }
+        }
+    }
+}
+
+// ------------------------------------------------------
+// Transpose a given selection higher for the current fx
+void FX_Data_Up_Sel(int Position, SELECTION Sel, int Amount, int Instr)
+{
+    int ybc;
+    int xbc;
+    int fx_data;
+    int fx;
+    int track;
+    int shift_l;
+    int shift_r;
+    int shift_l_dat;
+    int shift_r_dat;
+    int effect;
+    int max_columns = Get_Max_Nibble_All_Tracks();
+    int Done_Track_FX[MAX_TRACKS][MAX_EFFECTS];
+
+    for(ybc = Sel.y_start; ybc <= Sel.y_end; ybc++)
+    {
+        memset(Done_Track_FX, 0, sizeof(Done_Track_FX));
+        for(xbc = Sel.x_start; xbc <= Sel.x_end; xbc++)
+        {
+            if(xbc < max_columns && ybc < MAX_ROWS)
+            {
+                shift_l = 0;
+                shift_r = 1;
+                shift_l_dat = 2;
+                shift_r_dat = 3;
+                track = Get_Track_From_Nibble(Channels_MultiNotes, Channels_Effects, xbc);
+                switch(Get_Column_Type(Channels_MultiNotes, Channels_Effects, xbc))
+                {
+                    case EFFECTLO:
+                    case EFFECT2LO:
+                    case EFFECT3LO:
+                    case EFFECT4LO:
+                        shift_l = -1;
+                        shift_r = 0;
+                        shift_l_dat = 1;
+                        shift_r_dat = 2;
+                    case EFFECTHI:
+                    case EFFECT2HI:
+                    case EFFECT3HI:
+                    case EFFECT4HI:
+                    
+                        switch(Get_Column_Type(Channels_MultiNotes, Channels_Effects, xbc))
+                        {
+                            case EFFECTLO:
+                            case EFFECTHI:
+                               effect = 0;
+                               break;
+                            case EFFECT2LO:
+                            case EFFECT2HI:
+                               effect = 1;
+                               break;
+                            case EFFECT3LO:
+                            case EFFECT3HI:
+                               effect = 2;
+                               break;
+                            case EFFECT4HI:
+                            case EFFECT4LO:
+                               effect = 3;
+                               break;
+                        }
+                        if(!Done_Track_FX[track][effect])
+                        {
+                            Done_Track_FX[track][effect] = TRUE;
+                            fx = Read_Pattern_Column(Position, xbc + shift_l, ybc);
+                            fx |= Read_Pattern_Column(Position, xbc + shift_r, ybc);
+                            if(fx == Instr && fx != 0)
+                            {
+                                fx_data = Read_Pattern_Column(Position, xbc + shift_l_dat, ybc);
+                                fx_data |= Read_Pattern_Column(Position, xbc + shift_r_dat, ybc);
+                                fx_data += Amount;
+                                if(fx_data > 255)
+                                {
+                                    fx_data = 255;
+                                }
+                                Write_Pattern_Column(Position, xbc + shift_l_dat, ybc, fx_data);
+                                Write_Pattern_Column(Position, xbc + shift_r_dat, ybc, fx_data);
+                            }
+                        }
+                        break;
                 }
             }
         }
@@ -1667,12 +1756,12 @@ void Instrument_Semitone_Down_Sel(int Position, SELECTION Sel, int Amount, int I
                     if(instrument != 255)
                     {
                         // Store the current sample used for this track and nibble;
-                        Transpose_Block[track][Get_Max_Nibble_Track_From_Nibble(Channels_MultiNotes, Channels_Effects, xbc)] = instrument;
+                        Transpose_Block[track][Get_Byte_Type_From_Column_With_Track(Channels_MultiNotes, Channels_Effects, track, xbc) / 2] = instrument;
                     }
                     else
                     {
                         // Restore the current sample used for this track and nibble
-                        instrument = Transpose_Block[track][Get_Max_Nibble_Track_From_Nibble(Channels_MultiNotes, Channels_Effects, xbc)];
+                        instrument = Transpose_Block[track][Get_Byte_Type_From_Column_With_Track(Channels_MultiNotes, Channels_Effects, track, xbc) / 2];
                     }
                     if(instrument == Instr)
                     {
@@ -1684,6 +1773,94 @@ void Instrument_Semitone_Down_Sel(int Position, SELECTION Sel, int Amount, int I
                         }
                         Write_Pattern_Column(Position, xbc, ybc, note);
                     }
+                }
+            }
+        }
+    }
+}
+
+// ------------------------------------------------------
+// Transpose a given selection lower for the current fx
+void FX_Data_Down_Sel(int Position, SELECTION Sel, int Amount, int Instr)
+{
+    int ybc;
+    int xbc;
+    int fx_data;
+    int fx;
+    int track;
+    int shift_l;
+    int shift_r;
+    int shift_l_dat;
+    int shift_r_dat;
+    int effect;
+    int max_columns = Get_Max_Nibble_All_Tracks();
+    int Done_Track_FX[MAX_TRACKS][MAX_EFFECTS];
+
+    for(ybc = Sel.y_start; ybc <= Sel.y_end; ybc++)
+    {
+        memset(Done_Track_FX, 0, sizeof(Done_Track_FX));
+        for(xbc = Sel.x_start; xbc <= Sel.x_end; xbc++)
+        {
+            if(xbc < max_columns && ybc < MAX_ROWS)
+            {
+                shift_l = 0;
+                shift_r = 1;
+                shift_l_dat = 2;
+                shift_r_dat = 3;
+                track = Get_Track_From_Nibble(Channels_MultiNotes, Channels_Effects, xbc);
+                switch(Get_Column_Type(Channels_MultiNotes, Channels_Effects, xbc))
+                {
+                    case EFFECTLO:
+                    case EFFECT2LO:
+                    case EFFECT3LO:
+                    case EFFECT4LO:
+                        shift_l = -1;
+                        shift_r = 0;
+                        shift_l_dat = 1;
+                        shift_r_dat = 2;
+                    case EFFECTHI:
+                    case EFFECT2HI:
+                    case EFFECT3HI:
+                    case EFFECT4HI:
+                    
+                        switch(Get_Column_Type(Channels_MultiNotes, Channels_Effects, xbc))
+                        {
+                            case EFFECTLO:
+                            case EFFECTHI:
+                               effect = 0;
+                               break;
+                            case EFFECT2LO:
+                            case EFFECT2HI:
+                               effect = 1;
+                               break;
+                            case EFFECT3LO:
+                            case EFFECT3HI:
+                               effect = 2;
+                               break;
+                            case EFFECT4HI:
+                            case EFFECT4LO:
+                               effect = 3;
+                               break;
+                        }
+                        if(!Done_Track_FX[track][effect])
+                        {
+                            Done_Track_FX[track][effect] = TRUE;
+                            fx = Read_Pattern_Column(Position, xbc + shift_l, ybc);
+                            fx |= Read_Pattern_Column(Position, xbc + shift_r, ybc);
+                            if(fx == Instr && fx != 0)
+                            {
+                                fx_data = Read_Pattern_Column(Position, xbc + shift_l_dat, ybc);
+                                fx_data |= Read_Pattern_Column(Position, xbc + shift_r_dat, ybc);
+                                fx_data -= Amount;
+                                if(fx_data < 0)
+                                {
+                                    fx_data = 0;
+                                }
+                                Write_Pattern_Column(Position, xbc + shift_l_dat, ybc, fx_data);
+                                Write_Pattern_Column(Position, xbc + shift_r_dat, ybc, fx_data);
+                            }
+                        }
+                        break;
                 }
             }
         }
@@ -1917,6 +2094,166 @@ void Instrument_Remap_Sel(int Position, SELECTION Sel, int From, int To, int Swa
                             break;
 
                         case INSTRLO:
+                            instrument = Read_Pattern_Column(Position, xbc - 1, ybc);
+                            instrument |= Read_Pattern_Column(Position, xbc, ybc);
+                            if(instrument == 0xab)
+                            {
+                                Write_Pattern_Column(Position, xbc - 1, ybc, From);
+                                Write_Pattern_Column(Position, xbc, ybc, From);
+                            }
+                            break;
+                    }
+                }
+            }
+        }
+    }
+}
+
+// ------------------------------------------------------
+// Remap or swap an effect
+void FX_Remap_Sel(int Position, SELECTION Sel, int From, int To, int Swap)
+{
+    int ybc;
+    int xbc;
+    int instrument;
+    int max_columns = Get_Max_Nibble_All_Tracks();
+
+    for(ybc = Sel.y_start; ybc <= Sel.y_end; ybc++)
+    {
+        for(xbc = Sel.x_start; xbc <= Sel.x_end; xbc++)
+        {
+            if(xbc < max_columns && ybc < MAX_ROWS)
+            {
+                switch(Get_Column_Type(Channels_MultiNotes, Channels_Effects, xbc))
+                {
+                    case EFFECTHI:
+                    case EFFECT2HI:
+                    case EFFECT3HI:
+                    case EFFECT4HI:
+                        instrument = Read_Pattern_Column(Position, xbc, ybc);
+                        instrument |= Read_Pattern_Column(Position, xbc + 1, ybc);
+                        if(Swap)
+                        {
+                            if(instrument == From)
+                            {
+                                // Set to a phony instrument value
+                                Write_Pattern_Column(Position, xbc, ybc, 0xaa);
+                                Write_Pattern_Column(Position, xbc + 1, ybc, 0xaa);
+                            }
+                            else if(instrument == To)
+                            {
+                                // Set to a phony instrument value
+                                Write_Pattern_Column(Position, xbc, ybc, 0xab);
+                                Write_Pattern_Column(Position, xbc + 1, ybc, 0xab);
+                            }
+                        }
+                        else
+                        {
+                            if(instrument == From)
+                            {
+                                Write_Pattern_Column(Position, xbc, ybc, To);
+                                Write_Pattern_Column(Position, xbc + 1, ybc, To);
+                            }
+                        }
+                        break;
+
+                    case EFFECTLO:
+                    case EFFECT2LO:
+                    case EFFECT3LO:
+                    case EFFECT4LO:
+                        instrument = Read_Pattern_Column(Position, xbc - 1, ybc);
+                        instrument |= Read_Pattern_Column(Position, xbc, ybc);
+                        if(Swap)
+                        {
+                            if(instrument == From)
+                            {
+                                Write_Pattern_Column(Position, xbc - 1, ybc, 0xaa);
+                                Write_Pattern_Column(Position, xbc, ybc, 0xaa);
+                            }
+                            else if(instrument == To)
+                            {
+                                Write_Pattern_Column(Position, xbc - 1, ybc, 0xab);
+                                Write_Pattern_Column(Position, xbc, ybc, 0xab);
+                            }
+                        }
+                        else
+                        {
+                            if(instrument == From)
+                            {
+                                Write_Pattern_Column(Position, xbc - 1, ybc, To);
+                                Write_Pattern_Column(Position, xbc, ybc, To);
+                            }
+                        }
+                        break;
+                }
+            }
+        }
+    }
+ 
+    if(Swap)
+    {
+        for(ybc = Sel.y_start; ybc <= Sel.y_end; ybc++)
+        {
+            for(xbc = Sel.x_start; xbc <= Sel.x_end; xbc++)
+            {
+                if(xbc < max_columns && ybc < MAX_ROWS)
+                {
+                    switch(Get_Column_Type(Channels_MultiNotes, Channels_Effects, xbc))
+                    {
+                        case EFFECTHI:
+                        case EFFECT2HI:
+                        case EFFECT3HI:
+                        case EFFECT4HI:
+                            instrument = Read_Pattern_Column(Position, xbc, ybc);
+                            instrument |= Read_Pattern_Column(Position, xbc + 1, ybc);
+                            if(instrument == 0xaa)
+                            {
+                                Write_Pattern_Column(Position, xbc, ybc, To);
+                                Write_Pattern_Column(Position, xbc + 1, ybc, To);
+                            }
+                            break;
+
+                        case EFFECTLO:
+                        case EFFECT2LO:
+                        case EFFECT3LO:
+                        case EFFECT4LO:
+                            instrument = Read_Pattern_Column(Position, xbc - 1, ybc);
+                            instrument |= Read_Pattern_Column(Position, xbc, ybc);
+                            if(instrument == 0xaa)
+                            {
+                                Write_Pattern_Column(Position, xbc - 1, ybc, To);
+                                Write_Pattern_Column(Position, xbc, ybc, To);
+                            }
+                            break;
+                    }
+                }
+            }
+        }
+        for(ybc = Sel.y_start; ybc <= Sel.y_end; ybc++)
+        {
+            for(xbc = Sel.x_start; xbc <= Sel.x_end; xbc++)
+            {
+                if(xbc < max_columns && ybc < MAX_ROWS)
+                {
+                    switch(Get_Column_Type(Channels_MultiNotes, Channels_Effects, xbc))
+                    {
+                        case EFFECTHI:
+                        case EFFECT2HI:
+                        case EFFECT3HI:
+                        case EFFECT4HI:
+                            instrument = Read_Pattern_Column(Position, xbc, ybc);
+                            instrument |= Read_Pattern_Column(Position, xbc + 1, ybc);
+                            if(instrument == 0xab)
+                            {
+                                Write_Pattern_Column(Position, xbc, ybc, From);
+                                Write_Pattern_Column(Position, xbc + 1, ybc, From);
+                            }
+                            break;
+
+                        case EFFECTLO:
+                        case EFFECT2LO:
+                        case EFFECT3LO:
+                        case EFFECT4LO:
                             instrument = Read_Pattern_Column(Position, xbc - 1, ybc);
                             instrument |= Read_Pattern_Column(Position, xbc, ybc);
                             if(instrument == 0xab)

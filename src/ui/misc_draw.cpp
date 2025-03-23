@@ -1872,6 +1872,11 @@ void Gui_Draw_Button_Box(int x, int y, int sx, int sy, const char *str, int flag
             }
         }
     }
+    if((flags & BUTTON_CLEAR_BACK))
+    {
+        SetColor(COL_STATIC_MED);
+        Fillrect(x, y, x2, y2 + 1);
+    }
 
     if(flags & BUTTON_TEXT_VTOP)
     {
