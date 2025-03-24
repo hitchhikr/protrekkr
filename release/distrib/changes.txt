@@ -15,7 +15,7 @@ v2.8.3
 - Added 2 functions in sequencer to move a position up or down.
 - Global volumes of channel are now also used for midi notes.
 - Added a sequencer function to remap/swap and change effects numbers & values.
-- Fixed a bug with transposing multi-notes channels.
+- Fixed a couple of bugs with notes transpositions.
 
 v2.8.2
 

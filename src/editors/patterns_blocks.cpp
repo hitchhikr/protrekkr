@@ -1608,10 +1608,9 @@ void Instrument_Semitone_Up_Sel(int Position, SELECTION Sel, int Amount, int Ins
                     instrument = Read_Pattern_Column(Position, xbc + 1, ybc);
                     instrument |= Read_Pattern_Column(Position, xbc + 2, ybc);
                     track = Get_Track_From_Nibble(Channels_MultiNotes, Channels_Effects, xbc);
-
-                    // Store the current sample used for this track and nibble;
                     if(instrument != 255)
                     {
+                        // Store the current sample used for this track and nibble
                         Transpose_Block[track][Get_Byte_Type_From_Column_With_Track(Channels_MultiNotes, Channels_Effects, track, xbc) / 2] = instrument;
                     }
                     else
@@ -1755,7 +1754,7 @@ void Instrument_Semitone_Down_Sel(int Position, SELECTION Sel, int Amount, int I
                     track = Get_Track_From_Nibble(Channels_MultiNotes, Channels_Effects, xbc);
                     if(instrument != 255)
                     {
-                        // Store the current sample used for this track and nibble;
+                        // Store the current sample used for this track and nibble
                         Transpose_Block[track][Get_Byte_Type_From_Column_With_Track(Channels_MultiNotes, Channels_Effects, track, xbc) / 2] = instrument;
                     }
                     else
@@ -1892,13 +1891,13 @@ void Instrument_Octave_Up_Block(int Position)
                     track = Get_Track_From_Nibble(Channels_MultiNotes, Channels_Effects, xbc);
                     if(instrument != 255)
                     {
-                        // Store the current sample used for this track and nibble;
-                        Transpose_Block[track][Get_Max_Nibble_Track_From_Nibble(Channels_MultiNotes, Channels_Effects, xbc)] = instrument;
+                        // Store the current sample used for this track and nibble
+                        Transpose_Block[track][Get_Byte_Type_From_Column_With_Track(Channels_MultiNotes, Channels_Effects, track, xbc) / 2] = instrument;
                     }
                     else
                     {
                         // Restore the current sample used for this track and nibble
-                        instrument = Transpose_Block[track][Get_Max_Nibble_Track_From_Nibble(Channels_MultiNotes, Channels_Effects, xbc)];
+                        instrument = Transpose_Block[track][Get_Byte_Type_From_Column_With_Track(Channels_MultiNotes, Channels_Effects, track, xbc) / 2];
                     }
                     if(instrument == Current_Instrument)
                     {
@@ -1906,7 +1905,7 @@ void Instrument_Octave_Up_Block(int Position)
                         if(note < NOTE_OFF)
                         {
                             note += 12;
-                            if(note > NOTE_MAX) continue;
+                            if(note > NOTE_MAX) note = NOTE_MAX;
                         }
                         Write_Pattern_Column(Position, xbc, ybc, note);
                     }
@@ -1942,13 +1941,13 @@ void Instrument_Octave_Down_Block(int Position)
                     track = Get_Track_From_Nibble(Channels_MultiNotes, Channels_Effects, xbc);
                     if(instrument != 255)
                     {
-                        // Store the current sample used for this track and nibble;
-                        Transpose_Block[track][Get_Max_Nibble_Track_From_Nibble(Channels_MultiNotes, Channels_Effects, xbc)] = instrument;
+                        // Store the current sample used for this track and nibble
+                        Transpose_Block[track][Get_Byte_Type_From_Column_With_Track(Channels_MultiNotes, Channels_Effects, track, xbc) / 2] = instrument;
                     }
                     else
                     {
                         // Restore the current sample used for this track and nibble
-                        instrument = Transpose_Block[track][Get_Max_Nibble_Track_From_Nibble(Channels_MultiNotes, Channels_Effects, xbc)];
+                        instrument = Transpose_Block[track][Get_Byte_Type_From_Column_With_Track(Channels_MultiNotes, Channels_Effects, track, xbc) / 2];
                     }
                     if(instrument == Current_Instrument)
                     {
@@ -1956,7 +1955,7 @@ void Instrument_Octave_Down_Block(int Position)
                         if(note < NOTE_OFF)
                         {
                             note -= 12;
-                            if(note < 0) continue;
+                            if(note < 0) note = 0;
                         }
                         Write_Pattern_Column(Position, xbc, ybc, note);
                     }
