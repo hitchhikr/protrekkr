@@ -62,7 +62,13 @@
 void Compute_Stereo_Quick(int channel);
 
 int SamplesPerTick;
+
+#if !defined(__STAND_ALONE__)
+#if !defined(__NO_MIDI__)
 int SamplesPerTick_Midi;
+#endif
+#endif
+
 float SQRT[1025];   // Sqrt float-precalculated table.
 
 #if !defined(__STAND_ALONE__) || defined(__WINAMP__)
@@ -235,7 +241,11 @@ float left_reverb;
 float right_reverb;
 float delay_left_final;
 float delay_right_final;
+#if !defined(__STAND_ALONE__)
+#if !defined(__NO_MIDI__)
 int PosInTick_Midi;
+#endif
+#endif
 int PosInTick;
 
 #if !defined(__STAND_ALONE__)
@@ -2434,7 +2444,13 @@ void Pre_Song_Init(void)
 void Calc_Tempo(void)
 {
     SamplesPerTick = (int) (((60 * MIX_RATE) / Beats_Per_Min) / Ticks_Per_Beat);
+
+#if !defined(__STAND_ALONE__)
+#if !defined(__NO_MIDI__)
     SamplesPerTick_Midi = (int) (((60 * MIX_RATE) / Beats_Per_Min) / 24.0f);
+#endif
+#endif
+
     SamplesPerSub = SamplesPerTick / 6;
 }
 
@@ -2444,10 +2460,6 @@ void Post_Song_Init(void)
 {
     int i;
     int j;
-
-#if defined(PTK_SHUFFLE)
-    shuffleswitch = -1;
-#endif
 
     for(i = 0; i < MAX_TRACKS; i++)
     {
@@ -2673,10 +2685,22 @@ void Post_Song_Init(void)
 
     Calc_Tempo();
     PosInTick = 0;
+
+#if !defined(__STAND_ALONE__)
+#if !defined(__NO_MIDI__)
     PosInTick_Midi = SamplesPerTick_Midi;
+#endif
+#endif
+
     PosInTick_Delay = 0;
     Delay_Sound_Buffer = 0;
     Cur_Delay_Sound_Buffer = 0;
+
+#if defined(PTK_SHUFFLE)
+    shufflestep = 0;
+    shuffleswitch = -1;
+#endif
+
     Song_Playing_Pattern = FALSE;
     
     for(i = 0; i < 256; i++)
@@ -3199,23 +3223,22 @@ void Sp_Player(void)
             Subicounter++;
         }
 
-        PosInTick_Midi++;
-        if(PosInTick_Midi > (SamplesPerTick_Midi))
-        {
-            // Send midi clock notification
 #if !defined(__STAND_ALONE__)
 #if !defined(__NO_MIDI__)
+        PosInTick_Midi++;
+        if(PosInTick_Midi > SamplesPerTick_Midi)
+        {
+            // Send midi clock notification
             Midi_Send(0xf8, 0, 0);
-#endif
-#endif
             PosInTick_Midi = 0;
-
         }
+#endif
+#endif
 
         PosInTick++;
 
 #if defined(PTK_SHUFFLE)
-        if(PosInTick > ((SamplesPerTick + shufflestep)))
+        if(PosInTick > (SamplesPerTick + shufflestep))
         {
             shuffleswitch = -shuffleswitch;
 
@@ -7825,7 +7848,8 @@ float Do_Equ(LPEQSTATE es, float sample, int Left)
 #if defined(PTK_SHUFFLE)
 void Update_Shuffle(void)
 {
-    if(shuffleswitch == 1) shufflestep = -((SamplesPerTick * shuffle_amount) / 200);
+    if(shuffleswitch == 1) shufflestep = -((SamplesPerTick * shuffle_amount)) / 200;
     else shufflestep = (SamplesPerTick * shuffle_amount) / 200;
 }
+
 #endif
