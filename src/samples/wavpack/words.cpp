@@ -57,13 +57,7 @@
 #define INC_MED2() (wps->w.median [2] [chan] += ((wps->w.median [2] [chan] + DIV2) / DIV2) * 5)
 #define DEC_MED2() (wps->w.median [2] [chan] -= ((wps->w.median [2] [chan] + (DIV2-2)) / DIV2) * 2)
 
-#define count_bits(av) ( \
- (av) < (1 << 8) ? nbits_table [av] : \
-  ( \
-   (av) < (1L << 16) ? nbits_table [(av) >> 8] + 8 : \
-   ((av) < (1L << 24) ? nbits_table [(av) >> 16] + 16 : nbits_table [(av) >> 24] + 24) \
-  ) \
-)
+#define count_bits(av) ( (av) < (1 << 8) ? nbits_table [av] : ( (av) < (1L << 16) ? nbits_table [(av) >> 8] + 8 : ((av) < (1L << 24) ? nbits_table [(av) >> 16] + 16 : nbits_table [(av) >> 24] + 24) ) )
 
 ///////////////////////////// local table storage ////////////////////////////
 

@@ -33,9 +33,6 @@
 // Includes
 #include "include/aiff.h"
 
-extern "C"
-{
-
 AIFFFile::AIFFFile()
 {
     file = NULL;
@@ -444,6 +441,4 @@ void AIFFFile::IntToFloat(int *Dest, int Source)
 void AIFFFile::Int64ToDouble(Uint64 *Dest, Uint64 Source)
 {
     *Dest = Source;
-}
-
 }

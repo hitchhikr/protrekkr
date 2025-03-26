@@ -225,30 +225,23 @@ typedef struct WavpackContext
 #define apply_weight_i(weight, sample) ((((weight * sample) >> 8) + 2) >> 2)
 #endif
 
-#define apply_weight_f(weight, sample) (((((sample & 0xffffL) * weight) >> 9) + \
-    (((sample & ~0xffffL) >> 9) * weight) + 1) >> 1)
+#define apply_weight_f(weight, sample) (((((sample & 0xffffL) * weight) >> 9) + (((sample & ~0xffffL) >> 9) * weight) + 1) >> 1)
 
 #if 1   // PERFCOND
-#define apply_weight(weight, sample) (sample != (short) sample ? \
-    apply_weight_f (weight, sample) : apply_weight_i (weight, sample))
+#define apply_weight(weight, sample) (sample != (short) sample ? apply_weight_f (weight, sample) : apply_weight_i (weight, sample))
 #else
 #define apply_weight(weight, sample) ((int32_t)((weight * (int64_t) sample + 512) >> 10))
 #endif
 
 #if 0   // PERFCOND
-#define update_weight(weight, delta, source, result) \
-    if (source && result) { int32_t s = (int32_t) (source ^ result) >> 31; weight = (delta ^ s) + (weight - s); }
+#define update_weight(weight, delta, source, result) if (source && result) { int32_t s = (int32_t) (source ^ result) >> 31; weight = (delta ^ s) + (weight - s); }
 #elif 1
-#define update_weight(weight, delta, source, result) \
-    if (source && result) weight += (((source ^ result) >> 30) | 1) * delta
+#define update_weight(weight, delta, source, result) if (source && result) weight += (((source ^ result) >> 30) | 1) * delta
 #else
-#define update_weight(weight, delta, source, result) \
-    if (source && result) (source ^ result) < 0 ? (weight -= delta) : (weight += delta)
+#define update_weight(weight, delta, source, result) if (source && result) (source ^ result) < 0 ? (weight -= delta) : (weight += delta)
 #endif
 
-#define update_weight_clip(weight, delta, source, result) \
-    if (source && result && ((source ^ result) < 0 ? (weight -= delta) < -1024 : (weight += delta) > 1024)) \
-        weight = weight < 0 ? -1024 : 1024
+#define update_weight_clip(weight, delta, source, result) if (source && result && ((source ^ result) < 0 ? (weight -= delta) < -1024 : (weight += delta) > 1024)) weight = weight < 0 ? -1024 : 1024
 
 // bits.c
 
@@ -258,37 +251,13 @@ uint32_t bs_close_write (Bitstream *bs);
 
 #define bs_is_open(bs) ((bs)->ptr != NULL)
 
-#define putbit(bit, bs) { if (bit) (bs)->sr |= (1L << (bs)->bc); \
-    if (++((bs)->bc) == 8) { \
-        *((bs)->ptr) = (unsigned char) (bs)->sr; \
-        (bs)->sr = (bs)->bc = 0; \
-        if (++((bs)->ptr) == (bs)->end) (bs)->wrap (bs); \
-    }}
+#define putbit(bit, bs) { if (bit) (bs)->sr |= (1L << (bs)->bc); if (++((bs)->bc) == 8) { *((bs)->ptr) = (unsigned char) (bs)->sr; (bs)->sr = (bs)->bc = 0; if (++((bs)->ptr) == (bs)->end) (bs)->wrap (bs); }}
 
-#define putbit_0(bs) { \
-    if (++((bs)->bc) == 8) { \
-        *((bs)->ptr) = (unsigned char) (bs)->sr; \
-        (bs)->sr = (bs)->bc = 0; \
-        if (++((bs)->ptr) == (bs)->end) (bs)->wrap (bs); \
-    }}
+#define putbit_0(bs) { if (++((bs)->bc) == 8) { *((bs)->ptr) = (unsigned char) (bs)->sr; (bs)->sr = (bs)->bc = 0; if (++((bs)->ptr) == (bs)->end) (bs)->wrap (bs); }}
 
-#define putbit_1(bs) { (bs)->sr |= (1L << (bs)->bc); \
-    if (++((bs)->bc) == 8) { \
-        *((bs)->ptr) = (unsigned char) (bs)->sr; \
-        (bs)->sr = (bs)->bc = 0; \
-        if (++((bs)->ptr) == (bs)->end) (bs)->wrap (bs); \
-    }}
+#define putbit_1(bs) { (bs)->sr |= (1L << (bs)->bc); if (++((bs)->bc) == 8) { *((bs)->ptr) = (unsigned char) (bs)->sr; (bs)->sr = (bs)->bc = 0; if (++((bs)->ptr) == (bs)->end) (bs)->wrap (bs); }}
 
-#define putbits(value, nbits, bs) { \
-    (bs)->sr |= (int32_t)(value) << (bs)->bc; \
-    if (((bs)->bc += (nbits)) >= 8) \
-        do { \
-            *((bs)->ptr) = (unsigned char) (bs)->sr; \
-            (bs)->sr >>= 8; \
-            if (((bs)->bc -= 8) > 24) (bs)->sr |= ((value) >> ((nbits) - (bs)->bc)); \
-            if (++((bs)->ptr) == (bs)->end) (bs)->wrap (bs); \
-        } while ((bs)->bc >= 8); \
-}
+#define putbits(value, nbits, bs) { (bs)->sr |= (int32_t)(value) << (bs)->bc; if (((bs)->bc += (nbits)) >= 8) do { *((bs)->ptr) = (unsigned char) (bs)->sr; (bs)->sr >>= 8; if (((bs)->bc -= 8) > 24) (bs)->sr |= ((value) >> ((nbits) - (bs)->bc)); if (++((bs)->ptr) == (bs)->end) (bs)->wrap (bs); } while ((bs)->bc >= 8); }
 
 // pack.c
 

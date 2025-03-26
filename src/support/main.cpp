@@ -460,7 +460,9 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
 #endif
 
 #if defined(__USE_OPENGL__)
+#if !defined(__MORPHOS__)
     SDL_putenv("SDL_VIDEO_DRIVER=opengl");
+#endif
 #endif
 
     if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_NOPARACHUTE) < 0)
@@ -1142,7 +1144,7 @@ void Flush_Screen(void)
 #if defined(__USE_OPENGL__)
     Leave_2d_Mode();
 
-#if !defined(__WIN32__) && !defined(__AROS__) && !defined(__AMIGAOS4__)
+#if !defined(__WIN32__) && !defined(__AROS__) && !defined(__AMIGAOS4__) && !defined(__MORPHOS__)
     glDrawBuffer(GL_FRONT);
     glRasterPos2f(-1.0f, -1.0f);
     glCopyPixels(0, 0, Cur_Width, Cur_Height, GL_COLOR);
@@ -1200,27 +1202,7 @@ int Switch_FullScreen(int Width, int Height, int Refresh, int Force_Window_Mode)
 {
     int Real_FullScreen = 0;
 
-/*    if(!Force_Window_Mode)
-    {
-        if(Width > Orig_Screen_Width)
-        {
-            Width = Orig_Screen_Width;
-            Height = Orig_Screen_Height;
-            FullScreen = TRUE;
-        }
-        else
-        {
-            if(Height > Orig_Screen_Height)
-            {
-                Width = Orig_Screen_Width;
-                Height = Orig_Screen_Height;
-                FullScreen = TRUE;
-            }
-        }
-    }
-*/
-
-#ifndef __MORPHOS__
+#if !defined(__MORPHOS__)
     SDL_putenv("SDL_VIDEO_WINDOW_POS=center");
 #endif
     
@@ -1228,9 +1210,7 @@ int Switch_FullScreen(int Width, int Height, int Refresh, int Force_Window_Mode)
     if(Width < SCREEN_WIDTH) Width = SCREEN_WIDTH;
     if(Height < SCREEN_HEIGHT) Height = SCREEN_HEIGHT;
  
-#if defined(__LINUX__) || defined(__MACOSX_PPC__) || defined(__MACOSX_X86__) || defined(__WIN32__) || defined(__AROS__) || defined(__AMIGAOS4__)
     Real_FullScreen = SDL_FULLSCREEN;
-#endif
 
 #if defined(__USE_OPENGL__)
 

@@ -39,7 +39,11 @@
 #if defined(__WIN32__)
 #include <windows.h>
 #endif
+#ifndef __MORPHOS__
 #include <SDL/SDL_opengl.h>
+#else
+#include <GL/gl.h>
+#endif
 #define TEXTURES_SIZE 1024
 #endif
 

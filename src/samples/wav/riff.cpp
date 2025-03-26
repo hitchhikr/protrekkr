@@ -326,9 +326,6 @@ int RiffFile::SeekChunk(const char *ChunkName)
 }
 
 // ------------------------------------------------------
-extern "C"
-{
-
 WaveFile::WaveFile()
 {
     pcm_data.ckID = FourCC("data");
@@ -844,6 +841,4 @@ int WaveFile::FloatToInt(int *Source)
 void WaveFile::Int64ToDouble(Uint64 *Dest, Uint64 Source)
 {
     *Dest = Source;
-}
-
 }

@@ -131,13 +131,7 @@ typedef struct
 #define INC_MED2() (c->median [2] += ((c->median [2] + DIV2) / DIV2) * 5)
 #define DEC_MED2() (c->median [2] -= ((c->median [2] + (DIV2-2)) / DIV2) * 2)
 
-#define count_bits(av) ( \
- (av) < (1 << 8) ? nbits_table [av] : \
-  ( \
-   (av) < (1L << 16) ? nbits_table [(av) >> 8] + 8 : \
-   ((av) < (1L << 24) ? nbits_table [(av) >> 16] + 16 : nbits_table [(av) >> 24] + 24) \
-  ) \
-)
+#define count_bits(av) ((av) < (1 << 8) ? nbits_table [av] : ((av) < (1L << 16) ? nbits_table [(av) >> 8] + 8 : ((av) < (1L << 24) ? nbits_table [(av) >> 16] + 16 : nbits_table [(av) >> 24] + 24)))
 
 typedef struct
 {
@@ -221,50 +215,23 @@ void bs_open_read (Bitstream *bs,
 
 #define bs_is_open(bs) ((bs)->ptr != NULL)
 
-#define getbit(bs) ( \
-    (((bs)->bc) ? \
-        ((bs)->bc--, (bs)->sr & 1) : \
-            (((++((bs)->ptr) != (bs)->end) ? (void) 0 : (bs)->wrap (bs)), (bs)->bc = 7, ((bs)->sr = *((bs)->ptr)) & 1) \
-    ) ? \
-        ((bs)->sr >>= 1, 1) : \
-        ((bs)->sr >>= 1, 0) \
-)
+#define getbit(bs) ( (((bs)->bc) ? ((bs)->bc--, (bs)->sr & 1) : (((++((bs)->ptr) != (bs)->end) ? (void) 0 : (bs)->wrap (bs)), (bs)->bc = 7, ((bs)->sr = *((bs)->ptr)) & 1)) ? ((bs)->sr >>= 1, 1) : ((bs)->sr >>= 1, 0))
 
-#define getbits(value, nbits, bs) { \
-    while ((nbits) > (bs)->bc) { \
-        if (++((bs)->ptr) == (bs)->end) (bs)->wrap (bs); \
-        (bs)->sr |= (int32_t)*((bs)->ptr) << (bs)->bc; \
-        (bs)->bc += 8; \
-    } \
-    *(value) = (bs)->sr; \
-    if ((bs)->bc > 32) { \
-        (bs)->bc -= (nbits); \
-        (bs)->sr = *((bs)->ptr) >> (8 - (bs)->bc); \
-    } \
-    else { \
-        (bs)->bc -= (nbits); \
-        (bs)->sr >>= (nbits); \
-    } \
-}
+#define getbits(value, nbits, bs) { while ((nbits) > (bs)->bc) { if (++((bs)->ptr) == (bs)->end) (bs)->wrap (bs); (bs)->sr |= (int32_t)*((bs)->ptr) << (bs)->bc; (bs)->bc += 8; } *(value) = (bs)->sr; if ((bs)->bc > 32) { (bs)->bc -= (nbits); (bs)->sr = *((bs)->ptr) >> (8 - (bs)->bc); } else { (bs)->bc -= (nbits); (bs)->sr >>= (nbits); } }
 
 #if defined(_DEBUG)
 void native_to_little_endian (void *data, char *format);
 #endif
 #define apply_weight_i(weight, sample) ((weight * sample + 512) >> 10)
-#define apply_weight_f(weight, sample) (((((sample & 0xffffL) * weight) >> 9) + \
-    (((sample & ~0xffffL) >> 9) * weight) + 1) >> 1)
-#define apply_weight(weight, sample) (sample != (short) sample ? \
-    apply_weight_f (weight, sample) : apply_weight_i (weight, sample))
+#define apply_weight_f(weight, sample) (((((sample & 0xffffL) * weight) >> 9) + (((sample & ~0xffffL) >> 9) * weight) + 1) >> 1)
+#define apply_weight(weight, sample) (sample != (short) sample ? apply_weight_f (weight, sample) : apply_weight_i (weight, sample))
 
 #if 0   // PERFCOND
-#define update_weight(weight, delta, source, result) \
-    if (source && result) { int32_t s = (int32_t) (source ^ result) >> 31; weight = (delta ^ s) + (weight - s); }
+#define update_weight(weight, delta, source, result) if (source && result) { int32_t s = (int32_t) (source ^ result) >> 31; weight = (delta ^ s) + (weight - s); }
 #elif 1
-#define update_weight(weight, delta, source, result) \
-    if (source && result) weight += (((source ^ result) >> 30) | 1) * delta
+#define update_weight(weight, delta, source, result) if (source && result) weight += (((source ^ result) >> 30) | 1) * delta
 #else
-#define update_weight(weight, delta, source, result) \
-    if (source && result) (source ^ result) < 0 ? (weight -= delta) : (weight += delta)
+#define update_weight(weight, delta, source, result) if (source && result) (source ^ result) < 0 ? (weight -= delta) : (weight += delta)
 #endif
 
 int unpack_init (WavpackContext *wpc);

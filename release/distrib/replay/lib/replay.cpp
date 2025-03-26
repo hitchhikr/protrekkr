@@ -4989,8 +4989,8 @@ void Do_Effects_Tick_0(void)
 {
 
 #if defined(PTK_FX_ARPEGGIO) || defined(PTK_FX_VIBRATO) || defined(PTK_FX_REVERSE) || defined(PTK_SHUFFLE) || \
-    defined(PTK_FX_SETREVCUTO) || defined(PTK_FX_SETREVRESO) || defined(PTK_FX_SETREVDAMP) || defined(PTK_LIMITER_TRACKS) || defined(PTK_FX_SETBPM) || \
-    defined(PTK_FX_SETSPEED)
+    defined(PTK_FX_SETREVCUTO) || defined(PTK_FX_SETREVRESO) || defined(PTK_FX_SETREVDAMP) || defined(PTK_LIMITER_TRACKS) || \
+    defined(PTK_FX_SETBPM) || defined(PTK_FX_SETSPEED)
 
     int i;
     int j;
