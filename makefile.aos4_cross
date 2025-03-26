@@ -1,0 +1,215 @@
+CC = powerpc-eabi-gcc -mnewlib
+CXX = powerpc-eabi-g++ -mnewlib
+ROOT_OS4_SDK = D:\PPC32
+
+LIBS = -lstdc++ -lgcc_eh -lSDL -lz -lpthread -lunix
+
+FLAGS = -Ofast -w -fsigned-char -fno-strict-aliasing -fomit-frame-pointer -fno-exceptions -fno-unwind-tables -ffast-math -fno-rtti -fno-exceptions -Lsrc/extralibs/sdl_draw -Lsrc/extralibs/zlib-1.2.3 \
+        -mno-eabi -D __AMIGAOS4__ -D __GCC__ -D __BIG_ENDIAN__ -D __MOT_SWAP__ -D __NO_MIDI__ -D __amigaos4__ -D __NEWLIB__ \
+        -D __CROSS__ -D __PPC__ -D __REPLACE_MEMF_PUBLIC
+
+CCFLAGS = $(FLAGS)
+
+EXEOBJS = ptk.o \
+          editor_303.o editor_pattern.o editor_sequencer.o editor_track.o editor_track_fx.o \
+          patterns_blocks.o editor_synth.o editor_sample.o editor_fx_setup.o editor_setup.o \
+          editor_diskio.o editor_reverb.o editor_instrument.o editor_midi.o \
+          samples_pack.o files_list.o files.o mods.o s3m.o patterns.o reverbs.o midi_cfg.o \
+          bits.o pack.o tinypack.o words.o wputils.o \
+          config.o 303s.o synths.o insts.o ptps.o \
+          midi.o midi_dispatch.o \
+          timer.o main.o \
+          misc_draw.o draw_primitives.o requesters.o \
+          samples_ops.o aiff.o aiff_interface.o riff.o riff_interface.o \
+          spline.o tb_303.o wavpack.o samples_unpack.o replay.o synth.o endianness.o \
+          sounddriver_aos4.o draw_hline.o draw_pixel.o draw_vline.o
+LIBOBJS = midi.o \
+          spline.o tb_303.o wavpack.o samples_unpack.o replay.o synth.o endianness.o \
+          sounddriver_aos4.o
+
+all: protrekkr
+
+clean: RemObj
+
+RemObj:
+	-rm -f $(EXEOBJS)
+
+protrekkr: $(EXEOBJS)
+	-rm -f ./release/distrib/ptk_aos4
+	(cd src/extralibs/zlib-1.2.3; make -f makefile.aos4_cross)
+	$(CC) -nostartfiles -L./ $(ROOT_OS4_SDK)/lib/gcc/powerpc-eabi/13.1.0/crtbegin.o -Wl,-q -Wl,-T,amigaos.x -o ./release/distrib/ptk_aos4 -Wl,--relax $(FLAGS) $(EXEOBJS) $(LIBS)
+	powerpc-eabi-strip -S ./release/distrib/ptk_aos4
+
+libptkreplay: $(LIBOBJS)
+	$(AR) -crv libptkreplay.a $(LIBOBJS)
+
+ptk.o: src/ptk.cpp
+	$(CC) -c -o $(@) $(FLAGS) $<
+
+editor_303.o: src/editors/editor_303.cpp
+	$(CC) -c -o $(@) $(FLAGS) $<
+
+editor_pattern.o: src/editors/editor_pattern.cpp
+	$(CC) -c -o $(@) $(FLAGS) $<
+
+editor_sequencer.o: src/editors/editor_sequencer.cpp
+	$(CC) -c -o $(@) $(FLAGS) $<
+
+editor_track.o: src/editors/editor_track.cpp
+	$(CC) -c -o $(@) $(FLAGS) $<
+
+editor_track_fx.o: src/editors/editor_track_fx.cpp
+	$(CC) -c -o $(@) $(FLAGS) $<
+
+patterns_blocks.o: src/editors/patterns_blocks.cpp
+	$(CC) -c -o $(@) $(FLAGS) $<
+
+editor_synth.o: src/editors/editor_synth.cpp
+	$(CC) -c -o $(@) $(FLAGS) $<
+
+editor_sample.o: src/editors/editor_sample.cpp
+	$(CC) -c -o $(@) $(FLAGS) $<
+
+editor_fx_setup.o: src/editors/editor_fx_setup.cpp
+	$(CC) -c -o $(@) $(FLAGS) $<
+
+editor_setup.o: src/editors/editor_setup.cpp
+	$(CC) -c -o $(@) $(FLAGS) $<
+
+editor_diskio.o: src/editors/editor_diskio.cpp
+	$(CC) -c -o $(@) $(FLAGS) $<
+
+editor_reverb.o: src/editors/editor_reverb.cpp
+	$(CC) -c -o $(@) $(FLAGS) $<
+
+editor_instrument.o: src/editors/editor_instrument.cpp
+	$(CC) -c -o $(@) $(FLAGS) $<
+
+editor_midi.o: src/editors/editor_midi.cpp
+	$(CC) -c -o $(@) $(FLAGS) $<
+
+samples_pack.o: src/samples/samples_pack.cpp
+	$(CC) -c -o $(@) $(FLAGS) $<
+
+files_list.o: src/files/files_list.cpp
+	$(CC) -c -o $(@) $(FLAGS) $<
+
+files.o: src/files/files.cpp
+	$(CC) -c -o $(@) $(FLAGS) $<
+
+mods.o: src/files/mods.cpp
+	$(CC) -c -o $(@) $(FLAGS) $<
+
+s3m.o: src/files/s3m.cpp
+	$(CC) -c -o $(@) $(FLAGS) $<
+
+patterns.o: src/files/patterns.cpp
+	$(CC) -c -o $(@) $(FLAGS) $<
+
+reverbs.o: src/files/reverbs.cpp
+	$(CC) -c -o $(@) $(FLAGS) $<
+
+midi_cfg.o: src/files/midi_cfg.cpp
+	$(CC) -c -o $(@) $(FLAGS) $<
+
+config.o: src/files/config.cpp
+	$(CC) -c -o $(@) $(FLAGS) $<
+
+303s.o: src/files/303s.cpp
+	$(CC) -c -o $(@) $(FLAGS) $<
+
+synths.o: src/files/synths.cpp
+	$(CC) -c -o $(@) $(FLAGS) $<
+
+insts.o: src/files/insts.cpp
+	$(CC) -c -o $(@) $(FLAGS) $<
+
+ptps.o: src/files/ptps.cpp
+	$(CC) -c -o $(@) $(FLAGS) $<
+
+midi.o: src/midi/midi.cpp
+	$(CC) -c -o $(@) $(FLAGS) $<
+
+rtmidi.o: src/midi/rtmidi.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<
+
+midi_dispatch.o: src/midi/midi_dispatch.cpp
+	$(CC) -c -o $(@) $(FLAGS) $<
+
+timer.o: src/support/timer.cpp
+	$(CC) -c -o $(@) $(FLAGS) $<
+
+main.o: src/support/main.cpp
+	$(CC) -c -o $(@) $(FLAGS) $<
+
+misc_draw.o: src/ui/misc_draw.cpp
+	$(CC) -c -o $(@) $(FLAGS) $<
+
+draw_primitives.o: src/ui/draw_primitives.cpp
+	$(CC) -c -o $(@) $(FLAGS) $<
+
+requesters.o: src/ui/requesters.cpp
+	$(CC) -c -o $(@) $(FLAGS) $<
+
+samples_ops.o: src/samples/samples_ops.cpp
+	$(CC) -c -o $(@) $(FLAGS) $<
+
+aiff.o: src/samples/aiff/aiff.cpp
+	$(CC) -c -o $(@) $(FLAGS) $<
+
+aiff_interface.o: src/samples/aiff/aiff_interface.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<
+
+riff.o: src/samples/wav/riff.cpp
+	$(CC) -c -o $(@) $(FLAGS) $<
+
+riff_interface.o: src/samples/wav/riff_interface.cpp
+	$(CXX) -c -o $(@) $(FLAGS) $<
+
+spline.o: release/distrib/replay/lib/spline.cpp
+	$(CC) -c -o $(@) $(FLAGS) $<
+
+tb_303.o: release/distrib/replay/lib/tb_303.cpp
+	$(CC) -c -o $(@) $(FLAGS) $<
+
+wavpack.o: release/distrib/replay/lib/wavpack.cpp
+	$(CC) -c -o $(@) $(FLAGS) $<
+
+samples_unpack.o: release/distrib/replay/lib/samples_unpack.cpp
+	$(CC) -c -o $(@) $(FLAGS) $<
+
+replay.o: release/distrib/replay/lib/replay.cpp
+	$(CC) -c -o $(@) $(FLAGS) $<
+
+synth.o: release/distrib/replay/lib/synth.cpp
+	$(CC) -c -o $(@) $(FLAGS) $<
+
+endianness.o: release/distrib/replay/lib/endianness.cpp
+	$(CC) -c -o $(@) $(FLAGS) $<
+
+sounddriver_aos4.o: release/distrib/replay/lib/sounddriver/sounddriver_aos4.cpp
+	$(CC) -c -o $(@) $(FLAGS) $<
+
+bits.o: src/samples/wavpack/bits.cpp
+	$(CC) -c -o $(@) $(FLAGS) $<
+
+pack.o: src/samples/wavpack/pack.cpp
+	$(CC) -c -o $(@) $(FLAGS) $<
+
+words.o: src/samples/wavpack/words.cpp
+	$(CC) -c -o $(@) $(FLAGS) $<
+
+wputils.o: src/samples/wavpack/wputils.cpp
+	$(CC) -c -o $(@) $(FLAGS) $<
+
+tinypack.o: src/samples/wavpack/tinypack.cpp
+	$(CC) -c -o $(@) $(FLAGS) $<
+
+draw_hline.o: src/extralibs/sdl_draw/src/draw_hline.cpp
+	$(CC) -c -o $(@) -D__GCC__ -D __LINUX__ $(FLAGS) $<
+
+draw_pixel.o: src/extralibs/sdl_draw/src/draw_pixel.cpp
+	$(CC) -c -o $(@) -D__GCC__ -D __LINUX__ $(FLAGS) $<
+
+draw_vline.o: src/extralibs/sdl_draw/src/draw_vline.cpp
+	$(CC) -c -o $(@) -D__GCC__ -D __LINUX__ $(FLAGS) $<
