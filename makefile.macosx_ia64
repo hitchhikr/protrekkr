@@ -12,7 +12,7 @@ EXEOBJS_IA64 = ptk_ia64.o \
               editor_303_ia64.o editor_pattern_ia64.o editor_sequencer_ia64.o editor_track_ia64.o editor_track_fx_ia64.o \
               patterns_blocks_ia64.o editor_synth_ia64.o editor_sample_ia64.o editor_fx_setup_ia64.o editor_setup_ia64.o \
               editor_diskio_ia64.o editor_reverb_ia64.o editor_instrument_ia64.o editor_midi_ia64.o \
-              samples_pack_ia64.o files_list_ia64.o files_ia64.o mods_ia64.o patterns_ia64.o reverbs_ia64.o midi_cfg_ia64.o \
+              samples_pack_ia64.o files_list_ia64.o files_ia64.o mods_ia64.o s3m_ia64.o patterns_ia64.o reverbs_ia64.o midi_cfg_ia64.o \
               bits_ia64.o pack_ia64.o tinypack_ia64.o words_ia64.o wputils_ia64.o \
               config_ia64.o 303s_ia64.o synths_ia64.o insts_ia64.o ptps_ia64.o \
               midi_ia64.o rtmidi_ia64.o midi_dispatch_ia64.o \
@@ -95,6 +95,9 @@ files_ia64.o: src/files/files.cpp
 	$(CC) -c -o $(@) $(FLAGS_IA64) $<
 
 mods_ia64.o: src/files/mods.cpp
+	$(CC) -c -o $(@) $(FLAGS_IA64) $<
+
+s3m_ia64.o: src/files/s3m.cpp
 	$(CC) -c -o $(@) $(FLAGS_IA64) $<
 
 patterns_ia64.o: src/files/patterns.cpp

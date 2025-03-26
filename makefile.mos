@@ -13,7 +13,7 @@ EXEOBJS = ptk.o \
           editor_303.o editor_pattern.o editor_sequencer.o editor_track.o editor_track_fx.o \
           patterns_blocks.o editor_synth.o editor_sample.o editor_fx_setup.o editor_setup.o \
           editor_diskio.o editor_reverb.o editor_instrument.o editor_midi.o \
-          samples_pack.o files_list.o files.o mods.o patterns.o reverbs.o midi_cfg.o \
+          samples_pack.o files_list.o files.o mods.o s3m.o patterns.o reverbs.o midi_cfg.o \
           bits.o pack.o tinypack.o words.o wputils.o \
           config.o 303s.o synths.o insts.o ptps.o \
           midi.o midi_dispatch.o \
@@ -97,6 +97,9 @@ files.o: src/files/files.cpp
 	$(CC) -c -o $(@) $(FLAGS) $<
 
 mods.o: src/files/mods.cpp
+	$(CC) -c -o $(@) $(FLAGS) $<
+
+s3m.o: src/files/s3m.cpp
 	$(CC) -c -o $(@) $(FLAGS) $<
 
 patterns.o: src/files/patterns.cpp

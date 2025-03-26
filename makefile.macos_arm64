@@ -12,7 +12,7 @@ EXEOBJS_ARM64 = ptk_arm64.o \
               editor_303_arm64.o editor_pattern_arm64.o editor_sequencer_arm64.o editor_track_arm64.o editor_track_fx_arm64.o \
               patterns_blocks_arm64.o editor_synth_arm64.o editor_sample_arm64.o editor_fx_setup_arm64.o editor_setup_arm64.o \
               editor_diskio_arm64.o editor_reverb_arm64.o editor_instrument_arm64.o editor_midi_arm64.o \
-              samples_pack_arm64.o files_list_arm64.o files_arm64.o mods_arm64.o patterns_arm64.o reverbs_arm64.o midi_cfg_arm64.o \
+              samples_pack_arm64.o files_list_arm64.o files_arm64.o mods_arm64.o s3m_arm64.o patterns_arm64.o reverbs_arm64.o midi_cfg_arm64.o \
               bits_arm64.o pack_arm64.o tinypack_arm64.o words_arm64.o wputils_arm64.o \
               config_arm64.o 303s_arm64.o synths_arm64.o insts_arm64.o ptps_arm64.o \
               midi_arm64.o rtmidi_arm64.o midi_dispatch_arm64.o \
@@ -95,6 +95,9 @@ files_arm64.o: src/files/files.cpp
 	$(CC) -c -o $(@) $(FLAGS_ARM64) $<
 
 mods_arm64.o: src/files/mods.cpp
+	$(CC) -c -o $(@) $(FLAGS_ARM64) $<
+
+s3m_arm64.o: src/files/s3m.cpp
 	$(CC) -c -o $(@) $(FLAGS_ARM64) $<
 
 patterns_arm64.o: src/files/patterns.cpp

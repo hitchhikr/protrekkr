@@ -12,7 +12,7 @@ EXEOBJS_PPC = ptk_ppc.o \
               editor_303_ppc.o editor_pattern_ppc.o editor_sequencer_ppc.o editor_track_ppc.o editor_track_fx_ppc.o \
               patterns_blocks_ppc.o editor_synth_ppc.o editor_sample_ppc.o editor_fx_setup_ppc.o editor_setup_ppc.o \
               editor_diskio_ppc.o editor_reverb_ppc.o editor_instrument_ppc.o editor_midi_ppc.o \
-              samples_pack_ppc.o files_list_ppc.o files_ppc.o mods_ppc.o patterns_ppc.o reverbs_ppc.o midi_cfg_ppc.o \
+              samples_pack_ppc.o files_list_ppc.o files_ppc.o mods_ppc.o s3m_ppc.o patterns_ppc.o reverbs_ppc.o midi_cfg_ppc.o \
               bits_ppc.o pack_ppc.o tinypack_ppc.o words_ppc.o wputils_ppc.o \
               config_ppc.o 303s_ppc.o synths_ppc.o insts_ppc.o ptps_ppc.o \
               midi_ppc.o rtmidi_ppc.o midi_dispatch_ppc.o \
@@ -95,6 +95,9 @@ files_ppc.o: src/files/files.cpp
 	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
 mods_ppc.o: src/files/mods.cpp
+	$(CC) -c -o $(@) $(FLAGS_PPC) $<
+
+s3m_ppc.o: src/files/s3m.cpp
 	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
 patterns_ppc.o: src/files/patterns.cpp

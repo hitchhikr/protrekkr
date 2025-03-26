@@ -12,7 +12,7 @@ EXEOBJS_X86 = ptk_x86.o \
               editor_303_x86.o editor_pattern_x86.o editor_sequencer_x86.o editor_track_x86.o editor_track_fx_x86.o \
               patterns_blocks_x86.o editor_synth_x86.o editor_sample_x86.o editor_fx_setup_x86.o editor_setup_x86.o \
               editor_diskio_x86.o editor_reverb_x86.o editor_instrument_x86.o editor_midi_x86.o \
-              samples_pack_x86.o files_list_x86.o files_x86.o mods_x86.o patterns_x86.o reverbs_x86.o midi_cfg_x86.o \
+              samples_pack_x86.o files_list_x86.o files_x86.o mods_x86.o s3m_x86.o patterns_x86.o reverbs_x86.o midi_cfg_x86.o \
               bits_x86.o pack_x86.o tinypack_x86.o words_x86.o wputils_x86.o \
               config_x86.o 303s_x86.o synths_x86.o insts_x86.o ptps_x86.o \
               midi_x86.o rtmidi_x86.o midi_dispatch_x86.o \
@@ -95,6 +95,9 @@ files_x86.o: src/files/files.cpp
 	$(CC) -c -o $(@) $(FLAGS_X86) $<
 
 mods_x86.o: src/files/mods.cpp
+	$(CC) -c -o $(@) $(FLAGS_X86) $<
+
+s3m_x86.o: src/files/s3m.cpp
 	$(CC) -c -o $(@) $(FLAGS_X86) $<
 
 patterns_x86.o: src/files/patterns.cpp
