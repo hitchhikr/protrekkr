@@ -1,7 +1,7 @@
 CC = gcc
 CXX = g++
 
-LIBS_PPC = -lsdldraw_ppc -lz -framework CoreAudio -framework CoreMidi -framework AudioUnit -framework Cocoa -framework OpenGL -lSDL
+LIBS_PPC = -lsdldraw_ppc -lz -framework CoreAudio -framework CoreMidi -framework AudioUnit -framework Cocoa -framework OpenGL -framework SDL
 
 DEBUG = 
 
@@ -35,7 +35,7 @@ protrekkr_ppc: $(EXEOBJS_PPC)
 	(cd src/extralibs/zlib-1.2.3; make -f makefile.macosx_ppc)
 	(cd src/extralibs/bin2c; make -f makefile.macosx_ppc)
 	$(CXX) -o ./release/distrib/protrekkr_ppc.app/Contents/MacOS/Protrekkr -L./ -Lsrc/extralibs/sdl_draw -Lsrc/extralibs/zlib-1.2.3 \
-           -L/usr/local/lib -L/library/frameworks $(FLAGS_PPC) $(EXEOBJS_PPC) $(LIBS_PPC)
+           -L/library/frameworks $(FLAGS_PPC) $(EXEOBJS_PPC) $(LIBS_PPC)
 	strip -x -X -S ./release/distrib/protrekkr_ppc.app/Contents/MacOS/Protrekkr
 	chmod +x ./release/distrib/protrekkr_ppc.app/Contents/MacOS/Protrekkr
 	install_name_tool ./release/distrib/protrekkr_ppc.app/Contents/MacOS/Protrekkr -change /usr/local/lib/libSDL-1.2.0.dylib @executable_path/libSDL-1.2.0.dylib
