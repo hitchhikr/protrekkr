@@ -169,8 +169,9 @@ void CSynth::Reset(void)
     Data.LFO_2_RELEASE = 0.0f;
 
     Data.OSC_3_VOLUME = 0;
-
     Data.PTC_GLIDE_64 = 0;
+
+    GLIDE_64_ALIGN = 0;
 
     Data.GLB_VOLUME = 1.0f;
     Data.OSC_COMBINE = COMBINE_ADD;
@@ -748,11 +749,28 @@ float CSynth::GetSample(short *Left_Samples,
                         float Ampi_Vol)
     {
 
-    s_access *pos_osc_1 = (s_access *) position_osc_1;
-    s_access *pos_osc_2 = (s_access *) position_osc_2;
+    s_access *pos_osc_1
+#if defined(__GCC__)
+        __attribute__((aligned(8)))
+#endif
+        ;
+    pos_osc_1 = (s_access *) position_osc_1;
+    
+    s_access *pos_osc_2
+#if defined(__GCC__)
+        __attribute__((aligned(8)))
+#endif
+        ;
+    pos_osc_2 = (s_access *) position_osc_2;
 
 #if defined(PTK_SYNTH_OSC_3)
-    s_access *pos_osc_3 = (s_access *) position_osc_3;
+    s_access *pos_osc_3
+#if defined(__GCC__)
+        __attribute__((aligned(8)))
+#endif
+        ;
+    pos_osc_3 = (s_access *) position_osc_3;
+        
 #endif
 
     short *Left_Samples1 = NULL;
@@ -760,15 +778,35 @@ float CSynth::GetSample(short *Left_Samples,
     unsigned int res_dec;
 
 #if defined(PTK_SYNTH_PITCH)
-    int64 osc_speed1;
-    int64 osc_speed1b;
+    int64 osc_speed1
+#if defined(__GCC__)
+        __attribute__((aligned(8)))
+#endif
+        ;
+    int64 osc_speed1b
+#if defined(__GCC__)
+        __attribute__((aligned(8)))
+#endif
+        ;
 #endif
 
-    int64 osc_speed2;
-    double osc_speed_dbl;
+    int64 osc_speed2
+#if defined(__GCC__)
+        __attribute__((aligned(8)))
+#endif
+        ;
+    double osc_speed_dbl
+#if defined(__GCC__)
+        __attribute__((aligned(8)))
+#endif
+        ;
 
 #if defined(PTK_SYNTH_OSC_2)
-    int64 osc_speed_tune;
+    int64 osc_speed_tune
+#if defined(__GCC__)
+        __attribute__((aligned(8)))
+#endif
+        ;
 #endif
 
     float mul_datL;
@@ -813,16 +851,16 @@ float CSynth::GetSample(short *Left_Samples,
 
             if(*track)
             {
-                if(Data.PTC_GLIDE_64 != 0 && OSC_1_SPEED != 0)
+                if(GLIDE_64_ALIGN != 0 && OSC_1_SPEED != 0)
                 {
                     if(osc_speed > OSC_1_SPEED)
                     {
-                        OSC_1_SPEED += Data.PTC_GLIDE_64;
+                        OSC_1_SPEED += GLIDE_64_ALIGN;
                         if(OSC_1_SPEED > osc_speed) OSC_1_SPEED = osc_speed;
                     }
                     else
                     {
-                        OSC_1_SPEED -= Data.PTC_GLIDE_64;
+                        OSC_1_SPEED -= GLIDE_64_ALIGN;
                         if(OSC_1_SPEED < osc_speed) OSC_1_SPEED = osc_speed;
                     }
                 }
@@ -1409,16 +1447,16 @@ float CSynth::GetSample(short *Left_Samples,
             {
                 osc_speed_tune = osc_speed + (int64) ((double) Data.OSC_2_FINETUNE * 536870912.0)
                                            + (int64) ((double) Data.OSC_2_DETUNE * 536870912.0);
-                if(Data.PTC_GLIDE_64 != 0 && OSC_2_SPEED != 0)
+                if(GLIDE_64_ALIGN != 0 && OSC_2_SPEED != 0)
                 {
                     if(osc_speed_tune > OSC_2_SPEED)
                     {
-                        OSC_2_SPEED += Data.PTC_GLIDE_64;
+                        OSC_2_SPEED += GLIDE_64_ALIGN;
                         if(OSC_2_SPEED > osc_speed_tune) OSC_2_SPEED = osc_speed_tune;
                     }
                     else
                     {
-                        OSC_2_SPEED -= Data.PTC_GLIDE_64;
+                        OSC_2_SPEED -= GLIDE_64_ALIGN;
                         if(OSC_2_SPEED < osc_speed_tune) OSC_2_SPEED = osc_speed_tune;
                     }
                 }
@@ -2029,7 +2067,7 @@ void CSynth::ChangeParameters(Synth_Parameters TSP)
     Data.OSC_3_SWITCH =         TSP.osc_3_switch;
 
     Data.PTC_GLIDE =            ((float) TSP.ptc_glide * (float) TSP.ptc_glide) * 0.0000015625f;
-    Data.PTC_GLIDE_64 =         (int64) ((double) Data.PTC_GLIDE * 4294967296.0);
+    GLIDE_64_ALIGN =            (int64) ((double) Data.PTC_GLIDE * 4294967296.0);
 
     Data.DISTO =                ((float) TSP.disto - 64) * 0.015625f;
 

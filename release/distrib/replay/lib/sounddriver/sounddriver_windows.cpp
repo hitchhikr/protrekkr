@@ -66,7 +66,7 @@ DWORD AUDIO_ThreadId;
 HANDLE AUDIO_hReplayThread;
 
 int AUDIO_Latency;
-int AUDIO_Milliseconds = 10;
+int AUDIO_Milliseconds = 20;
 
 // ------------------------------------------------------
 // Functions

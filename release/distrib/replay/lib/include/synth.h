@@ -405,9 +405,26 @@ class CSynth
         float T_OSC_1_VOLUME;
         float T_OSC_2_VOLUME;
         
-        int64 OSC_1_SPEED;
-        int64 OSC_2_SPEED;
-        int64 OSC_3_SPEED;
+        int64 OSC_1_SPEED
+#if defined(__GCC__)
+        __attribute__((aligned(8)))
+#endif
+        ;
+        int64 OSC_2_SPEED
+#if defined(__GCC__)
+        __attribute__((aligned(8)))
+#endif
+        ;
+        int64 OSC_3_SPEED
+#if defined(__GCC__)
+        __attribute__((aligned(8)))
+#endif
+        ;
+        int64 GLIDE_64_ALIGN
+#if defined(__GCC__)
+        __attribute__((aligned(8)))
+#endif
+        ;
 
         /* Envelopes and LFO's properties */
         float ENV_1b_ATTACK;

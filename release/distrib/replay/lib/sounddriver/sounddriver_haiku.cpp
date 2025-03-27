@@ -48,7 +48,7 @@ Uint32 Amount;
 
 int AUDIO_SoundBuffer_Size;
 int AUDIO_Latency;
-int AUDIO_Milliseconds = 10;
+int AUDIO_Milliseconds = 20;
 
 // ------------------------------------------------------
 // Functions

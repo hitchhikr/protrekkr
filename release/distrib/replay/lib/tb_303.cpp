@@ -230,13 +230,13 @@ void gear303::tbNoteOn(int tbNote, para303 *PARAT303)
 
         RampVolume = 1.0f;
 
-        tbWaveform = PARAT303->waveform; 
+        tbWaveform = PARAT303->waveform;
         tbOscSpeedFreak = 0;
-        float frune = float(tbNote) - 17;
+        float ftune = float(tbNote) - 17;
 
         // 0.1889763f seems to be about right
-        frune += (float) PARAT303->tune * 0.1889763f;
-        float tbOscSpeedTmp = POWF2(frune / 12.0f) * 64.0f;
+        ftune += (float) PARAT303->tune * 0.1889763f;
+        float tbOscSpeedTmp = POWF2(ftune / 12.0f) * 64.0f;
 
         int tbLine2 = (tbLine - 1);
         if(tbLine2 < 0) tbLine2 = PARAT303->patternlength[tbPattern] - 1;
@@ -315,13 +315,13 @@ void gear303::tbNoteOn(int tbNote, para303 *PARAT303)
             tbOscSpeed = tbOscSpeedTmp;
             forcefault = 0;
             // Retrieve the previous speed
-            frune = float(PARAT303->tone[tbPattern][tbLine2]) - 17;
-            if(PARAT303->flag[tbPattern][tbLine2].transposeup_flag) frune += 12;
-            if(PARAT303->flag[tbPattern][tbLine2].transposedown_flag) frune -= 12;
-            frune += (float) PARAT303->tune * 0.1889763f;
+            ftune = float(PARAT303->tone[tbPattern][tbLine2]) - 17;
+            if(PARAT303->flag[tbPattern][tbLine2].transposeup_flag) ftune += 12;
+            if(PARAT303->flag[tbPattern][tbLine2].transposedown_flag) ftune -= 12;
+            ftune += (float) PARAT303->tune * 0.1889763f;
             tbInnertime = SamplesPerTick * 0.5f;
             float tbDestiny = tbOscSpeed;                            // Dest
-            float tbSource = POWF2(frune / 12.0f) * 64.0f;
+            float tbSource = POWF2(ftune / 12.0f) * 64.0f;
             // Previous speed
             tbOscSpeed = tbSource;
             tbOscSpeedFreak = (tbDestiny - tbSource) / tbInnertime;  // Get glide coefficient

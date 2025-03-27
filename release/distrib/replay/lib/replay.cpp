@@ -147,10 +147,18 @@ float sp_Tvol_Synth[MAX_TRACKS][MAX_POLYPHONY];
 float sp_Tvol_Mod[MAX_TRACKS];
 float DSend[MAX_TRACKS];   
 int CSend[MAX_TRACKS];
-int64 Vstep1[MAX_TRACKS][MAX_POLYPHONY];
+int64 Vstep1[MAX_TRACKS][MAX_POLYPHONY]
+#if defined(__GCC__)
+        __attribute__((aligned(8)))
+#endif
+        ;
 
 #if defined(PTK_FX_TRANCEGLIDER)
-    int64 glidestep[MAX_TRACKS];
+    int64 glidestep[MAX_TRACKS]
+#if defined(__GCC__)
+        __attribute__((aligned(8)))
+#endif
+        ;
 #endif
 
 EQSTATE EqDat[MAX_TRACKS];
@@ -173,14 +181,30 @@ float TPan[MAX_TRACKS];
 float old_TPan[MAX_TRACKS];
 int old_note[MAX_TRACKS][MAX_POLYPHONY];
 
-s_access sp_Position[MAX_TRACKS][MAX_POLYPHONY];
+s_access sp_Position[MAX_TRACKS][MAX_POLYPHONY]
+#if defined(__GCC__)
+        __attribute__((aligned(8)))
+#endif
+        ;
 
 #if defined(PTK_SYNTH)
-s_access sp_Position_osc_1[MAX_TRACKS][MAX_POLYPHONY];
-s_access sp_Position_osc_2[MAX_TRACKS][MAX_POLYPHONY];
+s_access sp_Position_osc_1[MAX_TRACKS][MAX_POLYPHONY]
+#if defined(__GCC__)
+        __attribute__((aligned(8)))
+#endif
+        ;
+s_access sp_Position_osc_2[MAX_TRACKS][MAX_POLYPHONY]
+#if defined(__GCC__)
+        __attribute__((aligned(8)))
+#endif
+        ;
 
 #if defined(PTK_SYNTH_OSC_3)
-    s_access sp_Position_osc_3[MAX_TRACKS][MAX_POLYPHONY];
+    s_access sp_Position_osc_3[MAX_TRACKS][MAX_POLYPHONY]
+#if defined(__GCC__)
+        __attribute__((aligned(8)))
+#endif
+        ;
 #endif
 #endif
 
@@ -664,14 +688,22 @@ int shuffleswitch;
 #endif
 
 #if defined(PTK_FX_VIBRATO)
-    int64 Vstep_vib[MAX_TRACKS][MAX_POLYPHONY];
+    int64 Vstep_vib[MAX_TRACKS][MAX_POLYPHONY]
+#if defined(__GCC__)
+        __attribute__((aligned(8)))
+#endif
+        ;
     int Vibrato_Switch[MAX_TRACKS];
     float Vibrato_BaseNote[MAX_TRACKS][MAX_POLYPHONY];
     int Vibcounter[MAX_TRACKS];
 #endif
 
 #if defined(PTK_FX_ARPEGGIO)
-    int64 Vstep_arp[MAX_TRACKS][MAX_POLYPHONY];
+    int64 Vstep_arp[MAX_TRACKS][MAX_POLYPHONY]
+#if defined(__GCC__)
+        __attribute__((aligned(8)))
+#endif
+        ;
     int Arpeggio_Switch[MAX_TRACKS];
     float Arpeggio_BaseNote[MAX_TRACKS][MAX_POLYPHONY];
 #endif
@@ -777,7 +809,11 @@ Uint32 Sample_Length[MAX_INSTRS][MAX_INSTRS_SPLITS];
 Uint32 Sample_Length_Packed[MAX_INSTRS][MAX_INSTRS_SPLITS];
 char Beat_Sync[MAX_INSTRS];
 short Beat_Lines[MAX_INSTRS];
-int64 sp_Step[MAX_TRACKS][MAX_POLYPHONY];
+int64 sp_Step[MAX_TRACKS][MAX_POLYPHONY]
+#if defined(__GCC__)
+        __attribute__((aligned(8)))
+#endif
+            ;
 float Sample_Amplify[MAX_INSTRS][MAX_INSTRS_SPLITS];
 char Sample_Channels[MAX_INSTRS][MAX_INSTRS_SPLITS];
 float FDecay[MAX_INSTRS][MAX_INSTRS_SPLITS];
@@ -5355,11 +5391,19 @@ void Do_Effects_Ticks_X(void)
     int pltr_sample[MAX_POLYPHONY];
 
 #if defined(PTK_FX_0) || defined(PTK_FX_X)
-    int64 pltr_eff_row[MAX_FX];
+    int64 pltr_eff_row[MAX_FX]
+#if defined(__GCC__)
+        __attribute__((aligned(8)))
+#endif
+        ;
 #endif
 
 #if defined(PTK_FX_0) || defined(PTK_FX_X)
-    int64 pltr_dat_row[MAX_FX];
+    int64 pltr_dat_row[MAX_FX]
+#if defined(__GCC__)
+        __attribute__((aligned(8)))
+#endif
+        ;
 #endif
 
     for(int trackef = 0; trackef < Song_Tracks; trackef++)
