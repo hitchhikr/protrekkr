@@ -4,7 +4,7 @@ CXX = g++ -mcrt=newlib
 LIBS = -lSDL -lz -lpthread -lunix
 
 FLAGS = -Ofast -w -fsigned-char -fno-strict-aliasing -fomit-frame-pointer -ffast-math -fno-rtti -fno-exceptions -Lsrc/extralibs/sdl_draw -Lsrc/extralibs/zlib-1.2.3 \
-        -D USE_SDL_THREADS -D __AMIGAOS4__ -D __GCC__ -D __BIG_ENDIAN__ -D __MOT_SWAP__ -D __NO_MIDI__
+        -D __AMIGAOS4__ -D __GCC__ -D __BIG_ENDIAN__ -D __MOT_SWAP__ -D __NO_MIDI__
 
 CCFLAGS = $(FLAGS)
 
