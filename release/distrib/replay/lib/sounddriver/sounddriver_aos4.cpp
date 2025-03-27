@@ -52,14 +52,9 @@ int volatile Thread_Running;
 int32 old_sigbit;
 void *old_sigtask;
 
-#if defined(USE_SDL_THREADS)
-#include <SDL/SDL_thread.h>
-SDL_Thread *hThread;
-#else
 #include <pthread.h>
-pthread_t hThread;
-#endif
 
+pthread_t hThread;
 int AUDIO_SoundBuffer_Size;
 int AUDIO_Latency;
 int AUDIO_Milliseconds = 20;
@@ -75,20 +70,12 @@ void AUDIO_Synth_Play(void);
 // ------------------------------------------------------
 // Name: AUDIO_Thread()
 // Desc: Audio rendering
-#if defined(USE_SDL_THREADS)
-int AUDIO_Thread(void *arg)
-#else
 void *AUDIO_Thread(void *arg)
-#endif
 {
-
-#if !defined(USE_SDL_THREADS)
     struct sched_param p;
     
-    memset(&p, 0, sizeof(p));
     p.sched_priority = 1;
     pthread_setschedparam(pthread_self(), SCHED_FIFO, &p);
-#endif
 
     old_sigbit = AHImp->mp_SigBit;
     old_sigtask = AHImp->mp_SigTask;
@@ -275,21 +262,13 @@ int AUDIO_Create_Sound_Buffer(int milliseconds)
 
     Thread_Running = 1;
 
-#if defined(USE_SDL_THREADS)
-    if(hThread = SDL_CreateThread(AUDIO_Thread, NULL))
-#else
     if(pthread_create(&hThread, NULL, AUDIO_Thread, NULL) == 0)
-#endif
     {
         return(TRUE);
     }
 
 #if !defined(__STAND_ALONE__) && !defined(__WINAMP__)
-#if defined(USE_SDL_THREADS)
-    Message_Error("Error while calling SDL_CreateThread()");
-#else
     Message_Error("Error while calling pthread_create()");
-#endif
 #endif
 
     Thread_Running = 0;

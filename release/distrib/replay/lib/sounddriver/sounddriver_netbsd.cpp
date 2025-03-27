@@ -65,6 +65,11 @@ void AUDIO_Synth_Play(void);
 // Desc: Audio rendering
 void *AUDIO_Thread(void *arg)
 {
+    struct sched_param p;
+
+    p.sched_priority = 1;
+    pthread_setschedparam(pthread_self(), SCHED_FIFO, &p);
+    
     while(Thread_Running)
     {
         if(AUDIO_SoundBuffer[0])
@@ -101,13 +106,10 @@ int AUDIO_Init_Driver(void (*Mixer)(Uint8 *, Uint32))
 
     char *Mixer_Name;
     int8 Mixer_Volume[4];
-    struct sched_param p;
 
     AUDIO_Device = open("/dev/audio", O_WRONLY, 0);
     if(AUDIO_Device >= 0)
     {
-        p.sched_priority = 1;
-        pthread_setschedparam(pthread_self(), SCHED_FIFO, &p);
         return(AUDIO_Create_Sound_Buffer(AUDIO_Milliseconds));
     }
     
@@ -136,7 +138,6 @@ int AUDIO_Create_Sound_Buffer(int milliseconds)
     frag_size = (int) (AUDIO_PCM_FREQ * (milliseconds / 1000.0f));
 
     int Dsp_Val;
-    struct sched_param p;
 
 	frag_size = 10 + (int) (logf((float) (frag_size >> 9)) / logf(2.0f));
 

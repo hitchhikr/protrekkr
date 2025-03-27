@@ -635,13 +635,11 @@ void Destroy_Context(void)
 {
     int i;
 
-    printf("SHIT2\n");
     if(Timer)
     {
         SDL_RemoveTimer(Timer);
     }
 
-    printf("SHIT3\n");
     Ptk_ReleaseDriver();
 
     if(thread_sema)
@@ -649,14 +647,12 @@ void Destroy_Context(void)
         SDL_DestroySemaphore(thread_sema);
     }
 
-    printf("SHIT4\n");
 #if defined(__MACOSX_PPC__) || defined(__LINUX__) || defined(__AROS__) || defined(__AMIGAOS4__) || defined(__MORPHOS__)
     usleep(10);
 #endif
 #if defined(__WIN32__)
     Sleep(10);
 #endif
-
 
 #if !defined(__NO_MIDI__)
     // Close any opened midi devices on any exit
@@ -694,7 +690,6 @@ void Destroy_Context(void)
     Free_Samples();
 
     Destroy_UI();
-    printf("SHIT45\n");
 
     for(i = 0; i < MAX_TRACKS; i++)
     {  
@@ -736,8 +731,6 @@ void Destroy_Context(void)
         free(RawPatterns);
     }
     RawPatterns = NULL;
-
-    printf("SHIT8\n");
 }
 
 // ------------------------------------------------------
@@ -2376,9 +2369,7 @@ int Screen_Update(void)
     if(Check_Requester(&Exit_Requester) == 1)
     {
         Song_Stop();
-    printf("FUCK YOU\n");
         Status_Box("Seppuku...", FALSE);
-    printf("FUCK YOU TOO\n");
         return(FALSE);
     }
 
