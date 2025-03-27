@@ -1236,10 +1236,12 @@ int Switch_FullScreen(int Width, int Height, int Refresh, int Force_Window_Mode)
     if(FullScreen)
     {
 
+#if !defined(__MORPHOS__)
 #if defined(__USE_OPENGL__)
         SDL_SetVideoMode(Width, Height, SCREEN_BPP, SDL_RESIZABLE | SDL_OPENGL | SDL_HWSURFACE | SDL_HWPALETTE);
 #else
         SDL_SetVideoMode(Width, Height, SCREEN_BPP, SDL_RESIZABLE | SDL_SWSURFACE | SDL_HWPALETTE);
+#endif
 #endif
 #if defined(__USE_OPENGL__)
         if((Main_Screen = SDL_SetVideoMode(Startup_Width, Startup_Height,
