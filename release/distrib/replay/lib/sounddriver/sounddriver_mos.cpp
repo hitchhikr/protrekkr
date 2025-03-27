@@ -330,13 +330,14 @@ void AUDIO_Stop_Sound_Buffer(void)
 {
     AUDIO_Stop();
 
-    if(hThread) 
+    if(hThread)
     {
         Thread_Running = 0;
         while(!Thread_Running)
         {
             usleep(10);
         }
+        pthread_cancel(hThread);
         hThread = 0;
         if(AHIio)
         {

@@ -2306,7 +2306,7 @@ void PTKEXPORT Ptk_Stop(void)
     {
         local_ramp_vol = 0.0f;
 
-#if defined(__MACOSX_PPC__) || defined(__LINUX__) || defined(__AROS__) || defined(__AMIGAOS4__)
+#if defined(__MACOSX_PPC__) || defined(__LINUX__) || defined(__AROS__) || defined(__AMIGAOS4__) || defined(__MORPHOS__)
         usleep(10);
 #endif
 #if defined(__WIN32__)

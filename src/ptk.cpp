@@ -635,17 +635,22 @@ void Destroy_Context(void)
 {
     int i;
 
+    printf("SHIT2\n");
     if(Timer)
     {
-        while(SDL_RemoveTimer(Timer) == FALSE)
-        {
-        };
+        SDL_RemoveTimer(Timer);
     }
-    AUDIO_Acknowledge = TRUE;
 
+    printf("SHIT3\n");
     Ptk_ReleaseDriver();
 
-#if defined(__MACOSX_PPC__) || defined(__LINUX__) || defined(__AROS__) || defined(__AMIGAOS4__)
+    if(thread_sema)
+    {
+        SDL_DestroySemaphore(thread_sema);
+    }
+
+    printf("SHIT4\n");
+#if defined(__MACOSX_PPC__) || defined(__LINUX__) || defined(__AROS__) || defined(__AMIGAOS4__) || defined(__MORPHOS__)
     usleep(10);
 #endif
 #if defined(__WIN32__)
@@ -657,21 +662,21 @@ void Destroy_Context(void)
     // Close any opened midi devices on any exit
     Midi_CloseIn();
 
-#if defined(__MACOSX_PPC__) || defined(__LINUX__) || defined(__AROS__) || defined(__AMIGAOS4__)
-    usleep(100);
+#if defined(__MACOSX_PPC__) || defined(__LINUX__) || defined(__AROS__) || defined(__AMIGAOS4__) || defined(__MORPHOS__)
+    usleep(50);
 #endif
 #if defined(__WIN32__)
-    Sleep(100);
+    Sleep(50);
 #endif
     
     Midi_CloseOut();
 #endif
 
-#if defined(__MACOSX_PPC__) || defined(__LINUX__) || defined(__AROS__) || defined(__AMIGAOS4__)
-    usleep(100);
+#if defined(__MACOSX_PPC__) || defined(__LINUX__) || defined(__AROS__) || defined(__AMIGAOS4__) || defined(__MORPHOS__)
+    usleep(50);
 #endif
 #if defined(__WIN32__)
-    Sleep(100);
+    Sleep(50);
 #endif
 
 #if !defined(__NO_MIDI__)
@@ -679,16 +684,17 @@ void Destroy_Context(void)
     Midi_FreeAll();
 #endif
 
-#if defined(__MACOSX_PPC__) || defined(__LINUX__) || defined(__AROS__) || defined(__AMIGAOS4__)
-    usleep(100);
+#if defined(__MACOSX_PPC__) || defined(__LINUX__) || defined(__AROS__) || defined(__AMIGAOS4__) || defined(__MORPHOS__)
+    usleep(50);
 #endif
 #if defined(__WIN32__)
-    Sleep(100);
+    Sleep(50);
 #endif
 
     Free_Samples();
 
     Destroy_UI();
+    printf("SHIT45\n");
 
     for(i = 0; i < MAX_TRACKS; i++)
     {  
@@ -731,12 +737,7 @@ void Destroy_Context(void)
     }
     RawPatterns = NULL;
 
-    if(thread_sema)
-    {
-        SDL_DestroySemaphore(thread_sema);
-    }
-
-    SDL_Quit();
+    printf("SHIT8\n");
 }
 
 // ------------------------------------------------------
@@ -2375,7 +2376,9 @@ int Screen_Update(void)
     if(Check_Requester(&Exit_Requester) == 1)
     {
         Song_Stop();
+    printf("FUCK YOU\n");
         Status_Box("Seppuku...", FALSE);
+    printf("FUCK YOU TOO\n");
         return(FALSE);
     }
 

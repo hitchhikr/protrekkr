@@ -470,7 +470,6 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
         Message_Error("Can't open SDL.");
         exit(0);
     }
-    atexit(Destroy_Context);
 
     // Show the restrictions:
     char *NoMidi = "";
@@ -498,7 +497,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
     if(ExePath == NULL)
     {
         Message_Error("Can't open alloc memory.");
-        exit(0);
+        SDL_Quit();
     }
     memset(ExePath, 0, ExePath_Size + 1);
 
@@ -731,7 +730,9 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
     if(!Switch_FullScreen(Cur_Width, Cur_Height, FALSE, FALSE))
     {
         Message_Error(SDL_GetError());
-        exit(0);
+        Destroy_Context();
+        SDL_Quit();
+        return 0;
     }
 
     Ptk_Palette[0].r = Save_R;
@@ -750,10 +751,11 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
 
     if(!Init_Context())
     {
-        exit(0);
+        Destroy_Context();
+        SDL_Quit();
     }
 
-#if defined(__AROS__) || defined(__MORPHOS__) || defined(__AMIGAOS4__)
+#if defined(__AROS__) || defined(__AMIGAOS4__) || defined(__MORPHOS__)
     char *env_var;
 
     env_var = getenv("PROTREKKR_MAIN_LOOP_DELAY");
@@ -1105,7 +1107,9 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
         free(ExePath);
     }
 
-    exit(0);
+    Destroy_Context();
+    SDL_Quit();
+    return 0;
 }
 
 // ------------------------------------------------------

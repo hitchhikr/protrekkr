@@ -104,7 +104,7 @@ void *AUDIO_Thread(void *arg)
                 memset(buf, 0, AUDIO_SoundBuffer_Size);
                 AUDIO_Acknowledge = TRUE;
             }
-            
+
             io->ahir_Std.io_Message.mn_Node.ln_Pri = 0;
             io->ahir_Std.io_Command = CMD_WRITE;
             io->ahir_Std.io_Data = buf;
@@ -117,7 +117,7 @@ void *AUDIO_Thread(void *arg)
             io->ahir_Position = 0x8000;
             io->ahir_Link = join;
             SendIO((struct IORequest *) io);
-            
+
             if(join)
             {
                 WaitIO((struct IORequest *) join);
@@ -222,7 +222,7 @@ int AUDIO_Create_Sound_Buffer(int milliseconds)
     memset(AHIbuf2, 0, AUDIO_SoundBuffer_Size);
 
     Thread_Running = 1;
-    
+
 #if defined(USE_SDL_THREADS)
     if(hThread = SDL_CreateThread(AUDIO_Thread, NULL))
 #else
