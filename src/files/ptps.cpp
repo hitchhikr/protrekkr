@@ -1486,7 +1486,7 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
 
                 fvalue = ((float) PARASynth[swrite].ptc_glide * (float) PARASynth[swrite].ptc_glide) * 0.0000015625f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
-                i64value = (int64) ((double) fvalue * 4294967296.0f);
+                i64value = (int64) ((float) fvalue);// * 4294967296.0f);
                 Write_Mod_Data(&i64value, sizeof(int64), 1, in);
 
                 fvalue = ((float) PARASynth[swrite].glb_volume) * 0.0078125f;

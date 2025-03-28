@@ -63,14 +63,14 @@ void Spline_Init(void)
 // y1 = y[1]  [sample at x+1]
 // y2 = y[2]  [sample at x+2]
 
-// res= distance between two neighbours sample points [y0 and y1] 
-//      ,so [0...1.0]. You have to multiply this distance * RESOLUTION used
-//      on the spline conversion table. [256 by default]
+// res = distance between two neighbours sample points [y0 and y1] 
+//       ,so [0...1.0]. You have to multiply this distance * RESOLUTION used
+//       on the spline conversion table. [256 by default]
 // If you are using 256 is assumed you are using 8 bit decimal
 // fixed point offsets for resampling.
 float Spline_Work(float yo, float y0, float y1, float y2, unsigned int res)
 {
-    res = res >> 22;
+    res = res >> 21;
     return (at[res] * yo + bt[res] * y0 + ct[res] * y1 + dt[res] * y2);
 }
 #endif

@@ -2636,7 +2636,7 @@ void Load_File(int Freeindex, const char *str)
                         {
                             save_sample_vol = 1.0f;
                             if(Get_Number_Of_Splits(Freeindex)) save_sample_vol = Sample_Vol[Freeindex];
-                            sp_Position[Freeindex][Current_Instrument_Split].absolu = 0;
+                            sp_Position[Freeindex][Current_Instrument_Split].int_pos = 0;
                             Lock_Audio_Thread();
                             Stop_Current_Instrument();
                             switch(channels)
@@ -2747,7 +2747,7 @@ void Load_File(int Freeindex, const char *str)
                         {
                             save_sample_vol = 1.0f;
                             if(Get_Number_Of_Splits(Freeindex)) save_sample_vol = Sample_Vol[Freeindex];
-                            sp_Position[Freeindex][Current_Instrument_Split].absolu = 0;
+                            sp_Position[Freeindex][Current_Instrument_Split].int_pos = 0;
                             Lock_Audio_Thread();
                             Stop_Current_Instrument();
                             switch(channels)
@@ -3705,7 +3705,7 @@ void Stop_Current_Instrument(void)
             if(sp_channelsample[u][i] == Current_Instrument)
             {
                 sp_Stage[u][i] = PLAYING_NOSAMPLE;
-                sp_Position[u][i].absolu = 0;
+                sp_Position[u][i].int_pos = 0;
             }
         }
         Player_FD[u] = 0;

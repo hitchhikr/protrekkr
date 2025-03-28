@@ -1281,7 +1281,8 @@ Done_Set_Range:
 
     Player_LL[Instrument][Split] = Player_LE[Instrument][Split] - Player_LS[Instrument][Split];
     Player_NS[Instrument][Split] = Sample_Length[Instrument][Split];
-    sp_Position[Instrument][Split].absolu = 0;
+    sp_Position[Instrument][Split].int_pos = 0;
+    sp_Position[Instrument][Split].flt_pos = 0;
 
     // Now look if this instrument is being played somewhere
     for(c = 0; c < Song_Tracks; c++)

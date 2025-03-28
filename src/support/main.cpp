@@ -421,10 +421,13 @@ void Get_Vid_Infos()
 
     i = 0;
     Max_Screen_Mode = 0;
-    while(Screen_Modes[i])
+    if(Screen_Modes)
     {
-        Max_Screen_Mode++;
-        i++;
+        while(Screen_Modes[i])
+        {
+            Max_Screen_Mode++;
+            i++;
+        }
     }
 }
 

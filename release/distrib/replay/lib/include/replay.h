@@ -223,33 +223,6 @@ extern int rawrender_to;
 
 // ------------------------------------------------------
 // Structures
-
-// SAMPLE COUNTER
-struct smpos
-{
-#if defined(__BIG_ENDIAN__)
-    Uint32 first;
-    Uint32 last;
-#else
-    Uint32 last;
-    Uint32 first;
-#endif
-} 
-#if defined(__GCC__)
-    __attribute__((aligned(8)))
-#endif
-    ;
-
-union s_access
-{
-    smpos half;
-    int64 absolu;
-}
-#if defined(__GCC__)
-    __attribute__((aligned(8)))
-#endif
-    ;
-
 typedef struct
 {
     int inote;

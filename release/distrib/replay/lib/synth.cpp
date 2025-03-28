@@ -3,7 +3,7 @@
 // Based on Juan Antonio Arguelles Rius's NoiseTrekker.
 //
 // Copyright (C) 2008-2025 Franck Charlet.
-// All rights reserved.
+// All rights reserFed.
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions
@@ -62,7 +62,7 @@ short STOCK_WHITE[SIZE_WAVEFORMS_SPACE];
 short STOCK_TRI[SIZE_WAVEFORMS_SPACE];
 #endif
 
-#define WAVEFORM_ADJUST_FREQ 0.5325
+#define WAVEFORM_ADJUST_FREQ 0.5325f
 
 // ------------------------------------------------------
 // This next function resets the synthesizer to default values
@@ -740,37 +740,26 @@ float CSynth::GetSample(short *Left_Samples,
                         float vol,
                         int *track,
                         int *track2,
-                        Uint64 *position_osc_1,
-                        Uint64 *position_osc_2,
+                        s_access *position_osc_1,
+                        s_access *position_osc_2,
+
 #if defined(PTK_SYNTH_OSC_3)
-                        Uint64 *position_osc_3,
+                        s_access *position_osc_3,
 #endif
-                        int64 osc_speed,
+
+                        float osc_speed,
                         float Ampi_Vol)
     {
 
-    s_access *pos_osc_1
-#if defined(__GCC__)
-        __attribute__((aligned(8)))
-#endif
-        ;
-    pos_osc_1 = (s_access *) position_osc_1;
+    s_access *pos_osc_1;
+    pos_osc_1 = position_osc_1;
     
-    s_access *pos_osc_2
-#if defined(__GCC__)
-        __attribute__((aligned(8)))
-#endif
-        ;
-    pos_osc_2 = (s_access *) position_osc_2;
+    s_access *pos_osc_2;
+    pos_osc_2 = position_osc_2;
 
 #if defined(PTK_SYNTH_OSC_3)
-    s_access *pos_osc_3
-#if defined(__GCC__)
-        __attribute__((aligned(8)))
-#endif
-        ;
-    pos_osc_3 = (s_access *) position_osc_3;
-        
+    s_access *pos_osc_3;
+    pos_osc_3 = position_osc_3;
 #endif
 
     short *Left_Samples1 = NULL;
@@ -778,35 +767,15 @@ float CSynth::GetSample(short *Left_Samples,
     unsigned int res_dec;
 
 #if defined(PTK_SYNTH_PITCH)
-    int64 osc_speed1
-#if defined(__GCC__)
-        __attribute__((aligned(8)))
-#endif
-        ;
-    int64 osc_speed1b
-#if defined(__GCC__)
-        __attribute__((aligned(8)))
-#endif
-        ;
+    float osc_speed1;
+    float osc_speed1b;
 #endif
 
-    int64 osc_speed2
-#if defined(__GCC__)
-        __attribute__((aligned(8)))
-#endif
-        ;
-    double osc_speed_dbl
-#if defined(__GCC__)
-        __attribute__((aligned(8)))
-#endif
-        ;
+    float osc_speed2;
+    float osc_speed_dbl;
 
 #if defined(PTK_SYNTH_OSC_2)
-    int64 osc_speed_tune
-#if defined(__GCC__)
-        __attribute__((aligned(8)))
-#endif
-        ;
+    float osc_speed_tune;
 #endif
 
     float mul_datL;
@@ -823,10 +792,10 @@ float CSynth::GetSample(short *Left_Samples,
     char Loop_Type1 = Loop_Type;
     char Loop_Type2 = Loop_Type;
 
-    unsigned int Loop_Sub1 = Loop_Sub;
-    unsigned int Loop_Sub2 = Loop_Sub;
-    unsigned int Length1 = Length;
-    unsigned int Length2 = Length;
+    int Loop_Sub1 = Loop_Sub;
+    int Loop_Sub2 = Loop_Sub;
+    int Length1 = Length;
+    int Length2 = Length;
 
 // ------------------------------------------------
 // Oscillator 1
@@ -870,7 +839,7 @@ float CSynth::GetSample(short *Left_Samples,
                 }
 
 #if defined(PTK_SYNTH_PITCH)
-                osc_speed1 = (int64) ((double)
+                osc_speed1 = ((float)
                              (
 #if defined(PTK_SYNTH_LFO_1_PITCH)
                               LFO_1_VALUE * Data.LFO_1_OSC_1_PITCH
@@ -884,7 +853,7 @@ float CSynth::GetSample(short *Left_Samples,
 #if defined(PTK_SYNTH_ENV_2_PITCH)
                             + ENV_2_VALUE * Data.ENV_2_OSC_1_PITCH
 #endif
-                           ) * 4294967296.0);
+                           ));// * 4294967296.0);
 #endif
 
                 osc_speed2 = OSC_1_SPEED;
@@ -943,13 +912,13 @@ float CSynth::GetSample(short *Left_Samples,
 
 #endif
 
-                    osc_speed_dbl = (double) osc_speed1;
+                    osc_speed_dbl = (float) osc_speed1;
                     osc_speed_dbl *= WAVEFORM_ADJUST_FREQ;
-                    osc_speed1 = (int64) osc_speed_dbl;
+                    osc_speed1 = osc_speed_dbl;
 
-                    osc_speed_dbl = (double) osc_speed2;
+                    osc_speed_dbl = (float) osc_speed2;
                     osc_speed_dbl *= WAVEFORM_ADJUST_FREQ;
-                    osc_speed2 = (int64) osc_speed_dbl;
+                    osc_speed2 = osc_speed_dbl;
 
                     // Those always loop
                     Loop_Type1 = SMP_LOOP_FORWARD;
@@ -957,9 +926,10 @@ float CSynth::GetSample(short *Left_Samples,
 
                 if(Left_Samples1)
                 {
-                    res_dec = pos_osc_1->half.last;
+                    // ******
+                    res_dec = pos_osc_1->int_pos;
                     
-                    Set_Spline_Boundaries(pos_osc_1->half.first,
+                    Set_Spline_Boundaries(pos_osc_1->int_pos,
                                           i_POSITION,
                                           Loop_Type1,
                                           ENV_1_LOOP_BACKWARD,
@@ -1093,19 +1063,21 @@ float CSynth::GetSample(short *Left_Samples,
 
 #if defined(PTK_SYNTH_PITCH)
                     osc_speed2 += osc_speed1;
-                    if(osc_speed2 < 16) osc_speed2 = 16;
+//                    if(osc_speed2 < 16) osc_speed2 = 16;
 #endif
 
                     if(ENV_1_LOOP_BACKWARD == TRUE)
                     {
-                        if(pos_osc_1->half.first > 0)
+                        if(pos_osc_1->int_pos > 0)
                         {
-                            pos_osc_1->absolu -= osc_speed2;
+                            pos_osc_1->flt_pos -= osc_speed2;
+                            pos_osc_1->int_pos = (int32) pos_osc_1->flt_pos;
                         }
                     }
                     else
                     {
-                        pos_osc_1->absolu += osc_speed2;
+                        pos_osc_1->flt_pos += osc_speed2;
+                        pos_osc_1->int_pos = (int32) pos_osc_1->flt_pos;
                     }
 
 #if defined(PTK_LOOP_FORWARD) || defined(PTK_LOOP_PINGPONG)
@@ -1115,17 +1087,19 @@ float CSynth::GetSample(short *Left_Samples,
 #endif
                             if(ENV_1_LOOP_BACKWARD)
                             {
-                                if((int) pos_osc_1->half.first <= 0)
+                                if((int) pos_osc_1->int_pos <= 0)
                                 {
-                                    pos_osc_1->half.first = 0;
+                                    pos_osc_1->int_pos = 0;
+                                    pos_osc_1->flt_pos = 0;
                                     *track = PLAYING_NOSAMPLE;
                                 }
                             }
                             else
                             {
-                                if(pos_osc_1->half.first >= Length1)
+                                if(pos_osc_1->int_pos >= Length1)
                                 {
-                                    pos_osc_1->half.first = Length1;
+                                    pos_osc_1->int_pos = Length1;
+                                    pos_osc_1->flt_pos = (float) Length1;
                                     *track = PLAYING_NOSAMPLE;
                                 }
                             }
@@ -1138,16 +1112,18 @@ float CSynth::GetSample(short *Left_Samples,
                         case SMP_LOOP_FORWARD:
                             if(ENV_1_LOOP_BACKWARD)
                             {
-                                if((int) pos_osc_1->half.first <= (int) (Length1 - Loop_Sub1))
+                                if((int) pos_osc_1->int_pos <= (int) (Length1 - Loop_Sub1))
                                 {
-                                    pos_osc_1->half.first += Length1;
+                                    pos_osc_1->int_pos += Length1;
+                                    pos_osc_1->flt_pos += Length1;
                                 }
                             }
                             else
                             {
-                                if(pos_osc_1->half.first >= Length1)
+                                if(pos_osc_1->int_pos >= Length1)
                                 {
-                                    pos_osc_1->half.first -= Loop_Sub1;
+                                    pos_osc_1->int_pos -= Loop_Sub1;
+                                    pos_osc_1->flt_pos -= Loop_Sub1;
                                 }
                             }
                             break;
@@ -1157,17 +1133,19 @@ float CSynth::GetSample(short *Left_Samples,
                         case SMP_LOOP_PINGPONG:
                             if(ENV_1_LOOP_BACKWARD)
                             {
-                                if((int) pos_osc_1->half.first <= (int) (Length1 - Loop_Sub1))
+                                if((int) pos_osc_1->int_pos <= (int) (Length1 - Loop_Sub1))
                                 {
-                                    pos_osc_1->half.first = Length1 - Loop_Sub1;
+                                    pos_osc_1->int_pos = Length1 - Loop_Sub1;
+                                    pos_osc_1->flt_pos = Length1 - (float) Loop_Sub1;
                                     ENV_1_LOOP_BACKWARD = FALSE;
                                 }
                             }
                             else
                             {
-                                if(pos_osc_1->half.first >= Length1)
+                                if(pos_osc_1->int_pos >= Length1)
                                 {
-                                    pos_osc_1->half.first = Length1;
+                                    pos_osc_1->int_pos = Length1;
+                                    pos_osc_1->flt_pos = (float) Length1;
                                     ENV_1_LOOP_BACKWARD = TRUE;
                                 }
                             }
@@ -1193,31 +1171,32 @@ float CSynth::GetSample(short *Left_Samples,
         {
             if(*track)
             {
-                double semitones_intervals[] =
+                float semitones_intervals[] =
                 {
-                    2.0,
-                    1.89072,
-                    1.78615, 
-                    1.68631, 
-                    1.59118, 
-                    1.50076, 
-                    1.41508, 
-                    1.33410, 
-                    1.25784, 
-                    1.18630, 
-                    1.11949, 
-                    1.05738, 
-                    1.0
+                    2.0f,
+                    1.89072f,
+                    1.78615f, 
+                    1.68631f, 
+                    1.59118f, 
+                    1.50076f, 
+                    1.41508f, 
+                    1.33410f, 
+                    1.25784f, 
+                    1.18630f, 
+                    1.11949f, 
+                    1.05738f, 
+                    1.0f
                 };
-                osc_speed_dbl = (double) osc_speed2 / 2.0;
+                osc_speed_dbl = (float) osc_speed2 / 2.0f;
                 osc_speed_dbl *= semitones_intervals[Data.OSC_3_INTERVAL];
-                osc_speed2 = (int64) osc_speed_dbl;
+                osc_speed2 = osc_speed_dbl;
 
                 if(Left_Samples1)
                 {
-                    res_dec = pos_osc_3->half.last;
+                    // ******
+                    res_dec = pos_osc_3->int_pos;
 
-                    Set_Spline_Boundaries(pos_osc_3->half.first,
+                    Set_Spline_Boundaries(pos_osc_3->int_pos,
                                           i_POSITION,
                                           Loop_Type1,
                                           ENV_3_LOOP_BACKWARD,
@@ -1352,14 +1331,16 @@ float CSynth::GetSample(short *Left_Samples,
 
                 if(ENV_3_LOOP_BACKWARD == TRUE)
                 {
-                    if(pos_osc_3->half.first > 0)
+                    if(pos_osc_3->int_pos > 0)
                     {
-                        pos_osc_3->absolu -= osc_speed2;
+                        pos_osc_3->flt_pos -= osc_speed2;
+                        pos_osc_3->int_pos = (int32) pos_osc_3->flt_pos;
                     }
                 }
                 else
                 {
-                    pos_osc_3->absolu += osc_speed2;
+                    pos_osc_3->flt_pos += osc_speed2;
+                    pos_osc_3->int_pos = (int32) pos_osc_3->flt_pos;
                 }
 
 #if defined(PTK_LOOP_FORWARD) || defined(PTK_LOOP_PINGPONG)
@@ -1369,17 +1350,19 @@ float CSynth::GetSample(short *Left_Samples,
 #endif
                         if(ENV_3_LOOP_BACKWARD)
                         {
-                            if((int) pos_osc_3->half.first <= 0)
+                            if((int) pos_osc_3->int_pos <= 0)
                             {
-                                pos_osc_3->half.first = 0;
+                                pos_osc_3->int_pos = 0;
+                                pos_osc_3->flt_pos = 0;
                                 *track = PLAYING_NOSAMPLE;
                             }
                         }
                         else
                         {
-                            if(pos_osc_3->half.first >= Length1)
+                            if(pos_osc_3->int_pos >= Length1)
                             {
-                                pos_osc_3->half.first = Length1;
+                                pos_osc_3->int_pos = Length1;
+                                pos_osc_3->flt_pos = (float) Length1;
                                 *track = PLAYING_NOSAMPLE;
                             }
                         }
@@ -1391,16 +1374,19 @@ float CSynth::GetSample(short *Left_Samples,
                     case SMP_LOOP_FORWARD:
                         if(ENV_3_LOOP_BACKWARD)
                         {
-                            if((int) pos_osc_3->half.first <= (int) (Length1 - Loop_Sub1))
+                            if((int) pos_osc_3->int_pos <= (int) (Length1 - Loop_Sub1))
                             {
-                                pos_osc_3->half.first += Length1;
+                                // ******
+                                pos_osc_3->int_pos += Length1;
+                                pos_osc_3->flt_pos += Length1;
                             }
                         }
                         else
                         {
-                            if(pos_osc_3->half.first >= Length1)
+                            if(pos_osc_3->int_pos >= Length1)
                             {
-                                pos_osc_3->half.first -= Loop_Sub1;
+                                pos_osc_3->int_pos -= Loop_Sub1;
+                                pos_osc_3->flt_pos -= Loop_Sub1;
                             }
                         }
                         break;
@@ -1410,17 +1396,19 @@ float CSynth::GetSample(short *Left_Samples,
                     case SMP_LOOP_PINGPONG:
                         if(ENV_3_LOOP_BACKWARD)
                         {
-                            if((int) pos_osc_3->half.first <= (int) (Length1 - Loop_Sub1))
+                            if((int) pos_osc_3->int_pos <= (int) (Length1 - Loop_Sub1))
                             {
-                                pos_osc_3->half.first = Length1 - Loop_Sub1;
+                                pos_osc_3->int_pos = Length1 - Loop_Sub1;
+                                pos_osc_3->flt_pos = (float) (Length1 - Loop_Sub);
                                 ENV_3_LOOP_BACKWARD = FALSE;
                             }
                         }
                         else
                         {
-                            if(pos_osc_3->half.first >= Length1)
+                            if(pos_osc_3->int_pos >= Length1)
                             {
-                                pos_osc_3->half.first = Length1;
+                                pos_osc_3->int_pos = Length1;
+                                pos_osc_3->flt_pos = (float) Length1;
                                 ENV_3_LOOP_BACKWARD = TRUE;
                             }
                         }
@@ -1445,8 +1433,8 @@ float CSynth::GetSample(short *Left_Samples,
         {
             if(*track2)
             {
-                osc_speed_tune = osc_speed + (int64) ((double) Data.OSC_2_FINETUNE * 536870912.0)
-                                           + (int64) ((double) Data.OSC_2_DETUNE * 536870912.0);
+                osc_speed_tune = osc_speed + ((float) Data.OSC_2_FINETUNE * 0.125f)
+                                           + ((float) Data.OSC_2_DETUNE  * 0.125f);
                 if(GLIDE_64_ALIGN != 0 && OSC_2_SPEED != 0)
                 {
                     if(osc_speed_tune > OSC_2_SPEED)
@@ -1466,7 +1454,7 @@ float CSynth::GetSample(short *Left_Samples,
                 }
 
 #if defined(PTK_SYNTH_PITCH)
-                osc_speed1b = ((int64) ((double)
+                osc_speed1b = ((float)
                                (
 #if defined(PTK_SYNTH_LFO_1_PITCH)
                                   LFO_1_VALUE * Data.LFO_1_OSC_2_PITCH
@@ -1480,7 +1468,8 @@ float CSynth::GetSample(short *Left_Samples,
 #if defined(PTK_SYNTH_ENV_2_PITCH)
                                 + ENV_2_VALUE * Data.ENV_2_OSC_2_PITCH
 #endif
-                               ) * 4294967296.0));
+                               ))
+                              ;// * 4294967296.0));
 #endif
 
                 osc_speed2 = OSC_2_SPEED;
@@ -1534,13 +1523,13 @@ float CSynth::GetSample(short *Left_Samples,
 
                     }
 
-                    osc_speed_dbl = (double) osc_speed1b;
+                    osc_speed_dbl = (float) osc_speed1b;
                     osc_speed_dbl *= WAVEFORM_ADJUST_FREQ;
-                    osc_speed1b = (int64) osc_speed_dbl;
+                    osc_speed1b = osc_speed_dbl;
 
-                    osc_speed_dbl = (double) osc_speed2;
+                    osc_speed_dbl = (float) osc_speed2;
                     osc_speed_dbl *= WAVEFORM_ADJUST_FREQ;
-                    osc_speed2 = (int64) osc_speed_dbl;
+                    osc_speed2 = osc_speed_dbl;
 
                     // Those always loop
                     Loop_Type2 = SMP_LOOP_FORWARD;
@@ -1560,9 +1549,10 @@ float CSynth::GetSample(short *Left_Samples,
 
                     if(Data.OSC_2_WAVEFORM == WAVEFORM_NONE) T_OSC_2_VOLUME *= Ampi_Vol;
 
-                    res_dec = pos_osc_2->half.last;
+                    // ******
+                    res_dec = pos_osc_2->int_pos;
 
-                    Set_Spline_Boundaries(pos_osc_2->half.first,
+                    Set_Spline_Boundaries(pos_osc_2->int_pos,
                                           i_POSITION,
                                           Loop_Type2,
                                           ENV_2_LOOP_BACKWARD,
@@ -1683,22 +1673,25 @@ float CSynth::GetSample(short *Left_Samples,
 
 #if defined(PTK_SYNTH_PITCH)
                     osc_speed2 += osc_speed1b;
-                    if(osc_speed2 < 16)
+/*                    if(osc_speed2 < 16)
                     {
                         osc_speed2 = 16;
-                    }
+                    }*/
 #endif
 
                     if(ENV_2_LOOP_BACKWARD == TRUE)
                     {
-                        if(pos_osc_2->half.first > 0)
+                        // ******
+                        if(pos_osc_2->int_pos > 0)
                         {
-                            pos_osc_2->absolu -= osc_speed2;
+                            pos_osc_2->flt_pos -= osc_speed2;
+                            pos_osc_2->int_pos = (int32) pos_osc_2->flt_pos;
                         }
                     }
                     else
                     {
-                        pos_osc_2->absolu += osc_speed2;
+                        pos_osc_2->flt_pos += osc_speed2;
+                        pos_osc_2->int_pos = (int32) pos_osc_2->flt_pos;
                     }
 
 #if defined(PTK_LOOP_FORWARD) || defined(PTK_LOOP_PINGPONG)
@@ -1708,9 +1701,10 @@ float CSynth::GetSample(short *Left_Samples,
 #endif
                             if(ENV_2_LOOP_BACKWARD)
                             {
-                                if((int) pos_osc_2->half.first <= 0)
+                                if((int) pos_osc_2->int_pos <= 0)
                                 {
-                                    pos_osc_2->half.first = 0;
+                                    pos_osc_2->int_pos = 0;
+                                    pos_osc_2->flt_pos = 0;
                                     *track2 = PLAYING_NOSAMPLE;
 #if defined(PTK_SYNTH_SYNC)
                                     do_sync = TRUE;
@@ -1719,9 +1713,10 @@ float CSynth::GetSample(short *Left_Samples,
                             }
                             else
                             {
-                                if(pos_osc_2->half.first >= Length2)
+                                if(pos_osc_2->int_pos >= Length2)
                                 {
-                                    pos_osc_2->half.first = Length2;
+                                    pos_osc_2->int_pos = Length2;
+                                    pos_osc_2->flt_pos = (float) Length2;
                                     *track2 = PLAYING_NOSAMPLE;
 #if defined(PTK_SYNTH_SYNC)
                                     do_sync = TRUE;
@@ -1737,9 +1732,11 @@ float CSynth::GetSample(short *Left_Samples,
                         case SMP_LOOP_FORWARD:
                             if(ENV_2_LOOP_BACKWARD)
                             {
-                                if((int) pos_osc_2->half.first <= (int) (Length2 - Loop_Sub2))
+                                // ******
+                                if((int) pos_osc_2->int_pos <= (int) (Length2 - Loop_Sub2))
                                 {
-                                    pos_osc_2->half.first += Length2;
+                                    pos_osc_2->int_pos += Length2;
+                                    pos_osc_2->flt_pos += Length2;
 #if defined(PTK_SYNTH_SYNC)
                                     do_sync = TRUE;
 #endif
@@ -1747,9 +1744,10 @@ float CSynth::GetSample(short *Left_Samples,
                             }
                             else
                             {
-                                if(pos_osc_2->half.first >= Length2)
+                                if(pos_osc_2->int_pos >= Length2)
                                 {
-                                    pos_osc_2->half.first -= Loop_Sub2;
+                                    pos_osc_2->int_pos -= Loop_Sub2;
+                                    pos_osc_2->flt_pos -= Loop_Sub2;
 #if defined(PTK_SYNTH_SYNC)
                                     do_sync = TRUE;
 #endif
@@ -1762,9 +1760,10 @@ float CSynth::GetSample(short *Left_Samples,
                         case SMP_LOOP_PINGPONG:
                             if(ENV_2_LOOP_BACKWARD)
                             {
-                                if((int) pos_osc_2->half.first <= (int) (Length2 - Loop_Sub2))
+                                if((int) pos_osc_2->int_pos <= (int) (Length2 - Loop_Sub2))
                                 {
-                                    pos_osc_2->half.first = Length2 - Loop_Sub2;
+                                    pos_osc_2->int_pos = Length2 - Loop_Sub2;
+                                    pos_osc_2->flt_pos = (float) (Length2 - Loop_Sub2);
                                     ENV_2_LOOP_BACKWARD = FALSE;
 #if defined(PTK_SYNTH_SYNC)
                                     do_sync = TRUE;
@@ -1773,9 +1772,10 @@ float CSynth::GetSample(short *Left_Samples,
                             }
                             else
                             {
-                                if(pos_osc_2->half.first >= Length2)
+                                if(pos_osc_2->int_pos >= Length2)
                                 {
-                                    pos_osc_2->half.first = Length2;
+                                    pos_osc_2->int_pos = Length2;
+                                    pos_osc_2->flt_pos = (float) Length2;
                                     ENV_2_LOOP_BACKWARD = TRUE;
 #if defined(PTK_SYNTH_SYNC)
                                     do_sync = TRUE;
@@ -1794,8 +1794,10 @@ float CSynth::GetSample(short *Left_Samples,
                     {
                         if(do_sync)
                         {
-                            pos_osc_1->absolu = 0;
-                            pos_osc_3->absolu = 0;
+                            pos_osc_1->int_pos = 0;
+                            pos_osc_1->flt_pos = 0;
+                            pos_osc_3->int_pos = 0;
+                            pos_osc_3->flt_pos = 0;
                         }
                     }
 #endif
@@ -2067,7 +2069,7 @@ void CSynth::ChangeParameters(Synth_Parameters TSP)
     Data.OSC_3_SWITCH =         TSP.osc_3_switch;
 
     Data.PTC_GLIDE =            ((float) TSP.ptc_glide * (float) TSP.ptc_glide) * 0.0000015625f;
-    GLIDE_64_ALIGN =            (int64) ((double) Data.PTC_GLIDE * 4294967296.0);
+    GLIDE_64_ALIGN =            ((float) Data.PTC_GLIDE);// * 4294967296.0);
 
     Data.DISTO =                ((float) TSP.disto - 64) * 0.015625f;
 

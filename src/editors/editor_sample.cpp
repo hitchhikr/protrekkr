@@ -419,11 +419,11 @@ void Draw_Wave_PlayBack_Pos(void)
             pos_in_sample = 0;
             for(i = 0; i < MAX_POLYPHONY; i++)
             {
-                if((int32) sp_Position[Track_Under_Caret][i].half.first > pos_in_sample)
+                if((int32) sp_Position[Track_Under_Caret][i].int_pos > pos_in_sample)
                 {
                     if(sp_Stage[Track_Under_Caret][i] == PLAYING_SAMPLE)
                     {
-                        pos_in_sample = sp_Position[Track_Under_Caret][i].half.first;
+                        pos_in_sample = sp_Position[Track_Under_Caret][i].int_pos;
                     }
                 }
             }

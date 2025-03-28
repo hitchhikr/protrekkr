@@ -147,18 +147,10 @@ float sp_Tvol_Synth[MAX_TRACKS][MAX_POLYPHONY];
 float sp_Tvol_Mod[MAX_TRACKS];
 float DSend[MAX_TRACKS];   
 int CSend[MAX_TRACKS];
-int64 Vstep1[MAX_TRACKS][MAX_POLYPHONY]
-#if defined(__GCC__)
-        __attribute__((aligned(8)))
-#endif
-        ;
+float Vstep1[MAX_TRACKS][MAX_POLYPHONY];
 
 #if defined(PTK_FX_TRANCEGLIDER)
-    int64 glidestep[MAX_TRACKS]
-#if defined(__GCC__)
-        __attribute__((aligned(8)))
-#endif
-        ;
+    float Glide_Step[MAX_TRACKS];
 #endif
 
 EQSTATE EqDat[MAX_TRACKS];
@@ -181,30 +173,14 @@ float TPan[MAX_TRACKS];
 float old_TPan[MAX_TRACKS];
 int old_note[MAX_TRACKS][MAX_POLYPHONY];
 
-s_access sp_Position[MAX_TRACKS][MAX_POLYPHONY]
-#if defined(__GCC__)
-        __attribute__((aligned(8)))
-#endif
-        ;
+s_access sp_Position[MAX_TRACKS][MAX_POLYPHONY];
 
 #if defined(PTK_SYNTH)
-s_access sp_Position_osc_1[MAX_TRACKS][MAX_POLYPHONY]
-#if defined(__GCC__)
-        __attribute__((aligned(8)))
-#endif
-        ;
-s_access sp_Position_osc_2[MAX_TRACKS][MAX_POLYPHONY]
-#if defined(__GCC__)
-        __attribute__((aligned(8)))
-#endif
-        ;
+s_access sp_Position_osc_1[MAX_TRACKS][MAX_POLYPHONY];
+s_access sp_Position_osc_2[MAX_TRACKS][MAX_POLYPHONY];
 
 #if defined(PTK_SYNTH_OSC_3)
-    s_access sp_Position_osc_3[MAX_TRACKS][MAX_POLYPHONY]
-#if defined(__GCC__)
-        __attribute__((aligned(8)))
-#endif
-        ;
+    s_access sp_Position_osc_3[MAX_TRACKS][MAX_POLYPHONY];
 #endif
 #endif
 
@@ -665,7 +641,7 @@ unsigned char *RawPatterns;
 
 int pl_eff_row[MAX_FX];
 int pl_dat_row[MAX_FX];
-int glide;
+int glide[MAX_TRACKS];
 float Sample_Vol[MAX_INSTRS];
 unsigned int SubCounter;
 unsigned int SamplesPerSub;
@@ -688,22 +664,14 @@ int shuffleswitch;
 #endif
 
 #if defined(PTK_FX_VIBRATO)
-    int64 Vstep_vib[MAX_TRACKS][MAX_POLYPHONY]
-#if defined(__GCC__)
-        __attribute__((aligned(8)))
-#endif
-        ;
+    float Vstep_vib[MAX_TRACKS][MAX_POLYPHONY];
     int Vibrato_Switch[MAX_TRACKS];
     float Vibrato_BaseNote[MAX_TRACKS][MAX_POLYPHONY];
     int Vibcounter[MAX_TRACKS];
 #endif
 
 #if defined(PTK_FX_ARPEGGIO)
-    int64 Vstep_arp[MAX_TRACKS][MAX_POLYPHONY]
-#if defined(__GCC__)
-        __attribute__((aligned(8)))
-#endif
-        ;
+    float Vstep_arp[MAX_TRACKS][MAX_POLYPHONY];
     int Arpeggio_Switch[MAX_TRACKS];
     float Arpeggio_BaseNote[MAX_TRACKS][MAX_POLYPHONY];
 #endif
@@ -809,11 +777,7 @@ Uint32 Sample_Length[MAX_INSTRS][MAX_INSTRS_SPLITS];
 Uint32 Sample_Length_Packed[MAX_INSTRS][MAX_INSTRS_SPLITS];
 char Beat_Sync[MAX_INSTRS];
 short Beat_Lines[MAX_INSTRS];
-int64 sp_Step[MAX_TRACKS][MAX_POLYPHONY]
-#if defined(__GCC__)
-        __attribute__((aligned(8)))
-#endif
-            ;
+float sp_Step[MAX_TRACKS][MAX_POLYPHONY];
 float Sample_Amplify[MAX_INSTRS][MAX_INSTRS_SPLITS];
 char Sample_Channels[MAX_INSTRS][MAX_INSTRS_SPLITS];
 float FDecay[MAX_INSTRS][MAX_INSTRS_SPLITS];
@@ -2331,7 +2295,6 @@ void Pre_Song_Init(void)
 {
     int i;
 
-    glide = 0;
 
 #if !defined(__STAND_ALONE__) || defined(BZR2)
     sprintf(artist, "Somebody");
@@ -2342,6 +2305,7 @@ void Pre_Song_Init(void)
     
     for(int ini = 0; ini < MAX_TRACKS; ini++)
     {
+        glide[ini] = 0;
         for(i = 0; i < MAX_POLYPHONY; i++)
         {
 
@@ -2543,14 +2507,18 @@ void Post_Song_Init(void)
             sp_Stage3[i][j] = PLAYING_NOSAMPLE;
 #endif
 
-            sp_Position[i][j].absolu = 0;
+            sp_Position[i][j].int_pos = 0;
+            sp_Position[i][j].flt_pos = 0;
 
 #if defined(PTK_SYNTH)
-            sp_Position_osc_1[i][j].absolu = 0;
-            sp_Position_osc_2[i][j].absolu = 0;
+            sp_Position_osc_1[i][j].int_pos = 0;
+            sp_Position_osc_1[i][j].flt_pos = 0;
+            sp_Position_osc_2[i][j].int_pos = 0;
+            sp_Position_osc_2[i][j].flt_pos = 0;
 
 #if defined(PTK_SYNTH_OSC_3)
-            sp_Position_osc_3[i][j].absolu = 0;
+            sp_Position_osc_3[i][j].int_pos = 0;
+            sp_Position_osc_3[i][j].flt_pos = 0;
 #endif
 #endif
 
@@ -2618,7 +2586,7 @@ void Post_Song_Init(void)
 #endif
 
 #if defined(PTK_FX_TRANCEGLIDER)
-        glidestep[i] = 0;
+        Glide_Step[i] = 0;
 #endif
 
 #if defined(PTK_LFO)
@@ -3069,11 +3037,20 @@ void Sp_Player(void)
 
                 // Those 2 will only be used when triggering new notes
                 toffset = 0;
-                glide = 0;
+                glide[ct] = 0;
                 for(i = 0; i < Channels_Effects[ct]; i++)
                 {
-                    if(pl_eff_row[i] == 0x9) toffset = pl_dat_row[i];
-                    else if(pl_eff_row[i] == 5) glide = 1;
+                    if(pl_eff_row[i] == 0x9)
+                    {
+                        toffset = pl_dat_row[i];
+                    }
+                    else
+                    {
+                        if(pl_eff_row[i] == 0x5)
+                        {
+                            glide[ct] = 1;
+                        }
+                    }
                 }
 
                 // Clear glide infos
@@ -3178,7 +3155,7 @@ void Sp_Player(void)
                                                 pl_note[i],
                                                 pl_sample[i],
                                                 toffset,
-                                                glide,
+                                                glide[ct],
                                                 FALSE, i + 1,
                                                 1.0f,
                                                 Song_Position,
@@ -3608,14 +3585,24 @@ ByPass_Wav:
                                 sp_Cvol[c][i] = 0.0f;
                             }
                         }
+                        if(sp_Stage[c][i] == PLAYING_NOSAMPLE)
+                        {
+                            if(sp_Cvol[c][i] < 0.02f)
+                            {
+                                sp_Cvol[c][i] = 0.0f;
+                                sp_Position[c][i].flt_pos = 0;
+                                sp_Position[c][i].int_pos = 0;
+                            }
+                        }
+
                     }
 
-                    res_dec = sp_Position[c][i].half.last;
+                    res_dec = sp_Position[c][i].int_pos;
 
                     // We had some signal (on any channel)
                     gotsome = TRUE;
 
-                    Set_Spline_Boundaries(sp_Position[c][i].half.first,
+                    Set_Spline_Boundaries(sp_Position[c][i].int_pos,
                                           Current_Pointer,
                                           Player_LT[c][i],
                                           Player_LW[c][i],
@@ -3639,14 +3626,16 @@ ByPass_Wav:
                     // check the carrier against looping infos
                     if(Player_LW[c][i] == SMP_LOOPING_BACKWARD)
                     {
-                        if((int) sp_Position[c][i].half.first > 0)
+                        if((int) sp_Position[c][i].int_pos > 0)
                         {
-                            sp_Position[c][i].absolu -= Vstep1[c][i];
+                            sp_Position[c][i].flt_pos -= Vstep1[c][i];
+                            sp_Position[c][i].int_pos = (int32) sp_Position[c][i].flt_pos;
                         }
                     }
                     else
                     {
-                        sp_Position[c][i].absolu += Vstep1[c][i];
+                        sp_Position[c][i].flt_pos += Vstep1[c][i];
+                        sp_Position[c][i].int_pos = (int32) sp_Position[c][i].flt_pos;
                     }
 
 #if defined(PTK_LOOP_FORWARD) || defined(PTK_LOOP_PINGPONG)
@@ -3656,16 +3645,18 @@ ByPass_Wav:
                         case SMP_LOOP_FORWARD:
                             if(Player_LW[c][i] == SMP_LOOPING_FORWARD)
                             {
-                                if(sp_Position[c][i].half.first >= Player_LE[c][i])
+                                if(sp_Position[c][i].int_pos >= Player_LE[c][i])
                                 {
-                                    sp_Position[c][i].half.first = Player_LS[c][i];
+                                    sp_Position[c][i].int_pos = Player_LS[c][i];
+                                    sp_Position[c][i].flt_pos = Player_LS[c][i];
                                 }
                             }
                             else
                             {
-                                if((int) sp_Position[c][i].half.first <= (int) Player_LS[c][i])
+                                if((int) sp_Position[c][i].int_pos <= (int) Player_LS[c][i])
                                 {
-                                    sp_Position[c][i].half.first = Player_LE[c][i];
+                                    sp_Position[c][i].int_pos = Player_LE[c][i];
+                                    sp_Position[c][i].flt_pos = Player_LE[c][i];
                                 }
                             }
                             break;
@@ -3674,18 +3665,20 @@ ByPass_Wav:
                         case SMP_LOOP_PINGPONG:
                             if(Player_LW[c][i] == SMP_LOOPING_FORWARD)
                             {
-                                if(sp_Position[c][i].half.first >= Player_LE[c][i])
+                                if(sp_Position[c][i].int_pos >= Player_LE[c][i])
                                 {
-                                    sp_Position[c][i].half.first = Player_LE[c][i];
+                                    sp_Position[c][i].int_pos = Player_LE[c][i];
+                                    sp_Position[c][i].flt_pos = Player_LE[c][i];
                                     Player_LW[c][i] = SMP_LOOPING_BACKWARD;
                                 }
                             }
                             else
                             {
-                                if((int) sp_Position[c][i].half.first <= (int) Player_LS[c][i])
+                                if((int) sp_Position[c][i].int_pos <= (int) Player_LS[c][i])
                                 {
                                     Player_LW[c][i] = SMP_LOOPING_FORWARD;
-                                    sp_Position[c][i].half.first = Player_LS[c][i];
+                                    sp_Position[c][i].int_pos = Player_LS[c][i];
+                                    sp_Position[c][i].flt_pos = Player_LS[c][i];
                                 }
                             }
                             break;
@@ -3694,17 +3687,19 @@ ByPass_Wav:
 #endif // defined(PTK_LOOP_FORWARD) || defined(PTK_LOOP_PINGPONG)
                             if(Player_LW[c][i] == SMP_LOOPING_FORWARD)
                             {
-                                if(sp_Position[c][i].half.first >= Player_NS[c][i])
+                                if(sp_Position[c][i].int_pos >= Player_NS[c][i])
                                 {
-                                    sp_Position[c][i].half.first = Player_NS[c][i];
+                                    sp_Position[c][i].int_pos = Player_NS[c][i];
+                                    sp_Position[c][i].flt_pos = Player_NS[c][i];
                                     sp_Stage[c][i] = PLAYING_NOSAMPLE;
                                 }
                             }
                             else
                             {
-                                if((int) sp_Position[c][i].half.first <= 0)
+                                if((int) sp_Position[c][i].int_pos <= 0)
                                 {
-                                    sp_Position[c][i].half.first = 0;
+                                    sp_Position[c][i].int_pos = 0;
+                                    sp_Position[c][i].flt_pos = 0;
                                     sp_Stage[c][i] = PLAYING_NOSAMPLE;
                                 }
                             }
@@ -3807,10 +3802,10 @@ ByPass_Wav:
                                                                 sp_Cvol_Synth[c][i],
                                                                 &sp_Stage2[c][i],
                                                                 &sp_Stage3[c][i],
-                                                                (Uint64 *) &sp_Position_osc_1[c][i],
-                                                                (Uint64 *) &sp_Position_osc_2[c][i],
+                                                                &sp_Position_osc_1[c][i],
+                                                                &sp_Position_osc_2[c][i],
 #if defined(PTK_SYNTH_OSC_3)
-                                                                (Uint64 *) &sp_Position_osc_3[c][i],
+                                                                &sp_Position_osc_3[c][i],
 #endif
                                                                 Vstep1[c][i],
                                                                 Player_Ampli[c][i]
@@ -4538,7 +4533,10 @@ void Play_Instrument(int channel, int sub_channel)
             // retrieve it's volume
             vol = sp_Tvol[channel][sub_channel];
             vol_synth = sp_Tvol_Synth[channel][sub_channel];
-            if(glide) no_retrig_adsr = TRUE;
+            if(glide)
+            {
+                no_retrig_adsr = TRUE;
+            }
         }
 
 #if defined(PTK_SYNTH)
@@ -4579,11 +4577,14 @@ void Play_Instrument(int channel, int sub_channel)
                 {
                     if(!glide)
                     {
-                        sp_Position[channel][sub_channel].absolu = 0;
-                        sp_Position_osc_1[channel][sub_channel].absolu = 0;
+                        sp_Position[channel][sub_channel].int_pos = 0;
+                        sp_Position[channel][sub_channel].flt_pos = 0;
+                        sp_Position_osc_1[channel][sub_channel].int_pos = 0;
+                        sp_Position_osc_1[channel][sub_channel].flt_pos = 0;
 
 #if defined(PTK_SYNTH_OSC_3)
-                        sp_Position_osc_3[channel][sub_channel].absolu = 0;
+                        sp_Position_osc_3[channel][sub_channel].int_pos = 0;
+                        sp_Position_osc_3[channel][sub_channel].flt_pos = 0;
 #endif
 
                     }
@@ -4593,8 +4594,10 @@ void Play_Instrument(int channel, int sub_channel)
                 {
                     if(!glide)
                     {
-                        sp_Position[channel][sub_channel].absolu = 0;
-                        sp_Position_osc_2[channel][sub_channel].absolu = 0;
+                        sp_Position[channel][sub_channel].int_pos = 0;
+                        sp_Position[channel][sub_channel].flt_pos = 0;
+                        sp_Position_osc_2[channel][sub_channel].int_pos = 0;
+                        sp_Position_osc_2[channel][sub_channel].flt_pos = 0;
                     }
                 }
             }
@@ -4660,16 +4663,15 @@ void Play_Instrument(int channel, int sub_channel)
             sp_Tvol_Synth[channel][sub_channel] = vol_synth;
             sp_Cvol_Synth_Ramp_Dest[channel][sub_channel] = 10.0f;
 
-            double spreadnote = (double) POWF2(note2 / 12.0f);
-            spreadnote *= 4294967296.0f;
+            float spreadnote = ((float) POWF2(note2 / 12.0f));
 
 #if defined(PTK_FX_ARPEGGIO)
-            Vstep_arp[channel][sub_channel] = (int64) spreadnote;
+            Vstep_arp[channel][sub_channel] = spreadnote;
             Arpeggio_BaseNote[channel][sub_channel] = (float) note2;
 #endif
 
 #if defined(PTK_FX_VIBRATO)
-            Vstep_vib[channel][sub_channel] = (int64) spreadnote;
+            Vstep_vib[channel][sub_channel] = spreadnote;
             Vibrato_BaseNote[channel][sub_channel] = (float) note2;
 #endif
 
@@ -4677,12 +4679,12 @@ void Play_Instrument(int channel, int sub_channel)
             {
                 if(glide)
                 {
-                    sp_Step[channel][sub_channel] = (int64) spreadnote;
+                    sp_Step[channel][sub_channel] = spreadnote;
                 }
                 else
                 {
-                    Vstep1[channel][sub_channel] = (int64) spreadnote;
-                    sp_Step[channel][sub_channel] = (int64) spreadnote;
+                    Vstep1[channel][sub_channel] = spreadnote;
+                    sp_Step[channel][sub_channel] = spreadnote;
                 }
             }
 
@@ -4744,46 +4746,44 @@ void Play_Instrument(int channel, int sub_channel)
 
                 if(Beat_Sync[associated_sample])
                 {
-                    double spreadnote = (double) (Sample_Length[associated_sample][split]) / ((double) Beat_Lines[associated_sample] * (double) SamplesPerTick);
-                    spreadnote *= 4294967296.0f;
+                    float spreadnote = ((float) (Sample_Length[associated_sample][split]) / ((float) Beat_Lines[associated_sample] * (float) SamplesPerTick));
 
 #if defined(PTK_FX_ARPEGGIO)
-                    Vstep_arp[channel][sub_channel] = (int64) spreadnote;
+                    Vstep_arp[channel][sub_channel] = spreadnote;
 #endif
 
 #if defined(PTK_FX_VIBRATO)
-                    Vstep_vib[channel][sub_channel] = (int64) spreadnote;
+                    Vstep_vib[channel][sub_channel] = spreadnote;
 #endif
 
                     if(!no_retrig_note)
                     {
-                        Vstep1[channel][sub_channel] = (int64) spreadnote;
-                        sp_Step[channel][sub_channel] = (int64) spreadnote;
+                        Vstep1[channel][sub_channel] = spreadnote;
+                        sp_Step[channel][sub_channel] = spreadnote;
                     }
                 }
                 else
                 {
-                    double spreadnote = (double) POWF2(note / 12.0f);
-                    spreadnote *= 4294967296.0f;
+                    float spreadnote = ((float) POWF2(note / 12.0f));
 
 #if defined(PTK_FX_ARPEGGIO)
-                    Vstep_arp[channel][sub_channel] = (int64) spreadnote;
+                    Vstep_arp[channel][sub_channel] = spreadnote;
 #endif
 
 #if defined(PTK_FX_VIBRATO)
-                    Vstep_vib[channel][sub_channel] = (int64) spreadnote;
+                    Vstep_vib[channel][sub_channel] = spreadnote;
 #endif
 
                     if(!no_retrig_note)
                     {
                         if(glide)
                         {
-                            sp_Step[channel][sub_channel] = (int64) spreadnote;
+                            sp_Step[channel][sub_channel] = spreadnote;
                         }
                         else
                         {
-                            Vstep1[channel][sub_channel] = (int64) spreadnote;
-                            sp_Step[channel][sub_channel] = (int64) spreadnote;
+                            Vstep1[channel][sub_channel] = spreadnote;
+                            sp_Step[channel][sub_channel] = spreadnote;
                         }
                     }
                 }
@@ -4814,14 +4814,16 @@ void Play_Instrument(int channel, int sub_channel)
                     Player_LE[channel][sub_channel] = Sel_End;
                     if(!no_retrig_note)
                     {
-                        sp_Position[channel][sub_channel].half.first = Sel_Start;
+                        sp_Position[channel][sub_channel].int_pos = Sel_Start;
+                        sp_Position[channel][sub_channel].flt_pos = Sel_Start;
                     }
                     Player_NS[channel][sub_channel] = Sel_End;
                     if(!glide)
                     {
                         if(!no_retrig_note)
                         {
-                            sp_Position[channel][sub_channel].half.first += offset << 8;
+                            sp_Position[channel][sub_channel].int_pos += offset << 8;
+                            sp_Position[channel][sub_channel].flt_pos += offset << 8;
                         }
                     }
                 }
@@ -4834,7 +4836,8 @@ void Play_Instrument(int channel, int sub_channel)
                     {
                         if(!no_retrig_note)
                         {
-                            sp_Position[channel][sub_channel].half.first = offset << 8;
+                            sp_Position[channel][sub_channel].int_pos = offset << 8;
+                            sp_Position[channel][sub_channel].flt_pos = offset << 8;
                         }
                     }
                 }
@@ -4846,7 +4849,8 @@ void Play_Instrument(int channel, int sub_channel)
                 {
                     if(!no_retrig_note)
                     {
-                        sp_Position[channel][sub_channel].half.first = offset << 8;
+                        sp_Position[channel][sub_channel].int_pos = offset << 8;
+                        sp_Position[channel][sub_channel].flt_pos = offset << 8;
                     }
                 }
 #endif
@@ -4892,7 +4896,11 @@ void Play_Instrument(int channel, int sub_channel)
                 if(!glide)
                 {
                     ramper[channel] = 0;
-                    if(!no_retrig_note) sp_Position[channel][sub_channel].half.first = offset << 8;
+                    if(!no_retrig_note)
+                    {
+                        sp_Position[channel][sub_channel].int_pos = offset << 8;
+                        sp_Position[channel][sub_channel].flt_pos = offset << 8;
+                    }
                 }
             }
 
@@ -4900,13 +4908,13 @@ void Play_Instrument(int channel, int sub_channel)
             // (synths can have Sample_Length = 0)
             if(Sample_Length[associated_sample][split])
             {
-                if((int) sp_Position[channel][sub_channel].half.first >= (int) Sample_Length[associated_sample][split])
+                if((int) sp_Position[channel][sub_channel].int_pos >= (int) Sample_Length[associated_sample][split])
                 {
                     if(LoopType[associated_sample][split])
                     {
                         // Don't cross the boundaries of the loop data
-                        sp_Position[channel][sub_channel].absolu = 0;
-                        sp_Position[channel][sub_channel].half.first = Player_LE[channel][sub_channel];
+                        sp_Position[channel][sub_channel].int_pos = Player_LE[channel][sub_channel];
+                        sp_Position[channel][sub_channel].flt_pos = Player_LE[channel][sub_channel];
                     }
                     else
                     {
@@ -4967,18 +4975,22 @@ void Play_Instrument(int channel, int sub_channel)
                 {
                     Max_Loop = Player_LE[channel][sub_channel];
                 }
-                sp_Position[channel][sub_channel].half.first = Max_Loop;
+                sp_Position[channel][sub_channel].int_pos = Max_Loop;
+                sp_Position[channel][sub_channel].flt_pos = Max_Loop;
 #if defined(PTK_SYNTH)
                 if(Synthesizer[channel][sub_channel].Data.OSC_1_WAVEFORM == WAVEFORM_WAV)
                 {
-                    sp_Position_osc_1[channel][sub_channel].half.first = Max_Loop;
+                    sp_Position_osc_1[channel][sub_channel].int_pos = Max_Loop;
+                    sp_Position_osc_1[channel][sub_channel].flt_pos = Max_Loop;
 #if defined(PTK_SYNTH_OSC_3)
-                    sp_Position_osc_3[channel][sub_channel].half.first = Max_Loop;
+                    sp_Position_osc_3[channel][sub_channel].int_pos = Max_Loop;
+                    sp_Position_osc_3[channel][sub_channel].flt_pos = Max_Loop;
 #endif
                 }
                 if(Synthesizer[channel][sub_channel].Data.OSC_2_WAVEFORM == WAVEFORM_WAV)
                 {
-                    sp_Position_osc_2[channel][sub_channel].half.first = Max_Loop;
+                    sp_Position_osc_2[channel][sub_channel].int_pos = Max_Loop;
+                    sp_Position_osc_2[channel][sub_channel].flt_pos = Max_Loop;
                 }
 #endif
             }
@@ -5391,19 +5403,11 @@ void Do_Effects_Ticks_X(void)
     int pltr_sample[MAX_POLYPHONY];
 
 #if defined(PTK_FX_0) || defined(PTK_FX_X)
-    int64 pltr_eff_row[MAX_FX]
-#if defined(__GCC__)
-        __attribute__((aligned(8)))
-#endif
-        ;
+    int pltr_eff_row[MAX_FX];
 #endif
 
 #if defined(PTK_FX_0) || defined(PTK_FX_X)
-    int64 pltr_dat_row[MAX_FX]
-#if defined(__GCC__)
-        __attribute__((aligned(8)))
-#endif
-        ;
+    int pltr_dat_row[MAX_FX];
 #endif
 
     for(int trackef = 0; trackef < Song_Tracks; trackef++)
@@ -5534,11 +5538,14 @@ void Do_Effects_Ticks_X(void)
 
                         for(i = 0; i < Channels_Polyphony[trackef]; i++)
                         {
-#if defined(__GCC__)
-                            if(Vstep1[trackef][i] < 137438953472ll) Vstep1[trackef][i] += pltr_dat_row[k] << 21;
-#else
-                            if(Vstep1[trackef][i] < 137438953472) Vstep1[trackef][i] += pltr_dat_row[k] << 21;
-#endif
+                            if(Vstep1[trackef][i] < 5.66029f)
+                            {
+                                Vstep1[trackef][i] += ((float) pltr_dat_row[k]) / 2048.0f;
+                            }
+                            else
+                            {
+                                Vstep1[trackef][i] = 5.66029f;
+                            }
                         }
                         break;
 #endif
@@ -5548,8 +5555,14 @@ void Do_Effects_Ticks_X(void)
                     case 0x23:
                         for(i = 0; i < Channels_Polyphony[trackef]; i++)
                         {
-                            Vstep1[trackef][i] -= pltr_dat_row[k] << 21;
-                            if(Vstep1[trackef][i] < 16) Vstep1[trackef][i] = 16;
+                            if(Vstep1[trackef][i] > 0.00586236f)
+                            {
+                                Vstep1[trackef][i] -= ((float) pltr_dat_row[k]) / 2048.0f;
+                            }
+                            else
+                            {
+                                Vstep1[trackef][i] = 0.00586236f;
+                            }
                         }
                         break;
 #endif
@@ -5750,11 +5763,14 @@ void Do_Effects_Ticks_X(void)
 
                     for(i = 0; i < Channels_Polyphony[trackef]; i++)
                     {
-#if defined(__GCC__)
-                        if(Vstep1[trackef][i] < 137438953472ll) Vstep1[trackef][i] += pltr_dat_row[k] << 21;
-#else
-                        if(Vstep1[trackef][i] < 137438953472) Vstep1[trackef][i] += pltr_dat_row[k] << 21;
-#endif
+                        if(Vstep1[trackef][i] < 5.66029f)
+                        {
+                            Vstep1[trackef][i] += ((float) pltr_dat_row[k]) / 2048.0f;
+                        }
+                        else
+                        {
+                            Vstep1[trackef][i] = 5.66029f;
+                        }
                     }
             
                     break;
@@ -5766,8 +5782,14 @@ void Do_Effects_Ticks_X(void)
 
                     for(i = 0; i < Channels_Polyphony[trackef]; i++)
                     {
-                        Vstep1[trackef][i] -= pltr_dat_row[k] << 21;
-                        if(Vstep1[trackef][i] < 16) Vstep1[trackef][i] = 16;
+                        if(Vstep1[trackef][i] > 0.00586236f)
+                        {
+                            Vstep1[trackef][i] -= ((float) pltr_dat_row[k]) / 2048.0f;
+                        }
+                        else
+                        {
+                            Vstep1[trackef][i] = 0.00586236f;
+                        }
                     }
                     break;
 #endif
@@ -5782,13 +5804,16 @@ void Do_Effects_Ticks_X(void)
 #if defined(PTK_FX_TRANCEGLIDER)
                 // $05 Glider
                 case 0x5:
-                    if(pltr_dat_row[k]) glidestep[trackef] = pltr_dat_row[k] << 21;
+                    if(pltr_dat_row[k])
+                    {
+                        Glide_Step[trackef] = ((float) pltr_dat_row[k]) / 2048.0f;
+                    }
 
                     for(i = 0; i < Channels_Polyphony[trackef]; i++)
                     {
                         if(Vstep1[trackef][i] < sp_Step[trackef][i])
                         {
-                            Vstep1[trackef][i] += glidestep[trackef];
+                            Vstep1[trackef][i] += Glide_Step[trackef];
                             if(Vstep1[trackef][i] > sp_Step[trackef][i])
                             {
                                 Vstep1[trackef][i] = sp_Step[trackef][i];
@@ -5798,8 +5823,11 @@ void Do_Effects_Ticks_X(void)
                         {
                             if(Vstep1[trackef][i] > sp_Step[trackef][i])
                             {
-                                Vstep1[trackef][i] -= glidestep[trackef];
-                                if(Vstep1[trackef][i] < sp_Step[trackef][i]) Vstep1[trackef][i] = sp_Step[trackef][i];
+                                Vstep1[trackef][i] -= Glide_Step[trackef];
+                                if(Vstep1[trackef][i] < sp_Step[trackef][i])
+                                {
+                                    Vstep1[trackef][i] = sp_Step[trackef][i];
+                                }
                             }
                         }
                     }
@@ -6008,7 +6036,7 @@ void Do_Effects_Ticks_X(void)
 
 #if defined(PTK_FX_ARPEGGIO)
         // Let's do the arpeggio
-        double arpnote;
+        float arpnote;
 
         if(Arpeggio_Switch[trackef])
         {
@@ -6020,14 +6048,12 @@ void Do_Effects_Ticks_X(void)
                         Vstep1[trackef][i] = Vstep_arp[trackef][i];
                         break;
                     case 1:
-                        arpnote = (double) POWF2(((Arpeggio_BaseNote[trackef][i] + (Arpeggio_Switch[trackef] >> 4))) / 12.0f);
-                        arpnote *= 4294967296.0f;
-                        Vstep1[trackef][i] = (int64) arpnote;
+                        arpnote = ((float) POWF2(((Arpeggio_BaseNote[trackef][i] + (Arpeggio_Switch[trackef] >> 4))) / 12.0f));
+                        Vstep1[trackef][i] = arpnote;
                         break;
                     case 2:
-                        arpnote = (double) POWF2(((Arpeggio_BaseNote[trackef][i] + (Arpeggio_Switch[trackef] & 0xf))) / 12.0f);
-                        arpnote *= 4294967296.0f;
-                        Vstep1[trackef][i] = (int64) arpnote;
+                        arpnote = ((float) POWF2(((Arpeggio_BaseNote[trackef][i] + (Arpeggio_Switch[trackef] & 0xf))) / 12.0f));
+                        Vstep1[trackef][i] = arpnote;
                         break;
                 }
             }
@@ -6036,7 +6062,7 @@ void Do_Effects_Ticks_X(void)
 
 #if defined(PTK_FX_VIBRATO)
         // Let's do the vibrato
-        double vibnote;
+        float vibnote;
         float vib_speed;
         float vib_amp;
 
@@ -6049,9 +6075,8 @@ void Do_Effects_Ticks_X(void)
 
             for(i = 0; i < Channels_Polyphony[trackef]; i++)
             {
-                vibnote = (double) POWF2(((Vibrato_BaseNote[trackef][i] + vib_speed)) / 12.0f);
-                vibnote *= 4294967296.0f;
-                Vstep1[trackef][i] = (int64) vibnote;
+                vibnote = ((float) POWF2(((Vibrato_BaseNote[trackef][i] + vib_speed)) / 12.0f));
+                Vstep1[trackef][i] = vibnote;
             }
         }
 #endif
