@@ -391,8 +391,6 @@ Read_Mod_File:
         Song_Tracks = MAX_TRACKS;
         Read_Mod_Data(&Song_Length, sizeof(char), 1, in);
 
-        Use_Cubic = CUBIC_INT;
-
         if(Sel_Interpolation)
         {
             Read_Mod_Data(&Use_Cubic, sizeof(char), 1, in);

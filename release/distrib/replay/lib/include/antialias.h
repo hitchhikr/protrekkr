@@ -29,11 +29,11 @@
 // SUCH DAMAGE.
 // ------------------------------------------------------
 
-#ifndef _SPLINE_H_
-#define _SPLINE_H_
+#ifndef _ANIALIAS_H_
+#define _ANIALIAS_H_
 
 // ------------------------------------------------------
 // Functions
-float Spline_Work(float yo, float y0, float y1, float y2);
+float AntiAlias_Work(float yo, float y0, float y1, float y2);
 
 #endif

@@ -40,7 +40,6 @@ float SIN[360];     // Sine float-precalculated table, in absolute degrees.
 #if defined(PTK_SYNTH)
 
 int SIZE_WAVEFORMS;
-extern char Use_Cubic;
 
 #if defined(PTK_SYNTH_SIN)
 short STOCK_SIN[SIZE_WAVEFORMS_SPACE];
@@ -839,7 +838,7 @@ float CSynth::GetSample(short *Left_Samples,
                 }
 
 #if defined(PTK_SYNTH_PITCH)
-                osc_speed1 = ((float)
+                osc_speed1 = (float)
                              (
 #if defined(PTK_SYNTH_LFO_1_PITCH)
                               LFO_1_VALUE * Data.LFO_1_OSC_1_PITCH
@@ -853,7 +852,7 @@ float CSynth::GetSample(short *Left_Samples,
 #if defined(PTK_SYNTH_ENV_2_PITCH)
                             + ENV_2_VALUE * Data.ENV_2_OSC_1_PITCH
 #endif
-                           ));// * 4294967296.0);
+                           );
 #endif
 
                 osc_speed2 = OSC_1_SPEED;
@@ -929,13 +928,13 @@ float CSynth::GetSample(short *Left_Samples,
                     // ******
                     res_dec = pos_osc_1->int_pos;
                     
-                    Set_Spline_Boundaries(pos_osc_1->int_pos,
-                                          &i_POSITION,
-                                          Loop_Type1,
-                                          ENV_1_LOOP_BACKWARD,
-                                          Length1,
-                                          Length1,
-                                          Length1 - Loop_Sub1);
+                    Set_Carrier_Boundaries(pos_osc_1->int_pos,
+                                           &i_POSITION,
+                                           Loop_Type1,
+                                           ENV_1_LOOP_BACKWARD,
+                                           Length1,
+                                           Length1,
+                                           Length1 - Loop_Sub1);
 
                     mul_datL = 1.0f;
                     mul_datR = 1.0f;
@@ -1108,13 +1107,13 @@ float CSynth::GetSample(short *Left_Samples,
                     // ******
                     res_dec = pos_osc_3->int_pos;
 
-                    Set_Spline_Boundaries(pos_osc_3->int_pos,
-                                          &i_POSITION,
-                                          Loop_Type1,
-                                          ENV_3_LOOP_BACKWARD,
-                                          Length1,
-                                          Length1,
-                                          Length1 - Loop_Sub1);
+                    Set_Carrier_Boundaries(pos_osc_3->int_pos,
+                                           &i_POSITION,
+                                           Loop_Type1,
+                                           ENV_3_LOOP_BACKWARD,
+                                           Length1,
+                                           Length1,
+                                           Length1 - Loop_Sub1);
 
                     mul_datL = 1.0f;
                     mul_datR = 1.0f;
@@ -1293,7 +1292,7 @@ float CSynth::GetSample(short *Left_Samples,
                                 + ENV_2_VALUE * Data.ENV_2_OSC_2_PITCH
 #endif
                                ))
-                              ;// * 4294967296.0));
+                              ;
 #endif
 
                 osc_speed2 = OSC_2_SPEED;
@@ -1376,13 +1375,13 @@ float CSynth::GetSample(short *Left_Samples,
                     // ******
                     res_dec = pos_osc_2->int_pos;
 
-                    Set_Spline_Boundaries(pos_osc_2->int_pos,
-                                          &i_POSITION,
-                                          Loop_Type2,
-                                          ENV_2_LOOP_BACKWARD,
-                                          Length2,
-                                          Length2,
-                                          Length2 - Loop_Sub2);
+                    Set_Carrier_Boundaries(pos_osc_2->int_pos,
+                                           &i_POSITION,
+                                           Loop_Type2,
+                                           ENV_2_LOOP_BACKWARD,
+                                           Length2,
+                                           Length2,
+                                           Length2 - Loop_Sub2);
 
                     mul_datL = 1.0f;
                     mul_datR = 1.0f;
@@ -1813,7 +1812,7 @@ void CSynth::ChangeParameters(Synth_Parameters TSP)
     Data.OSC_3_SWITCH =         TSP.osc_3_switch;
 
     Data.PTC_GLIDE =            ((float) TSP.ptc_glide * (float) TSP.ptc_glide) * 0.0000015625f;
-    GLIDE_64_ALIGN =            ((float) Data.PTC_GLIDE);// * 4294967296.0);
+    GLIDE_64_ALIGN =            ((float) Data.PTC_GLIDE);
 
     Data.DISTO =                ((float) TSP.disto - 64) * 0.015625f;
 

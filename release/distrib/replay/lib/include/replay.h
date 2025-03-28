@@ -35,7 +35,7 @@
 // ------------------------------------------------------
 // Includes
 #include "tb_303.h"
-#include "spline.h"
+#include "antialias.h"
 #if !defined(BZR2)
 #if defined(__WIN32__)
 #include "../sounddriver/include/sounddriver_windows.h"
@@ -85,10 +85,6 @@
 
 #define MIX_RATE 44100
 #define fMIX_RATE 44100.0f
-
-#define NONE_INT 0
-#define CUBIC_INT 1
-#define SPLINE_INT 2
 
 #define DEFAULT_BASE_NOTE 48
 
@@ -509,13 +505,13 @@ float Do_RMS(float input, float *rms_sum, float *buffer);
 int Get_Free_Sub_Channel(int channel, int polyphony);
 int Get_Pattern_Offset(int pattern, int track, int row);
 void Init_Reverb_Filter(void);
-void Set_Spline_Boundaries(unsigned int Position,
-                           unsigned int *Boundaries,
-                           int LoopType,
-                           unsigned int LoopWay,
-                           unsigned int Length,
-                           unsigned int LoopEnd,
-                           unsigned int LoopStart);
+void Set_Carrier_Boundaries(unsigned int Position,
+                            unsigned int *Boundaries,
+                            int LoopType,
+                            unsigned int LoopWay,
+                            unsigned int Length,
+                            unsigned int LoopEnd,
+                            unsigned int LoopStart);
 void Init_Equ(LPEQSTATE es);
 float Do_Equ(LPEQSTATE es, float sample, int Left);
 #if defined(PTK_SHUFFLE)

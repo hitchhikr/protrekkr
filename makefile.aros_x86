@@ -21,10 +21,7 @@ EXEOBJS = ptk.o \
           timer.o main.o \
           misc_draw.o draw_primitives.o requesters.o \
           samples_ops.o aiff.o aiff_interface.o riff.o riff_interface.o \
-          spline.o tb_303.o wavpack.o samples_unpack.o replay.o synth.o endianness.o \
-          sounddriver_aros.o
-LIBOBJS = midi.o \
-          spline.o tb_303.o wavpack.o samples_unpack.o replay.o synth.o endianness.o \
+          antialias.o tb_303.o wavpack.o samples_unpack.o replay.o synth.o endianness.o \
           sounddriver_aros.o
 
 all: protrekkr
@@ -43,9 +40,6 @@ protrekkr: $(EXEOBJS)
 	cp ptk_aros.info ./release/distrib/ptk_aros.info
 	-rm -f $(EXEOBJS)
 	(make -f makefile.aros_x86_ogl)
-
-libptkreplay: $(LIBOBJS)
-	$(AR) -crv libptkreplay.a $(LIBOBJS)
 
 ptk.o: src/ptk.cpp
 	$(CC) -c -o $(@) $(FLAGS) $<
@@ -170,7 +164,7 @@ riff.o: src/samples/wav/riff.cpp
 riff_interface.o: src/samples/wav/riff_interface.cpp
 	$(CXX) -c -o $(@) $(FLAGS) $<
 
-spline.o: release/distrib/replay/lib/spline.cpp
+antialias.o: release/distrib/replay/lib/antialias.cpp
 	$(CC) -c -o $(@) $(FLAGS) $<
 
 tb_303.o: release/distrib/replay/lib/tb_303.cpp

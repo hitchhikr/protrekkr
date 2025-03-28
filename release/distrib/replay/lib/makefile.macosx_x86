@@ -1,22 +1,22 @@
 LIBFLAGS = -c
-LIBOBJS_X86 = endianness_x86.o replay_x86.o synth_x86.o tb_303_x86.o spline_x86.o wavpack_x86.o samples_unpack_x86.o sounddriver_macosx_x86.o
+LIBOBJS_X86 = endianness_x86.o replay_x86.o synth_x86.o tb_303_x86.o antialias_x86.o wavpack_x86.o samples_unpack_x86.o sounddriver_macosx_x86.o
 
 all: ptkreplay
 clean: remlibobj
 
 remlibobj:
 	-rm -f $(LIBOBJS_X86)
-	-rm libptkreplay_x86.a
+	-rm -f libptkreplay_x86.a
 
 ptkreplay: $(LIBOBJS_X86)
-	-rm libptkreplay_x86.a
-	ar -s -r libptkreplay_x86.a $(LIBOBJS_X86)
+	-rm -f libptkreplay_x86.a
+	$(AR) -s -r libptkreplay_x86.a $(LIBOBJS_X86)
 
 sounddriver_macosx_x86.o: lib/sounddriver/sounddriver_macosx.cpp
 	$(CC) -o $(@) $(LIBFLAGS) $(FLAGS_X86) lib/sounddriver/sounddriver_macosx.cpp
 
-spline_x86.o: lib/spline.cpp
-	$(CC) -o $(@) $(LIBFLAGS) $(FLAGS_X86) lib/spline.cpp
+antialias_x86.o: lib/antialias.cpp
+	$(CC) -o $(@) $(LIBFLAGS) $(FLAGS_X86) lib/antialias.cpp
 
 samples_unpack_x86.o: lib/samples_unpack.cpp
 	$(CC) -o $(@) $(LIBFLAGS) $(FLAGS_X86) lib/samples_unpack.cpp

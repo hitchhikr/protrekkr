@@ -3099,7 +3099,6 @@ void New_Mod(void)
 
     if(ZzaappOMatic == ZZAAPP_ALL)
     {
-        Use_Cubic = CUBIC_INT;
         sprintf(Selection_Name, "Untitled");
         sprintf(Reverb_Name, "Untitled");
         sprintf(Midi_Name, "Untitled");

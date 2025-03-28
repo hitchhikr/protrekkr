@@ -1008,7 +1008,6 @@ void Load_S3M(char *Name, const char *FileName)
                     Fix_Stereo(i);
                 }
 
-                Use_Cubic = NONE_INT;
                 //Beats_Per_Min = 125;
                 //Ticks_Per_Beat = 4;
                 //mas_vol = 0.75f;

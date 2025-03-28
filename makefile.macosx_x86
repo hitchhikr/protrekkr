@@ -19,7 +19,7 @@ EXEOBJS_X86 = ptk_x86.o \
               timer_x86.o main_x86.o sdlmain_x86.o \
               misc_draw_x86.o draw_primitives_x86.o requesters_x86.o \
               samples_ops_x86.o aiff_x86.o aiff_interface_x86.o riff_x86.o riff_interface_x86.o \
-              spline_x86.o tb_303_x86.o wavpack_x86.o samples_unpack_x86.o replay_x86.o synth_x86.o endianness_x86.o \
+              antialias_x86.o tb_303_x86.o wavpack_x86.o samples_unpack_x86.o replay_x86.o synth_x86.o endianness_x86.o \
               sounddriver_macosx_x86.o
 
 all: protrekkr_x86
@@ -166,7 +166,7 @@ riff_x86.o: src/samples/wav/riff.cpp
 riff_interface_x86.o: src/samples/wav/riff_interface.cpp
 	$(CXX) -c -o $(@) $(FLAGS_X86) $<
 
-spline_x86.o: release/distrib/replay/lib/spline.cpp
+antialias_x86.o: release/distrib/replay/lib/antialias.cpp
 	$(CC) -c -o $(@) $(FLAGS_X86) $<
 
 tb_303_x86.o: release/distrib/replay/lib/tb_303.cpp

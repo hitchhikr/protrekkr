@@ -17,6 +17,7 @@ v2.8.5
 - Added a sequencer function to remap/swap and change effects numbers & values.
 - Fixed a couple of bugs with notes transpositions functions.
 - Major tracker and replay speedup.
+- Removed splines, audio output is now just anti-aliased instead.
 
 v2.8.2
 

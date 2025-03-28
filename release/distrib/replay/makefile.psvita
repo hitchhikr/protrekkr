@@ -12,7 +12,7 @@ OBJS = test/test_psvita.o test/module.o
 # lib/sounddriver/common/debugScreen.o
 
 INCDIR =
-CFLAGS = -ffast-math -fsigned-char -fno-strict-aliasing -fsingle-precision-constant -w -Os -D __GCC__ -D __STAND_ALONE__ -D __NO_MIDI__ -D __PSVITA__
+CFLAGS = -ffast-math -fsigned-char -fno-strict-aliasing -fsingle-precision-constant -w -Ofast -D __GCC__ -D __STAND_ALONE__ -D __NO_MIDI__ -D __PSVITA__
 CXXFLAGS = $(CFLAGS) -fno-exceptions -fno-rtti
 ASFLAGS = -c
 

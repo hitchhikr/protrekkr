@@ -1,4 +1,4 @@
 cd release/distrib/
-zip -vr ptk_v2.8.3_macosx_ppc.zip * -x@../../exclude_macosx_ppc.lst
+zip -vr ptk_v2.8.5_macosx_ppc.zip * -x@../../exclude_macosx_ppc.lst
 cd ..
 cd ..

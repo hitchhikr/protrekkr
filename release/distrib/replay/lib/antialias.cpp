@@ -31,10 +31,10 @@
 
 // ------------------------------------------------------
 // Includes
-#include "include/spline.h"
+#include "include/antialias.h"
 #include "include/ptk_def_properties.h"
 
-float Spline_Work(float yo, float y0, float y1, float y2)
+float AntiAlias_Work(float yo, float y0, float y1, float y2)
 {
     return (0.15f * yo + 0.15f * y0 + 0.15f * y1 + 0.15f * y2);
 }

@@ -19,11 +19,8 @@ EXEOBJS = ptk.o \
           timer.o main.o \
           misc_draw.o draw_primitives.o requesters.o \
           samples_ops.o aiff.o aiff_interface.o riff.o riff_interface.o \
-          spline.o tb_303.o wavpack.o samples_unpack.o replay.o synth.o endianness.o \
+          antialias.o tb_303.o wavpack.o samples_unpack.o replay.o synth.o endianness.o \
           sounddriver_aos4.o draw_hline.o draw_pixel.o draw_vline.o
-LIBOBJS = midi.o \
-          spline.o tb_303.o wavpack.o samples_unpack.o replay.o synth.o endianness.o \
-          sounddriver_aos4.o
 
 all: protrekkr
 
@@ -36,9 +33,6 @@ protrekkr: $(EXEOBJS)
 	-rm -f ./release/distrib/ptk_aos4
 	$(CXX) -o ./release/distrib/ptk_aos4 -L./ $(FLAGS) $(EXEOBJS) $(LIBS)
 	strip -R.comment ./release/distrib/ptk_aos4
-
-libptkreplay: $(LIBOBJS)
-	$(AR) -crv libptkreplay.a $(LIBOBJS)
 
 ptk.o: src/ptk.cpp
 	$(CC) -c -o $(@) $(FLAGS) $<
@@ -163,7 +157,7 @@ riff.o: src/samples/wav/riff.cpp
 riff_interface.o: src/samples/wav/riff_interface.cpp
 	$(CXX) -c -o $(@) $(FLAGS) $<
 
-spline.o: release/distrib/replay/lib/spline.cpp
+antialias.o: release/distrib/replay/lib/antialias.cpp
 	$(CC) -c -o $(@) $(FLAGS) $<
 
 tb_303.o: release/distrib/replay/lib/tb_303.cpp

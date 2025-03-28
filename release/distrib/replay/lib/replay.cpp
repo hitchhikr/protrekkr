@@ -188,7 +188,7 @@ s_access sp_Position_osc_2[MAX_TRACKS][MAX_POLYPHONY];
 float CCut[MAX_TRACKS];
 #endif
 
-char Use_Cubic = CUBIC_INT;
+char Use_Cubic = 0;
 
 float TCut[MAX_TRACKS];
 float ICut[MAX_TRACKS];
@@ -3581,14 +3581,14 @@ ByPass_Wav:
                     // We had some signal (on any channel)
                     gotsome = TRUE;
 
-                    Set_Spline_Boundaries(sp_Position[c][i].int_pos,
-                                          &Current_Pointer,
-                                          Player_LT[c][i],
-                                          Player_LW[c][i],
-                                          Player_NS[c][i],
-                                          Player_LE[c][i],
-                                          Player_LS[c][i]
-                                         );
+                    Set_Carrier_Boundaries(sp_Position[c][i].int_pos,
+                                           &Current_Pointer,
+                                           Player_LT[c][i],
+                                           Player_LW[c][i],
+                                           Player_NS[c][i],
+                                           Player_LE[c][i],
+                                           Player_LS[c][i]
+                                          );
 
                     if(Player_WL[c][i])
                     {
@@ -6418,16 +6418,16 @@ void Get_Player_Values(void)
 
     float old_l_float = left_float; 
     float old_r_float = right_float;
-    left_float = Spline_Work(left_float_history[(pos_round_float_history) & 3],
-                             left_float_history[(pos_round_float_history + 1) & 3],
-                             left_float_history[(pos_round_float_history + 2) & 3],
-                             left_float_history[(pos_round_float_history + 3) & 3]
-                            );
-    right_float = Spline_Work(right_float_history[(pos_round_float_history) & 3],
-                              right_float_history[(pos_round_float_history + 1) & 3],
-                              right_float_history[(pos_round_float_history + 2) & 3],
-                              right_float_history[(pos_round_float_history + 3) & 3]
-                            );
+    left_float = AntiAlias_Work(left_float_history[(pos_round_float_history) & 3],
+                                left_float_history[(pos_round_float_history + 1) & 3],
+                                left_float_history[(pos_round_float_history + 2) & 3],
+                                left_float_history[(pos_round_float_history + 3) & 3]
+                               );
+    right_float = AntiAlias_Work(right_float_history[(pos_round_float_history) & 3],
+                                 right_float_history[(pos_round_float_history + 1) & 3],
+                                 right_float_history[(pos_round_float_history + 2) & 3],
+                                 right_float_history[(pos_round_float_history + 3) & 3]
+                                );
     left_float_history[pos_round_float_history] = old_l_float;
     right_float_history[pos_round_float_history] = old_r_float;
     
@@ -7743,14 +7743,14 @@ int Get_Pattern_Offset(int pattern, int track, int row)
 
 // ------------------------------------------------------
 // Calculate the boundaries of a carrier for splines calculation
-void Set_Spline_Boundaries(unsigned int Position,
-                           unsigned int *Boundaries,
-                           int LoopType,
-                           unsigned int LoopWay,
-                           unsigned int Length,
-                           unsigned int LoopEnd,
-                           unsigned int LoopStart
-                          )
+void Set_Carrier_Boundaries(unsigned int Position,
+                            unsigned int *Boundaries,
+                            int LoopType,
+                            unsigned int LoopWay,
+                            unsigned int Length,
+                            unsigned int LoopEnd,
+                            unsigned int LoopStart
+                           )
 {
     *Boundaries = Position;
     Length--;

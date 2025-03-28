@@ -3,7 +3,7 @@ AS = as
 AR = ar
 STRIP = strip
 LIBS = -lptkreplay -ldsound -lmsacm32
-FLAGS = -Os -ffast-math -fsigned-char -mms-bitfields -fno-strict-aliasing -fno-rtti -fno-exceptions -Wno-multichar -D G_OS_WIN32 -D __WIN32__ -D __GCC__ -D __STAND_ALONE__ \
+FLAGS = -Ofast -ffast-math -fsigned-char -mms-bitfields -fno-strict-aliasing -fno-rtti -fno-exceptions -Wno-multichar -D G_OS_WIN32 -D __WIN32__ -D __GCC__ -D __STAND_ALONE__ \
         -D __MP3_CODEC__ -D __AT3_CODEC__ -D __GSM_CODEC__ -D __ADPCM_CODEC__ -D __TRUESPEECH_CODEC__
 EXEOBJS = test.o module.o
 

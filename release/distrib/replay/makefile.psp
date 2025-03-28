@@ -3,7 +3,7 @@ TARGET = ptkreplay
 OBJS = test/test_psp.o test/module.o
          
 INCDIR =
-CFLAGS = -g -n -ffast-math -fsigned-char -fno-strict-aliasing -fsingle-precision-constant -I$(PSPDSK)/include -g -G0 -Os -D __GCC__ -D __STAND_ALONE__ -D __NO_MIDI__ -D __PSP__
+CFLAGS = -g -n -ffast-math -fsigned-char -fno-strict-aliasing -fsingle-precision-constant -I$(PSPDSK)/include -g -G0 -O3 -D __GCC__ -D __STAND_ALONE__ -D __NO_MIDI__ -D __PSP__
 CXXFLAGS = $(CFLAGS) -fno-exceptions -fno-rtti
 ASFLAGS = -c $(CFLAGS)
 

@@ -44,9 +44,6 @@ extern int ChorType;
 extern int ChorCut;
 extern int ChorRez;
 
-int Table_Interpolation_Dec[] = { 0, SPLINE_INT, 0 };
-int Table_Interpolation_Inc[] = { SPLINE_INT, CUBIC_INT, CUBIC_INT };
-
 // ------------------------------------------------------
 // Functions
 void Display_Reverb_Cutoff(void);
@@ -66,19 +63,20 @@ void Draw_Fx_Ed(void)
     Gui_Draw_Button_Box(18, (Cur_Height - 48), 56, 16, "Stereo", BUTTON_NORMAL | BUTTON_DISABLED);
 
     Gui_Draw_Button_Box(240, (Cur_Height - 136), 288, 96, "Stereo Delay Settings", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_VTOP);
-    Gui_Draw_Button_Box(248, (Cur_Height - 120), 56, 16, "R.Delay", BUTTON_NORMAL | BUTTON_DISABLED);
-    Gui_Draw_Button_Box(248, (Cur_Height - 102), 56, 16, "L.Delay", BUTTON_NORMAL | BUTTON_DISABLED);
-    Gui_Draw_Button_Box(248, (Cur_Height - 84), 56, 16, "R.Decay", BUTTON_NORMAL | BUTTON_DISABLED);
-    Gui_Draw_Button_Box(248, (Cur_Height - 66), 56, 16, "L.Decay", BUTTON_NORMAL | BUTTON_DISABLED);
-    Gui_Draw_Button_Box(530, (Cur_Height - 136), 104, 56, "Ticks Delay Synchro", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_VTOP);
+    Gui_Draw_Button_Box(248, (Cur_Height - 119), 56, 16, "R.Delay", BUTTON_NORMAL | BUTTON_DISABLED);
+    Gui_Draw_Button_Box(248, (Cur_Height - 101), 56, 16, "L.Delay", BUTTON_NORMAL | BUTTON_DISABLED);
+    Gui_Draw_Button_Box(248, (Cur_Height - 83), 56, 16, "R.Decay", BUTTON_NORMAL | BUTTON_DISABLED);
+    Gui_Draw_Button_Box(248, (Cur_Height - 65), 56, 16, "L.Decay", BUTTON_NORMAL | BUTTON_DISABLED);
+    Gui_Draw_Button_Box(530 + 5, (Cur_Height - 136), 104 + 97, 38, "Ticks Delay Synchro", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_VTOP);
 
-    Gui_Draw_Button_Box(596, (Cur_Height - 120), 32, 16, "Set", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
-    Gui_Draw_Button_Box(596, (Cur_Height - 102), 32, 16, "Set", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
+    Gui_Draw_Button_Box(597 + 5, (Cur_Height - 119), 32, 16, "Set L", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
+    Gui_Draw_Button_Box(597 + 5 + 97, (Cur_Height - 119), 32, 16, "Set R", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
 
-    Gui_Draw_Button_Box(530, (Cur_Height - 76), 56, 16, "CutOff Frq.", BUTTON_NORMAL | BUTTON_DISABLED);
-    Gui_Draw_Button_Box(530, (Cur_Height - 56), 56, 16, "Reso.", BUTTON_NORMAL | BUTTON_DISABLED);
+    Gui_Draw_Button_Box(530 + 5, (Cur_Height - 95), 56, 16, "Type", BUTTON_NORMAL | BUTTON_DISABLED);
+    Gui_Draw_Button_Box(530 + 5, (Cur_Height - 76), 56, 16, "CutOff Frq.", BUTTON_NORMAL | BUTTON_DISABLED);
+    Gui_Draw_Button_Box(530 + 5, (Cur_Height - 56), 56, 16, "Reso.", BUTTON_NORMAL | BUTTON_DISABLED);
 
-    Gui_Draw_Button_Box(640, (Cur_Height - 136), 64, 16, "Interpolation", BUTTON_NORMAL | BUTTON_DISABLED);
+//    Gui_Draw_Button_Box(640, (Cur_Height - 136), 64, 16, "Interpolation", BUTTON_NORMAL | BUTTON_DISABLED);
 
     Gui_Draw_Button_Box(113 + 34, (Cur_Height - 120), 32, 16, "Damp", BUTTON_NORMAL | BUTTON_DISABLED);
 
@@ -103,8 +101,8 @@ void Actualize_Fx_Ed(char gode)
                 lchorus_counter = MIX_RATE;
                 lchorus_counter2 = MIX_RATE - lchorus_delay;
             }
-            Real_Slider(307, (Cur_Height - 120), lchorus_delay / 175, TRUE);
-            Print_Long(458, (Cur_Height - 120), (lchorus_delay * 1000) / MIX_RATE, 2);
+            Real_Slider(307, (Cur_Height - 119), lchorus_delay / 175, TRUE);
+            Print_Long(458, (Cur_Height - 119), (lchorus_delay * 1000) / MIX_RATE, 2);
         }
 
         if(gode == 0 || gode == 4)
@@ -116,24 +114,24 @@ void Actualize_Fx_Ed(char gode)
                 rchorus_counter = MIX_RATE;
                 rchorus_counter2 = MIX_RATE - rchorus_delay;
             }
-            Real_Slider(307, (Cur_Height - 102), rchorus_delay / 175, TRUE);
-            Print_Long(458, (Cur_Height - 102), (rchorus_delay * 1000) / MIX_RATE, 2);
+            Real_Slider(307, (Cur_Height - 101), rchorus_delay / 175, TRUE);
+            Print_Long(458, (Cur_Height - 101), (rchorus_delay * 1000) / MIX_RATE, 2);
         }
 
         if(gode == 0 || gode == 5)
         {
             if(lchorus_feedback > 0.95f) lchorus_feedback = 0.95f;
             if(lchorus_feedback < 0.0f) lchorus_feedback = 0.0f;
-            Real_Slider(307, (Cur_Height - 84), (int) (lchorus_feedback * 127.0f), TRUE);
-            Print_Long(458, (Cur_Height - 84), (int) (lchorus_feedback * 100.0f), 1);
+            Real_Slider(307, (Cur_Height - 83), (int) (lchorus_feedback * 127.0f), TRUE);
+            Print_Long(458, (Cur_Height - 83), (int) (lchorus_feedback * 100.0f), 1);
         }
 
         if(gode == 0 || gode == 6)
         {
             if(rchorus_feedback > 0.95f) rchorus_feedback = 0.95f;
             if(rchorus_feedback < 0.0f) rchorus_feedback = 0.0f;
-            Real_Slider(307, (Cur_Height - 66), (int) (rchorus_feedback * 127), TRUE);
-            Print_Long(458, (Cur_Height - 66), (int) (rchorus_feedback * 100), 1);
+            Real_Slider(307, (Cur_Height - 65), (int) (rchorus_feedback * 127), TRUE);
+            Print_Long(458, (Cur_Height - 65), (int) (rchorus_feedback * 100), 1);
         }
 
         if(gode == 0 || gode == 7)
@@ -171,7 +169,7 @@ void Actualize_Fx_Ed(char gode)
             {
                 Ticks_Synchro_Left--;
             }
-            Gui_Draw_Arrows_Number_Box2(534, (Cur_Height - 120), Ticks_Synchro_Left, BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
+            Gui_Draw_Arrows_Number_Box2(535 + 5, (Cur_Height - 119), Ticks_Synchro_Left, BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
         }
         if(gode == 0 || gode == 11)
         {
@@ -180,26 +178,7 @@ void Actualize_Fx_Ed(char gode)
             {
                 Ticks_Synchro_Right--;
             }
-            Gui_Draw_Arrows_Number_Box2(534, (Cur_Height - 102), Ticks_Synchro_Right, BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
-        }
-
-        if(gode == 0 || gode == 12)
-        {
-            Gui_Draw_Button_Box(706, (Cur_Height - 136), 16, 16, "\03", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
-
-            switch(Use_Cubic)
-            {
-                case CUBIC_INT:
-                    Gui_Draw_Button_Box(706 + 16 + 2, (Cur_Height - 136), 42, 16, "Cubic", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
-                    break;
-                case SPLINE_INT:
-                    Gui_Draw_Button_Box(706 + 16 + 2, (Cur_Height - 136), 42, 16, "Linear", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
-                    break;
-                default:
-                    Gui_Draw_Button_Box(706 + 16 + 2, (Cur_Height - 136), 42, 16, "None", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
-                    break;
-            }
-            Gui_Draw_Button_Box(706 + (18 + 42) + 2, (Cur_Height - 136), 16, 16, "\04", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
+            Gui_Draw_Arrows_Number_Box2(535 + 5 + 97, (Cur_Height - 119), Ticks_Synchro_Right, BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
         }
 
         if(gode == 0 || gode == 13)
@@ -237,7 +216,7 @@ void Actualize_Fx_Ed(char gode)
             {
                 ChorCut = 127;
             }
-            Real_Slider(586, (Cur_Height - 76), (int) ChorCut, ChorType != 4);
+            Real_Slider(586 + 5, (Cur_Height - 76), (int) ChorCut, ChorType != 4);
         }
 
         if(gode == 0 || gode == 16)
@@ -250,20 +229,20 @@ void Actualize_Fx_Ed(char gode)
             {
                 ChorRez = 127;
             }
-            Real_Slider(586, (Cur_Height - 56), ChorRez, ChorType != 4);
+            Real_Slider(586 + 5, (Cur_Height - 56), ChorRez, ChorType != 4);
         }
 
         if(gode == 0 || gode == 16)
         {
             switch(ChorType)
             {
-                case 0: Gui_Draw_Button_Box(702, (Cur_Height - 118), 82, 16, "LoPass -12db", BUTTON_NORMAL | BUTTON_DISABLED); break;
-                case 1: Gui_Draw_Button_Box(702, (Cur_Height - 118), 82, 16, "HiPass", BUTTON_NORMAL | BUTTON_DISABLED); break;
-                case 2: Gui_Draw_Button_Box(702, (Cur_Height - 118), 82, 16, "BandPass", BUTTON_NORMAL | BUTTON_DISABLED); break;
-                case 3: Gui_Draw_Button_Box(702, (Cur_Height - 118), 82, 16, "BandReject", BUTTON_NORMAL | BUTTON_DISABLED); break;
-                case 4: Gui_Draw_Button_Box(702, (Cur_Height - 118), 82, 16, "Filter Off", BUTTON_NORMAL | BUTTON_DISABLED); break;
+                case 0: Gui_Draw_Button_Box(650 + 5, (Cur_Height - 95), 82, 16, "LoPass -12db", BUTTON_NORMAL | BUTTON_DISABLED); break;
+                case 1: Gui_Draw_Button_Box(650 + 5, (Cur_Height - 95), 82, 16, "HiPass", BUTTON_NORMAL | BUTTON_DISABLED); break;
+                case 2: Gui_Draw_Button_Box(650 + 5, (Cur_Height - 95), 82, 16, "BandPass", BUTTON_NORMAL | BUTTON_DISABLED); break;
+                case 3: Gui_Draw_Button_Box(650 + 5, (Cur_Height - 95), 82, 16, "BandReject", BUTTON_NORMAL | BUTTON_DISABLED); break;
+                case 4: Gui_Draw_Button_Box(650 + 5, (Cur_Height - 95), 82, 16, "Filter Off", BUTTON_NORMAL | BUTTON_DISABLED); break;
             }
-            value_box(640, (Cur_Height - 118), ChorType, BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
+            value_box(588 + 5, (Cur_Height - 95), ChorType, BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
         }
 /*
         if(gode == 0 || gode == 13)
@@ -344,33 +323,34 @@ void Mouse_Sliders_Fx_Ed(void)
             gui_action = GUI_CMD_UPDATE_FX_ED;
             teac = 13;
         }  
-        if(Check_Mouse(307, (Cur_Height - 120), 148, 16))
+
+        if(Check_Mouse(307, (Cur_Height - 119), 148, 16))
         {
             lchorus_delay = (Mouse.x - 317) * 174;
             gui_action = GUI_CMD_UPDATE_FX_ED;
             teac = 3;
         }
-        if(Check_Mouse(307, (Cur_Height - 102), 148, 16))
+        if(Check_Mouse(307, (Cur_Height - 101), 148, 16))
         {
             rchorus_delay = (Mouse.x - 317) * 174;
             gui_action = GUI_CMD_UPDATE_FX_ED;
             teac = 4;
         }
-        if(Check_Mouse(307, (Cur_Height - 84), 148, 16))
+        if(Check_Mouse(307, (Cur_Height - 83), 148, 16))
         {
             lchorus_feedback = float(Mouse.x - 317) / 127;
             gui_action = GUI_CMD_UPDATE_FX_ED;
             teac = 5;
         }
-        if(Check_Mouse(307, (Cur_Height - 66), 148, 16))
+        if(Check_Mouse(307, (Cur_Height - 65), 148, 16))
         {
             rchorus_feedback = float(Mouse.x - 317) / 127;
             gui_action = GUI_CMD_UPDATE_FX_ED;
             teac = 6;
         }
 
-        if(Check_Mouse(586, (Cur_Height - 76), 148, 16) && ChorType != 4) gui_action = GUI_CMD_SET_CHORUS_CUTOFF_FREQ;
-        if(Check_Mouse(586, (Cur_Height - 56), 148, 16) && ChorType != 4) gui_action = GUI_CMD_SET_CHORUS_RESONANCE;
+        if(Check_Mouse(586 + 5, (Cur_Height - 76), 148, 16) && ChorType != 4) gui_action = GUI_CMD_SET_CHORUS_CUTOFF_FREQ;
+        if(Check_Mouse(586 + 5, (Cur_Height - 56), 148, 16) && ChorType != 4) gui_action = GUI_CMD_SET_CHORUS_RESONANCE;
 
         /*        // Compressor attack
         if(Check_Mouse(706, 505, 72, 18))
@@ -400,13 +380,13 @@ void Mouse_Right_Fx_Ed(void)
     if(userscreen == USER_SCREEN_FX_SETUP_EDIT)
     {
         // Ticks synchro left
-        if(Check_Mouse(534, (Cur_Height - 120), 16, 16) == 1)
+        if(Check_Mouse(535 + 5, (Cur_Height - 119), 16, 16) == 1)
         {
             Ticks_Synchro_Left -= 10;
             gui_action = GUI_CMD_UPDATE_FX_ED;
             teac = 10;
         }
-        if(Check_Mouse(578, (Cur_Height - 120), 16, 16) == 1)
+        if(Check_Mouse(579 + 5, (Cur_Height - 119), 16, 16) == 1)
         {
             Ticks_Synchro_Left += 10;
             gui_action = GUI_CMD_UPDATE_FX_ED;
@@ -414,13 +394,13 @@ void Mouse_Right_Fx_Ed(void)
         }
 
         // Ticks synchro right
-        if(Check_Mouse(534, (Cur_Height - 102), 16, 16) == 1)
+        if(Check_Mouse(535 + 5 + 97, (Cur_Height - 119), 16, 16) == 1)
         {
             Ticks_Synchro_Right -= 10;
             gui_action = GUI_CMD_UPDATE_FX_ED;
             teac = 11;
         }
-        if(Check_Mouse(578, (Cur_Height - 102), 16, 16) == 1)
+        if(Check_Mouse(579 + 5 + 97, (Cur_Height - 119), 16, 16) == 1)
         {
             Ticks_Synchro_Right += 10;
             gui_action = GUI_CMD_UPDATE_FX_ED;
@@ -434,14 +414,14 @@ void Mouse_Left_Fx_Ed(void)
     if(userscreen == USER_SCREEN_FX_SETUP_EDIT)
     {
         // Filter type
-        if(Check_Mouse(640, (Cur_Height - 118), 16, 16) && ChorType > 0)
+        if(Check_Mouse(588 + 5, (Cur_Height - 95), 16, 16) && ChorType > 0)
         {
             Reset_Chorus_Filters();
             ChorType--;
             teac = 16;
             gui_action = GUI_CMD_UPDATE_FX_ED;
         }
-        if(Check_Mouse(640 + 44, (Cur_Height - 118), 16, 16) && ChorType < MAX_CHORUS_FILTER)
+        if(Check_Mouse(588 + 5 + 44, (Cur_Height - 95), 16, 16) && ChorType < MAX_CHORUS_FILTER)
         {
             Reset_Chorus_Filters();
             ChorType++;
@@ -465,13 +445,13 @@ void Mouse_Left_Fx_Ed(void)
         }
 
         // Ticks synchro left
-        if(Check_Mouse(534, (Cur_Height - 120), 16, 16))
+        if(Check_Mouse(535 + 5, (Cur_Height - 119), 16, 16))
         {
             Ticks_Synchro_Left--;
             gui_action = GUI_CMD_UPDATE_FX_ED;
             teac = 10;
         }
-        if(Check_Mouse(578, (Cur_Height - 120), 16, 16))
+        if(Check_Mouse(579 + 5, (Cur_Height - 119), 16, 16))
         {
             Ticks_Synchro_Left++;
             gui_action = GUI_CMD_UPDATE_FX_ED;
@@ -479,26 +459,29 @@ void Mouse_Left_Fx_Ed(void)
         }
 
         // Ticks synchro right
-        if(Check_Mouse(534, (Cur_Height - 102), 16, 16))
+        if(Check_Mouse(535 + 5 + 97, (Cur_Height - 119), 16, 16))
         {
             Ticks_Synchro_Right--;
             gui_action = GUI_CMD_UPDATE_FX_ED;
             teac = 11;
         }
-        if(Check_Mouse(578, (Cur_Height - 102), 16, 16))
+        if(Check_Mouse(579 + 5 + 97, (Cur_Height - 119), 16, 16))
         {
             Ticks_Synchro_Right++;
             gui_action = GUI_CMD_UPDATE_FX_ED;
             teac = 11;
         }
 
-        if(Check_Mouse(596, (Cur_Height - 120), 32, 16))
+        // Set left ticks
+        if(Check_Mouse(597 + 5, (Cur_Height - 119), 32, 16))
         {
             lchorus_delay = SamplesPerTick * Ticks_Synchro_Left;
             gui_action = GUI_CMD_UPDATE_FX_ED;
             teac = 3;
         }
-        if(Check_Mouse(596, (Cur_Height - 102), 32, 16))
+
+        // Set right ticks
+        if(Check_Mouse(597 + 5 + 97, (Cur_Height - 119), 32, 16))
         {
             rchorus_delay = SamplesPerTick * Ticks_Synchro_Right;
             gui_action = GUI_CMD_UPDATE_FX_ED;
@@ -517,25 +500,6 @@ void Mouse_Left_Fx_Ed(void)
             gui_action = GUI_CMD_UPDATE_FX_ED;
             teac = 0;
         }  
-
-        if(Check_Mouse(706, (Cur_Height - 136), 16, 16))
-        {
-            if(Use_Cubic > 0)
-            {
-                Use_Cubic = Table_Interpolation_Dec[Use_Cubic];
-            }
-            gui_action = GUI_CMD_UPDATE_FX_ED;
-            teac = 12;
-        }
-        if(Check_Mouse(706 + (18 + 42) + 2, (Cur_Height - 136), 16, 16))
-        {
-            if(Use_Cubic <= SPLINE_INT)
-            {
-                Use_Cubic = Table_Interpolation_Inc[Use_Cubic];
-            }
-            gui_action = GUI_CMD_UPDATE_FX_ED;
-            teac = 12;
-        }
 
     }
 }
