@@ -59,6 +59,9 @@ void gear303::reset(void)
     tbRealEnvmod = 0.0f;
     tbRealResonance = 0.0f;
     tbRealAccent = 0.0f;
+    tbLastCutoff = 0.0f;
+    tbLastEnvmod = 0.0f;
+    tbLastResonance = 0.0f;
     tbAutoSlidect = 1;
     tbAutoSlideres = 1;
     tbAutoSlideenv = 1;

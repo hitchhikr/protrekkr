@@ -33,12 +33,7 @@
 #define _SPLINE_H_
 
 // ------------------------------------------------------
-// Constants
-#define RESOLUTION 1024
-
-// ------------------------------------------------------
 // Functions
-void Spline_Init(void);
-float Spline_Work(float yo, float y0, float y1, float y2, unsigned int res);
+float Spline_Work(float yo, float y0, float y1, float y2);
 
 #endif

@@ -35,7 +35,6 @@
 // ------------------------------------------------------
 // constants
 #define PTK_USE_CUBIC
-#define PTK_USE_SPLINE
 #define PTK_303
 #define PTK_FX_0
 #define PTK_FX_X

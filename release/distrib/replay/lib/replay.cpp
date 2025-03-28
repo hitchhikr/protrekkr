@@ -233,6 +233,9 @@ float Segue_SamplesR[MAX_TRACKS];
 
 float left_float;
 float right_float;
+int pos_round_float_history;
+float left_float_history[4];
+float right_float_history[4];
 float left_float_render;
 float right_float_render;
 float left_chorus;
@@ -688,7 +691,7 @@ float Curr_Signal_L[MAX_POLYPHONY];
 float Curr_Signal_R[MAX_POLYPHONY];
 float All_Signal_L;
 float All_Signal_R;
-unsigned int Current_Pointer[4];
+unsigned int Current_Pointer;
 
 #if defined(PTK_SYNTH)
 char Synth_Was[MAX_TRACKS][MAX_POLYPHONY];
@@ -1129,6 +1132,9 @@ Uint32 STDCALL Mixer(Uint8 *Buffer, Uint32 Len)
 #endif
         {
 
+            
+
+
 #if defined(BZR2)
             if(!Song_Playing)
             {
@@ -1363,14 +1369,6 @@ int STDCALL Ptk_InitDriver(void)
     {
         SQRT[i] = (float) sqrtf(i / 1024.0f);
     }
-
-    #if defined(__STAND_ALONE__) && !defined(__WINAMP__)
-        #if defined(PTK_USE_SPLINE)
-            Spline_Init();
-        #endif
-    #else
-        Spline_Init();
-    #endif
 
 #if !defined(__WINAMP__)
 
@@ -2062,19 +2060,32 @@ void PTKEXPORT Ptk_SetPosition(int new_position)
 void Reset_Values(void)
 {
     int i;
-
-#if defined(PTK_LIMITER_TRACKS)
     int j;
-#endif
 
     if(!Done_Reset)
     {
         Song_Playing = FALSE;
 
+#if defined(PTK_FX_PATTERNLOOP)
+        repeat_loop_pos = 0;
+        repeat_loop_counter = 0;
+        repeat_loop_counter_in = 0;
+#endif
+        
         lchorus_counter = MIX_RATE;
         rchorus_counter = MIX_RATE;
         lchorus_counter2 = MIX_RATE - lchorus_delay;
         rchorus_counter2 = MIX_RATE - rchorus_delay;
+
+        pos_round_float_history = 0;
+        left_float_history[0] = 0.0f;
+        left_float_history[1] = 0.0f;
+        left_float_history[2] = 0.0f;
+        left_float_history[3] = 0.0f;
+        right_float_history[0] = 0.0f;
+        right_float_history[1] = 0.0f;
+        right_float_history[2] = 0.0f;
+        right_float_history[3] = 0.0f;
 
         for(i = 0; i < 131072; i++)
         {
@@ -2084,9 +2095,29 @@ void Reset_Values(void)
 
         Reset_Chorus_Filters();
 
+#if defined(PTK_LIMITER_MASTER)
+        mas_comp_threshold_Master = 100.0f;
+        mas_comp_ratio_Master = 0;
+        rms_sumL_Master = 0;
+        rms_sumR_Master = 0;
+        mas_envL_Master = 0;
+        mas_envR_Master = 0;
+        for(i = 0; i < MAS_COMPRESSOR_SIZE; i++)
+        {
+            mas_comp_bufferL_Master[i] = 0;
+            mas_comp_bufferR_Master[i] = 0;
+        }
+#endif
+
+#if defined(PTK_COMPRESSOR)
+        Initreverb();
+#endif
+
         for(i = 0; i < MAX_TRACKS; i++)
         {
             Reset_Filters(i);
+
+            glide[i] = 0;
 
 #if defined(PTK_TRACKFILTERS)
             CCut[i] = 0.0f;
@@ -2116,48 +2147,281 @@ void Reset_Values(void)
                 mas_comp_bufferR_Track[i][j] = 0;
             }
 #endif
-        }
 
-#if defined(PTK_LIMITER_MASTER)
-        mas_comp_threshold_Master = 100.0f;
-        mas_comp_ratio_Master = 0;
-        rms_sumL_Master = 0;
-        rms_sumR_Master = 0;
-        mas_envL_Master = 0;
-        mas_envR_Master = 0;
-        for(i = 0; i < MAS_COMPRESSOR_SIZE; i++)
-        {
-            mas_comp_bufferL_Master[i] = 0;
-            mas_comp_bufferR_Master[i] = 0;
-        }
-#endif
-
-#if defined(PTK_COMPRESSOR)
-        Initreverb();
-#endif
-
-        for(int stopper = 0; stopper < MAX_TRACKS; stopper++)
-        {
-            for(int stopper_poly = 0; stopper_poly < MAX_POLYPHONY; stopper_poly++)
+            for(j = 0; j < MAX_POLYPHONY; j++)
             {
+                Reserved_Sub_Channels[i][j] = -1;
+                Note_Sub_Channels[i][j] = -1;
+
+#if defined(PTK_FX_ARPEGGIO)
+                Arpeggio_BaseNote[i][j] = 0;
+                Vstep_arp[i][j] = 0;
+#endif
+
+#if defined(PTK_FX_VIBRATO)
+                Vibrato_BaseNote[i][j] = 0;
+                Vstep_vib[i][j] = 0;
+#endif
 
 #if defined(PTK_SYNTH)
-                Synthesizer[stopper][stopper_poly].Reset();
-                sp_Stage2[stopper][stopper_poly] = PLAYING_NOSAMPLE;
-                sp_Stage3[stopper][stopper_poly] = PLAYING_NOSAMPLE;
+                Synth_Was[i][j] = 0;
+#endif
+
+                Player_WL[i][j] = 0;
+                Player_WR[i][j] = 0;
+                Player_Ampli[i][j] = 0;
+                Player_SC[i][j] = 0;
+                Player_LT[i][j] = 0;
+                Player_LW[i][j] = 0;
+                Player_LS[i][j] = 0;
+                Player_LE[i][j] = 0;
+                Player_LL[i][j] = 0;
+                Player_NS[i][j] = 0;
+
+                sp_Step[i][j] = 0;
+
+                sp_Cvol[i][j] = 0.0f;
+                sp_Cvol_Ramp[i][j] = 0.0f;
+                sp_Cvol_Ramp_Dest[i][j] = 10.0f;
+                sp_Cvol_Synth[i][j] = 0.0f;
+                sp_Cvol_Synth_Ramp[i][j] = 0.0f;
+                sp_Cvol_Synth_Ramp_Dest[i][j] = 10.0f;
+
+                sp_channelsample[i][j] = -1;
+                sp_channelnote[i][j] = 120;
+                sp_split[i][j] = 0;
+
+                sp_Tvol[i][j] = 0.0f;
+                sp_Tvol_Synth[i][j] = 0.0f;
+
+#if defined(PTK_SYNTH)
+                Synthesizer[i][j].Reset();
+                sp_Stage2[i][j] = PLAYING_NOSAMPLE;
+                sp_Stage3[i][j] = PLAYING_NOSAMPLE;
 #endif
 
 #if defined(PTK_INSTRUMENTS)
-                sp_Stage[stopper][stopper_poly] = PLAYING_NOSAMPLE;
+                sp_Stage[i][j] = PLAYING_NOSAMPLE;
 #endif
 
-                Reserved_Sub_Channels[stopper][stopper_poly] = -1;
-                Note_Sub_Channels[stopper][stopper_poly] = -1;
-                sp_channelsample[stopper][stopper_poly] = -1;
-                sp_channelnote[stopper][stopper_poly] = 120;
+                Reserved_Sub_Channels[i][j] = -1;
+                Note_Sub_Channels[i][j] = -1;
+                sp_channelsample[i][j] = -1;
+                sp_channelnote[i][j] = 120;
                 
+                Cut_Stage[i][j] = FALSE;
+                Glide_Stage[i][j] = FALSE;
+
+#if defined(PTK_INSTRUMENTS)
+                sp_Stage[i][j] = PLAYING_NOSAMPLE;
+#endif
+
+#if defined(PTK_SYNTH)
+                sp_Stage2[i][j] = PLAYING_NOSAMPLE;
+                sp_Stage3[i][j] = PLAYING_NOSAMPLE;
+#endif
+
+                sp_Position[i][j].int_pos = 0;
+                sp_Position[i][j].flt_pos = 0;
+
+#if defined(PTK_SYNTH)
+                sp_Position_osc_1[i][j].int_pos = 0;
+                sp_Position_osc_1[i][j].flt_pos = 0;
+                sp_Position_osc_2[i][j].int_pos = 0;
+                sp_Position_osc_2[i][j].flt_pos = 0;
+
+#if defined(PTK_SYNTH_OSC_3)
+                sp_Position_osc_3[i][j].int_pos = 0;
+                sp_Position_osc_3[i][j].flt_pos = 0;
+#endif
+#endif
+
+                old_note[i][j] = 0;
+                Vstep1[i][j] = 0;
+            
+#if defined(PTK_FX_ARPEGGIO)
+                Arpeggio_BaseNote[i][j] = 0;
+                Vstep_arp[i][j] = 0;
+#endif
+
+#if defined(PTK_FX_VIBRATO)
+                Vibrato_BaseNote[i][j] = 0;
+                Vstep_vib[i][j] = 0;
+#endif
+
+                Cut_Stage[i][j] = FALSE;
+                Glide_Stage[i][j] = FALSE;
+
+#if defined(PTK_INSTRUMENTS)
+                sp_Tvol[i][j] = 0.0f;
+                sp_Cvol[i][j] = 0.0f;
+                sp_Cvol_Ramp[i][j] = 0.0f;
+                sp_Cvol_Ramp_Dest[i][j] = 10.0f;
+#endif
+
+#if defined(PTK_SYNTH)
+                sp_Tvol_Synth[i][j] = 0.0f;
+                sp_Cvol_Synth[i][j] = 0.0f;
+                sp_Cvol_Synth_Ramp[i][j] = 0.0f;
+                sp_Cvol_Synth_Ramp_Dest[i][j] = 10.0f;
+#endif
+
             }
+
+#if defined(PTK_FX_ARPEGGIO)
+            Arpeggio_Switch[i] = 0;
+#endif
+
+#if defined(PTK_FX_VIBRATO)
+            Vibrato_Switch[i] = 0;
+#endif
+        
+#if defined(PTK_FX_AUTOFADEMODE)
+            FADEMODE[i] = 0;
+            FADECOEF[i] = 0.0f;
+#endif
+       
+            sp_Tvol_Mod[i] = 1.0f;
+
+#if defined(PTK_FX_REVERSE)
+            Reverse_Switch[i] = 0;
+            Reserve_Dat[i] = 0;
+#endif
+
+            old_TPan[i] = TPan[i];
+            sp_Tvol_Mod[i] = 1.0f;
+
+            Player_FD[i] = 0.0f;
+
+            oldspawn[i] = 0;
+            roldspawn[i] = 0;
+
+#if defined(PTK_TRACK_EQ)
+            EqDat[i].f1p0[0] = 0.0f;
+            EqDat[i].f1p0[1] = 0.0f;
+        
+            EqDat[i].f1p1[0] = 0.0f;
+            EqDat[i].f1p1[1] = 0.0f;
+        
+            EqDat[i].f1p2[0] = 0.0f;
+            EqDat[i].f1p2[1] = 0.0f;
+        
+            EqDat[i].f1p3[0] = 0.0f;
+            EqDat[i].f1p3[1] = 0.0f;
+        
+            EqDat[i].f2p0[0] = 0.0f;
+            EqDat[i].f2p0[1] = 0.0f;
+
+            EqDat[i].f2p1[0] = 0.0f;
+            EqDat[i].f2p1[1] = 0.0f;
+
+            EqDat[i].f2p2[0] = 0.0f;
+            EqDat[i].f2p2[1] = 0.0f;
+        
+            EqDat[i].f2p3[0] = 0.0f;
+            EqDat[i].f2p3[1] = 0.0f;
+
+            EqDat[i].sdm1[0] = 0.0f;
+            EqDat[i].sdm1[1] = 0.0f;
+
+            EqDat[i].sdm2[0] = 0.0f;
+            EqDat[i].sdm2[1] = 0.0f;
+
+            EqDat[i].sdm3[0] = 0.0f;
+            EqDat[i].sdm3[1] = 0.0f;
+#endif
+
+#if defined(PTK_FX_TRANCEGLIDER)
+            Glide_Step[i] = 0;
+#endif
+
+#if defined(PTK_LFO)
+#if !defined(__STAND_ALONE__)
+            if(reset_carriers)
+            {
+#endif
+                LFO_CARRIER_FILTER[i] = 0.0f;
+                LFO_CARRIER_VOLUME[i] = 0.0f;
+                LFO_CARRIER_PANNING[i] = 0.0f;
+#if !defined(__STAND_ALONE__)
+            }
+#endif
+#endif
+
+#if defined(PTK_FLANGER)
+            FLANGER_OFFSET2[i] = float(FLANGER_OFFSET[i] - FLANGER_DELAY[i]);
+            FLANGER_OFFSET1[i] = float(FLANGER_OFFSET[i] - FLANGER_DELAY[i]);  
+            for(int ini2 = 0; ini2 < 16400; ini2++)
+            {
+                FLANGE_LEFTBUFFER[i][ini2] = 0.0f;
+                FLANGE_RIGHTBUFFER[i][ini2] = 0.0f;
+            }
+#endif
         }
+
+        SubCounter = 0;
+        Subicounter = 0;
+
+        lchorus_counter = MIX_RATE;
+        rchorus_counter = MIX_RATE;
+        lchorus_counter2 = MIX_RATE - lchorus_delay;
+        rchorus_counter2 = MIX_RATE - rchorus_delay;
+
+#if !defined(__STAND_ALONE__)
+#if !defined(__NO_MIDI__)
+        Midi_AllNotesOff();
+#endif
+        // Clear all midi channels
+        Clear_Midi_Channels_Pool();
+#endif
+
+        for(i = 0; i < 256; i++)
+        {
+            Delays_Pos_Sound_Buffer[i].Line = 0;
+            Delays_Pos_Sound_Buffer[i].Pos = 0;
+            Delays_Pos_Sound_Buffer[i].SamplesPerTick = 0;
+
+#if defined(PTK_SHUFFLE)
+            Delays_Pos_Sound_Buffer[i].shufflestep = 0;
+#endif
+
+        }
+
+#if defined(PTK_SHUFFLE)
+        Update_Shuffle();
+#endif
+
+        local_ramp_vol = 1.0f;
+        local_curr_ramp_vol = 0.0f;
+    
+        local_mas_vol = 1.0f;
+        local_curr_mas_vol = 0.0f;
+
+        // Start as the last known position
+        for(int spl = 0; spl < MAX_TRACKS; spl++)
+        {
+            CCoef[spl] = float((float) CSend[spl] / 127.0f);
+            Compute_Stereo(spl);
+            Fix_Stereo(spl);
+        }
+
+        Calc_Tempo();
+        PosInTick = 0;
+
+#if !defined(__STAND_ALONE__)
+#if !defined(__NO_MIDI__)
+        PosInTick_Midi = SamplesPerTick_Midi;
+#endif
+#endif
+
+        PosInTick_Delay = 0;
+        Delay_Sound_Buffer = 0;
+        Cur_Delay_Sound_Buffer = 0;
+
+#if defined(PTK_SHUFFLE)
+        shufflestep = 0;
+        shuffleswitch = -1;
+#endif
 
 #if defined(PTK_303)
         
@@ -2168,13 +2432,10 @@ void Reset_Values(void)
         track3032 = 255;
 #endif
 
-#if !defined(__STAND_ALONE__)
-#if !defined(__NO_MIDI__)
-        Midi_AllNotesOff();
-#endif
-        // Clear all midi channels
-        Clear_Midi_Channels_Pool();
-#endif
+        Pattern_Line_Visual = Pattern_Line;
+        Song_Position_Visual = Song_Position;
+
+        AUDIO_ResetTimer();
 
 #if defined(__PSP__)
         volatile int *ptr_Done_Reset = (int *) (((int) &Done_Reset) | 0x40000000);
@@ -2305,7 +2566,6 @@ void Pre_Song_Init(void)
     
     for(int ini = 0; ini < MAX_TRACKS; ini++)
     {
-        glide[ini] = 0;
         for(i = 0; i < MAX_POLYPHONY; i++)
         {
 
@@ -2458,289 +2718,8 @@ void Calc_Tempo(void)
 // Init the replayer data
 void Post_Song_Init(void)
 {
-    int i;
-    int j;
-
-    for(i = 0; i < MAX_TRACKS; i++)
-    {
-        for(j = 0; j < MAX_POLYPHONY; j++)
-        {
-            Reserved_Sub_Channels[i][j] = -1;
-            Note_Sub_Channels[i][j] = -1;
-
-#if defined(PTK_FX_ARPEGGIO)
-            Arpeggio_BaseNote[i][j] = 0;
-            Vstep_arp[i][j] = 0;
-#endif
-
-#if defined(PTK_FX_VIBRATO)
-            Vibrato_BaseNote[i][j] = 0;
-            Vstep_vib[i][j] = 0;
-#endif
-
-#if defined(PTK_SYNTH)
-            Synth_Was[i][j] = 0;
-#endif
-
-            Player_WL[i][j] = 0;
-            Player_WR[i][j] = 0;
-            Player_Ampli[i][j] = 0;
-            Player_SC[i][j] = 0;
-            Player_LT[i][j] = 0;
-            Player_LW[i][j] = 0;
-            Player_LS[i][j] = 0;
-            Player_LE[i][j] = 0;
-            Player_LL[i][j] = 0;
-            Player_NS[i][j] = 0;
-
-            sp_Step[i][j] = 0;
-
-#if defined(PTK_INSTRUMENTS)
-            sp_Stage[i][j] = PLAYING_NOSAMPLE;
-#endif
-
-            Cut_Stage[i][j] = FALSE;
-            Glide_Stage[i][j] = FALSE;
-
-#if defined(PTK_SYNTH)
-            sp_Stage2[i][j] = PLAYING_NOSAMPLE;
-            sp_Stage3[i][j] = PLAYING_NOSAMPLE;
-#endif
-
-            sp_Position[i][j].int_pos = 0;
-            sp_Position[i][j].flt_pos = 0;
-
-#if defined(PTK_SYNTH)
-            sp_Position_osc_1[i][j].int_pos = 0;
-            sp_Position_osc_1[i][j].flt_pos = 0;
-            sp_Position_osc_2[i][j].int_pos = 0;
-            sp_Position_osc_2[i][j].flt_pos = 0;
-
-#if defined(PTK_SYNTH_OSC_3)
-            sp_Position_osc_3[i][j].int_pos = 0;
-            sp_Position_osc_3[i][j].flt_pos = 0;
-#endif
-#endif
-
-            old_note[i][j] = 0;
-
-            Vstep1[i][j] = 0;
-
-            sp_Cvol[i][j] = 0.0f;
-            sp_Cvol_Ramp[i][j] = 0.0f;
-            sp_Cvol_Ramp_Dest[i][j] = 10.0f;
-            sp_Cvol_Synth[i][j] = 0.0f;
-            sp_Cvol_Synth_Ramp[i][j] = 0.0f;
-            sp_Cvol_Synth_Ramp_Dest[i][j] = 10.0f;
-
-            sp_channelsample[i][j] = -1;
-            sp_channelnote[i][j] = 120;
-            sp_split[i][j] = 0;
-
-            sp_Tvol[i][j] = 0.0f;
-            sp_Tvol_Synth[i][j] = 0.0f;
-
-        }
-
-        old_TPan[i] = TPan[i];
-        sp_Tvol_Mod[i] = 1.0f;
-
-        Player_FD[i] = 0.0f;
-
-        oldspawn[i] = 0;
-        roldspawn[i] = 0;
-
-#if defined(PTK_TRACK_EQ)
-        EqDat[i].f1p0[0] = 0.0f;
-        EqDat[i].f1p0[1] = 0.0f;
-        
-        EqDat[i].f1p1[0] = 0.0f;
-        EqDat[i].f1p1[1] = 0.0f;
-        
-        EqDat[i].f1p2[0] = 0.0f;
-        EqDat[i].f1p2[1] = 0.0f;
-        
-        EqDat[i].f1p3[0] = 0.0f;
-        EqDat[i].f1p3[1] = 0.0f;
-        
-        EqDat[i].f2p0[0] = 0.0f;
-        EqDat[i].f2p0[1] = 0.0f;
-
-        EqDat[i].f2p1[0] = 0.0f;
-        EqDat[i].f2p1[1] = 0.0f;
-
-        EqDat[i].f2p2[0] = 0.0f;
-        EqDat[i].f2p2[1] = 0.0f;
-        
-        EqDat[i].f2p3[0] = 0.0f;
-        EqDat[i].f2p3[1] = 0.0f;
-
-        EqDat[i].sdm1[0] = 0.0f;
-        EqDat[i].sdm1[1] = 0.0f;
-
-        EqDat[i].sdm2[0] = 0.0f;
-        EqDat[i].sdm2[1] = 0.0f;
-
-        EqDat[i].sdm3[0] = 0.0f;
-        EqDat[i].sdm3[1] = 0.0f;
-#endif
-
-#if defined(PTK_FX_TRANCEGLIDER)
-        Glide_Step[i] = 0;
-#endif
-
-#if defined(PTK_LFO)
-#if !defined(__STAND_ALONE__)
-        if(reset_carriers)
-        {
-#endif
-            LFO_CARRIER_FILTER[i] = 0.0f;
-            LFO_CARRIER_VOLUME[i] = 0.0f;
-            LFO_CARRIER_PANNING[i] = 0.0f;
-#if !defined(__STAND_ALONE__)
-        }
-#endif
-#endif
-
-#if defined(PTK_FLANGER)
-        FLANGER_OFFSET2[i] = float(FLANGER_OFFSET[i] - FLANGER_DELAY[i]);
-        FLANGER_OFFSET1[i] = float(FLANGER_OFFSET[i] - FLANGER_DELAY[i]);  
-        for(int ini2 = 0; ini2 < 16400; ini2++)
-        {
-            FLANGE_LEFTBUFFER[i][ini2] = 0.0f;
-            FLANGE_RIGHTBUFFER[i][ini2] = 0.0f;
-        }
-#endif
-    }
-
-    SubCounter = 0;
-    Subicounter = 0;
-
     Reset_Values();
-
-#if defined(PTK_FX_PATTERNLOOP)
-    repeat_loop_pos = 0;
-    repeat_loop_counter = 0;
-    repeat_loop_counter_in = 0;
-#endif
-
-    for(i = 0; i < MAX_TRACKS; i++)
-    {
-
-#if defined(PTK_FX_ARPEGGIO)
-        Arpeggio_Switch[i] = 0;
-#endif
-
-#if defined(PTK_FX_VIBRATO)
-        Vibrato_Switch[i] = 0;
-#endif
-        
-        for(j = 0; j < MAX_POLYPHONY; j++)
-        {
-
-#if defined(PTK_FX_ARPEGGIO)
-            Arpeggio_BaseNote[i][j] = 0;
-            Vstep_arp[i][j] = 0;
-#endif
-
-#if defined(PTK_FX_VIBRATO)
-            Vibrato_BaseNote[i][j] = 0;
-            Vstep_vib[i][j] = 0;
-#endif
-
-            Cut_Stage[i][j] = FALSE;
-            Glide_Stage[i][j] = FALSE;
-
-#if defined(PTK_INSTRUMENTS)
-            sp_Tvol[i][j] = 0.0f;
-            sp_Cvol[i][j] = 0.0f;
-            sp_Cvol_Ramp[i][j] = 0.0f;
-            sp_Cvol_Ramp_Dest[i][j] = 10.0f;
-#endif
-
-#if defined(PTK_SYNTH)
-            sp_Tvol_Synth[i][j] = 0.0f;
-            sp_Cvol_Synth[i][j] = 0.0f;
-            sp_Cvol_Synth_Ramp[i][j] = 0.0f;
-            sp_Cvol_Synth_Ramp_Dest[i][j] = 10.0f;
-#endif
-
-
-        }
-
-#if defined(PTK_FX_AUTOFADEMODE)
-        FADEMODE[i] = 0;
-        FADECOEF[i] = 0.0f;
-#endif
-       
-        sp_Tvol_Mod[i] = 1.0f;
-
-#if defined(PTK_FX_REVERSE)
-        Reverse_Switch[i] = 0;
-        Reserve_Dat[i] = 0;
-#endif
-
-    }
-
-    lchorus_counter = MIX_RATE;
-    rchorus_counter = MIX_RATE;
-    lchorus_counter2 = MIX_RATE - lchorus_delay;
-    rchorus_counter2 = MIX_RATE - rchorus_delay;
-
-    Calc_Tempo();
-    PosInTick = 0;
-
-#if !defined(__STAND_ALONE__)
-#if !defined(__NO_MIDI__)
-    PosInTick_Midi = SamplesPerTick_Midi;
-#endif
-#endif
-
-    PosInTick_Delay = 0;
-    Delay_Sound_Buffer = 0;
-    Cur_Delay_Sound_Buffer = 0;
-
-#if defined(PTK_SHUFFLE)
-    shufflestep = 0;
-    shuffleswitch = -1;
-#endif
-
     Song_Playing_Pattern = FALSE;
-    
-    for(i = 0; i < 256; i++)
-    {
-        Delays_Pos_Sound_Buffer[i].Line = 0;
-        Delays_Pos_Sound_Buffer[i].Pos = 0;
-        Delays_Pos_Sound_Buffer[i].SamplesPerTick = 0;
-
-#if defined(PTK_SHUFFLE)
-        Delays_Pos_Sound_Buffer[i].shufflestep = 0;
-#endif
-
-    }
-
-    Pattern_Line_Visual = Pattern_Line;
-    Song_Position_Visual = Song_Position;
-
-#if defined(PTK_SHUFFLE)
-    Update_Shuffle();
-#endif
-
-    local_ramp_vol = 1.0f;
-    local_curr_ramp_vol = 0.0f;
-    
-    local_mas_vol = 1.0f;
-    local_curr_mas_vol = 0.0f;
-
-    // Start as the last known position
-    for(int spl = 0; spl < MAX_TRACKS; spl++)
-    {
-        CCoef[spl] = float((float) CSend[spl] / 127.0f);
-        Compute_Stereo(spl);
-        Fix_Stereo(spl);
-    }
-
-    AUDIO_ResetTimer();
 }
 
 // ------------------------------------------------------
@@ -3603,7 +3582,7 @@ ByPass_Wav:
                     gotsome = TRUE;
 
                     Set_Spline_Boundaries(sp_Position[c][i].int_pos,
-                                          Current_Pointer,
+                                          &Current_Pointer,
                                           Player_LT[c][i],
                                           Player_LW[c][i],
                                           Player_NS[c][i],
@@ -3613,12 +3592,12 @@ ByPass_Wav:
 
                     if(Player_WL[c][i])
                     {
-                        Curr_Signal_L[i] = Process_Sample(Player_WL[c][i], c, i, res_dec);
+                        Curr_Signal_L[i] = (float) *(Player_WL[c][i] + Current_Pointer) * sp_Cvol[c][i] * Player_Ampli[c][i];
                         // Is it stereo sample ?
                         if(Player_SC[c][i] == 2)
                         {
                             grown = TRUE;
-                            Curr_Signal_R[i] = Process_Sample(Player_WR[c][i], c, i, res_dec);
+                            Curr_Signal_R[i] = (float) *(Player_WR[c][i] + Current_Pointer) * sp_Cvol[c][i] * Player_Ampli[c][i];
                         }
                     }
 
@@ -3923,7 +3902,7 @@ ByPass_Wav:
 #if defined(PTK_TRACKFILTERS)
         if(FType[c] != 4)
         {   // Track filter activated
-            float const dfi = TCut[c] - CCut[c];
+            float dfi = TCut[c] - CCut[c];
 
             if(dfi < -1.0f || dfi > 1.0f) CCut[c] += dfi * ICut[c];
 
@@ -6160,6 +6139,7 @@ void Reset_Filters(int tr)
     xi0[0][tr] = 0.0f;
     xi1[0][tr] = 0.0f;
     xi2[0][tr] = 0.0f;
+    
     buf024[1][tr] = 0.0f;
     buf124[1][tr] = 0.0f;
     buf0[1][tr] = 0.0f;
@@ -6436,6 +6416,24 @@ void Get_Player_Values(void)
     if(right_float > 1.0f) right_float = 1.0f;
     if(right_float < -1.0f) right_float = -1.0f;
 
+    float old_l_float = left_float; 
+    float old_r_float = right_float;
+    left_float = Spline_Work(left_float_history[(pos_round_float_history) & 3],
+                             left_float_history[(pos_round_float_history + 1) & 3],
+                             left_float_history[(pos_round_float_history + 2) & 3],
+                             left_float_history[(pos_round_float_history + 3) & 3]
+                            );
+    right_float = Spline_Work(right_float_history[(pos_round_float_history) & 3],
+                              right_float_history[(pos_round_float_history + 1) & 3],
+                              right_float_history[(pos_round_float_history + 2) & 3],
+                              right_float_history[(pos_round_float_history + 3) & 3]
+                            );
+    left_float_history[pos_round_float_history] = old_l_float;
+    right_float_history[pos_round_float_history] = old_r_float;
+    
+    pos_round_float_history++;
+    pos_round_float_history &= 3;
+    
 #if !defined(__STAND_ALONE__)
     left_float_render = left_float;
     right_float_render = right_float;
@@ -7754,11 +7752,7 @@ void Set_Spline_Boundaries(unsigned int Position,
                            unsigned int LoopStart
                           )
 {
-    Boundaries[0] = Position;
-    Boundaries[3] = 0;
-    if(Boundaries[0]) Boundaries[3] = Boundaries[0] - 1;
-    Boundaries[1] = Boundaries[0] + 1;
-    Boundaries[2] = Boundaries[0] + 2;
+    *Boundaries = Position;
     Length--;
     if(LoopEnd >= Length) LoopEnd = Length;
 
@@ -7769,17 +7763,11 @@ void Set_Spline_Boundaries(unsigned int Position,
         case SMP_LOOP_FORWARD:
             if(LoopWay == SMP_LOOPING_FORWARD)
             {
-                if(Boundaries[0] >= LoopEnd) Boundaries[0] = LoopStart;
-                if(Boundaries[1] >= LoopEnd) Boundaries[1] = LoopStart;
-                if(Boundaries[2] >= LoopEnd) Boundaries[2] = LoopStart;
-                if(Boundaries[3] >= LoopEnd) Boundaries[3] = LoopStart;
+                if(*Boundaries >= LoopEnd) *Boundaries = LoopStart;
             }
             else
             {
-                if((int) Boundaries[0] <= (int) LoopStart) Boundaries[0] = LoopEnd;
-                if((int) Boundaries[1] <= (int) LoopStart) Boundaries[1] = LoopEnd;
-                if((int) Boundaries[2] <= (int) LoopStart) Boundaries[2] = LoopEnd;
-                if((int) Boundaries[3] <= (int) LoopStart) Boundaries[3] = LoopEnd;
+                if((int) *Boundaries <= (int) LoopStart) *Boundaries = LoopEnd;
             }
             break;
 #endif
@@ -7788,21 +7776,12 @@ void Set_Spline_Boundaries(unsigned int Position,
         case SMP_LOOP_PINGPONG:
             if(LoopWay == SMP_LOOPING_FORWARD)
             {
-                if(Boundaries[0] >= LoopEnd) Boundaries[0] = LoopEnd;
-                if(Boundaries[1] >= LoopEnd) Boundaries[1] = LoopEnd;
-                if(Boundaries[2] >= LoopEnd) Boundaries[2] = LoopEnd;
-                if(Boundaries[3] >= LoopEnd) Boundaries[3] = LoopEnd;
+                if(*Boundaries >= LoopEnd) *Boundaries = LoopEnd;
             }
             else
             {
-                if(Boundaries[0] >= LoopEnd) Boundaries[0] = LoopEnd;
-                if(Boundaries[1] >= LoopEnd) Boundaries[1] = LoopEnd;
-                if(Boundaries[2] >= LoopEnd) Boundaries[2] = LoopEnd;
-                if(Boundaries[3] >= LoopEnd) Boundaries[3] = LoopEnd;
-                if((int) Boundaries[0] <= (int) LoopStart) Boundaries[0] = LoopStart;
-                if((int) Boundaries[1] <= (int) LoopStart) Boundaries[1] = LoopStart;
-                if((int) Boundaries[2] <= (int) LoopStart) Boundaries[2] = LoopStart;
-                if((int) Boundaries[3] <= (int) LoopStart) Boundaries[3] = LoopStart;
+                if(*Boundaries >= LoopEnd) *Boundaries = LoopEnd;
+                if((int) *Boundaries <= (int) LoopStart) *Boundaries = LoopStart;
             }
             break;
 #endif
@@ -7811,64 +7790,15 @@ void Set_Spline_Boundaries(unsigned int Position,
 #endif // defined(PTK_LOOP_FORWARD) || defined(PTK_LOOP_PINGPONG)
             if(LoopWay == SMP_LOOPING_FORWARD)
             {
-                if(Boundaries[0] >= Length) Boundaries[0] = Length;
-                if(Boundaries[1] >= Length) Boundaries[1] = Length;
-                if(Boundaries[2] >= Length) Boundaries[2] = Length;
-                if(Boundaries[3] >= Length) Boundaries[3] = Length;
+                if(*Boundaries >= Length) *Boundaries = Length;
             }
             else
             {
-                if((int) Boundaries[0] <= 0) Boundaries[0] = 0;
-                if((int) Boundaries[1] <= 0) Boundaries[1] = 0;
-                if((int) Boundaries[2] <= 0) Boundaries[2] = 0;
-                if((int) Boundaries[3] <= 0) Boundaries[3] = 0;
+                if((int) *Boundaries <= 0) *Boundaries = 0;
             }
+            
 #if defined(PTK_LOOP_FORWARD) || defined(PTK_LOOP_PINGPONG)
             break;
-    }
-#endif
-}
-
-// ------------------------------------------------------
-// Obtain the sample located at the current position
-float Process_Sample(short *Data, int c, int i, unsigned int res_dec)
-{
-#if defined(__STAND_ALONE__) && !defined(__WINAMP__)
-#if defined(PTK_USE_CUBIC)
-    return Cubic_Work(*(Data + Current_Pointer[3]),
-                      *(Data + Current_Pointer[0]),
-                      *(Data + Current_Pointer[1]),
-                      *(Data + Current_Pointer[2]),
-                      res_dec) * sp_Cvol[c][i] * Player_Ampli[c][i];
-#elif defined(PTK_USE_SPLINE)
-    return Spline_Work(*(Data + Current_Pointer[3]),
-                       *(Data + Current_Pointer[0]),
-                       *(Data + Current_Pointer[1]),
-                       *(Data + Current_Pointer[2]),
-                       res_dec) * sp_Cvol[c][i] * Player_Ampli[c][i];
-#else // PTK_USE_CUBIC
-    return (*(Data + Current_Pointer[0]) * sp_Cvol[c][i] * Player_Ampli[c][i]);
-#endif // PTK_USE_CUBIC
-
-#else // __STAND_ALONE__ && __WINAMP__
-    switch(Use_Cubic)
-    {
-        case CUBIC_INT:
-            return Cubic_Work(*(Data + Current_Pointer[3]),
-                              *(Data + Current_Pointer[0]),
-                              *(Data + Current_Pointer[1]),
-                              *(Data + Current_Pointer[2]),
-                              res_dec) * sp_Cvol[c][i] * Player_Ampli[c][i];
-            break;
-        case SPLINE_INT:
-            return Spline_Work(*(Data + Current_Pointer[3]),
-                               *(Data + Current_Pointer[0]),
-                               *(Data + Current_Pointer[1]),
-                               *(Data + Current_Pointer[2]),
-                               res_dec) * sp_Cvol[c][i] * Player_Ampli[c][i];
-            break;
-        default:
-            return (*(Data + Current_Pointer[0]) * sp_Cvol[c][i] * Player_Ampli[c][i]);
     }
 #endif
 }

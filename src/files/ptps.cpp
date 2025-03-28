@@ -1093,22 +1093,6 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
         }
     }
 
-    switch(Use_Cubic)
-    {
-        case CUBIC_INT:
-            Save_Constant("PTK_USE_CUBIC", TRUE);
-            Save_Constant("PTK_USE_SPLINE", FALSE);
-            break;
-        case SPLINE_INT:
-            Save_Constant("PTK_USE_CUBIC", FALSE);
-            Save_Constant("PTK_USE_SPLINE", TRUE);
-            break;
-        default:
-            Save_Constant("PTK_USE_CUBIC", FALSE);
-            Save_Constant("PTK_USE_SPLINE", FALSE);
-            break;
-    }
-
     Save_Constant("PTK_303", Store_303_1 | Store_303_2);
 
     Save_Constant("PTK_FX_0", Store_FX_PitchUp | Store_FX_PitchDown |

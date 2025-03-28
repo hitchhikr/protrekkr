@@ -34,43 +34,7 @@
 #include "include/spline.h"
 #include "include/ptk_def_properties.h"
 
-#if defined(PTK_USE_SPLINE)
-// ------------------------------------------------------
-// Variables
-float at[RESOLUTION];
-float bt[RESOLUTION];
-float ct[RESOLUTION];
-float dt[RESOLUTION];
-
-// ------------------------------------------------------
-// Initialize the working table
-void Spline_Init(void)
+float Spline_Work(float yo, float y0, float y1, float y2)
 {
-    for(int i = 0; i < RESOLUTION; i++)
-    {
-        float x = (float) i / (float) RESOLUTION;
-        at[i] = -0.5f * x * x * x + x * x - 0.5f * x;
-        bt[i] = 1.5f * x * x * x - 2.5f * x * x + 1.0f;
-        ct[i] = -1.5f * x * x * x + 2.0f * x * x + 0.5f * x;
-        dt[i] = 0.5f * x * x * x - 0.5f * x * x;
-    }
+    return (0.15f * yo + 0.15f * y0 + 0.15f * y1 + 0.15f * y2);
 }
-
-// ------------------------------------------------------
-// Work function. Where all is cooked :]
-// yo = y[-1] [sample at x-1]
-// y0 = y[0]  [sample at x (input)]
-// y1 = y[1]  [sample at x+1]
-// y2 = y[2]  [sample at x+2]
-
-// res = distance between two neighbours sample points [y0 and y1] 
-//       ,so [0...1.0]. You have to multiply this distance * RESOLUTION used
-//       on the spline conversion table. [256 by default]
-// If you are using 256 is assumed you are using 8 bit decimal
-// fixed point offsets for resampling.
-float Spline_Work(float yo, float y0, float y1, float y2, unsigned int res)
-{
-    res = res >> 21;
-    return (at[res] * yo + bt[res] * y0 + ct[res] * y1 + dt[res] * y2);
-}
-#endif

@@ -780,7 +780,7 @@ float CSynth::GetSample(short *Left_Samples,
 
     float mul_datL;
     float mul_datR;
-    unsigned int i_POSITION[4];
+    unsigned int i_POSITION;
 
 #if defined(PTK_SYNTH_SYNC)
     int do_sync = FALSE;
@@ -930,7 +930,7 @@ float CSynth::GetSample(short *Left_Samples,
                     res_dec = pos_osc_1->int_pos;
                     
                     Set_Spline_Boundaries(pos_osc_1->int_pos,
-                                          i_POSITION,
+                                          &i_POSITION,
                                           Loop_Type1,
                                           ENV_1_LOOP_BACKWARD,
                                           Length1,
@@ -958,112 +958,24 @@ float CSynth::GetSample(short *Left_Samples,
                                  + (ENV_2_VALUE * Data.ENV_2_OSC_1_PW)
 #endif
                                 );
-                        if(*(Left_Samples1 + i_POSITION[0]) > 0) mul_datL = T_OSC_PW * 2.0f;
-                        if(Stereo == 2) if(*(Right_Samples1 + i_POSITION[0]) > 0) mul_datR = T_OSC_PW * 2.0f;
+                        if(*(Left_Samples1 + i_POSITION) > 0) mul_datL = T_OSC_PW * 2.0f;
+                        if(Stereo == 2) if(*(Right_Samples1 + i_POSITION) > 0) mul_datR = T_OSC_PW * 2.0f;
                     }
 #endif
 
-#if defined(__STAND_ALONE__) && !defined(__WINAMP__)
-#if defined(PTK_USE_CUBIC)
-                    GS_VAL_L = (Cubic_Work(
-                                (float) (*(Left_Samples1 + i_POSITION[3])) * mul_datL,
-                                (float) (*(Left_Samples1 + i_POSITION[0])) * mul_datL,
-                                (float) (*(Left_Samples1 + i_POSITION[1])) * mul_datL,
-                                (float) (*(Left_Samples1 + i_POSITION[2])) * mul_datL,
-                                res_dec)) * T_OSC_1_VOLUME;
-#elif defined(PTK_USE_SPLINE)
-                    GS_VAL_L = (Spline_Work(
-                                (float) (*(Left_Samples1 + i_POSITION[3])) * mul_datL,
-                                (float) (*(Left_Samples1 + i_POSITION[0])) * mul_datL,
-                                (float) (*(Left_Samples1 + i_POSITION[1])) * mul_datL,
-                                (float) (*(Left_Samples1 + i_POSITION[2])) * mul_datL,
-                                res_dec)) * T_OSC_1_VOLUME;
-#else
-                    GS_VAL_L = (*(Left_Samples1 + i_POSITION[0]) * mul_datL)
-                              * T_OSC_1_VOLUME;
-#endif
-
-#else
-                    switch(Use_Cubic)
-                    {
-                        case CUBIC_INT:
-                            GS_VAL_L = (Cubic_Work(
-                                        (float) (*(Left_Samples1 + i_POSITION[3])) * mul_datL,
-                                        (float) (*(Left_Samples1 + i_POSITION[0])) * mul_datL,
-                                        (float) (*(Left_Samples1 + i_POSITION[1])) * mul_datL,
-                                        (float) (*(Left_Samples1 + i_POSITION[2])) * mul_datL,
-                                        res_dec)) * T_OSC_1_VOLUME;
-                            break;
-                        case SPLINE_INT:
-                            GS_VAL_L = (Spline_Work(
-                                        (float) (*(Left_Samples1 + i_POSITION[3])) * mul_datL,
-                                        (float) (*(Left_Samples1 + i_POSITION[0])) * mul_datL,
-                                        (float) (*(Left_Samples1 + i_POSITION[1])) * mul_datL,
-                                        (float) (*(Left_Samples1 + i_POSITION[2])) * mul_datL,
-                                        res_dec)) * T_OSC_1_VOLUME;
-                            break;
-                        default:
-                            GS_VAL_L = (*(Left_Samples1 + i_POSITION[0]) * mul_datL)
-                                        * T_OSC_1_VOLUME;
-                            break;
-                    }
-#endif
+                    GS_VAL_L = (*(Left_Samples1 + i_POSITION) * mul_datL)
+                                * T_OSC_1_VOLUME;
 
                     // Stereo sample
                     if(Stereo == 2)
                     {
-
-#if defined(__STAND_ALONE__) && !defined(__WINAMP__)
-#if defined(PTK_USE_CUBIC)
-                        GS_VAL_R = (Cubic_Work(
-                                     (float) (*(Right_Samples1 + i_POSITION[3])) * mul_datR,
-                                     (float) (*(Right_Samples1 + i_POSITION[0])) * mul_datR,
-                                     (float) (*(Right_Samples1 + i_POSITION[1])) * mul_datR,
-                                     (float) (*(Right_Samples1 + i_POSITION[2])) * mul_datR,
-                                     res_dec)) * T_OSC_1_VOLUME;
-#elif defined(PTK_USE_SPLINE)
-                        GS_VAL_R = (Spline_Work(
-                                     (float) (*(Right_Samples1 + i_POSITION[3])) * mul_datR,
-                                     (float) (*(Right_Samples1 + i_POSITION[0])) * mul_datR,
-                                     (float) (*(Right_Samples1 + i_POSITION[1])) * mul_datR,
-                                     (float) (*(Right_Samples1 + i_POSITION[2])) * mul_datR,
-                                     res_dec)) * T_OSC_1_VOLUME;
-#else
-                        GS_VAL_R = (*(Right_Samples1 + i_POSITION[0]) * mul_datR)
+                        GS_VAL_R = (*(Right_Samples1 + i_POSITION) * mul_datR)
                                    * T_OSC_1_VOLUME;
-#endif
-
-#else
-                        switch(Use_Cubic)
-                        {
-                            case CUBIC_INT:
-                                GS_VAL_R = (Cubic_Work(
-                                             (float) (*(Right_Samples1 + i_POSITION[3])) * mul_datR,
-                                             (float) (*(Right_Samples1 + i_POSITION[0])) * mul_datR,
-                                             (float) (*(Right_Samples1 + i_POSITION[1])) * mul_datR,
-                                             (float) (*(Right_Samples1 + i_POSITION[2])) * mul_datR,
-                                             res_dec)) * T_OSC_1_VOLUME;
-                                break;
-                            case SPLINE_INT:
-                                GS_VAL_R = (Spline_Work(
-                                             (float) (*(Right_Samples1 + i_POSITION[3])) * mul_datR,
-                                             (float) (*(Right_Samples1 + i_POSITION[0])) * mul_datR,
-                                             (float) (*(Right_Samples1 + i_POSITION[1])) * mul_datR,
-                                             (float) (*(Right_Samples1 + i_POSITION[2])) * mul_datR,
-                                             res_dec)) * T_OSC_1_VOLUME;
-                                break;
-                            default:
-                                GS_VAL_R = (*(Right_Samples1 + i_POSITION[0]) * mul_datR)
-                                           * T_OSC_1_VOLUME;
-                                break;
-                        }
-#endif
                     }
 
 
 #if defined(PTK_SYNTH_PITCH)
                     osc_speed2 += osc_speed1;
-//                    if(osc_speed2 < 16) osc_speed2 = 16;
 #endif
 
                     if(ENV_1_LOOP_BACKWARD == TRUE)
@@ -1197,7 +1109,7 @@ float CSynth::GetSample(short *Left_Samples,
                     res_dec = pos_osc_3->int_pos;
 
                     Set_Spline_Boundaries(pos_osc_3->int_pos,
-                                          i_POSITION,
+                                          &i_POSITION,
                                           Loop_Type1,
                                           ENV_3_LOOP_BACKWARD,
                                           Length1,
@@ -1226,106 +1138,18 @@ float CSynth::GetSample(short *Left_Samples,
 #endif
                                 );
 
-                        if(*(Left_Samples1 + i_POSITION[0]) > 0) mul_datL = T_OSC_PW * 2.0f;
-                        if(Stereo == 2) if(*(Right_Samples1 + i_POSITION[0]) > 0) mul_datR = T_OSC_PW * 2.0f;
+                        if(*(Left_Samples1 + i_POSITION) > 0) mul_datL = T_OSC_PW * 2.0f;
+                        if(Stereo == 2) if(*(Right_Samples1 + i_POSITION) > 0) mul_datR = T_OSC_PW * 2.0f;
                     }
 #endif
 
-#if defined(__STAND_ALONE__) && !defined(__WINAMP__)
-#if defined(PTK_USE_CUBIC)
-                    GS_VAL_L = Math_Func(GS_VAL_L, (Cubic_Work(
-                                                    (float) (*(Left_Samples1 + i_POSITION[3])) * mul_datL,
-                                                    (float) (*(Left_Samples1 + i_POSITION[0])) * mul_datL,
-                                                    (float) (*(Left_Samples1 + i_POSITION[1])) * mul_datL,
-                                                    (float) (*(Left_Samples1 + i_POSITION[2])) * mul_datL,
-                                                    res_dec)) * T_OSC_1_VOLUME * Data.OSC_3_VOLUME);
-#elif defined(PTK_USE_SPLINE)
-                    GS_VAL_L = Math_Func(GS_VAL_L, (Spline_Work(
-                                                    (float) (*(Left_Samples1 + i_POSITION[3])) * mul_datL,
-                                                    (float) (*(Left_Samples1 + i_POSITION[0])) * mul_datL,
-                                                    (float) (*(Left_Samples1 + i_POSITION[1])) * mul_datL,
-                                                    (float) (*(Left_Samples1 + i_POSITION[2])) * mul_datL,
-                                                    res_dec)) * T_OSC_1_VOLUME * Data.OSC_3_VOLUME);
-#else
-                    GS_VAL_L = Math_Func(GS_VAL_L, (*(Left_Samples1 + i_POSITION[0]) * mul_datL)
+                    GS_VAL_L = Math_Func(GS_VAL_L, (*(Left_Samples1 + i_POSITION) * mul_datL)
                                                     * T_OSC_1_VOLUME * Data.OSC_3_VOLUME);
-#endif
-
-#else
-                    switch(Use_Cubic)
-                    {
-                        case CUBIC_INT:
-                            GS_VAL_L = Math_Func(GS_VAL_L, (Cubic_Work(
-                                                            (float) (*(Left_Samples1 + i_POSITION[3])) * mul_datL,
-                                                            (float) (*(Left_Samples1 + i_POSITION[0])) * mul_datL,
-                                                            (float) (*(Left_Samples1 + i_POSITION[1])) * mul_datL,
-                                                            (float) (*(Left_Samples1 + i_POSITION[2])) * mul_datL,
-                                                             res_dec)) * T_OSC_1_VOLUME * Data.OSC_3_VOLUME);
-                            break;
-                        case SPLINE_INT:
-                            GS_VAL_L = Math_Func(GS_VAL_L, (Spline_Work(
-                                                            (float) (*(Left_Samples1 + i_POSITION[3])) * mul_datL,
-                                                            (float) (*(Left_Samples1 + i_POSITION[0])) * mul_datL,
-                                                            (float) (*(Left_Samples1 + i_POSITION[1])) * mul_datL,
-                                                            (float) (*(Left_Samples1 + i_POSITION[2])) * mul_datL,
-                                                            res_dec)) * T_OSC_1_VOLUME * Data.OSC_3_VOLUME);
-                            break;
-                        default:
-                            GS_VAL_L = Math_Func(GS_VAL_L, (*(Left_Samples1 + i_POSITION[0]) * mul_datL)
-                                                            * T_OSC_1_VOLUME * Data.OSC_3_VOLUME);
-                            break;
-                    }
-#endif
 
                     if(Stereo == 2)
                     {
-
-#if defined(__STAND_ALONE__) && !defined(__WINAMP__)
-#if defined(PTK_USE_CUBIC)
-                        GS_VAL_R = Math_Func(GS_VAL_R, (Cubic_Work(
-                                                        (float) (*(Right_Samples1 + i_POSITION[3])) * mul_datR,
-                                                        (float) (*(Right_Samples1 + i_POSITION[0])) * mul_datR,
-                                                        (float) (*(Right_Samples1 + i_POSITION[1])) * mul_datR,
-                                                        (float) (*(Right_Samples1 + i_POSITION[2])) * mul_datR,
-                                                        res_dec)) * T_OSC_1_VOLUME * Data.OSC_3_VOLUME);
-#elif defined(PTK_USE_SPLINE)
-                        GS_VAL_R = Math_Func(GS_VAL_R, (Spline_Work(
-                                                        (float) (*(Right_Samples1 + i_POSITION[3])) * mul_datR,
-                                                        (float) (*(Right_Samples1 + i_POSITION[0])) * mul_datR,
-                                                        (float) (*(Right_Samples1 + i_POSITION[1])) * mul_datR,
-                                                        (float) (*(Right_Samples1 + i_POSITION[2])) * mul_datR,
-                                                        res_dec)) * T_OSC_1_VOLUME * Data.OSC_3_VOLUME);
-#else
-                        GS_VAL_R = Math_Func(GS_VAL_R, (*(Right_Samples1 + i_POSITION[0]) * mul_datR)
+                        GS_VAL_R = Math_Func(GS_VAL_R, (*(Right_Samples1 + i_POSITION) * mul_datR)
                                                         * T_OSC_1_VOLUME * Data.OSC_3_VOLUME);
-#endif
-
-#else
-                        switch(Use_Cubic)
-                        {
-                            case CUBIC_INT:
-                                GS_VAL_R = Math_Func(GS_VAL_R, (Cubic_Work(
-                                                                (float) (*(Right_Samples1 + i_POSITION[3])) * mul_datR,
-                                                                (float) (*(Right_Samples1 + i_POSITION[0])) * mul_datR,
-                                                                (float) (*(Right_Samples1 + i_POSITION[1])) * mul_datR,
-                                                                (float) (*(Right_Samples1 + i_POSITION[2])) * mul_datR,
-                                                                res_dec)) * T_OSC_1_VOLUME * Data.OSC_3_VOLUME);
-                                break;
-                            case SPLINE_INT:
-                                GS_VAL_R = Math_Func(GS_VAL_R, (Spline_Work(
-                                                                (float) (*(Right_Samples1 + i_POSITION[3])) * mul_datR,
-                                                                (float) (*(Right_Samples1 + i_POSITION[0])) * mul_datR,
-                                                                (float) (*(Right_Samples1 + i_POSITION[1])) * mul_datR,
-                                                                (float) (*(Right_Samples1 + i_POSITION[2])) * mul_datR,
-                                                                res_dec)) * T_OSC_1_VOLUME * Data.OSC_3_VOLUME);
-                                break;
-                            default:
-                                GS_VAL_R = Math_Func(GS_VAL_R, (*(Right_Samples1 + i_POSITION[0]) * mul_datR)
-                                                                * T_OSC_1_VOLUME * Data.OSC_3_VOLUME);
-                                break;
-                        }
-#endif
-
                     }
                 }
 
@@ -1553,7 +1377,7 @@ float CSynth::GetSample(short *Left_Samples,
                     res_dec = pos_osc_2->int_pos;
 
                     Set_Spline_Boundaries(pos_osc_2->int_pos,
-                                          i_POSITION,
+                                          &i_POSITION,
                                           Loop_Type2,
                                           ENV_2_LOOP_BACKWARD,
                                           Length2,
@@ -1581,102 +1405,22 @@ float CSynth::GetSample(short *Left_Samples,
                                     + (ENV_2_VALUE * Data.ENV_2_OSC_2_PW)
 #endif
                                    );
-                        if(*(Left_Samples + i_POSITION[0]) > 0) mul_datL = T_OSC_PW * 2.0f;
-                        if(Stereo == 2) if(*(Right_Samples + i_POSITION[0]) > 0) mul_datR = T_OSC_PW * 2.0f;
+                        if(*(Left_Samples + i_POSITION) > 0) mul_datL = T_OSC_PW * 2.0f;
+                        if(Stereo == 2) if(*(Right_Samples + i_POSITION) > 0) mul_datR = T_OSC_PW * 2.0f;
                     }
 #endif
 
-#if defined(__STAND_ALONE__) && !defined(__WINAMP__)
-#if defined(PTK_USE_CUBIC)
-                    GS_VAL_L = Math_Func(GS_VAL_L, Cubic_Work((float) (*(Left_Samples + i_POSITION[3])) * mul_datL,
-                                                              (float) (*(Left_Samples + i_POSITION[0])) * mul_datL,
-                                                              (float) (*(Left_Samples + i_POSITION[1])) * mul_datL,
-                                                              (float) (*(Left_Samples + i_POSITION[2])) * mul_datL,
-                                                              res_dec) * T_OSC_2_VOLUME);
-#elif defined(PTK_USE_SPLINE)
-                    GS_VAL_L = Math_Func(GS_VAL_L, Spline_Work((float) (*(Left_Samples + i_POSITION[3])) * mul_datL,
-                                                               (float) (*(Left_Samples + i_POSITION[0])) * mul_datL,
-                                                               (float) (*(Left_Samples + i_POSITION[1])) * mul_datL,
-                                                               (float) (*(Left_Samples + i_POSITION[2])) * mul_datL,
-                                                               res_dec) * T_OSC_2_VOLUME);
-#else
-                    GS_VAL_L = Math_Func(GS_VAL_L, *(Left_Samples + i_POSITION[0]) * mul_datL) * T_OSC_2_VOLUME;
-#endif
-
-#else
-                    switch(Use_Cubic)
-                    {
-                        case CUBIC_INT:
-                            GS_VAL_L = Math_Func(GS_VAL_L, Cubic_Work((float) (*(Left_Samples + i_POSITION[3])) * mul_datL,
-                                                                      (float) (*(Left_Samples + i_POSITION[0])) * mul_datL,
-                                                                      (float) (*(Left_Samples + i_POSITION[1])) * mul_datL,
-                                                                      (float) (*(Left_Samples + i_POSITION[2])) * mul_datL,
-                                                                      res_dec) * T_OSC_2_VOLUME);
-                            break;
-                        case SPLINE_INT:
-                            GS_VAL_L = Math_Func(GS_VAL_L, Spline_Work((float) (*(Left_Samples + i_POSITION[3])) * mul_datL,
-                                                                       (float) (*(Left_Samples + i_POSITION[0])) * mul_datL,
-                                                                       (float) (*(Left_Samples + i_POSITION[1])) * mul_datL,
-                                                                       (float) (*(Left_Samples + i_POSITION[2])) * mul_datL,
-                                                                       res_dec) * T_OSC_2_VOLUME);
-                            break;
-                        default:
-                            GS_VAL_L = Math_Func(GS_VAL_L, (*(Left_Samples + i_POSITION[0]) * mul_datL) * T_OSC_2_VOLUME);
-                            break;
-                    }
-#endif
+                    GS_VAL_L = Math_Func(GS_VAL_L, (*(Left_Samples + i_POSITION) * mul_datL) * T_OSC_2_VOLUME);
 
                     // Stereo sample
                     if(Stereo == 2)
                     {
 
-#if defined(__STAND_ALONE__) && !defined(__WINAMP__)
-#if defined(PTK_USE_CUBIC)
-                        GS_VAL_R = Math_Func(GS_VAL_R, Cubic_Work((float) (*(Right_Samples + i_POSITION[3])) * mul_datR,
-                                                                (float) (*(Right_Samples + i_POSITION[0])) * mul_datR,
-                                                                (float) (*(Right_Samples + i_POSITION[1])) * mul_datR,
-                                                                (float) (*(Right_Samples + i_POSITION[2])) * mul_datR,
-                                                                res_dec) * T_OSC_2_VOLUME);
-#elif defined(PTK_USE_SPLINE)
-                        GS_VAL_R = Math_Func(GS_VAL_R, Spline_Work((float) (*(Right_Samples + i_POSITION[3])) * mul_datR,
-                                                                 (float) (*(Right_Samples + i_POSITION[0])) * mul_datR,
-                                                                 (float) (*(Right_Samples + i_POSITION[1])) * mul_datR,
-                                                                 (float) (*(Right_Samples + i_POSITION[2])) * mul_datR,
-                                                                 res_dec) * T_OSC_2_VOLUME);
-#else
-                        GS_VAL_R = Math_Func(GS_VAL_R, (*(Right_Samples + i_POSITION[0]) * mul_datR) * T_OSC_2_VOLUME);
-#endif
-
-#else
-                        switch(Use_Cubic)
-                        {
-                            case CUBIC_INT:
-                                GS_VAL_R = Math_Func(GS_VAL_R, Cubic_Work((float) (*(Right_Samples + i_POSITION[3])) * mul_datR,
-                                                                        (float) (*(Right_Samples + i_POSITION[0])) * mul_datR,
-                                                                        (float) (*(Right_Samples + i_POSITION[1])) * mul_datR,
-                                                                        (float) (*(Right_Samples + i_POSITION[2])) * mul_datR,
-                                                                        res_dec) * T_OSC_2_VOLUME);
-                                break;
-                            case SPLINE_INT:
-                                GS_VAL_R = Math_Func(GS_VAL_R, Spline_Work((float) (*(Right_Samples + i_POSITION[3])) * mul_datR,
-                                                                         (float) (*(Right_Samples + i_POSITION[0])) * mul_datR,
-                                                                         (float) (*(Right_Samples + i_POSITION[1])) * mul_datR,
-                                                                         (float) (*(Right_Samples + i_POSITION[2])) * mul_datR,
-                                                                         res_dec) * T_OSC_2_VOLUME);
-                                break;
-                            default:
-                                GS_VAL_R = Math_Func(GS_VAL_R, (*(Right_Samples + i_POSITION[0]) * mul_datR) * T_OSC_2_VOLUME);
-                                break;
-                        }
-#endif
+                        GS_VAL_R = Math_Func(GS_VAL_R, (*(Right_Samples + i_POSITION) * mul_datR) * T_OSC_2_VOLUME);
                     }
 
 #if defined(PTK_SYNTH_PITCH)
                     osc_speed2 += osc_speed1b;
-/*                    if(osc_speed2 < 16)
-                    {
-                        osc_speed2 = 16;
-                    }*/
 #endif
 
                     if(ENV_2_LOOP_BACKWARD == TRUE)

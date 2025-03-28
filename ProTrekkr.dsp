@@ -275,10 +275,6 @@ SOURCE=.\src\editors\patterns_blocks.cpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\release\distrib\replay\lib\include\cubic_spline.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\release\distrib\replay\lib\include\endianness.h
 # End Source File
 # Begin Source File

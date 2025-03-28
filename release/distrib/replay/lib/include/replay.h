@@ -35,7 +35,6 @@
 // ------------------------------------------------------
 // Includes
 #include "tb_303.h"
-#include "cubic_spline.h"
 #include "spline.h"
 #if !defined(BZR2)
 #if defined(__WIN32__)
@@ -424,7 +423,7 @@ extern int Locked_Sub_Channels[MAX_TRACKS][MAX_POLYPHONY];
 extern int sp_Stage[MAX_TRACKS][MAX_POLYPHONY];
 extern int Cut_Stage[MAX_TRACKS][MAX_POLYPHONY];
 extern int Glide_Stage[MAX_TRACKS][MAX_POLYPHONY];
-extern unsigned int Current_Pointer[4];
+extern unsigned int Current_Pointer;
 
 #if defined(PTK_SYNTH)
 extern int sp_Stage2[MAX_TRACKS][MAX_POLYPHONY];
@@ -517,7 +516,6 @@ void Set_Spline_Boundaries(unsigned int Position,
                            unsigned int Length,
                            unsigned int LoopEnd,
                            unsigned int LoopStart);
-float Process_Sample(short *Data, int c, int i, unsigned int res_dec);
 void Init_Equ(LPEQSTATE es);
 float Do_Equ(LPEQSTATE es, float sample, int Left);
 #if defined(PTK_SHUFFLE)

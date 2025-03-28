@@ -3694,10 +3694,7 @@ void Stop_Current_Instrument(void)
     int i;
     int u;
 
-    Current_Pointer[0] = 0;
-    Current_Pointer[1] = 0;
-    Current_Pointer[2] = 0;
-    Current_Pointer[3] = 0;
+    Current_Pointer = 0;
     for(u = 0; u < MAX_TRACKS; u++)
     {
         for(i = 0; i < MAX_POLYPHONY; i++)
