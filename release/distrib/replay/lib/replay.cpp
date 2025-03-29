@@ -70,6 +70,8 @@ int SamplesPerTick_Midi;
 #endif
 
 float SQRT[1025];   // Sqrt float-precalculated table.
+float Left_Buffer[16 * 1024];
+float Right_Buffer[16 * 1024];
 
 #if !defined(__STAND_ALONE__) || defined(__WINAMP__)
     int Beats_Per_Min = 125;
@@ -208,6 +210,7 @@ float lbuff_chorus[131072];
 float rbuff_chorus[131072];
 #if defined(PTK_FILTER_LOHIBAND)
 float coef[5];
+float Final_coef[5];
 float coef_chorus[5];
 float coeftab[5][128][128][4];
 #endif
@@ -233,9 +236,9 @@ float Segue_SamplesR[MAX_TRACKS];
 
 float left_float;
 float right_float;
-int pos_round_float_history;
-float left_float_history[4];
-float right_float_history[4];
+int pos_round_float_history[MAX_TRACKS];
+float left_float_history[MAX_TRACKS][31 + 1];
+float right_float_history[MAX_TRACKS][31 + 1];
 float left_float_render;
 float right_float_render;
 float left_chorus;
@@ -730,6 +733,7 @@ unsigned int Player_NS[MAX_TRACKS][MAX_POLYPHONY];
 
     float Track_Volume[MAX_TRACKS];
     char Track_Surround[MAX_TRACKS];
+    char Track_Denoise[MAX_TRACKS];
 
 #if defined(PTK_LIMITER_MASTER)
     float mas_comp_bufferL_Master[MAS_COMPRESSOR_SIZE];
@@ -817,6 +821,10 @@ float fx1[2][MAX_TRACKS];
 float fx2[2][MAX_TRACKS];
 float fy1[2][MAX_TRACKS];
 float fy2[2][MAX_TRACKS];
+float Final_fx1[2];
+float Final_fx2[2];
+float Final_fy1[2];
+float Final_fy2[2];
 float fx1_chorus[2];
 float fx2_chorus[2];
 float fy1_chorus[2];
@@ -1101,6 +1109,8 @@ Uint32 STDCALL Mixer(Uint8 *Buffer, Uint32 Len)
 
     short *pSamples = (short *) Buffer;
     int i;
+    int cur_sample = 0;
+    float interp = 0.0f;
 
 #if !defined(__STAND_ALONE__)
     float clamp_left_value;
@@ -1132,9 +1142,6 @@ Uint32 STDCALL Mixer(Uint8 *Buffer, Uint32 Len)
 #endif
         {
 
-            
-
-
 #if defined(BZR2)
             if(!Song_Playing)
             {
@@ -1149,8 +1156,11 @@ Uint32 STDCALL Mixer(Uint8 *Buffer, Uint32 Len)
                 break;
             }
 #endif
+            interp = (float) cur_sample / ((float) Len / 4.0f);
 
-            Get_Player_Values();
+            Get_Player_Values(interp);
+
+            cur_sample++;
 
 #if !defined(__STAND_ALONE__)
             // Gather data for the scopes and the vumeters
@@ -1591,6 +1601,9 @@ int PTKEXPORT Ptk_InitModule(Uint8 *Module, int start_position)
             Mod_Dat_Read(&EqDat[i].mg, sizeof(float));
             Mod_Dat_Read(&EqDat[i].hg, sizeof(float));
         }
+
+        // Surround effect
+        Mod_Dat_Read(Track_Denoise, sizeof(char) * Song_Tracks);
 
         TmpPatterns = RawPatterns;
         for(int pwrite = 0; pwrite < nPatterns; pwrite++)
@@ -2077,15 +2090,9 @@ void Reset_Values(void)
         lchorus_counter2 = MIX_RATE - lchorus_delay;
         rchorus_counter2 = MIX_RATE - rchorus_delay;
 
-        pos_round_float_history = 0;
-        left_float_history[0] = 0.0f;
-        left_float_history[1] = 0.0f;
-        left_float_history[2] = 0.0f;
-        left_float_history[3] = 0.0f;
-        right_float_history[0] = 0.0f;
-        right_float_history[1] = 0.0f;
-        right_float_history[2] = 0.0f;
-        right_float_history[3] = 0.0f;
+        memset(pos_round_float_history, 0, sizeof(pos_round_float_history));
+        memset(left_float_history, 0, sizeof(left_float_history));
+        memset(right_float_history, 0, sizeof(right_float_history));
 
         for(i = 0; i < 131072; i++)
         {
@@ -2577,6 +2584,7 @@ void Pre_Song_Init(void)
 
         Track_Volume[ini] = 1.0f;
         Track_Surround[ini] = FALSE;
+        Track_Denoise[ini] = FALSE;
 
 #if defined(PTK_TRACK_EQ)
         Init_Equ(&EqDat[ini]);
@@ -2776,7 +2784,7 @@ void Proc_Next_Visual_Line()
 
 // ------------------------------------------------------
 // Main Player Routine
-void Sp_Player(void)
+void Sp_Player(float interp)
 {
 #if defined(PTK_INSTRUMENTS)
     unsigned int res_dec;
@@ -3803,14 +3811,17 @@ ByPass_Wav:
 
             // Gather the signals of all the sub channels
 
-#if DENORMAL
-            Curr_Signal_L[i] = denormal(Curr_Signal_L[i]);
-            Curr_Signal_R[i] = denormal(Curr_Signal_R[i]);
-#endif
+            if(gotsome)
+            {
 
-            All_Signal_L += Curr_Signal_L[i];
-            All_Signal_R += Curr_Signal_R[i];
-        }
+#if DENORMAL
+                Curr_Signal_L[i] = denormal(Curr_Signal_L[i]);
+                Curr_Signal_R[i] = denormal(Curr_Signal_R[i]);
+#endif
+                All_Signal_L += Curr_Signal_L[i];
+                All_Signal_R += Curr_Signal_R[i];
+            }
+        } // Channels_Polyphony[c]
 
 #if defined(PTK_303)
         if(track3031 == c && Chan_Active_State[Song_Position][c])
@@ -4285,6 +4296,33 @@ ByPass_Wav:
         All_Signal_L *= Track_Volume[c];
         All_Signal_R *= Track_Volume[c];
 #endif
+
+        if(Track_Denoise[c])
+        {
+            float old_l_float = 0.0f;
+            float old_r_float = 0.0f;
+            float accum;
+            int k;
+            old_l_float = All_Signal_L;
+            old_r_float = All_Signal_R;
+            accum = 0.0f;
+            for(k = 0; k < 32; k++)
+            {
+                accum += ((1.0f / 32.0f) * left_float_history[c][(pos_round_float_history[c] - k) & 31]);
+            }
+            All_Signal_L = accum;
+            accum = 0.0f;
+            for(k = 0; k < 32; k++)
+            {
+                accum += ((1.0f / 32.0f) * right_float_history[c][(pos_round_float_history[c] - k) & 31]);
+            }
+            All_Signal_R = accum;
+            left_float_history[c][pos_round_float_history[c]] = old_l_float;
+            right_float_history[c][pos_round_float_history[c]] = old_r_float;
+            pos_round_float_history[c]++;
+            pos_round_float_history[c] &= 31;
+        }
+
 
         // Store to global signals
         left_float += All_Signal_L;
@@ -5487,7 +5525,8 @@ void Do_Effects_Ticks_X(void)
     defined(PTK_FX_SETDISTORTIONTHRESHOLD) || defined(PTK_FX_SETDISTORTIONCLAMP) || \
     defined(PTK_FX_SETCUTOFF) || defined(PTK_FX_SETFILTERRESONANCE) || defined(PTK_FX_SWITCHFLANGER) || \
     defined(PTK_FX_TRACK_FILTER_LFO) || defined(PTK_FX_SETFILTERTYPE) || \
-    defined(PTK_FX_SETCHORUSFILTERTYPE) || defined(PTK_FX_SETCHORUSCUTOFF) || defined(PTK_FX_SETCHORUSRESONANCE)
+    defined(PTK_FX_SETCHORUSFILTERTYPE) || defined(PTK_FX_SETCHORUSCUTOFF) || defined(PTK_FX_SETCHORUSRESONANCE) || \
+    defined(PTK_FX_SETDENOISE)
 
             // Only at tick 0 but after instruments data
             if(PosInTick == 0)
@@ -5521,10 +5560,6 @@ void Do_Effects_Ticks_X(void)
                             {
                                 Vstep1[trackef][i] += ((float) pltr_dat_row[k]) / 2048.0f;
                             }
-                            else
-                            {
-                                Vstep1[trackef][i] = 5.66029f;
-                            }
                         }
                         break;
 #endif
@@ -5537,10 +5572,6 @@ void Do_Effects_Ticks_X(void)
                             if(Vstep1[trackef][i] > 0.00586236f)
                             {
                                 Vstep1[trackef][i] -= ((float) pltr_dat_row[k]) / 2048.0f;
-                            }
-                            else
-                            {
-                                Vstep1[trackef][i] = 0.00586236f;
                             }
                         }
                         break;
@@ -5724,13 +5755,31 @@ void Do_Effects_Ticks_X(void)
                         break;
 #endif
 
+#if defined(PTK_FX_SETDENOISE)
+                    // $30 Set chorus filter resonance
+                    case 0x30:
+                        Track_Denoise[trackef] = (int) (pltr_dat_row[k] & 1);
+
+#if !defined(__STAND_ALONE__)
+                        if(userscreen == USER_SCREEN_TRACK_EDIT)
+                        {
+                            gui_action_external |= GUI_UPDATE_EXTERNAL_DENOISE;
+                        }
+#endif
+
+                        break;
+#endif
 
 
-                }
 
-            }
+
+                } // pltr_eff_row[k]
+
+            } // PosInTick == 0
 
 #endif
+
+            // At all ticks
 
 #if defined(PTK_FX_0)
             switch(pltr_eff_row[k])
@@ -5746,10 +5795,6 @@ void Do_Effects_Ticks_X(void)
                         {
                             Vstep1[trackef][i] += ((float) pltr_dat_row[k]) / 2048.0f;
                         }
-                        else
-                        {
-                            Vstep1[trackef][i] = 5.66029f;
-                        }
                     }
             
                     break;
@@ -5764,10 +5809,6 @@ void Do_Effects_Ticks_X(void)
                         if(Vstep1[trackef][i] > 0.00586236f)
                         {
                             Vstep1[trackef][i] -= ((float) pltr_dat_row[k]) / 2048.0f;
-                        }
-                        else
-                        {
-                            Vstep1[trackef][i] = 0.00586236f;
                         }
                     }
                     break;
@@ -6280,7 +6321,7 @@ void Fix_Stereo(int channel)
 
 // ------------------------------------------------------
 // Main mixing routine
-void Get_Player_Values(void)
+void Get_Player_Values(float interp)
 {
 #if !defined(__STAND_ALONE__)
     int c;
@@ -6301,7 +6342,7 @@ void Get_Player_Values(void)
     if(mas_comp_pos_rms_buffer > MAS_COMPRESSOR_SIZE - 1) mas_comp_pos_rms_buffer = 0;
 #endif
 
-    Sp_Player();
+    Sp_Player(interp);
 
     // Wait for the audio latency before starting to play
     if(Song_Playing)
@@ -6416,24 +6457,6 @@ void Get_Player_Values(void)
     if(right_float > 1.0f) right_float = 1.0f;
     if(right_float < -1.0f) right_float = -1.0f;
 
-    float old_l_float = left_float; 
-    float old_r_float = right_float;
-    left_float = AntiAlias_Work(left_float_history[(pos_round_float_history) & 3],
-                                left_float_history[(pos_round_float_history + 1) & 3],
-                                left_float_history[(pos_round_float_history + 2) & 3],
-                                left_float_history[(pos_round_float_history + 3) & 3]
-                               );
-    right_float = AntiAlias_Work(right_float_history[(pos_round_float_history) & 3],
-                                 right_float_history[(pos_round_float_history + 1) & 3],
-                                 right_float_history[(pos_round_float_history + 2) & 3],
-                                 right_float_history[(pos_round_float_history + 3) & 3]
-                                );
-    left_float_history[pos_round_float_history] = old_l_float;
-    right_float_history[pos_round_float_history] = old_r_float;
-    
-    pos_round_float_history++;
-    pos_round_float_history &= 3;
-    
 #if !defined(__STAND_ALONE__)
     left_float_render = left_float;
     right_float_render = right_float;
@@ -6593,6 +6616,22 @@ float Filter_Chorus(int stereo, float x)
     return y;
 }
 #endif
+
+float Final_Filter(int stereo, float x)
+{
+    float y;
+
+    y = Final_coef[0] * x +
+        Final_coef[1] * Final_fx1[stereo] +
+        Final_coef[2] * Final_fx2[stereo] +
+        Final_coef[3] * Final_fy1[stereo] +
+        Final_coef[4] * Final_fy2[stereo];
+    Final_fy2[stereo] = Final_fy1[stereo];
+    Final_fy1[stereo] = y;
+    Final_fx2[stereo] = Final_fx1[stereo];
+    Final_fx1[stereo] = x;
+    return y;
+}
 
 #if defined(PTK_PROC_FILTER)
 float Filter(int stereo, float x, char i)

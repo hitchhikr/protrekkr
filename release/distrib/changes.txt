@@ -7,9 +7,9 @@ v2.8.5
 - Fullscreen mode resolution can now be selected.
 - Added 4 parametrable filters for stereo delay.
 - New effects:
-  2D: Set stereo filter type.
-  2E: Set stereo filter cutoff.
-  2F: Set stereo filter resonance.
+  - 2D: Set stereo delay filter type.
+  - 2E: Set stereo delay filter cutoff.
+  - 2F: Set stereo delay filter resonance.
 - Midi data range is now correctly scaled: row data of FF will be sent as 127.
 - Ptk now sends Midi start/cont/stop and Midi clock events.
 - Added 2 functions in sequencer to move a position up or down.
@@ -17,7 +17,9 @@ v2.8.5
 - Added a sequencer function to remap/swap and change effects numbers & values.
 - Fixed a couple of bugs with notes transpositions functions.
 - Major tracker and replay speedup.
-- Removed splines, audio output is now just anti-aliased instead.
+- Removed splines, channels can now be individually denoised (or not)
+  due to this, this effect have been added:
+  - 30: Turn channel denoising on/off.
 
 v2.8.2
 

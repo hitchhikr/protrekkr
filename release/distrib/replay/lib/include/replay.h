@@ -35,7 +35,6 @@
 // ------------------------------------------------------
 // Includes
 #include "tb_303.h"
-#include "antialias.h"
 #if !defined(BZR2)
 #if defined(__WIN32__)
 #include "../sounddriver/include/sounddriver_windows.h"
@@ -299,6 +298,7 @@ extern int lchorus_delay;
 extern int rchorus_delay;
 extern float Track_Volume[MAX_TRACKS];
 extern char Track_Surround[MAX_TRACKS];
+extern char Track_Denoise[MAX_TRACKS];
 extern float mas_comp_threshold_Track[MAX_TRACKS];
 extern float mas_comp_ratio_Track[MAX_TRACKS];
 extern char Compress_Track[MAX_TRACKS];
@@ -464,7 +464,7 @@ extern EQSTATE EqDat[MAX_TRACKS];
 // ------------------------------------------------------
 // Functions
 void Pre_Song_Init(void);
-void Sp_Player(void);
+void Sp_Player(float interp);
 void Schedule_Instrument(int channel, int sub_channel,
                          int note, int sample,
                          unsigned int offset,
@@ -480,7 +480,7 @@ void Reset_Filters(int tr);
 void Compute_Stereo(int channel);
 void Fix_Stereo(int channel);
 void Calc_Tempo(void);
-void Get_Player_Values(void);
+void Get_Player_Values(float interp);
 void Note_Off_303(char strack);
 void Init_Sample_Bank(void);
 void Kill_Instrument(int inst_nbr, int all_splits);

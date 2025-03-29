@@ -43,7 +43,7 @@
 
 // ------------------------------------------------------
 // Constants
-#define AUDIO_PCM_FREQ 44100
+#define AUDIO_PCM_FREQ (44100)
 
 #define AUDIO_DBUF_CHANNELS 2
 #define AUDIO_DBUF_RESOLUTION 16

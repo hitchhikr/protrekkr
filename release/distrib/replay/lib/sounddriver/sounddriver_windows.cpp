@@ -91,10 +91,12 @@ DWORD WINAPI AUDIO_Thread(LPVOID lpParameter)
 
             AUDIO_Sound_Buffer->GetCurrentPosition(&AUDIO_Buffer_Pos, NULL);
             Bytes_To_Lock = AUDIO_Buffer_Pos - AUDIO_Old_Buffer_Pos;
-            if(Bytes_To_Lock < 0) Bytes_To_Lock += AUDIO_Latency;
+            if(Bytes_To_Lock < 0)
+            {
+                Bytes_To_Lock += AUDIO_Latency;
+            }
             AUDIO_Sound_Buffer->Lock(AUDIO_Old_Buffer_Pos, Bytes_To_Lock, &AUDIO_Audio_Ptr1, &AUDIO_Audio_Bytes1, &AUDIO_Audio_Ptr2, &AUDIO_Audio_Bytes2, 0);
             AUDIO_Old_Buffer_Pos = AUDIO_Buffer_Pos;
-
             if(AUDIO_Play_Flag)
             {
                 AUDIO_Mixer((Uint8 *) AUDIO_Audio_Ptr1, AUDIO_Audio_Bytes1);
@@ -106,10 +108,9 @@ DWORD WINAPI AUDIO_Thread(LPVOID lpParameter)
                 memset(AUDIO_Audio_Ptr2, 0, AUDIO_Audio_Bytes2);
                 AUDIO_Acknowledge = TRUE;
             }
-
             AUDIO_Sound_Buffer->Unlock(AUDIO_Audio_Ptr1, AUDIO_Audio_Bytes1, AUDIO_Audio_Ptr2, AUDIO_Audio_Bytes2);
 
-            AUDIO_Samples += (AUDIO_Audio_Bytes1 + AUDIO_Audio_Bytes2);
+            AUDIO_Samples += ((AUDIO_Audio_Bytes1) + (AUDIO_Audio_Bytes2));
             AUDIO_Timer = ((((float) AUDIO_Samples) * (1.0f / (float) AUDIO_Latency)) * 1000.0f);
         }
         Sleep(10);

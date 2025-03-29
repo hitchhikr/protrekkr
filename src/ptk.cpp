@@ -2143,6 +2143,12 @@ int Screen_Update(void)
                 gui_action_external &= ~GUI_UPDATE_EXTERNAL_CHORUS_FILTER_RESONANCE;
             }
 
+            if(gui_action_external & GUI_UPDATE_EXTERNAL_DENOISE)
+            {
+                Actualize_Track_Ed(18);
+                gui_action_external &= ~GUI_UPDATE_EXTERNAL_DENOISE;
+            }
+
             if(gui_action_external & GUI_UPDATE_EXTERNAL_FILTER_CUTOFF)
             {
                 Actualize_Track_Ed(1);
@@ -2543,7 +2549,8 @@ void Load_File(int Freeindex, const char *str)
                 strcmp(extension, "PROTREKT") == 0 ||
                 strcmp(extension, "PROTREKU") == 0 ||
                 strcmp(extension, "PROTREKV") == 0 ||
-                strcmp(extension, "PROTREKW") == 0)
+                strcmp(extension, "PROTREKW") == 0 ||
+                strcmp(extension, "PROTREKX") == 0)
         {
             sprintf(name, "%s", FileName);
             Song_Stop();
@@ -3445,7 +3452,7 @@ void Wav_Renderizer()
                     Song_Play();
                     while(Song_Position < Max_Position && done == FALSE)
                     {
-                        Get_Player_Values();
+                        Get_Player_Values(0);
                         if(rawrender_32float)
                         {
                             // [-1.0..1.0]
@@ -3495,7 +3502,7 @@ void Wav_Renderizer()
                                     Sample_Buffer[1] = (short *) realloc(Sample_Buffer[1], (Pos_In_Memory + Mem_Buffer_Size) * 2);
                                 }
                             }
-                            Get_Player_Values();
+                            Get_Player_Values(0);
                             if(Stereo)
                             {
                                 Sample_Buffer[0][Pos_In_Memory] = left_float_render * 32767.0f;

@@ -295,10 +295,6 @@ SOURCE=.\release\distrib\replay\lib\include\samples_unpack.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\release\distrib\replay\lib\include\spline.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\release\distrib\replay\lib\include\synth.h
 # End Source File
 # Begin Source File
@@ -337,10 +333,6 @@ SOURCE=.\release\distrib\replay\lib\replay.cpp
 # Begin Source File
 
 SOURCE=.\release\distrib\replay\lib\samples_unpack.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\release\distrib\replay\lib\spline.cpp
 # End Source File
 # Begin Source File
 

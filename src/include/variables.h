@@ -258,6 +258,7 @@
 #define GUI_UPDATE_EXTERNAL_CHORUS_FILTER_TYPE (1 << 12)
 #define GUI_UPDATE_EXTERNAL_CHORUS_FILTER_CUTOFF (1 << 13)
 #define GUI_UPDATE_EXTERNAL_CHORUS_FILTER_RESONANCE (1 << 14)
+#define GUI_UPDATE_EXTERNAL_DENOISE (1 << 15)
 
 #define GUI_UPDATE_EXTERNAL_303_1_CUTOFF (1 << 0)
 #define GUI_UPDATE_EXTERNAL_303_2_CUTOFF (1 << 1)
@@ -543,7 +544,7 @@ void value_box3(int x, int y, char val, int flags);
 void value_box4(int x, int y, char val);
 void Actualize_Track_Ed(char gode);
 void Actualize_Songname(int *newletter, char *nam);
-void Get_Player_Values(void);
+void Get_Player_Values(float interp);
 void Check_Loops(void);
 void Copy_303_Skin(int xd, int yd, int xs, int ys, int w, int h);
 void Go303(void);
@@ -565,7 +566,7 @@ void Stop_Current_Instrument(void);
 void draw_lfoed(void);
 void draw_tracked(void);
 void Delete_Instrument(void);
-void Sp_Player(void);             
+void Sp_Player(float interp);             
 void Pre_Song_Init(void);
 void Reverb_work(void);
 void Start_Rec(void);
@@ -574,6 +575,7 @@ void Notify_Play(void);
 void ComputeCoefs(int freq, int r, int t);
 void live303(int pltr_eff_row, int pltr_dat_row);
 float Filter_Chorus(int stereo, float x);
+float Final_Filter(int stereo, float x);
 float Filter(int stereo, float x, char i);
 float Cutoff(int v);
 float Reonance(float v);

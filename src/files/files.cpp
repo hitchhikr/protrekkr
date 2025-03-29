@@ -194,6 +194,7 @@ int Load_Ptk(CustomFile customFile)
     int extended_LFO = FALSE;
     int Tb303_Scaling = FALSE;
     int Track_Srnd = FALSE;
+    int Track_Dns = FALSE;
     int Long_Midi_Prg = FALSE;
     int Var_Disto = FALSE;
     int Osc_Sync = FALSE;
@@ -258,6 +259,8 @@ int Load_Ptk(CustomFile customFile)
 
         switch(extension[7])
         {
+            case 'X':
+                Track_Dns = TRUE;
             case 'W':
                 Chorus_Filters = TRUE;
             case 'V':
@@ -436,6 +439,13 @@ Read_Mod_File:
                 Read_Mod_Data_Swap(&EqDat[i].lg, sizeof(float), 1, in);
                 Read_Mod_Data_Swap(&EqDat[i].mg, sizeof(float), 1, in);
                 Read_Mod_Data_Swap(&EqDat[i].hg, sizeof(float), 1, in);
+            }
+            if(Track_Dns)
+            {
+                for(i = 0; i < MAX_TRACKS; i++)
+                {
+                    Read_Mod_Data(&Track_Denoise[i], sizeof(char), 1, in);
+                }
             }
         }
 
@@ -1386,6 +1396,10 @@ int Save_Ptk(char *FileName, int NewFormat, int Simulate, Uint8 *Memory)
                 Write_Mod_Data_Swap(&EqDat[i].mg, sizeof(float), 1, in);
                 Write_Mod_Data_Swap(&EqDat[i].hg, sizeof(float), 1, in);
             }
+            for(i = 0; i < MAX_TRACKS; i++)
+            {
+                Write_Mod_Data(&Track_Denoise[i], sizeof(char), 1, in);
+            }
             // Clean the unused patterns garbage (doesn't seem to do much)
             for(i = Song_Tracks; i < MAX_TRACKS; i++)
             {
@@ -1798,7 +1812,7 @@ int Pack_Module(char *FileName)
     output = fopen(Temph, "wb");
     if(output)
     {
-        sprintf(extension, "PROTREKW");
+        sprintf(extension, "PROTREKX");
         Write_Data(extension, sizeof(char), 9, output);
         Write_Data_Swap(&Depack_Size, sizeof(int), 1, output);
         Write_Data(Final_Mem_Out, sizeof(char), Len, output);

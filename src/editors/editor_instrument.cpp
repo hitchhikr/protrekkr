@@ -333,7 +333,7 @@ void Actualize_Instrument_Ed(int typex, char gode)
                     switch(SampleCompression[Current_Instrument])
                     {
                         case SMP_PACK_GSM:
-                            Gui_Draw_Button_Box(681, (Cur_Height - 134), 39, 16, "WavPac", Allow_Global | BUTTON_TEXT_CENTERED);
+                            Gui_Draw_Button_Box(681, (Cur_Height - 134), 39, 16, "WavPck", Allow_Global | BUTTON_TEXT_CENTERED);
                             Gui_Draw_Button_Box(640, (Cur_Height - 116), 39, 16, "Gsm", Allow_GSM | Allow_Global_Pushed | BUTTON_TEXT_CENTERED);
                             Gui_Draw_Button_Box(681, (Cur_Height - 116), 39, 16, "Mp3", Allow_MP3 | Allow_Global | BUTTON_TEXT_CENTERED);
                             Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 1), 80, 16, "ADPCM", Allow_Global | BUTTON_TEXT_CENTERED);
@@ -343,7 +343,7 @@ void Actualize_Instrument_Ed(int typex, char gode)
                             Gui_Draw_Button_Box(681, (Cur_Height - 116) + (18 * 3), 39, 16, "None", Allow_Global | BUTTON_TEXT_CENTERED);
                             break;
                         case SMP_PACK_MP3:
-                            Gui_Draw_Button_Box(681, (Cur_Height - 134), 39, 16, "WavPac", Allow_Global | BUTTON_TEXT_CENTERED);
+                            Gui_Draw_Button_Box(681, (Cur_Height - 134), 39, 16, "WavPck", Allow_Global | BUTTON_TEXT_CENTERED);
                             Gui_Draw_Button_Box(640, (Cur_Height - 116), 39, 16, "Gsm", Allow_GSM | Allow_Global | BUTTON_TEXT_CENTERED);
                             Gui_Draw_Button_Box(681, (Cur_Height - 116), 39, 16, "Mp3", Allow_MP3 | Allow_Global_Pushed | BUTTON_TEXT_CENTERED);
                             Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 1), 80, 16, "ADPCM", Allow_Global | BUTTON_TEXT_CENTERED);
@@ -353,7 +353,7 @@ void Actualize_Instrument_Ed(int typex, char gode)
                             Gui_Draw_Button_Box(681, (Cur_Height - 116) + (18 * 3), 39, 16, "None", Allow_Global | BUTTON_TEXT_CENTERED);
                             break;
                         case SMP_PACK_ADPCM:
-                            Gui_Draw_Button_Box(681, (Cur_Height - 134), 39, 16, "WavPac", Allow_Global | BUTTON_TEXT_CENTERED);
+                            Gui_Draw_Button_Box(681, (Cur_Height - 134), 39, 16, "WavPck", Allow_Global | BUTTON_TEXT_CENTERED);
                             Gui_Draw_Button_Box(640, (Cur_Height - 116), 39, 16, "Gsm", Allow_GSM | Allow_Global | BUTTON_TEXT_CENTERED);
                             Gui_Draw_Button_Box(681, (Cur_Height - 116), 39, 16, "Mp3", Allow_MP3 | Allow_Global | BUTTON_TEXT_CENTERED);
                             Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 1), 80, 16, "ADPCM", Allow_Global_Pushed | BUTTON_TEXT_CENTERED);
@@ -363,7 +363,7 @@ void Actualize_Instrument_Ed(int typex, char gode)
                             Gui_Draw_Button_Box(681, (Cur_Height - 116) + (18 * 3), 39, 16, "None", Allow_Global | BUTTON_TEXT_CENTERED);
                             break;
                         case SMP_PACK_AT3:
-                            Gui_Draw_Button_Box(681, (Cur_Height - 134), 39, 16, "WavPac", Allow_Global | BUTTON_TEXT_CENTERED);
+                            Gui_Draw_Button_Box(681, (Cur_Height - 134), 39, 16, "WavPck", Allow_Global | BUTTON_TEXT_CENTERED);
                             Gui_Draw_Button_Box(640, (Cur_Height - 116), 39, 16, "Gsm", Allow_GSM | Allow_Global | BUTTON_TEXT_CENTERED);
                             Gui_Draw_Button_Box(681, (Cur_Height - 116), 39, 16, "Mp3", Allow_MP3 | Allow_Global | BUTTON_TEXT_CENTERED);
                             Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 1), 80, 16, "ADPCM", Allow_Global | BUTTON_TEXT_CENTERED);
@@ -373,7 +373,7 @@ void Actualize_Instrument_Ed(int typex, char gode)
                             Gui_Draw_Button_Box(681, (Cur_Height - 116) + (18 * 3), 39, 16, "None", Allow_Global | BUTTON_TEXT_CENTERED);
                             break;
                         case SMP_PACK_8BIT:
-                            Gui_Draw_Button_Box(681, (Cur_Height - 134), 39, 16, "WavPac", Allow_Global | BUTTON_TEXT_CENTERED);
+                            Gui_Draw_Button_Box(681, (Cur_Height - 134), 39, 16, "WavPck", Allow_Global | BUTTON_TEXT_CENTERED);
                             Gui_Draw_Button_Box(640, (Cur_Height - 116), 39, 16, "Gsm", Allow_GSM | Allow_Global | BUTTON_TEXT_CENTERED);
                             Gui_Draw_Button_Box(681, (Cur_Height - 116), 39, 16, "Mp3", Allow_MP3 | Allow_Global | BUTTON_TEXT_CENTERED);
                             Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 1), 80, 16, "ADPCM", Allow_Global | BUTTON_TEXT_CENTERED);
@@ -383,7 +383,7 @@ void Actualize_Instrument_Ed(int typex, char gode)
                             Gui_Draw_Button_Box(681, (Cur_Height - 116) + (18 * 3), 39, 16, "None", Allow_Global | BUTTON_TEXT_CENTERED);
                             break;
                         case SMP_PACK_WAVPACK:
-                            Gui_Draw_Button_Box(681, (Cur_Height - 134), 39, 16, "WavPac", Allow_Global_Pushed | BUTTON_TEXT_CENTERED);
+                            Gui_Draw_Button_Box(681, (Cur_Height - 134), 39, 16, "WavPck", Allow_Global_Pushed | BUTTON_TEXT_CENTERED);
                             Gui_Draw_Button_Box(640, (Cur_Height - 116), 39, 16, "Gsm", Allow_GSM | Allow_Global | BUTTON_TEXT_CENTERED);
                             Gui_Draw_Button_Box(681, (Cur_Height - 116), 39, 16, "Mp3", Allow_MP3 | Allow_Global | BUTTON_TEXT_CENTERED);
                             Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 1), 80, 16, "ADPCM", Allow_Global | BUTTON_TEXT_CENTERED);
@@ -393,7 +393,7 @@ void Actualize_Instrument_Ed(int typex, char gode)
                             Gui_Draw_Button_Box(681, (Cur_Height - 116) + (18 * 3), 39, 16, "None", Allow_Global | BUTTON_TEXT_CENTERED);
                             break;
                         case SMP_PACK_NONE:
-                            Gui_Draw_Button_Box(681, (Cur_Height - 134), 39, 16, "WavPac", Allow_Global | BUTTON_TEXT_CENTERED);
+                            Gui_Draw_Button_Box(681, (Cur_Height - 134), 39, 16, "WavPck", Allow_Global | BUTTON_TEXT_CENTERED);
                             Gui_Draw_Button_Box(640, (Cur_Height - 116), 39, 16, "Gsm", Allow_GSM | Allow_Global | BUTTON_TEXT_CENTERED);
                             Gui_Draw_Button_Box(681, (Cur_Height - 116), 39, 16, "Mp3", Allow_MP3 | Allow_Global | BUTTON_TEXT_CENTERED);
                             Gui_Draw_Button_Box(640, (Cur_Height - 116) + (18 * 1), 80, 16, "ADPCM", Allow_Global | BUTTON_TEXT_CENTERED);

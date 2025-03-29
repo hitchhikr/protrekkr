@@ -528,13 +528,13 @@ void Display_Track_Compressor_Status(int Track)
     {
         if(Compress_Track[Track_Under_Caret])
         {
-            Gui_Draw_Button_Box(602, (Cur_Height - 121), 20, 16, "On", BUTTON_PUSHED);
-            Gui_Draw_Button_Box(624, (Cur_Height - 121), 20, 16, "Off", BUTTON_NORMAL);
+            Gui_Draw_Button_Box(602, (Cur_Height - 121), 20, 16, "On", BUTTON_PUSHED | BUTTON_TEXT_CENTERED);
+            Gui_Draw_Button_Box(624, (Cur_Height - 121), 20, 16, "Off", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
         }
         else
         {
-            Gui_Draw_Button_Box(602, (Cur_Height - 121), 20, 16, "On", BUTTON_NORMAL);
-            Gui_Draw_Button_Box(624, (Cur_Height - 121), 20, 16, "Off", BUTTON_PUSHED);
+            Gui_Draw_Button_Box(602, (Cur_Height - 121), 20, 16, "On", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
+            Gui_Draw_Button_Box(624, (Cur_Height - 121), 20, 16, "Off", BUTTON_PUSHED | BUTTON_TEXT_CENTERED);
         }
     }
 }

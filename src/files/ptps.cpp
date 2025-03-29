@@ -262,6 +262,7 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
     int Store_FX_SetChorusFilterType = FALSE;
     int Store_FX_SetChorusFilterCutoff = FALSE;
     int Store_FX_SetChorusFilterResonance = FALSE;
+    int Store_FX_SetDenoise = FALSE;
 
     int Store_Synth = FALSE;
 
@@ -429,6 +430,11 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
         Write_Mod_Data(&EqDat[i].lg, sizeof(float), 1, in);
         Write_Mod_Data(&EqDat[i].mg, sizeof(float), 1, in);
         Write_Mod_Data(&EqDat[i].hg, sizeof(float), 1, in);
+    }
+
+    for(i = 0; i < char_value; i++)
+    {
+        Write_Mod_Data(&Track_Denoise[i], sizeof(char), 1, in);
     }
 
     // Check the instruments
@@ -975,14 +981,19 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                                     }
                                     break;
 
-                                // $2d Set chorus filter cutoff
+                                // $2e Set chorus filter cutoff
                                 case 0x2e:
                                     Store_FX_SetChorusFilterCutoff = TRUE;
                                     break;
                                     
-                                // $2d Set chorus filter resonance
+                                // $2f Set chorus filter resonance
                                 case 0x2f:
                                     Store_FX_SetChorusFilterResonance = TRUE;
+                                    break;
+
+                                // $30 Set denoising
+                                case 0x30:
+                                    Store_FX_SetDenoise = TRUE;
                                     break;
 
                                 // $43 Set channel lfo frequency value
@@ -1183,6 +1194,7 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
     Save_Constant("PTK_FX_SETCHORUSFILTERTYPE", Store_FX_SetChorusFilterType);
     Save_Constant("PTK_FX_SETCHORUSCUTOFF", Store_FX_SetChorusFilterCutoff);
     Save_Constant("PTK_FX_SETCHORUSRESONANCE", Store_FX_SetChorusFilterResonance);
+    Save_Constant("PTK_FX_SETDENOISE", Store_FX_SetDenoise);
 
     // Special but only at tick 0
     Save_Constant("PTK_FX_TICK0", Store_FX_Vibrato | Store_FX_Arpeggio |

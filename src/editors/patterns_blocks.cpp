@@ -2959,6 +2959,7 @@ void Reset_Track(int Track)
 
     Track_Volume[Track] = 1.0f;
     Track_Surround[Track] = FALSE;
+    Track_Denoise[Track] = FALSE;
 
     FLANGER_ON[Track] = 0;
     FLANGER_AMOUNT[Track] = -0.8f;
@@ -3054,6 +3055,7 @@ void Copy_Track(int Track_Src, int Track_Dst)
         
     Track_Volume[Track_Dst] =           Track_Volume[Track_Src];
     Track_Surround[Track_Dst] =         Track_Surround[Track_Src];
+    Track_Denoise[Track_Dst] =          Track_Denoise[Track_Src];
 
     LFO_ON[Track_Dst] =                 LFO_ON[Track_Src];
     LFO_RATE[Track_Dst] =               LFO_RATE[Track_Src];
