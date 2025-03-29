@@ -464,7 +464,7 @@ extern EQSTATE EqDat[MAX_TRACKS];
 // ------------------------------------------------------
 // Functions
 void Pre_Song_Init(void);
-void Sp_Player(float interp);
+void Sp_Player(void);
 void Schedule_Instrument(int channel, int sub_channel,
                          int note, int sample,
                          unsigned int offset,
@@ -480,7 +480,7 @@ void Reset_Filters(int tr);
 void Compute_Stereo(int channel);
 void Fix_Stereo(int channel);
 void Calc_Tempo(void);
-void Get_Player_Values(float interp);
+void Get_Player_Values(void);
 void Note_Off_303(char strack);
 void Init_Sample_Bank(void);
 void Kill_Instrument(int inst_nbr, int all_splits);

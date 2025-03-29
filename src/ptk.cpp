@@ -3452,7 +3452,7 @@ void Wav_Renderizer()
                     Song_Play();
                     while(Song_Position < Max_Position && done == FALSE)
                     {
-                        Get_Player_Values(0);
+                        Get_Player_Values();
                         if(rawrender_32float)
                         {
                             // [-1.0..1.0]
@@ -3502,7 +3502,7 @@ void Wav_Renderizer()
                                     Sample_Buffer[1] = (short *) realloc(Sample_Buffer[1], (Pos_In_Memory + Mem_Buffer_Size) * 2);
                                 }
                             }
-                            Get_Player_Values(0);
+                            Get_Player_Values();
                             if(Stereo)
                             {
                                 Sample_Buffer[0][Pos_In_Memory] = left_float_render * 32767.0f;

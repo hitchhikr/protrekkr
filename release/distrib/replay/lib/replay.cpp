@@ -1109,8 +1109,6 @@ Uint32 STDCALL Mixer(Uint8 *Buffer, Uint32 Len)
 
     short *pSamples = (short *) Buffer;
     int i;
-    int cur_sample = 0;
-    float interp = 0.0f;
 
 #if !defined(__STAND_ALONE__)
     float clamp_left_value;
@@ -1156,11 +1154,8 @@ Uint32 STDCALL Mixer(Uint8 *Buffer, Uint32 Len)
                 break;
             }
 #endif
-            interp = (float) cur_sample / ((float) Len / 4.0f);
 
-            Get_Player_Values(interp);
-
-            cur_sample++;
+            Get_Player_Values();
 
 #if !defined(__STAND_ALONE__)
             // Gather data for the scopes and the vumeters
@@ -2784,7 +2779,7 @@ void Proc_Next_Visual_Line()
 
 // ------------------------------------------------------
 // Main Player Routine
-void Sp_Player(float interp)
+void Sp_Player(void)
 {
 #if defined(PTK_INSTRUMENTS)
     unsigned int res_dec;
@@ -6321,7 +6316,7 @@ void Fix_Stereo(int channel)
 
 // ------------------------------------------------------
 // Main mixing routine
-void Get_Player_Values(float interp)
+void Get_Player_Values(void)
 {
 #if !defined(__STAND_ALONE__)
     int c;
@@ -6342,7 +6337,7 @@ void Get_Player_Values(float interp)
     if(mas_comp_pos_rms_buffer > MAS_COMPRESSOR_SIZE - 1) mas_comp_pos_rms_buffer = 0;
 #endif
 
-    Sp_Player(interp);
+    Sp_Player();
 
     // Wait for the audio latency before starting to play
     if(Song_Playing)
