@@ -981,8 +981,8 @@ void Reverb_work(void);
 void Initreverb(void);
 
 #if defined(PTK_FLANGER)
-    float Filter_FlangerL(int track, float input);
-    float Filter_FlangerR(int track, float input);
+    __inline float Filter_FlangerL(int track, float input);
+    __inline float Filter_FlangerR(int track, float input);
 #endif
 
 volatile int Done_Reset;
@@ -997,7 +997,7 @@ float absf(float x)
     return(x);
 }
 
-#define DENORMAL 0
+#define DENORMAL 1
 
 #if DENORMAL
 __inline float denormal(float sample)
@@ -3910,10 +3910,11 @@ ByPass_Wav:
         {   // Track filter activated
             float dfi = TCut[c] - CCut[c];
 
-            if(dfi < -1.0f || dfi > 1.0f) CCut[c] += dfi * ICut[c];
-
+            if(dfi < -1.0f || dfi > 1.0f)
+            {
+                CCut[c] += dfi * ICut[c];
+            }
             realcut = Apply_Lfo_To_Filter(CCut[c] - ramper[c], c);
-
             ramper[c] += Player_FD[c] * realcut * 0.015625f;
             gco = (int) realcut;
         }
@@ -4115,6 +4116,10 @@ ByPass_Wav:
                 All_Signal_R = All_Signal_L;
             }
 
+#if DENORMAL
+            All_Signal_L = denormal(All_Signal_L);
+            All_Signal_R = denormal(All_Signal_R);
+#endif
             // Dry Send
 #if defined(PTK_DISCLAP)
             if(Disclap[c])
@@ -4173,7 +4178,7 @@ ByPass_Wav:
             fstep2 = POWF2(SIN[(int) (de_value * 359.0f)] * FLANGER_AMPL[c]);
             
             FLANGER_OFFSET2[c] += fstep1;
-            FLANGER_OFFSET1[c] += fstep2;  
+            FLANGER_OFFSET1[c] += fstep2;
 
             if(FLANGER_OFFSET2[c] >= 16384.0f) FLANGER_OFFSET2[c] -= 16384.0f;
             if(FLANGER_OFFSET1[c] >= 16384.0f) FLANGER_OFFSET1[c] -= 16384.0f;
@@ -4318,6 +4323,10 @@ ByPass_Wav:
             pos_round_float_history[c] &= 31;
         }
 
+#if DENORMAL
+        All_Signal_L = denormal(All_Signal_L);
+        All_Signal_R = denormal(All_Signal_R);
+#endif
 
         // Store to global signals
         left_float += All_Signal_L;
@@ -6612,22 +6621,6 @@ float Filter_Chorus(int stereo, float x)
 }
 #endif
 
-float Final_Filter(int stereo, float x)
-{
-    float y;
-
-    y = Final_coef[0] * x +
-        Final_coef[1] * Final_fx1[stereo] +
-        Final_coef[2] * Final_fx2[stereo] +
-        Final_coef[3] * Final_fy1[stereo] +
-        Final_coef[4] * Final_fy2[stereo];
-    Final_fy2[stereo] = Final_fy1[stereo];
-    Final_fy1[stereo] = y;
-    Final_fx2[stereo] = Final_fx1[stereo];
-    Final_fx1[stereo] = x;
-    return y;
-}
-
 #if defined(PTK_PROC_FILTER)
 float Filter(int stereo, float x, char i)
 {
@@ -6671,6 +6664,10 @@ float filter2p(int stereo, int ch, float input, float f, float q)
     float fb = float(q * (1.0f + (1.0f / fa)));
     buf0[stereo][ch] = fa * buf0[stereo][ch] + f * (input + fb * (buf0[stereo][ch] - buf1[stereo][ch])); 
     buf1[stereo][ch] = fa * buf1[stereo][ch] + f * buf0[stereo][ch];
+#if DENORMAL
+    buf0[stereo][ch] = denormal(buf0[stereo][ch]);
+    buf1[stereo][ch] = denormal(buf1[stereo][ch]);
+#endif
     return buf1[stereo][ch];  
 }
 #endif
@@ -6685,6 +6682,10 @@ float filterhp2(int stereo, int ch, float input, float f, float q)
     float fb = float(q * (1.0f + (1.0f / fa)));
     buf024[stereo][ch] = fa * buf024[stereo][ch] + f * (input + fb * (buf024[stereo][ch] - buf124[stereo][ch])); 
     buf124[stereo][ch] = fa * buf124[stereo][ch] + f * buf024[stereo][ch];
+#if DENORMAL
+    buf024[stereo][ch] = denormal(buf024[stereo][ch]);
+    buf124[stereo][ch] = denormal(buf124[stereo][ch]);
+#endif
     return input - buf124[stereo][ch];
 }
 #endif
@@ -6699,6 +6700,10 @@ float filterhp(int stereo, int ch, float input, float f, float q)
     float fb = float(q * (1.0f + (1.0f / fa)));
     buf0[stereo][ch] = fa * buf0[stereo][ch] + f * (input + fb * (buf0[stereo][ch] - buf1[stereo][ch])); 
     buf1[stereo][ch] = fa * buf1[stereo][ch] + f * buf0[stereo][ch];
+#if DENORMAL
+    buf0[stereo][ch] = denormal(buf0[stereo][ch]);
+    buf1[stereo][ch] = denormal(buf1[stereo][ch]);
+#endif
     return input - buf1[stereo][ch];
 }
 #endif
@@ -6712,6 +6717,10 @@ float filter2p24d(int stereo, int ch, float input, float f, float q)
     float fb = float(q * (1.0f + (1.0f / fa)));
     buf024[stereo][ch] = fa * buf024[stereo][ch] + f * (input + fb * (buf024[stereo][ch] - buf124[stereo][ch])); 
     buf124[stereo][ch] = fa * buf124[stereo][ch] + f * buf024[stereo][ch];
+#if DENORMAL
+    buf024[stereo][ch] = denormal(buf024[stereo][ch]);
+    buf124[stereo][ch] = denormal(buf124[stereo][ch]);
+#endif
     return buf124[stereo][ch];  
 }
 #endif
@@ -6743,7 +6752,10 @@ float filterWater(int stereo, int ch, float input, float f)
     float ad = input - buf0[stereo][ch];
 
     if(ad > 1.0f || ad < -1.0f) buf0[stereo][ch] += ad / f;
-    return buf0[stereo][ch];
+#if DENORMAL
+    buf0[stereo][ch] = denormal(buf0[stereo][ch]);
+#endif
+   return buf0[stereo][ch];
 }
 #endif
 
@@ -6754,6 +6766,9 @@ float filterWaterStereo(int stereo, int ch, float input, float f)
     float ad = input - buf1[stereo][ch];
 
     if(ad > 1.0f || ad < -1.0f) buf1[stereo][ch] += ad / f;
+#if DENORMAL
+    buf1[stereo][ch] = denormal(buf1[stereo][ch]);
+#endif
     return buf1[stereo][ch];
 }
 #endif
@@ -6766,7 +6781,9 @@ float filterDelta(int stereo, int ch, float input, float f, float q)
 
     float output = buf1[stereo][ch];
     if(buf1[stereo][ch] > 1.0f || buf1[stereo][ch] < -1.0f) buf1[stereo][ch] *= q;
-
+#if DENORMAL
+    buf1[stereo][ch] = denormal(buf1[stereo][ch]);
+#endif
     buf0[stereo][ch]++;
     if(buf0[stereo][ch] >= f)
     {
@@ -6811,16 +6828,32 @@ float filterBellShaped(int stereo, int ch, float input, float f, float q, float 
     float gain = g / 6.6f;
     if(freq > 22100.0f) freq = 22100.0f;   // apply Nyquist frequency
     Wn = 1.0f / (6.2831853f * freq);       // freq of center
+#if DENORMAL
+    Wn = denormal(Wn);
+#endif
     Wp = float(Wn / tanf(Wn / 88200.0f));  // prewarped frequency
+#if DENORMAL
+    Wp = denormal(Wp);
+#endif
     a = (Wn * Wn * Wp * Wp);
     float t1 = Wn * Wp * q;
     b = (3.0f + gain) * t1;
     c = (3.0f - gain) * t1;
     t1 = a + c + 1.0f;
+#if DENORMAL
+    t1 = denormal(t1);
+#endif
     b2 = (1.0f - c + a) / t1;
     a2 = (1.0f - b + a) / t1;
     b1 = a1 = 2.0f * (1.0f - a) / t1;
     a0 = (a + b + 1.0f) / t1;
+#if DENORMAL
+    b1 = denormal(b1);
+    b2 = denormal(b2);
+    a0 = denormal(a0);
+    a1 = denormal(a1);
+    a2 = denormal(a2);
+#endif
     xi0[stereo][ch] = input - b1 * xi1[stereo][ch] - b2 * xi2[stereo][ch];
     float output = a0 * xi0[stereo][ch] + a1 * xi1[stereo][ch] + a2 * xi2[stereo][ch];
     xi2[stereo][ch] = xi1[stereo][ch];
@@ -6844,6 +6877,10 @@ float filter2px(int stereo, int ch, float input, float f, float q)
     float fb = float(q * (1.0f + (1.0f / fa)));
     buf0[stereo][ch] = fa * buf0[stereo][ch] + f * (input + fb * (buf0[stereo][ch] - buf1[stereo][ch]));
     buf1[stereo][ch] = fa * buf1[stereo][ch] + f * buf0[stereo][ch];
+#if DENORMAL
+    buf0[stereo][ch] = denormal(buf0[stereo][ch]);
+    buf1[stereo][ch] = denormal(buf1[stereo][ch]);
+#endif
     return buf1[stereo][ch];
 }
 #endif
@@ -7548,7 +7585,7 @@ void Init_Reverb_Filter(void)
     }
 }
 
-inline float allpass_filter(float *Buffer, float input, int counter)
+__inline float allpass_filter(float *Buffer, float input, int counter)
 {
     float output = (-Feedback * input) + Buffer[currentCounter];
     Buffer[counter] = (output * Feedback) + input;
@@ -7672,20 +7709,28 @@ void Reset_303_Parameters(para303 *tbpars)
 // ------------------------------------------------------
 // Filter flanger signal
 #if defined(PTK_FLANGER)
-float Filter_FlangerL(int track, float input)
+__inline float Filter_FlangerL(int track, float input)
 {
     float fa = 1.0f - FLANGER_LOPASS_CUTOFF; 
     float fb = float(FLANGER_LOPASS_RESONANCE * (1.0f + (1.0f / fa)));
     Flanger_sbuf0L[track] = fa * Flanger_sbuf0L[track] + FLANGER_LOPASS_CUTOFF * (input + fb * (Flanger_sbuf0L[track] - Flanger_sbuf1L[track]));
     Flanger_sbuf1L[track] = fa * Flanger_sbuf1L[track] + FLANGER_LOPASS_CUTOFF * Flanger_sbuf0L[track];
+#if DENORMAL
+    Flanger_sbuf0L[track] = denormal(Flanger_sbuf0L[track]);
+    Flanger_sbuf1L[track] = denormal(Flanger_sbuf1L[track]);
+#endif
     return(Flanger_sbuf1L[track]);
 }
-float Filter_FlangerR(int track, float input)
+__inline float Filter_FlangerR(int track, float input)
 {
     float fa = 1.0f - FLANGER_LOPASS_CUTOFF;
     float fb = float(FLANGER_LOPASS_RESONANCE * (1.0f + (1.0f / fa)));
     Flanger_sbuf0R[track] = fa * Flanger_sbuf0R[track] + FLANGER_LOPASS_CUTOFF * (input + fb * (Flanger_sbuf0R[track] - Flanger_sbuf1R[track]));
     Flanger_sbuf1R[track] = fa * Flanger_sbuf1R[track] + FLANGER_LOPASS_CUTOFF * Flanger_sbuf0R[track];
+#if DENORMAL
+    Flanger_sbuf0R[track] = denormal(Flanger_sbuf0R[track]);
+    Flanger_sbuf1R[track] = denormal(Flanger_sbuf1R[track]);
+#endif
     return(Flanger_sbuf1R[track]);
 }
 #endif
@@ -7861,11 +7906,27 @@ float Do_Equ(LPEQSTATE es, float sample, int Left)
     es->f1p1[Left] += (es->lf * (es->f1p0[Left] - es->f1p1[Left]));
     es->f1p2[Left] += (es->lf * (es->f1p1[Left] - es->f1p2[Left]));
     es->f1p3[Left] += (es->lf * (es->f1p2[Left] - es->f1p3[Left]));
+
+#if DENORMAL
+    es->f1p0[Left] = denormal(es->f1p0[Left]);
+    es->f1p1[Left] = denormal(es->f1p1[Left]);
+    es->f1p2[Left] = denormal(es->f1p2[Left]);
+    es->f1p3[Left] = denormal(es->f1p3[Left]);
+#endif
+
     l = es->f1p3[Left];
     es->f2p0[Left] += (es->hf * (sample - es->f2p0[Left])) + vsa;
     es->f2p1[Left] += (es->hf * (es->f2p0[Left] - es->f2p1[Left]));
     es->f2p2[Left] += (es->hf * (es->f2p1[Left] - es->f2p2[Left]));
     es->f2p3[Left] += (es->hf * (es->f2p2[Left] - es->f2p3[Left]));
+
+#if DENORMAL
+    es->f2p0[Left] = denormal(es->f2p0[Left]);
+    es->f2p1[Left] = denormal(es->f2p1[Left]);
+    es->f2p2[Left] = denormal(es->f2p2[Left]);
+    es->f2p3[Left] = denormal(es->f2p3[Left]);
+#endif
+
     h = es->sdm3[Left] - es->f2p3[Left];
     m = es->sdm3[Left] - (h + l);
     l *= es->lg;
