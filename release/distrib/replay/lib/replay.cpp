@@ -7588,6 +7588,9 @@ void Init_Reverb_Filter(void)
 __inline float allpass_filter(float *Buffer, float input, int counter)
 {
     float output = (-Feedback * input) + Buffer[currentCounter];
+#if DENORMAL
+    output = denormal(output);
+#endif
     Buffer[counter] = (output * Feedback) + input;
     return output;
 }
@@ -7653,6 +7656,13 @@ void Reverb_work(void)
         }
 
         // Lopass
+
+#if DENORMAL
+        LFP_L.buffy0 = denormal(LFP_L.buffy0);
+        LFP_L.buffy1 = denormal(LFP_L.buffy1);
+        LFP_R.buffy0 = denormal(LFP_R.buffy0);
+        LFP_R.buffy1 = denormal(LFP_R.buffy1);
+#endif
         l_rout = LFP_L.fWork(l_rout, Reverb_Filter_Cutoff, Reverb_Filter_Resonance);
         r_rout = LFP_R.fWork(r_rout, Reverb_Filter_Cutoff, Reverb_Filter_Resonance);
 
@@ -7902,11 +7912,10 @@ float Do_Equ(LPEQSTATE es, float sample, int Left)
     float m;
     float h;
 
-    es->f1p0[Left] += (es->lf * (sample - es->f1p0[Left])) + vsa;
-    es->f1p1[Left] += (es->lf * (es->f1p0[Left] - es->f1p1[Left]));
-    es->f1p2[Left] += (es->lf * (es->f1p1[Left] - es->f1p2[Left]));
-    es->f1p3[Left] += (es->lf * (es->f1p2[Left] - es->f1p3[Left]));
-
+#if DENORMAL
+    vsa = denormal(vsa);
+#endif
+    
 #if DENORMAL
     es->f1p0[Left] = denormal(es->f1p0[Left]);
     es->f1p1[Left] = denormal(es->f1p1[Left]);
@@ -7914,11 +7923,10 @@ float Do_Equ(LPEQSTATE es, float sample, int Left)
     es->f1p3[Left] = denormal(es->f1p3[Left]);
 #endif
 
-    l = es->f1p3[Left];
-    es->f2p0[Left] += (es->hf * (sample - es->f2p0[Left])) + vsa;
-    es->f2p1[Left] += (es->hf * (es->f2p0[Left] - es->f2p1[Left]));
-    es->f2p2[Left] += (es->hf * (es->f2p1[Left] - es->f2p2[Left]));
-    es->f2p3[Left] += (es->hf * (es->f2p2[Left] - es->f2p3[Left]));
+    es->f1p0[Left] += (es->lf * (sample - es->f1p0[Left])) + vsa;
+    es->f1p1[Left] += (es->lf * (es->f1p0[Left] - es->f1p1[Left]));
+    es->f1p2[Left] += (es->lf * (es->f1p1[Left] - es->f1p2[Left]));
+    es->f1p3[Left] += (es->lf * (es->f1p2[Left] - es->f1p3[Left]));
 
 #if DENORMAL
     es->f2p0[Left] = denormal(es->f2p0[Left]);
@@ -7926,12 +7934,26 @@ float Do_Equ(LPEQSTATE es, float sample, int Left)
     es->f2p2[Left] = denormal(es->f2p2[Left]);
     es->f2p3[Left] = denormal(es->f2p3[Left]);
 #endif
+    
+    l = es->f1p3[Left];
+    es->f2p0[Left] += (es->hf * (sample - es->f2p0[Left])) + vsa;
+    es->f2p1[Left] += (es->hf * (es->f2p0[Left] - es->f2p1[Left]));
+    es->f2p2[Left] += (es->hf * (es->f2p1[Left] - es->f2p2[Left]));
+    es->f2p3[Left] += (es->hf * (es->f2p2[Left] - es->f2p3[Left]));
 
     h = es->sdm3[Left] - es->f2p3[Left];
     m = es->sdm3[Left] - (h + l);
-    l *= es->lg;
-    m *= es->mg;
-    h *= es->hg;
+
+    l *= denormal(es->lg);
+    m *= denormal(es->mg);
+    h *= denormal(es->hg);
+
+#if DENORMAL
+    l = denormal(l);
+    m = denormal(m);
+    h = denormal(h);
+#endif
+
     es->sdm3[Left] = es->sdm2[Left];
     es->sdm2[Left] = es->sdm1[Left];
     es->sdm1[Left] = sample;

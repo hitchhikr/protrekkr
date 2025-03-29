@@ -518,11 +518,6 @@ class CSynth
 #if defined(PTK_COMPRESSOR)
 class rFilter
 {
-    private: 
-
-        float buffy0;
-        float buffy1;
-
     public:
 
         rFilter()
@@ -545,6 +540,9 @@ class rFilter
             buffy1 = fa * buffy1 + f * buffy0;
             return buffy1;
         };
+
+        float buffy0;
+        float buffy1;
 };
 #endif
 
