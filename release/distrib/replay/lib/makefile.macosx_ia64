@@ -1,5 +1,5 @@
 LIBFLAGS = -c
-LIBOBJS_IA64 = endianness_ia64.o replay_ia64.o synth_ia64.o tb_303_ia64.o antialias_ia64.o wavpack_ia64.o samples_unpack_ia64.o sounddriver_macosx_ia64.o
+LIBOBJS_IA64 = endianness_ia64.o replay_ia64.o synth_ia64.o tb_303_ia64.o wavpack_ia64.o samples_unpack_ia64.o sounddriver_macosx_ia64.o
 
 all: ptkreplay
 clean: remlibobj
@@ -14,9 +14,6 @@ ptkreplay: $(LIBOBJS_IA64)
 
 sounddriver_macosx_ia64.o: lib/sounddriver/sounddriver_macosx.cpp
 	$(CC) -o $(@) $(LIBFLAGS) $(FLAGS_IA64) lib/sounddriver/sounddriver_macosx.cpp
-
-antialias_ia64.o: lib/antialias.cpp
-	$(CC) -o $(@) $(LIBFLAGS) $(FLAGS_IA64) lib/antialias.cpp
 
 samples_unpack_ia64.o: lib/samples_unpack.cpp
 	$(CC) -o $(@) $(LIBFLAGS) $(FLAGS_IA64) lib/samples_unpack.cpp

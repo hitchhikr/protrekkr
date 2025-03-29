@@ -19,7 +19,7 @@ EXEOBJS_IA64 = ptk_ia64.o \
               timer_ia64.o main_ia64.o sdlmain_ia64.o \
               misc_draw_ia64.o draw_primitives_ia64.o requesters_ia64.o \
               samples_ops_ia64.o aiff_ia64.o aiff_interface_ia64.o riff_ia64.o riff_interface_ia64.o \
-              antialias_ia64.o tb_303_ia64.o wavpack_ia64.o samples_unpack_ia64.o replay_ia64.o synth_ia64.o endianness_ia64.o \
+              tb_303_ia64.o wavpack_ia64.o samples_unpack_ia64.o replay_ia64.o synth_ia64.o endianness_ia64.o \
               sounddriver_macosx_ia64.o
 
 all: protrekkr_ia64
@@ -165,9 +165,6 @@ riff_ia64.o: src/samples/wav/riff.cpp
 
 riff_interface_ia64.o: src/samples/wav/riff_interface.cpp
 	$(CXX) -c -o $(@) $(FLAGS_IA64) $<
-
-antialias_ia64.o: release/distrib/replay/lib/antialias.cpp
-	$(CC) -c -o $(@) $(FLAGS_IA64) $<
 
 tb_303_ia64.o: release/distrib/replay/lib/tb_303.cpp
 	$(CC) -c -o $(@) $(FLAGS_IA64) $<

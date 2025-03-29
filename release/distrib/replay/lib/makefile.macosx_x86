@@ -1,5 +1,5 @@
 LIBFLAGS = -c
-LIBOBJS_X86 = endianness_x86.o replay_x86.o synth_x86.o tb_303_x86.o antialias_x86.o wavpack_x86.o samples_unpack_x86.o sounddriver_macosx_x86.o
+LIBOBJS_X86 = endianness_x86.o replay_x86.o synth_x86.o tb_303_x86.o wavpack_x86.o samples_unpack_x86.o sounddriver_macosx_x86.o
 
 all: ptkreplay
 clean: remlibobj
@@ -14,9 +14,6 @@ ptkreplay: $(LIBOBJS_X86)
 
 sounddriver_macosx_x86.o: lib/sounddriver/sounddriver_macosx.cpp
 	$(CC) -o $(@) $(LIBFLAGS) $(FLAGS_X86) lib/sounddriver/sounddriver_macosx.cpp
-
-antialias_x86.o: lib/antialias.cpp
-	$(CC) -o $(@) $(LIBFLAGS) $(FLAGS_X86) lib/antialias.cpp
 
 samples_unpack_x86.o: lib/samples_unpack.cpp
 	$(CC) -o $(@) $(LIBFLAGS) $(FLAGS_X86) lib/samples_unpack.cpp

@@ -1,5 +1,5 @@
 LIBFLAGS = -c
-LIBOBJS = endianness.o replay.o synth.o tb_303.o antialias.o wavpack.o samples_unpack.o sounddriver_haiku.o
+LIBOBJS = endianness.o replay.o synth.o tb_303.o wavpack.o samples_unpack.o sounddriver_haiku.o
 
 all: ptkreplay
 clean: remlibobj
@@ -26,9 +26,6 @@ synth.o: lib/synth.cpp
 
 replay.o: lib/replay.cpp
 	$(CC) -o $(@) $(LIBFLAGS) $(FLAGS) lib/replay.cpp
-
-antialias.o: lib/antialias.cpp
-	$(CC) -o $(@) $(LIBFLAGS) $(FLAGS) lib/antialias.cpp
 
 wavpack.o: lib/wavpack.cpp
 	$(CC) -o $(@) $(LIBFLAGS) $(FLAGS) lib/wavpack.cpp

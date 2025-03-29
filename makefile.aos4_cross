@@ -21,7 +21,7 @@ EXEOBJS = ptk.o \
           timer.o main.o \
           misc_draw.o draw_primitives.o requesters.o \
           samples_ops.o aiff.o aiff_interface.o riff.o riff_interface.o \
-          antialias.o tb_303.o wavpack.o samples_unpack.o replay.o synth.o endianness.o \
+          tb_303.o wavpack.o samples_unpack.o replay.o synth.o endianness.o \
           sounddriver_aos4.o draw_hline.o draw_pixel.o draw_vline.o
 
 all: protrekkr
@@ -159,9 +159,6 @@ riff.o: src/samples/wav/riff.cpp
 
 riff_interface.o: src/samples/wav/riff_interface.cpp
 	$(CXX) -c -o $(@) $(FLAGS) $<
-
-antialias.o: release/distrib/replay/lib/antialias.cpp
-	$(CC) -c -o $(@) $(FLAGS) $<
 
 tb_303.o: release/distrib/replay/lib/tb_303.cpp
 	$(CC) -c -o $(@) $(FLAGS) $<
