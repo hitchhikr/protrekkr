@@ -19,7 +19,7 @@ v2.8.5
 - Major tracker and replay speedup.
 - Removed splines, channels can now be individually denoised (or not)
   due to this, this effect have been added:
-  - 30: Turn channel denoising on/off.
+  - 30: Control channel denoising strength (see manual for parameter).
 
 v2.8.2
 
