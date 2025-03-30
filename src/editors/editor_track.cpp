@@ -66,8 +66,8 @@ void Draw_Track_Ed(void)
     Gui_Draw_Button_Box(710, (Cur_Height - 114), 60, 16, "Polyphony", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_NO_BORDER);
     Gui_Draw_Button_Box(710, (Cur_Height - 96), 60, 16, "Notes", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_NO_BORDER);
     Gui_Draw_Button_Box(710, (Cur_Height - 78), 60, 16, "Effects", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_NO_BORDER);
-    Gui_Draw_Button_Box(647, (Cur_Height - 60), 60, 10, S_ U_ R_ R_ O_ U_ N_ D_, BUTTON_NORMAL | BUTTON_DISABLED);
-    Gui_Draw_Button_Box(647, (Cur_Height - 48), 60, 10, D_ E_ N_ O_ I_ S_ E_, BUTTON_NORMAL | BUTTON_DISABLED);
+    Gui_Draw_Button_Box(647, (Cur_Height - 60), 47, 10, S_ U_ R_ R_ O_ U_ N_ D_, BUTTON_NORMAL | BUTTON_DISABLED);
+    Gui_Draw_Button_Box(647, (Cur_Height - 48), 47, 10, D_ E_ N_ O_ I_ S_ E_, BUTTON_NORMAL | BUTTON_DISABLED);
 }
    
 void Actualize_Track_Ed(char gode)
@@ -329,27 +329,37 @@ void Actualize_Track_Ed(char gode)
         {
             if(Track_Surround[Track_Under_Caret] == TRUE)
             {
-                Gui_Draw_Button_Box(709, (Cur_Height - 60), 20, 10, O_ N_, BUTTON_PUSHED | BUTTON_TEXT_CENTERED);
-                Gui_Draw_Button_Box(709 + 22, (Cur_Height - 60), 20, 10, O_ F_ F_, BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
+                Gui_Draw_Button_Box(696, (Cur_Height - 60), 20, 10, O_ N_, BUTTON_PUSHED | BUTTON_TEXT_CENTERED);
+                Gui_Draw_Button_Box(696 + 22, (Cur_Height - 60), 20, 10, O_ F_ F_, BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
             }
             else
             {
-                Gui_Draw_Button_Box(709, (Cur_Height - 60), 20, 10, O_ N_, BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
-                Gui_Draw_Button_Box(709 + 22, (Cur_Height - 60), 20, 10, O_ F_ F_, BUTTON_PUSHED | BUTTON_TEXT_CENTERED);
+                Gui_Draw_Button_Box(696, (Cur_Height - 60), 20, 10, O_ N_, BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
+                Gui_Draw_Button_Box(696 + 22, (Cur_Height - 60), 20, 10, O_ F_ F_, BUTTON_PUSHED | BUTTON_TEXT_CENTERED);
             }
         }
         
         if(gode == 0 || gode == 18)
         {
-            if(Track_Denoise[Track_Under_Caret] == TRUE)
+            Gui_Draw_Button_Box(696, (Cur_Height - 48), 16, 10, "\213", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
+            Gui_Draw_Button_Box(696 + 56, (Cur_Height - 48), 16, 10, "\212", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
+            switch(Track_Denoise[Track_Under_Caret])
             {
-                Gui_Draw_Button_Box(709, (Cur_Height - 48), 20, 10, O_ N_, BUTTON_PUSHED | BUTTON_TEXT_CENTERED);
-                Gui_Draw_Button_Box(709 + 22, (Cur_Height - 48), 20, 10, O_ F_ F_, BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
-            }
-            else
-            {
-                Gui_Draw_Button_Box(709, (Cur_Height - 48), 20, 10, O_ N_, BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
-                Gui_Draw_Button_Box(709 + 22, (Cur_Height - 48), 20, 10, O_ F_ F_, BUTTON_PUSHED | BUTTON_TEXT_CENTERED);
+                case 0:
+                    Gui_Draw_Button_Box(714, (Cur_Height - 48), 36, 10, N_ O_ N_ E_, BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
+                    break;
+                case 1:
+                    Gui_Draw_Button_Box(714, (Cur_Height - 48), 36, 10, L_ O_ W_, BUTTON_NORMAL | BUTTON_DISABLED  | BUTTON_TEXT_CENTERED);
+                    break;
+                case 2:
+                    Gui_Draw_Button_Box(714, (Cur_Height - 48), 36, 10, H_ I_ G_ H_, BUTTON_NORMAL | BUTTON_DISABLED  | BUTTON_TEXT_CENTERED);
+                    break;
+                case 3:
+                    Gui_Draw_Button_Box(714, (Cur_Height - 48), 36, 10, H_ I_ G_ H_ E_ R_, BUTTON_NORMAL | BUTTON_DISABLED  | BUTTON_TEXT_CENTERED);
+                    break;
+                case 4:
+                    Gui_Draw_Button_Box(714, (Cur_Height - 48), 36, 10, H_ I_ G_ H_ E_ S_ T_, BUTTON_NORMAL | BUTTON_DISABLED  | BUTTON_TEXT_CENTERED);
+                    break;
             }
         }
         
@@ -554,13 +564,13 @@ void Mouse_Left_Track_Ed(void)
         }
 
         // Surround mode
-        if(Check_Mouse(709, (Cur_Height - 60), 20, 10) && Track_Surround[Track_Under_Caret] == FALSE)
+        if(Check_Mouse(696, (Cur_Height - 60), 20, 10) && Track_Surround[Track_Under_Caret] == FALSE)
         {
             Track_Surround[Track_Under_Caret] = TRUE;
             gui_action = GUI_CMD_UPDATE_TRACK_ED;
             teac = 17;
         }
-        if(Check_Mouse(709 + 22, (Cur_Height - 60), 20, 10) && Track_Surround[Track_Under_Caret] == TRUE)
+        if(Check_Mouse(696 + 22, (Cur_Height - 60), 20, 10) && Track_Surround[Track_Under_Caret] == TRUE)
         {
             Track_Surround[Track_Under_Caret] = FALSE;
             gui_action = GUI_CMD_UPDATE_TRACK_ED;
@@ -568,15 +578,21 @@ void Mouse_Left_Track_Ed(void)
         }
 
         // Denoise mode
-        if(Check_Mouse(709, (Cur_Height - 48), 20, 10) && Track_Denoise[Track_Under_Caret] == FALSE)
+        if(Check_Mouse(696, (Cur_Height - 48), 16, 10) && Track_Denoise[Track_Under_Caret] != 0)
         {
-            Track_Denoise[Track_Under_Caret] = TRUE;
+            if(Track_Denoise[Track_Under_Caret] > 0)
+            {
+                Track_Denoise[Track_Under_Caret]--;
+            }
             gui_action = GUI_CMD_UPDATE_TRACK_ED;
             teac = 18;
         }
-        if(Check_Mouse(709 + 22, (Cur_Height - 48), 20, 10) && Track_Denoise[Track_Under_Caret] == TRUE)
+        if(Check_Mouse(696 + 56, (Cur_Height - 48), 16, 10) && Track_Denoise[Track_Under_Caret] != 4)
         {
-            Track_Denoise[Track_Under_Caret] = FALSE;
+            if(Track_Denoise[Track_Under_Caret] < 5)
+            {
+                Track_Denoise[Track_Under_Caret]++;
+            }
             gui_action = GUI_CMD_UPDATE_TRACK_ED;
             teac = 18;
         }

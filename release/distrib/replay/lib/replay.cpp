@@ -2579,7 +2579,7 @@ void Pre_Song_Init(void)
 
         Track_Volume[ini] = 1.0f;
         Track_Surround[ini] = FALSE;
-        Track_Denoise[ini] = FALSE;
+        Track_Denoise[ini] = 0;
 
 #if defined(PTK_TRACK_EQ)
         Init_Equ(&EqDat[ini]);
@@ -4302,25 +4302,32 @@ ByPass_Wav:
             float old_l_float = 0.0f;
             float old_r_float = 0.0f;
             float accum;
+            float denoiser;
             int k;
+            int denoise_mask;
+            int denoise_size;
+            int Table_Denoise[] = { 0, 4, 8, 16, 32 };
             old_l_float = All_Signal_L;
             old_r_float = All_Signal_R;
+            denoise_size = Table_Denoise[Track_Denoise[c]];
+            denoiser = (1.0f / denoise_size);
+            denoise_mask = denoise_size - 1;
             accum = 0.0f;
-            for(k = 0; k < 32; k++)
+            for(k = 0; k < denoise_size; k++)
             {
-                accum += ((1.0f / 32.0f) * left_float_history[c][(pos_round_float_history[c] - k) & 31]);
+                accum += (denoiser * left_float_history[c][(pos_round_float_history[c] - k) & denoise_mask]);
             }
             All_Signal_L = accum;
             accum = 0.0f;
-            for(k = 0; k < 32; k++)
+            for(k = 0; k < denoise_size; k++)
             {
-                accum += ((1.0f / 32.0f) * right_float_history[c][(pos_round_float_history[c] - k) & 31]);
+                accum += (denoiser * right_float_history[c][(pos_round_float_history[c] - k) & denoise_mask]);
             }
             All_Signal_R = accum;
             left_float_history[c][pos_round_float_history[c]] = old_l_float;
             right_float_history[c][pos_round_float_history[c]] = old_r_float;
             pos_round_float_history[c]++;
-            pos_round_float_history[c] &= 31;
+            pos_round_float_history[c] &= denoise_mask;
         }
 
 #if DENORMAL
@@ -5762,7 +5769,14 @@ void Do_Effects_Ticks_X(void)
 #if defined(PTK_FX_SETDENOISE)
                     // $30 Set chorus filter resonance
                     case 0x30:
-                        Track_Denoise[trackef] = (int) (pltr_dat_row[k] & 1);
+                        if(pltr_dat_row[k] > 4)
+                        {
+                            Track_Denoise[trackef] = 4;
+                        }
+                        else
+                        {
+                            Track_Denoise[trackef] = pltr_dat_row[k];
+                        }
 
 #if !defined(__STAND_ALONE__)
                         if(userscreen == USER_SCREEN_TRACK_EDIT)
@@ -7915,7 +7929,7 @@ float Do_Equ(LPEQSTATE es, float sample, int Left)
 #if DENORMAL
     vsa = denormal(vsa);
 #endif
-    
+
 #if DENORMAL
     es->f1p0[Left] = denormal(es->f1p0[Left]);
     es->f1p1[Left] = denormal(es->f1p1[Left]);

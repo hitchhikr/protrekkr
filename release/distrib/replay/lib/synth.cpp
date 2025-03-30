@@ -229,21 +229,24 @@ void CSynth::Reset(void)
     MoogBufferR[4] = 0.0f;
 #endif
 }
+
 #define DENORMAL_SYNTH 1
 
 #if DENORMAL_SYNTH
 __inline float denormal_synth(float sample)
 {
     unsigned int isample;
-
     *(unsigned int *) &isample = *(unsigned int *) &sample;
-    unsigned int exponent = isample & 0x7F800000;
-    int aNaN = exponent < 0x7F800000;
-    int aDen = exponent > 0;
-    return sample * (aNaN & aDen);
+
+    int abs_mantissa = isample & 0x007FFFFF;
+    int biased_exponent = isample & 0x7F800000;
+    if (biased_exponent == 0 && abs_mantissa != 0) 
+    {
+        return 0;
+    }
+    return sample;
 }
 #endif
-
 
 // ------------------------------------------------------
 // This function is for internal use only. Makes the LFO's run.
@@ -977,16 +980,13 @@ float CSynth::GetSample(short *Left_Samples,
                     }
 #endif
 
-                    GS_VAL_L = (*(Left_Samples1 + i_POSITION) * mul_datL)
-                                * T_OSC_1_VOLUME;
+                    GS_VAL_L = (*(Left_Samples1 + i_POSITION) * mul_datL) * T_OSC_1_VOLUME;
 
                     // Stereo sample
                     if(Stereo == 2)
                     {
-                        GS_VAL_R = (*(Right_Samples1 + i_POSITION) * mul_datR)
-                                   * T_OSC_1_VOLUME;
+                        GS_VAL_R = (*(Right_Samples1 + i_POSITION) * mul_datR) * T_OSC_1_VOLUME;
                     }
-
 
 #if defined(PTK_SYNTH_PITCH)
                     osc_speed2 += osc_speed1;
@@ -1897,6 +1897,7 @@ float CSynth::Moog_Filter_L(void)
     float f;
     float p;
     float q;
+    float in;
     float t[4];
     float cut = FILT_CUTO;
     float res = FILT_RESO;
@@ -1908,12 +1909,15 @@ float CSynth::Moog_Filter_L(void)
     res *= 5.0f;
     q = res * ((1.0f + (0.5f * q) * (1.0f - q + (5.6f * q * q))));
     if(q > 2.42f) q = 2.42f;
-    float in = (GS_VAL_L / 32767.0f) - (q * MoogBufferL[4]);
 #if DENORMAL_SYNTH
     MoogBufferL[1] = denormal_synth(MoogBufferL[1]);
     MoogBufferL[2] = denormal_synth(MoogBufferL[2]);
     MoogBufferL[3] = denormal_synth(MoogBufferL[3]);
     MoogBufferL[4] = denormal_synth(MoogBufferL[4]);
+#endif
+    in = (GS_VAL_L / 32767.0f) - (q * MoogBufferL[4]);
+#if DENORMAL_303
+    in = denormal_303(in);
 #endif
     t[1] = MoogBufferL[1];
     t[2] = MoogBufferL[2];
@@ -1942,6 +1946,7 @@ float CSynth::Moog_Filter_R(void)
     float p;
     float q;
     float t[4];
+    float in;
     float cut = FILT_CUTO;
     float res = FILT_RESO;
 
@@ -1952,12 +1957,15 @@ float CSynth::Moog_Filter_R(void)
     res *= 5.0f;
     q = res * ((1.0f + (0.5f * q) * (1.0f - q + (5.6f * q * q))));
     if(q > 2.42f) q = 2.42f;
-    float in = (GS_VAL_L / 32767.0f) - (q * MoogBufferR[4]);
 #if DENORMAL_SYNTH
     MoogBufferR[1] = denormal_synth(MoogBufferR[1]);
     MoogBufferR[2] = denormal_synth(MoogBufferR[2]);
     MoogBufferR[3] = denormal_synth(MoogBufferR[3]);
     MoogBufferR[4] = denormal_synth(MoogBufferR[4]);
+#endif
+    in = (GS_VAL_L / 32767.0f) - (q * MoogBufferR[4]);
+#if DENORMAL_303
+    in = denormal_303(in);
 #endif
     t[1] = MoogBufferR[1];
     t[2] = MoogBufferR[2];
