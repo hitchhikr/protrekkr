@@ -12,11 +12,11 @@ Standalone replay routines are available for most of these Operating Systems and
 ![alt text](ptk.png)
 ---
 > [!CAUTION]
-> **The tracker itself requires at least a 1,5ghz processor to run properly.**
----
+> **The tracker itself requires AT LEAST a 1,5ghz processor to run properly.**
+**---**
 **This is a FREEWARE tool, this means that you can use it for whatever you want and for free.**
 **There's NO GUARANTEE that this program will perform well or even run on your computer.**
----
+**---**
 In order to compile the tracker, use the provided makefile for your target architecture (if available).
 
 Example:
@@ -31,8 +31,7 @@ Notice that you'll need SDL 1 (only to compile the tracker, the replay routines 
 > **On Linux use libsdl1.2-dev and on Mac OS use libsdl from Mac Ports.**<br><br>
 > **If your Linux distribution doesn't include SDL 1.2 then try your luck here:<br>https://github.com/libsdl-org/SDL-1.2**<br><br>
 > **"ptk_vx.x.x_macosx_ia64_ogl.zip" may be problematic on some 64 bit versions of Mac OS (ulterior to Catalina), on those you should use "ptk_vx.x.x_macosx_ia64.zip" instead.**
-
----
+**---**
 So far, ProTrekkr was used in these intros or demos (the ones i'm aware of, at least) :<br><br>
 <a href="http://www.pouet.net/prod.php?which=51129" target=_parent>Nebula by Sqny</a><br>
 <a href="http://www.pouet.net/prod.php?which=51286" target=_parent>Kaivo by Clrsrc</a><br>
