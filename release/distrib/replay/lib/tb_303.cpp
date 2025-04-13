@@ -413,15 +413,18 @@ float gear303::tbFilter(void)
     cut += 0.55f;
     cut *= envcut;
     cut *= 0.50f;
+
 #if DENORMAL_303
     cut = denormal_303(cut);
 #endif
+
     q = (0.85f - cut);
     p = ((cut * cut) * 0.45f);
     f = (p + p) - 1.0f;
     res *= 5.0f;
     q = res * ((1.0f + (0.5f * q) * (1.0f - q + (5.6f * q * q))));
     if(q > 2.42f) q = 2.42f;
+
 #if DENORMAL_303
     q = denormal_303(q);
     tbBuf[0] = denormal_303(tbBuf[0]);
@@ -430,10 +433,13 @@ float gear303::tbFilter(void)
     tbBuf[3] = denormal_303(tbBuf[3]);
     tbBuf[4] = denormal_303(tbBuf[4]);
 #endif
+
     in = (tbSample / 16384.0f) - (q * tbBuf[4] * envcut2);
+
 #if DENORMAL_303
     in = denormal_303(in);
 #endif
+
     t[1] = tbBuf[1];
     t[2] = tbBuf[2];
     t[3] = tbBuf[3];

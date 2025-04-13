@@ -1,0 +1,48 @@
+TODO (more or less):
+
+V2.8.5:
+
+  + Add Midi to AROS, AOS4 and MorphOS (also FreeBSD, NetBSD ?).
+  + Import ScreamTracker 3 modules and instruments.
+
+V3.0.0:
+
+Interface:
+
+  - Graphic display/edition of ADSRs.
+  - Multiple undo/redo.
+  - Add a script engine based on LUA for the samples editor.
+  - Integrated samples recording.
+  - Integrated Skale Helper equivalent.
+  - Vertical blocks inversion.
+  - Expand/shrink blocks function.
+  - Crossfade between 2 samples (LUA ?).
+  - Synchro points also exported in milliseconds.
+  - Drums sequences editor.
+  - Possibility to expand patterns on paste operations
+    if the pasted blocks are larger that the patterns themselves.
+  - Functions to copy/exchange synths and instruments.
+  - Display LFOs values in milliseconds.
+
+Audio:
+
+  - Distortion per channel.
+  - Note delay effect.
+  - Add Linux Jack support.
+  - Multiple waveforms for LFOs (sin/saw/square).
+  - Function to sync LFOs with tempo.
+
+Files:
+
+  - Import Rebirth RB-338 modules.
+  - Import Oktalyzer modules.
+  - Import IFF 8SVX samples.
+  - Import SoundFont samples.
+  - Import/Export .FLAC samples.
+  - Import DigiBooster PRO "DBM0" modules.
+  - Export patterns to .mid.
+
+Misc:
+
+  - Big manual with screenshots.
+  - A replay for the PlayStation 3.

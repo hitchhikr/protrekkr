@@ -237,8 +237,8 @@ float Segue_SamplesR[MAX_TRACKS];
 float left_float;
 float right_float;
 int pos_round_float_history[MAX_TRACKS];
-float left_float_history[MAX_TRACKS][31 + 1];
-float right_float_history[MAX_TRACKS][31 + 1];
+float left_float_history[MAX_TRACKS][32];
+float right_float_history[MAX_TRACKS][32];
 float left_float_render;
 float right_float_render;
 float left_chorus;
@@ -7602,9 +7602,6 @@ void Init_Reverb_Filter(void)
 __inline float allpass_filter(float *Buffer, float input, int counter)
 {
     float output = (-Feedback * input) + Buffer[currentCounter];
-#if DENORMAL
-    output = denormal(output);
-#endif
     Buffer[counter] = (output * Feedback) + input;
     return output;
 }
@@ -7641,11 +7638,6 @@ void Reverb_work(void)
             nev_l *= Reverb_Damp;
             nev_r *= Reverb_Damp;
 
-#if DENORMAL
-            nev_l = denormal(nev_l);
-            nev_r = denormal(nev_r);
-#endif
-
             if(++counters_L[i] > 99999) counters_L[i] -= 99999;
             if(++counters_R[i] > 99999) counters_R[i] -= 99999;
             delay_left_buffer[i][counters_L[i]] = nev_l;
@@ -7659,12 +7651,6 @@ void Reverb_work(void)
         {
             l_rout = allpass_filter(allBuffer_L[i], l_rout, delayedCounterL[i]);
             r_rout = allpass_filter(allBuffer_R[i], r_rout, delayedCounterR[i]);
-
-#if DENORMAL
-            l_rout = denormal(l_rout);
-            r_rout = denormal(r_rout);
-#endif
-            
             if(++delayedCounterL[i] > 5759) delayedCounterL[i] -= 5759;
             if(++delayedCounterR[i] > 5759) delayedCounterR[i] -= 5759;
         }
@@ -7739,10 +7725,12 @@ __inline float Filter_FlangerL(int track, float input)
     float fb = float(FLANGER_LOPASS_RESONANCE * (1.0f + (1.0f / fa)));
     Flanger_sbuf0L[track] = fa * Flanger_sbuf0L[track] + FLANGER_LOPASS_CUTOFF * (input + fb * (Flanger_sbuf0L[track] - Flanger_sbuf1L[track]));
     Flanger_sbuf1L[track] = fa * Flanger_sbuf1L[track] + FLANGER_LOPASS_CUTOFF * Flanger_sbuf0L[track];
+
 #if DENORMAL
     Flanger_sbuf0L[track] = denormal(Flanger_sbuf0L[track]);
     Flanger_sbuf1L[track] = denormal(Flanger_sbuf1L[track]);
 #endif
+
     return(Flanger_sbuf1L[track]);
 }
 __inline float Filter_FlangerR(int track, float input)
@@ -7751,10 +7739,12 @@ __inline float Filter_FlangerR(int track, float input)
     float fb = float(FLANGER_LOPASS_RESONANCE * (1.0f + (1.0f / fa)));
     Flanger_sbuf0R[track] = fa * Flanger_sbuf0R[track] + FLANGER_LOPASS_CUTOFF * (input + fb * (Flanger_sbuf0R[track] - Flanger_sbuf1R[track]));
     Flanger_sbuf1R[track] = fa * Flanger_sbuf1R[track] + FLANGER_LOPASS_CUTOFF * Flanger_sbuf0R[track];
+
 #if DENORMAL
     Flanger_sbuf0R[track] = denormal(Flanger_sbuf0R[track]);
     Flanger_sbuf1R[track] = denormal(Flanger_sbuf1R[track]);
 #endif
+
     return(Flanger_sbuf1R[track]);
 }
 #endif
@@ -7908,7 +7898,7 @@ void Set_Carrier_Boundaries(unsigned int Position,
 
 #if defined(PTK_TRACK_EQ)
 // Public domain stuff from Neil C. / Etanza Systems
-static float vsa = (float) (1.0 / 4294967295.0);
+float vsa;
 
 void Init_Equ(LPEQSTATE es)
 {
@@ -7918,6 +7908,14 @@ void Init_Equ(LPEQSTATE es)
     es->hg = 1.0f;
     es->lf = 2.0f * sinf(PIf * (880.0f / fMIX_RATE));
     es->hf = 2.0f * sinf(PIf * (5000.0f / fMIX_RATE));
+    vsa = (float) (1.0 / 4294967295.0);
+
+#if DENORMAL
+    es->lf = denormal(es->lf);
+    es->hf = denormal(es->hf);
+    vsa = denormal(vsa);
+#endif
+
 }
 
 float Do_Equ(LPEQSTATE es, float sample, int Left)
@@ -7925,10 +7923,6 @@ float Do_Equ(LPEQSTATE es, float sample, int Left)
     float l;
     float m;
     float h;
-
-#if DENORMAL
-    vsa = denormal(vsa);
-#endif
 
 #if DENORMAL
     es->f1p0[Left] = denormal(es->f1p0[Left]);
@@ -7958,15 +7952,9 @@ float Do_Equ(LPEQSTATE es, float sample, int Left)
     h = es->sdm3[Left] - es->f2p3[Left];
     m = es->sdm3[Left] - (h + l);
 
-    l *= denormal(es->lg);
-    m *= denormal(es->mg);
-    h *= denormal(es->hg);
-
-#if DENORMAL
-    l = denormal(l);
-    m = denormal(m);
-    h = denormal(h);
-#endif
+    l *= es->lg;
+    m *= es->mg;
+    h *= es->hg;
 
     es->sdm3[Left] = es->sdm2[Left];
     es->sdm2[Left] = es->sdm1[Left];

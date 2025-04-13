@@ -1854,10 +1854,12 @@ float CSynth::Filter_L(void)
 {
     sbuf0L = FILT_A * sbuf0L + FILT_CUTO * (GS_VAL_L + FILT_B * (sbuf0L - sbuf1L)); 
     sbuf1L = FILT_A * sbuf1L + FILT_CUTO * sbuf0L;
+
 #if DENORMAL_SYNTH
     sbuf0L = denormal_synth(sbuf0L);
     sbuf1L = denormal_synth(sbuf1L);
 #endif
+
 #if defined(PTK_SYNTH_FILTER_LO) && defined(PTK_SYNTH_FILTER_HI)
     return(Data.VCF_TYPE == 0 ? sbuf1L : GS_VAL_L - sbuf1L);
 #else
@@ -1874,10 +1876,12 @@ float CSynth::Filter_R(void)
 {
     sbuf0R = FILT_A * sbuf0R + FILT_CUTO * (GS_VAL_R + FILT_B * (sbuf0R - sbuf1R));
     sbuf1R = FILT_A * sbuf1R + FILT_CUTO * sbuf0R;
+
 #if DENORMAL_SYNTH
     sbuf0R = denormal_synth(sbuf0R);
     sbuf1R = denormal_synth(sbuf1R);
 #endif
+
 #if defined(PTK_SYNTH_FILTER_LO) && defined(PTK_SYNTH_FILTER_HI)
     return(Data.VCF_TYPE == 0 ? sbuf1R : GS_VAL_R - sbuf1R);
 #else
@@ -1909,16 +1913,20 @@ float CSynth::Moog_Filter_L(void)
     res *= 5.0f;
     q = res * ((1.0f + (0.5f * q) * (1.0f - q + (5.6f * q * q))));
     if(q > 2.42f) q = 2.42f;
+
 #if DENORMAL_SYNTH
     MoogBufferL[1] = denormal_synth(MoogBufferL[1]);
     MoogBufferL[2] = denormal_synth(MoogBufferL[2]);
     MoogBufferL[3] = denormal_synth(MoogBufferL[3]);
     MoogBufferL[4] = denormal_synth(MoogBufferL[4]);
 #endif
+
     in = (GS_VAL_L / 32767.0f) - (q * MoogBufferL[4]);
-#if DENORMAL_303
-    in = denormal_303(in);
+
+#if DENORMAL_SYNTH
+    in = denormal_synth(in);
 #endif
+
     t[1] = MoogBufferL[1];
     t[2] = MoogBufferL[2];
     t[3] = MoogBufferL[3];
@@ -1957,16 +1965,20 @@ float CSynth::Moog_Filter_R(void)
     res *= 5.0f;
     q = res * ((1.0f + (0.5f * q) * (1.0f - q + (5.6f * q * q))));
     if(q > 2.42f) q = 2.42f;
+
 #if DENORMAL_SYNTH
     MoogBufferR[1] = denormal_synth(MoogBufferR[1]);
     MoogBufferR[2] = denormal_synth(MoogBufferR[2]);
     MoogBufferR[3] = denormal_synth(MoogBufferR[3]);
     MoogBufferR[4] = denormal_synth(MoogBufferR[4]);
 #endif
+
     in = (GS_VAL_L / 32767.0f) - (q * MoogBufferR[4]);
-#if DENORMAL_303
-    in = denormal_303(in);
+
+#if DENORMAL_SYNTH
+    in = denormal_synth(in);
 #endif
+
     t[1] = MoogBufferR[1];
     t[2] = MoogBufferR[2];
     t[3] = MoogBufferR[3];
