@@ -54,7 +54,7 @@ __inline float denormal_303(float sample)
 
     int abs_mantissa = isample & 0x007FFFFF;
     int biased_exponent = isample & 0x7F800000;
-    if (biased_exponent == 0 && abs_mantissa != 0) 
+    if(biased_exponent == 0 && abs_mantissa != 0) 
     {
         return 0;
     }
