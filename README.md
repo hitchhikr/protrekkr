@@ -31,8 +31,8 @@ Notice that you'll need SDL 1 (only to compile the tracker, the replay routines 
 > **"ptk_vx.x.x_macosx_ia64_ogl.zip" may be problematic on some 64 bit versions of Mac OS (ulterior to Catalina), on those you should use "ptk_vx.x.x_macosx_ia64.zip" instead.**
 
 ---
-This is a FREEWARE tool, this means that you can use it for whatever you want and for free.
-There's NO GUARANTEE that this program will perform well or even run on your computer.
+> **This is a FREEWARE tool, this means that you can use it for whatever you want and for free.
+> **There's NO GUARANTEE that this program will perform well or even run on your computer.
 
 ---
 So far, ProTrekkr was used in these intros or demos (the ones i'm aware of, at least) :<br><br>
