@@ -1003,12 +1003,15 @@ float absf(float x)
 __inline float denormal(float sample)
 {
     unsigned int isample;
-
     *(unsigned int *) &isample = *(unsigned int *) &sample;
-    unsigned int exponent = isample & 0x7F800000;
-    int aNaN = exponent < 0x7F800000;
-    int aDen = exponent > 0;
-    return sample * (aNaN & aDen);
+
+    int abs_mantissa = isample & 0x007FFFFF;
+    int biased_exponent = isample & 0x7F800000;
+    if (biased_exponent == 0 && abs_mantissa != 0) 
+    {
+        return 0;
+    }
+    return sample;
 }
 #endif
 

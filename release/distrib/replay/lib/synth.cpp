@@ -1915,6 +1915,7 @@ float CSynth::Moog_Filter_L(void)
     if(q > 2.42f) q = 2.42f;
 
 #if DENORMAL_SYNTH
+    q = denormal_synth(q);
     MoogBufferL[1] = denormal_synth(MoogBufferL[1]);
     MoogBufferL[2] = denormal_synth(MoogBufferL[2]);
     MoogBufferL[3] = denormal_synth(MoogBufferL[3]);
@@ -1923,17 +1924,13 @@ float CSynth::Moog_Filter_L(void)
 
     in = (GS_VAL_L / 32767.0f) - (q * MoogBufferL[4]);
 
-#if DENORMAL_SYNTH
-    in = denormal_synth(in);
-#endif
-
     t[1] = MoogBufferL[1];
     t[2] = MoogBufferL[2];
     t[3] = MoogBufferL[3];
-    MoogBufferL[1] = ((in + MoogBufferL[0]) * p ) - (MoogBufferL[1] * f);
-    MoogBufferL[2] = ((MoogBufferL[1] + t[1]) * p ) - (MoogBufferL[2] * f);
-    MoogBufferL[3] = ((MoogBufferL[2] + t[2]) * p ) - (MoogBufferL[3] * f);
-    MoogBufferL[4] = ((MoogBufferL[3] + t[3]) * p ) - (MoogBufferL[4] * f);
+    MoogBufferL[1] = ((in + MoogBufferL[0]) * p) - (MoogBufferL[1] * f);
+    MoogBufferL[2] = ((MoogBufferL[1] + t[1]) * p) - (MoogBufferL[2] * f);
+    MoogBufferL[3] = ((MoogBufferL[2] + t[2]) * p) - (MoogBufferL[3] * f);
+    MoogBufferL[4] = ((MoogBufferL[3] + t[3]) * p) - (MoogBufferL[4] * f);
     MoogBufferL[0] = in;
 
 #if defined(PTK_SYNTH_FILTER_MOOG_LO) && defined(PTK_SYNTH_FILTER_MOOG_BAND)
@@ -1967,6 +1964,7 @@ float CSynth::Moog_Filter_R(void)
     if(q > 2.42f) q = 2.42f;
 
 #if DENORMAL_SYNTH
+    q = denormal_synth(q);
     MoogBufferR[1] = denormal_synth(MoogBufferR[1]);
     MoogBufferR[2] = denormal_synth(MoogBufferR[2]);
     MoogBufferR[3] = denormal_synth(MoogBufferR[3]);
@@ -1974,10 +1972,6 @@ float CSynth::Moog_Filter_R(void)
 #endif
 
     in = (GS_VAL_L / 32767.0f) - (q * MoogBufferR[4]);
-
-#if DENORMAL_SYNTH
-    in = denormal_synth(in);
-#endif
 
     t[1] = MoogBufferR[1];
     t[2] = MoogBufferR[2];
