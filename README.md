@@ -9,11 +9,13 @@ Juan Antonio Arguelles Rius aka Arguru.
 Currently the tracker is available on Windows, Linux, FreeBSD, NetBSD, Amiga OS4, AROS, MorphOS, Mac OS (ppc, x86, ia64 & arm64) and Haiku OS.<br><br>
 Standalone replay routines are available for most of these Operating Systems and also for the PlayStation Portable & PlayStation Vita.<br>
 
+![alt text](ptk.png)
+---
 > [!CAUTION]
 > **The tracker itself requires at least a 1,5ghz processor to run properly.**
-
-![alt text](ptk.png)
-
+---
+**This is a FREEWARE tool, this means that you can use it for whatever you want and for free.**
+**There's NO GUARANTEE that this program will perform well or even run on your computer.**
 ---
 In order to compile the tracker, use the provided makefile for your target architecture (if available).
 
@@ -29,10 +31,6 @@ Notice that you'll need SDL 1 (only to compile the tracker, the replay routines 
 > **On Linux use libsdl1.2-dev and on Mac OS use libsdl from Mac Ports.**<br><br>
 > **If your Linux distribution doesn't include SDL 1.2 then try your luck here:<br>https://github.com/libsdl-org/SDL-1.2**<br><br>
 > **"ptk_vx.x.x_macosx_ia64_ogl.zip" may be problematic on some 64 bit versions of Mac OS (ulterior to Catalina), on those you should use "ptk_vx.x.x_macosx_ia64.zip" instead.**
-
----
-**This is a FREEWARE tool, this means that you can use it for whatever you want and for free.**
-**There's NO GUARANTEE that this program will perform well or even run on your computer.**
 
 ---
 So far, ProTrekkr was used in these intros or demos (the ones i'm aware of, at least) :<br><br>
