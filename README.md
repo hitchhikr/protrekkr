@@ -12,8 +12,7 @@ Standalone replay routines are available for most of these Operating Systems and
 ![alt text](ptk.png)
 ---
 > [!CAUTION]
-> **The tracker itself requires AT LEAST a 1,5ghz processor to run properly.**
----
+> **The tracker itself requires AT LEAST a 1,5ghz processor to run properly.**<br><br>
 **This is a FREEWARE tool, this means that you can use it for whatever you want and for free.**
 **There's NO GUARANTEE that this program will perform well or even run on your computer.**
 ---
