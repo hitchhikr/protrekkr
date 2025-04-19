@@ -953,6 +953,7 @@ void Record_Delay_Event();
 #endif
 
 void Do_Effects_Ticks_X(void);
+float Filter_Chorus(int stereo, float x);
 float Filter(int stereo, float x, char i);
 float filter2p(int stereo, int ch, float input, float f, float q);
 float filter2px(int stereo, int ch, float input, float f, float q);
@@ -3630,10 +3631,10 @@ ByPass_Wav:
                         case SMP_LOOP_FORWARD:
                             if(Player_LW[c][i] == SMP_LOOPING_FORWARD)
                             {
-                                if(sp_Position[c][i].int_pos >= Player_LE[c][i])
+                                if(sp_Position[c][i].int_pos >= (int) Player_LE[c][i])
                                 {
                                     sp_Position[c][i].int_pos = Player_LS[c][i];
-                                    sp_Position[c][i].flt_pos = Player_LS[c][i];
+                                    sp_Position[c][i].flt_pos = (float) Player_LS[c][i];
                                 }
                             }
                             else
@@ -3641,7 +3642,7 @@ ByPass_Wav:
                                 if((int) sp_Position[c][i].int_pos <= (int) Player_LS[c][i])
                                 {
                                     sp_Position[c][i].int_pos = Player_LE[c][i];
-                                    sp_Position[c][i].flt_pos = Player_LE[c][i];
+                                    sp_Position[c][i].flt_pos = (float) Player_LE[c][i];
                                 }
                             }
                             break;
@@ -3650,10 +3651,10 @@ ByPass_Wav:
                         case SMP_LOOP_PINGPONG:
                             if(Player_LW[c][i] == SMP_LOOPING_FORWARD)
                             {
-                                if(sp_Position[c][i].int_pos >= Player_LE[c][i])
+                                if(sp_Position[c][i].int_pos >= (int) Player_LE[c][i])
                                 {
                                     sp_Position[c][i].int_pos = Player_LE[c][i];
-                                    sp_Position[c][i].flt_pos = Player_LE[c][i];
+                                    sp_Position[c][i].flt_pos = (float) Player_LE[c][i];
                                     Player_LW[c][i] = SMP_LOOPING_BACKWARD;
                                 }
                             }
@@ -3663,7 +3664,7 @@ ByPass_Wav:
                                 {
                                     Player_LW[c][i] = SMP_LOOPING_FORWARD;
                                     sp_Position[c][i].int_pos = Player_LS[c][i];
-                                    sp_Position[c][i].flt_pos = Player_LS[c][i];
+                                    sp_Position[c][i].flt_pos = (float) Player_LS[c][i];
                                 }
                             }
                             break;
@@ -3672,10 +3673,10 @@ ByPass_Wav:
 #endif // defined(PTK_LOOP_FORWARD) || defined(PTK_LOOP_PINGPONG)
                             if(Player_LW[c][i] == SMP_LOOPING_FORWARD)
                             {
-                                if(sp_Position[c][i].int_pos >= Player_NS[c][i])
+                                if(sp_Position[c][i].int_pos >= (int) Player_NS[c][i])
                                 {
                                     sp_Position[c][i].int_pos = Player_NS[c][i];
-                                    sp_Position[c][i].flt_pos = Player_NS[c][i];
+                                    sp_Position[c][i].flt_pos = (float) Player_NS[c][i];
                                     sp_Stage[c][i] = PLAYING_NOSAMPLE;
                                 }
                             }
@@ -4881,7 +4882,7 @@ void Play_Instrument(int channel, int sub_channel)
                     if(!no_retrig_note)
                     {
                         sp_Position[channel][sub_channel].int_pos = offset << 8;
-                        sp_Position[channel][sub_channel].flt_pos = offset << 8;
+                        sp_Position[channel][sub_channel].flt_pos = (float) (offset << 8);
                     }
                 }
 #endif
@@ -4930,7 +4931,7 @@ void Play_Instrument(int channel, int sub_channel)
                     if(!no_retrig_note)
                     {
                         sp_Position[channel][sub_channel].int_pos = offset << 8;
-                        sp_Position[channel][sub_channel].flt_pos = offset << 8;
+                        sp_Position[channel][sub_channel].flt_pos = (float) (offset << 8);
                     }
                 }
             }
@@ -4945,7 +4946,7 @@ void Play_Instrument(int channel, int sub_channel)
                     {
                         // Don't cross the boundaries of the loop data
                         sp_Position[channel][sub_channel].int_pos = Player_LE[channel][sub_channel];
-                        sp_Position[channel][sub_channel].flt_pos = Player_LE[channel][sub_channel];
+                        sp_Position[channel][sub_channel].flt_pos = (float) Player_LE[channel][sub_channel];
                     }
                     else
                     {
@@ -5007,21 +5008,21 @@ void Play_Instrument(int channel, int sub_channel)
                     Max_Loop = Player_LE[channel][sub_channel];
                 }
                 sp_Position[channel][sub_channel].int_pos = Max_Loop;
-                sp_Position[channel][sub_channel].flt_pos = Max_Loop;
+                sp_Position[channel][sub_channel].flt_pos = (float) Max_Loop;
 #if defined(PTK_SYNTH)
                 if(Synthesizer[channel][sub_channel].Data.OSC_1_WAVEFORM == WAVEFORM_WAV)
                 {
                     sp_Position_osc_1[channel][sub_channel].int_pos = Max_Loop;
-                    sp_Position_osc_1[channel][sub_channel].flt_pos = Max_Loop;
+                    sp_Position_osc_1[channel][sub_channel].flt_pos = (float) Max_Loop;
 #if defined(PTK_SYNTH_OSC_3)
                     sp_Position_osc_3[channel][sub_channel].int_pos = Max_Loop;
-                    sp_Position_osc_3[channel][sub_channel].flt_pos = Max_Loop;
+                    sp_Position_osc_3[channel][sub_channel].flt_pos = (float) Max_Loop;
 #endif
                 }
                 if(Synthesizer[channel][sub_channel].Data.OSC_2_WAVEFORM == WAVEFORM_WAV)
                 {
                     sp_Position_osc_2[channel][sub_channel].int_pos = Max_Loop;
-                    sp_Position_osc_2[channel][sub_channel].flt_pos = Max_Loop;
+                    sp_Position_osc_2[channel][sub_channel].flt_pos = (float) Max_Loop;
                 }
 #endif
             }

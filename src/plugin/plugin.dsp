@@ -132,10 +132,6 @@ SOURCE=.\out.h
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\release\distrib\replay\lib\include\cubic_spline.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\release\distrib\replay\lib\include\ptk_def_properties.h
 # End Source File
 # Begin Source File
@@ -165,14 +161,6 @@ SOURCE=..\..\release\distrib\replay\lib\sounddriver\sounddriver_windows.cpp
 # Begin Source File
 
 SOURCE=..\..\release\distrib\replay\lib\sounddriver\include\sounddriver_windows.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\release\distrib\replay\lib\spline.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\release\distrib\replay\lib\include\spline.h
 # End Source File
 # Begin Source File
 
