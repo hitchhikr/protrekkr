@@ -67,7 +67,7 @@ void Draw_Track_Ed(void)
     Gui_Draw_Button_Box(710, (Cur_Height - 96), 60, 16, "Notes", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_NO_BORDER);
     Gui_Draw_Button_Box(710, (Cur_Height - 78), 60, 16, "Effects", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_NO_BORDER);
     Gui_Draw_Button_Box(647, (Cur_Height - 60), 47, 10, S_ U_ R_ R_ O_ U_ N_ D_, BUTTON_NORMAL | BUTTON_DISABLED);
-    Gui_Draw_Button_Box(647, (Cur_Height - 48), 47, 10, D_ E_ N_ O_ I_ S_ E_, BUTTON_NORMAL | BUTTON_DISABLED);
+    Gui_Draw_Button_Box(647, (Cur_Height - 48), 47, 10, D_ E_ N_ O_ I_ S_ E_ R_, BUTTON_NORMAL | BUTTON_DISABLED);
 }
    
 void Actualize_Track_Ed(char gode)
