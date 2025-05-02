@@ -1,0 +1,203 @@
+CC = gcc
+CXX = g++
+
+LIBS_X86_64 = -lsdldraw_x86_64 -lz -framework CoreAudio -framework CoreMidi -framework AudioUnit -framework Cocoa -framework OpenGL -lSDL
+
+DEBUG = 
+
+FLAGS_X86_64 = $(DEBUG) -Ofast -fsigned-char -arch x86_64 -ffast-math -fomit-frame-pointer -fno-rtti -I/opt/local/include \
+            -fno-strict-aliasing -w -D __MACOSX_X86__ -D __GCC__ -D __MACOSX_CORE__ -D __MOT_SWAP__ -D __AIFF__ -D __USE_OPENGL__
+
+EXEOBJS_X86_64 = ptk_x86_64.o \
+              editor_303_x86_64.o editor_pattern_x86_64.o editor_sequencer_x86_64.o editor_track_x86_64.o editor_track_fx_x86_64.o \
+              patterns_blocks_x86_64.o editor_synth_x86_64.o editor_sample_x86_64.o editor_fx_setup_x86_64.o editor_setup_x86_64.o \
+              editor_diskio_x86_64.o editor_reverb_x86_64.o editor_instrument_x86_64.o editor_midi_x86_64.o \
+              samples_pack_x86_64.o files_list_x86_64.o files_x86_64.o mods_x86_64.o s3m_x86_64.o patterns_x86_64.o reverbs_x86_64.o midi_cfg_x86_64.o \
+              bits_x86_64.o pack_x86_64.o tinypack_x86_64.o words_x86_64.o wputils_x86_64.o \
+              config_x86_64.o 303s_x86_64.o synths_x86_64.o insts_x86_64.o ptps_x86_64.o \
+              midi_x86_64.o rtmidi_x86_64.o midi_dispatch_x86_64.o \
+              timer_x86_64.o main_x86_64.o sdlmain_x86_64.o \
+              misc_draw_x86_64.o draw_primitives_x86_64.o requesters_x86_64.o \
+              samples_ops_x86_64.o aiff_x86_64.o aiff_interface_x86_64.o riff_x86_64.o riff_interface_x86_64.o \
+              tb_303_x86_64.o wavpack_x86_64.o samples_unpack_x86_64.o replay_x86_64.o synth_x86_64.o endianness_x86_64.o \
+              sounddriver_macosx_x86_64.o
+
+all: protrekkr_x86_64
+
+clean: RemObj
+
+RemObj:
+	-rm -f $(EXEOBJS_X86_64)
+
+protrekkr_x86_64: $(EXEOBJS_X86_64)
+	-rm -f ./release/distrib/protrekkr_x86_64.app/Contents/MacOS/Protrekkr
+	(cd src/extralibs/sdl_draw; make -f makefile.macosx_x86_64)
+	(cd src/extralibs/zlib-1.2.3; make -f makefile.macosx_x86_64)
+	(cd src/extralibs/bin2c; make -f makefile.macosx_x86_64)
+	$(CXX) -o ./release/distrib/protrekkr_x86_64.app/Contents/MacOS/Protrekkr \
+           -L./ -L/opt/local/lib -L/library/frameworks -Lsrc/extralibs/sdl_draw -Lsrc/extralibs/zlib-1.2.3 $(FLAGS_X86_64) $(EXEOBJS_x86_64) $(LIBS_X86_64)
+	strip -x -X -S ./release/distrib/protrekkr_x86_64.app/Contents/MacOS/Protrekkr
+	chmod +x ./release/distrib/protrekkr_x86_64.app/Contents/MacOS/Protrekkr
+	install_name_tool ./release/distrib/protrekkr_x86_64.app/Contents/MacOS/Protrekkr -change /opt/local/lib/libSDL-1.2.0.dylib @executable_path/libSDL-1.2.0.dylib
+
+ptk_x86_64.o: src/ptk.cpp
+	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
+
+editor_303_x86_64.o: src/editors/editor_303.cpp
+	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
+
+editor_pattern_x86_64.o: src/editors/editor_pattern.cpp
+	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
+
+editor_sequencer_x86_64.o: src/editors/editor_sequencer.cpp
+	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
+
+editor_track_x86_64.o: src/editors/editor_track.cpp
+	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
+
+editor_track_fx_x86_64.o: src/editors/editor_track_fx.cpp
+	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
+
+patterns_blocks_x86_64.o: src/editors/patterns_blocks.cpp
+	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
+
+editor_synth_x86_64.o: src/editors/editor_synth.cpp
+	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
+
+editor_sample_x86_64.o: src/editors/editor_sample.cpp
+	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
+
+editor_fx_setup_x86_64.o: src/editors/editor_fx_setup.cpp
+	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
+
+editor_setup_x86_64.o: src/editors/editor_setup.cpp
+	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
+
+editor_diskio_x86_64.o: src/editors/editor_diskio.cpp
+	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
+
+editor_reverb_x86_64.o: src/editors/editor_reverb.cpp
+	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
+
+editor_instrument_x86_64.o: src/editors/editor_instrument.cpp
+	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
+
+editor_midi_x86_64.o: src/editors/editor_midi.cpp
+	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
+
+samples_pack_x86_64.o: src/samples/samples_pack.cpp
+	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
+
+files_list_x86_64.o: src/files/files_list.cpp
+	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
+
+files_x86_64.o: src/files/files.cpp
+	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
+
+mods_x86_64.o: src/files/mods.cpp
+	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
+
+s3m_x86_64.o: src/files/s3m.cpp
+	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
+
+patterns_x86_64.o: src/files/patterns.cpp
+	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
+
+reverbs_x86_64.o: src/files/reverbs.cpp
+	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
+
+midi_cfg_x86_64.o: src/files/midi_cfg.cpp
+	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
+
+config_x86_64.o: src/files/config.cpp
+	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
+
+303s_x86_64.o: src/files/303s.cpp
+	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
+
+synths_x86_64.o: src/files/synths.cpp
+	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
+
+insts_x86_64.o: src/files/insts.cpp
+	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
+
+ptps_x86_64.o: src/files/ptps.cpp
+	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
+
+midi_x86_64.o: src/midi/midi.cpp
+	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
+
+rtmidi_x86_64.o: src/midi/rtmidi.cpp
+	$(CXX) -c -o $(@) $(FLAGS_X86_64) $<
+
+midi_dispatch_x86_64.o: src/midi/midi_dispatch.cpp
+	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
+
+timer_x86_64.o: src/support/timer.cpp
+	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
+
+main_x86_64.o: src/support/main.cpp
+	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
+
+sdlmain_x86_64.o: src/support/sdlmain.m
+	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
+
+misc_draw_x86_64.o: src/ui/misc_draw.cpp
+	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
+
+draw_primitives_x86_64.o: src/ui/draw_primitives.cpp
+	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
+
+requesters_x86_64.o: src/ui/requesters.cpp
+	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
+
+samples_ops_x86_64.o: src/samples/samples_ops.cpp
+	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
+
+aiff_x86_64.o: src/samples/aiff/aiff.cpp
+	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
+
+aiff_interface_x86_64.o: src/samples/aiff/aiff_interface.cpp
+	$(CXX) -c -o $(@) $(FLAGS_X86_64) $<
+
+riff_x86_64.o: src/samples/wav/riff.cpp
+	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
+
+riff_interface_x86_64.o: src/samples/wav/riff_interface.cpp
+	$(CXX) -c -o $(@) $(FLAGS_X86_64) $<
+
+tb_303_x86_64.o: release/distrib/replay/lib/tb_303.cpp
+	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
+
+wavpack_x86_64.o: release/distrib/replay/lib/wavpack.cpp
+	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
+
+samples_unpack_x86_64.o: release/distrib/replay/lib/samples_unpack.cpp
+	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
+
+replay_x86_64.o: release/distrib/replay/lib/replay.cpp
+	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
+
+synth_x86_64.o: release/distrib/replay/lib/synth.cpp
+	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
+
+endianness_x86_64.o: release/distrib/replay/lib/endianness.cpp
+	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
+
+sounddriver_macosx_x86_64.o: release/distrib/replay/lib/sounddriver/sounddriver_macosx.cpp
+	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
+
+bits_x86_64.o: src/samples/wavpack/bits.cpp
+	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
+
+pack_x86_64.o: src/samples/wavpack/pack.cpp
+	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
+
+words_x86_64.o: src/samples/wavpack/words.cpp
+	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
+
+wputils_x86_64.o: src/samples/wavpack/wputils.cpp
+	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
+
+tinypack_x86_64.o: src/samples/wavpack/tinypack.cpp
+	$(CC) -c -o $(@) $(FLAGS_X86_64) $<

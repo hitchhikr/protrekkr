@@ -8,8 +8,8 @@
 *netbsd*
 *aros*
 *linux*
-*x86*
-*ia64*
+*x86_32*
+*x86_64*
 *arm64*
 *haiku*
 *aos4*
