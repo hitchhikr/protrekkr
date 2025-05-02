@@ -35,7 +35,7 @@ protrekkr_x86_64: $(EXEOBJS_X86_64)
 	(cd src/extralibs/zlib-1.2.3; make -f makefile.macosx_x86_64)
 	(cd src/extralibs/bin2c; make -f makefile.macosx_x86_64)
 	$(CXX) -o ./release/distrib/protrekkr_x86_64.app/Contents/MacOS/Protrekkr \
-           -L./ -L/opt/local/lib -L/library/frameworks -Lsrc/extralibs/sdl_draw -Lsrc/extralibs/zlib-1.2.3 $(FLAGS_X86_64) $(EXEOBJS_x86_64) $(LIBS_X86_64)
+           -L./ -L/opt/local/lib -L/library/frameworks -Lsrc/extralibs/sdl_draw -Lsrc/extralibs/zlib-1.2.3 $(FLAGS_X86_64) $(EXEOBJS_X86_64) $(LIBS_X86_64)
 	strip -x -X -S ./release/distrib/protrekkr_x86_64.app/Contents/MacOS/Protrekkr
 	chmod +x ./release/distrib/protrekkr_x86_64.app/Contents/MacOS/Protrekkr
 	install_name_tool ./release/distrib/protrekkr_x86_64.app/Contents/MacOS/Protrekkr -change /opt/local/lib/libSDL-1.2.0.dylib @executable_path/libSDL-1.2.0.dylib
