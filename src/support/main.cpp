@@ -411,22 +411,24 @@ void Load_Keyboard_Def(char *FileName)
 }
 
 // ------------------------------------------------------
-// Retrive the video infos
+// Retrieve the video infos
 void Get_Vid_Infos()
 {
     int i;
 
     Screen_Info = SDL_GetVideoInfo();
-    Screen_Modes = SDL_ListModes(Screen_Info->vfmt, SDL_SWSURFACE | SDL_FULLSCREEN);
-
-    i = 0;
-    Max_Screen_Mode = 0;
-    if(Screen_Modes)
+    if(Screen_Info)
     {
-        while(Screen_Modes[i])
+        Screen_Modes = SDL_ListModes(Screen_Info->vfmt, SDL_SWSURFACE | SDL_FULLSCREEN);
+        i = 0;
+        Max_Screen_Mode = 0;
+        if(Screen_Modes)
         {
-            Max_Screen_Mode++;
-            i++;
+            while(Screen_Modes[i])
+            {
+                Max_Screen_Mode++;
+                i++;
+            }
         }
     }
 }
@@ -493,8 +495,6 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
 #if defined(__USE_OPENGL__)
     strcat(Window_Title, " - (Using OpenGL)");
 #endif
-
-    SDL_WM_SetCaption(Window_Title, NULL);
 
     ExePath = (char *) malloc(ExePath_Size + 1);
     if(ExePath == NULL)
@@ -1363,6 +1363,8 @@ int Switch_FullScreen(int Width, int Height, int Refresh, int Force_Window_Mode)
 #endif
 
     Get_Vid_Infos();
+
+    SDL_WM_SetCaption(Window_Title, NULL);
 
     if(Refresh)
     {
