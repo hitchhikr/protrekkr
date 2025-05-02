@@ -1,0 +1,39 @@
+CC = gcc
+AS = as
+AR = ar
+STRIP = strip
+include test/module.macosx
+
+LIBS_X86_32 = -lptkreplay_x86_32 -framework CoreAudio -framework AudioUnit -framework Cocoa
+DEBUG = 
+FLAGS_X86_32 = $(DEBUG) -Ofast -fsigned-char -arch i386 -fomit-frame-pointer -fno-rtti -fno-strict-aliasing -ffast-math -D __MACOSX_X86__ -D __GCC__ -D __STAND_ALONE__
+EXEOBJS_X86_32 = test_x86_32.o module_x86_32.o
+
+all: remreplaytest module ptkreplay replaytest
+clean: remobj remlibobj
+
+remreplaytest:
+	-rm -f libptkreplay_x86_32.a
+	-rm -f replaytest
+
+remobj:
+	-rm -f module.cpp
+	-rm -f $(EXEOBJS_X86_32)
+
+replaytest: $(EXEOBJS_X86_32)
+	$(CC) -o replaytest -L./ $(FLAGS_X86_32) $(EXEOBJS_X86_32) $(LIBS_X86_32)
+	$(STRIP) -x -X -S replaytest
+	-rm -f module.cpp
+
+test_x86_32.o: test/test_macosx.cpp
+	$(CC) -c -o $(@) $(FLAGS_X86_32) test/test_macosx.cpp
+
+module_x86_32.o: module.cpp
+	$(CC) -c -o $(@) -arch i386 module.cpp
+
+module:
+	chmod +x ./bin2c
+	./bin2c $(MODULE) module.cpp _PTK_MODULE
+
+# the library itself #
+include lib/makefile.macosx_x86_32

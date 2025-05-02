@@ -1,0 +1,34 @@
+LIBFLAGS = -c
+LIBOBJS_X86_64 = endianness_x86_64.o replay_x86_64.o synth_x86_64.o tb_303_x86_64.o wavpack_x86_64.o samples_unpack_x86_64.o sounddriver_macosx_x86_64.o
+
+all: ptkreplay
+clean: remlibobj
+
+remlibobj:
+	-rm -f $(LIBOBJS_X86_64)
+	-rm -f libptkreplay_x86_64.a
+	
+ptkreplay: $(LIBOBJS_X86_64)
+	-rm -f libptkreplay_x86_64.a
+	$(AR) -s -r libptkreplay_x86_64.a $(LIBOBJS_X86_64)
+
+sounddriver_macosx_x86_64.o: lib/sounddriver/sounddriver_macosx.cpp
+	$(CC) -o $(@) $(LIBFLAGS) $(FLAGS_X86_64) lib/sounddriver/sounddriver_macosx.cpp
+
+samples_unpack_x86_64.o: lib/samples_unpack.cpp
+	$(CC) -o $(@) $(LIBFLAGS) $(FLAGS_X86_64) lib/samples_unpack.cpp
+
+tb_303_x86_64.o: lib/tb_303.cpp
+	$(CC) -o $(@) $(LIBFLAGS) $(FLAGS_X86_64) lib/tb_303.cpp
+
+synth_x86_64.o: lib/synth.cpp
+	$(CC) -o $(@) $(LIBFLAGS) $(FLAGS_X86_64) lib/synth.cpp
+
+replay_x86_64.o: lib/replay.cpp
+	$(CC) -o $(@) $(LIBFLAGS) $(FLAGS_X86_64) lib/replay.cpp
+
+endianness_x86_64.o: lib/endianness.cpp
+	$(CC) -o $(@) $(LIBFLAGS) $(FLAGS_X86_64) lib/endianness.cpp
+
+wavpack_x86_64.o: lib/wavpack.cpp
+	$(CC) -o $(@) $(LIBFLAGS) $(FLAGS_X86_64) lib/wavpack.cpp
