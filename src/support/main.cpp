@@ -417,13 +417,13 @@ void Get_Vid_Infos()
     int i;
 
     Screen_Info = SDL_GetVideoInfo();
+    Max_Screen_Mode = 0;
     if(Screen_Info)
     {
         Screen_Modes = SDL_ListModes(Screen_Info->vfmt, SDL_SWSURFACE | SDL_FULLSCREEN);
-        i = 0;
-        Max_Screen_Mode = 0;
         if(Screen_Modes)
         {
+            i = 0;
             while(Screen_Modes[i])
             {
                 Max_Screen_Mode++;
