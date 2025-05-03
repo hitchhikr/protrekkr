@@ -542,16 +542,19 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
     #if defined(__MACOSX_PPC__) || defined(__MACOSX_X86__)
         Path_Length = ExePath_Size;
         _NSGetExecutablePath(ExePath, &Path_Length);
-        while(Path_Length--)
+        i = 0;
+        // Remove 4 levels
+        while(i < 4)
         {
+            Path_Length--;
             if(ExePath[Path_Length] == '/')
             {
                 ExePath[Path_Length] = 0;
-                Path_Length++;
-                break;
+                i++;
             }
         }
-
+        CHDIR(ExePath);
+/*
         // There's a probably a better way to do that but
         // it works fine and i want the app to be able 
         // to run from a console too.
@@ -569,7 +572,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
                 break;
             }
             strcat(ExePath, "../");
-        }
+        }*/
     #else
         GETCWD(ExePath, MAX_PATH);
     #endif
