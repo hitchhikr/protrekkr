@@ -2,8 +2,8 @@ May be done (or not):
 
 V2.8.5:
 
-  + Add Midi to AROS, AOS4 and MorphOS (also FreeBSD, NetBSD ?).
-  + Import ScreamTracker 3 modules and instruments.
+  - Add Midi support to AROS, AOS4 and MorphOS (also FreeBSD, NetBSD ?).
+  - Import ScreamTracker 3 modules and instruments.
 
 V3.0.0:
 

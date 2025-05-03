@@ -346,7 +346,11 @@
 #define LARG_VUMETER 134
 #define MIN_PEAK MAX_VUMETER - 18
 
+#if defined(__MACOSX_PPC__) || defined(__MACOSX_X86__)
+#define MAX_PATH 1024
+#else
 #define MAX_PATH 260
+#endif
 
 #define ZZAAPP_ALL 1
 #define ZZAAPP_PATTERNS 2

@@ -21,7 +21,6 @@ v2.8.5
   due to this, this effect have been added:
   - 30: Control channel denoising strength (see manual for parameter).
 - Renamed Mac OS 64 bit distrib from ia64 to x86_64 (and x86 to x86_32).
-- x86 64 bit version of Mac OS distrib shouldn't crash anymore at startup.
 
 v2.8.2
 
