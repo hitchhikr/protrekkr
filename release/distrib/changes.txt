@@ -2,7 +2,7 @@
 ProTrekkr releases history
 ===============================================================================
 
-v2.8.5
+v2.8.3 PRE 2
 
 - Fullscreen mode resolution can now be selected.
 - Added 4 parametrable filters for stereo delay.
@@ -19,8 +19,9 @@ v2.8.5
 - Tracker and replay speeded up.
 - Removed splines, channels can now be individually denoised (or not)
   due to this, this effect have been added:
-  - 30: Control channel denoising strength (see manual for parameter).
+  - 30: Control channel denoising strength (see manual for parameter infos).
 - Renamed Mac OS 64 bit distrib from ia64 to x86_64 (and x86 to x86_32).
+- Fixed a crash at startup in some MacOS versions.
 
 v2.8.2
 

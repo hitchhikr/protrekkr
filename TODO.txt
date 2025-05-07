@@ -1,6 +1,6 @@
-May be done (or not):
+What may (or not) be done:
 
-V2.8.5:
+V2.8.3:
 
   - Add Midi support to AROS, AOS4 and MorphOS (also FreeBSD, NetBSD ?).
   - Import ScreamTracker 3 modules and instruments.
