@@ -2436,8 +2436,8 @@ void Load_File(int Freeindex, const char *str)
         fseek(in, 0, SEEK_SET);
         fread(&extension_digi, sizeof(char), 20, in);
 
-//        fseek(in, 44, SEEK_SET);
-  //      fread(&s3mtag, sizeof(char), 4, in);
+        fseek(in, 44, SEEK_SET);
+        fread(&s3m_tag, sizeof(char), 4, in);
 
         // Look for sound/noise/star/protracker module
         found_mod = Check_Mod(mod_tag);

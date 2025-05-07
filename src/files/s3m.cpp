@@ -423,18 +423,39 @@ void Load_S3M(char *Name, const char *FileName)
 
             if(channels <= 16)
             {
-
                 Ticks_Per_Beat = Header.DefaultSpeed;
                 Beats_Per_Min = Header.DefaultTempo;
                 mas_vol = (Header.MasterVolume & 0x7f) / 127.0f;
                 Song_Tracks = channels;
 
-                for(swrite = 0; swrite < 31; swrite++)
+                Seek_S3M(96, SEEK_SET);
+
+                Song_Length = (unsigned char) Header.SongLength;
+
+                // Get the positions
+                for(tps = 0; tps < Header.SongLength; tps++)
                 {
-                    SampleType[swrite][0] = 1;
+                    unsigned char pos;
+                    pos = Getc_S3M();
+                    if(pos == 0xff) break;
+                    pSequence[tps] = pos;
+                    patternLines[tps] = 64;
+                }
+                
+                // Read samples data
+                for(swrite = 0; swrite < Header.SamplesEntries; swrite++)
+                {
+                    // Read sample name
+                    // pointer * 16 = offset in file
+
+                    Read_S3M(&nameins[swrite], 12);
 
                     memset(nameins[swrite], 0, 20);
-                    Read_S3M(&nameins[swrite], 19);
+
+                    SampleType[swrite][0] = 1;
+                    
+                    // Read sample name
+                    Read_S3M(&nameins[swrite], 12);
 
                     Seek_S3M(3, SEEK_CUR);
 
@@ -1008,9 +1029,6 @@ void Load_S3M(char *Name, const char *FileName)
                     Fix_Stereo(i);
                 }
 
-                //Beats_Per_Min = 125;
-                //Ticks_Per_Beat = 4;
-                //mas_vol = 0.75f;
                 compressor = FALSE;
 
                 free(S3M_Dat);

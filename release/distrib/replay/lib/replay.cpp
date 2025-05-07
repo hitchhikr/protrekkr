@@ -4305,31 +4305,32 @@ ByPass_Wav:
         {
             float old_l_float = 0.0f;
             float old_r_float = 0.0f;
-            float accum;
-            float denoiser;
+            float accum_l;
+            float accum_r;
+            float denoiser_coeff;
             int k;
+            int pos_round;
             int denoise_mask;
             int denoise_size;
             int Table_Denoise[] = { 0, 4, 8, 16, 32 };
+            float Table_Denoise_Coeffs[] = { 1.0f, 1.0f / 4, 1.0f / 8, 1.0f / 16, 1.0f / 32 };
             old_l_float = All_Signal_L;
             old_r_float = All_Signal_R;
             denoise_size = Table_Denoise[Track_Denoise[c]];
-            denoiser = (1.0f / denoise_size);
+            denoiser_coeff = Table_Denoise_Coeffs[Track_Denoise[c]];
             denoise_mask = denoise_size - 1;
-            accum = 0.0f;
+            accum_l = 0.0f;
+            accum_r = 0.0f;
             for(k = 0; k < denoise_size; k++)
             {
-                accum += (denoiser * left_float_history[c][(pos_round_float_history[c] - k) & denoise_mask]);
+                pos_round = (pos_round_float_history[c] - k) & denoise_mask;
+                accum_l += left_float_history[c][pos_round];
+                accum_r += right_float_history[c][pos_round];
             }
-            All_Signal_L = accum;
-            accum = 0.0f;
-            for(k = 0; k < denoise_size; k++)
-            {
-                accum += (denoiser * right_float_history[c][(pos_round_float_history[c] - k) & denoise_mask]);
-            }
-            All_Signal_R = accum;
-            left_float_history[c][pos_round_float_history[c]] = old_l_float;
-            right_float_history[c][pos_round_float_history[c]] = old_r_float;
+            All_Signal_L = accum_l;
+            All_Signal_R = accum_r;
+            left_float_history[c][pos_round_float_history[c]] = old_l_float * denoiser_coeff;
+            right_float_history[c][pos_round_float_history[c]] = old_r_float * denoiser_coeff;
             pos_round_float_history[c]++;
             pos_round_float_history[c] &= denoise_mask;
         }
