@@ -22,6 +22,7 @@ v2.8.3 PRE 2
   - 30: Control channel denoising strength (see manual for parameter infos).
 - Renamed Mac OS 64 bit distrib from ia64 to x86_64 (and x86 to x86_32).
 - Fixed a crash at startup in some MacOS versions.
+- MorphOS version is now officially supported.
 
 v2.8.2
 
