@@ -1,7 +1,7 @@
 CC = gcc
 CXX = g++
 
-LIBS_PPC = -lsdldraw_ppc -lz -framework CoreAudio -framework CoreMidi -framework AudioUnit -framework Cocoa -framework OpenGL -framework SDL
+LIBS_PPC = -lz -framework CoreAudio -framework CoreMidi -framework AudioUnit -framework Cocoa -framework OpenGL -framework SDL
 
 DEBUG = 
 
@@ -20,7 +20,7 @@ EXEOBJS_PPC = ptk_ppc.o \
               misc_draw_ppc.o draw_primitives_ppc.o requesters_ppc.o \
               samples_ops_ppc.o aiff_ppc.o aiff_interface_ppc.o riff_ppc.o riff_interface_ppc.o \
               tb_303_ppc.o wavpack_ppc.o samples_unpack_ppc.o replay_ppc.o synth_ppc.o endianness_ppc.o \
-              sounddriver_macosx_ppc.o
+              sounddriver_macosx_ppc.o  draw_hline.o draw_pixel.o draw_vline.o
 
 all: protrekkr_ppc
 
@@ -31,7 +31,6 @@ RemObj:
 
 protrekkr_ppc: $(EXEOBJS_PPC)
 	-rm -f ./release/distrib/protrekkr_ppc.app/Contents/MacOS/Protrekkr
-	(cd src/extralibs/sdl_draw; make -f makefile.macosx_ppc)
 	(cd src/extralibs/zlib-1.2.3; make -f makefile.macosx_ppc)
 	(cd src/extralibs/bin2c; make -f makefile.macosx_ppc)
 	$(CXX) -o ./release/distrib/protrekkr_ppc.app/Contents/MacOS/Protrekkr -L./ -Lsrc/extralibs/sdl_draw -Lsrc/extralibs/zlib-1.2.3 \
@@ -201,3 +200,12 @@ wputils_ppc.o: src/samples/wavpack/wputils.cpp
 
 tinypack_ppc.o: src/samples/wavpack/tinypack.cpp
 	$(CC) -c -o $(@) $(FLAGS_PPC) $<
+
+draw_hline.o: src/extralibs/sdl_draw/src/draw_hline.cpp
+	$(CC) -c -o $(@) -D__GCC__ -D __LINUX__ $(FLAGS_PPC) $<
+
+draw_pixel.o: src/extralibs/sdl_draw/src/draw_pixel.cpp
+	$(CC) -c -o $(@) -D__GCC__ -D __LINUX__ $(FLAGS_PPC) $<
+
+draw_vline.o: src/extralibs/sdl_draw/src/draw_vline.cpp
+	$(CC) -c -o $(@) -D__GCC__ -D __LINUX__ $(FLAGS_PPC) $<
