@@ -1,7 +1,7 @@
 CC = gcc
 AR = ar
 LIBFLAGS = -c
-FLAGS_X86_64 = -Ofast -arch x86_64 -D __LINUX__ -D __GCC__ -I/opt/local/include
+FLAGS_X86_64 = -O3 -arch x86_64 -D __LINUX__ -D __GCC__ -I/opt/local/include
 LIBOBJS_X86_64 = draw_hline_x86_64.o draw_pixel_x86_64.o draw_vline_x86_64.o
 
 all: sdldraw
