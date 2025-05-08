@@ -95,6 +95,9 @@ extern int pos_scope_latency;
 
 int can_modify_song = 0;
 
+int Song_Position_Visual_Save;
+int Pattern_Line_Visual_Save;
+
 int file_loaded = FALSE;
 int Burned_Title = FALSE;
 extern int global_argc;
@@ -219,6 +222,7 @@ extern float local_curr_mas_vol;
 int MouseWheel_Multiplier = 1;
 char Rows_Decimal = FALSE;
 char See_Prev_Next_Pattern = FALSE;
+char Save_Step_Play = FALSE;
 
 char cur_input_name[1024];
 
@@ -4978,6 +4982,11 @@ void Keyboard_Handler(void)
         {
             if(Enter_Notified)
             {
+                if(Save_Step_Play)
+                {
+                    Song_Position_Visual_Save = Song_Position;
+                    Pattern_Line_Visual_Save = Pattern_Line;
+                }
                 po_ctrl2 = FALSE;
                 Enter_Notified = FALSE;
                 play_pattern = FALSE;
@@ -4997,6 +5006,13 @@ void Keyboard_Handler(void)
                 is_recording = 0;
                 is_recording_2 = 0;
                 Nbr_Sub_Note_Off = 0;
+                if(Save_Step_Play)
+                {
+                    Song_Position_Visual = Song_Position_Visual_Save;
+                    Pattern_Line_Visual = Pattern_Line_Visual_Save;
+                    Song_Position = Song_Position_Visual_Save;
+                    Pattern_Line = Pattern_Line_Visual_Save;
+                }
                 Song_Stop();
             }
         }

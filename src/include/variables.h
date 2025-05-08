@@ -509,6 +509,7 @@ extern SDL_Surface *LOGOPIC;
 extern int MouseWheel_Multiplier;
 extern char Rows_Decimal;
 extern char See_Prev_Next_Pattern;
+extern char Save_Step_Play;
 
 extern MARKER Patterns_Marker;
 

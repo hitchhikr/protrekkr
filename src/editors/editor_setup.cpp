@@ -114,6 +114,7 @@ void Draw_Master_Ed(void)
 
     Gui_Draw_Button_Box(8, (Cur_Height - 105), 110, 16, "Latency (Milliseconds)", BUTTON_NORMAL | BUTTON_DISABLED);
 
+    Gui_Draw_Button_Box(330, (Cur_Height - 145), 114, 16, "Reset After Step Play", BUTTON_NORMAL | BUTTON_DISABLED);
     Gui_Draw_Button_Box(330, (Cur_Height - 125), 114, 16, "Mousewheel Multiplier", BUTTON_NORMAL | BUTTON_DISABLED);
     Gui_Draw_Button_Box(330, (Cur_Height - 105), 114, 16, "Rows Highlight", BUTTON_NORMAL | BUTTON_DISABLED);
     Gui_Draw_Button_Box(330, (Cur_Height - 85), 114, 16, "Decimal Rows", BUTTON_NORMAL | BUTTON_DISABLED);
@@ -568,6 +569,21 @@ void Actualize_Master_Ed(char gode)
             }
         }
         
+        // Save position in step play
+        if(gode == 0 || gode == 28)
+        {
+            if(Save_Step_Play)
+            {
+                Gui_Draw_Button_Box(446, (Cur_Height - 145), 29, 16, "On", BUTTON_PUSHED | BUTTON_TEXT_CENTERED);
+                Gui_Draw_Button_Box(446 + 31, (Cur_Height - 145), 29, 16, "Off", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
+            }
+            else
+            {
+                Gui_Draw_Button_Box(446, (Cur_Height - 145), 29, 16, "On", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
+                Gui_Draw_Button_Box(446 + 31, (Cur_Height - 145), 29, 16, "Off", BUTTON_PUSHED | BUTTON_TEXT_CENTERED);
+            }
+        }
+
         // There was a palette change
         if(RefreshTex)
         {
@@ -659,6 +675,22 @@ void Mouse_Left_Master_Ed(void)
                 gui_action = GUI_CMD_UPDATE_SETUP_ED;
                 teac = 5;
             }
+        }
+
+        // Save step play position
+        if(Check_Mouse(446, (Cur_Height - 145), 29, 16))
+        {
+            Save_Step_Play = TRUE;
+            teac = 28;
+            gui_action = GUI_CMD_UPDATE_SETUP_ED;
+        }
+
+        // Save step play position
+        if(Check_Mouse(446 + 31, (Cur_Height - 145), 29, 16))
+        {
+            Save_Step_Play = FALSE;
+            teac = 28;
+            gui_action = GUI_CMD_UPDATE_SETUP_ED;
         }
 
         // Mousewheel

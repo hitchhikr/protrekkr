@@ -2,6 +2,10 @@
 ProTrekkr releases history
 ===============================================================================
 
+v2.8.3 PRE 3
+
+- Added an option to automatically restore old position after step play.
+
 v2.8.3 PRE 2
 
 - Fullscreen mode resolution can now be selected.

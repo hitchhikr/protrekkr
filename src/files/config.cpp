@@ -76,7 +76,7 @@ void Save_Config(void)
     char KeyboardName[MAX_PATH];
     signed char phony = -1;
 
-    sprintf(extension, "PROTCFGM");
+    sprintf(extension, "PROTCFGN");
     Status_Box("Saving 'ptk.cfg'...", FALSE);
 
     SET_FILENAME;
@@ -180,7 +180,9 @@ void Save_Config(void)
     // Fullscreen resolution
 	Write_Data_Swap(&Cur_Screen_Mode, sizeof(int), 1, out);
     
-	fclose(out);
+	Write_Data(&Save_Step_Play, sizeof(Save_Step_Play), 1, out);
+
+    fclose(out);
 
 	Read_SMPT();
 	last_index = -1;
@@ -201,6 +203,7 @@ void Load_Config(void)
     int leading_z = TRUE;
     int added_color = TRUE;
     int fullscreen_reso = TRUE;
+    int save_step = TRUE;
     int Real_Palette_Idx;
     int Max_Colors;
     char FileName[MAX_PATH];
@@ -221,30 +224,35 @@ void Load_Config(void)
 
         Read_Data(extension, sizeof(char), 9, in);
         ok_cfg = TRUE;
-        if(strcmp(extension, "PROTCFGM") != 0)
+        
+        if(strcmp(extension, "PROTCFGN") != 0)
         {
-            fullscreen_reso = FALSE;
-            if(strcmp(extension, "PROTCFGL") != 0)
+            save_step = FALSE;
+            if(strcmp(extension, "PROTCFGM") != 0)
             {
-                added_color = FALSE;
-                if(strcmp(extension, "PROTCFGK") != 0)
+                fullscreen_reso = FALSE;
+                if(strcmp(extension, "PROTCFGL") != 0)
                 {
-                    leading_z = FALSE;
-                    if(strcmp(extension, "PROTCFGJ") != 0)
+                    added_color = FALSE;
+                    if(strcmp(extension, "PROTCFGK") != 0)
                     {
-                        sliders = FALSE;
-                        if(strcmp(extension, "PROTCFGI") != 0)
+                        leading_z = FALSE;
+                        if(strcmp(extension, "PROTCFGJ") != 0)
                         {
-                            dbl = FALSE;
-                            if(strcmp(extension, "PROTCFGH") != 0)
+                            sliders = FALSE;
+                            if(strcmp(extension, "PROTCFGI") != 0)
                             {
-                                if(strcmp(extension, "PROTCFGG") == 0)
+                                dbl = FALSE;
+                                if(strcmp(extension, "PROTCFGH") != 0)
                                 {
-                                    older_cfg = TRUE;
-                                }
-                                else
-                                {
-                                    ok_cfg = FALSE;
+                                    if(strcmp(extension, "PROTCFGG") == 0)
+                                    {
+                                        older_cfg = TRUE;
+                                    }
+                                    else
+                                    {
+                                        ok_cfg = FALSE;
+                                    }
                                 }
                             }
                         }
@@ -363,6 +371,12 @@ void Load_Config(void)
             if(fullscreen_reso)
             {
                 Read_Data_Swap(&Cur_Screen_Mode, sizeof(int), 1, in);
+            }
+
+            Save_Step_Play = FALSE;
+            if(save_step)
+            {
+                Read_Data(&Save_Step_Play, sizeof(Save_Step_Play), 1, in);
             }
 
 #ifndef __MORPHOS__
