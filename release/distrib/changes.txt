@@ -5,6 +5,8 @@ ProTrekkr releases history
 v2.8.3 PRE 3
 
 - Added an option to automatically restore old position after step play.
+- Fixed MorphOS distrib files attributes by using an LHA archive.
+- Minor speedup.
 
 v2.8.3 PRE 2
 

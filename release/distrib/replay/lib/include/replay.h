@@ -48,8 +48,10 @@
 #include "../sounddriver/include/sounddriver_macosx.h"
 #elif defined(__MACOSX_X86__)
 #include "../sounddriver/include/sounddriver_macosx.h"
-#elif defined(__AROS__) || defined(__MORPHOS__)
+#elif defined(__AROS__)
 #include "../sounddriver/include/sounddriver_aros.h"
+#elif defined(__MORPHOS__)
+#include "../sounddriver/include/sounddriver_mos.h"
 #elif defined(__AMIGAOS4__)
 #include "../sounddriver/include/sounddriver_aos4.h"
 #elif defined(__PSP__)
