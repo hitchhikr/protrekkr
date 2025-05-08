@@ -523,7 +523,8 @@ void Actualize_Master_Ed(char gode)
             if(FullScreen)
             {
                 Gui_Draw_Button_Box(512 + 64 + 8, (Cur_Height - 145), 16, 16, "\03", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
-                Gui_Draw_Button_Box(520 + 64 + 16 + 2, (Cur_Height - 145), 106, 16, "N/A", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
+                sprintf(Modes, "%d x %d", Screen_Modes[Cur_Screen_Mode]->w, Screen_Modes[Cur_Screen_Mode]->h);
+                Gui_Draw_Button_Box(520 + 64 + 16 + 2, (Cur_Height - 145), 106, 16, Modes, BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
                 Gui_Draw_Button_Box(520 + 64 + 16 + 2 + 106 + 2, (Cur_Height - 145), 16, 16, "\04", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
             }
             else

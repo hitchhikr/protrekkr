@@ -1367,7 +1367,10 @@ int Switch_FullScreen(int Width, int Height, int Refresh, int Force_Window_Mode)
 
     Get_Vid_Infos();
 
-    SDL_WM_SetCaption(Window_Title, NULL);
+    if(!FullScreen)
+    {
+        SDL_WM_SetCaption(Window_Title, NULL);
+    }
 
     if(Refresh)
     {

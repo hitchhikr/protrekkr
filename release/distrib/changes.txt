@@ -13,15 +13,15 @@ v2.8.3 PRE 2
 - Midi data range is now correctly scaled: row data of FF will be sent as 127.
 - Ptk now sends Midi start/cont/stop and Midi clock events.
 - Added 2 functions in sequencer to move a position up or down.
-- Global volumes of channel are now also used for midi notes.
+- Global volumes of channels are now also used for midi notes.
 - Added a sequencer function to remap/swap and change effects numbers & values.
-- Fixed a couple of bugs with notes transpositions functions.
+- Fixed a couple of bugs with notes transpose functions.
 - Tracker and replay speeded up.
 - Removed splines, channels can now be individually denoised (or not)
   due to this, this effect have been added:
   - 30: Control channel denoising strength (see manual for parameter infos).
 - Renamed Mac OS 64 bit distrib from ia64 to x86_64 (and x86 to x86_32).
-- Fixed a crash at startup in some MacOS versions.
+- Fixed a crash at startup in some Mac OS versions.
 - MorphOS version is now officially supported.
 
 v2.8.2

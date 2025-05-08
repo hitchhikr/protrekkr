@@ -3815,10 +3815,16 @@ ByPass_Wav:
 
 #if DENORMAL
                 Curr_Signal_L[i] = denormal(Curr_Signal_L[i]);
-                Curr_Signal_R[i] = denormal(Curr_Signal_R[i]);
+                if(grown)
+                {
+                    Curr_Signal_R[i] = denormal(Curr_Signal_R[i]);
+                }
 #endif
                 All_Signal_L += Curr_Signal_L[i];
-                All_Signal_R += Curr_Signal_R[i];
+                if(grown)
+                {
+                    All_Signal_R += Curr_Signal_R[i];
+                }
             }
         } // Channels_Polyphony[c]
 
@@ -3827,14 +3833,20 @@ ByPass_Wav:
         {
             Signal_303 = tb303engine[0].tbGetSample(&tb303[0]);
             All_Signal_L += Signal_303;
-            if(grown) All_Signal_R += Signal_303;
+            if(grown)
+            {
+                All_Signal_R += Signal_303;
+            }
             gotsome = TRUE;
         }
         if(track3032 == c && Chan_Active_State[Song_Position][c])
         {
             Signal_303 = tb303engine[1].tbGetSample(&tb303[1]);
             All_Signal_L += Signal_303;
-            if(grown) All_Signal_R += Signal_303;
+            if(grown)
+            {
+                All_Signal_R += Signal_303;
+            }
             gotsome = TRUE;
         }
 #endif
@@ -3887,7 +3899,10 @@ ByPass_Wav:
         if(New_Instrument[c] && Channels_Polyphony[c] == 1)
         {
             All_Signal_L = (All_Signal_L * (1.0f - Segue_Volume[c])) + (Segue_SamplesL[c] * Segue_Volume[c]);
-            All_Signal_R = (All_Signal_R * (1.0f - Segue_Volume[c])) + (Segue_SamplesR[c] * Segue_Volume[c]);
+            if(grown)
+            {
+                All_Signal_R = (All_Signal_R * (1.0f - Segue_Volume[c])) + (Segue_SamplesR[c] * Segue_Volume[c]);
+            }
             Pos_Segue[c]++;
             Segue_Volume[c] -= 1.0f / 127.0f;
             if(Pos_Segue[c] >= 128)
@@ -3899,12 +3914,19 @@ ByPass_Wav:
         {
             // Store the transition
             Segue_SamplesL[c] = All_Signal_L;
-            Segue_SamplesR[c] = All_Signal_R;
+            if(grown)
+            {
+                Segue_SamplesR[c] = All_Signal_R;
+            }
+
         }
 
 #if DENORMAL
         All_Signal_L = denormal(All_Signal_L);
-        All_Signal_R = denormal(All_Signal_R);
+        if(grown)
+        {
+            All_Signal_R = denormal(All_Signal_R);
+        }
 #endif
 
         // -----------------------------------------------
@@ -3941,7 +3963,10 @@ ByPass_Wav:
                     coef[4] = coeftab[4][gco][FRez[c]][FType[c]];
 
                     All_Signal_L = Filter(0, All_Signal_L + 1.0f, c);
-                    if(grown) All_Signal_R = Filter(1, All_Signal_R + 1.0f, c);
+                    if(grown)
+                    {
+                        All_Signal_R = Filter(1, All_Signal_R + 1.0f, c);
+                    }
                 }
                 else
 #endif
@@ -3952,7 +3977,10 @@ ByPass_Wav:
 #if defined(PTK_FILTER_LO24)
                         case 5:
                             All_Signal_L = filter2p(0, c, All_Signal_L + 1.0f, realcut, (float) FRez[c]);
-                            if(grown) All_Signal_R = filter2p(1, c, All_Signal_R + 1.0f, realcut, (float) FRez[c]);
+                            if(grown)
+                            {
+                                All_Signal_R = filter2p(1, c, All_Signal_R + 1.0f, realcut, (float) FRez[c]);
+                            }
                             break;
 #endif
 
@@ -3971,14 +3999,20 @@ ByPass_Wav:
 #if defined(PTK_FILTER_LP24)
                         case 7:
                             All_Signal_L = filter2p(0, c, All_Signal_L + 1.0f, realcut, (float) FRez[c]);
-                            if(grown) All_Signal_R = filter2p24d(1, c, All_Signal_R + 1.0f, realcut, (float) FRez[c]);
+                            if(grown)
+                            {
+                                All_Signal_R = filter2p24d(1, c, All_Signal_R + 1.0f, realcut, (float) FRez[c]);
+                            }
                             break;
 #endif
 
 #if defined(PTK_FILTER_AMODM)
                         case 8:
                             All_Signal_L = filterRingMod(0, c, All_Signal_L, realcut, (float) FRez[c]);
-                            if(grown) All_Signal_R = filterRingMod(1, c, All_Signal_R, realcut, (float) FRez[c]);
+                            if(grown)
+                            {
+                                All_Signal_R = filterRingMod(1, c, All_Signal_R, realcut, (float) FRez[c]);
+                            }
                             break;
 #endif
 
@@ -4002,91 +4036,130 @@ ByPass_Wav:
 #if defined(PTK_FILTER_SINGLEM)
                         case 10:
                             All_Signal_L = filterWater(0, c, All_Signal_L, realcut);
-                            if(grown) All_Signal_R = filterWater(1, c, All_Signal_R, realcut);
+                            if(grown)
+                            {
+                                All_Signal_R = filterWater(1, c, All_Signal_R, realcut);
+                            }
                             break;
 #endif
 
 #if defined(PTK_FILTER_SINGLES)
                         case 11:
                             All_Signal_L = filterWater(0, c, All_Signal_L, realcut);
-                            if(grown) All_Signal_R = filterWaterStereo(1, c, All_Signal_R, realcut);
+                            if(grown)
+                            {
+                                All_Signal_R = filterWaterStereo(1, c, All_Signal_R, realcut);
+                            }
                             break;
 #endif
 
 #if defined(PTK_FILTER_EQM15)
                         case 12:
                             All_Signal_L = filterBellShaped(0, c, All_Signal_L, realcut, (float) FRez[c], -15);
-                            if(grown) All_Signal_R = filterBellShaped(1, c, All_Signal_R, realcut, (float) FRez[c], -15);
+                            if(grown)
+                            {
+                                All_Signal_R = filterBellShaped(1, c, All_Signal_R, realcut, (float) FRez[c], -15);
+                            }
                             break;
 #endif
 
 #if defined(PTK_FILTER_EQM6)
                         case 13:
                             All_Signal_L = filterBellShaped(0, c, All_Signal_L, realcut, (float) FRez[c], -6);
-                            if(grown) All_Signal_R = filterBellShaped(1, c, All_Signal_R, realcut, (float) FRez[c], -6);
+                            if(grown)
+                            {
+                                All_Signal_R = filterBellShaped(1, c, All_Signal_R, realcut, (float) FRez[c], -6);
+                            }
                             break;
 #endif
 
 #if defined(PTK_FILTER_EQP6)
                         case 14:
                             All_Signal_L = filterBellShaped(0, c, All_Signal_L, realcut, (float) FRez[c], 6);
-                            if(grown) All_Signal_R = filterBellShaped(1, c, All_Signal_R, realcut, (float) FRez[c], 6);
+                            if(grown)
+                            {
+                                All_Signal_R = filterBellShaped(1, c, All_Signal_R, realcut, (float) FRez[c], 6);
+                            }
                             break;
 #endif
 
 #if defined(PTK_FILTER_EQP15)
                         case 15:
                             All_Signal_L = filterBellShaped(0, c, All_Signal_L, realcut, (float) FRez[c], 15);
-                            if(grown) All_Signal_R = filterBellShaped(1, c, All_Signal_R, realcut, (float) FRez[c], 15);
+                            if(grown)
+                            {
+                                All_Signal_R = filterBellShaped(1, c, All_Signal_R, realcut, (float) FRez[c], 15);
+                            }
                             break;
 #endif
 
 #if defined(PTK_FILTER_DELTA)
                         case 16:
                             All_Signal_L = filterDelta(0, c, All_Signal_L, realcut, (float) FRez[c]);
-                            if(grown) All_Signal_R = filterDelta(1, c, All_Signal_R, realcut, (float) FRez[c]);
+                            if(grown)
+                            {
+                                All_Signal_R = filterDelta(1, c, All_Signal_R, realcut, (float) FRez[c]);
+                            }
                             break;
 #endif
 
 #if defined(PTK_FILTER_DISTL)
                         case 17:
                             All_Signal_L = int_filter2p(0, c, All_Signal_L, realcut, (float) FRez[c], 0.25f);
-                            if(grown) All_Signal_R = int_filter2p(1, c, All_Signal_R, realcut, (float) FRez[c], 0.25f);
+                            if(grown)
+                            {
+                                All_Signal_R = int_filter2p(1, c, All_Signal_R, realcut, (float) FRez[c], 0.25f);
+                            }
                             break;
 #endif
 
 #if defined(PTK_FILTER_DISTM)
                         case 18:
                             All_Signal_L = int_filter2p(0, c, All_Signal_L, realcut, (float) FRez[c], 0.56f);
-                            if(grown) All_Signal_R = int_filter2p(1, c, All_Signal_R, realcut, (float) FRez[c], 0.56f);
+                            if(grown)
+                            {
+                                All_Signal_R = int_filter2p(1, c, All_Signal_R, realcut, (float) FRez[c], 0.56f);
+                            }
                             break;
 #endif
 
 #if defined(PTK_FILTER_DISTH)
                         case 19:
                             All_Signal_L = int_filter2p(0, c, All_Signal_L, realcut, (float) FRez[c], 0.78f);
-                            if(grown) All_Signal_R = int_filter2p(1, c, All_Signal_R, realcut, (float) FRez[c], 0.78f);
+                            if(grown)
+                            {
+                                All_Signal_R = int_filter2p(1, c, All_Signal_R, realcut, (float) FRez[c], 0.78f);
+                            }
                             break;
 #endif
 
 #if defined(PTK_FILTER_DIST)
                         case 20:
                             All_Signal_L = int_filter2p(0, c, All_Signal_L, realcut, (float) FRez[c], 0.96f);
-                            if(grown) All_Signal_R = int_filter2p(1, c, All_Signal_R, realcut, (float) FRez[c], 0.96f);
+                            if(grown)
+                            {
+                                All_Signal_R = int_filter2p(1, c, All_Signal_R, realcut, (float) FRez[c], 0.96f);
+                            }
                             break;
 #endif
 
 #if defined(PTK_FILTER_HP12M)
                         case 21:
                             All_Signal_L = filterhp(0, c, All_Signal_L + 1.0f, realcut, (float) FRez[c]);
-                            if(grown) All_Signal_R = filterhp(1, c, All_Signal_R + 1.0f, realcut, (float) FRez[c]);
+                            if(grown)
+                            {
+                                All_Signal_R = filterhp(1, c, All_Signal_R + 1.0f, realcut, (float) FRez[c]);
+                            }
                             break;
 #endif
 
 #if defined(PTK_FILTER_HP12S)
                         case 22:
                             All_Signal_L = filterhp(0, c, All_Signal_L + 1.0f, realcut, (float) FRez[c]);
-                            if(grown) All_Signal_R = filterhp2(1, c, All_Signal_R + 1.0f, realcut, (float) FRez[c]);
+                            if(grown)
+                            {
+                                All_Signal_R = filterhp2(1, c, All_Signal_R + 1.0f, realcut, (float) FRez[c]);
+                            }
                             break;
 #endif
 
@@ -4112,29 +4185,43 @@ ByPass_Wav:
             if(Chan_Mute_State[c])
             {
                 All_Signal_L = 0;
+                All_Signal_R = 0;
             }
 #endif
+
+            // Dry Send
+#if defined(PTK_DISCLAP)
+            if(Disclap[c])
+            {
+                // Distortion
+                if(All_Signal_L > DThreshold[c]) All_Signal_L = DClamp[c];
+                else if(All_Signal_L < -DThreshold[c]) All_Signal_L = -DClamp[c];
+
+                if(grown)
+                {
+                    if(All_Signal_R > DThreshold[c]) All_Signal_R = DClamp[c];
+                    else if(All_Signal_R < -DThreshold[c]) All_Signal_R = -DClamp[c];
+                }
+            }
+#endif
+
+#if DENORMAL
+            All_Signal_L = denormal(All_Signal_L);
+#endif
+
             // Duplicate the mono signal if necessary
             if(!grown)
             {
                 All_Signal_R = All_Signal_L;
             }
+            else
+            {
 
 #if DENORMAL
-            All_Signal_L = denormal(All_Signal_L);
-            All_Signal_R = denormal(All_Signal_R);
+                All_Signal_R = denormal(All_Signal_R);
 #endif
-            // Dry Send
-#if defined(PTK_DISCLAP)
-            if(Disclap[c])
-            {   // Distortion
-                if(All_Signal_L > DThreshold[c]) All_Signal_L = DClamp[c];
-                else if(All_Signal_L < -DThreshold[c]) All_Signal_L = -DClamp[c];
 
-                if(All_Signal_R > DThreshold[c]) All_Signal_R = DClamp[c];
-                else if(All_Signal_R < -DThreshold[c]) All_Signal_R = -DClamp[c];
             }
-#endif
 
 #if !defined(__STAND_ALONE__) || defined(__WINAMP__)
             if(Chan_Mute_State[c])
@@ -4195,6 +4282,10 @@ ByPass_Wav:
             All_Signal_L += Filter_FlangerL(c, ++oldspawn[c]);
             All_Signal_R += Filter_FlangerR(c, ++roldspawn[c]);
 
+#if DENORMAL
+            All_Signal_L = denormal(All_Signal_L);
+            All_Signal_R = denormal(All_Signal_R);
+#endif
             if(++FLANGER_OFFSET[c] >= 16384) FLANGER_OFFSET[c] -= 16384;
             FLANGER_GR[c] += FLANGER_RATE[c];
 
@@ -4213,11 +4304,6 @@ ByPass_Wav:
             All_Signal_L = 0;
             All_Signal_R = 0;
         }
-#endif
-
-#if DENORMAL
-        All_Signal_L = denormal(All_Signal_L);
-        All_Signal_R = denormal(All_Signal_R);
 #endif
 
 #if defined(PTK_LIMITER_TRACKS)
