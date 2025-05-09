@@ -8,7 +8,7 @@ v2.8.3 PRE 4
 - Fixed MorphOS distrib files attributes by using an LHA archive.
 - Minor speedup.
 - Due to MorphOS not supporting Right Ctrl; Left Ctrl + Right Alt shortcut
-  to play a song (+ Left Shift to play a pattern) have been added.
+  to play a song (+ Left Shift to play from current pos) have been added.
 - Escape key now stops current playing.
 
 v2.8.3 PRE 2

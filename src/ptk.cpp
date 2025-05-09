@@ -5040,8 +5040,10 @@ void Keyboard_Handler(void)
         }
         if(!Keys[SDLK_RCTRL] && !po_ctrl2) po_ctrl2 = TRUE;
 
+
+#if defined(__MORPHOS__)
         // Play song (alt)
-        if(Keys[SDLK_RALT] && Get_LCtrl() && snamesel == INPUT_NONE && po_ctrl2)
+        if(Keys[SDLK_RALT] && Get_LCtrl() && snamesel == INPUT_NONE && po_alt2)
         {
             play_pattern = FALSE;
             po_ctrl2 = FALSE;
@@ -5053,10 +5055,16 @@ void Keyboard_Handler(void)
             }
             gui_action = GUI_CMD_PLAY_SONG;
         }
-        if(!Keys[SDLK_RCTRL] && !po_ctrl2) po_ctrl2 = TRUE;
+#endif
 
         // Play pattern
-        if(Keys[SDLK_RALT] && !Get_LCtrl() && snamesel == INPUT_NONE && po_alt2)
+        if(Keys[SDLK_RALT] 
+
+#if defined(__MORPHOS__)
+            && !Get_LCtrl()
+#endif
+
+            && snamesel == INPUT_NONE && po_alt2)
         {
             play_pattern = TRUE;
             po_alt2 = FALSE;
@@ -5068,6 +5076,7 @@ void Keyboard_Handler(void)
             }
             gui_action = GUI_CMD_PLAY_SONG;
         }
+ 
         if(!Keys[SDLK_RALT] && !po_alt2) po_alt2 = TRUE;
 
         // Play song

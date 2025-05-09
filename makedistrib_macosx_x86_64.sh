@@ -1,4 +1,4 @@
 cd release/distrib/
-zip -vr ptk_v2.8.3_PRE_3_macosx_x86_64.zip * -x@../../exclude_macosx_x86_64.lst
+zip -vr ptk_v2.8.3_PRE_4_macosx_x86_64.zip * -x@../../exclude_macosx_x86_64.lst
 cd ..
 cd ..
