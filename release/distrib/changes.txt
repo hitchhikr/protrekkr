@@ -2,11 +2,14 @@
 ProTrekkr releases history
 ===============================================================================
 
-v2.8.3 PRE 3
+v2.8.3 PRE 4
 
 - Added an option to automatically restore old position after step play.
 - Fixed MorphOS distrib files attributes by using an LHA archive.
 - Minor speedup.
+- Added Left Ctrl + Right Alt shortcut to play a song
+  (due to MorphOS not supported Right Ctrl).
+- Escape key now stops current playing.
 
 v2.8.3 PRE 2
 

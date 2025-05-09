@@ -5040,7 +5040,23 @@ void Keyboard_Handler(void)
         }
         if(!Keys[SDLK_RCTRL] && !po_ctrl2) po_ctrl2 = TRUE;
 
-        if(Keys[SDLK_RALT] && snamesel == INPUT_NONE && po_alt2)
+        // Play song (alt)
+        if(Keys[SDLK_RALT] && Get_LCtrl() && snamesel == INPUT_NONE && po_ctrl2)
+        {
+            play_pattern = FALSE;
+            po_ctrl2 = FALSE;
+            reset_carriers = FALSE;
+            if(!Get_LShift())
+            {
+                reset_carriers = TRUE;
+                Pattern_Line = 0;
+            }
+            gui_action = GUI_CMD_PLAY_SONG;
+        }
+        if(!Keys[SDLK_RCTRL] && !po_ctrl2) po_ctrl2 = TRUE;
+
+        // Play pattern
+        if(Keys[SDLK_RALT] && !Get_LCtrl() && snamesel == INPUT_NONE && po_alt2)
         {
             play_pattern = TRUE;
             po_alt2 = FALSE;
@@ -5059,7 +5075,16 @@ void Keyboard_Handler(void)
         {
             po_alt = TRUE;
         }
-        if(!Get_LAlt() && po_alt) po_alt = FALSE;
+        if(!Get_LAlt() && po_alt)
+        {
+            po_alt = FALSE;
+        }
+
+        // Stop song
+        if(Keys[SDLK_ESCAPE] && !Get_LAlt() && !Get_LShift() && !Get_LCtrl() && snamesel == INPUT_NONE && !reelletter)
+        {
+            gui_action = GUI_CMD_STOP_SONG;
+        }
 
         if(Key_Unicode)
         {
