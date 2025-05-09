@@ -4976,7 +4976,7 @@ void Keyboard_Handler(void)
         }
     }
 
-    if(!Get_LAlt() && !Get_RAlt() && snamesel == INPUT_NONE && !validating_input && !is_recording)
+    if(!Get_LAlt() && !Get_RAlt() && snamesel == INPUT_NONE && !validating_input && !is_recording && !reelletter)
     {
         if(Enter_Notification)
         {
