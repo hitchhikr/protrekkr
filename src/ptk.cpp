@@ -5046,7 +5046,7 @@ void Keyboard_Handler(void)
         if(Keys[SDLK_RALT] && Get_LCtrl() && snamesel == INPUT_NONE && po_alt2)
         {
             play_pattern = FALSE;
-            po_ctrl2 = FALSE;
+            po_alt2 = FALSE;
             reset_carriers = FALSE;
             if(!Get_LShift())
             {
