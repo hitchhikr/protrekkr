@@ -9,7 +9,7 @@ v2.8.3 PRE 4
 - Minor speedup.
 - Due to MorphOS not supporting Right Ctrl; Left Ctrl + Right Alt shortcut
   to play a song (+ Left Shift to play from current pos) have been added.
-- Escape key now stops current playing.
+- Pressing escape key now stops current playing or any editing/recording.
 
 v2.8.3 PRE 2
 
