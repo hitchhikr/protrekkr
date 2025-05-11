@@ -61,7 +61,7 @@ class RtMidi
     protected:
 
         RtMidi();
-        virtual ~RtMidi(){};
+        virtual ~RtMidi();
 
         // A basic error reporting function for internal use in the RtMidi
         // subclasses.  The behavior of this function can be modified to
@@ -71,8 +71,10 @@ class RtMidi
         void *apiData_;
         bool connected_;
         char errorString_[256];
-#if defined(__AROS__)
+#if defined(__AROS__) || defined(__MORPHOS__)
         struct Library *CamdBase = NULL;
+        int MidiSig = -1;
+        struct MidiNode *CamdNode = NULL;
 #endif
 };
 

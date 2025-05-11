@@ -5,7 +5,7 @@ STRIP = strip
 LIBS = -lGL -lSDL -lsdldraw -lz -lpthread
 
 FLAGS = -Ofast -fsigned-char -Lsrc/extralibs/sdl_draw -Lsrc/extralibs/zlib-1.2.3 -ffast-math -fno-rtti -D __USE_OPENGL__ \
-        -fno-strict-aliasing -Wno-write-strings -Wno-multichar -D __AROS__ -D __GCC__ -D __NO_MIDI__ -D __MOT_SWAP__ \
+        -fno-strict-aliasing -Wno-write-strings -Wno-multichar -D __AROS__ -D __GCC__ -D __MOT_SWAP__ \
         -I./src/include
 
 CCFLAGS = $(FLAGS)
