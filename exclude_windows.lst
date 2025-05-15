@@ -29,6 +29,7 @@
 *.elf*
 *ptk_properties.h*
 *.zip*
+*test.exe*
 *bin2c*
 *.app*
 *debug*

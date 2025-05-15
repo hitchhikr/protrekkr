@@ -2819,9 +2819,6 @@ void Sp_Player(void)
     float realcut;
 #endif
 
-    left_float = 0;
-    right_float = 0;
-
 #if defined(PTK_COMPRESSOR)
     delay_left_final = 0.0f;
     delay_right_final = 0.0f;
@@ -3456,8 +3453,8 @@ void Sp_Player(void)
 
         for(i = 0; i < Channels_Polyphony[c]; i++)
         {
-            Curr_Signal_L[i] = 0;
-            Curr_Signal_R[i] = 0;
+            Curr_Signal_L[i] = 0.0f;
+            Curr_Signal_R[i] = 0.0f;
 
 #if defined(PTK_INSTRUMENTS) || defined(PTK_SYNTH)
 
@@ -3597,6 +3594,7 @@ ByPass_Wav:
                                            Player_LS[c][i]
                                           );
 
+                    // Get sample data
                     if(Player_WL[c][i])
                     {
                         Curr_Signal_L[i] = (float) *(Player_WL[c][i] + Current_Pointer) * sp_Cvol[c][i] * Player_Ampli[c][i];
@@ -3798,7 +3796,9 @@ ByPass_Wav:
                                                                );
 
                 if((Synthesizer[c][i].Data.OSC_1_WAVEFORM == WAVEFORM_WAV ||
-                    Synthesizer[c][i].Data.OSC_2_WAVEFORM == WAVEFORM_WAV))
+                    Synthesizer[c][i].Data.OSC_2_WAVEFORM == WAVEFORM_WAV
+                   )
+                  )
                 {
                     // It was a stereo signal
                     if(Player_SC[c][i] == 2) grown = TRUE;
@@ -4431,7 +4431,7 @@ ByPass_Wav:
         right_float += All_Signal_R;
 
 #if defined(PTK_COMPRESSOR)
-        // Sending to delay...
+        // Sending to delay
         float const DS = DSend[c];
 
         if(DS > 0.008f)
@@ -6445,6 +6445,8 @@ void Get_Player_Values(void)
     right_reverb = 0.0f;
     left_compress = 1.0f;
     right_compress = 1.0f;
+    left_float = 0.0f;
+    right_float = 0.0f;
 
 #if defined(PTK_LIMITER_MASTER) || defined(PTK_LIMITER_TRACKS)
     mas_comp_pos_rms_buffer++;
