@@ -295,7 +295,7 @@ int main (int argc, char **argv)
     {
         int i;
         gArgc = argc;
-        gArgv = (char **) SDL_malloc(sizeof (char *) * (argc+1));
+        gArgv = (char **) SDL_malloc(sizeof (char *) * (argc + 1));
         for (i = 0; i <= argc; i++)
             gArgv[i] = argv[i];
         gFinderLaunch = NO;
