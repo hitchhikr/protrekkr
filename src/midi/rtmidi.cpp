@@ -65,7 +65,7 @@ RtMidi :: RtMidi() : apiData_(0), connected_(false)
         {
 	        // Let's create MIDI node for this piece of software
             CamdNode = (struct MidiNode *) CreateMidi(MIDI_Name,  "ProTrekkr",
-                                                      //MIDI_RecvSignal, MidiSig,
+                                                      MIDI_RecvSignal, MidiSig,
                                                       MIDI_MsgQueue, 2048,
                                                       MIDI_SysExSize, 10000,
                                                       MIDI_ClientType, CCType_Sequencer,
@@ -3097,6 +3097,7 @@ void RtMidiOut :: initialize(char *clientName)
 
 void RtMidiOut :: openPort(unsigned int portNumber, char *portName)
 {
+    char Name[256];
     if(connected_)
     {
         sprintf(errorString_, "RtMidiOut::openPort: a valid connection already exists!");
@@ -3120,8 +3121,10 @@ void RtMidiOut :: openPort(unsigned int portNumber, char *portName)
     }
 
     CAMDMidiData *data = static_cast<CAMDMidiData *> (apiData_);
-	data->outHandle = AddMidiLink(data->node, MLTYPE_Sender,
-                                              MLINK_Location, portName,
+    memset(Name, 0, sizeof(Name));
+    getPortName(portNumber, Name);
+    data->outHandle = AddMidiLink(data->node, MLTYPE_Sender,
+                                              MLINK_Location, Name,
                                               MLINK_Priority,0L,
                                               MLINK_EventMask, CMD_All,
                                               TAG_DONE
@@ -3202,9 +3205,7 @@ void RtMidiOut :: sendMessage(std::vector<unsigned char> *message)
                 buffer[i] = message->at(i);
             }
             PutSysEx(data->outHandle, buffer);
-
             free(buffer);
-
         }
         else
         {   // Channel or system message.
