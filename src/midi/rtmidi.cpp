@@ -65,12 +65,11 @@ RtMidi :: RtMidi() : apiData_(0), connected_(false)
         {
 	        // Let's create MIDI node for this piece of software
             CamdNode = (struct MidiNode *) CreateMidi(MIDI_Name,  "ProTrekkr",
-                                                      MIDI_RecvSignal, MidiSig,
+                                                      //MIDI_RecvSignal, MidiSig,
                                                       MIDI_MsgQueue, 2048,
                                                       MIDI_SysExSize, 10000,
                                                       MIDI_ClientType, CCType_Sequencer,
-								                      MIDI_ErrFilter, CMEF_All,
-                                                      TAG_END
+								                      TAG_END
                                                      );
             if(CamdNode == NULL)
             {
@@ -2873,8 +2872,6 @@ void RtMidiIn :: initialize(char *clientName)
     inputData_.apiData = (void *) data;
     data->message.bytes.clear();  // needs to be empty for first input message
 
-    // We'll issue a warning here if no devices are available but not
-    // throw an error since the user can plugin something later.
     data->node = CamdNode;
 
     if(data->node == NULL)
@@ -2912,14 +2909,11 @@ void RtMidiIn :: openPort(unsigned int portNumber, char *portName)
 
     CAMDMidiData *data = static_cast<CAMDMidiData *> (apiData_);
 	data->inHandle = AddMidiLink(data->node, MLTYPE_Receiver,
-                                             MLINK_Name, portName,
                                              MLINK_Location, portName,
                                              MLINK_EventMask, CMF_Note | CMF_Mode | CMF_RealTime,
-                                             MLINK_Comment, portName,
-                                             MLINK_PortID, portNumber,
                                              TAG_DONE
                                 );
-    if(data->inHandle)
+    if(!data->inHandle)
     {
         sprintf(errorString_, "RtMidiIn::initialize: error creating CAMD MidiLink object.");
         error(RtError::DRIVER_ERROR);
@@ -2975,12 +2969,7 @@ unsigned int RtMidiIn :: getPortCount()
         clus = NextCluster(NULL);
         while(clus)
         {
-            link = NextClusterLink(clus, NULL, MLTYPE_Receiver);
-            while(link)
-            {
-                devices++;
-                link = NextClusterLink(clus, link, MLTYPE_Receiver);
-            }
+            devices++;
             clus = NextCluster(clus);
         }
 		UnlockCAMD(key);
@@ -2993,7 +2982,6 @@ std::string RtMidiIn :: getPortName(unsigned int portNumber, char *Name)
 	APTR key;
 	struct MidiCluster *clus;
     int i;
-    struct MidiLink *link = NULL;
 
     unsigned int nDevices = getPortCount();
 
@@ -3007,35 +2995,19 @@ std::string RtMidiIn :: getPortName(unsigned int portNumber, char *Name)
     if(key = LockCAMD(CD_Linkages))
 	{
         clus = NextCluster(NULL);
-        while(clus)
+        for(i = 0; i < portNumber; i++)
         {
-            link = NextClusterLink(clus, NULL, MLTYPE_Receiver);
-            if(link)
-            {
-                for(i = 0 ; i < portNumber; i++)
-		        {
-                    link = NextClusterLink(clus, link, MLTYPE_Receiver);
-                }
-                goto Got_Port;
-            }
             clus = NextCluster(clus);
         }
 		UnlockCAMD(key);
 	}
 Got_Port:
 
-    // For some reason, we need to copy character by character with
-    // UNICODE (thanks to Eduardo Coutinho!).
-    if(link)
+    if(clus)
     {
         char nameString[MAXPNAMELEN];
 
-        memset(nameString, 0, MAXPNAMELEN);
-        for(int i = 0; i < strlen(link->ml_MidiNode->mi_Node.ln_Name); i++)
-        {
-            nameString[i] = (char) (link->ml_MidiNode->mi_Node.ln_Name[i]);
-        }
-
+        strcpy(nameString, clus->mcl_Node.ln_Name);
         std::string stringName(nameString);
         strcpy(Name, nameString);
         return stringName;
@@ -3060,12 +3032,7 @@ unsigned int RtMidiOut :: getPortCount()
         clus = NextCluster(NULL);
         while(clus)
         {
-            link = NextClusterLink(clus, NULL, MLTYPE_Sender);
-            while(link)
-            {
-                devices++;
-                link = NextClusterLink(clus, link, MLTYPE_Sender);
-            }
+            devices++;
             clus = NextCluster(clus);
         }
 		UnlockCAMD(key);
@@ -3078,7 +3045,6 @@ std::string RtMidiOut :: getPortName(unsigned int portNumber, char *Name)
 	APTR key;
 	struct MidiCluster *clus;
     int i;
-    struct MidiLink *link = NULL;
 
     unsigned int nDevices = getPortCount();
 
@@ -3092,35 +3058,19 @@ std::string RtMidiOut :: getPortName(unsigned int portNumber, char *Name)
     if(key = LockCAMD(CD_Linkages))
 	{
         clus = NextCluster(NULL);
-        while(clus)
+        for(i = 0; i < portNumber; i++)
         {
-            link = NextClusterLink(clus, NULL, MLTYPE_Sender);
-            if(link)
-            {
-                for(i = 0 ; i < portNumber; i++)
-		        {
-                    link = NextClusterLink(clus, link, MLTYPE_Sender);
-                }
-                goto Got_Port;
-            }
             clus = NextCluster(clus);
         }
 		UnlockCAMD(key);
 	}
 Got_Port:
 
-    if(link)
+    if(clus)
     {
-        // For some reason, we need to copy character by character with
-        // UNICODE (thanks to Eduardo Coutinho!).
         char nameString[MAXPNAMELEN];
-    
-        memset(nameString, 0, MAXPNAMELEN);
-        for(int i = 0; i < strlen(link->ml_MidiNode->mi_Node.ln_Name); i++)
-        {
-            nameString[i] = (char)(strlen(link->ml_MidiNode->mi_Node.ln_Name));
-        }
 
+        strcpy(nameString, clus->mcl_Node.ln_Name);
         std::string stringName(nameString);
         strcpy(Name, nameString);
         return stringName;
@@ -3135,10 +3085,6 @@ void RtMidiOut :: initialize(char *clientName)
     memset(data, 0, sizeof(CAMDMidiData));
     apiData_ = (void *) data;
     
-    data->node = CamdNode;
-
-    // We'll issue a warning here if no devices are available but not
-    // throw an error since the user can plugin something later.
     data->node = CamdNode;
 
     if(data->node == NULL)
@@ -3174,15 +3120,13 @@ void RtMidiOut :: openPort(unsigned int portNumber, char *portName)
     }
 
     CAMDMidiData *data = static_cast<CAMDMidiData *> (apiData_);
-	data->inHandle = AddMidiLink(data->node, MLTYPE_Sender,
-                                             MLINK_Name, portName,
-                                             MLINK_Location, portName,
-                                             MLINK_EventMask, CMF_Note | CMF_Mode | CMF_RealTime,
-                                             MLINK_Comment, portName,
-                                             MLINK_PortID, portNumber,
-                                             TAG_DONE
-                                );
-    if(data->inHandle)
+	data->outHandle = AddMidiLink(data->node, MLTYPE_Sender,
+                                              MLINK_Location, portName,
+                                              MLINK_Priority,0L,
+                                              MLINK_EventMask, CMD_All,
+                                              TAG_DONE
+                                 );
+    if(!data->outHandle)
     {
         sprintf(errorString_, "RtMidiOut::initialize: error creating CAMD MidiLink object.");
         error(RtError::DRIVER_ERROR);
@@ -3199,10 +3143,10 @@ void RtMidiOut :: closePort(void)
         CAMDMidiData *data = static_cast<CAMDMidiData *> (apiData_);
         if(data)
         {
-            if(data->inHandle)
+            if(data->outHandle)
             {
-                RemoveMidiLink(data->inHandle);
-                data->inHandle = NULL;
+                RemoveMidiLink(data->outHandle);
+                data->outHandle = NULL;
             }
         }
         connected_ = false;
@@ -3237,7 +3181,6 @@ void RtMidiOut :: sendMessage(std::vector<unsigned char> *message)
         return;
     }
 
-//    MMRESULT result;
     CAMDMidiData *data = static_cast<CAMDMidiData *> (apiData_);
     if(data && data->outHandle)
     {
@@ -3245,7 +3188,7 @@ void RtMidiOut :: sendMessage(std::vector<unsigned char> *message)
         {   // Sysex message
 
             // Allocate buffer for sysex data.
-            char *buffer = (char *) malloc(nBytes);
+            unsigned char *buffer = (unsigned char *) malloc(nBytes);
             if(buffer == NULL)
             {
                 sprintf(errorString_, "RtMidiOut::sendMessage: error allocating sysex message memory!");
@@ -3258,36 +3201,8 @@ void RtMidiOut :: sendMessage(std::vector<unsigned char> *message)
             {
                 buffer[i] = message->at(i);
             }
+            PutSysEx(data->outHandle, buffer);
 
-            // Create and prepare MIDIHDR structure.
-            /*MIDIHDR sysex;
-            sysex.lpData = (LPSTR) buffer;
-            sysex.dwBufferLength = nBytes;
-            sysex.dwFlags = 0;
-            result = midiOutPrepareHeader(data->outHandle,  &sysex, sizeof(MIDIHDR));
-            if( result != MMSYSERR_NOERROR)
-            {
-                free(buffer);
-                sprintf(errorString_, "RtMidiOut::sendMessage: error preparing sysex header.");
-                error(RtError::DRIVER_ERROR);
-                return;
-            }
-
-            // Send the message.
-            result = midiOutLongMsg(data->outHandle, &sysex, sizeof(MIDIHDR));
-            if(result != MMSYSERR_NOERROR)
-            {
-                free(buffer);
-                sprintf(errorString_, "RtMidiOut::sendMessage: error sending sysex message.");
-                error(RtError::DRIVER_ERROR);
-                return;
-            }
-
-            // Unprepare the buffer and MIDIHDR.
-            while(MIDIERR_STILLPLAYING == midiOutUnprepareHeader(data->outHandle, &sysex, sizeof (MIDIHDR)))
-            {
-                Sleep(1);
-            }*/
             free(buffer);
 
         }
@@ -3302,23 +3217,13 @@ void RtMidiOut :: sendMessage(std::vector<unsigned char> *message)
                 return;
             }
 
-            // Pack MIDI bytes into double word.
-            unsigned int packet;
-            unsigned char *ptr = (unsigned char *) &packet;
+            MidiMsg packet;
+            packet.mm_Status = message->at(0);
+            packet.mm_Data1 = message->at(1);
+            packet.mm_Data2 = message->at(2);
+            packet.mm_Port = 0;
 
-            for(unsigned int i = 0; i < nBytes; i++)
-            {
-                *ptr = message->at(i);
-                ++ptr;
-            }
-
-            // Send the message immediately.
-            /*result = midiOutShortMsg(data->outHandle, packet);
-            if(result != MMSYSERR_NOERROR)
-            {
-                sprintf(errorString_, "RtMidiOut::sendMessage: error sending MIDI message.");
-                error(RtError::WARNING);
-            }*/
+            PutMidiMsg(data->outHandle, &packet);
         }
     }
 }
