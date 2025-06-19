@@ -143,14 +143,14 @@
 					Name="Release|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="nasmw.exe -f win32 &quot;.\test\$(InputName).asm&quot; -o &quot;.\$(InputName).obj&quot;  -s -O9"
+						CommandLine="nasm.exe -f win32 &quot;.\test\$(InputName).asm&quot; -o &quot;.\$(InputName).obj&quot;  -s -O9"
 						Outputs=".\$(InputName).obj"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="nasmw.exe -f win32 &quot;.\test\$(InputName).asm&quot; -o &quot;.\$(InputName).obj&quot;  -s -O9"
+						CommandLine="nasm.exe -f win32 &quot;.\test\$(InputName).asm&quot; -o &quot;.\$(InputName).obj&quot;  -s -O9"
 						Outputs=".\$(InputName).obj"/>
 				</FileConfiguration>
 			</File>

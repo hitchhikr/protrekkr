@@ -97,7 +97,7 @@ InputPath=.\test\module.asm
 InputName=module
 
 ".\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	nasmw.exe -f win32 ".\test\$(InputName).asm" -o ".\$(InputName).obj"  -s -O9
+	nasm.exe -f win32 ".\test\$(InputName).asm" -o ".\$(InputName).obj"  -s -O9
 
 # End Custom Build
 
@@ -108,7 +108,7 @@ InputPath=.\test\module.asm
 InputName=module
 
 ".\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	nasmw.exe -f win32 ".\test\$(InputName).asm" -o ".\$(InputName).obj"  -s -O9
+	nasm.exe -f win32 ".\test\$(InputName).asm" -o ".\$(InputName).obj"  -s -O9
 
 # End Custom Build
 
