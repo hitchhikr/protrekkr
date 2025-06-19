@@ -29,7 +29,7 @@ Notice that you'll need SDL 1 (only to compile the tracker, the replay routines 
 > **When compiling for Linux or Mac OS: Use libsdl1.2 and NOT libsdl1.2-compat.**<br><br>
 > **On Linux use libsdl1.2-dev and on Mac OS use libsdl from Mac Ports.**<br><br>
 > **If your Linux distribution doesn't include SDL 1.2 then try your luck here:<br>https://github.com/libsdl-org/SDL-1.2**<br><br>
-> **"ptk_vx.x.x_macosx_ia64_ogl.zip" may be problematic on some 64 bit versions of Mac OS (ulterior to Catalina), on those you should use "ptk_vx.x.x_macosx_ia64.zip" instead.**
+> **"ptk_vx.x.x_macosx_x86_64_ogl.zip" may be problematic on some 64 bit versions of Mac OS (ulterior to Catalina), on those you should use "ptk_vx.x.x_macosx_x86_64.zip" instead.**
 ---
 So far, ProTrekkr was used in these intros or demos (the ones i'm aware of, at least) :<br><br>
 <a href="http://www.pouet.net/prod.php?which=51129" target=_parent>Nebula by Sqny</a><br>
