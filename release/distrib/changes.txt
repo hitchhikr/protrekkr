@@ -2,6 +2,12 @@
 ProTrekkr releases history
 ===============================================================================
 
+v2.8.3 PRE 5
+
+- Fixed a crash in Setup tab occurring in Windows.
+- Replay speed up.
+- Midi out implemented for AROS and MorphOS.
+
 v2.8.3 PRE 4
 
 - Added an option to automatically restore old position after step play.
