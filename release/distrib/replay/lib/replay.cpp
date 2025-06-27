@@ -3705,7 +3705,8 @@ ByPass_Wav:
             // Handle the synth part
             if(Synthesizer[c][i].ENV_1_STAGE ||
                Synthesizer[c][i].ENV_2_STAGE ||
-               Cut_Stage[c][i] && Synth_Really_Used[c][i])
+               Cut_Stage[c][i] && Synth_Really_Used[c][i]
+              )
             {
                 if(Synthesizer[c][i].ENV_1_STAGE == SYNTH_RELEASE && 
                    Synthesizer[c][i].ENV_2_STAGE == SYNTH_RELEASE && 
@@ -4758,9 +4759,12 @@ void Play_Instrument(int channel, int sub_channel)
                     }
                     else
                     {
-                        // Schedule a release
-                        Synthesizer[channel][sub_channel].ENV_1_STAGE = SYNTH_RELEASE;
-                        Synthesizer[channel][sub_channel].ENV_2_STAGE = SYNTH_RELEASE;
+                        if(Synth_Prg[sample])
+                        {
+                            // Schedule a release if it a synth
+                            Synthesizer[channel][sub_channel].ENV_1_STAGE = SYNTH_RELEASE;
+                            Synthesizer[channel][sub_channel].ENV_2_STAGE = SYNTH_RELEASE;
+                        }
                     }
                 }
                 if(Synth_Prg[sample])
