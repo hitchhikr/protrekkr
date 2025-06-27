@@ -259,10 +259,10 @@ void Actualize_Synth_Ed(char gode)
            gode == UPDATE_SYNTH_CHANGE_ASSOCIATED_SAMPLE ||
            gode == UPDATE_SYNTH_ED_VALUES)
         {
-            int synthprg_check = Synthprg[Current_Instrument];
-            if(synthprg_check > 130) Synthprg[Current_Instrument] = 130;
+            int Synth_Prg_check = Synth_Prg[Current_Instrument];
+            if(Synth_Prg_check > 130) Synth_Prg[Current_Instrument] = 130;
             
-            switch(Synthprg[Current_Instrument])
+            switch(Synth_Prg[Current_Instrument])
             {
                 case 0:
                     Allow_All = FALSE;
@@ -284,7 +284,7 @@ void Actualize_Synth_Ed(char gode)
                     Allow_All = TRUE;
                     Allow_Button = BUTTON_NORMAL;
                     Allow_Button_Pushed = BUTTON_PUSHED;
-                    value_box(228, (Cur_Height - 150), (Synthprg[Current_Instrument] - 2), BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
+                    value_box(228, (Cur_Height - 150), (Synth_Prg[Current_Instrument] - 2), BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
                     break;
             }
             Gui_Draw_Button_Box(758, (Cur_Height - 150), 34, 16, "Save", Allow_Button | BUTTON_TEXT_CENTERED);
@@ -1040,26 +1040,26 @@ void Mouse_Right_Synth_Ed(void)
 
         if(Check_Mouse(228, (Cur_Height - 150), 17, 16))
         {
-            if(Synthprg[Current_Instrument] >= 10)
+            if(Synth_Prg[Current_Instrument] >= 10)
             {
-                Synthprg[Current_Instrument] -= 10;
+                Synth_Prg[Current_Instrument] -= 10;
             }
             else
             {
-                Synthprg[Current_Instrument] = 0;
+                Synth_Prg[Current_Instrument] = 0;
             }
             teac = UPDATE_SYNTH_ED_ALL;
             gui_action = GUI_CMD_UPDATE_SYNTH_ED;
         }
         if(Check_Mouse(228 + 44, (Cur_Height - 150), 17, 16))
         {
-            if(Synthprg[Current_Instrument] <= (129 - 10))
+            if(Synth_Prg[Current_Instrument] <= (129 - 10))
             {
-                Synthprg[Current_Instrument] += 10;
+                Synth_Prg[Current_Instrument] += 10;
             }
             else
             {
-                Synthprg[Current_Instrument] = 129;
+                Synth_Prg[Current_Instrument] = 129;
             }
             teac = UPDATE_SYNTH_ED_ALL;
             gui_action = GUI_CMD_UPDATE_SYNTH_ED;
@@ -1080,18 +1080,18 @@ void Mouse_Left_Synth_Ed(void)
         // Select
         if(Check_Mouse(228, (Cur_Height - 150), 17, 16))
         {
-            if(Synthprg[Current_Instrument])
+            if(Synth_Prg[Current_Instrument])
             {
-                Synthprg[Current_Instrument]--;
+                Synth_Prg[Current_Instrument]--;
             }
             teac = UPDATE_SYNTH_ED_ALL;
             gui_action = GUI_CMD_UPDATE_SYNTH_ED;
         }
         if(Check_Mouse(228 + 44, (Cur_Height - 150), 17, 16))
         {
-            if(Synthprg[Current_Instrument] < 129)
+            if(Synth_Prg[Current_Instrument] < 129)
             {
-                Synthprg[Current_Instrument]++;
+                Synth_Prg[Current_Instrument]++;
             }
             teac = UPDATE_SYNTH_ED_ALL;
             gui_action = GUI_CMD_UPDATE_SYNTH_ED;

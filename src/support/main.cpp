@@ -1363,9 +1363,13 @@ int Switch_FullScreen(int Width, int Height, int Refresh, int Force_Window_Mode)
         SendMessage(Main_Window, WM_SETICON, ICON_BIG, (LPARAM) hIcon);
         SendMessage(Main_Window, WM_SETICON, ICON_SMALL, (LPARAM) hIconSmall);
     }
-#endif
+
+#else
 
     Get_Vid_Infos();
+
+#endif
+
 
     if(!FullScreen)
     {

@@ -316,7 +316,7 @@ extern char nameins[MAX_INSTRS][20];
 extern int Midiprg[MAX_INSTRS];
 
 #if defined(PTK_SYNTH)
-extern unsigned char Synthprg[MAX_INSTRS];
+extern unsigned char Synth_Prg[MAX_INSTRS];
 #endif
 
 #if !defined(__STAND_ALONE__)

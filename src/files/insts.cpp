@@ -114,7 +114,7 @@ void Load_Inst(char *FileName)
             Midiprg[swrite] = OldMidiPrg;
         }
             
-        Read_Data(&Synthprg[swrite], sizeof(char), 1, in);
+        Read_Data(&Synth_Prg[swrite], sizeof(char), 1, in);
 
         PARASynth[swrite].disto = 0;
 
@@ -249,16 +249,16 @@ void Save_Inst(void)
 
         Write_Data_Swap(&Midiprg[swrite], sizeof(int), 1, in);
 
-        switch(Synthprg[swrite])
+        switch(Synth_Prg[swrite])
         {
             case SYNTH_WAVE_OFF:
             case SYNTH_WAVE_CURRENT:
-                synth_prg = Synthprg[swrite];
+                synth_prg = Synth_Prg[swrite];
                 synth_save = swrite;
                 break;
             default:
                 synth_prg = SYNTH_WAVE_CURRENT;
-                synth_save = Synthprg[swrite] - 2;
+                synth_save = Synth_Prg[swrite] - 2;
                 break;
         }
 

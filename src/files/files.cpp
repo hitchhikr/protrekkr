@@ -537,7 +537,7 @@ Read_Mod_File:
                 Midiprg[swrite] = OldMidiPrg;
             }
             
-            Read_Mod_Data(&Synthprg[swrite], sizeof(char), 1, in);
+            Read_Mod_Data(&Synth_Prg[swrite], sizeof(char), 1, in);
 
             PARASynth[swrite].disto = 64;
 
@@ -1445,7 +1445,7 @@ int Save_Ptk(char *FileName, int NewFormat, int Simulate, Uint8 *Memory)
                 Write_Mod_Data(nameins[swrite], sizeof(char), 20, in);
                 Write_Mod_Data_Swap(&Midiprg[swrite], sizeof(int), 1, in);
 
-                Write_Mod_Data(&Synthprg[swrite], sizeof(char), 1, in);
+                Write_Mod_Data(&Synth_Prg[swrite], sizeof(char), 1, in);
 
                 Write_Synth_Params(Write_Mod_Data, Write_Mod_Data_Swap, in, swrite);
                 // Compression type
@@ -2246,7 +2246,7 @@ void Clear_Instrument_Dat(int n_index, int split, int lenfir)
     {
         Sample_Vol[n_index] = 0.0f;
         Midiprg[n_index] = -1;
-        Synthprg[n_index] = SYNTH_WAVE_OFF;
+        Synth_Prg[n_index] = SYNTH_WAVE_OFF;
         Beat_Sync[n_index] = FALSE;
 
         // Internal wavpack is default compression

@@ -530,7 +530,6 @@ void Actualize_Master_Ed(char gode)
             }
             else
             {
-
                 if(Changing_Screen_Mode)
                 {
                     int Try_Screen_Mode = Cur_Screen_Mode;
@@ -548,7 +547,7 @@ void Actualize_Master_Ed(char gode)
                             break;
                         }
                     } while(Screen_Modes[Try_Screen_Mode]->w < 800 && Screen_Modes[Try_Screen_Mode]->h < 600);
-            
+
                     if((Screen_Modes[Try_Screen_Mode]->w >= 800 && Screen_Modes[Try_Screen_Mode]->h >= 600))
                     {
                         Cur_Screen_Mode = Try_Screen_Mode;
@@ -561,6 +560,10 @@ void Actualize_Master_Ed(char gode)
                     if(Startup_Width < SCREEN_WIDTH) Startup_Width = SCREEN_WIDTH;
                     if(Startup_Height < SCREEN_HEIGHT) Startup_Height = SCREEN_HEIGHT;
                     Changing_Screen_Mode = 0;
+                }
+                if(Cur_Screen_Mode > (Max_Screen_Mode - 1))
+                {
+                    Cur_Screen_Mode = (Max_Screen_Mode - 1);
                 }
                 sprintf(Modes, "%d x %d", Screen_Modes[Cur_Screen_Mode]->w, Screen_Modes[Cur_Screen_Mode]->h);
                 Gui_Draw_Button_Box(512 + 64 + 8, (Cur_Height - 145), 16, 16, "\03", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);

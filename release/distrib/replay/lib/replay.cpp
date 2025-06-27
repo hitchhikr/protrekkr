@@ -767,7 +767,7 @@ char SamplesSwap[MAX_INSTRS];
 short *RawSamples_Swap[MAX_INSTRS][2][16];
 #endif
 
-unsigned char Synthprg[128];
+unsigned char Synth_Prg[128];
 
 #if defined(PTK_SYNTH)
 #if !defined(__STAND_ALONE__) || defined(__WINAMP__)
@@ -876,6 +876,7 @@ int sp_Stage[MAX_TRACKS][MAX_POLYPHONY];
 #endif
 
 int Cut_Stage[MAX_TRACKS][MAX_POLYPHONY];
+int Synth_Really_Used[MAX_TRACKS][MAX_POLYPHONY];
 int Glide_Stage[MAX_TRACKS][MAX_POLYPHONY];
 
 #if defined(PTK_SYNTH)
@@ -1626,14 +1627,14 @@ int PTKEXPORT Ptk_InitModule(Uint8 *Module, int start_position)
 
         for(int swrite = 0; swrite < nbr_instr; swrite++)
         {
-            Mod_Dat_Read(&Synthprg[swrite], sizeof(char));
+            Mod_Dat_Read(&Synth_Prg[swrite], sizeof(char));
 
             Mod_Dat_Read(&Beat_Sync[swrite], sizeof(char));
             Mod_Dat_Read(&Beat_Lines[swrite], sizeof(short));
             Mod_Dat_Read(&Sample_Vol[swrite], sizeof(float));
 
 #if defined(PTK_SYNTH)
-            if(Synthprg[swrite])
+            if(Synth_Prg[swrite])
             {
                 Mod_Dat_Read(&PARASynth[swrite], sizeof(SYNTH_DATA));
             }
@@ -3704,7 +3705,7 @@ ByPass_Wav:
             // Handle the synth part
             if(Synthesizer[c][i].ENV_1_STAGE ||
                Synthesizer[c][i].ENV_2_STAGE ||
-               Cut_Stage[c][i])
+               Cut_Stage[c][i] && Synth_Really_Used[c][i])
             {
                 if(Synthesizer[c][i].ENV_1_STAGE == SYNTH_RELEASE && 
                    Synthesizer[c][i].ENV_2_STAGE == SYNTH_RELEASE && 
@@ -4659,14 +4660,14 @@ void Play_Instrument(int channel, int sub_channel)
         }
 
 #if defined(PTK_SYNTH)
-        switch(Synthprg[sample])
+        switch(Synth_Prg[sample])
         {
             case SYNTH_WAVE_OFF:          // synth off
             case SYNTH_WAVE_CURRENT:      // Current waveform selected
                 associated_sample = sample;
                 break;
             default:                      // Any other waveform selected
-                associated_sample = Synthprg[sample] - 2;
+                associated_sample = Synth_Prg[sample] - 2;
                 break;
         }
 #else
@@ -4728,6 +4729,7 @@ void Play_Instrument(int channel, int sub_channel)
 #endif
 #endif
 
+            // Nullify the glide if the instrument is different
             if(sample != sp_channelsample[channel][sub_channel])
             {
                 glide = 0;
@@ -4748,8 +4750,20 @@ void Play_Instrument(int channel, int sub_channel)
                 {
                     Synthesizer[channel][sub_channel].Data.OSC_1_WAVEFORM = WAVEFORM_NONE;
                     Synthesizer[channel][sub_channel].Data.OSC_2_WAVEFORM = WAVEFORM_NONE;
+                    // No synth playing
+                    if(!Synthesizer[channel][sub_channel].ENV_1_STAGE && 
+                       !Synthesizer[channel][sub_channel].ENV_1_STAGE)
+                    {
+                        Synth_Really_Used[channel][sub_channel] = 0;
+                    }
+                    else
+                    {
+                        // Schedule a release
+                        Synthesizer[channel][sub_channel].ENV_1_STAGE = SYNTH_RELEASE;
+                        Synthesizer[channel][sub_channel].ENV_2_STAGE = SYNTH_RELEASE;
+                    }
                 }
-                if(Synthprg[sample])
+                if(Synth_Prg[sample])
                 {
 
 #if defined(__STAND_ALONE__) && !defined(__WINAMP__)
@@ -4768,6 +4782,7 @@ void Play_Instrument(int channel, int sub_channel)
 #endif
                                                              ,glide
                                                              );
+                    Synth_Really_Used[channel][sub_channel] = Synth_Prg[associated_sample];
                 }
             }
 #endif
@@ -4812,7 +4827,7 @@ void Play_Instrument(int channel, int sub_channel)
 #endif
 
 #if defined(PTK_SYNTH)
-            if(Synthprg[sample] == SYNTH_WAVE_OFF)
+            if(Synth_Prg[sample] == SYNTH_WAVE_OFF)
             {
                 sp_Stage2[channel][sub_channel] = PLAYING_NOSAMPLE;
                 sp_Stage3[channel][sub_channel] = PLAYING_NOSAMPLE;
@@ -4831,7 +4846,7 @@ void Play_Instrument(int channel, int sub_channel)
             {
 
 #if defined(PTK_SYNTH)
-                if(Synthprg[sample])
+                if(Synth_Prg[sample])
                 {
                     // Synth + sample together if both OSCs are != wav
                     if(Synthesizer[channel][sub_channel].Data.OSC_1_WAVEFORM != WAVEFORM_WAV &&
@@ -4908,7 +4923,7 @@ void Play_Instrument(int channel, int sub_channel)
                 }
 
 #if defined(PTK_SYNTH)
-                Synth_Was[channel][sub_channel] = Synthprg[sample];
+                Synth_Was[channel][sub_channel] = Synth_Prg[sample];
 #endif
                 sp_split[channel][sub_channel] = split;
 
@@ -7422,7 +7437,7 @@ void Kill_Instrument(int inst_nbr, int all_splits)
         Beat_Lines[inst_nbr] = 16;
 
 #if defined(PTK_SYNTH)
-        Synthprg[inst_nbr] = SYNTH_WAVE_OFF;
+        Synth_Prg[inst_nbr] = SYNTH_WAVE_OFF;
 #endif
 
 #if !defined(__STAND_ALONE__)

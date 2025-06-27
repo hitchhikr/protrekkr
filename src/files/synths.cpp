@@ -518,7 +518,7 @@ void Load_Synth(char *FileName)
         if(PARASynth[Current_Instrument].lfo_1_period > 128) PARASynth[Current_Instrument].lfo_1_period = 128;
         if(PARASynth[Current_Instrument].lfo_2_period > 128) PARASynth[Current_Instrument].lfo_2_period = 128;
 
-        Synthprg[Current_Instrument] = SYNTH_WAVE_CURRENT;
+        Synth_Prg[Current_Instrument] = SYNTH_WAVE_CURRENT;
         sprintf(nameins[Current_Instrument],PARASynth[Current_Instrument].Preset_Name);
         Actualize_Synth_Ed(UPDATE_SYNTH_ED_ALL);
 

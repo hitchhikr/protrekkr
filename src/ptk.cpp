@@ -3026,13 +3026,13 @@ void New_Mod(void)
         Actualize_Master(0);
         for(i = 0; i < MAX_INSTRS; i++)
         {
-            Old_Prg = Synthprg[i];
+            Old_Prg = Synth_Prg[i];
             Kill_Instrument(i, TRUE);
-            Synthprg[i] = Old_Prg;
+            Synth_Prg[i] = Old_Prg;
             sprintf(nameins[i], "Untitled");
-            if((Synthprg[i] - 2) == i)
+            if((Synth_Prg[i] - 2) == i)
             {
-                Synthprg[i] = 1;
+                Synth_Prg[i] = 1;
             }
         }
         Renew_Sample_Ed();
@@ -3050,7 +3050,7 @@ void New_Mod(void)
         for(i = 0; i < MAX_INSTRS; i++)
         {
             Reset_Synth_Parameters(&PARASynth[i]);
-            Synthprg[i] = 0;
+            Synth_Prg[i] = 0;
         }
         Final_Mod_Length = 0;
         Actualize_Master(0);
@@ -3651,7 +3651,7 @@ void Delete_Instrument(void)
             }
         }
         Reset_Synth_Parameters(&PARASynth[Current_Instrument]);
-        Synthprg[Current_Instrument] = 0;
+        Synth_Prg[Current_Instrument] = 0;
         Actualize_Master(0);
         Final_Mod_Length = 0;
         Actualize_Synth_Ed(UPDATE_SYNTH_ED_ALL);
@@ -3663,13 +3663,13 @@ void Delete_Instrument(void)
         seditor = 0;
         Final_Mod_Length = 0;
         Actualize_Master(0);
-        Old_Prg = Synthprg[Current_Instrument];
+        Old_Prg = Synth_Prg[Current_Instrument];
         Kill_Instrument(Current_Instrument, FALSE);
-        Synthprg[Current_Instrument] = Old_Prg;
+        Synth_Prg[Current_Instrument] = Old_Prg;
         sprintf(nameins[Current_Instrument], "Untitled");
-        if((Synthprg[Current_Instrument] - 2) == Current_Instrument)
+        if((Synth_Prg[Current_Instrument] - 2) == Current_Instrument)
         {
-            Synthprg[Current_Instrument] = 1;
+            Synth_Prg[Current_Instrument] = 1;
         }
         Renew_Sample_Ed();
         Status_Box("Instrument Deleted.", TRUE);
@@ -3682,13 +3682,13 @@ void Delete_Instrument(void)
         seditor = 0;
         Final_Mod_Length = 0;
         Actualize_Master(0);
-        Old_Prg = Synthprg[Current_Instrument];
+        Old_Prg = Synth_Prg[Current_Instrument];
         Kill_Instrument(Current_Instrument, TRUE);
-        Synthprg[Current_Instrument] = Old_Prg;
+        Synth_Prg[Current_Instrument] = Old_Prg;
         sprintf(nameins[Current_Instrument], "Untitled");
-        if((Synthprg[Current_Instrument] - 2) == Current_Instrument)
+        if((Synth_Prg[Current_Instrument] - 2) == Current_Instrument)
         {
-            Synthprg[Current_Instrument] = 1;
+            Synth_Prg[Current_Instrument] = 1;
         }
         Renew_Sample_Ed();
         Status_Box("Instrument Deleted.", TRUE);
@@ -3754,7 +3754,7 @@ int Get_Nbr_Synths(void)
 
     for(i = 0; i < MAX_INSTRS; i++)
     {
-        if(Synthprg[i])
+        if(Synth_Prg[i])
         {
             nbr_synth++;
         }

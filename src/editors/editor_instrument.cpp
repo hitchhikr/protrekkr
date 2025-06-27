@@ -1366,7 +1366,7 @@ void Dump_Instruments_Synths_List(int xr, int yr)
                         case SCOPE_ZONE_SYNTH_LIST:
 
                             Font = USE_FONT_LOW;
-                            if(Synthprg[rel_val])
+                            if(Synth_Prg[rel_val])
                             {
                                 Font = USE_FONT;
                             }
@@ -1377,7 +1377,7 @@ void Dump_Instruments_Synths_List(int xr, int yr)
                             sprintf(Line, "%s", PARASynth[rel_val].Preset_Name);
                             Print_String(xr + 19, yr + (counter * 12), Font, Line);
 
-                            int instr_to_search = Synthprg[rel_val];
+                            int instr_to_search = Synth_Prg[rel_val];
                             if(instr_to_search == 0)
                             {
                                 sprintf(Line, "No waveform");
@@ -1411,19 +1411,19 @@ void Dump_Instruments_Synths_List(int xr, int yr)
                             }
                             Print_String(xr + (Cur_Width - 632), yr + (counter * 12), Font, Line);
 
-                            if(Synthprg[rel_val] == 0)
+                            if(Synth_Prg[rel_val] == 0)
                             {
                                 sprintf(Line, "No Instr.");
                                 Print_String(xr + (Cur_Width - 540), yr + (counter * 12), Font, Line);
                             }
-                            else if(Synthprg[rel_val] == 1)
+                            else if(Synth_Prg[rel_val] == 1)
                             {
                                 sprintf(Line, "Rel. Instr.: Curr");
                                 Print_String(xr + (Cur_Width - 540), yr + (counter * 12), USE_FONT, Line);
                             }
                             else
                             {
-                                sprintf(Line, "Rel. Instr.: %.2x", Synthprg[rel_val] - 2);
+                                sprintf(Line, "Rel. Instr.: %.2x", Synth_Prg[rel_val] - 2);
                                 Print_String(xr + (Cur_Width - 540), yr + (counter * 12), USE_FONT, Line);
                             }
                             break;
@@ -1511,7 +1511,7 @@ void Actualize_Instruments_Synths_List(int modeac)
                     Nbr_Entries = 0;
                     for(i = 0; i < MAX_INSTRS; i++)
                     {
-                        if(Synthprg[i])
+                        if(Synth_Prg[i])
                         {
                             Nbr_Entries++;
                         }

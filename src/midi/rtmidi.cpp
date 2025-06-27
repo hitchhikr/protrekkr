@@ -44,6 +44,9 @@
 #if defined(__AROS__) || defined(__MORPHOS__)
 #include <proto/camd.h>
 #include <proto/exec.h>
+#include <proto/dos.h>
+#include <sys/ioctl.h>
+#include <unistd.h>
 #endif
 
 #define  RT_SYSEX_BUFFER_SIZE 4096
@@ -76,6 +79,7 @@ RtMidi :: RtMidi() : apiData_(0), connected_(false)
                 FreeSignal(MidiSig);
                 MidiSig = -1;
             }
+
         }
     }
 #endif
@@ -91,11 +95,11 @@ RtMidi :: ~RtMidi()
         DeleteMidi(CamdNode);
         CamdNode = NULL;
     }
-    if(MidiSig)
+    if(MidiSig != -1)
     {
         FreeSignal(MidiSig);
     }
-    MidiSig = 0;
+    MidiSig = -1;
     if(CamdBase)
     {
         CloseLibrary(CamdBase);
@@ -2729,7 +2733,13 @@ struct CAMDMidiData
     struct MidiLink *inHandle;      // Handle to Midi Input Device
     struct MidiLink *outHandle;     // Handle to Midi Output Device
     struct MidiNode *node = NULL;
+    pthread_t thread;
+    pthread_t dummy_thread_id;
     unsigned int lastTime;
+    unsigned int bufferSize;
+    unsigned int requestedBufferSize;
+    unsigned char *buffer;
+    int MidiSig;
     RtMidiIn::MidiMessage message;
 };
 
@@ -2737,132 +2747,250 @@ struct CAMDMidiData
 //  API: camd.library
 //  Class Definitions: RtMidiIn
 //*********************************************************************//
-/*
-static void CALLBACK midiInputCallback(HMIDIOUT hmin,
-                                       UINT inputStatus, 
-                                       DWORD instancePtr,
-                                       DWORD midiMessage,
-                                       DWORD timestamp)
+
+extern "C" void *CAMDMidiHandler(void *ptr)
 {
-    if(inputStatus != MIM_DATA &&
-       inputStatus != MIM_LONGDATA &&
-       inputStatus != MIM_LONGERROR)
+    RtMidiIn::RtMidiInData *data = static_cast<RtMidiIn::RtMidiInData *> (ptr);
+    CAMDMidiData *apiData = static_cast<CAMDMidiData *> (data->apiData);
+
+    long nBytes;
+    double time;
+    bool continueSysex = false;
+    bool doDecode = false;
+    RtMidiIn::MidiMessage message;
+    int poll_fd_count;
+    struct pollfd *poll_fds;
+    MidiMsg mmsg;
+    ULONG signal;
+
+//    snd_seq_event_t *ev;
+    int result;
+    apiData->bufferSize = 32;
+  //  result = snd_midi_event_new(0, &apiData->coder);
+
+    if(result < 0)
     {
-        return;
+        data->doInput = false;
+        return 0;
     }
-
-    RtMidiIn::RtMidiInData *data = (RtMidiIn::RtMidiInData *)instancePtr;
-    WinMidiData *apiData = static_cast<WinMidiData *> (data->apiData);
-
-    // Calculate time stamp.
-    apiData->message.timeStamp = 0.0f;
-    if(data->firstMessage == true)
+    unsigned char *buffer = (unsigned char *) malloc(apiData->bufferSize);
+    if(buffer == NULL)
     {
-        data->firstMessage = false;
+        data->doInput = false;
+//        snd_midi_event_free(apiData->coder);
+//        apiData->coder = 0;
+        return 0;
     }
-    else
+
+    //snd_midi_event_init(apiData->coder);
+    //snd_midi_event_no_status(apiData->coder, 1); // suppress running status messages
+
+//    poll_fd_count = snd_seq_poll_descriptors_count( apiData->seq, POLLIN) + 1;
+//    poll_fds = (struct pollfd *) alloca(poll_fd_count * sizeof(struct pollfd));
+
+//    snd_seq_poll_descriptors(apiData->seq, poll_fds + 1, poll_fd_count - 1, POLLIN);
+  //  
+    //poll_fds[0].fd = apiData->trigger_fds[0];
+    //poll_fds[0].events = POLLIN;
+
+    printf("ARGHH\n");
+    while(data->doInput)
     {
-        apiData->message.timeStamp = (double) (timestamp - apiData->lastTime) * 0.001f;
-    }
-    apiData->lastTime = timestamp;
-
-    if(inputStatus == MIM_DATA)
-    {   // Channel or system message
-
-        // Make sure the first byte is a status byte.
-        unsigned char status = (unsigned char) (midiMessage & 0x000000FF);
-        if(!(status & 0x80))
+/*        signal = Wait(SIGBREAKF_CTRL_C | 1L << apiData->MidiSig);
+        if(signal & SIGBREAKF_CTRL_C)
+		{
+            break;
+		}
+    printf("BLAH\n");*/
+/*        while(GetMidi(apiData->node, &mmsg))
         {
-            return;
-        }
-
-        // Determine the number of bytes in the MIDI message.
-        unsigned short nBytes = 1;
-        if(status < 0xC0) nBytes = 3;
-        else if(status < 0xE0) nBytes = 2;
-        else if(status < 0xF0) nBytes = 3;
-        else if(status < 0xF3)
+//    printf("GOT\n");
+            message.bytes.clear();
+            message.bytes.assign(buffer, &buffer[apiData->bufferSize]);
+            message.bytes[0] = mmsg.mm_Status;
+            message.bytes[1] = mmsg.mm_Data1;
+            message.bytes[2] = mmsg.mm_Data2;
+            data->queue.push(message);
+        }*/
+  /*      if(snd_seq_event_input_pending(apiData->seq, 1) == 0)
         {
-            // A MIDI time code message and we're ignoring it.
-            if(status == 0xF1 && (data->ignoreFlags & 0x02) ) return;
-            nBytes = 3;
-        }
-        else if(status == 0xF3) nBytes = 2;
-        else if(status == 0xF8 && (data->ignoreFlags & 0x02))
-        {
-            // A MIDI timing tick message and we're ignoring it.
-            return;
-        }
-        else if ( status == 0xFE && (data->ignoreFlags & 0x04) )
-        {
-            // A MIDI active sensing message and we're ignoring it.
-            return;
-        }
-
-        // Copy bytes to our MIDI message.
-        unsigned char *ptr = (unsigned char *) &midiMessage;
-        for(int i = 0; i < nBytes; i++ )
-        {
-            apiData->message.bytes.push_back(*ptr++);
-        }
-    }
-    else
-    {   // Sysex message (MIM_LONGDATA or MIM_LONGERROR)
-        MIDIHDR *sysex = (MIDIHDR *) midiMessage; 
-        if(!(data->ignoreFlags & 0x01) && inputStatus != MIM_LONGERROR)
-        {
-            // Sysex message and we're not ignoring it
-            for(int i = 0; i < (int) sysex->dwBytesRecorded; i++)
+            // No data pending
+            if(poll(poll_fds, poll_fd_count, -1) >= 0)
             {
-                apiData->message.bytes.push_back(sysex->lpData[i]);
+                if(poll_fds[0].revents & POLLIN)
+                {
+                    bool dummy;
+                    int res = read(poll_fds[0].fd, &dummy, sizeof(dummy));
+                    (void) res;
+                }
+            }
+            continue;
+        }
+
+        // If here, there should be data.
+        result = snd_seq_event_input(apiData->seq, &ev);
+        if(result == -ENOSPC)
+        {
+            continue;
+        }
+        else if(result <= 0)
+        {
+            continue;
+        }
+
+        // This is a bit weird, but we now have to decode an ALSA MIDI
+        // event (back) into MIDI bytes.  We'll ignore non-MIDI types.
+        if(!continueSysex)
+        {
+            message.bytes.clear();
+        }
+
+        doDecode = false;
+        switch(ev->type)
+        {
+		    case SND_SEQ_EVENT_PORT_SUBSCRIBED:
+                break;
+
+    		case SND_SEQ_EVENT_PORT_UNSUBSCRIBED:
+                break;
+
+            case SND_SEQ_EVENT_QFRAME: // MIDI time code
+                if(data->ignoreFlags & 0x02)
+                {
+                    doDecode = true;
+                    break;
+                }
+
+            case SND_SEQ_EVENT_TICK: // MIDI timing tick
+                if(data->ignoreFlags & 0x02)
+                {
+                    doDecode = true;
+                    break;
+                }
+
+            case SND_SEQ_EVENT_SENSING: // Active sensing
+                if(data->ignoreFlags & 0x04)
+                {
+                    doDecode = true;
+                    break;
+                }
+
+		    case SND_SEQ_EVENT_SYSEX:
+                if((data->ignoreFlags & 0x01))
+                {
+                    break;
+                }
+                if(ev->data.ext.len > apiData->bufferSize)
+                {
+                    apiData->bufferSize = ev->data.ext.len;
+                    free(buffer);
+                    buffer = (unsigned char *) malloc(apiData->bufferSize);
+                    if(buffer == NULL)
+                    {
+                        data->doInput = false;
+                        break;
+                    }
+                }
+                doDecode = true;
+                break;
+
+            default:
+                doDecode = true;
+        }
+
+        if(doDecode)
+        {
+            nBytes = snd_midi_event_decode(apiData->coder, buffer, apiData->bufferSize, ev);
+            if(nBytes > 0)
+            {
+                // The ALSA sequencer has a maximum buffer size for MIDI sysex
+                // events of 256 bytes.  If a device sends sysex messages larger
+                // than this, they are segmented into 256 byte chunks.  So,
+                // we'll watch for this and concatenate sysex chunks into a
+                // single sysex message if necessary.
+                if(!continueSysex)
+                {
+                    message.bytes.assign(buffer, &buffer[nBytes]);
+                }
+                else
+                {
+                    message.bytes.insert(message.bytes.end(), buffer, &buffer[nBytes]);
+                }
+
+                continueSysex = ((ev->type == SND_SEQ_EVENT_SYSEX) && (message.bytes.back() != 0xF7));
+                if(!continueSysex)
+                {
+                    // Calculate the time stamp:
+                    message.timeStamp = 0.0;
+
+                    // Method 1: Use the system time.
+                    //(void)gettimeofday(&tv, (struct timezone *)NULL);
+                    //time = (tv.tv_sec * 1000000) + tv.tv_usec;
+
+                    // Method 2: Use the ALSA sequencer event time data.
+                    // (thanks to Pedro Lopez-Cabanillas!).
+
+                    // Using method from:
+                    // https://www.gnu.org/software/libc/manual/html_node/Elapsed-Time.html
+
+                    // Perform the carry for the later subtraction by updating y.
+                    // Temp var y is timespec because computation requires signed types,
+                    // while snd_seq_real_time_t has unsigned types.
+
+                    snd_seq_real_time_t &x(ev->time.time);
+                    struct timespec y;
+                    
+                    y.tv_nsec = apiData->lastTime.tv_nsec;
+                    y.tv_sec = apiData->lastTime.tv_sec;
+                    if(x.tv_nsec < y.tv_nsec)
+                    {
+                        int nsec = (y.tv_nsec - (int)x.tv_nsec) / 1000000000 + 1;
+                        y.tv_nsec -= 1000000000 * nsec;
+                        y.tv_sec += nsec;
+                    }
+                    if(x.tv_nsec - y.tv_nsec > 1000000000)
+                    {
+                        int nsec = ((int)x.tv_nsec - y.tv_nsec) / 1000000000;
+                        y.tv_nsec += 1000000000 * nsec;
+                        y.tv_sec -= nsec;
+                    }
+                }
             }
         }
 
-        // The WinMM API requires that the sysex buffer be requeued after
-        // input of each sysex message.  Even if we are ignoring sysex
-        // messages, we still need to requeue the buffer in case the user
-        // decides to not ignore sysex messages in the future.  However,
-        // it seems that WinMM calls this function with an empty sysex
-        // buffer when an application closes and in this case, we should
-        // avoid requeueing it, else the computer suddenly reboots after
-        // one or two minutes.
-	    if(apiData->sysexBuffer[sysex->dwUser]->dwBytesRecorded > 0)
+        snd_seq_free_event(ev);
+        if(message.bytes.size() == 0 || continueSysex)
         {
-            MMRESULT result = midiInAddBuffer(apiData->inHandle, apiData->sysexBuffer[sysex->dwUser], sizeof(MIDIHDR));
-            if (result != MMSYSERR_NOERROR)
-            {
-                std::cerr << "\nRtMidiIn::midiInputCallback: error sending sysex to Midi device!!\n\n";
-                return;
-            }
-            if(data->ignoreFlags & 0x01)
-            {
-                return;
-            }
+            continue;
+        }
+
+        if(data->usingCallback)
+        {
+            RtMidiIn::RtMidiCallback callback = (RtMidiIn::RtMidiCallback) data->userCallback;
+            callback(message.timeStamp, &message.bytes, data->userData);
         }
         else
         {
-            return;
-        }
+            // As long as we haven't reached our queue size limit, push the message.
+            if(data->queueLimit > data->queue.size())
+            {
+                data->queue.push(message);
+            }
+        }*/
+        usleep(10);
     }
 
-    if(data->usingCallback)
+    if(buffer)
     {
-        RtMidiIn::RtMidiCallback callback = (RtMidiIn::RtMidiCallback) data->userCallback;
-        callback(apiData->message.timeStamp, &apiData->message.bytes, data->userData);
+        free(buffer);
     }
-    else
-    {
-        // As long as we haven't reached our queue size limit, push the message.
-        if(data->queueLimit > data->queue.size())
-        {
-            data->queue.push(apiData->message);
-        }
-    }
-
-    // Clear the vector for the next input message.
-    apiData->message.bytes.clear();
+//    snd_midi_event_free(apiData->coder);
+  //  apiData->coder = 0;
+    printf("SHIT\n");
+//    apiData->thread = apiData->dummy_thread_id;
+//    data->doInput = false;
+    return 0;
 }
-*/
 
 void RtMidiIn :: initialize(char *clientName)
 {
@@ -2871,7 +2999,7 @@ void RtMidiIn :: initialize(char *clientName)
     apiData_ = (void *) data;
     inputData_.apiData = (void *) data;
     data->message.bytes.clear();  // needs to be empty for first input message
-
+    data->MidiSig = MidiSig;
     data->node = CamdNode;
 
     if(data->node == NULL)
@@ -2885,6 +3013,7 @@ void RtMidiIn :: initialize(char *clientName)
 
 void RtMidiIn :: openPort(unsigned int portNumber, char *portName)
 {
+    char Name[256];
     if(connected_)
     {
         sprintf(errorString_, "RtMidiIn::openPort: a valid connection already exists!");
@@ -2908,9 +3037,11 @@ void RtMidiIn :: openPort(unsigned int portNumber, char *portName)
     }
 
     CAMDMidiData *data = static_cast<CAMDMidiData *> (apiData_);
+    memset(Name, 0, sizeof(Name));
+    getPortName(portNumber, Name);
+    printf("PORT: %s\n", Name);
 	data->inHandle = AddMidiLink(data->node, MLTYPE_Receiver,
-                                             MLINK_Location, portName,
-                                             MLINK_EventMask, CMF_Note | CMF_Mode | CMF_RealTime,
+                                             MLINK_Location, Name,
                                              TAG_DONE
                                 );
     if(!data->inHandle)
@@ -2919,7 +3050,25 @@ void RtMidiIn :: openPort(unsigned int portNumber, char *portName)
         error(RtError::DRIVER_ERROR);
         return;
     }
+    
+    if(inputData_.doInput == false)
+    {
+        // Start our MIDI input thread.
+        pthread_attr_t attr;
+        pthread_attr_init(&attr);
+        pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
 
+        inputData_.doInput = true;
+        int err = 1;//pthread_create(&data->thread, &attr, CAMDMidiHandler, &inputData_);
+        pthread_attr_destroy(&attr);
+        if(err)
+        {
+            inputData_.doInput = false;
+            sprintf(errorString_, "RtMidiIn::openPort: error starting MIDI input thread!");
+            error(RtError::THREAD_ERROR);
+            return;
+        }
+    }
     connected_ = true;
 }
 
@@ -2942,6 +3091,21 @@ void RtMidiIn :: closePort(void)
                 data->inHandle = NULL;
             }
         }
+        // Stop thread to avoid triggering the callback, while the port is intended to be closed
+//            printf("FuCK0\n");
+        pthread_join(data->thread, NULL);
+  //          printf("FuCK00\n");
+        if(inputData_.doInput)
+        {
+//            SetSignal(SIGBREAKF_CTRL_C, SIGBREAKF_CTRL_C);
+            inputData_.doInput == false;
+    //        printf("FuCK1\n");
+/*            if(!pthread_equal(data->thread, data->dummy_thread_id))
+            {*/
+      //      printf("FuCK2\n");
+            //}
+        }
+        //    printf("FuCK3\n");
         connected_ = false;
     }
 }

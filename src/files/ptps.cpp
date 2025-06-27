@@ -510,7 +510,7 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
     int synth_instr_remap;
     for(i = 0; i < MAX_INSTRS; i++)
     {
-        switch(Synthprg[i])
+        switch(Synth_Prg[i])
         {
             case SYNTH_WAVE_OFF:
                 break;
@@ -520,10 +520,10 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                 break;
             default:
                 Store_Synth = TRUE;
-                synth_instr_remap = Synthprg[i] - 2;
+                synth_instr_remap = Synth_Prg[i] - 2;
                 break;
         }
-        if(Synthprg[i] != SYNTH_WAVE_OFF)
+        if(Synth_Prg[i] != SYNTH_WAVE_OFF)
         {
             if(Used_Instr[synth_instr_remap].new_order == -1)
             {
@@ -1204,14 +1204,14 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
     // Remap the used instruments
     for(i = 0; i < MAX_INSTRS; i++)
     {
-        switch(Synthprg[i])
+        switch(Synth_Prg[i])
         {
             case SYNTH_WAVE_OFF:
             case SYNTH_WAVE_CURRENT:
                 break;
 
             default:
-                Synthprg[i] = Get_Instr_New_Order(Synthprg[i] - 2) + 2;
+                Synth_Prg[i] = Get_Instr_New_Order(Synth_Prg[i] - 2) + 2;
                 break;
         }
     }
@@ -1225,13 +1225,13 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
         swrite = Used_Instr2[i].old_order;
         if(swrite != -1)
         {
-            Write_Mod_Data(&Synthprg[swrite], sizeof(char), 1, in);
+            Write_Mod_Data(&Synth_Prg[swrite], sizeof(char), 1, in);
 
             Write_Mod_Data(&Beat_Sync[swrite], sizeof(char), 1, in);
             Write_Mod_Data(&Beat_Lines[swrite], sizeof(short), 1, in);
             Write_Mod_Data(&Sample_Vol[swrite], sizeof(float), 1, in);
 
-            if(Synthprg[swrite])
+            if(Synth_Prg[swrite])
             {
                 // Forward as least for synths
                 Store_Loop_Forward = TRUE;
