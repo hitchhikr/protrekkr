@@ -201,7 +201,7 @@ class RtMidiIn : public RtMidi
             MidiMessage message;
             unsigned int queueLimit;
             unsigned char ignoreFlags;
-            volatile bool doInput;
+            bool doInput;
             bool firstMessage;
             void *apiData;
             bool usingCallback;

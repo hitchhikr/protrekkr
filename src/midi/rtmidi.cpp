@@ -2793,7 +2793,7 @@ extern "C" void *CAMDMidiHandler(void *ptr)
     //poll_fds[0].fd = apiData->trigger_fds[0];
     //poll_fds[0].events = POLLIN;
 
-    printf("ARGHH\n");
+//    printf("ARGHH\n");
     while(data->doInput)
     {
 /*        signal = Wait(SIGBREAKF_CTRL_C | 1L << apiData->MidiSig);
@@ -2986,7 +2986,6 @@ extern "C" void *CAMDMidiHandler(void *ptr)
     }
 //    snd_midi_event_free(apiData->coder);
   //  apiData->coder = 0;
-    printf("SHIT\n");
 //    apiData->thread = apiData->dummy_thread_id;
 //    data->doInput = false;
     return 0;
