@@ -92,7 +92,7 @@ int Midi_GetProgram(int midi_program)
 // ------------------------------------------------------
 // Handle the midi events
 void Midi_CallBackIn(double deltatime,
-                     std::vector< unsigned char > *message,
+                     std::vector<unsigned char> *message,
                      void *userData)
 {
     int Midi_Channel_Number;

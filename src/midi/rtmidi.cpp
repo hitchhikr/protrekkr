@@ -2741,6 +2741,7 @@ struct CAMDMidiData
     unsigned char *buffer;
     int MidiSig;
     RtMidiIn::MidiMessage message;
+    struct Library *CamdBase = NULL;
 };
 
 //*********************************************************************//
@@ -2757,13 +2758,8 @@ extern "C" void *CAMDMidiHandler(void *ptr)
     double time;
     bool continueSysex = false;
     bool doDecode = false;
-    RtMidiIn::MidiMessage message;
-    int poll_fd_count;
-    struct pollfd *poll_fds;
     MidiMsg mmsg;
-    ULONG signal;
     struct Library *CamdBase = NULL;
-    CamdBase = OpenLibrary("camd.library", 0L);
 
     apiData->bufferSize = 32;
 
@@ -2773,26 +2769,32 @@ extern "C" void *CAMDMidiHandler(void *ptr)
         data->doInput = true;
         return 0;
     }
-    GetMidi(apiData->node, &mmsg);
     while(data->doInput)
     {
-//        while(GetMidi(apiData->node, &mmsg))
+        CamdBase = apiData->CamdBase;
+        while(GetMidi(apiData->node, &mmsg))
         {
-//    printf("GOT\n");
-/*            message.bytes.clear();
-            message.bytes.assign(buffer, &buffer[apiData->bufferSize]);
-            message.bytes[0] = mmsg.mm_Status;
-            message.bytes[1] = mmsg.mm_Data1;
-            message.bytes[2] = mmsg.mm_Data2;
-            data->queue.push(message);*/
+            buffer[0] = mmsg.mm_Status & MS_StatBits;
+            buffer[1] = mmsg.mm_Data1;
+            buffer[2] = mmsg.mm_Data2;
+            apiData->message.bytes.assign(buffer, &buffer[apiData->bufferSize]);
+            if(data->usingCallback)
+            {
+                RtMidiIn::RtMidiCallback callback = (RtMidiIn::RtMidiCallback) data->userCallback;
+                callback(0.0, &apiData->message.bytes, data->userData);
+            }
+            else
+            {
+                // As long as we haven't reached our queue size limit, push the message.
+                if(data->queueLimit > data->queue.size())
+                {
+                    data->queue.push(apiData->message);
+                }
+            }
         }
         usleep(10);
     }
 
-    if(CamdBase)
-    {
-        CloseLibrary(CamdBase);
-    }
     if(buffer)
     {
         free(buffer);
@@ -2810,6 +2812,7 @@ void RtMidiIn :: initialize(char *clientName)
     data->message.bytes.clear();  // needs to be empty for first input message
     data->MidiSig = MidiSig;
     data->node = CamdNode;
+    data->CamdBase = CamdBase;
 
     if(data->node == NULL)
     {
@@ -3181,7 +3184,6 @@ void RtMidiOut :: sendMessage(std::vector<unsigned char> *message)
             packet.mm_Data1 = message->at(1);
             packet.mm_Data2 = message->at(2);
             packet.mm_Port = 0;
-
             PutMidiMsg(data->outHandle, &packet);
         }
     }
