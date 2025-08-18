@@ -4194,6 +4194,7 @@ void Keyboard_Handler(void)
             Goto_Next_Column();
         }
 
+#if !defined(__MORPHOS__)
         // Decrease slider value by 1
         if(Keys[SDLK_RIGHT] && !Get_LCtrl() && !Get_LAlt() && Get_RShift() && pattern_sliders && can_modify_song)
         {
@@ -4213,10 +4214,37 @@ void Keyboard_Handler(void)
         }
 
         // Increase slider value by 10
+
         if(Keys[SDLK_UP] && !Get_LCtrl() && !Get_LAlt() && Get_RShift() && pattern_sliders && can_modify_song)
         {
             Set_Slider_Value(10);
         }
+#else
+        // Decrease slider value by 1
+        if(Keys[SDLK_RIGHT] && !Get_LCtrl() && Get_LAlt() && pattern_sliders && can_modify_song)
+        {
+            Set_Slider_Value(-1);
+        }
+
+        // Increase slider value by 1
+        if(Keys[SDLK_LEFT] && !Get_LCtrl() && Get_LAlt() && pattern_sliders && can_modify_song)
+        {
+            Set_Slider_Value(1);
+        }
+
+        // Decrease slider value by 10
+        if(Keys[SDLK_DOWN] && !Get_LCtrl() && Get_LAlt() && pattern_sliders && can_modify_song)
+        {
+            Set_Slider_Value(-10);
+        }
+
+        // Increase slider value by 10
+
+        if(Keys[SDLK_UP] && !Get_LCtrl() && Get_LAlt() && pattern_sliders && can_modify_song)
+        {
+            Set_Slider_Value(10);
+        }
+#endif
 
         // Previous row
         if(Keys[SDLK_UP] && !Song_Playing && !Get_RShift())
@@ -4835,10 +4863,11 @@ void Keyboard_Handler(void)
             retnote = -2;
             retnote_raw = -2;
         }
-        if(Keys[SDLK_RSHIFT])
+        if(Keys[SDLK_RSHIFT] || Keys_Raw[2])
         {
             retnote = -3;
             retnote_raw = -3;
+            Keys_Raw[2] = FALSE;
         }
 
         // Key jazz
@@ -5345,14 +5374,14 @@ void Keyboard_Handler(void)
             if(Get_LCtrl())
             {
                 // Previous position in sequence
-                if(Keys[SDLK_LEFT])
+                if(Keys[SDLK_LEFT] && !pattern_sliders)
                 {
                     gui_action = GUI_CMD_PREVIOUS_POSITION;
                     Keys[SDLK_LEFT] = FALSE;
                 }
 
                 // Next position in sequence
-                if(Keys[SDLK_RIGHT])
+                if(Keys[SDLK_RIGHT] && !pattern_sliders)
                 {
                     gui_action = GUI_CMD_NEXT_POSITION;
                     Keys[SDLK_RIGHT] = FALSE;
@@ -5361,14 +5390,14 @@ void Keyboard_Handler(void)
             else
             {
                 // Previous instrument
-                if(Keys[SDLK_LEFT])
+                if(Keys[SDLK_LEFT] && !pattern_sliders)
                 {
                     gui_action = GUI_CMD_PREV_INSTR;
                     Keys[SDLK_LEFT] = FALSE;
                 }
 
                 // Next instrument
-                if(Keys[SDLK_RIGHT])
+                if(Keys[SDLK_RIGHT] && !pattern_sliders)
                 {
                     gui_action = GUI_CMD_NEXT_INSTR;
                     Keys[SDLK_RIGHT] = FALSE;

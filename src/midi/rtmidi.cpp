@@ -66,14 +66,19 @@ RtMidi :: RtMidi() : apiData_(0), connected_(false)
         MidiSig = AllocSignal(-1);
         if(MidiSig != -1)
         {
+            TagItem Midi_Tags[] = 
+            {
+                MIDI_Name, (ULONG) "ProTrekkr",
+                MIDI_RecvSignal, 0,
+                MIDI_MsgQueue, 2048,
+                MIDI_SysExSize, 10000,
+                MIDI_ClientType, CCType_Sequencer,
+			    TAG_END
+            };
+
 	        // Let's create MIDI node for this piece of software
-            CamdNode = (struct MidiNode *) CreateMidi(MIDI_Name,  "ProTrekkr",
-                                                      MIDI_RecvSignal, MidiSig,
-                                                      MIDI_MsgQueue, 2048,
-                                                      MIDI_SysExSize, 10000,
-                                                      MIDI_ClientType, CCType_Sequencer,
-								                      TAG_END
-                                                     );
+            Midi_Tags[1].ti_Data = MidiSig;
+            CamdNode = (struct MidiNode *) CreateMidiA(Midi_Tags);
             if(CamdNode == NULL)
             {
                 FreeSignal(MidiSig);
@@ -2719,9 +2724,26 @@ void RtMidiOut :: sendMessage(std::vector<unsigned char> *message)
 #if !defined(__MORPHOS__)
 #include <midi/mididefs.h>
 #else
-#define AddMidiLink AddMidiLinkA
-#define CreateMidi CreateMidiA
+//#define AddMidiLink AddMidiLinkA
+//#define CreateMidi CreateMidiA
 #endif
+TagItem Receiver_Tags[] = 
+{ 
+    MLINK_Location, 0,
+    MLINK_EventMask, CMF_Channel,
+    TAG_DONE
+};
+TagItem Sender_Tags[] = 
+{ 
+    MLINK_Location, 0,
+    MLINK_Priority, 0,
+#if defined(__MORPHOS__)
+    MLINK_EventMask, CMF_All,
+#else
+    MLINK_EventMask, CMD_All,
+#endif
+    TAG_DONE
+};
 
 struct Library *CamdBase = NULL;
 
@@ -2760,6 +2782,7 @@ extern "C" void *CAMDMidiHandler(void *ptr)
     bool doDecode = false;
     MidiMsg mmsg;
     struct Library *CamdBase = NULL;
+    RtMidiIn::RtMidiCallback callback = (RtMidiIn::RtMidiCallback) data->userCallback;
 
     apiData->bufferSize = 32;
 
@@ -2780,7 +2803,6 @@ extern "C" void *CAMDMidiHandler(void *ptr)
             apiData->message.bytes.assign(buffer, &buffer[apiData->bufferSize]);
             if(data->usingCallback)
             {
-                RtMidiIn::RtMidiCallback callback = (RtMidiIn::RtMidiCallback) data->userCallback;
                 callback(0.0, &apiData->message.bytes, data->userData);
             }
             else
@@ -2851,10 +2873,8 @@ void RtMidiIn :: openPort(unsigned int portNumber, char *portName)
     CAMDMidiData *data = static_cast<CAMDMidiData *> (apiData_);
     memset(Name, 0, sizeof(Name));
     getPortName(portNumber, Name);
-	data->inHandle = AddMidiLink(data->node, MLTYPE_Receiver,
-                                             MLINK_Location, Name,
-                                             TAG_DONE
-                                );
+    Receiver_Tags[0].ti_Data = (IPTR) Name;
+	data->inHandle = AddMidiLinkA(data->node, MLTYPE_Receiver, Receiver_Tags);
     if(!data->inHandle)
     {
         sprintf(errorString_, "RtMidiIn::initialize: error creating CAMD MidiLink object.");
@@ -3084,12 +3104,8 @@ void RtMidiOut :: openPort(unsigned int portNumber, char *portName)
     CAMDMidiData *data = static_cast<CAMDMidiData *> (apiData_);
     memset(Name, 0, sizeof(Name));
     getPortName(portNumber, Name);
-    data->outHandle = AddMidiLink(data->node, MLTYPE_Sender,
-                                              MLINK_Location, Name,
-                                              MLINK_Priority,0L,
-                                              MLINK_EventMask, CMD_All,
-                                              TAG_DONE
-                                 );
+    Sender_Tags[0].ti_Data = (IPTR) Name;
+    data->outHandle = AddMidiLinkA(data->node, MLTYPE_Sender, Sender_Tags);
     if(!data->outHandle)
     {
         sprintf(errorString_, "RtMidiOut::initialize: error creating CAMD MidiLink object.");

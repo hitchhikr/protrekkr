@@ -213,6 +213,8 @@ KEYCORE Keyboard[] =
     {  0, 0x19, 'p' },     // Mi / E
     {  0, 0x1a, '[' },     // Fa / F
     {  0, 0x1b, ']' },     // Sol / G
+
+    {  0, 0x02, 'a' },     // Off
     {  0, 0x1f, 's' },     // Do# / etc.
     {  0, 0x20, 'd' },     // Re#
     {  0, 0x22, 'g' },     // Fa#
@@ -258,6 +260,7 @@ KEYCORE Default_Keyboard[] =
     {  '[', 0x1a, '[' },     // Fa
     {  ']', 0x1b, ']' },     // Sol
 
+    {  'a', 0x02, 'a' },     // Off
     {  's', 0x1f, 's' },     // Do#
     {  'd', 0x20, 'd' },     // Re#
     {  'g', 0x22, 'g' },     // Fa#
@@ -290,6 +293,10 @@ int Get_LShift(void)
 
 int Get_RShift(void)
 {
+/*#if !defined(__MORPHOS__)
+#else
+    if(SDL_GetModState() & KMOD_RMETA) return(TRUE);
+#endif*/
     if(SDL_GetModState() & KMOD_RSHIFT) return(TRUE);
     return(FALSE);
 }
@@ -805,7 +812,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
 
         memset(Keys, 0, sizeof(Keys));
         memset(Keys_Sym, 0, sizeof(Keys_Sym));
-        memset(Keys_Unicode, 0, sizeof(Keys_Raw));
+        memset(Keys_Unicode, 0, sizeof(Keys_Unicode));
 
         SDL_PumpEvents();
         int Nbr_Events = SDL_PeepEvents(Events, MAX_EVENTS, SDL_GETEVENT, 
@@ -902,7 +909,11 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
                         }
 
                         RShift_Notification = FALSE;
+#if !defined(__MORPHOS__)
                         if(Get_RShift())
+#else
+                        if(Get_LAlt())
+#endif
                         {
                             RShift_Notification = TRUE;
                             RShift_Notified = TRUE;
@@ -972,8 +983,12 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
                                 Enter_Notified = TRUE;
                             }
                         }
-                            
+
+#if !defined(__MORPHOS__)
                         if(Get_RShift())
+#else
+                        if(Get_LAlt())
+#endif
                         {
                             RShift_Notification = TRUE;
                         }

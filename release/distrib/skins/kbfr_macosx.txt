@@ -1,5 +1,5 @@
 French.MacOSX
  0xa0 "   ( 0xa1 0xa3   0xa2 0xa4   -
 a    z e r t    y    u i    o    p ^ $
- s d   g h j   l m
+q s d   g h j   l m
 w x c v b n , ; : =

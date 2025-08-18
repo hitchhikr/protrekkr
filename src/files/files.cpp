@@ -1682,16 +1682,16 @@ Uint8 *Pack_Data(Uint8 *Memory, int *Size)
     deflateInit(&c_stream, Z_BEST_COMPRESSION);
     c_stream.next_in = (Bytef *) Memory;
     c_stream.next_out = Final_Mem_Out;
-    while (c_stream.total_in != *Size)
+    while(c_stream.total_in != *Size)
     {
         c_stream.avail_in = 1;
         c_stream.avail_out = 1;
         deflate(&c_stream, Z_NO_FLUSH);
     }
-    for (;;)
+    for(;;)
     {
         c_stream.avail_out = 1;
-        if (deflate(&c_stream, Z_FINISH) == Z_STREAM_END) break;
+        if(deflate(&c_stream, Z_FINISH) == Z_STREAM_END) break;
     }
     deflateEnd(&c_stream);
     *Size = c_stream.total_out;
@@ -1712,12 +1712,12 @@ Uint8 *Depack_Data(Uint8 *Memory, int Sizen, int Size_Out)
         d_stream.next_in = (Uint8 *) Memory;
         d_stream.next_out = Test_Mem;
         inflateInit(&d_stream);
-        while (d_stream.total_out < Size_Out &&
-               d_stream.total_in < Sizen)
+        while(d_stream.total_out < Size_Out &&
+              d_stream.total_in < Sizen)
         {
             d_stream.avail_in = 1;
             d_stream.avail_out = 1;
-            if (inflate(&d_stream, Z_NO_FLUSH) == Z_STREAM_END) break;
+            if(inflate(&d_stream, Z_NO_FLUSH) == Z_STREAM_END) break;
         }
         inflateEnd(&d_stream);
     }

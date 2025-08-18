@@ -3676,7 +3676,11 @@ void Mouse_Sliders_Pattern_Ed(void)
                 Select_First_Delay_Vert = 100.0f;
             }
         }
+#if !defined(__MORPHOS__)
         if(!Get_RShift())
+#else
+        if(!Get_LAlt())
+#endif
         {
             Mark_Block_End(column, track, line, 3);
         }
@@ -3713,7 +3717,11 @@ void Mouse_Left_Pattern_Ed(void)
         int column;
         int In_Scrolling = FALSE;
         Get_Column_Over_Mouse(&track, &column, FALSE, NULL, TRUE, &column_x_coords, &line_number);
+#if !defined(__MORPHOS__)
         if(!Get_RShift())
+#else
+        if(!Get_LAlt())
+#endif
         {
             Mark_Block_Start(column, track, Get_Line_Over_Mouse(&Need_Scroll));
         }
