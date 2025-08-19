@@ -226,7 +226,7 @@ unsigned char Getc_S3M()
 // Retrieve a word from the .mod data
 unsigned short Getc_S3M_Word()
 {
-    return (int) (Getc_S3M() << 8) + (int) Getc_S3M();
+    return (int) (Getc_S3M()) + (int) (Getc_S3M() << 8);
 }
 
 // ------------------------------------------------------
@@ -315,6 +315,10 @@ void Load_S3M(char *Name, const char *FileName)
     S3M_MODULEHEADER Header;
     unsigned int channel_pan;
     int channels;
+    int smp_offset;
+    int smp_offset_tbl_pos;
+    int smp_name_char;
+    int smp_data_offset;
 
     int FineTune_Table[] =
     {
@@ -421,6 +425,7 @@ void Load_S3M(char *Name, const char *FileName)
                 }
             }
 
+            // No more then 16 channels allowed
             if(channels <= 16)
             {
                 Ticks_Per_Beat = Header.DefaultSpeed;
@@ -447,17 +452,43 @@ void Load_S3M(char *Name, const char *FileName)
                 {
                     // Read sample name
                     // pointer * 16 = offset in file
+                    // Read sample name
+                    smp_offset = Getc_S3M_Word();
+                    // Save it
+                    smp_offset_tbl_pos = S3M_Pos();
+                    smp_offset *= 16;
 
-                    Read_S3M(&nameins[swrite], 12);
+                    // Go to the sample infos from the offset
+                    Seek_S3M(smp_offset, SEEK_SET);
 
-                    memset(nameins[swrite], 0, 20);
+                    // Clear it first
+                    memset(SampleName[swrite][0], 0, 64);
 
                     SampleType[swrite][0] = 1;
                     
+                    // Pass over the type
+                    Getc_S3M();
+                    
                     // Read sample name
-                    Read_S3M(&nameins[swrite], 12);
-
-                    Seek_S3M(3, SEEK_CUR);
+                    smp_name_char = Getc_S3M();
+                    i = 0;
+                    for(j = 0; j < 12; j++)
+                    {
+                        // Don't record garbage
+                        if(smp_name_char == 0)
+                        {
+                            i = 1;
+                        }
+                        if(i == 0)
+                        {
+                            SampleName[swrite][0][j] = smp_name_char;
+                        }
+                        smp_name_char = Getc_S3M();
+                    }
+                    // Get that sample data offset in file
+                    smp_data_offset = Getc_S3M();
+                    smp_data_offset |= Getc_S3M() << 8;
+                    smp_data_offset |= Getc_S3M() << 16;
 
                     // Remove suspicious chars
                     for(j = 0; nameins[swrite][j]; j++)
@@ -465,7 +496,6 @@ void Load_S3M(char *Name, const char *FileName)
                         if(!isalnum(nameins[swrite][j])) nameins[swrite][j] = '_';
                     }
     
-                    sprintf(SampleName[swrite][0], "Untitled.wav");
                     
                     Clear_Instrument_Dat(swrite, 0, 0);
 
