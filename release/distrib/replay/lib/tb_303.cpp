@@ -44,7 +44,7 @@ gear303::gear303()
     reset();
 }
 
-#define DENORMAL_303 1
+#define DENORMAL_303 0
 
 #if DENORMAL_303
 __inline float denormal_303(float sample)

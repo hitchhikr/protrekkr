@@ -999,7 +999,7 @@ float absf(float x)
     return(x);
 }
 
-#define DENORMAL 1
+#define DENORMAL 0
 
 #if DENORMAL
 __inline float denormal(float sample)
@@ -1018,7 +1018,7 @@ __inline float denormal(float sample)
 #endif
 
 #if defined(USE_FASTPOW)
-void ToFloat(int *dest, int val)
+__inline void ToFloat(int *dest, int val)
 {
     *dest = val;
 }

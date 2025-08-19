@@ -230,7 +230,7 @@ void CSynth::Reset(void)
 #endif
 }
 
-#define DENORMAL_SYNTH 1
+#define DENORMAL_SYNTH 0
 
 #if DENORMAL_SYNTH
 __inline float denormal_synth(float sample)
