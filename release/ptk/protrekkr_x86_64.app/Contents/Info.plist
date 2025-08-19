@@ -1,6 +1,6 @@
-<?xml version="2.8.3 PRE 5" encoding="UTF-8"?>
+<?xml version="2.8.3 PRE 6" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="2.8.3 PRE 5">
+<plist version="2.8.3 PRE 6">
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
@@ -19,7 +19,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>2.8.3 PRE 5</string>
+	<string>2.8.3 PRE 6</string>
 	<key>NSMainNibFile</key>
 	<string>SDLMain</string>
 	<key>NSPrincipalClass</key>
