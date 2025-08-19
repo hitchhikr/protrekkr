@@ -41,7 +41,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-#if defined(__AROS__) || defined(__MORPHOS__)
+#if defined(__AROS__) || defined(__MORPHOS__) || defined(__AMIGAOS4__)
 #include <proto/camd.h>
 #include <proto/exec.h>
 #include <proto/dos.h>
@@ -58,33 +58,62 @@
 RtMidi :: RtMidi() : apiData_(0), connected_(false)
 {
 
-#if defined(__AROS__) || defined(__MORPHOS__)
+#if defined(__AROS__) || defined(__MORPHOS__) || defined(__AMIGAOS4__)
+
+#if defined(__AMIGAOS4__)
+    CamdBase = IExec->OpenLibrary("camd.library", 0L);
+#else
     CamdBase = OpenLibrary("camd.library", 0L);
+#endif
 
     if(CamdBase)
     {
-        MidiSig = AllocSignal(-1);
-        if(MidiSig != -1)
+
+#if defined(__AMIGAOS4__)
+        ICamd = (struct CamdIFace *) IExec->GetInterface(CamdBase, "main", 1, NULL);
+        if(ICamd)
+#endif
+
         {
-            TagItem Midi_Tags[] = 
-            {
-                MIDI_Name, (ULONG) "ProTrekkr",
-                MIDI_RecvSignal, 0,
-                MIDI_MsgQueue, 2048,
-                MIDI_SysExSize, 10000,
-                MIDI_ClientType, CCType_Sequencer,
-			    TAG_END
-            };
 
-	        // Let's create MIDI node for this piece of software
-            Midi_Tags[1].ti_Data = MidiSig;
-            CamdNode = (struct MidiNode *) CreateMidiA(Midi_Tags);
-            if(CamdNode == NULL)
+#if defined(__AMIGAOS4__)
+            MidiSig = IExec->AllocSignal(-1);
+#else
+            MidiSig = AllocSignal(-1);
+#endif
+
+            if(MidiSig != -1)
             {
-                FreeSignal(MidiSig);
-                MidiSig = -1;
+                TagItem Midi_Tags[] = 
+                {
+                    MIDI_Name, (ULONG) "ProTrekkr",
+                    MIDI_RecvSignal, 0,
+                    MIDI_MsgQueue, 2048,
+                    MIDI_SysExSize, 10000,
+                    MIDI_ClientType, CCType_Sequencer,
+			        TAG_END
+                };
+
+	            // Let's create MIDI node for this piece of software
+                Midi_Tags[1].ti_Data = MidiSig;
+
+#if defined(__AMIGAOS4__)
+                CamdNode = (struct MidiNode *) ICamd->CreateMidiA(Midi_Tags);
+#else
+                CamdNode = (struct MidiNode *) CreateMidiA(Midi_Tags);
+#endif
+
+                if(CamdNode == NULL)
+                {
+
+#if defined(__AMIGAOS4__)
+                    ICamd->FreeSignal(MidiSig);
+#else
+                    FreeSignal(MidiSig);
+#endif
+                    MidiSig = -1;
+                }
             }
-
         }
     }
 #endif
@@ -94,20 +123,47 @@ RtMidi :: RtMidi() : apiData_(0), connected_(false)
 RtMidi :: ~RtMidi() 
 {
 
-#if defined(__AROS__) || defined(__MORPHOS__)
+#if defined(__AROS__) || defined(__MORPHOS__) || defined(__AMIGAOS4__)
     if(CamdNode)
     {
+
+#if defined(__AMIGAOS4__)
+        ICamd->DeleteMidi(CamdNode);
+#else
         DeleteMidi(CamdNode);
+#endif
+
         CamdNode = NULL;
     }
+
     if(MidiSig != -1)
     {
+
+#if defined(__AMIGAOS4__)
+        IExec->FreeSignal(MidiSig);
+#else
         FreeSignal(MidiSig);
+#endif
+
     }
+
+#if defined(__AMIGAOS4__)
+    if(ICamd)
+    {
+        IExec->DropInterface((struct Interface *) ICamd);
+    }
+#endif
+    
     MidiSig = -1;
     if(CamdBase)
     {
+
+#if defined(__AMIGAOS4__)
+        IExec->CloseLibrary(CamdBase);
+#else
         CloseLibrary(CamdBase);
+#endif
+
     }
     CamdBase = NULL;
 #endif
@@ -2718,15 +2774,14 @@ void RtMidiOut :: sendMessage(std::vector<unsigned char> *message)
 //  API: AROS & MorphOS camd.library
 //*********************************************************************//
 
-#if defined(__AROS__) || defined(__MORPHOS__)
+#if defined(__AROS__) || defined(__MORPHOS__) || defined(__AMIGAOS4__)
 
 #include <pthread.h>
+
 #if !defined(__MORPHOS__)
 #include <midi/mididefs.h>
-#else
-//#define AddMidiLink AddMidiLinkA
-//#define CreateMidi CreateMidiA
 #endif
+
 TagItem Receiver_Tags[] = 
 { 
     MLINK_Location, 0,
@@ -2764,6 +2819,11 @@ struct CAMDMidiData
     int MidiSig;
     RtMidiIn::MidiMessage message;
     struct Library *CamdBase = NULL;
+
+#if defined(__AMIGAOS4__)
+    struct CamdIFace *ICamd = NULL;
+#endif
+
 };
 
 //*********************************************************************//
@@ -2782,6 +2842,7 @@ extern "C" void *CAMDMidiHandler(void *ptr)
     bool doDecode = false;
     MidiMsg mmsg;
     struct Library *CamdBase = NULL;
+    struct CamdIFace *ICamd = NULL;
     RtMidiIn::RtMidiCallback callback = (RtMidiIn::RtMidiCallback) data->userCallback;
 
     apiData->bufferSize = 32;
@@ -2795,7 +2856,13 @@ extern "C" void *CAMDMidiHandler(void *ptr)
     while(data->doInput)
     {
         CamdBase = apiData->CamdBase;
+
+#if defined(__AMIGAOS4__)
+        ICamd = apiData->ICamd;
+        while(ICamd->GetMidi(apiData->node, &mmsg))
+#else
         while(GetMidi(apiData->node, &mmsg))
+#endif
         {
             buffer[0] = mmsg.mm_Status & MS_StatBits;
             buffer[1] = mmsg.mm_Data1;
@@ -2836,6 +2903,10 @@ void RtMidiIn :: initialize(char *clientName)
     data->node = CamdNode;
     data->CamdBase = CamdBase;
 
+#if defined(__AMIGAOS4__)
+    data->ICamd = ICamd;
+#endif
+    
     if(data->node == NULL)
     {
         sprintf(errorString_, "RtMidiIn::initialize: no MIDI input devices currently available.");
@@ -2874,7 +2945,13 @@ void RtMidiIn :: openPort(unsigned int portNumber, char *portName)
     memset(Name, 0, sizeof(Name));
     getPortName(portNumber, Name);
     Receiver_Tags[0].ti_Data = (IPTR) Name;
+
+#if defined(__AMIGAOS4__)
+	data->inHandle = ICamd->AddMidiLinkA(data->node, MLTYPE_Receiver, Receiver_Tags);
+#else
 	data->inHandle = AddMidiLinkA(data->node, MLTYPE_Receiver, Receiver_Tags);
+#endif
+
     if(!data->inHandle)
     {
         sprintf(errorString_, "RtMidiIn::initialize: error creating CAMD MidiLink object.");
@@ -2912,7 +2989,11 @@ void RtMidiIn :: closePort(void)
         {
             if(data->inHandle)
             {
+#if defined(__AMIGAOS4__)
+                ICamd->RemoveMidiLink(data->inHandle);
+#else
                 RemoveMidiLink(data->inHandle);
+#endif
                 data->inHandle = NULL;
             }
         }
@@ -2945,16 +3026,39 @@ unsigned int RtMidiIn :: getPortCount()
     unsigned int devices = 0;
     struct MidiLink *link = NULL;
 
+#if defined(__AMIGAOS4__)
+    if(key = ICamd->LockCAMD(CD_Linkages))
+#else
     if(key = LockCAMD(CD_Linkages))
-	{
+#endif
+
+    {
+
+#if defined(__AMIGAOS4__)
+        clus = ICamd->NextCluster(NULL);
+#else
         clus = NextCluster(NULL);
+#endif
+
         while(clus)
         {
             devices++;
+
+#if defined(__AMIGAOS4__)
+            clus = ICamd->NextCluster(clus);
+#else
             clus = NextCluster(clus);
+#endif
+
         }
-		UnlockCAMD(key);
-	}
+
+#if defined(__AMIGAOS4__)
+        ICamd->UnlockCAMD(key);
+#else
+        UnlockCAMD(key);
+#endif
+
+    }
     return devices;
 }
 
@@ -2973,15 +3077,38 @@ std::string RtMidiIn :: getPortName(unsigned int portNumber, char *Name)
         return("");
     }
 
+#if defined(__AMIGAOS4__)
+    if(key = ICamd->LockCAMD(CD_Linkages))
+#else
     if(key = LockCAMD(CD_Linkages))
-	{
+#endif
+
+    {
+
+#if defined(__AMIGAOS4__)
+        clus = ICamd->NextCluster(NULL);
+#else
         clus = NextCluster(NULL);
+#endif
+
         for(i = 0; i < portNumber; i++)
         {
+
+#if defined(__AMIGAOS4__)
+            clus = ICamd->NextCluster(clus);
+#else
             clus = NextCluster(clus);
+#endif
+
         }
-		UnlockCAMD(key);
-	}
+
+#if defined(__AMIGAOS4__)
+        ICamd->UnlockCAMD(key);
+#else
+        UnlockCAMD(key);
+#endif
+
+    }
 Got_Port:
 
     if(clus)
@@ -3008,16 +3135,39 @@ unsigned int RtMidiOut :: getPortCount()
     unsigned int devices = 0;
     struct MidiLink *link = NULL;
 
+#if defined(__AMIGAOS4__)
+    if(key = ICamd->LockCAMD(CD_Linkages))
+#else
     if(key = LockCAMD(CD_Linkages))
-	{
+#endif
+
+    {
+
+#if defined(__AMIGAOS4__)
+        clus = ICamd->NextCluster(NULL);
+#else
         clus = NextCluster(NULL);
+#endif
+
         while(clus)
         {
             devices++;
+
+#if defined(__AMIGAOS4__)
+            clus = ICamd->NextCluster(clus);
+#else
             clus = NextCluster(clus);
+#endif
+
         }
+
+#if defined(__AMIGAOS4__)
+		ICamd->UnlockCAMD(key);
+#else
 		UnlockCAMD(key);
-	}
+#endif
+
+    }
     return devices;
 }
 
@@ -3036,15 +3186,38 @@ std::string RtMidiOut :: getPortName(unsigned int portNumber, char *Name)
         return("");
     }
 
+#if defined(__AMIGAOS4__)
+    if(key = ICamd->LockCAMD(CD_Linkages))
+#else
     if(key = LockCAMD(CD_Linkages))
-	{
+#endif
+
+    {
+
+#if defined(__AMIGAOS4__)
+        clus = ICamd->NextCluster(NULL);
+#else
         clus = NextCluster(NULL);
+#endif
+
         for(i = 0; i < portNumber; i++)
         {
+
+#if defined(__AMIGAOS4__)
+            clus = ICamd->NextCluster(clus);
+#else
             clus = NextCluster(clus);
+#endif
+
         }
-		UnlockCAMD(key);
-	}
+
+#if defined(__AMIGAOS4__)        
+        ICamd->UnlockCAMD(key);
+#else
+        UnlockCAMD(key);
+#endif
+
+    }
 Got_Port:
 
     if(clus)
@@ -3105,7 +3278,13 @@ void RtMidiOut :: openPort(unsigned int portNumber, char *portName)
     memset(Name, 0, sizeof(Name));
     getPortName(portNumber, Name);
     Sender_Tags[0].ti_Data = (IPTR) Name;
+
+#if defined(__AMIGAOS4__)
+    data->outHandle = ICamd->AddMidiLinkA(data->node, MLTYPE_Sender, Sender_Tags);
+#else
     data->outHandle = AddMidiLinkA(data->node, MLTYPE_Sender, Sender_Tags);
+#endif
+
     if(!data->outHandle)
     {
         sprintf(errorString_, "RtMidiOut::initialize: error creating CAMD MidiLink object.");
@@ -3125,7 +3304,13 @@ void RtMidiOut :: closePort(void)
         {
             if(data->outHandle)
             {
+
+#if defined(__AMIGAOS4__)
+                ICamd->RemoveMidiLink(data->outHandle);
+#else
                 RemoveMidiLink(data->outHandle);
+#endif
+
                 data->outHandle = NULL;
             }
         }
@@ -3181,7 +3366,13 @@ void RtMidiOut :: sendMessage(std::vector<unsigned char> *message)
             {
                 buffer[i] = message->at(i);
             }
+
+#if defined(__AMIGAOS4__)
+            ICamd->PutSysEx(data->outHandle, buffer);
+#else
             PutSysEx(data->outHandle, buffer);
+#endif
+
             free(buffer);
         }
         else
@@ -3200,7 +3391,13 @@ void RtMidiOut :: sendMessage(std::vector<unsigned char> *message)
             packet.mm_Data1 = message->at(1);
             packet.mm_Data2 = message->at(2);
             packet.mm_Port = 0;
+
+#if defined(__AMIGAOS4__)
+            ICamd->PutMidiMsg(data->outHandle, &packet);
+#else
             PutMidiMsg(data->outHandle, &packet);
+#endif
+
         }
     }
 }

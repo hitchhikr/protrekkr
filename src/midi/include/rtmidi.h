@@ -71,11 +71,16 @@ class RtMidi
         void *apiData_;
         bool connected_;
         char errorString_[256];
-#if defined(__AROS__) || defined(__MORPHOS__)
+
+#if defined(__AROS__) || defined(__MORPHOS__) || defined(__AMIGAOS4__)
         struct Library *CamdBase = NULL;
+#if defined(__AMIGAOS4__)
+        struct CamdIFace *ICamd = NULL;
+#endif
         int MidiSig = -1;
         struct MidiNode *CamdNode = NULL;
 #endif
+
 };
 
 /**********************************************************************/
