@@ -4,7 +4,7 @@ ProTrekkr releases history
 
 v2.8.3 PRE 6
 
-- Distribution archives are now included in a directory
+- Distribution files are now included in a directory
   (thanks to papiosaur for the suggestion).
 
 v2.8.3 PRE 5
