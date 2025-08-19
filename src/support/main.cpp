@@ -293,10 +293,6 @@ int Get_LShift(void)
 
 int Get_RShift(void)
 {
-/*#if !defined(__MORPHOS__)
-#else
-    if(SDL_GetModState() & KMOD_RMETA) return(TRUE);
-#endif*/
     if(SDL_GetModState() & KMOD_RSHIFT) return(TRUE);
     return(FALSE);
 }

@@ -1,9 +1,9 @@
-What may (or not) be done:
+What may (or may not) be done:
 
 V2.8.3:
 
-  - Add Midi support to AROS, AOS4 and MorphOS (also FreeBSD, NetBSD ?).
-  - Import ScreamTracker 3 modules and instruments.
+  - Add MIDI support to AOS4.
+  - Finish the import of ScreamTracker 3 modules.
 
 V3.0.0:
 
@@ -14,6 +14,7 @@ Interface:
   - Add a script engine based on LUA for the samples editor.
   - Integrated samples recording.
   - Integrated Skale Helper equivalent.
+  - Import the data of the chords helper as a .txt.
   - Vertical blocks inversion.
   - Expand/shrink blocks function.
   - Crossfade between 2 samples (LUA ?).
@@ -44,5 +45,5 @@ Files:
 
 Misc:
 
-  - Big manual with screenshots.
+  - Better manual with screenshots.
   - A replay for the PlayStation 3.
