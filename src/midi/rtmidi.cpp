@@ -61,7 +61,7 @@ RtMidi :: RtMidi() : apiData_(0), connected_(false)
 #if defined(__AROS__) || defined(__MORPHOS__) || defined(__AMIGAOS4__)
 
 #if defined(__AMIGAOS4__)
-    CamdBase = IExec->OpenLibrary("camd.library", 0L);
+    CamdBase = IExec->OpenLibrary((CONST_STRPTR) "camd.library", 0L);
 #else
     CamdBase = OpenLibrary("camd.library", 0L);
 #endif
@@ -70,7 +70,7 @@ RtMidi :: RtMidi() : apiData_(0), connected_(false)
     {
 
 #if defined(__AMIGAOS4__)
-        ICamd = (struct CamdIFace *) IExec->GetInterface(CamdBase, "main", 1, NULL);
+        ICamd = (struct CamdIFace *) IExec->GetInterface(CamdBase, (CONST_STRPTR) "main", 1, NULL);
         if(ICamd)
 #endif
 
@@ -107,7 +107,7 @@ RtMidi :: RtMidi() : apiData_(0), connected_(false)
                 {
 
 #if defined(__AMIGAOS4__)
-                    ICamd->FreeSignal(MidiSig);
+                    IExec->FreeSignal(MidiSig);
 #else
                     FreeSignal(MidiSig);
 #endif
@@ -2792,11 +2792,13 @@ TagItem Sender_Tags[] =
 { 
     MLINK_Location, 0,
     MLINK_Priority, 0,
-#if defined(__MORPHOS__)
+
+#if defined(__MORPHOS__) || defined(__AMIGAOS4__)
     MLINK_EventMask, CMF_All,
 #else
     MLINK_EventMask, CMD_All,
 #endif
+
     TAG_DONE
 };
 
@@ -2944,7 +2946,7 @@ void RtMidiIn :: openPort(unsigned int portNumber, char *portName)
     CAMDMidiData *data = static_cast<CAMDMidiData *> (apiData_);
     memset(Name, 0, sizeof(Name));
     getPortName(portNumber, Name);
-    Receiver_Tags[0].ti_Data = (IPTR) Name;
+    Receiver_Tags[0].ti_Data = (uint32_t) Name;
 
 #if defined(__AMIGAOS4__)
 	data->inHandle = ICamd->AddMidiLinkA(data->node, MLTYPE_Receiver, Receiver_Tags);
@@ -3115,7 +3117,7 @@ Got_Port:
     {
         char nameString[MAXPNAMELEN];
 
-        strcpy(nameString, clus->mcl_Node.ln_Name);
+        strcpy(nameString, (const char *) clus->mcl_Node.ln_Name);
         std::string stringName(nameString);
         strcpy(Name, nameString);
         return stringName;
@@ -3224,7 +3226,7 @@ Got_Port:
     {
         char nameString[MAXPNAMELEN];
 
-        strcpy(nameString, clus->mcl_Node.ln_Name);
+        strcpy(nameString, (const char *) clus->mcl_Node.ln_Name);
         std::string stringName(nameString);
         strcpy(Name, nameString);
         return stringName;
@@ -3277,7 +3279,7 @@ void RtMidiOut :: openPort(unsigned int portNumber, char *portName)
     CAMDMidiData *data = static_cast<CAMDMidiData *> (apiData_);
     memset(Name, 0, sizeof(Name));
     getPortName(portNumber, Name);
-    Sender_Tags[0].ti_Data = (IPTR) Name;
+    Sender_Tags[0].ti_Data = (uint32_t) Name;
 
 #if defined(__AMIGAOS4__)
     data->outHandle = ICamd->AddMidiLinkA(data->node, MLTYPE_Sender, Sender_Tags);
