@@ -2,7 +2,6 @@ What may (or may not) be done:
 
 V2.8.3 FINAL:
 
-  - Add MIDI support to AOS4.
   - Finish the import of ScreamTracker 3 modules.
 
 V3.0.0:
