@@ -53,7 +53,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /machine:I386
-# ADD LINK32 kernel32.lib user32.lib sdl.lib dsound.lib msacm32.lib zlib.lib winmm.lib advapi32.lib sdl_draw.lib shlwapi.lib sdlmain.lib msvcrt.lib libcp.lib opengl32.lib /nologo /subsystem:windows /pdb:none /machine:I386 /nodefaultlib /out:"release/distrib/ptk_win.exe"
+# ADD LINK32 kernel32.lib user32.lib sdl.lib dsound.lib msacm32.lib zlib.lib winmm.lib advapi32.lib sdl_draw.lib shlwapi.lib sdlmain.lib msvcrt.lib libcp.lib opengl32.lib /nologo /subsystem:windows /pdb:none /machine:I386 /nodefaultlib /out:"release/ptk/ptk_win.exe"
 # SUBTRACT LINK32 /debug
 
 !ELSEIF  "$(CFG)" == "ProTrekkr - Win32 Debug"
@@ -80,7 +80,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib sdl.lib sdl_draw.lib dsound.lib msacm32.lib winmm.lib advapi32.lib zlib.lib shlwapi.lib sdlmain.lib msvcrt.lib libcp.lib opengl32.lib /nologo /subsystem:windows /pdb:none /debug /machine:I386 /nodefaultlib /out:"release/distrib/ptk_win.exe"
+# ADD LINK32 kernel32.lib user32.lib sdl.lib sdl_draw.lib dsound.lib msacm32.lib winmm.lib advapi32.lib zlib.lib shlwapi.lib sdlmain.lib msvcrt.lib libcp.lib opengl32.lib /nologo /subsystem:windows /pdb:none /debug /machine:I386 /nodefaultlib /out:"release/ptk/ptk_win.exe"
 
 !ENDIF 
 
@@ -275,35 +275,35 @@ SOURCE=.\src\editors\patterns_blocks.cpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\release\distrib\replay\lib\include\endianness.h
+SOURCE=.\release\ptk\replay\lib\include\endianness.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\release\distrib\replay\lib\include\ptk_def_properties.h
+SOURCE=.\release\ptk\replay\lib\include\ptk_def_properties.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\release\distrib\replay\lib\include\ptkreplay.h
+SOURCE=.\release\ptk\replay\lib\include\ptkreplay.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\release\distrib\replay\lib\include\replay.h
+SOURCE=.\release\ptk\replay\lib\include\replay.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\release\distrib\replay\lib\include\samples_unpack.h
+SOURCE=.\release\ptk\replay\lib\include\samples_unpack.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\release\distrib\replay\lib\include\synth.h
+SOURCE=.\release\ptk\replay\lib\include\synth.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\release\distrib\replay\lib\include\tb_303.h
+SOURCE=.\release\ptk\replay\lib\include\tb_303.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\release\distrib\replay\lib\include\wavpack.h
+SOURCE=.\release\ptk\replay\lib\include\wavpack.h
 # End Source File
 # End Group
 # Begin Group "sounddriver"
@@ -314,37 +314,37 @@ SOURCE=.\release\distrib\replay\lib\include\wavpack.h
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\release\distrib\replay\lib\sounddriver\include\sounddriver_windows.h
+SOURCE=.\release\ptk\replay\lib\sounddriver\include\sounddriver_windows.h
 # End Source File
 # End Group
 # Begin Source File
 
-SOURCE=.\release\distrib\replay\lib\sounddriver\sounddriver_windows.cpp
+SOURCE=.\release\ptk\replay\lib\sounddriver\sounddriver_windows.cpp
 # End Source File
 # End Group
 # Begin Source File
 
-SOURCE=.\release\distrib\replay\lib\endianness.cpp
+SOURCE=.\release\ptk\replay\lib\endianness.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\release\distrib\replay\lib\replay.cpp
+SOURCE=.\release\ptk\replay\lib\replay.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\release\distrib\replay\lib\samples_unpack.cpp
+SOURCE=.\release\ptk\replay\lib\samples_unpack.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\release\distrib\replay\lib\synth.cpp
+SOURCE=.\release\ptk\replay\lib\synth.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\release\distrib\replay\lib\tb_303.cpp
+SOURCE=.\release\ptk\replay\lib\tb_303.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\release\distrib\replay\lib\wavpack.cpp
+SOURCE=.\release\ptk\replay\lib\wavpack.cpp
 # End Source File
 # End Group
 # Begin Group "ui"
@@ -629,11 +629,11 @@ SOURCE=.\src\samples\samples_pack.cpp
 # End Group
 # Begin Source File
 
-SOURCE=.\release\distrib\changes.txt
+SOURCE=.\release\ptk\changes.txt
 # End Source File
 # Begin Source File
 
-SOURCE=.\release\distrib\license.txt
+SOURCE=.\release\ptk\license.txt
 # End Source File
 # Begin Source File
 

@@ -28,12 +28,12 @@ RemObj:
 	-rm -f $(EXEOBJS)
 
 protrekkr: $(EXEOBJS)
-	-rm -f ./release/distrib/ptk_netbsd
+	-rm -f ./release/ptk/ptk_netbsd
 	(cd src/extralibs/sdl_draw; gmake -f makefile.netbsd)
 	(cd src/extralibs/zlib-1.2.3; gmake)
-	$(CXX) -o ./release/distrib/ptk_netbsd -L./ $(FLAGS) $(EXEOBJS) $(LIBS)
-	strip -s -x ./release/distrib/ptk_netbsd
-	chmod +x ./release/distrib/ptk_netbsd
+	$(CXX) -o ./release/ptk/ptk_netbsd -L./ $(FLAGS) $(EXEOBJS) $(LIBS)
+	strip -s -x ./release/ptk/ptk_netbsd
+	chmod +x ./release/ptk/ptk_netbsd
 	
 ptk.o: src/ptk.cpp
 	$(CC) -c -o $(@) $(FLAGS) $<
@@ -158,25 +158,25 @@ riff.o: src/samples/wav/riff.cpp
 riff_interface.o: src/samples/wav/riff_interface.cpp
 	$(CXX) -c -o $(@) $(FLAGS) $<
 
-tb_303.o: release/distrib/replay/lib/tb_303.cpp
+tb_303.o: release/ptk/replay/lib/tb_303.cpp
 	$(CC) -c -o $(@) $(FLAGS) $<
 
-wavpack.o: release/distrib/replay/lib/wavpack.cpp
+wavpack.o: release/ptk/replay/lib/wavpack.cpp
 	$(CC) -c -o $(@) $(FLAGS) $<
 
-samples_unpack.o: release/distrib/replay/lib/samples_unpack.cpp
+samples_unpack.o: release/ptk/replay/lib/samples_unpack.cpp
 	$(CC) -c -o $(@) $(FLAGS) $<
 
-replay.o: release/distrib/replay/lib/replay.cpp
+replay.o: release/ptk/replay/lib/replay.cpp
 	$(CC) -c -o $(@) $(FLAGS) $<
 
-synth.o: release/distrib/replay/lib/synth.cpp
+synth.o: release/ptk/replay/lib/synth.cpp
 	$(CC) -c -o $(@) $(FLAGS) $<
 
-endianness.o: release/distrib/replay/lib/endianness.cpp
+endianness.o: release/ptk/replay/lib/endianness.cpp
 	$(CC) -c -o $(@) $(FLAGS) $<
 
-sounddriver_netbsd.o: release/distrib/replay/lib/sounddriver/sounddriver_netbsd.cpp
+sounddriver_netbsd.o: release/ptk/replay/lib/sounddriver/sounddriver_netbsd.cpp
 	$(CC) -c -o $(@) $(FLAGS) $<
 
 bits.o: src/samples/wavpack/bits.cpp

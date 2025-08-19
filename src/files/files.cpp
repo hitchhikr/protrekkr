@@ -64,7 +64,7 @@
 #include "../editors/include/editor_pattern.h"
 #endif
 
-#include "../../release/distrib/replay/lib/include/endianness.h"
+#include "../../release/ptk/replay/lib/include/endianness.h"
 
 // ------------------------------------------------------
 // Variables

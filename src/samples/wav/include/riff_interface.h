@@ -35,7 +35,7 @@
 // ------------------------------------------------------
 // Includes
 #include "ddc.h"
-#include "../../../../release/distrib/replay/lib/include/endianness.h"
+#include "../../../../release/ptk/replay/lib/include/endianness.h"
 
 #ifdef __cplusplus
 extern "C"

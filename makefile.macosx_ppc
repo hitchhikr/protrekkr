@@ -30,14 +30,14 @@ RemObj:
 	-rm -f $(EXEOBJS_PPC)
 
 protrekkr_ppc: $(EXEOBJS_PPC)
-	-rm -f ./release/distrib/protrekkr_ppc.app/Contents/MacOS/Protrekkr
+	-rm -f ./release/ptk/protrekkr_ppc.app/Contents/MacOS/Protrekkr
 	(cd src/extralibs/zlib-1.2.3; make -f makefile.macosx_ppc)
 	(cd src/extralibs/bin2c; make -f makefile.macosx_ppc)
-	$(CXX) -o ./release/distrib/protrekkr_ppc.app/Contents/MacOS/Protrekkr -L./ -Lsrc/extralibs/sdl_draw -Lsrc/extralibs/zlib-1.2.3 \
+	$(CXX) -o ./release/ptk/protrekkr_ppc.app/Contents/MacOS/Protrekkr -L./ -Lsrc/extralibs/sdl_draw -Lsrc/extralibs/zlib-1.2.3 \
            -L/library/frameworks $(FLAGS_PPC) $(EXEOBJS_PPC) $(LIBS_PPC)
-	strip -x -X -S ./release/distrib/protrekkr_ppc.app/Contents/MacOS/Protrekkr
-	chmod +x ./release/distrib/protrekkr_ppc.app/Contents/MacOS/Protrekkr
-	install_name_tool ./release/distrib/protrekkr_ppc.app/Contents/MacOS/Protrekkr -change /usr/local/lib/libSDL-1.2.0.dylib @executable_path/libSDL-1.2.0.dylib
+	strip -x -X -S ./release/ptk/protrekkr_ppc.app/Contents/MacOS/Protrekkr
+	chmod +x ./release/ptk/protrekkr_ppc.app/Contents/MacOS/Protrekkr
+	install_name_tool ./release/ptk/protrekkr_ppc.app/Contents/MacOS/Protrekkr -change /usr/local/lib/libSDL-1.2.0.dylib @executable_path/libSDL-1.2.0.dylib
 	
 ptk_ppc.o: src/ptk.cpp
 	$(CC) -c -o $(@) $(FLAGS_PPC) $<
@@ -165,25 +165,25 @@ riff_ppc.o: src/samples/wav/riff.cpp
 riff_interface_ppc.o: src/samples/wav/riff_interface.cpp
 	$(CXX) -c -o $(@) $(FLAGS_PPC) $<
 
-tb_303_ppc.o: release/distrib/replay/lib/tb_303.cpp
+tb_303_ppc.o: release/ptk/replay/lib/tb_303.cpp
 	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
-wavpack_ppc.o: release/distrib/replay/lib/wavpack.cpp
+wavpack_ppc.o: release/ptk/replay/lib/wavpack.cpp
 	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
-samples_unpack_ppc.o: release/distrib/replay/lib/samples_unpack.cpp
+samples_unpack_ppc.o: release/ptk/replay/lib/samples_unpack.cpp
 	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
-replay_ppc.o: release/distrib/replay/lib/replay.cpp
+replay_ppc.o: release/ptk/replay/lib/replay.cpp
 	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
-synth_ppc.o: release/distrib/replay/lib/synth.cpp
+synth_ppc.o: release/ptk/replay/lib/synth.cpp
 	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
-endianness_ppc.o: release/distrib/replay/lib/endianness.cpp
+endianness_ppc.o: release/ptk/replay/lib/endianness.cpp
 	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
-sounddriver_macosx_ppc.o: release/distrib/replay/lib/sounddriver/sounddriver_macosx.cpp
+sounddriver_macosx_ppc.o: release/ptk/replay/lib/sounddriver/sounddriver_macosx.cpp
 	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
 bits_ppc.o: src/samples/wavpack/bits.cpp

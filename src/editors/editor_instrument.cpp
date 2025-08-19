@@ -36,9 +36,9 @@
 #include "../samples/include/samples_pack.h"
 #include "../files/include/files_list.h"
 
-#include "../../release/distrib/replay/lib/include/samples_unpack.h"
-#include "../../release/distrib/replay/lib/include/wavpack.h"
-#include "../../release/distrib/replay/lib/include/endianness.h"
+#include "../../release/ptk/replay/lib/include/samples_unpack.h"
+#include "../../release/ptk/replay/lib/include/wavpack.h"
+#include "../../release/ptk/replay/lib/include/endianness.h"
 
 #include "../files/include/files.h"
 #include "../ui/include/requesters.h"

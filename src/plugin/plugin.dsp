@@ -53,7 +53,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 kernel32.lib user32.lib ../../zlib.lib msvcrt.lib msacm32.lib dsound.lib /nologo /dll /machine:I386 /out:"..\..\release\distrib\in_ptk.dll"
+# ADD LINK32 kernel32.lib user32.lib ../../zlib.lib msvcrt.lib msacm32.lib dsound.lib /nologo /dll /machine:I386 /out:"..\..\release\ptk\in_ptk.dll"
 
 !ELSEIF  "$(CFG)" == "plugin - Win32 Debug"
 
@@ -132,59 +132,59 @@ SOURCE=.\out.h
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\release\distrib\replay\lib\include\ptk_def_properties.h
+SOURCE=..\..\release\ptk\replay\lib\include\ptk_def_properties.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\release\distrib\replay\lib\include\ptkreplay.h
+SOURCE=..\..\release\ptk\replay\lib\include\ptkreplay.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\release\distrib\replay\lib\replay.cpp
+SOURCE=..\..\release\ptk\replay\lib\replay.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\release\distrib\replay\lib\include\replay.h
+SOURCE=..\..\release\ptk\replay\lib\include\replay.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\release\distrib\replay\lib\samples_unpack.cpp
+SOURCE=..\..\release\ptk\replay\lib\samples_unpack.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\release\distrib\replay\lib\include\samples_unpack.h
+SOURCE=..\..\release\ptk\replay\lib\include\samples_unpack.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\release\distrib\replay\lib\sounddriver\sounddriver_windows.cpp
+SOURCE=..\..\release\ptk\replay\lib\sounddriver\sounddriver_windows.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\release\distrib\replay\lib\sounddriver\include\sounddriver_windows.h
+SOURCE=..\..\release\ptk\replay\lib\sounddriver\include\sounddriver_windows.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\release\distrib\replay\lib\synth.cpp
+SOURCE=..\..\release\ptk\replay\lib\synth.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\release\distrib\replay\lib\include\synth.h
+SOURCE=..\..\release\ptk\replay\lib\include\synth.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\release\distrib\replay\lib\tb_303.cpp
+SOURCE=..\..\release\ptk\replay\lib\tb_303.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\release\distrib\replay\lib\include\tb_303.h
+SOURCE=..\..\release\ptk\replay\lib\include\tb_303.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\release\distrib\replay\lib\wavpack.cpp
+SOURCE=..\..\release\ptk\replay\lib\wavpack.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\release\distrib\replay\lib\include\wavpack.h
+SOURCE=..\..\release\ptk\replay\lib\include\wavpack.h
 # End Source File
 # End Group
 # End Target

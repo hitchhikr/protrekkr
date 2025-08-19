@@ -9,10 +9,10 @@ remobj_bin2c:
 	-rm -f $(BIN2C_PPC)
 	
 bin2c: $(BIN2C_PPC)
-	g++ -o ../../../release/distrib/replay/bin2c -s -L./ $(FLAGS_PPC) $(BIN2C_PPC) $(BIN2C_LIBS_PPC)
+	g++ -o ../../../release/ptk/replay/bin2c -s -L./ $(FLAGS_PPC) $(BIN2C_PPC) $(BIN2C_LIBS_PPC)
 	-rm -f $(BIN2C_PPC)
-	strip -x -X -S ../../../release/distrib/replay/bin2c
-	chmod +x ../../../release/distrib/replay/bin2c
+	strip -x -X -S ../../../release/ptk/replay/bin2c
+	chmod +x ../../../release/ptk/replay/bin2c
 
 bin2c_ppc.o: bin2c.cpp
 	g++ -c -o $(@) $(FLAGS_PPC) bin2c.cpp

@@ -9,10 +9,10 @@ remobj_bin2c:
 	-rm -f $(BIN2C_X86_32)
 	
 bin2c: $(BIN2C_X86_32)
-	g++ -o ../../../release/distrib/replay/bin2c -L./ $(FLAGS_X86_32) $(BIN2C_X86_32) $(BIN2C_LIBS_X86_32)
+	g++ -o ../../../release/ptk/replay/bin2c -L./ $(FLAGS_X86_32) $(BIN2C_X86_32) $(BIN2C_LIBS_X86_32)
 	-rm -f $(BIN2C_X86_32)
-	strip -x -X -S ../../../release/distrib/replay/bin2c
-	chmod +x ../../../release/distrib/replay/bin2c
+	strip -x -X -S ../../../release/ptk/replay/bin2c
+	chmod +x ../../../release/ptk/replay/bin2c
 
 bin2c_x86_32.o: bin2c.cpp
 	g++ -c -o $(@) $(FLAGS_X86_32) bin2c.cpp

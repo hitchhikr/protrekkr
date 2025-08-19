@@ -22,7 +22,7 @@ Example:
 
 make -f makefile.linux
 
-The executable will be created in the release/distrib directory.
+The executable will be created in the release/ptk directory.
 
 Notice that you'll need SDL 1 (only to compile the tracker, the replay routines themselves have no dependencies).<br>
 > [!CAUTION]

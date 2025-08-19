@@ -30,15 +30,15 @@ RemObj:
 	-rm -f $(EXEOBJS_X86_64)
 
 protrekkr_x86_64: $(EXEOBJS_X86_64)
-	-rm -f ./release/distrib/protrekkr_x86_64.app/Contents/MacOS/Protrekkr
+	-rm -f ./release/ptk/protrekkr_x86_64.app/Contents/MacOS/Protrekkr
 	(cd src/extralibs/sdl_draw; make -f makefile.macosx_x86_64)
 	(cd src/extralibs/zlib-1.2.3; make -f makefile.macosx_x86_64)
 	(cd src/extralibs/bin2c; make -f makefile.macosx_x86_64)
-	$(CXX) -o ./release/distrib/protrekkr_x86_64.app/Contents/MacOS/Protrekkr \
+	$(CXX) -o ./release/ptk/protrekkr_x86_64.app/Contents/MacOS/Protrekkr \
            -L./ -L/opt/local/lib -L/library/frameworks -Lsrc/extralibs/sdl_draw -Lsrc/extralibs/zlib-1.2.3 $(FLAGS_X86_64) $(EXEOBJS_X86_64) $(LIBS_X86_64)
-	strip -x -X -S ./release/distrib/protrekkr_x86_64.app/Contents/MacOS/Protrekkr
-	chmod +x ./release/distrib/protrekkr_x86_64.app/Contents/MacOS/Protrekkr
-	install_name_tool ./release/distrib/protrekkr_x86_64.app/Contents/MacOS/Protrekkr -change /opt/local/lib/libSDL-1.2.0.dylib @executable_path/libSDL-1.2.0.dylib
+	strip -x -X -S ./release/ptk/protrekkr_x86_64.app/Contents/MacOS/Protrekkr
+	chmod +x ./release/ptk/protrekkr_x86_64.app/Contents/MacOS/Protrekkr
+	install_name_tool ./release/ptk/protrekkr_x86_64.app/Contents/MacOS/Protrekkr -change /opt/local/lib/libSDL-1.2.0.dylib @executable_path/libSDL-1.2.0.dylib
 
 ptk_x86_64.o: src/ptk.cpp
 	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
@@ -166,25 +166,25 @@ riff_x86_64.o: src/samples/wav/riff.cpp
 riff_interface_x86_64.o: src/samples/wav/riff_interface.cpp
 	$(CXX) -c -o $(@) $(FLAGS_X86_64) $<
 
-tb_303_x86_64.o: release/distrib/replay/lib/tb_303.cpp
+tb_303_x86_64.o: release/ptk/replay/lib/tb_303.cpp
 	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
 
-wavpack_x86_64.o: release/distrib/replay/lib/wavpack.cpp
+wavpack_x86_64.o: release/ptk/replay/lib/wavpack.cpp
 	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
 
-samples_unpack_x86_64.o: release/distrib/replay/lib/samples_unpack.cpp
+samples_unpack_x86_64.o: release/ptk/replay/lib/samples_unpack.cpp
 	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
 
-replay_x86_64.o: release/distrib/replay/lib/replay.cpp
+replay_x86_64.o: release/ptk/replay/lib/replay.cpp
 	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
 
-synth_x86_64.o: release/distrib/replay/lib/synth.cpp
+synth_x86_64.o: release/ptk/replay/lib/synth.cpp
 	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
 
-endianness_x86_64.o: release/distrib/replay/lib/endianness.cpp
+endianness_x86_64.o: release/ptk/replay/lib/endianness.cpp
 	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
 
-sounddriver_macosx_x86_64.o: release/distrib/replay/lib/sounddriver/sounddriver_macosx.cpp
+sounddriver_macosx_x86_64.o: release/ptk/replay/lib/sounddriver/sounddriver_macosx.cpp
 	$(CC) -c -o $(@) $(FLAGS_X86_64) $<
 
 bits_x86_64.o: src/samples/wavpack/bits.cpp

@@ -34,8 +34,8 @@
 #if defined(__WIN32__)
 #include <windows.h>
 #if defined(__GCC__)
-#include "../../release/distrib/replay/lib/include/mmreg.h"
-#include "../../release/distrib/replay/lib/include/msacm.h"
+#include "../../release/ptk/replay/lib/include/mmreg.h"
+#include "../../release/ptk/replay/lib/include/msacm.h"
 #else
 #include <mmreg.h>
 #include <msacm.h>
@@ -43,7 +43,7 @@
 #endif
 
 #include "include/samples_pack.h"
-#include "../../release/distrib/replay/lib/include/samples_unpack.h"
+#include "../../release/ptk/replay/lib/include/samples_unpack.h"
 
 int pack_audio(short *Source, short *Dest, int Size);
 

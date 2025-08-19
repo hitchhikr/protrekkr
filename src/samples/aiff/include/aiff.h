@@ -37,7 +37,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
-#include "../../../../release/distrib/replay/lib/include/endianness.h"
+#include "../../../../release/ptk/replay/lib/include/endianness.h"
 
 // ------------------------------------------------------
 // Constants

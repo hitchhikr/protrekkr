@@ -37,7 +37,7 @@
 #include "files.h"
 #include "reverbs.h"
 #include "../../editors/include/patterns_blocks.h"
-#include "../../../release/distrib/replay/lib/include/endianness.h"
+#include "../../../release/ptk/replay/lib/include/endianness.h"
 
 #if !defined(BZR2)
 #include "../../midi/include/midi.h"

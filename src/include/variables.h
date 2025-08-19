@@ -41,7 +41,7 @@
 
 #include "../support/include/main.h"
 #endif
-#include "../../release/distrib/replay/lib/include/replay.h"
+#include "../../release/ptk/replay/lib/include/replay.h"
 
 // ------------------------------------------------------
 // Constants

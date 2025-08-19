@@ -36,7 +36,7 @@
 
 #include "in2.h"
 
-#include "../../release/distrib/replay/lib/include/replay.h"
+#include "../../release/ptk/replay/lib/include/replay.h"
 #include "../include/version.h"
 
 // avoid CRT. Evil. Big. Bloated. Only uncomment this code if you are using 

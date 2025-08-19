@@ -82,8 +82,8 @@
 #include "../midi/include/midi.h"
 #endif
 
-#include "../../release/distrib/replay/lib/include/endianness.h"
-#include "../../release/distrib/replay/lib/include/replay.h"
+#include "../../release/ptk/replay/lib/include/endianness.h"
+#include "../../release/ptk/replay/lib/include/replay.h"
 
 #include <string>
 #include <list>
