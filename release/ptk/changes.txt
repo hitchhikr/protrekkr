@@ -4,15 +4,14 @@ ProTrekkr releases history
 
 v2.8.3 PRE 6
 
-- Distributions files are now included in a directory
-  (thanks to papiosaur for the suggestion).
-- MIDI implemented for Amiga OS 4.
+- Distributions files are now included in a directory.
+- Implemented MIDI support for Amiga OS 4.
 
 v2.8.3 PRE 5
 
 - Fixed a crash in Setup tab occurring in Windows version.
 - Replay speed up.
-- MIDI implemented for MorphOS.
+- Implemented MIDI support for MorphOS.
 - Due to the fact the MorphOS doesn't seem to handle right shift key properly,
   notes off can also be accessed with 'A' key (or 'Q' with French keyboard).
 - Right shift replaced with right alt for patterns sliders edition in MorphOS.
