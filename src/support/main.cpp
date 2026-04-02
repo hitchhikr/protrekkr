@@ -772,7 +772,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
         Message_Error(SDL_GetError());
         Destroy_Context();
         SDL_Quit();
-        return 0;
+        return EXIT_FAILURE;
     }
 
     Ptk_Palette[0].r = Save_R;
@@ -793,6 +793,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
     {
         Destroy_Context();
         SDL_Quit();
+        return EXIT_FAILURE;
     }
 
 #if defined(__AROS__) || defined(__AMIGAOS4__) || defined(__MORPHOS__)
@@ -1157,7 +1158,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
 
     Destroy_Context();
     SDL_Quit();
-    return 0;
+    return EXIT_SUCCESS;
 }
 
 // ------------------------------------------------------

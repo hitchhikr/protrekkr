@@ -2,9 +2,13 @@
 ProTrekkr releases history
 ===============================================================================
 
+v2.8.3 PRE 7
+
+- Won't crash if mandatory interface files aren't found.
+
 v2.8.3 PRE 6
 
-- Distributions files are now included in a directory.
+- Distributions files are now included inside a directory.
 - Implemented MIDI support for Amiga OS 4.
 
 v2.8.3 PRE 5
