@@ -2,7 +2,7 @@
 // Protrekkr
 // Based on Juan Antonio Arguelles Rius's NoiseTrekker.
 //
-// Copyright (C) 2008-2025 Franck Charlet.
+// Copyright (C) 2008-2026 Franck Charlet.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -52,8 +52,8 @@ int AUDIO_Milliseconds = 20;
 // Functions
 int AUDIO_Create_Sound_Buffer(int milliseconds);
 void AUDIO_Stop_Sound_Buffer(void);
-void (STDCALL *AUDIO_Mixer)(Uint8 *, Uint32);
-void AUDIO_Mixer_Fill_Buffer(void *, Uint32);
+void (STDCALL *AUDIO_Mixer)(UINT8 *, UINT32);
+void AUDIO_Mixer_Fill_Buffer(void *, UINT32);
 void AUDIO_Synth_Play(void);
 
 // ------------------------------------------------------
@@ -95,7 +95,7 @@ SceInt32 AUDIO_Thread(SceSize args, ScePVoid argp)
                 if(done == FALSE)
                 {
                     done = TRUE;
-                    AUDIO_Mixer((Uint8 *) ptrBuffer, AUDIO_SoundBuffer_Size);
+                    AUDIO_Mixer((UINT8 *) ptrBuffer, AUDIO_SoundBuffer_Size);
                 }
             }
         }
@@ -111,7 +111,7 @@ SceInt32 AUDIO_Thread(SceSize args, ScePVoid argp)
 // ------------------------------------------------------
 // Name: AUDIO_Init_Driver()
 // Desc: Init the audio driver
-int AUDIO_Init_Driver(void (*Mixer)(Uint8 *, Uint32))
+int AUDIO_Init_Driver(void (*Mixer)(UINT8 *, UINT32))
 {
     AUDIO_Mixer = Mixer;
     return(AUDIO_Create_Sound_Buffer(AUDIO_Milliseconds));

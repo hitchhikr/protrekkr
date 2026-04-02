@@ -2,7 +2,7 @@
 // Protrekkr
 // Based on Juan Antonio Arguelles Rius's NoiseTrekker.
 //
-// Copyright (C) 2008-2025 Franck Charlet.
+// Copyright (C) 2008-2026 Franck Charlet.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -115,7 +115,7 @@ typedef struct
 // ------------------------------------------------------
 // Variables
 #if !defined(BZR2)
-extern SDL_Surface *Main_Screen;
+extern SDL_TEXTURE *Main_Screen;
 extern MOUSE Mouse;
 #endif
 
@@ -149,10 +149,7 @@ extern HWND Main_Window;
 int Init_Context(void);
 void Destroy_Context(void);
 int Screen_Update(void);
-void STDCALL Mixer(Uint8 *Buffer, Uint32 Len);
-#if !defined(BZR2)
-SDL_Surface *Load_Skin_Picture(char *name);
-#endif
+void STDCALL Mixer(UINT8 *Buffer, UINT32 Len);
 LPJAZZ_KEY Get_Jazz_Key_Off(JAZZ_KEY Pool[MAX_TRACKS][MAX_POLYPHONY], int Note);
 int Discard_Key_Note_Off(JAZZ_KEY Pool[MAX_TRACKS][MAX_POLYPHONY], int Channel, int Sub_Channel);
 void Set_Default_Channels_Polyphony(void);

@@ -61,7 +61,7 @@
 
 ///////////////////////////// local table storage ////////////////////////////
 
-const uint32_t bitset [] =
+const UINT32 bitset [] =
 {
     1L << 0, 1L << 1, 1L << 2, 1L << 3,
     1L << 4, 1L << 5, 1L << 6, 1L << 7,
@@ -70,10 +70,10 @@ const uint32_t bitset [] =
     1L << 16, 1L << 17, 1L << 18, 1L << 19,
     1L << 20, 1L << 21, 1L << 22, 1L << 23,
     1L << 24, 1L << 25, 1L << 26, 1L << 27,
-    1L << 28, 1L << 29, 1L << 30, (uint32_t) 1L << 31
+    1L << 28, 1L << 29, 1L << 30, (UINT32) 1L << 31
 };
 
-const uint32_t bitmask [] =
+const UINT32 bitmask [] =
 {
     (1L << 0) - 1, (1L << 1) - 1, (1L << 2) - 1, (1L << 3) - 1,
     (1L << 4) - 1, (1L << 5) - 1, (1L << 6) - 1, (1L << 7) - 1,
@@ -105,7 +105,7 @@ const char nbits_table [] =
     8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8      // 240 - 255
 };
 
-static const uchar log2_table [] =
+static const UINT8 log2_table [] =
 {
     0x00, 0x01, 0x03, 0x04, 0x06, 0x07, 0x09, 0x0a, 0x0b, 0x0d, 0x0e, 0x10, 0x11, 0x12, 0x14, 0x15,
     0x16, 0x18, 0x19, 0x1a, 0x1c, 0x1d, 0x1e, 0x20, 0x21, 0x22, 0x24, 0x25, 0x26, 0x28, 0x29, 0x2a,
@@ -125,7 +125,7 @@ static const uchar log2_table [] =
     0xf4, 0xf5, 0xf6, 0xf7, 0xf7, 0xf8, 0xf9, 0xf9, 0xfa, 0xfb, 0xfc, 0xfc, 0xfd, 0xfe, 0xff, 0xff
 };
 
-static const uchar exp2_table [] =
+static const UINT8 exp2_table [] =
 {
     0x00, 0x01, 0x01, 0x02, 0x03, 0x03, 0x04, 0x05, 0x06, 0x06, 0x07, 0x08, 0x08, 0x09, 0x0a, 0x0b,
     0x0b, 0x0c, 0x0d, 0x0e, 0x0e, 0x0f, 0x10, 0x10, 0x11, 0x12, 0x13, 0x13, 0x14, 0x15, 0x16, 0x16,
@@ -159,7 +159,7 @@ static const char ones_count_table [] =
 
 ///////////////////////////// executable code ////////////////////////////////
 
-static int FASTCALL mylog2 (uint32_t avalue);
+static int FASTCALL mylog2 (UINT32 avalue);
 
 // Initialize entropy encoder for the specified stream. In lossless mode there
 // are no parameters to select; in hybrid mode the bitrate mode and value need
@@ -183,7 +183,7 @@ void word_set_bitrate (WavpackStream *wps)
     int bitrate_0;
 
     bitrate_0 = wps->bits < 568 ? 0 : wps->bits - 568;
-    wps->w.bitrate_acc [0] = (int32_t) bitrate_0 << 16;
+    wps->w.bitrate_acc [0] = (INT32) bitrate_0 << 16;
 }
 
 // Allocates the correct space in the metadata structure and writes the
@@ -194,10 +194,10 @@ void word_set_bitrate (WavpackStream *wps)
 
 void write_entropy_vars (WavpackStream *wps, WavpackMetadata *wpmd)
 {
-    uchar *byteptr;
+    UINT8 *byteptr;
     int temp;
 
-    byteptr = (uchar *) wpmd->temp_data;
+    byteptr = (UINT8 *) wpmd->temp_data;
     wpmd->data = wpmd->temp_data;
     wpmd->id = ID_ENTROPY_VARS;
 
@@ -208,7 +208,7 @@ void write_entropy_vars (WavpackStream *wps, WavpackMetadata *wpmd)
     *byteptr++ = temp = mylog2 (wps->w.median [2] [0]);
     *byteptr++ = temp >> 8;
 
-    wpmd->byte_length = byteptr - (uchar *) wpmd->data;
+    wpmd->byte_length = byteptr - (UINT8 *) wpmd->data;
     read_entropy_vars (wps, wpmd);
 }
 
@@ -221,11 +221,11 @@ void write_entropy_vars (WavpackStream *wps, WavpackMetadata *wpmd)
 
 void write_hybrid_profile (WavpackStream *wps, WavpackMetadata *wpmd)
 {
-    uchar *byteptr;
+    UINT8 *byteptr;
     int temp;
 
     word_set_bitrate (wps);
-    byteptr = (uchar *) wpmd->temp_data;
+    byteptr = (UINT8 *) wpmd->temp_data;
     wpmd->data = wpmd->temp_data;
     wpmd->id = ID_HYBRID_PROFILE;
 
@@ -240,7 +240,7 @@ void write_hybrid_profile (WavpackStream *wps, WavpackMetadata *wpmd)
         *byteptr++ = temp >> 8;
     }
 
-    wpmd->byte_length = byteptr - (uchar *) wpmd->data;
+    wpmd->byte_length = byteptr - (UINT8 *) wpmd->data;
     read_hybrid_profile (wps, wpmd);
 }
 
@@ -250,7 +250,7 @@ void write_hybrid_profile (WavpackStream *wps, WavpackMetadata *wpmd)
 
 int read_entropy_vars (WavpackStream *wps, WavpackMetadata *wpmd)
 {
-    uchar *byteptr = (uchar *) wpmd->data;
+    UINT8 *byteptr = (UINT8 *) wpmd->data;
 
     if (wpmd->byte_length != 6)
         return FALSE;
@@ -268,13 +268,13 @@ int read_entropy_vars (WavpackStream *wps, WavpackMetadata *wpmd)
 
 int read_hybrid_profile (WavpackStream *wps, WavpackMetadata *wpmd)
 {
-    uchar *byteptr = (uchar *) wpmd->data;
-    uchar *endptr = byteptr + wpmd->byte_length;
+    UINT8 *byteptr = (UINT8 *) wpmd->data;
+    UINT8 *endptr = byteptr + wpmd->byte_length;
 
     wps->w.slow_level [0] = exp2s (byteptr [0] + (byteptr [1] << 8));
     byteptr += 2;
 
-    wps->w.bitrate_acc [0] = (int32_t)(byteptr [0] + (byteptr [1] << 8)) << 16;
+    wps->w.bitrate_acc [0] = (INT32)(byteptr [0] + (byteptr [1] << 8)) << 16;
     byteptr += 2;
 
     if (byteptr < endptr) {
@@ -316,10 +316,10 @@ static void update_error_limit (WavpackStream *wps)
 // if a correction file is being created) and is used as feedback to the
 // predictor.
 
-int32_t FASTCALL send_word (WavpackStream *wps, int32_t value, int chan)
+INT32 FASTCALL send_word (WavpackStream *wps, INT32 value, int chan)
 {
-    int32_t ones_count;
-    int32_t low, mid, high;
+    INT32 ones_count;
+    INT32 low, mid, high;
     int sign = (value < 0) ? 1 : 0;
 
     if (!(wps->w.median [0] [0] & ~1) && !wps->w.holding_zero && !(wps->w.median [0] [1] & ~1)) {
@@ -349,7 +349,7 @@ int32_t FASTCALL send_word (WavpackStream *wps, int32_t value, int chan)
     if (!chan)
         update_error_limit (wps);
 
-    if (value < (int32_t) GET_MED (0)) {
+    if (value < (INT32) GET_MED (0)) {
         ones_count = low = 0;
         high = GET_MED (0) - 1;
         DEC_MED0 ();
@@ -358,7 +358,7 @@ int32_t FASTCALL send_word (WavpackStream *wps, int32_t value, int chan)
         low = GET_MED (0);
         INC_MED0 ();
 
-        if (value - low < (int32_t) GET_MED (1)) {
+        if (value - low < (INT32) GET_MED (1)) {
             ones_count = 1;
             high = low + GET_MED (1) - 1;
             DEC_MED1 ();
@@ -367,7 +367,7 @@ int32_t FASTCALL send_word (WavpackStream *wps, int32_t value, int chan)
             low += GET_MED (1);
             INC_MED1 ();
 
-            if (value - low < (int32_t) GET_MED (2)) {
+            if (value - low < (INT32) GET_MED (2)) {
                 ones_count = 2;
                 high = low + GET_MED (2) - 1;
                 DEC_MED2 ();
@@ -403,9 +403,9 @@ int32_t FASTCALL send_word (WavpackStream *wps, int32_t value, int chan)
 
     if (!wps->w.error_limit [chan]) {
         if (high != low) {      
-            uint32_t maxcode = high - low, code = value - low;
+            UINT32 maxcode = high - low, code = value - low;
             int bitcount = count_bits (maxcode);
-            uint32_t extras = bitset [bitcount] - maxcode - 1;
+            UINT32 extras = bitset [bitcount] - maxcode - 1;
 
             if (code < extras) {
                 wps->w.pend_data |= code << wps->w.pend_count;
@@ -421,7 +421,7 @@ int32_t FASTCALL send_word (WavpackStream *wps, int32_t value, int chan)
         mid = value;
     }
     else
-        while (high - low > (int32_t) wps->w.error_limit [chan])
+        while (high - low > (INT32) wps->w.error_limit [chan])
             if (value < mid) {
                 mid = ((high = mid - 1) + low + 1) >> 1;
                 wps->w.pend_count++;
@@ -431,15 +431,15 @@ int32_t FASTCALL send_word (WavpackStream *wps, int32_t value, int chan)
                 wps->w.pend_data |= bitset [wps->w.pend_count++];
             }
 
-    wps->w.pend_data |= ((int32_t) sign << wps->w.pend_count++);
+    wps->w.pend_data |= ((INT32) sign << wps->w.pend_count++);
 
     if (!wps->w.holding_zero)
         flush_word (wps);
 
     if (bs_is_open (&wps->wvcbits) && wps->w.error_limit [chan]) {
-        uint32_t code = value - low, maxcode = high - low;
+        UINT32 code = value - low, maxcode = high - low;
         int bitcount = count_bits (maxcode);
-        uint32_t extras = bitset [bitcount] - maxcode - 1;
+        UINT32 extras = bitset [bitcount] - maxcode - 1;
 
         if (bitcount) {
             if (code < extras) {
@@ -540,7 +540,7 @@ void flush_word (WavpackStream *wps)
 // This function returns the log2 for the specified 32-bit unsigned value.
 // The maximum value allowed is about 0xff800000 and returns 8447.
 
-static int FASTCALL mylog2 (uint32_t avalue)
+static int FASTCALL mylog2 (UINT32 avalue)
 {
     int dbits;
 
@@ -564,7 +564,7 @@ static int FASTCALL mylog2 (uint32_t avalue)
 // All input values are valid and the return values are in the range of
 // +/- 8192.
 
-int log2s (int32_t value)
+int log2s (INT32 value)
 {
     return (value < 0) ? -mylog2 (-value) : mylog2 (value);
 }
@@ -574,9 +574,9 @@ int log2s (int32_t value)
 // but since a full 32-bit value is returned this can be used for unsigned
 // conversions as well (i.e. the input range is -8192 to +8447).
 
-int32_t exp2s (int log)
+INT32 exp2s (int log)
 {
-    uint32_t value;
+    UINT32 value;
 
     if (log < 0)
         return -exp2s (-log);

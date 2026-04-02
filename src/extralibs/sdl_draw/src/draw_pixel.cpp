@@ -26,29 +26,13 @@
 #include "../../include/sdl_draw.h"
 #endif
 
-#define SDL_DRAW_PUTPIXEL_BPP(A, B, C) *(A(B(Uint8 *) super->pixels + y * super->pitch + x * SDL_DRAW_BPP)) = C;
+#define SDL_DRAW_PUTPIXEL_BPP(A, B, C) *(A(B(UINT8 *) super->pixels + y * super->pitch + x * SDL_DRAW_BPP)) = C;
 
-#define SDL_DRAW_PUTPIXEL SDL_DRAW_PUTPIXEL_BPP(0+, 0+, (Uint8) color)
+#define SDL_DRAW_PUTPIXEL SDL_DRAW_PUTPIXEL_BPP(0+, 0+, (UINT8) color)
 
-void STDCALL Draw_Pixel(SDL_Surface *super, Sint16 x, Sint16 y, Uint32 color)
+void STDCALL Draw_Pixel(SDL_Surface *super, INT16 x, INT16 y, UINT32 color)
 {
-    /* Lock surface */
-/*    if (SDL_MUSTLOCK(super))
-    {
-        if(SDL_LockSurface(super) < 0)
-        {
-            return; 
-        }
-    }
-*/
     SDL_DRAW_PUTPIXEL
-
-    /* Unlock surface */
-/*    if (SDL_MUSTLOCK(super))
-    { 
-        SDL_UnlockSurface(super);
-    }
-*/
 
 }/*Draw_Pixel*/
 

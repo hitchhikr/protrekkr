@@ -2,7 +2,7 @@
 // Protrekkr
 // Based on Juan Antonio Arguelles Rius's NoiseTrekker.
 //
-// Copyright (C) 2008-2025 Franck Charlet.
+// Copyright (C) 2008-2026 Franck Charlet.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -47,9 +47,9 @@
 #endif
 typedef struct
 {
-   Uint8 Pos;
-   Uint8 Row;
-   Uint8 Data;
+   UINT8 Pos;
+   UINT8 Row;
+   UINT8 Data;
 } SYNC_FX, *LPSYNC_FX;
 #pragma pack(pop)
 

@@ -29,37 +29,32 @@
 // SUCH DAMAGE.
 // ------------------------------------------------------
 
-#ifndef _AIFF_INTERFACE_H_
-#define _AIFF_INTERFACE_H_
+#ifndef _PTK_TYPES_H_
+#define _PTK_TYPES_H_
 
 // ------------------------------------------------------
-// Includes
-#include "../../../../release/ptk/replay/lib/include/endianness.h"
-
-#ifdef __cplusplus
-extern "C"
-{
+// Types
+#if defined(__WIN32__) && !defined(__GCC__)
+    typedef unsigned __int64 UINT64;
+    typedef signed __int64 INT64;
+#else
+    #if defined(__HAIKU__) || defined(__LINUX__) || defined(__AROS__) || defined(__AMIGAOS4__)
+        #include <stdint.h>
+        #define UINT64 uint64_t
+        #define INT64 int64_t
+    #else
+        typedef unsigned long long UINT64;
+        typedef signed long long INT64;
+    #endif
 #endif
+typedef unsigned int UINT32;
+typedef signed int INT32;
+typedef unsigned short UINT16;
+typedef signed short INT16;
+typedef unsigned char UINT8;
+typedef signed char INT8;
 
-typedef void *AIFFHandle;
-AIFFHandle create_aiff(void);
-void free_aiff(AIFFHandle);
-
-int AIFF_Open(AIFFHandle, const char *Filename);
-void AIFF_Close(AIFFHandle);
-int AIFF_BitsPerSample(AIFFHandle);
-int AIFF_NumChannels(AIFFHandle);
-unsigned long AIFF_NumSamples(AIFFHandle);
-int AIFF_BaseNote(AIFFHandle);
-int AIFF_LoopType(AIFFHandle);
-unsigned long AIFF_LoopStart(AIFFHandle);
-unsigned long AIFF_LoopEnd(AIFFHandle);
-
-int AIFF_ReadMonoSample(AIFFHandle, short *Sample);
-int AIFF_ReadStereoSample(AIFFHandle, short *L, short *R);
-
-#ifdef __cplusplus
-}
-#endif
+#define TRUE 1
+#define FALSE 0
 
 #endif

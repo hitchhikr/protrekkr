@@ -2,7 +2,7 @@
 // Protrekkr
 // Based on Juan Antonio Arguelles Rius's NoiseTrekker.
 //
-// Copyright (C) 2008-2025 Franck Charlet.
+// Copyright (C) 2008-2026 Franck Charlet.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -64,8 +64,8 @@ extern char Mp3_BitRate[MAX_INSTRS];
 extern int Type_Mp3_BitRate[];
 extern char At3_BitRate[MAX_INSTRS];
 extern int Type_At3_BitRate[];
-extern int32 sed_real_range_start;
-extern int32 sed_real_range_end;
+extern INT32 sed_real_range_start;
+extern INT32 sed_real_range_end;
 
 void Lock_Sample(int instr_nbr, int split);
 
@@ -1095,7 +1095,7 @@ void Display_Fine_Loop_Data(void)
     {
         for(int a = 0; a < 200; a++)
         {
-            Uint32 ose = a + LoopStart[Current_Instrument][Current_Instrument_Split];
+            UINT32 ose = a + LoopStart[Current_Instrument][Current_Instrument_Split];
             if(ose < Sample_Length[Current_Instrument][Current_Instrument_Split])
             {
                 int v = *(RawSamples[Current_Instrument][0][Current_Instrument_Split] + ose) / 1024;
@@ -1117,7 +1117,7 @@ void Display_Fine_Loop_Data(void)
     {
         for(int b = 0; b < 200; b++)
         {
-            Uint32 ose = (LoopEnd[Current_Instrument][Current_Instrument_Split] - 200) + b;
+            UINT32 ose = (LoopEnd[Current_Instrument][Current_Instrument_Split] - 200) + b;
             iose = ose;
             if(iose > -1 && ose < Sample_Length[Current_Instrument][Current_Instrument_Split])
             {
@@ -1140,8 +1140,8 @@ void Display_Fine_Loop_Data(void)
 
 void Mouse_Left_Repeat_Instrument_Ed(void)
 {
-    int32 *Cur_Loop_Start = (int32 *) &LoopStart[Current_Instrument][Current_Instrument_Split];
-    int32 *Cur_Loop_End = (int32 *) &LoopEnd[Current_Instrument][Current_Instrument_Split];
+    INT32 *Cur_Loop_Start = (INT32 *) &LoopStart[Current_Instrument][Current_Instrument_Split];
+    INT32 *Cur_Loop_End = (INT32 *) &LoopEnd[Current_Instrument][Current_Instrument_Split];
 
     if(userscreen == USER_SCREEN_INSTRUMENT_EDIT && seditor == 1)
     {
@@ -1165,7 +1165,7 @@ void Mouse_Left_Repeat_Instrument_Ed(void)
             gui_action = GUI_CMD_UPDATE_LOOP_EDITOR_ED;
             teac = 5;
         }
-        if(Check_Mouse(394, (Cur_Height - 130), 16, 16) && *Cur_Loop_End < (int32) Sample_Length[Current_Instrument][Current_Instrument_Split])
+        if(Check_Mouse(394, (Cur_Height - 130), 16, 16) && *Cur_Loop_End < (INT32) Sample_Length[Current_Instrument][Current_Instrument_Split])
         {
             *Cur_Loop_End += 1;
             gui_action = GUI_CMD_UPDATE_LOOP_EDITOR_ED;
@@ -1176,8 +1176,8 @@ void Mouse_Left_Repeat_Instrument_Ed(void)
 
 void Mouse_Sliders_Right_Instrument_Ed(void)
 {
-    int32 *Cur_Loop_Start = (int32 *) &LoopStart[Current_Instrument][Current_Instrument_Split];
-    int32 *Cur_Loop_End = (int32 *) &LoopEnd[Current_Instrument][Current_Instrument_Split];
+    INT32 *Cur_Loop_Start = (INT32 *) &LoopStart[Current_Instrument][Current_Instrument_Split];
+    INT32 *Cur_Loop_End = (INT32 *) &LoopEnd[Current_Instrument][Current_Instrument_Split];
 
     if(userscreen == USER_SCREEN_INSTRUMENT_EDIT && seditor == 1)
     {
@@ -1208,10 +1208,10 @@ void Mouse_Sliders_Right_Instrument_Ed(void)
             teac = 5;
         }
         if(Check_Mouse(394, (Cur_Height - 130), 16, 16) && *Cur_Loop_End <
-           (int32) Sample_Length[Current_Instrument][Current_Instrument_Split])
+           (INT32) Sample_Length[Current_Instrument][Current_Instrument_Split])
         {
             *Cur_Loop_End += 10;
-            if(*Cur_Loop_End > (int32) Sample_Length[Current_Instrument][Current_Instrument_Split])
+            if(*Cur_Loop_End > (INT32) Sample_Length[Current_Instrument][Current_Instrument_Split])
             {
                 *Cur_Loop_End = Sample_Length[Current_Instrument][Current_Instrument_Split];
             }
@@ -1235,9 +1235,9 @@ void Dump_Instruments_Synths_List(int xr, int yr)
         case SCOPE_ZONE_INSTR_LIST:
         case SCOPE_ZONE_SYNTH_LIST:
 
-            SetColor(COL_BACKGROUND);
+            Set_Color(COL_BACKGROUND);
             bjbox(xr - 1, yr + 1, Cur_Width - 412, 137);
-            SetColor(COL_BLACK);
+            Set_Color(COL_BLACK);
             bjbox(Cur_Width - 19, yr + 1, 1, 137);
 
             for(int counter = 0; counter < 11; counter++)
@@ -1248,7 +1248,7 @@ void Dump_Instruments_Synths_List(int xr, int yr)
                 {
                     if(Instrs_index + counter == Current_Instrument)
                     {
-                        SetColor(COL_PUSHED_MED);
+                        Set_Color(COL_PUSHED_MED);
                         bjbox(xr, yr + (counter * 12) + 2, Cur_Width - 415, 11);
                     }
 
@@ -1640,29 +1640,29 @@ void Lock_Sample(int instr_nbr, int split)
             {
 #if defined(__AT3_CODEC__)
                 case SMP_PACK_AT3:
-                    Unpack_AT3((Uint8 *) PackedSample, Dest_Buffer, PackedLen, Size, BitRate);
+                    Unpack_AT3((UINT8 *) PackedSample, Dest_Buffer, PackedLen, Size, BitRate);
                     break;
 #endif
 #if defined(__GSM_CODEC__)
                 case SMP_PACK_GSM:
-                    Unpack_GSM((Uint8 *) PackedSample, Dest_Buffer, PackedLen, Size);
+                    Unpack_GSM((UINT8 *) PackedSample, Dest_Buffer, PackedLen, Size);
                     break;
 #endif
 #if defined(__MP3_CODEC__)
                 case SMP_PACK_MP3:
-                    Unpack_MP3((Uint8 *) PackedSample, Dest_Buffer, PackedLen, Size, BitRate);
+                    Unpack_MP3((UINT8 *) PackedSample, Dest_Buffer, PackedLen, Size, BitRate);
                     break;
 #endif
                 case SMP_PACK_ADPCM:
-                    Unpack_ADPCM((Uint8 *) PackedSample, Dest_Buffer, PackedLen, Size);
+                    Unpack_ADPCM((UINT8 *) PackedSample, Dest_Buffer, PackedLen, Size);
                     break;
 
                 case SMP_PACK_8BIT:
-                    Unpack_8Bit((Uint8 *) PackedSample, Dest_Buffer, PackedLen, Size);
+                    Unpack_8Bit((UINT8 *) PackedSample, Dest_Buffer, PackedLen, Size);
                     break;
 
                 case SMP_PACK_WAVPACK:
-                    Unpack_WavPack((Uint8 *) PackedSample, Dest_Buffer, PackedLen, Size);
+                    Unpack_WavPack((UINT8 *) PackedSample, Dest_Buffer, PackedLen, Size);
                     break;
             }
         }

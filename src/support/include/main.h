@@ -2,7 +2,7 @@
 // Protrekkr
 // Based on Juan Antonio Arguelles Rius's NoiseTrekker.
 //
-// Copyright (C) 2008-2025 Franck Charlet.
+// Copyright (C) 2008-2026 Franck Charlet.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -34,11 +34,7 @@
 
 // ------------------------------------------------------
 // Includes
-#include <SDL/SDL.h>
-#if defined(__WIN32__)
-#include <SDL/SDL_syswm.h>
-#endif
-
+#include "../../ui/include/draw_primitives.h"
 #include "../../include/version.h"
 
 // ------------------------------------------------------
@@ -54,10 +50,9 @@
 #define SDL_MOUSE_LEFT_BUTTON 1
 #define SDL_MOUSE_MIDDLE_BUTTON 2
 #define SDL_MOUSE_RIGHT_BUTTON 3
+#define SDL_GO_FULLSCREEN (SDL_USEREVENT + 1)
 
 #define MAX_EVENTS 16
-
-#define SDL_GO_FULLSCREEN (SDL_USEREVENT + 1)
 
 // ------------------------------------------------------
 // Structure
@@ -101,5 +96,7 @@ int Get_LCtrl(void);
 int Get_RCtrl(void);
 int Redraw_Screen(void);
 void Redraw_Screen_Quick(void);
+SDL_Rect *Get_Screen_Rect(int mode_index);
+void Set_Window_Pos(int left, int Top);
 
 #endif

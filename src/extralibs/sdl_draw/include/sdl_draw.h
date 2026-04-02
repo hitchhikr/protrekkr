@@ -25,6 +25,7 @@
 #define SDL_DRAW_H
 
 #include <SDL/SDL.h>
+#include <ptk_types.h>
 
 #define SDL_DRAW_BPP 1
 
@@ -34,8 +35,8 @@
 #define STDCALL
 #endif
 
-void STDCALL Draw_Pixel(SDL_Surface *super, Sint16 x, Sint16 y, Uint32 color);
-void STDCALL Draw_HLine(SDL_Surface *super, Sint16 x0,Sint16 y0, Sint16 x1, Uint32 color);
-void STDCALL Draw_VLine(SDL_Surface *super, Sint16 x0,Sint16 y0, Sint16 y1, Uint32 color);
+void STDCALL Draw_Pixel(SDL_Surface *super, INT16 x, INT16 y, UINT32 color);
+void STDCALL Draw_HLine(SDL_Surface *super, INT16 x0, INT16 y0, INT16 x1, UINT32 color);
+void STDCALL Draw_VLine(SDL_Surface *super, INT16 x0, INT16 y0, INT16 y1, UINT32 color);
 
 #endif /* SDL_DRAW_H */

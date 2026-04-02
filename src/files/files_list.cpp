@@ -2,7 +2,7 @@
 // Protrekkr
 // Based on Juan Antonio Arguelles Rius's NoiseTrekker.
 //
-// Copyright (C) 2008-2025 Franck Charlet.
+// Copyright (C) 2008-2026 Franck Charlet.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -44,9 +44,6 @@
 #include <dirent.h>
 #include <sys/stat.h>
 #if defined(__AROS__) || defined(__MORPHOS__)
-#include <stdint.h>
-#define int32 int32_t
-#define uint32 uint32_t
 #define PATH_SEPARATOR "/"
 #define MAXLEN 512
 #endif
@@ -346,9 +343,9 @@ int list_file(const char *fpath, const struct stat *sb, int typeflag, struct FTW
 #if defined(__AROS__) || defined(__MORPHOS__)
 void CopyStringBSTRToC(BSTR in,
                        STRPTR out,
-                       uint32_t max)
+                       UINT32 max)
 {
-    uint32_t i;
+    UINT32 i;
     
     max = AROS_BSTR_strlen(in);
     
@@ -506,7 +503,7 @@ void Read_SMPT(void)
     {
         // Only display volumes
         struct DosList *dl;
-        const uint32 flags = LDF_VOLUMES | LDF_READ;
+        const UINT32 flags = LDF_VOLUMES | LDF_READ;
         char BString[1024];
         dl = LockDosList(flags);
         while ((dl = NextDosEntry(dl, flags)) != NULL)
@@ -669,9 +666,9 @@ void Dump_Files_List(int xr, int yr)
         case SCOPE_ZONE_PATTERN_DIR:
         case SCOPE_ZONE_MIDICFG_DIR:
         case SCOPE_ZONE_SAMPLE_DIR:
-            SetColor(COL_BACKGROUND);
+            Set_Color(COL_BACKGROUND);
             bjbox(xr - 1, yr + 1, Cur_Width - 413, 137);
-            SetColor(COL_BLACK);
+            Set_Color(COL_BLACK);
             bjbox(Cur_Width - 19, yr + 1, 1, 137);
 
             // Current dir background
@@ -713,7 +710,7 @@ void Dump_Files_List(int xr, int yr)
                         // Highlight bar in files requester.
                         if(y + counter == lt_curr[Scopish])
                         {
-                            SetColor(COL_PUSHED_MED);
+                            Set_Color(COL_PUSHED_MED);
                             bjbox(xr, yr + (counter * space) + 2, (Cur_Width - 415), space);
                         }
 
@@ -744,7 +741,7 @@ void Dump_Files_List(int xr, int yr)
                                 }
                                 break;
                             case _A_SEP:
-                                SetColor(COL_PUSHED_HI);
+                                Set_Color(COL_PUSHED_HI);
                                 bjbox(xr - 1, yr + (counter * space) + (space / 2) + 1, Cur_Width - 413, 1);
                                 break;
                         }
@@ -811,16 +808,16 @@ void Actualize_Files_List(int modeac)
 // Draw the slider beside the list
 void Draw_Lists_Slider(int idx)
 {
-    SetColor(COL_BLACK);
+    Set_Color(COL_BLACK);
     bjbox(Cur_Width - 18, 42, 18, 136);
 
-    SetColor(COL_STATIC_LO);
+    Set_Color(COL_STATIC_LO);
     bjbox(Cur_Width - 18, 59 - 1, 15 + 2, 103 + 2);
-    SetColor(COL_STATIC_HI);
+    Set_Color(COL_STATIC_HI);
     bjbox(Cur_Width - 17, 59, 15 + 1, 103 + 1);
-    SetColor(COL_INPUT_MED);
+    Set_Color(COL_INPUT_MED);
     bjbox(Cur_Width - 17, 59, 15, 103);
-    SetColor(COL_SLIDER_MED);
+    Set_Color(COL_SLIDER_MED);
     bjbox(Cur_Width - 17, 59 + idx, 15, 103 - idx);
 
     Gui_Draw_Button_Box(MAX_PATT_SCREEN_X + 2, 58 + idx + 1, 16 - 2, 32, NULL, BUTTON_NORMAL);

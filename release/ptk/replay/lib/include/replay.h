@@ -2,7 +2,7 @@
 // Protrekkr
 // Based on Juan Antonio Arguelles Rius's NoiseTrekker.
 //
-// Copyright (C) 2008-2025 Franck Charlet.
+// Copyright (C) 2008-2026 Franck Charlet.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -34,6 +34,7 @@
 
 // ------------------------------------------------------
 // Includes
+#include <ptk_types.h>
 #include "tb_303.h"
 #if !defined(BZR2)
 #if defined(__WIN32__)
@@ -322,17 +323,17 @@ extern unsigned char Synth_Prg[MAX_INSTRS];
 #if !defined(__STAND_ALONE__)
 extern char SamplesSwap[MAX_INSTRS];
 extern short *RawSamples_Swap[MAX_INSTRS][2][MAX_INSTRS_SPLITS];
-extern Uint32 Sample_Length_Packed[MAX_INSTRS][MAX_INSTRS_SPLITS];
+extern UINT32 Sample_Length_Packed[MAX_INSTRS][MAX_INSTRS_SPLITS];
 #endif
 
 extern char SampleType[MAX_INSTRS][MAX_INSTRS_SPLITS];
 extern char SampleCompression[MAX_INSTRS];
 extern char SampleName[MAX_INSTRS][MAX_INSTRS_SPLITS][64];
 extern char Basenote[MAX_INSTRS][MAX_INSTRS_SPLITS];
-extern Uint32 LoopStart[MAX_INSTRS][MAX_INSTRS_SPLITS];
-extern Uint32 LoopEnd[MAX_INSTRS][MAX_INSTRS_SPLITS];
+extern UINT32 LoopStart[MAX_INSTRS][MAX_INSTRS_SPLITS];
+extern UINT32 LoopEnd[MAX_INSTRS][MAX_INSTRS_SPLITS];
 extern char LoopType[MAX_INSTRS][MAX_INSTRS_SPLITS];
-extern Uint32 Sample_Length[MAX_INSTRS][MAX_INSTRS_SPLITS];
+extern UINT32 Sample_Length[MAX_INSTRS][MAX_INSTRS_SPLITS];
 extern char Finetune[MAX_INSTRS][MAX_INSTRS_SPLITS];
 extern float Sample_Amplify[MAX_INSTRS][MAX_INSTRS_SPLITS];
 extern float FDecay[MAX_INSTRS][MAX_INSTRS_SPLITS];

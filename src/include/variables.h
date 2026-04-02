@@ -2,7 +2,7 @@
 // Protrekkr
 // Based on Juan Antonio Arguelles Rius's NoiseTrekker.
 //
-// Copyright (C) 2008-2025 Franck Charlet.
+// Copyright (C) 2008-2026 Franck Charlet.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -37,8 +37,7 @@
 // ------------------------------------------------------
 // Includes
 #if !defined(BZR2)
-#include <SDL/SDL.h>
-
+#include "../ui/include/draw_primitives.h"
 #include "../support/include/main.h"
 #endif
 #include "../../release/ptk/replay/lib/include/replay.h"
@@ -370,12 +369,6 @@ typedef struct
     int cStatus;
 } MARKER, *LPMARKER;
 
-#if defined(__HAIKU__)
-#include <stdint.h>
-typedef int32_t int32;
-#define int64 int64_t
-#endif
-
 // ------------------------------------------------------
 // Variables
 extern int SamplesPerTick;
@@ -425,7 +418,7 @@ extern int resty;
 extern int rs_coef;
 
 #if !defined(BZR2)
-extern SDL_Surface *Main_Screen;
+extern SDL_TEXTURE *Main_Screen;
 #endif
 
 extern int CONSOLE_HEIGHT2;
@@ -434,10 +427,10 @@ extern float left_float_render;
 extern float right_float_render;
 
 #if !defined(BZR2)
-extern SDL_Surface *PFONT;
-extern SDL_Surface *PFONT_DOUBLE;
-extern SDL_Surface *FONT;
-extern SDL_Surface *FONT_LOW;
+extern SDL_TEXTURE *PFONT;
+extern SDL_TEXTURE *PFONT_DOUBLE;
+extern SDL_TEXTURE *FONT;
+extern SDL_TEXTURE *FONT_LOW;
 #endif
 
 extern int gui_action;
@@ -502,8 +495,8 @@ extern float VuMeters_Level_Dats_R[MAX_TRACKS];
 extern float *Scope_Dats_LeftRight[2];
 
 #if !defined(BZR2)
-extern SDL_Surface *SKIN303;
-extern SDL_Surface *LOGOPIC;
+extern SDL_TEXTURE *SKIN303;
+extern SDL_TEXTURE *LOGOPIC;
 #endif
 
 extern int MouseWheel_Multiplier;
@@ -515,7 +508,7 @@ extern MARKER Patterns_Marker;
 
 extern int LastProgram[MAX_TRACKS];
 
-extern Uint32 Alloc_midi_Channels[MAX_TRACKS][MAX_POLYPHONY];
+extern UINT32 Alloc_midi_Channels[MAX_TRACKS][MAX_POLYPHONY];
 
 extern char *ExePath;
 
@@ -629,7 +622,7 @@ void Select_Block_Keyboard(int Type);
 void Calc_selection(void);
 int Next_Line_Pattern_Auto(int *position, int lines, int *line);
 int Get_Free_Midi_Sub_Channel(int track);
-int Search_Corresponding_Midi_Sub_Channel(int track, Uint32 Data);
+int Search_Corresponding_Midi_Sub_Channel(int track, UINT32 Data);
 int Get_Midi_Channel(int midi_channel);
 void Draw_Scope_Files_Button(void);
 

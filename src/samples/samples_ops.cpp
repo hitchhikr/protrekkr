@@ -2,7 +2,7 @@
 // Protrekkr
 // Based on Juan Antonio Arguelles Rius's NoiseTrekker.
 //
-// Copyright (C) 2008-2025 Franck Charlet.
+// Copyright (C) 2008-2026 Franck Charlet.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -33,11 +33,6 @@
 // Includes
 #include "include/samples_ops.h"
 
-#if defined(__AROS__) || defined(__MORPHOS__)
-#include <stdint.h>
-#define int32 int32_t
-#endif
-
 // ------------------------------------------------------
 // Variables
 int cur_sample_buffer;
@@ -56,9 +51,9 @@ extern s_access sp_Position[MAX_TRACKS][MAX_POLYPHONY];
 
 // ------------------------------------------------------
 // Rotate a selection to the left by a given amount
-int Sample_Rotate_Left(int32 range_start, int32 range_end, int amount)
+int Sample_Rotate_Left(INT32 range_start, INT32 range_end, int amount)
 {
-    int32 i;
+    INT32 i;
     int j;
     short sample1;
     short sample2;
@@ -100,9 +95,9 @@ int Sample_Rotate_Left(int32 range_start, int32 range_end, int amount)
 
 // ------------------------------------------------------
 // Rotate a selection to the right by a given amount
-int Sample_Rotate_Right(int32 range_start, int32 range_end, int amount)
+int Sample_Rotate_Right(INT32 range_start, INT32 range_end, int amount)
 {
-    int32 i;
+    INT32 i;
     int j;
     short sample1;
     short sample2;
@@ -144,9 +139,9 @@ int Sample_Rotate_Right(int32 range_start, int32 range_end, int amount)
 
 // ------------------------------------------------------
 // Swap the data of a selection
-int Sample_Reverse(int32 range_start, int32 range_end)
+int Sample_Reverse(INT32 range_start, INT32 range_end)
 {
-    int32 i;
+    INT32 i;
     short sample;
     char nc;
     long p_s;
@@ -179,9 +174,9 @@ int Sample_Reverse(int32 range_start, int32 range_end)
 
 // ------------------------------------------------------
 // Convert a selection into a whole sample
-int Sample_Crop(int32 range_start, int32 range_end)
+int Sample_Crop(INT32 range_start, INT32 range_end)
 {
-    int32 i;
+    INT32 i;
     short *NewBuffer[2];
     char nc;
     long p_s;
@@ -256,7 +251,7 @@ int Sample_Crop(int32 range_start, int32 range_end)
 
 // ------------------------------------------------------
 // Copy part of a sample
-int Sample_Copy(int32 range_start, int32 range_end)
+int Sample_Copy(INT32 range_start, INT32 range_end)
 {
     int i;
     short *dest_mono;
@@ -319,9 +314,9 @@ int Sample_Copy(int32 range_start, int32 range_end)
 
 // ------------------------------------------------------
 // Paste a back buffer into a sample
-int Sample_Paste(int32 range_start)
+int Sample_Paste(INT32 range_start)
 {
-    int32 i;
+    INT32 i;
     short *NewBuffer[2];
     char nc;
     long p_s;
@@ -388,7 +383,7 @@ int Sample_Paste(int32 range_start)
         if((Sample_Length[Current_Instrument][Current_Instrument_Split] - range_start) > 0)
         {
             // Add the rest of the original data
-            for(i = range_start; i < (int32) Sample_Length[Current_Instrument][Current_Instrument_Split]; i++)
+            for(i = range_start; i < (INT32) Sample_Length[Current_Instrument][Current_Instrument_Split]; i++)
             {
                 *(NewBuffer[0] + p_s) = *(RawSamples[Current_Instrument][0][Current_Instrument_Split] + i);
                 if(nc == 2)
@@ -427,9 +422,9 @@ int Sample_Paste(int32 range_start)
 
 // ------------------------------------------------------
 // Cut part of a sample
-int Sample_Cut(int32 range_start, int32 range_end, int do_copy)
+int Sample_Cut(INT32 range_start, INT32 range_end, int do_copy)
 {
-    int32 i;
+    INT32 i;
     short *NewBuffer[2];
     char nc;
     long p_s;
@@ -490,7 +485,7 @@ int Sample_Cut(int32 range_start, int32 range_end, int do_copy)
         if((Sample_Length[Current_Instrument][Current_Instrument_Split] - range_end) > 0)
         {
             // Add the data located after the range end
-            for(i = range_end; i < (int32) Sample_Length[Current_Instrument][Current_Instrument_Split]; i++)
+            for(i = range_end; i < (INT32) Sample_Length[Current_Instrument][Current_Instrument_Split]; i++)
             {
                 *(NewBuffer[0] + p_s) = *(RawSamples[Current_Instrument][0][Current_Instrument_Split] + i);
                 if(nc == 2)
@@ -540,9 +535,9 @@ int Sample_Cut(int32 range_start, int32 range_end, int do_copy)
 
 // ------------------------------------------------------
 // Adjust DC of a sample
-void Sample_DC_Adjust(int32 range_start, int32 range_end)
+void Sample_DC_Adjust(INT32 range_start, INT32 range_end)
 {
-    int32 i;
+    INT32 i;
     char nc = Sample_Channels[Current_Instrument][Current_Instrument_Split];
     float l_shift = 0;
     float r_shift = 0;
@@ -597,9 +592,9 @@ void Sample_DC_Adjust(int32 range_start, int32 range_end)
 
 // ------------------------------------------------------
 // Normalize a sample
-void Sample_Normalize(int32 range_start, int32 range_end)
+void Sample_Normalize(INT32 range_start, INT32 range_end)
 {
-    int32 i;
+    INT32 i;
     char nc = Sample_Channels[Current_Instrument][Current_Instrument_Split];
     float l_scale = 0;
     float r_scale = 0;
@@ -662,9 +657,9 @@ void Sample_Normalize(int32 range_start, int32 range_end)
 
 // ------------------------------------------------------
 // Zeroize a sample
-void Sample_Zeroize(int32 range_start, int32 range_end)
+void Sample_Zeroize(INT32 range_start, INT32 range_end)
 {
-    int32 i;
+    INT32 i;
     char nc = Sample_Channels[Current_Instrument][Current_Instrument_Split];
 
     for(i = range_start; i < range_end + 1; i++)
@@ -682,7 +677,7 @@ void Sample_Zeroize(int32 range_start, int32 range_end)
 
 // ------------------------------------------------------
 // Fade a sample in
-void Sample_FadeIn(int32 range_start, int32 range_end)
+void Sample_FadeIn(INT32 range_start, INT32 range_end)
 {
     int i;
     char nc = Sample_Channels[Current_Instrument][Current_Instrument_Split];
@@ -727,9 +722,9 @@ void Sample_FadeIn(int32 range_start, int32 range_end)
 
 // ------------------------------------------------------
 // Fade a sample out
-void Sample_FadeOut(int32 range_start, int32 range_end)
+void Sample_FadeOut(INT32 range_start, INT32 range_end)
 {
-    int32 i;
+    INT32 i;
     char nc = Sample_Channels[Current_Instrument][Current_Instrument_Split];
     float c_vol = 1.0f;
     float const coef_vol = 1.0f / ((range_end + 1) - range_start);
@@ -772,9 +767,9 @@ void Sample_FadeOut(int32 range_start, int32 range_end)
 
 // ------------------------------------------------------
 // Half a sample
-void Sample_Half(int32 range_start, int32 range_end)
+void Sample_Half(INT32 range_start, INT32 range_end)
 {
-    int32 i;
+    INT32 i;
     char nc = Sample_Channels[Current_Instrument][Current_Instrument_Split];
     float c_vol = 0.5f;
 
@@ -798,9 +793,9 @@ void Sample_Half(int32 range_start, int32 range_end)
 
 // ------------------------------------------------------
 // Duplicate the current selection
-int Sample_Duplicate(int32 range_start, int32 range_end)
+int Sample_Duplicate(INT32 range_start, INT32 range_end)
 {
-    int32 i;
+    INT32 i;
     short *NewBuffer[2];
     char nc;
     long p_s;
@@ -867,7 +862,7 @@ int Sample_Duplicate(int32 range_start, int32 range_end)
         if((Sample_Length[Current_Instrument][Current_Instrument_Split] - range_start) > 0)
         {
             // Add the rest of the original data
-            for(i = range_start; i < (int32) Sample_Length[Current_Instrument][Current_Instrument_Split]; i++)
+            for(i = range_start; i < (INT32) Sample_Length[Current_Instrument][Current_Instrument_Split]; i++)
             {
                 *(NewBuffer[0] + p_s) = *(RawSamples[Current_Instrument][0][Current_Instrument_Split] + i);
                 if(nc == 2)
@@ -906,9 +901,9 @@ int Sample_Duplicate(int32 range_start, int32 range_end)
 
 // ------------------------------------------------------
 // Insert zeroes into a sample the length of the selection buffer
-int Sample_InsertZero(int32 range_start, int32 range_end)
+int Sample_InsertZero(INT32 range_start, INT32 range_end)
 {
-    int32 i;
+    INT32 i;
     short *NewBuffer[2];
     char nc;
     long p_s;
@@ -967,7 +962,7 @@ int Sample_InsertZero(int32 range_start, int32 range_end)
         if((Sample_Length[Current_Instrument][Current_Instrument_Split] - range_start) > 0)
         {
             // Add the rest of the original data
-            for(i = range_start; i < (int32) Sample_Length[Current_Instrument][Current_Instrument_Split]; i++)
+            for(i = range_start; i < (INT32) Sample_Length[Current_Instrument][Current_Instrument_Split]; i++)
             {
                 *(NewBuffer[0] + p_s) = *(RawSamples[Current_Instrument][0][Current_Instrument_Split] + i);
                 if(nc == 2)
@@ -1004,7 +999,7 @@ int Sample_InsertZero(int32 range_start, int32 range_end)
     return 0;
 }
 
-void Recalculate_Sample_Size(int Instrument, int Split, int Discard_Loop, Uint32 Range_Start, Uint32 Range_End, int Add_Data, int Crop)
+void Recalculate_Sample_Size(int Instrument, int Split, int Discard_Loop, UINT32 Range_Start, UINT32 Range_End, int Add_Data, int Crop)
 {
     int c;
     int i;

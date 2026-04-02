@@ -36,8 +36,11 @@
 
 ///////////////////////////// local table storage ////////////////////////////
 
-const int32_t sample_rates [] = { 6000, 8000, 9600, 11025, 12000, 16000, 22050,
-    24000, 32000, 44100, 48000, 64000, 88200, 96000, 192000 };
+const INT32 sample_rates [] =
+{
+    6000, 8000, 9600, 11025, 12000, 16000, 22050,
+    24000, 32000, 44100, 48000, 64000, 88200, 96000, 192000
+};
 
 ///////////////////////////// large static storage ////////////////////////////
 
@@ -49,7 +52,7 @@ const int32_t sample_rates [] = { 6000, 8000, 9600, 11025, 12000, 16000, 22050,
                                 // (2 file) is not needed then the wvc_buffer
                                 // can be made very small.
 
-static uchar wv_buffer [BIT_BUFFER_SIZE];
+static UINT8 wv_buffer [BIT_BUFFER_SIZE];
 // wvc_buffer [BIT_BUFFER_SIZE];
 //static WavpackContext wavpack_context;
 */
@@ -104,9 +107,9 @@ char *WavpackGetErrorMessage (WavpackContext *wpc)
 // to seek all the way to the end to determine the actual duration. A return of
 // FALSE indicates an error.
 
-int WavpackSetConfiguration (WavpackContext *wpc, WavpackConfig *config, uint32_t total_samples)
+int WavpackSetConfiguration (WavpackContext *wpc, WavpackConfig *config, UINT32 total_samples)
 {
-    uint32_t flags = (config->bytes_per_sample - 1);
+    UINT32 flags = (config->bytes_per_sample - 1);
     WavpackStream *wps = &wpc->stream;
     int bps = 0, shift, i;
 
@@ -127,8 +130,8 @@ int WavpackSetConfiguration (WavpackContext *wpc, WavpackConfig *config, uint32_
         if (wpc->config.sample_rate == sample_rates [i])
             break;
 
-    flags |= (uint32_t) i << SRATE_LSB;
-    flags |= (uint32_t) shift << SHIFT_LSB;
+    flags |= (UINT32) i << SRATE_LSB;
+    flags |= (UINT32) shift << SHIFT_LSB;
 
     flags |= HYBRID_FLAG;
     bps = config->bitrate;
@@ -185,25 +188,25 @@ int WavpackPackInit (WavpackContext *wpc)
 static int finish_block (WavpackContext *wpc);
 
 int WavpackPackSamples (WavpackContext *wpc,
-                        int32_t *sample_buffer,
-                        uint32_t sample_count)
+                        INT32 *sample_buffer,
+                        UINT32 sample_count)
 {
     WavpackStream *wps = &wpc->stream;
     int nch = wpc->config.num_channels;
-    uint32_t flags = wps->wphdr.flags;
+    UINT32 flags = wps->wphdr.flags;
 
     if (flags & SHIFT_MASK)
     {
         int shift = (flags & SHIFT_MASK) >> SHIFT_LSB;
-        int32_t *ptr = sample_buffer;
-        uint32_t cnt = sample_count;
+        INT32 *ptr = sample_buffer;
+        UINT32 cnt = sample_count;
         while (cnt--)
             *ptr++ >>= shift;
     }
 
     while (sample_count)
     {
-        uint32_t samples_to_pack, samples_packed;
+        UINT32 samples_to_pack, samples_packed;
 
         if (!wpc->acc_samples)
         {
@@ -256,7 +259,7 @@ int WavpackFlushSamples (WavpackContext *wpc)
 static int finish_block (WavpackContext *wpc)
 {
     WavpackStream *wps = &wpc->stream;
-    uint32_t bcount;
+    UINT32 bcount;
     int result;
 
     result = pack_finish_block (wpc);
@@ -281,20 +284,20 @@ static int finish_block (WavpackContext *wpc)
 
 // Get total number of samples contained in the WavPack file, or -1 if unknown
 
-uint32_t WavpackGetNumSamples (WavpackContext *wpc)
+UINT32 WavpackGetNumSamples (WavpackContext *wpc)
 {
-    return wpc ? wpc->total_samples : (uint32_t) -1;
+    return wpc ? wpc->total_samples : (UINT32) -1;
 }
 
 // Get the current sample index position, or -1 if unknown
 
-uint32_t WavpackGetSampleIndex (WavpackContext *wpc)
+UINT32 WavpackGetSampleIndex (WavpackContext *wpc)
 {
     if (wpc)
     {
         return wpc->stream.sample_index;
     }
-    return (uint32_t) -1;
+    return (UINT32) -1;
 }
 
 // Given the pointer to the first block written (to either a .wv or .wvc file),
@@ -317,7 +320,7 @@ int WavpackLossyBlocks (WavpackContext *wpc)
 
 // Return the total size of the WavPack file(s) in bytes.
 
-uint32_t WavpackGetFileSize (WavpackContext *wpc)
+UINT32 WavpackGetFileSize (WavpackContext *wpc)
 {
     return wpc ? wpc->filelen : 0;
 }
@@ -332,7 +335,7 @@ WavpackContext *WavpackCloseFile (WavpackContext *wpc)
 
 // Returns the sample rate of the specified WavPack file
 
-uint32_t WavpackGetSampleRate (WavpackContext *wpc)
+UINT32 WavpackGetSampleRate (WavpackContext *wpc)
 {
     return wpc ? wpc->config.sample_rate : 44100;
 }

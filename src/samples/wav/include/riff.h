@@ -24,24 +24,12 @@
 #include <stdio.h>
 #include "ddc.h"
 
+#include <ptk_types.h>
 #include "../../../../release/ptk/replay/lib/include/endianness.h"
 
 #define WAVE_FORMAT_IEEE_FLOAT 0x0003
 #define WAVE_FORMAT_PCM 1
 #define WAVE_FORMAT_EXTENSIBLE 0xfffe
-
-typedef unsigned int UINT32;
-typedef int INT32;
-
-#if defined(__WIN32__) && !defined(__GCC__)
-typedef unsigned __int64 Uint64;
-#else
-#if defined(__LINUX__) || defined(__HAIKU__) || defined(__AROS__)
-typedef uint64_t Uint64;
-#else
-typedef unsigned long long Uint64;
-#endif
-#endif
 
 #if !defined(__GCC__)
 #pragma pack(push)
@@ -302,7 +290,7 @@ class WaveFile: private RiffFile
         int Flip12;
 
         void IntToFloat(int *Dest, int Source);
-        void Int64ToDouble(Uint64 *Dest, Uint64 Source);
+        void Int64ToDouble(UINT64 *Dest, UINT64 Source);
         int FloatToInt(int *Source);
 };
 

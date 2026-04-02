@@ -40,11 +40,11 @@
   }
 
 void STDCALL Draw_VLine(SDL_Surface *super,
-                        Sint16 x0,Sint16 y0, Sint16 y1,
-                        Uint32 color)
+                        INT16 x0, INT16 y0, INT16 y1,
+                        UINT32 color)
 {
-    Uint8 *p;
-    Sint16 i;
+    UINT8 *p;
+    INT16 i;
 
     if(y0 > y1)
     {
@@ -53,26 +53,9 @@ void STDCALL Draw_VLine(SDL_Surface *super,
         y0 = i;
     }
   
-    p = (Uint8 *) super->pixels + y0 * super->pitch + x0 * SDL_DRAW_BPP;
-
-    /* Lock surface */
-/*    if(SDL_MUSTLOCK(super))
-    {
-        if(SDL_LockSurface(super) < 0)
-        { 
-            return; 
-        }
-    }
-*/
+    p = (UINT8 *) super->pixels + y0 * super->pitch + x0 * SDL_DRAW_BPP;
 
     SDL_DRAW_PUTPIXEL
-
-    /* Unlock surface */
-/*    if(SDL_MUSTLOCK(super))
-    { 
-        SDL_UnlockSurface(super); 
-    }
-*/
 
 }/*Draw_VLine*/
 

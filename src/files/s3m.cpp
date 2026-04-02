@@ -2,7 +2,7 @@
 // Protrekkr
 // Based on Juan Antonio Arguelles Rius's NoiseTrekker.
 //
-// Copyright (C) 2008-2025 Franck Charlet.
+// Copyright (C) 2008-2026 Franck Charlet.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -188,7 +188,7 @@ int S3M_Size;
 
 // ------------------------------------------------------
 // Look for S3M signature
-int Check_S3M(int s3m_tag)
+int Check_S3M(UINT32 s3m_tag)
 {
     if(Swap_32(S3M_tags[0]) == s3m_tag)
     {

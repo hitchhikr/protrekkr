@@ -2,7 +2,7 @@
 // Protrekkr
 // Based on Juan Antonio Arguelles Rius's NoiseTrekker.
 //
-// Copyright (C) 2008-2025 Franck Charlet.
+// Copyright (C) 2008-2026 Franck Charlet.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -72,8 +72,8 @@ int AUDIO_Milliseconds = 20;
 // Functions
 int AUDIO_Create_Sound_Buffer(int milliseconds);
 void AUDIO_Stop_Sound_Buffer(void);
-void (STDCALL *AUDIO_Mixer)(Uint8 *, Uint32);
-void AUDIO_Mixer_Fill_Buffer(void *, Uint32);
+void (STDCALL *AUDIO_Mixer)(UINT8 *, UINT32);
+void AUDIO_Mixer_Fill_Buffer(void *, UINT32);
 void AUDIO_Synth_Play(void);
 
 // ------------------------------------------------------
@@ -99,8 +99,8 @@ DWORD WINAPI AUDIO_Thread(LPVOID lpParameter)
             AUDIO_Old_Buffer_Pos = AUDIO_Buffer_Pos;
             if(AUDIO_Play_Flag)
             {
-                AUDIO_Mixer((Uint8 *) AUDIO_Audio_Ptr1, AUDIO_Audio_Bytes1);
-                AUDIO_Mixer((Uint8 *) AUDIO_Audio_Ptr2, AUDIO_Audio_Bytes2);
+                AUDIO_Mixer((UINT8 *) AUDIO_Audio_Ptr1, AUDIO_Audio_Bytes1);
+                AUDIO_Mixer((UINT8 *) AUDIO_Audio_Ptr2, AUDIO_Audio_Bytes2);
             }
             else
             {
@@ -121,7 +121,7 @@ DWORD WINAPI AUDIO_Thread(LPVOID lpParameter)
 // ------------------------------------------------------
 // Name: AUDIO_Init_Driver()
 // Desc: Init the audio driver
-int AUDIO_Init_Driver(HWND hWnd, void (STDCALL *Mixer)(Uint8 *, Uint32))
+int AUDIO_Init_Driver(HWND hWnd, void (STDCALL *Mixer)(UINT8 *, UINT32))
 {
     AUDIO_Mixer = Mixer;
 

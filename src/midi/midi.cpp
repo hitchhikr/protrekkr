@@ -2,7 +2,7 @@
 // Protrekkr
 // Based on Juan Antonio Arguelles Rius's NoiseTrekker.
 //
-// Copyright (C) 2008-2025 Franck Charlet.
+// Copyright (C) 2008-2026 Franck Charlet.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -103,8 +103,8 @@ void Midi_CallBackIn(double deltatime,
     int Instrument_Number; 
     int tmp_note;
     int Unknown_Message;
-    Uint32 Param1 = 0;
-    Uint32 Param1_Swap = 0;
+    UINT32 Param1 = 0;
+    UINT32 Param1_Swap = 0;
     int i;
     unsigned char *ptr = (unsigned char *) &Param1;
     unsigned int nBytes = message->size();
@@ -386,7 +386,10 @@ void Midi_InitOut(void)
 // Close the midi out device
 void Midi_CloseOut(void)
 {
-    if(midiout) midiout->closePort();
+    if(midiout)
+    {
+        midiout->closePort();
+    }
 }
 
 // ------------------------------------------------------

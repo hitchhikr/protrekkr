@@ -2,7 +2,7 @@
 // Protrekkr
 // Based on Juan Antonio Arguelles Rius's NoiseTrekker.
 //
-// Copyright (C) 2008-2025 Franck Charlet.
+// Copyright (C) 2008-2026 Franck Charlet.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -82,7 +82,7 @@ char SplashScreen = TRUE;
 
 int Mod_Length;
 int Mod_Simulate;
-Uint8 *Mod_Memory;
+UINT8 *Mod_Memory;
 int Mod_Mem_Pos;
 int Final_Mod_Length;
 
@@ -916,13 +916,13 @@ short *Unpack_Sample(CustomFile &FileHandle, int Dest_Length, char Pack_Type, in
 {
     int Packed_Length;
     short *Dest_Buffer;
-    Uint8 *Packed_Read_Buffer;
+    UINT8 *Packed_Read_Buffer;
 
     Read_Mod_Data(&Packed_Length, sizeof(int), 1, FileHandle);
     if(Packed_Length == -1)
     {
         // Sample wasn't packed
-        Packed_Read_Buffer = (Uint8 *) malloc(Dest_Length * 2 + 8);
+        Packed_Read_Buffer = (UINT8 *) malloc(Dest_Length * 2 + 8);
         memset(Packed_Read_Buffer, 0, Dest_Length * 2 + 8);
         Read_Mod_Data(Packed_Read_Buffer, sizeof(char), Dest_Length * 2, FileHandle);
         return((short *) Packed_Read_Buffer);
@@ -930,7 +930,7 @@ short *Unpack_Sample(CustomFile &FileHandle, int Dest_Length, char Pack_Type, in
     else
     {
 
-        Packed_Read_Buffer = (Uint8 *) malloc(Packed_Length);
+        Packed_Read_Buffer = (UINT8 *) malloc(Packed_Length);
         // Read the packer buffer
         Read_Mod_Data(Packed_Read_Buffer, sizeof(char), Packed_Length, FileHandle);
         Dest_Buffer = (short *) malloc(Dest_Length * 2 + 8);
@@ -1250,7 +1250,7 @@ void rtrim_string(char *string, int maxlen)
 
 // ------------------------------------------------------
 // Entry point function for modules saving
-int Save_Ptk(char *FileName, int NewFormat, int Simulate, Uint8 *Memory)
+int Save_Ptk(char *FileName, int NewFormat, int Simulate, UINT8 *Memory)
 {
     FILE *in;
     int i;
@@ -1672,11 +1672,11 @@ int Save_Ptk(char *FileName, int NewFormat, int Simulate, Uint8 *Memory)
 
 // ------------------------------------------------------
 // Pack a module
-Uint8 *Pack_Data(Uint8 *Memory, int *Size)
+UINT8 *Pack_Data(UINT8 *Memory, int *Size)
 {
     z_stream c_stream; // compression stream
     int Comp_Len = -1;
-    Uint8 *Final_Mem_Out = (Uint8 *) malloc(*Size);
+    UINT8 *Final_Mem_Out = (UINT8 *) malloc(*Size);
 
     memset(&c_stream, 0, sizeof(c_stream));
     deflateInit(&c_stream, Z_BEST_COMPRESSION);
@@ -1701,15 +1701,15 @@ Uint8 *Pack_Data(Uint8 *Memory, int *Size)
 
 // ------------------------------------------------------
 // Depack a compressed module
-Uint8 *Depack_Data(Uint8 *Memory, int Sizen, int Size_Out)
+UINT8 *Depack_Data(UINT8 *Memory, int Sizen, int Size_Out)
 {
     z_stream d_stream;
 
-    Uint8 *Test_Mem = (Uint8 *) malloc(Size_Out);
+    UINT8 *Test_Mem = (UINT8 *) malloc(Size_Out);
     if(Test_Mem)
     {
         memset(&d_stream, 0, sizeof(d_stream));
-        d_stream.next_in = (Uint8 *) Memory;
+        d_stream.next_in = (UINT8 *) Memory;
         d_stream.next_out = Test_Mem;
         inflateInit(&d_stream);
         while(d_stream.total_out < Size_Out &&
@@ -1781,7 +1781,7 @@ int Pack_Module(char *FileName)
     char name[128];
     char extension[10];
     char Temph[MAX_PATH];
-    Uint8 *Final_Mem_Out;
+    UINT8 *Final_Mem_Out;
     int Depack_Size;
 
     // Reset autosave counter
@@ -1804,7 +1804,7 @@ int Pack_Module(char *FileName)
 
     Depack_Size = Len;
 
-    Uint8 *Final_Mem = (Uint8 *) malloc(Len);
+    UINT8 *Final_Mem = (UINT8 *) malloc(Len);
     Save_Ptk(FileName, FALSE, SAVE_WRITEMEM, Final_Mem);
 
     Final_Mem_Out = Pack_Data(Final_Mem, &Len);
@@ -1838,10 +1838,10 @@ int Pack_Module(char *FileName)
 // Return the length of a compressed module
 int Test_Mod(void)
 {
-    Uint8 *Final_Mem_Out;
+    UINT8 *Final_Mem_Out;
     int Len = Save_Ptk("", TRUE, SAVE_CALCLEN, NULL);
 
-    Uint8 *Final_Mem = (Uint8 *) malloc(Len);
+    UINT8 *Final_Mem = (UINT8 *) malloc(Len);
     Save_Ptk("", TRUE, SAVE_WRITEMEM, Final_Mem);
 
     Final_Mem_Out = Pack_Data(Final_Mem, &Len);
@@ -2023,7 +2023,7 @@ int Calc_Length(void)
     int pos_patt;
     int patt_cmd[MAX_FX];
     int patt_data[MAX_FX];
-    Uint8 *Cur_Patt;
+    UINT8 *Cur_Patt;
     float Ticks = (float) Ticks_Per_Beat;
     float BPM = (float) Beats_Per_Min;
     int rep_pos = 0;

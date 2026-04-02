@@ -2,7 +2,7 @@
 // Protrekkr
 // Based on Juan Antonio Arguelles Rius's NoiseTrekker.
 //
-// Copyright (C) 2008-2025 Franck Charlet.
+// Copyright (C) 2008-2026 Franck Charlet.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -209,8 +209,6 @@ void Load_Config(void)
     char FileName[MAX_PATH];
     char KeyboardName[MAX_PATH];
     signed char phony = -1;
-    char Win_Coords[64];
-    SDL_Surface *Desktop = NULL;
 
     SET_FILENAME;
 
@@ -379,14 +377,7 @@ void Load_Config(void)
                 Read_Data(&Save_Step_Play, sizeof(Save_Step_Play), 1, in);
             }
 
-#ifndef __MORPHOS__
-            sprintf(Win_Coords,
-                    "SDL_VIDEO_WINDOW_POS=%d,%d",
-                    Cur_Left,
-                    Cur_Top);
-            SDL_putenv(Win_Coords);
-#endif
-
+            Set_Window_Pos(Cur_Left, Cur_Top);
         }
         fclose(in);
     }

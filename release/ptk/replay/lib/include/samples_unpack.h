@@ -2,7 +2,7 @@
 // Protrekkr
 // Based on Juan Antonio Arguelles Rius's NoiseTrekker.
 //
-// Copyright (C) 2008-2025 Franck Charlet.
+// Copyright (C) 2008-2026 Franck Charlet.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -34,6 +34,8 @@
 
 // ------------------------------------------------------
 // Includes
+#include <ptk_types.h>
+
 #if defined(__STAND_ALONE__)
     #if defined(__WINAMP__)
         #include "ptk_def_properties.h"
@@ -49,12 +51,6 @@
 #endif
 
 // ------------------------------------------------------
-// Types
-typedef unsigned char Uint8;
-typedef unsigned short Uint16;
-typedef unsigned int Uint32;
-
-// ------------------------------------------------------
 // Constants
 #define MP3_FRAMES_DELAG (1460 - 355)
 
@@ -62,27 +58,27 @@ typedef unsigned int Uint32;
 // Functions
 #if defined(__STAND_ALONE__)
 #if defined(PTK_AT3)
-void Unpack_AT3(Uint8 *Source, short *Dest, int Src_Size, int Dst_Size, int BitRate);
+void Unpack_AT3(UINT8 *Source, short *Dest, int Src_Size, int Dst_Size, int BitRate);
 #endif
 #if defined(PTK_GSM)
-void Unpack_GSM(Uint8 *Source, short *Dest, int Src_Size, int Dst_Size);
+void Unpack_GSM(UINT8 *Source, short *Dest, int Src_Size, int Dst_Size);
 #endif
 #if defined(PTK_MP3)
-void Unpack_MP3(Uint8 *Source, short *Dest, int Src_Size, int Dst_Size, int BitRate);
+void Unpack_MP3(UINT8 *Source, short *Dest, int Src_Size, int Dst_Size, int BitRate);
 #endif
 #else
 #if defined(__AT3_CODEC__)
-void Unpack_AT3(Uint8 *Source, short *Dest, int Src_Size, int Dst_Size, int BitRate);
+void Unpack_AT3(UINT8 *Source, short *Dest, int Src_Size, int Dst_Size, int BitRate);
 #endif
 #if defined(__GSM_CODEC__)
-void Unpack_GSM(Uint8 *Source, short *Dest, int Src_Size, int Dst_Size);
+void Unpack_GSM(UINT8 *Source, short *Dest, int Src_Size, int Dst_Size);
 #endif
 #if defined(__MP3_CODEC__)
-void Unpack_MP3(Uint8 *Source, short *Dest, int Src_Size, int Dst_Size, int BitRate);
+void Unpack_MP3(UINT8 *Source, short *Dest, int Src_Size, int Dst_Size, int BitRate);
 #endif
 #endif
-void Unpack_ADPCM(Uint8 *Source, short *Dest, int Src_Size, int Dst_Size);
-void Unpack_8Bit(Uint8 *Source, short *Dest, int Src_Size, int Dst_Size);
-void Unpack_WavPack(Uint8 *Source, short *Dest, int Src_Size, int Dst_Size);
+void Unpack_ADPCM(UINT8 *Source, short *Dest, int Src_Size, int Dst_Size);
+void Unpack_8Bit(UINT8 *Source, short *Dest, int Src_Size, int Dst_Size);
+void Unpack_WavPack(UINT8 *Source, short *Dest, int Src_Size, int Dst_Size);
 
 #endif

@@ -2,7 +2,7 @@
 // Protrekkr
 // Based on Juan Antonio Arguelles Rius's NoiseTrekker.
 //
-// Copyright (C) 2008-2025 Franck Charlet.
+// Copyright (C) 2008-2026 Franck Charlet.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -51,8 +51,6 @@
 SystemSoundActionID WavActionID;
 #endif
 
-extern SDL_sem *thread_sema;
-
 extern char SplashScreen;
 
 extern int metronome_rows_counter;
@@ -85,8 +83,8 @@ extern int shuffleswitch;
 extern char Use_Cubic;
 extern char Paste_Across;
 
-extern int32 sed_real_range_start;
-extern int32 sed_real_range_end;
+extern INT32 sed_real_range_start;
+extern INT32 sed_real_range_end;
 
 unsigned char sl3 = 0;
 
@@ -203,14 +201,14 @@ int c_r_cvol = 32768;
 
 int snamesel = INPUT_NONE;
 
-SDL_Surface *PFONT;
-SDL_Surface *PFONT_DOUBLE;
-SDL_Surface *FONT;
-SDL_Surface *FONT_LOW;
+SDL_TEXTURE *PFONT;
+SDL_TEXTURE *PFONT_DOUBLE;
+SDL_TEXTURE *FONT;
+SDL_TEXTURE *FONT_LOW;
 
 SDL_TimerID Timer;
-Uint32 Timer_CallBack(Uint32 interval, void *param);
-Uint32 (*Timer_Ptr)(Uint32 interval, void *param) = &Timer_CallBack;
+UINT32 Timer_CallBack(UINT32 interval, void *param);
+UINT32 (*Timer_Ptr)(UINT32 interval, void *param) = &Timer_CallBack;
 extern int Status_Box_Wait;
 extern int Status_Box_Wait_Done;
 
@@ -226,14 +224,14 @@ char Save_Step_Play = FALSE;
 
 char cur_input_name[1024];
 
-SDL_Surface *LOGOPIC;
+SDL_TEXTURE *LOGOPIC;
 int wait_title;
 int display_title = 0;
 
 int key_record_first_time;
 double key_ticks;
 int old_key_Pattern_Line;
-Uint32 Alloc_midi_Channels[MAX_TRACKS][MAX_POLYPHONY];
+UINT32 Alloc_midi_Channels[MAX_TRACKS][MAX_POLYPHONY];
 int Record_Keys[37];
 int Record_Keys_State[37];
 
@@ -475,11 +473,11 @@ int ZzaappOMatic;
 
 // ------------------------------------------------------
 // Load a skin picture
-SDL_Surface *Load_Skin_Picture(char *name)
+SDL_TEXTURE *Load_Skin_Picture(char *name)
 {
     char filepath[MAX_PATH];
     char error[256];
-    SDL_Surface *surface;
+    SDL_TEXTURE *surface;
 
 #if defined(__WIN32__)
     sprintf(filepath, "skins\\%s", name);
@@ -827,8 +825,8 @@ int Screen_Update(void)
 
     if(gui_action_metronome == GUI_CMD_FLASH_METRONOME_ON)
     {
-        SetColor(COL_VUMETERPEAK);
-        Fillrect(73, 83, 73 + 15, 83 + 15);
+        Set_Color(COL_VUMETERPEAK);
+        Fill_Rect(73, 83, 73 + 15, 83 + 15);
     }
     if(gui_action_metronome == GUI_CMD_FLASH_METRONOME_OFF)
     {
@@ -894,7 +892,7 @@ int Screen_Update(void)
                         PlaySound(Get_FileName(lt_curr[Scopish]), NULL, SND_FILENAME | SND_ASYNC);
 #endif
 #if defined(__MACOSX_PPC__)
-                        if(FSPathMakeRef((Uint8 *) Get_FileName(lt_curr[Scopish]), &soundFileRef, NULL) == noErr)
+                        if(FSPathMakeRef((UINT8 *) Get_FileName(lt_curr[Scopish]), &soundFileRef, NULL) == noErr)
                         {
                             SystemSoundGetActionID(&soundFileRef, &WavActionID);
                             SystemSoundSetCompletionRoutine(WavActionID,
@@ -1572,8 +1570,8 @@ int Screen_Update(void)
             if(Sample_Channels[Current_Instrument][Current_Instrument_Split] == 1) t_stereo = FALSE;
             else t_stereo = TRUE;
 
-            Uint32 woff = 0;
-            Uint32 wend = 0;
+            UINT32 woff = 0;
+            UINT32 wend = 0;
 
             short *eSamples = RawSamples[Current_Instrument][0][Current_Instrument_Split];
             short *erSamples = RawSamples[Current_Instrument][1][Current_Instrument_Split];
@@ -2015,10 +2013,10 @@ int Screen_Update(void)
         Actualize_Files_List(0);
 
         // Vu meters background
-        SetColor(COL_BLACK);
-        Fillrect(MIN_VUMETER - 1, 9, MAX_VUMETER, 20);
-        SetColor(COL_BACKGROUND);
-        Fillrect(MIN_VUMETER, 10, MAX_VUMETER - 1, 19);
+        Set_Color(COL_BLACK);
+        Fill_Rect(MIN_VUMETER - 1, 9, MAX_VUMETER, 20);
+        Set_Color(COL_BACKGROUND);
+        Fill_Rect(MIN_VUMETER, 10, MAX_VUMETER - 1, 19);
 
         Draw_Pattern_Right_Stuff();
         Update_Pattern(0);
@@ -2049,9 +2047,9 @@ int Screen_Update(void)
     }
     
     // Clear
-    SetColor(COL_BACKGROUND);
-    Fillrect(Lt_vu_Peak, 10, MAX_VUMETER - 1, 14);
-    Fillrect(Rt_vu_Peak, 15, MAX_VUMETER - 1, 19);
+    Set_Color(COL_BACKGROUND);
+    Fill_Rect(Lt_vu_Peak, 10, MAX_VUMETER - 1, 14);
+    Fill_Rect(Rt_vu_Peak, 15, MAX_VUMETER - 1, 19);
 
     // Draw the vu meters
     for(i = MIN_VUMETER; i < Lt_vu; i += 2)
@@ -3815,7 +3813,7 @@ void ShowInfo(void)
 
 // ------------------------------------------------------
 // Function called each second mainly for autosaving purposes
-Uint32 Timer_CallBack(Uint32 interval, void *param)
+UINT32 Timer_CallBack(UINT32 interval, void *param)
 {
     if(Req_TimeOut)
     {
@@ -7157,7 +7155,7 @@ int Get_Free_Midi_Sub_Channel(int track)
 
 // ------------------------------------------------------
 // Search & return the midi channel corresponding to the given data
-int Search_Corresponding_Midi_Sub_Channel(int track, Uint32 Data)
+int Search_Corresponding_Midi_Sub_Channel(int track, UINT32 Data)
 {
     int i;
 
@@ -7774,8 +7772,8 @@ void Draw_Scope(void)
 
     if(Scopish == SCOPE_ZONE_SCOPE)
     {
-        SetColor(COL_BACKGROUND);
-        Fillrect(394, 42, Cur_Width - 1, 179);
+        Set_Color(COL_BACKGROUND);
+        Fill_Rect(394, 42, Cur_Width - 1, 179);
 
         cur_pos_x = 0;
         if(Scopish_LeftRight)
@@ -7965,8 +7963,8 @@ void Draw_VuMeters(void)
     int scope_pos = Get_Song_Position();
     int start_pos_x;
 
-    SetColor(COL_BACKGROUND);
-    Fillrect(394, 42, Cur_Width - 1, 179);
+    Set_Color(COL_BACKGROUND);
+    Fill_Rect(394, 42, Cur_Width - 1, 179);
 
     // Tracks
     ptrTbl_Dat = &VuMeters_Table_Dats[VuMeters_Table[Song_Tracks].offset];
@@ -8384,8 +8382,8 @@ void Display_RShift_Status(void)
         {
             if(RShift_Notified)
             {
-                SetColor(COL_VUMETERPEAK);
-                Fillrect(320 + 1, 126 + 1, 320 + 1 + 9, 126  + 1 + 15);
+                Set_Color(COL_VUMETERPEAK);
+                Fill_Rect(320 + 1, 126 + 1, 320 + 1 + 9, 126  + 1 + 15);
                 RShift_Notified = FALSE;
             }
         }

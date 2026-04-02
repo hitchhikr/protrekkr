@@ -2,7 +2,7 @@
 // Protrekkr
 // Based on Juan Antonio Arguelles Rius's NoiseTrekker.
 //
-// Copyright (C) 2008-2025 Franck Charlet.
+// Copyright (C) 2008-2026 Franck Charlet.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -331,7 +331,7 @@ void Draw_Pattern(int track, int line, int petrack, int row)
     y = 184;
 
     // Clear headers line
-    SetColor(COL_PATTERN_LO_BACK);
+    Set_Color(COL_PATTERN_LO_BACK);
     bjbox(1, y, CONSOLE_WIDTH - 20, 16 + chars_height);
 
     dover = PAT_COL_NOTE;
@@ -343,8 +343,8 @@ void Draw_Pattern(int track, int line, int petrack, int row)
     {
         cur_track = track + liner;
 
-        if(Track_Under_Caret == cur_track) SetColor(COL_PUSHED_MED);
-        else SetColor(COL_PATTERN_LO_BACK);
+        if(Track_Under_Caret == cur_track) Set_Color(COL_PUSHED_MED);
+        else Set_Color(COL_PATTERN_LO_BACK);
 
         if(dover + 2 >= MAX_PATT_SCREEN_X) break;
         dover += 2;
@@ -546,7 +546,7 @@ Skip_Header2:
     In_Prev_Next2 = FALSE;
 
     int sub = chars_height == 16 ? 4 : -13;
-    SetColor(COL_PATTERN_LO_BACK);
+    Set_Color(COL_PATTERN_LO_BACK);
  
     bjbox(1,
           y,
@@ -1128,13 +1128,13 @@ No_Slider_Effect_Lo:
         {
             high_color = 71 + 87;
             Fx_Color = 32;
-            SetColor(COL_PATTERN_LO_BACK_SHADOW);
+            Set_Color(COL_PATTERN_LO_BACK_SHADOW);
         }
         else
         {
             high_color = 0 + 87;
             Fx_Color = 31;
-            SetColor(COL_PATTERN_LO_BACK_SHADOW);
+            Set_Color(COL_PATTERN_LO_BACK_SHADOW);
         }
     }
     else
@@ -1143,13 +1143,13 @@ No_Slider_Effect_Lo:
         {
             high_color = 71;
             Fx_Color = 32;
-            SetColor(COL_PATTERN_LO_BACK);
+            Set_Color(COL_PATTERN_LO_BACK);
         }
         else
         {
             high_color = 0;
             Fx_Color = 31;
-            SetColor(COL_PATTERN_LO_BACK);
+            Set_Color(COL_PATTERN_LO_BACK);
         }
     }
 
@@ -1232,7 +1232,7 @@ void Draw_Patt_Line_Highlighted(int track, int line, int petrack, int row, int y
             }
         }
 
-        SetColor(COL_PATTERN_LO_BACK);
+        Set_Color(COL_PATTERN_LO_BACK);
         bjbox(1, ypos, CHANNELS_WIDTH - 1, chars_height * 2);
 
         dover = PAT_COL_NOTE;
@@ -2228,8 +2228,8 @@ void Draw_Pattern_Right_Stuff()
 
     cur_line = Get_Pattern_Line();
 
-    SetColor(COL_BLACK);
-    Fillrect(MAX_PATT_SCREEN_X, 184, MAX_PATT_SCREEN_X + 20, (Cur_Height - 251) + (16 * 5) + Patterns_Lines_Offset);
+    Set_Color(COL_BLACK);
+    Fill_Rect(MAX_PATT_SCREEN_X, 184, MAX_PATT_SCREEN_X + 20, (Cur_Height - 251) + (16 * 5) + Patterns_Lines_Offset);
 
     DrawVLine(0, 184, (Cur_Height - 251) + (16 * 5) + Patterns_Lines_Offset, COL_BLACK);
 
@@ -3542,7 +3542,7 @@ void Mouse_Sliders_Pattern_Ed(void)
             {
                 s_offset = (float) (max_length - DISPLAYED_LINES);
             }
-            final_row = (int32) s_offset;
+            final_row = (INT32) s_offset;
             if(final_row < 0)
             {
                 final_row = 0;
@@ -3585,7 +3585,7 @@ void Mouse_Sliders_Pattern_Ed(void)
             {
                 s_offset = (float) (max_length - DISPLAYED_LINES);
             }
-            final_row = (int32) s_offset;
+            final_row = (INT32) s_offset;
             if(final_row < 0)
             {
                 final_row = 0;

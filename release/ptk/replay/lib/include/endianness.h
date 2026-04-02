@@ -2,7 +2,7 @@
 // Protrekkr
 // Based on Juan Antonio Arguelles Rius's NoiseTrekker.
 //
-// Copyright (C) 2008-2025 Franck Charlet.
+// Copyright (C) 2008-2026 Franck Charlet.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -32,46 +32,38 @@
 #ifndef __ENDIANNESS_H_
 #define __ENDIANNESS_H_
 
-#if defined(__WIN32__) && !defined(__GCC__)
-typedef unsigned __int64 Uint64;
-#else
-#if defined(__HAIKU__) || defined(__LINUX__) || defined(__AROS__) || defined(BZR2)
-#include <stdint.h>
-typedef uint64_t Uint64;
-#else
-typedef unsigned long long Uint64;
-#endif
-#endif
+// ------------------------------------------------------
+// Includes
+#include <ptk_types.h>
 
 // ------------------------------------------------------
 // Functions
-
 #if defined(__BIG_ENDIAN__)
-Uint64 __Swap_64(Uint64 Value);
-int __Swap_32(int Value);
-short __Swap_16(short Value);
-#define Swap_64(x) __Swap_64((Uint64) x)
-#define Swap_32(x) __Swap_32((int) x)
-#define Swap_16(x) __Swap_16((int) x)
+UINT64 __Swap_64(UINT64 Value);
+UINT32 __Swap_32(UINT32 Value);
+UINT16 __Swap_16(UINT16 Value);
+#define Swap_64(x) __Swap_64((UINT64) x)
+#define Swap_32(x) __Swap_32((UINT32) x)
+#define Swap_16(x) __Swap_16((UINT16) x)
 #else
-#define Swap_64(x) (Uint64) x
-#define Swap_32(x) (int) x
-#define Swap_16(x) (int) x
+#define Swap_64(x) (UINT64) x
+#define Swap_32(x) (UINT32) x
+#define Swap_16(x) (UINT16) x
 #endif
 
 // Only used inside the tracker to load Audio IFF files
 #if defined(__MOT_SWAP__)
 #if defined(__BIG_ENDIAN__)
-#define Mot_Swap_64(x) (Uint64) x
-#define Mot_Swap_32(x) (int) x
-#define Mot_Swap_16(x) (int) x
+#define Mot_Swap_64(x) (UINT64) x
+#define Mot_Swap_32(x) (UINT32) x
+#define Mot_Swap_16(x) (UINT16) x
 #else
-Uint64 __Swap_64(Uint64 Value);
-int __Swap_32(int Value);
-short __Swap_16(short Value);
-#define Mot_Swap_64(x) __Swap_64((Uint64) x)
-#define Mot_Swap_32(x) __Swap_32((int) x)
-#define Mot_Swap_16(x) __Swap_16((int) x)
+UINT64 __Swap_64(UINT64 Value);
+UINT32 __Swap_32(UINT32 Value);
+UINT16 __Swap_16(UINT16 Value);
+#define Mot_Swap_64(x) __Swap_64((UINT64) x)
+#define Mot_Swap_32(x) __Swap_32((UINT32) x)
+#define Mot_Swap_16(x) __Swap_16((UINT16) x)
 #endif
 #endif
 

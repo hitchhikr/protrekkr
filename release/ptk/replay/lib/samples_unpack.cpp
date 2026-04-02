@@ -2,7 +2,7 @@
 // Protrekkr
 // Based on Juan Antonio Arguelles Rius's NoiseTrekker.
 //
-// Copyright (C) 2008-2025 Franck Charlet.
+// Copyright (C) 2008-2026 Franck Charlet.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -87,7 +87,7 @@ WAVEFORMATEX Wave_Format;
 // ------------------------------------------------------
 // Unpack a GSM sample
 #if defined(PTK_GSM)
-void Unpack_GSM(Uint8 *Source, short *Dest, int Src_Size, int Dst_Size)
+void Unpack_GSM(UINT8 *Source, short *Dest, int Src_Size, int Dst_Size)
 {
     int i;
     int Real_Size;
@@ -112,7 +112,7 @@ void Unpack_GSM(Uint8 *Source, short *Dest, int Src_Size, int Dst_Size)
     Unpack_Stream_Head.cbStruct = sizeof(ACMSTREAMHEADER);
     Unpack_Stream_Head.pbSrc = Source;
     Unpack_Stream_Head.cbSrcLength = Src_Size;
-    Unpack_Stream_Head.pbDst = (Uint8 *) dwDest;
+    Unpack_Stream_Head.pbDst = (UINT8 *) dwDest;
     Unpack_Stream_Head.cbDstLength = Real_Size;
     acmStreamPrepareHeader(Unpack_Stream, &Unpack_Stream_Head, 0);
     acmStreamConvert(Unpack_Stream, &Unpack_Stream_Head, 0);
@@ -131,7 +131,7 @@ void Unpack_GSM(Uint8 *Source, short *Dest, int Src_Size, int Dst_Size)
 // ------------------------------------------------------
 // Unpack an AT3 sample
 #if defined(PTK_AT3)
-void Unpack_AT3(Uint8 *Source, short *Dest, int Src_Size, int Dst_Size, int BitRate)
+void Unpack_AT3(UINT8 *Source, short *Dest, int Src_Size, int Dst_Size, int BitRate)
 {
     int i;
     int Real_Size;
@@ -174,7 +174,7 @@ void Unpack_AT3(Uint8 *Source, short *Dest, int Src_Size, int Dst_Size, int BitR
     Unpack_Stream_Head.cbStruct = sizeof(ACMSTREAMHEADER);
     Unpack_Stream_Head.pbSrc = Source;
     Unpack_Stream_Head.cbSrcLength = Src_Size;
-    Unpack_Stream_Head.pbDst = (Uint8 *) dwDest;
+    Unpack_Stream_Head.pbDst = (UINT8 *) dwDest;
     Unpack_Stream_Head.cbDstLength = Real_Size;
     acmStreamPrepareHeader(Unpack_Stream, &Unpack_Stream_Head, 0);
     acmStreamConvert(Unpack_Stream, &Unpack_Stream_Head, 0);
@@ -193,7 +193,7 @@ void Unpack_AT3(Uint8 *Source, short *Dest, int Src_Size, int Dst_Size, int BitR
 // ------------------------------------------------------
 // Unpack a MP3 sample
 #if defined(PTK_MP3)
-void Unpack_MP3(Uint8 *Source, short *Dest, int Src_Size, int Dst_Size, int BitRate)
+void Unpack_MP3(UINT8 *Source, short *Dest, int Src_Size, int Dst_Size, int BitRate)
 {
     int i;
     int Real_Size;
@@ -220,7 +220,7 @@ void Unpack_MP3(Uint8 *Source, short *Dest, int Src_Size, int Dst_Size, int BitR
     Unpack_Stream_Head.cbStruct = sizeof(ACMSTREAMHEADER);
     Unpack_Stream_Head.pbSrc = Source;
     Unpack_Stream_Head.cbSrcLength = Src_Size;
-    Unpack_Stream_Head.pbDst = (Uint8 *) dwDest;
+    Unpack_Stream_Head.pbDst = (UINT8 *) dwDest;
     Unpack_Stream_Head.cbDstLength = Real_Size;
     acmStreamPrepareHeader(Unpack_Stream, &Unpack_Stream_Head, 0);
     acmStreamConvert(Unpack_Stream, &Unpack_Stream_Head, 0);
@@ -256,7 +256,7 @@ static int stepsizeTable[89] =
 	5894, 6484, 7132, 7845, 8630, 9493, 10442, 11487, 12635, 13899,
 	15289, 16818, 18500, 20350, 22385, 24623, 27086, 29794, 32767
 };
-void Unpack_ADPCM(Uint8 *Source, short *Dest, int Src_Size, int Dst_Size)
+void Unpack_ADPCM(UINT8 *Source, short *Dest, int Src_Size, int Dst_Size)
 {
     signed char *inp;   /* Input buffer pointer */
     short *outp;        /* output buffer pointer */
@@ -331,7 +331,7 @@ void Unpack_ADPCM(Uint8 *Source, short *Dest, int Src_Size, int Dst_Size)
 // ------------------------------------------------------
 // Unpack a Bit 8 sample
 #if defined(PTK_8BIT)
-void Unpack_8Bit(Uint8 *Source, short *Dest, int Src_Size, int Dst_Size)
+void Unpack_8Bit(UINT8 *Source, short *Dest, int Src_Size, int Dst_Size)
 {
     int i;
 

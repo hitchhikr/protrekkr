@@ -2,7 +2,7 @@
 // Protrekkr
 // Based on Juan Antonio Arguelles Rius's NoiseTrekker.
 //
-// Copyright (C) 2008-2025 Franck Charlet.
+// Copyright (C) 2008-2026 Franck Charlet.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -135,17 +135,17 @@ void Actualize_Seq_Ed(char gode)
 {
     if(userscreen == USER_SCREEN_SEQUENCER)
     {
-        SetColor(COL_BLACK);
+        Set_Color(COL_BLACK);
         bjbox(91, (Cur_Height - 132), 21, 87);
         bjbox(122, (Cur_Height - 132), 129, 87);
         bjbox(259, (Cur_Height - 132), 21, 87);
-        SetColor(COL_BACKGROUND);
+        Set_Color(COL_BACKGROUND);
         bjbox(91 + 1, (Cur_Height - 132) + 1, 21 - 2, 87 - 2);
         bjbox(122 + 1, (Cur_Height - 132) + 1, 129 - 2, 87 - 2);
         bjbox(259 + 1, (Cur_Height - 132) + 1, 21 - 2, 87 - 2);
 
         // Current pos bar
-        SetColor(COL_PUSHED_MED);
+        Set_Color(COL_PUSHED_MED);
         bjbox(123, (Cur_Height - 95), 127, 12);
 
         for(int lseq = -3; lseq < 4; lseq++)

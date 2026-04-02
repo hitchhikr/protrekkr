@@ -2,7 +2,7 @@
 // Protrekkr
 // Based on Juan Antonio Arguelles Rius's NoiseTrekker.
 //
-// Copyright (C) 2008-2025 Franck Charlet.
+// Copyright (C) 2008-2026 Franck Charlet.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -35,6 +35,7 @@
 #include "include/editor_sequencer.h"
 #include "include/editor_pattern.h"
 #include "../midi/include/midi.h"
+#include "../support/include/main.h"
 
 // ------------------------------------------------------
 // Variables
@@ -57,7 +58,6 @@ extern int leading_zeroes_char;
 extern int leading_zeroes_char_row;
 
 extern int metronome_magnify;
-extern SDL_Rect **Screen_Modes;
 extern int Cur_Screen_Mode;
 extern int Max_Screen_Mode;
 int Changing_Screen_Mode = 0;
@@ -524,7 +524,7 @@ void Actualize_Master_Ed(char gode)
             if(FullScreen)
             {
                 Gui_Draw_Button_Box(512 + 64 + 8, (Cur_Height - 145), 16, 16, "\03", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
-                sprintf(Modes, "%d x %d", Screen_Modes[Cur_Screen_Mode]->w, Screen_Modes[Cur_Screen_Mode]->h);
+                sprintf(Modes, "%d x %d", Get_Screen_Rect(Cur_Screen_Mode)->w, Get_Screen_Rect(Cur_Screen_Mode)->h);
                 Gui_Draw_Button_Box(520 + 64 + 16 + 2, (Cur_Height - 145), 106, 16, Modes, BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
                 Gui_Draw_Button_Box(520 + 64 + 16 + 2 + 106 + 2, (Cur_Height - 145), 16, 16, "\04", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
             }
@@ -546,15 +546,15 @@ void Actualize_Master_Ed(char gode)
                             Try_Screen_Mode = (Max_Screen_Mode - 1);
                             break;
                         }
-                    } while(Screen_Modes[Try_Screen_Mode]->w < 800 && Screen_Modes[Try_Screen_Mode]->h < 600);
+                    } while(Get_Screen_Rect(Try_Screen_Mode)->w < 800 && Get_Screen_Rect(Try_Screen_Mode)->h < 600);
 
-                    if((Screen_Modes[Try_Screen_Mode]->w >= 800 && Screen_Modes[Try_Screen_Mode]->h >= 600))
+                    if((Get_Screen_Rect(Try_Screen_Mode)->w >= 800 && Get_Screen_Rect(Try_Screen_Mode)->h >= 600))
                     {
                         Cur_Screen_Mode = Try_Screen_Mode;
                     }
             
-                    Orig_Screen_Width = Screen_Modes[Cur_Screen_Mode]->w;
-                    Orig_Screen_Height = Screen_Modes[Cur_Screen_Mode]->h;
+                    Orig_Screen_Width = Get_Screen_Rect(Cur_Screen_Mode)->w;
+                    Orig_Screen_Height = Get_Screen_Rect(Cur_Screen_Mode)->h;
                     Startup_Width = Orig_Screen_Width;
                     Startup_Height = Orig_Screen_Height;
                     if(Startup_Width < SCREEN_WIDTH) Startup_Width = SCREEN_WIDTH;
@@ -565,7 +565,7 @@ void Actualize_Master_Ed(char gode)
                 {
                     Cur_Screen_Mode = (Max_Screen_Mode - 1);
                 }
-                sprintf(Modes, "%d x %d", Screen_Modes[Cur_Screen_Mode]->w, Screen_Modes[Cur_Screen_Mode]->h);
+                sprintf(Modes, "%d x %d", Get_Screen_Rect(Cur_Screen_Mode)->w, Get_Screen_Rect(Cur_Screen_Mode)->h);
                 Gui_Draw_Button_Box(512 + 64 + 8, (Cur_Height - 145), 16, 16, "\03", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
                 Gui_Draw_Button_Box(520 + 64 + 16 + 2, (Cur_Height - 145), 106, 16, Modes, BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
                 Gui_Draw_Button_Box(520 + 64 + 16 + 2 + 106 + 2, (Cur_Height - 145), 16, 16, "\04", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);

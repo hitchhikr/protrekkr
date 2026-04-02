@@ -2,7 +2,7 @@
 // Protrekkr
 // Based on Juan Antonio Arguelles Rius's NoiseTrekker.
 //
-// Copyright (C) 2008-2025 Franck Charlet.
+// Copyright (C) 2008-2026 Franck Charlet.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -86,7 +86,7 @@ typedef struct
 
 // ------------------------------------------------------
 // Functions
-int Check_S3M(int s3m_tag);
+int Check_S3M(UINT32 s3m_tag);
 void Load_S3M(char *Name, const char *FileName);
 
 #endif

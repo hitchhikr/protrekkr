@@ -5,7 +5,7 @@ LIBS_X86_64 = -lsdldraw_x86_64 -lz -framework CoreAudio -framework CoreMidi -fra
 
 DEBUG = 
 
-FLAGS_X86_64 = $(DEBUG) -Ofast -fsigned-char -arch x86_64 -ffast-math -fomit-frame-pointer -fno-rtti -I/opt/local/include \
+FLAGS_X86_64 = $(DEBUG) -Ofast -fsigned-char -arch x86_64 -ffast-math -fomit-frame-pointer -fno-rtti -Irelease/ptk/replay/lib/include -I/opt/local/include \
             -fno-strict-aliasing -w -D __MACOSX_X86__ -D __GCC__ -D __MACOSX_CORE__ -D __MOT_SWAP__ -D __AIFF__
 
 EXEOBJS_X86_64 = ptk_x86_64.o \

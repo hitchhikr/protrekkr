@@ -2,7 +2,7 @@
 // Protrekkr
 // Based on Juan Antonio Arguelles Rius's NoiseTrekker.
 //
-// Copyright (C) 2008-2025 Franck Charlet.
+// Copyright (C) 2008-2026 Franck Charlet.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -37,20 +37,20 @@
 
 // ------------------------------------------------------
 // Variables
-extern SDL_Surface *Main_Screen;
-extern SDL_Surface *Temp_PFONT;
-extern SDL_Surface *Temp_LARGEPFONT;
-extern SDL_Surface *Temp_SMALLPFONT;
-extern SDL_Surface *Temp_NOTEPFONT;
-extern SDL_Surface *Temp_NOTELARGEPFONT;
-extern SDL_Surface *Temp_NOTESMALLPFONT;
+extern SDL_TEXTURE *Main_Screen;
+extern SDL_TEXTURE *Temp_PFONT;
+extern SDL_TEXTURE *Temp_LARGEPFONT;
+extern SDL_TEXTURE *Temp_SMALLPFONT;
+extern SDL_TEXTURE *Temp_NOTEPFONT;
+extern SDL_TEXTURE *Temp_NOTELARGEPFONT;
+extern SDL_TEXTURE *Temp_NOTESMALLPFONT;
 // ---
-extern SDL_Surface *Temp_PFONT_DOUBLE;
-extern SDL_Surface *Temp_LARGEPFONT_DOUBLE;
-extern SDL_Surface *Temp_SMALLPFONT_DOUBLE;
-extern SDL_Surface *Temp_NOTEPFONT_DOUBLE;
-extern SDL_Surface *Temp_NOTELARGEPFONT_DOUBLE;
-extern SDL_Surface *Temp_NOTESMALLPFONT_DOUBLE;
+extern SDL_TEXTURE *Temp_PFONT_DOUBLE;
+extern SDL_TEXTURE *Temp_LARGEPFONT_DOUBLE;
+extern SDL_TEXTURE *Temp_SMALLPFONT_DOUBLE;
+extern SDL_TEXTURE *Temp_NOTEPFONT_DOUBLE;
+extern SDL_TEXTURE *Temp_NOTELARGEPFONT_DOUBLE;
+extern SDL_TEXTURE *Temp_NOTESMALLPFONT_DOUBLE;
 // ---
 extern char *Font_Ascii;
 extern int Nbr_Letters;
@@ -178,7 +178,7 @@ void Draw_Flat_Rectangle(float x, float y,
 
 // ------------------------------------------------------
 // Create a texture
-GLuint Create_Texture(SDL_Surface *Source)
+GLuint Create_OGL_Texture(SDL_TEXTURE *Source)
 {
     GLuint txId = 0;
     unsigned char *SrcPic;
@@ -234,7 +234,7 @@ GLuint Create_Texture(SDL_Surface *Source)
 
 // ------------------------------------------------------
 // Delete a previously created texture
-void Destroy_Texture(GLuint *txId)
+void Destroy_OGL_Texture(GLuint *txId)
 {
     glDeleteTextures(1, txId);
     glFlush();
@@ -273,6 +273,20 @@ void Draw_Tx_Quad(float x, float y, float x1, float y1, float Width, float Heigh
     }
 }
 #endif
+
+// ------------------------------------------------------
+//  Create a texture
+SDL_TEXTURE *Create_SDL_Texture(int width, int height)
+{
+    return SDL_AllocSurface(SDL_SWSURFACE, width, height, 8, 0, 0, 0, 0xff);
+}
+
+// ------------------------------------------------------
+// Delete a previously created texture
+void Destroy_SDL_Texture(SDL_TEXTURE *texture)
+{
+    SDL_FreeSurface(texture);
+}
 
 // ------------------------------------------------------
 // Draw a pixel
@@ -315,7 +329,7 @@ void DrawVLine(int x, int y1, int y2, int Color)
 
 // ------------------------------------------------------
 // Set the current color
-void SetColor(int color)
+void Set_Color(int color)
 {
     FgColor = color;
 }
@@ -325,7 +339,7 @@ void SetColor(int color)
 #if defined(__USE_OPENGL__)
 void Copy_No_Refresh(GLuint Source,
 #else
-void Copy_No_Refresh(SDL_Surface *Source,
+void Copy_No_Refresh(SDL_TEXTURE *Source,
 #endif
           int dest_x, int dest_y,
           int source_start_x, int source_start_y,
@@ -365,7 +379,7 @@ void Copy_No_Refresh(SDL_Surface *Source,
 
 // ------------------------------------------------------
 // Fill a rectangle with the current color
-void Fillrect(int x1, int y1, int x2, int y2)
+void Fill_Rect(int x1, int y1, int x2, int y2)
 {
 
 #if defined(__USE_OPENGL__)
@@ -388,7 +402,7 @@ void Fillrect(int x1, int y1, int x2, int y2)
 #if defined(__USE_OPENGL__)
 void Copy(GLuint Source,
 #else
-void Copy(SDL_Surface *Source,
+void Copy(SDL_TEXTURE *Source,
 #endif
           int x, int y,
           int x1, int y1,
@@ -423,7 +437,7 @@ void Copy(SDL_Surface *Source,
 // ------------------------------------------------------
 // Copy a rectangle onto a given surface
 // (Only used to create the fonts and destroy the requesters)
-void Copy_To_Surface(SDL_Surface *Source, SDL_Surface *dest,
+void Copy_To_Surface(SDL_TEXTURE *Source, SDL_TEXTURE *dest,
                      int dest_x, int dest_y, int src_start_x, int src_start_y, int src_end_x, int src_end_y)
 {
     SDL_Rect Src_Rect;

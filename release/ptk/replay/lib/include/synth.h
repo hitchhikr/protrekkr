@@ -2,7 +2,7 @@
 // Protrekkr
 // Based on Juan Antonio Arguelles Rius's NoiseTrekker.
 //
-// Copyright (C) 2008-2025 Franck Charlet.
+// Copyright (C) 2008-2026 Franck Charlet.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,6 @@
 // ------------------------------------------------------
 // Includes
 #include <math.h>
-//#include "replay.h"
 
 // ------------------------------------------------------
 // Constants
@@ -55,28 +54,13 @@
 #define COMBINE_MUL 2
 #define COMBINE_DIV 3
 
-// ------------------------------------------------------
-// Types
-#if defined(__WIN32__) && !defined(__GCC__)
-typedef __int64 int64;
-typedef unsigned __int64 Uint64;
-#else
-typedef long long int64;
-#if defined(__HAIKU__) || defined(__LINUX__) || defined(__AROS__)
-#include <stdint.h>
-typedef uint64_t Uint64;
-#else
-typedef unsigned long long Uint64;
-#endif
-#endif
-
 extern float SIN[360];
 
 #if defined(PTK_SYNTH)
 
 struct s_access
 {
-    int32 int_pos;
+    INT32 int_pos;
     float flt_pos;
 };
 
@@ -310,7 +294,7 @@ typedef struct
         float OSC_3_VOLUME;
         unsigned char OSC_3_SWITCH;
         float PTC_GLIDE;
-        int64 PTC_GLIDE_64;
+        INT64 PTC_GLIDE_64;
         float GLB_VOLUME;
         float DISTO;
         float LFO_1_ATTACK;

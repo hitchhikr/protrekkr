@@ -2,7 +2,7 @@
 // Protrekkr
 // Based on Juan Antonio Arguelles Rius's NoiseTrekker.
 //
-// Copyright (C) 2008-2025 Franck Charlet.
+// Copyright (C) 2008-2026 Franck Charlet.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -44,21 +44,21 @@ extern int Sample_Back_Size[4];
 
 // ------------------------------------------------------
 // Functions
-int Sample_Rotate_Left(int32 range_start, int32 range_end, int amount);
-int Sample_Rotate_Right(int32 range_start, int32 range_end, int amount);
-int Sample_Reverse(int32 range_start, int32 range_end);
-int Sample_Crop(int32 range_start, int32 range_end);
-int Sample_Copy(int32 range_start, int32 range_end);
-int Sample_Paste(int32 range_start);
-int Sample_Cut(int32 range_start, int32 range_end, int do_copy);
-void Sample_DC_Adjust(int32 range_start, int32 range_end);
-void Sample_Normalize(int32 range_start, int32 range_end);
-void Sample_Zeroize(int32 range_start, int32 range_end);
-void Sample_FadeIn(int32 range_start, int32 range_end);
-void Sample_FadeOut(int32 range_start, int32 range_end);
-void Sample_Half(int32 range_start, int32 range_end);
-int Sample_Duplicate(int32 range_start, int32 range_end);
-int Sample_InsertZero(int32 range_start, int32 range_end);
-void Recalculate_Sample_Size(int Instrument, int Split, int Discard_Loop, Uint32 Range_Start, Uint32 Range_End, int Add_Data, int Crop);
+int Sample_Rotate_Left(INT32 range_start, INT32 range_end, int amount);
+int Sample_Rotate_Right(INT32 range_start, INT32 range_end, int amount);
+int Sample_Reverse(INT32 range_start, INT32 range_end);
+int Sample_Crop(INT32 range_start, INT32 range_end);
+int Sample_Copy(INT32 range_start, INT32 range_end);
+int Sample_Paste(INT32 range_start);
+int Sample_Cut(INT32 range_start, INT32 range_end, int do_copy);
+void Sample_DC_Adjust(INT32 range_start, INT32 range_end);
+void Sample_Normalize(INT32 range_start, INT32 range_end);
+void Sample_Zeroize(INT32 range_start, INT32 range_end);
+void Sample_FadeIn(INT32 range_start, INT32 range_end);
+void Sample_FadeOut(INT32 range_start, INT32 range_end);
+void Sample_Half(INT32 range_start, INT32 range_end);
+int Sample_Duplicate(INT32 range_start, INT32 range_end);
+int Sample_InsertZero(INT32 range_start, INT32 range_end);
+void Recalculate_Sample_Size(int Instrument, int Split, int Discard_Loop, UINT32 Range_Start, UINT32 Range_End, int Add_Data, int Crop);
 
 #endif

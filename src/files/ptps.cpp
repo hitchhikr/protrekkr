@@ -2,7 +2,7 @@
 // Protrekkr
 // Based on Juan Antonio Arguelles Rius's NoiseTrekker.
 //
-// Copyright (C) 2008-2025 Franck Charlet.
+// Copyright (C) 2008-2026 Franck Charlet.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -1259,7 +1259,7 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
 
                 float fvalue;
                 int ivalue;
-                int64 i64value;
+                INT64 i64value;
 
                 fvalue = (float) (PARASynth[swrite].osc_1_pw - 256) / 256.0f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
@@ -1482,8 +1482,8 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
 
                 fvalue = ((float) PARASynth[swrite].ptc_glide * (float) PARASynth[swrite].ptc_glide) * 0.0000015625f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
-                i64value = (int64) ((float) fvalue);
-                Write_Mod_Data(&i64value, sizeof(int64), 1, in);
+                i64value = (INT64) ((float) fvalue);
+                Write_Mod_Data(&i64value, sizeof(INT64), 1, in);
 
                 fvalue = ((float) PARASynth[swrite].glb_volume) * 0.0078125f;
                 Write_Mod_Data(&fvalue, sizeof(float), 1, in);
@@ -1578,11 +1578,11 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                             Apply_Interpolation = TRUE;
                             break;
                     }
-                    Uint32 Real_Len = Sample_Length[swrite][slwrite];
-                    Uint32 Calc_Len = Sample_Length[swrite][slwrite];
-                    Uint32 Loop_Start = LoopStart[swrite][slwrite];
-                    Uint32 Loop_End = LoopEnd[swrite][slwrite];
-                    Uint32 iSmp;
+                    UINT32 Real_Len = Sample_Length[swrite][slwrite];
+                    UINT32 Calc_Len = Sample_Length[swrite][slwrite];
+                    UINT32 Loop_Start = LoopStart[swrite][slwrite];
+                    UINT32 Loop_End = LoopEnd[swrite][slwrite];
+                    UINT32 iSmp;
 
                     short *Smp_Dats = NULL;
 

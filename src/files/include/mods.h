@@ -2,7 +2,7 @@
 // Protrekkr
 // Based on Juan Antonio Arguelles Rius's NoiseTrekker.
 //
-// Copyright (C) 2008-2025 Franck Charlet.
+// Copyright (C) 2008-2026 Franck Charlet.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -54,7 +54,7 @@ typedef struct
 
 // ------------------------------------------------------
 // Functions
-int Check_Mod(int mod_tag);
+int Check_Mod(UINT32 mod_tag);
 void Load_Mod(char *Name, const char *FileName, int channels, int digibooster);
 
 #endif

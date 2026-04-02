@@ -2,7 +2,7 @@
 // Protrekkr
 // Based on Juan Antonio Arguelles Rius's NoiseTrekker.
 //
-// Copyright (C) 2008-2025 Franck Charlet.
+// Copyright (C) 2008-2026 Franck Charlet.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -44,7 +44,7 @@ float AUDIO_Timer;
 
 int volatile AUDIO_Acknowledge;
 BStreamingGameSound *AUDIO_Device;
-Uint32 Amount;
+UINT32 Amount;
 
 int AUDIO_SoundBuffer_Size;
 int AUDIO_Latency;
@@ -54,8 +54,8 @@ int AUDIO_Milliseconds = 20;
 // Functions
 int AUDIO_Create_Sound_Buffer(int milliseconds);
 void AUDIO_Stop_Sound_Buffer(void);
-void (STDCALL *AUDIO_Mixer)(Uint8 *, Uint32);
-void AUDIO_Mixer_Fill_Buffer(void *, Uint32);
+void (STDCALL *AUDIO_Mixer)(UINT8 *, UINT32);
+void AUDIO_Mixer_Fill_Buffer(void *, UINT32);
 void AUDIO_Synth_Play(void);
 
 // ------------------------------------------------------
@@ -65,7 +65,7 @@ static void AUDIO_Callback(void *cookie, void *inBuffer, size_t byteCount, BStre
 {
     if(AUDIO_Play_Flag)
     {
-        AUDIO_Mixer((Uint8 *) inBuffer, byteCount);
+        AUDIO_Mixer((UINT8 *) inBuffer, byteCount);
     }
     else
     {
@@ -78,7 +78,7 @@ static void AUDIO_Callback(void *cookie, void *inBuffer, size_t byteCount, BStre
 // ------------------------------------------------------
 // Name: AUDIO_Init_Driver()
 // Desc: Init the audio driver
-int AUDIO_Init_Driver(void (*Mixer)(Uint8 *, Uint32))
+int AUDIO_Init_Driver(void (*Mixer)(UINT8 *, UINT32))
 {
     AUDIO_Mixer = Mixer;
 

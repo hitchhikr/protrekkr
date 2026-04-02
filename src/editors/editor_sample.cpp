@@ -2,7 +2,7 @@
 // Protrekkr
 // Based on Juan Antonio Arguelles Rius's NoiseTrekker.
 //
-// Copyright (C) 2008-2025 Franck Charlet.
+// Copyright (C) 2008-2026 Franck Charlet.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -34,11 +34,6 @@
 #include "include/editor_sample.h"
 #include "include/editor_instrument.h"
 #include "../samples/include/samples_ops.h"
-
-#if defined(__AROS__) || defined(__MORPHOS__)
-#include <stdint.h>
-#define int32 int32_t
-#endif
 
 // ------------------------------------------------------
 // Constants
@@ -76,14 +71,14 @@
 // Variables
 extern s_access sp_Position[MAX_TRACKS][MAX_POLYPHONY];
 
-int32 axswave = 0;
+INT32 axswave = 0;
 
-int32 sed_display_start = 0;
-int32 sed_display_length = 0;
-int32 sed_range_start = 0;
-int32 sed_range_end = 0;
-int32 sed_real_range_start = 0;
-int32 sed_real_range_end = 0;
+INT32 sed_display_start = 0;
+INT32 sed_display_length = 0;
+INT32 sed_range_start = 0;
+INT32 sed_range_end = 0;
+INT32 sed_real_range_start = 0;
+INT32 sed_real_range_end = 0;
 int cur_sample_color = COL_SCOPESSAMPLES;
 char sed_range_mode = FALSE;
 int smp_draw_mode = FALSE;
@@ -121,12 +116,12 @@ void Draw_Sample_Ed(void)
 
 void Draw_Wave_Data(void)
 {
-    int32 s_offset;
-    int32 s_ex;
+    INT32 s_offset;
+    INT32 s_ex;
     int start_rect;
     int set_start_rect;
     int end_rect;
-    int64 pos_in_wav;
+    INT64 pos_in_wav;
     int Allow;
 
     if(userscreen == USER_SCREEN_SAMPLE_EDIT)
@@ -154,8 +149,8 @@ void Draw_Wave_Data(void)
                               LARGE_SMP_VIEW + 2 - (18 * 2), Allow);
 
             // Layout around the waveform
-            SetColor(COL_BACKGROUND);
-            Fillrect(WAVE_LEFT, (Cur_Height - 150), LARGE_SMP_VIEW + WAVE_LEFT + 1, (Cur_Height - 150) + SAMPLE_HEIGHT);
+            Set_Color(COL_BACKGROUND);
+            Fill_Rect(WAVE_LEFT, (Cur_Height - 150), LARGE_SMP_VIEW + WAVE_LEFT + 1, (Cur_Height - 150) + SAMPLE_HEIGHT);
             DrawHLine((Cur_Height - 150), WAVE_LEFT, LARGE_SMP_VIEW + WAVE_LEFT + 1, COL_BLACK);
             DrawHLine((Cur_Height - 150) + SAMPLE_HEIGHT - 1, WAVE_LEFT, LARGE_SMP_VIEW + WAVE_LEFT + 1, COL_BLACK);
             DrawVLine(LARGE_SMP_VIEW + WAVE_LEFT + 1, (Cur_Height - 150), (Cur_Height - 150) + SAMPLE_HEIGHT - 1, COL_BLACK);
@@ -189,7 +184,7 @@ void Draw_Wave_Data(void)
                 set_start_rect = 0;
                 for(s_ex = 0; s_ex < LARGE_SMP_VIEW; s_ex++)
                 {
-                    pos_in_wav = ((int64) s_ex * (int64) sed_display_length);
+                    pos_in_wav = ((INT64) s_ex * (INT64) sed_display_length);
                     s_offset = (int) (pos_in_wav / LARGE_SMP_VIEW) + sed_display_start;
 
                     if(sed_range_mode &&
@@ -212,12 +207,12 @@ void Draw_Wave_Data(void)
                 }
                 if(set_start_rect)
                 {
-                    SetColor(cur_sample_color);
+                    Set_Color(cur_sample_color);
                     if(end_rect == start_rect)
                     {
                         end_rect++;
                     }
-                    Fillrect(start_rect + WAVE_LEFT + 1, (Cur_Height - 150) + 1, end_rect + WAVE_LEFT + 1, (Cur_Height - 150) + SAMPLE_HEIGHT - 1);
+                    Fill_Rect(start_rect + WAVE_LEFT + 1, (Cur_Height - 150) + 1, end_rect + WAVE_LEFT + 1, (Cur_Height - 150) + SAMPLE_HEIGHT - 1);
                 }
 
                 // Now draw the sample data
@@ -227,7 +222,7 @@ void Draw_Wave_Data(void)
                         // Mono sample
                         for(s_ex = 0; s_ex < LARGE_SMP_VIEW; s_ex++)
                         {
-                            pos_in_wav = ((int64) s_ex * (int64) sed_display_length);
+                            pos_in_wav = ((INT64) s_ex * (INT64) sed_display_length);
                             s_offset = (int) (pos_in_wav / LARGE_SMP_VIEW) + sed_display_start;
                             int h = *(RawSamples[Current_Instrument][0][Current_Instrument_Split] + s_offset) / rs_coef;
                             if(h > s_size) h = s_size;
@@ -257,7 +252,7 @@ void Draw_Wave_Data(void)
                         // Stereo sample
                         for(s_ex = 0; s_ex < LARGE_SMP_VIEW; s_ex++)
                         {
-                            pos_in_wav = ((int64) s_ex * (int64) sed_display_length);
+                            pos_in_wav = ((INT64) s_ex * (INT64) sed_display_length);
                             s_offset = (int) (pos_in_wav / LARGE_SMP_VIEW) + sed_display_start;
                             int h = *(RawSamples[Current_Instrument][0][Current_Instrument_Split] + s_offset) / rs_coef;
                             int h2 = *(RawSamples[Current_Instrument][1][Current_Instrument_Split] + s_offset) / rs_coef;
@@ -295,10 +290,10 @@ void Draw_Wave_Data(void)
                 // Display the loop infos bars
                 if(LoopType[Current_Instrument][Current_Instrument_Split])
                 {
-                    int64 LSX64 = ((int64) (LoopStart[Current_Instrument][Current_Instrument_Split] - sed_display_start)) * LARGE_SMP_VIEW;
-                    int32 LSX = (int32) ((int64) LSX64 / (int64) sed_display_length);
-                    int64 LEX64 = ((int64) (LoopEnd[Current_Instrument][Current_Instrument_Split] - sed_display_start)) * LARGE_SMP_VIEW;
-                    int32 LEX = (int32) ((int64) LEX64 / (int64) sed_display_length);
+                    INT64 LSX64 = ((INT64) (LoopStart[Current_Instrument][Current_Instrument_Split] - sed_display_start)) * LARGE_SMP_VIEW;
+                    INT32 LSX = (INT32) ((INT64) LSX64 / (INT64) sed_display_length);
+                    INT64 LEX64 = ((INT64) (LoopEnd[Current_Instrument][Current_Instrument_Split] - sed_display_start)) * LARGE_SMP_VIEW;
+                    INT32 LEX = (INT32) ((INT64) LEX64 / (INT64) sed_display_length);
 
                     if(LSX >= 0 && LSX <= LARGE_SMP_VIEW)
                     {
@@ -384,11 +379,11 @@ void Renew_Sample_Ed(void)
 // Draw the current playback position
 void Draw_Wave_PlayBack_Pos(void)
 {
-    int32 sed_real_range_start;
-    int32 sed_real_range_end;
-    int32 pos_in_sample;
+    INT32 sed_real_range_start;
+    INT32 sed_real_range_end;
+    INT32 pos_in_sample;
     int i;
-    int64 pos_in_wav;
+    INT64 pos_in_wav;
 
     if(draw_sampled_wave2)
     {
@@ -419,7 +414,7 @@ void Draw_Wave_PlayBack_Pos(void)
             pos_in_sample = 0;
             for(i = 0; i < MAX_POLYPHONY; i++)
             {
-                if((int32) sp_Position[Track_Under_Caret][i].int_pos > pos_in_sample)
+                if((INT32) sp_Position[Track_Under_Caret][i].int_pos > pos_in_sample)
                 {
                     if(sp_Stage[Track_Under_Caret][i] == PLAYING_SAMPLE)
                     {
@@ -440,10 +435,10 @@ void Draw_Wave_PlayBack_Pos(void)
 
             if(Sample_Channels[Current_Instrument][Current_Instrument_Split] == 1)
             {
-                for(int32 s_ex = 0; s_ex < LARGE_SMP_VIEW; s_ex++)
+                for(INT32 s_ex = 0; s_ex < LARGE_SMP_VIEW; s_ex++)
                 {
-                    pos_in_wav = ((int64) s_ex * (int64) sed_display_length);
-                    int32 s_offset = (int) (pos_in_wav / LARGE_SMP_VIEW) + sed_display_start;
+                    pos_in_wav = ((INT64) s_ex * (INT64) sed_display_length);
+                    INT32 s_offset = (int) (pos_in_wav / LARGE_SMP_VIEW) + sed_display_start;
 
                     int h = *(RawSamples[Current_Instrument][0][Current_Instrument_Split] + s_offset) / rs_coef;
                     if(h > s_size) h = s_size;
@@ -475,10 +470,10 @@ void Draw_Wave_PlayBack_Pos(void)
             // STEREO DISPLAY
             if(Sample_Channels[Current_Instrument][Current_Instrument_Split] == 2)
             {
-                for(int32 s_ex = 0; s_ex < LARGE_SMP_VIEW; s_ex++)
+                for(INT32 s_ex = 0; s_ex < LARGE_SMP_VIEW; s_ex++)
                 {
-                    pos_in_wav = ((int64) s_ex * (int64) sed_display_length);
-                    int32 s_offset = (int) (pos_in_wav / LARGE_SMP_VIEW) + sed_display_start;
+                    pos_in_wav = ((INT64) s_ex * (INT64) sed_display_length);
+                    INT32 s_offset = (int) (pos_in_wav / LARGE_SMP_VIEW) + sed_display_start;
                     int h = *(RawSamples[Current_Instrument][0][Current_Instrument_Split] + s_offset) / rs_coef;
                     int h2 = *(RawSamples[Current_Instrument][1][Current_Instrument_Split] + s_offset) / rs_coef;
                     if(h > s_size) h = s_size;
@@ -528,8 +523,8 @@ void Draw_Wave_PlayBack_Pos(void)
 // and responds to the various commands
 void Actualize_Sample_Ed(char gode)
 {
-    int32 sed_real_range_start;
-    int32 sed_real_range_end;
+    INT32 sed_real_range_start;
+    INT32 sed_real_range_end;
     int read_only;
     int Allow;
     int allow_draw_mode;
@@ -1362,7 +1357,7 @@ void Mouse_Sliders_Sample_Ed(void)
     int Mouse_Pos;
     double test;
     int Allow = TRUE;
-    int32 sed_draw_pos;
+    INT32 sed_draw_pos;
     short *smp_dataL;
     short *smp_dataR;
     int mouse_y_pos;
@@ -1391,8 +1386,8 @@ void Mouse_Sliders_Sample_Ed(void)
                 }
                 if(smp_draw_mode)
                 {
-                    test = (double) (((int64) Mouse_Pos * (int64) sed_display_length)) / LARGE_SMP_VIEW;
-                    sed_draw_pos = sed_display_start + (int32) test;
+                    test = (double) (((INT64) Mouse_Pos * (INT64) sed_display_length)) / LARGE_SMP_VIEW;
+                    sed_draw_pos = sed_display_start + (INT32) test;
                     teac = 0;
                     smp_dataL = (RawSamples[Current_Instrument][0][Current_Instrument_Split] + sed_draw_pos);
                     smp_dataR = (RawSamples[Current_Instrument][1][Current_Instrument_Split] + sed_draw_pos);
@@ -1468,8 +1463,8 @@ void Mouse_Sliders_Sample_Ed(void)
                 {
                     axswave = Sample_Length[Current_Instrument][Current_Instrument_Split];
                     sed_range_mode = TRUE;
-                    test = (double) (((int64) Mouse_Pos * (int64) sed_display_length)) / LARGE_SMP_VIEW;
-                    sed_range_end = sed_display_start + (int32) test;
+                    test = (double) (((INT64) Mouse_Pos * (INT64) sed_display_length)) / LARGE_SMP_VIEW;
+                    sed_range_end = sed_display_start + (INT32) test;
                     teac = 4;
 
                     if(!sas)
@@ -1517,7 +1512,7 @@ void Mouse_Sliders_Sample_Ed(void)
                     s_offset = (float) (max_length - sed_display_length);
                 }
                 if(s_offset < 0) s_offset = 0;
-                sed_display_start = (int32) s_offset;
+                sed_display_start = (INT32) s_offset;
                 gui_action = GUI_CMD_REFRESH_SAMPLE_ED;
                 draw_sampled_wave = TRUE;
             }
@@ -1588,11 +1583,11 @@ void Refresh_Sample(int clear_sel)
     }
 
     // Adjust after the cut
-    if(sed_display_length > (int32) Sample_Length[Current_Instrument][Current_Instrument_Split])
+    if(sed_display_length > (INT32) Sample_Length[Current_Instrument][Current_Instrument_Split])
     {
         sed_display_length = Sample_Length[Current_Instrument][Current_Instrument_Split];
     }
-    if(sed_display_length + sed_display_start > (int32) Sample_Length[Current_Instrument][Current_Instrument_Split])
+    if(sed_display_length + sed_display_start > (INT32) Sample_Length[Current_Instrument][Current_Instrument_Split])
     {
         sed_display_start = Sample_Length[Current_Instrument][Current_Instrument_Split] - sed_display_length;
     }
@@ -1664,21 +1659,21 @@ void Display_Sample_Buffers(int Allow)
 // Display a selection
 void Zoom_In_Sel()
 {
-    int32 max_length;
+    INT32 max_length;
 
     sed_range_mode = FALSE;
     if(sed_range_end != sed_range_start)
     {
-        if((int32) sed_range_end < (int32) sed_range_start)
+        if((INT32) sed_range_end < (INT32) sed_range_start)
         {
-            int32 swap_range = sed_range_start;
+            INT32 swap_range = sed_range_start;
             sed_range_start = sed_range_end;
             sed_range_end = swap_range;
         }
         sed_display_length = (sed_range_end - sed_range_start);
         sed_display_start = sed_range_start;
         max_length = Sample_Length[Current_Instrument][Current_Instrument_Split] - sed_display_length;
-        if((int32) sed_display_start > max_length)
+        if((INT32) sed_display_start > max_length)
         {
             sed_display_start = max_length;
         }
@@ -1692,7 +1687,7 @@ void Zoom_In_Sel()
 // Move from a selection
 void Zoom_Out_Sel()
 {
-    int32 start_test;
+    INT32 start_test;
 
     sed_display_start -= sed_display_length;
     start_test = sed_display_start;
@@ -1702,11 +1697,11 @@ void Zoom_Out_Sel()
     }
     sed_display_length *= 3;
 
-    if(sed_display_length > (int32) Sample_Length[Current_Instrument][Current_Instrument_Split])
+    if(sed_display_length > (INT32) Sample_Length[Current_Instrument][Current_Instrument_Split])
     {
         sed_display_length = Sample_Length[Current_Instrument][Current_Instrument_Split];
     }
-    if(sed_display_length + sed_display_start > (int32) Sample_Length[Current_Instrument][Current_Instrument_Split])
+    if(sed_display_length + sed_display_start > (INT32) Sample_Length[Current_Instrument][Current_Instrument_Split])
     {
         sed_display_start = Sample_Length[Current_Instrument][Current_Instrument_Split] - sed_display_length;
     }

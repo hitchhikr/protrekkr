@@ -2,7 +2,7 @@
 // Protrekkr
 // Based on Juan Antonio Arguelles Rius's NoiseTrekker.
 //
-// Copyright (C) 2008-2025 Franck Charlet.
+// Copyright (C) 2008-2026 Franck Charlet.
 // All rights reserFed.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -997,13 +997,13 @@ float CSynth::GetSample(short *Left_Samples,
                         if(pos_osc_1->int_pos > 0)
                         {
                             pos_osc_1->flt_pos -= osc_speed2;
-                            pos_osc_1->int_pos = (int32) pos_osc_1->flt_pos;
+                            pos_osc_1->int_pos = (INT32) pos_osc_1->flt_pos;
                         }
                     }
                     else
                     {
                         pos_osc_1->flt_pos += osc_speed2;
-                        pos_osc_1->int_pos = (int32) pos_osc_1->flt_pos;
+                        pos_osc_1->int_pos = (INT32) pos_osc_1->flt_pos;
                     }
 
 #if defined(PTK_LOOP_FORWARD) || defined(PTK_LOOP_PINGPONG)
@@ -1172,13 +1172,13 @@ float CSynth::GetSample(short *Left_Samples,
                     if(pos_osc_3->int_pos > 0)
                     {
                         pos_osc_3->flt_pos -= osc_speed2;
-                        pos_osc_3->int_pos = (int32) pos_osc_3->flt_pos;
+                        pos_osc_3->int_pos = (INT32) pos_osc_3->flt_pos;
                     }
                 }
                 else
                 {
                     pos_osc_3->flt_pos += osc_speed2;
-                    pos_osc_3->int_pos = (int32) pos_osc_3->flt_pos;
+                    pos_osc_3->int_pos = (INT32) pos_osc_3->flt_pos;
                 }
 
 #if defined(PTK_LOOP_FORWARD) || defined(PTK_LOOP_PINGPONG)
@@ -1443,13 +1443,13 @@ float CSynth::GetSample(short *Left_Samples,
                         if(pos_osc_2->int_pos > 0)
                         {
                             pos_osc_2->flt_pos -= osc_speed2;
-                            pos_osc_2->int_pos = (int32) pos_osc_2->flt_pos;
+                            pos_osc_2->int_pos = (INT32) pos_osc_2->flt_pos;
                         }
                     }
                     else
                     {
                         pos_osc_2->flt_pos += osc_speed2;
-                        pos_osc_2->int_pos = (int32) pos_osc_2->flt_pos;
+                        pos_osc_2->int_pos = (INT32) pos_osc_2->flt_pos;
                     }
 
 #if defined(PTK_LOOP_FORWARD) || defined(PTK_LOOP_PINGPONG)

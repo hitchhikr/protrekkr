@@ -2,7 +2,7 @@
 // Protrekkr
 // Based on Juan Antonio Arguelles Rius's NoiseTrekker.
 //
-// Copyright (C) 2008-2025 Franck Charlet.
+// Copyright (C) 2008-2026 Franck Charlet.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -58,14 +58,13 @@ LPREQUESTER Current_Requester;
 int Req_Pressed_Button;
 int Req_Default_Button;
 static int Cancel_Button;
-SDL_Surface *Req_Picture;
-SDL_Surface *Req_Back;
+SDL_TEXTURE *Req_Picture;
+SDL_TEXTURE *Req_Back;
 #if defined(__USE_OPENGL__)
 GLuint Req_Picture_GL = -1;
 #endif
 int Req_TimeOut;
 int Req_Timer;
-extern SDL_Event Events[MAX_EVENTS];
 extern int Burned_Title;
 
 // ------------------------------------------------------
@@ -118,7 +117,7 @@ int Display_Requester(LPREQUESTER Requester, int Action, char *Text, int Center)
         Req_Picture = *Requester->Picture;
 
 #if defined(__USE_OPENGL__)
-        Req_Picture_GL = Create_Texture(Req_Picture);
+        Req_Picture_GL = Create_OGL_Texture(Req_Picture);
 #endif
 
     }
@@ -251,7 +250,7 @@ int Display_Requester(LPREQUESTER Requester, int Action, char *Text, int Center)
     Pos_Y = (CONSOLE_HEIGHT - Size_Y) / 2;
 
 #if !defined(__USE_OPENGL__)
-    Req_Back = SDL_AllocSurface(SDL_SWSURFACE, Size_X + 1, Size_Y + 1, 8, 0, 0, 0, 0xff);
+    Req_Back = Create_SDL_Texture(Size_X + 1, Size_Y + 1);
     if(Req_Back)
     {
         Copy_To_Surface(Main_Screen, Req_Back, 0, 0,
@@ -282,7 +281,7 @@ int Check_Requester(LPREQUESTER Requester)
             Gui_Draw_Button_Box(Pos_X + (BEVEL_SIZE + 1), Pos_Y + (BEVEL_SIZE + 1),
                                 Size_X - ((BEVEL_SIZE + 1) * 2), Size_Y - ((BEVEL_SIZE + 1) * 2),
                                 NULL, BUTTON_NORMAL | BUTTON_DISABLED);
-            SetColor(COL_PATTERN_HI_BACK);
+            Set_Color(COL_PATTERN_HI_BACK);
             Copy(GET_SURFACE(Req_Picture), Pos_X + BEVEL_SIZE + 1, Pos_Y + BEVEL_SIZE + 1,
                  0, 0, Req_Picture->w - 1, Req_Picture->h - 2);
         }
@@ -428,7 +427,7 @@ void Kill_Requester(void)
              0, 0,
              Pos_X + Size_X + 1,
              Pos_Y + Size_Y + 1);
-        SDL_FreeSurface(Req_Back);
+        Destroy_SDL_Texture(Req_Back);
         Req_Back = NULL;
         if(Req_Picture)
         {
@@ -438,7 +437,7 @@ void Kill_Requester(void)
 #else
     if(Req_Picture_GL != -1)
     {
-        Destroy_Texture(&Req_Picture_GL);
+        Destroy_OGL_Texture(&Req_Picture_GL);
         Req_Picture_GL = -1;
         Set_Pictures_And_Palettes(FALSE);
     }
@@ -446,8 +445,8 @@ void Kill_Requester(void)
 
     Current_Requester = NULL;
     Req_TimeOut = 0;
-    SetColor(COL_BLACK);
-    Fillrect(Pos_X, Pos_Y, Pos_X + Size_X + 1, Pos_Y + Size_Y + 1);
+    Set_Color(COL_BLACK);
+    Fill_Rect(Pos_X, Pos_Y, Pos_X + Size_X + 1, Pos_Y + Size_Y + 1);
 
     Env_Change = TRUE;
     Mouse.button = 0;

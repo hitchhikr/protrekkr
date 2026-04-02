@@ -2,7 +2,7 @@
 // Protrekkr
 // Based on Juan Antonio Arguelles Rius's NoiseTrekker.
 //
-// Copyright (C) 2008-2025 Franck Charlet.
+// Copyright (C) 2008-2026 Franck Charlet.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -110,15 +110,15 @@ int ToGSM(short *Source, short *Dest, int Size)
     Src_size = Size;
     unsigned long rawbufsize = 0;
     acmStreamSize(Pack_Stream, Src_size, &rawbufsize, ACM_STREAMSIZEF_SOURCE);
-    Uint8 *Pack_Buf = (Uint8 *) malloc(Src_size + 8);
+    UINT8 *Pack_Buf = (UINT8 *) malloc(Src_size + 8);
     memset(Pack_Buf, 0, Src_size + 8);
-    Uint8 *rawbuf = (Uint8 *) malloc(rawbufsize + 8);
+    UINT8 *rawbuf = (UINT8 *) malloc(rawbufsize + 8);
     memset(rawbuf, 0, rawbufsize + 8);
 
     ACMSTREAMHEADER Pack_Stream_Head;
     ZeroMemory(&Pack_Stream_Head, sizeof(ACMSTREAMHEADER));
     Pack_Stream_Head.cbStruct = sizeof(ACMSTREAMHEADER);
-    Pack_Stream_Head.pbSrc = (Uint8 *) Pack_Buf;
+    Pack_Stream_Head.pbSrc = (UINT8 *) Pack_Buf;
     Pack_Stream_Head.cbSrcLength = Src_size;
     Pack_Stream_Head.pbDst = rawbuf;
     Pack_Stream_Head.cbDstLength = rawbufsize;
@@ -204,15 +204,15 @@ int ToAT3(short *Source, short *Dest, int Size, int BitRate)
     Src_size = Size;
     unsigned long rawbufsize = 0;
     acmStreamSize(Pack_Stream, Src_size, &rawbufsize, ACM_STREAMSIZEF_SOURCE);
-    Uint8 *Pack_Buf = (Uint8 *) malloc(Src_size + 8);
+    UINT8 *Pack_Buf = (UINT8 *) malloc(Src_size + 8);
     memset(Pack_Buf, 0, Src_size + 8);
-    Uint8 *rawbuf = (Uint8 *) malloc(rawbufsize + 8);
+    UINT8 *rawbuf = (UINT8 *) malloc(rawbufsize + 8);
     memset(rawbuf, 0, rawbufsize + 8);
 
     ACMSTREAMHEADER Pack_Stream_Head;
     ZeroMemory(&Pack_Stream_Head, sizeof(ACMSTREAMHEADER));
     Pack_Stream_Head.cbStruct = sizeof(ACMSTREAMHEADER);
-    Pack_Stream_Head.pbSrc = (Uint8 *) Pack_Buf;
+    Pack_Stream_Head.pbSrc = (UINT8 *) Pack_Buf;
     Pack_Stream_Head.cbSrcLength = Src_size;
     Pack_Stream_Head.pbDst = rawbuf;
     Pack_Stream_Head.cbDstLength = rawbufsize;
@@ -324,15 +324,15 @@ int ToMP3(short *Source, short *Dest, int Size, int BitRate)
     unsigned long rawbufsize = 0;
     acmStreamSize(Pack_Stream, Src_size, &rawbufsize, ACM_STREAMSIZEF_SOURCE);
     rawbufsize += MP3_FRAMES_LAG * 2;
-    Uint8 *Pack_Buf = (Uint8 *) malloc(Src_size + (MP3_FRAMES_LAG * 4) + 8);
+    UINT8 *Pack_Buf = (UINT8 *) malloc(Src_size + (MP3_FRAMES_LAG * 4) + 8);
     memset(Pack_Buf, 0, Src_size + (MP3_FRAMES_LAG * 4) + 8);
-    Uint8 *rawbuf = (Uint8 *) malloc(rawbufsize + (MP3_FRAMES_LAG * 4) + 8);
+    UINT8 *rawbuf = (UINT8 *) malloc(rawbufsize + (MP3_FRAMES_LAG * 4) + 8);
     memset(rawbuf, 0, rawbufsize + (MP3_FRAMES_LAG * 4) + 8);
 
     ACMSTREAMHEADER Pack_Stream_Head;
     ZeroMemory(&Pack_Stream_Head, sizeof(ACMSTREAMHEADER));
     Pack_Stream_Head.cbStruct = sizeof(ACMSTREAMHEADER);
-    Pack_Stream_Head.pbSrc = (Uint8 *) Pack_Buf;
+    Pack_Stream_Head.pbSrc = (UINT8 *) Pack_Buf;
     Pack_Stream_Head.cbSrcLength = Src_size + (MP3_FRAMES_LAG * 2);
     Pack_Stream_Head.pbDst = rawbuf;
     Pack_Stream_Head.cbDstLength = rawbufsize;

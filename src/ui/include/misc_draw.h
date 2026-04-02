@@ -2,7 +2,7 @@
 // Protrekkr
 // Based on Juan Antonio Arguelles Rius's NoiseTrekker.
 //
-// Copyright (C) 2008-2025 Franck Charlet.
+// Copyright (C) 2008-2026 Franck Charlet.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -34,7 +34,6 @@
 
 // ------------------------------------------------------
 // Includes
-#include <SDL/SDL.h>
 #include "draw_primitives.h"
 
 // ------------------------------------------------------
@@ -267,17 +266,17 @@ extern void (*Slider_Function)(int x, int y, int ltr, int ys, int y2, int larg, 
 void DrawPixel(int x, int y, int Color);
 void DrawHLine(int y, int x1, int x2, int Color);
 void DrawVLine(int x, int y1, int y2, int Color);
-void SetColor(int color);
+void Set_Color(int color);
 #if defined(__USE_OPENGL__)
-void Destroy_Textures();
+void Destroy_OGL_Textures();
 #endif
-void Fillrect(int x1, int y1, int x2, int y2);
-void Copy(SDL_Surface *Source, int x, int y, int x1, int y1, int x2, int y2);
-void Copy_To_Surface(SDL_Surface *Source, SDL_Surface *dest,
+void Fill_Rect(int x1, int y1, int x2, int y2);
+void Copy(SDL_TEXTURE *Source, int x, int y, int x1, int y1, int x2, int y2);
+void Copy_To_Surface(SDL_TEXTURE *Source, SDL_TEXTURE *dest,
                      int dest_x, int dest_y, int src_start_x, int src_start_y, int src_end_x, int src_end_y);
 void Print_String(char *str, int x, int y, int size_x, int flag);
 int Get_Size_Text(char *String);
-SDL_Surface *Load_Picture(char *FileName);
+SDL_TEXTURE *Load_Picture(char *FileName);
 int Create_Font_Data(char *FontName);
 void Set_Pictures_And_Palettes(int LogPalette);
 void Set_Main_Palette(void);

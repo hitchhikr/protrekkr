@@ -40,7 +40,7 @@ int pack_audio(short *Source, short *Dest, int Size);
 #define SOFT_ERROR 1
 #define HARD_ERROR 2
 
-static int write_block (void *wpc, void *data, int32_t length)
+static int write_block (void *wpc, void *data, INT32 length)
 {
     WavpackContext *wpc_loc = (WavpackContext *) wpc;
     if (wpc_loc->Dest && data && length)
@@ -65,16 +65,16 @@ static int write_block (void *wpc, void *data, int32_t length)
 
 #define BIT_BUFFER_SIZE 65536   // This should be carefully chosen for the
 #define INPUT_SAMPLES (sizeof (int) == 2 ? 4096 : 65536)
-static uchar wv_buffer [BIT_BUFFER_SIZE];
+static UINT8 wv_buffer [BIT_BUFFER_SIZE];
 
 int pack_audio(short *Source, short *Dest, int Size)
 {
-    uint32_t samples_remaining;
+    UINT32 samples_remaining;
     int bytes_per_sample;
     WavpackContext wpc;
-    uint32_t sample_count = 0;
-    int32_t *large_buffer;
-    uchar *cSource = (uchar *) Source;
+    UINT32 sample_count = 0;
+    INT32 *large_buffer;
+    UINT8 *cSource = (UINT8 *) Source;
 
     CLEAR(wpc);
     wpc.config.bitrate = (int)(2.0f * 256.0f);
@@ -91,7 +91,7 @@ int pack_audio(short *Source, short *Dest, int Size)
 
     WavpackSetConfiguration (&wpc, &wpc.config, Size);
 
-    large_buffer = (int32_t *) malloc(Size * wpc.config.bytes_per_sample * sizeof(int32_t));
+    large_buffer = (INT32 *) malloc(Size * wpc.config.bytes_per_sample * sizeof(INT32));
     if(large_buffer)
     {
         WavpackPackInit (&wpc);
@@ -100,8 +100,8 @@ int pack_audio(short *Source, short *Dest, int Size)
 
         while (1)
         {
-            uint32_t bytes_to_read = 0;
-            uint32_t bytes_read = 0;
+            UINT32 bytes_to_read = 0;
+            UINT32 bytes_read = 0;
 
             if (samples_remaining > INPUT_SAMPLES)
             {
@@ -123,16 +123,16 @@ int pack_audio(short *Source, short *Dest, int Size)
             }
             if (sample_count)
             {
-                uint32_t cnt = sample_count;
-                uchar *sptr = cSource;
-                int32_t *dptr = large_buffer;
+                UINT32 cnt = sample_count;
+                UINT8 *sptr = cSource;
+                INT32 *dptr = large_buffer;
 
                 while (cnt--)
                 {
 #if defined(__BIG_ENDIAN__)
-                    *dptr++ = sptr[1] | ((int32_t)(signed char) sptr[0] << 8);
+                    *dptr++ = sptr[1] | ((INT32)(signed char) sptr[0] << 8);
 #else
-                    *dptr++ = sptr[0] | ((int32_t)(signed char) sptr[1] << 8);
+                    *dptr++ = sptr[0] | ((INT32)(signed char) sptr[1] << 8);
 #endif
                     sptr += 2;
                 }

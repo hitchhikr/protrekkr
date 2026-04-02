@@ -2,7 +2,7 @@
 // Protrekkr
 // Based on Juan Antonio Arguelles Rius's NoiseTrekker.
 //
-// Copyright (C) 2008-2025 Franck Charlet.
+// Copyright (C) 2008-2026 Franck Charlet.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -39,10 +39,6 @@
 #include <string.h>
 #endif
 
-#if defined(__AROS__) || defined(__HAIKU__)
-#define int32 int32_t
-#endif
-
 #if !defined(__STAND_ALONE__)
 #include "../../../../src/midi/include/midi.h"
 #include "../../../../src/include/variables.h"
@@ -55,10 +51,6 @@
 
 // ------------------------------------------------------
 // Variables
-#if !defined(__STAND_ALONE__) && !defined(__WINAMP__)
-    extern SDL_sem *thread_sema;
-#endif
-
 void Compute_Stereo_Quick(int channel);
 
 int SamplesPerTick;
@@ -778,10 +770,10 @@ SYNTH_DATA PARASynth[128];
 #endif
 
 char LoopType[MAX_INSTRS][MAX_INSTRS_SPLITS];
-Uint32 LoopStart[MAX_INSTRS][MAX_INSTRS_SPLITS];
-Uint32 LoopEnd[MAX_INSTRS][MAX_INSTRS_SPLITS];
-Uint32 Sample_Length[MAX_INSTRS][MAX_INSTRS_SPLITS];
-Uint32 Sample_Length_Packed[MAX_INSTRS][MAX_INSTRS_SPLITS];
+UINT32 LoopStart[MAX_INSTRS][MAX_INSTRS_SPLITS];
+UINT32 LoopEnd[MAX_INSTRS][MAX_INSTRS_SPLITS];
+UINT32 Sample_Length[MAX_INSTRS][MAX_INSTRS_SPLITS];
+UINT32 Sample_Length_Packed[MAX_INSTRS][MAX_INSTRS_SPLITS];
 char Beat_Sync[MAX_INSTRS];
 short Beat_Lines[MAX_INSTRS];
 float sp_Step[MAX_TRACKS][MAX_POLYPHONY];
@@ -921,8 +913,8 @@ int delay_time;
     char SampleName[128][16][64];
     unsigned char nPatterns = 1;
     extern char sr_isrecording;
-    extern int32 sed_range_start;
-    extern int32 sed_range_end;
+    extern INT32 sed_range_start;
+    extern INT32 sed_range_end;
 #else
     unsigned char nPatterns;
 #endif
@@ -1038,7 +1030,11 @@ static __inline__ float FastFloor(float f)
 #if defined(__AROS__)
     __asm__("" : "+d" (d));
 #else
-    __asm__("" : "+f" (d));
+    #if defined(__WIN32__)
+        __asm__("" : "+d" (d));
+    #else
+        __asm__("" : "+f" (d));
+    #endif
 #endif
 #endif
     d = d + c;
@@ -1102,9 +1098,9 @@ float FastPow(float a, float b)
 // ------------------------------------------------------
 // Audio mixer
 #if !defined(BZR2)
-void STDCALL Mixer(Uint8 *Buffer, Uint32 Len)
+void STDCALL Mixer(UINT8 *Buffer, UINT32 Len)
 #else
-Uint32 STDCALL Mixer(Uint8 *Buffer, Uint32 Len)
+UINT32 STDCALL Mixer(UINT8 *Buffer, UINT32 Len)
 #endif
 {
 
@@ -1121,14 +1117,11 @@ Uint32 STDCALL Mixer(Uint8 *Buffer, Uint32 Len)
 #endif
 
 #if !defined(__STAND_ALONE__) && !defined(__WINAMP__)
-    if(thread_sema)
-    {
-        SDL_SemWait(thread_sema);
-    }
+    Lock_Audio_Thread();
 #endif
 
 #if defined(BZR2)
-    Uint32 numSamples = Len;
+    UINT32 numSamples = Len;
 #endif
 
 #if !defined(__STAND_ALONE__)
@@ -1239,10 +1232,7 @@ Uint32 STDCALL Mixer(Uint8 *Buffer, Uint32 Len)
 #endif
 
 #if !defined(__STAND_ALONE__) && !defined(__WINAMP__)
-    if(thread_sema)
-    {
-        SDL_SemPost(thread_sema);
-    }
+    Unlock_Audio_Thread();
 #endif
 
 #if defined(BZR2)
@@ -1409,7 +1399,7 @@ int STDCALL Ptk_InitDriver(void)
 // ------------------------------------------------------
 // Load a module
 #if defined(__STAND_ALONE__)
-Uint8 *Cur_Module;
+UINT8 *Cur_Module;
 
 // ------------------------------------------------------
 // Retrieve data from the ptp mod
@@ -1424,7 +1414,7 @@ short *Unpack_Sample(int Dest_Length, char Pack_Type, int BitRate)
 {
     int Packed_Length;
     short *Dest_Buffer;
-    Uint8 *Packed_Read_Buffer;
+    UINT8 *Packed_Read_Buffer;
 
     Mod_Dat_Read(&Packed_Length, sizeof(int));
     if(Packed_Length == -1)
@@ -1432,9 +1422,9 @@ short *Unpack_Sample(int Dest_Length, char Pack_Type, int BitRate)
         // Sample wasn't packed
 
 #if defined(__PSVITA__)
-        Packed_Read_Buffer = (Uint8 *) PSVITA_malloc(Dest_Length * 2 + 8);
+        Packed_Read_Buffer = (UINT8 *) PSVITA_malloc(Dest_Length * 2 + 8);
 #else
-        Packed_Read_Buffer = (Uint8 *) malloc(Dest_Length * 2 + 8);
+        Packed_Read_Buffer = (UINT8 *) malloc(Dest_Length * 2 + 8);
         memset(Packed_Read_Buffer, 0, Dest_Length * 2 + 8);
 #endif
 
@@ -1445,9 +1435,9 @@ short *Unpack_Sample(int Dest_Length, char Pack_Type, int BitRate)
     {
 
 #if defined(__PSVITA__)
-        Packed_Read_Buffer = (Uint8 *) PSVITA_malloc(Packed_Length);
+        Packed_Read_Buffer = (UINT8 *) PSVITA_malloc(Packed_Length);
 #else
-        Packed_Read_Buffer = (Uint8 *) malloc(Packed_Length);
+        Packed_Read_Buffer = (UINT8 *) malloc(Packed_Length);
 #endif
 
         // Read the packer buffer
@@ -1519,9 +1509,9 @@ short *Unpack_Sample(int Dest_Length, char Pack_Type, int BitRate)
 }
 #endif // PTK_INSTRUMENTS
 
-int PTKEXPORT Ptk_InitModule(Uint8 *Module, int start_position)
+int PTKEXPORT Ptk_InitModule(UINT8 *Module, int start_position)
 {
-    Uint32 *dwModule = (Uint32 *) Module;
+    UINT32 *dwModule = (UINT32 *) Module;
     Cur_Module = Module;
 
     int i;
@@ -1669,8 +1659,8 @@ int PTKEXPORT Ptk_InitModule(Uint8 *Module, int start_position)
                 if(SampleType[swrite][slwrite])
                 {
                     int Apply_Interpolation;
-                    Uint32 Save_Len;
-                    Uint32 iSmp;
+                    UINT32 Save_Len;
+                    UINT32 iSmp;
                     short Sample1;
                     short Sample2;
                     short *Sample_Buffer = NULL;
@@ -3614,13 +3604,13 @@ ByPass_Wav:
                         if((int) sp_Position[c][i].int_pos > 0)
                         {
                             sp_Position[c][i].flt_pos -= Vstep1[c][i];
-                            sp_Position[c][i].int_pos = (int32) sp_Position[c][i].flt_pos;
+                            sp_Position[c][i].int_pos = (INT32) sp_Position[c][i].flt_pos;
                         }
                     }
                     else
                     {
                         sp_Position[c][i].flt_pos += Vstep1[c][i];
-                        sp_Position[c][i].int_pos = (int32) sp_Position[c][i].flt_pos;
+                        sp_Position[c][i].int_pos = (INT32) sp_Position[c][i].flt_pos;
                     }
 
 #if defined(PTK_LOOP_FORWARD) || defined(PTK_LOOP_PINGPONG)
@@ -4934,8 +4924,8 @@ void Play_Instrument(int channel, int sub_channel)
                 // Player Pointer Assignment
 
 #if !defined(__STAND_ALONE__)
-                Uint32 Sel_Start;
-                Uint32 Sel_End;
+                UINT32 Sel_Start;
+                UINT32 Sel_End;
             
                 // Only play the selection
                 if(userscreen == USER_SCREEN_SAMPLE_EDIT &&

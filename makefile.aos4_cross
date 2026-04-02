@@ -1,12 +1,13 @@
-CC = powerpc-eabi-gcc -mnewlib
-CXX = powerpc-eabi-g++ -mnewlib
+CC = powerpc-eabi-gcc
+CXX = powerpc-eabi-g++
 ROOT_OS4_SDK = D:\PPC32
 
 LIBS = -lstdc++ -lgcc_eh -lSDL -lz -lpthread -lunix
 
-FLAGS = -Ofast -w -fsigned-char -fno-strict-aliasing -fomit-frame-pointer -fno-unwind-tables -ffast-math -fno-rtti -Lsrc/extralibs/sdl_draw -Lsrc/extralibs/zlib-1.2.3 \
+FLAGS = -Ofast -w -fsigned-char -fno-strict-aliasing -fomit-frame-pointer -fno-unwind-tables -ffast-math -fno-rtti \
+        -Irelease/ptk/replay/lib/include -Lsrc/extralibs/sdl_draw -Lsrc/extralibs/zlib-1.2.3 \
         -mno-eabi -D __AMIGAOS4__ -D __GCC__ -D __BIG_ENDIAN__ -D __MOT_SWAP__ -D __amigaos4__ -D __NEWLIB__ \
-        -D __CROSS__ -D __PPC__ -D __REPLACE_MEMF_PUBLIC
+        -D __CROSS__ -D __PPC__ -D __REPLACE_MEMF_PUBLIC -std=c++11 -DHAVE_STRCASECMP
 
 CCFLAGS = $(FLAGS)
 
@@ -34,7 +35,7 @@ RemObj:
 protrekkr: $(EXEOBJS)
 	-rm -f ./release/ptk/ptk_aos4
 	(cd src/extralibs/zlib-1.2.3; make -f makefile.aos4_cross)
-	$(CC) -nostartfiles -L./ $(ROOT_OS4_SDK)/lib/gcc/powerpc-eabi/13.1.0/crtbegin.o -Wl,-q -Wl,-T,amigaos.x -o ./release/ptk/ptk_aos4 -Wl,--relax $(FLAGS) $(EXEOBJS) $(LIBS)
+	$(CXX) -nostartfiles -L./ $(ROOT_OS4_SDK)/lib/gcc/powerpc-eabi/13.1.0/crtbegin.o -Wl,-q -Wl,-T,amigaos.x -o ./release/ptk/ptk_aos4 -Wl,--relax $(FLAGS) $(EXEOBJS) $(LIBS)
 	powerpc-eabi-strip -S ./release/ptk/ptk_aos4
 
 ptk.o: src/ptk.cpp

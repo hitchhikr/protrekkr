@@ -2,7 +2,7 @@
 // Protrekkr
 // Based on Juan Antonio Arguelles Rius's NoiseTrekker.
 //
-// Copyright (C) 2008-2025 Franck Charlet.
+// Copyright (C) 2008-2026 Franck Charlet.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -40,8 +40,6 @@
 #if defined(__AROS__) || defined(__MORPHOS__)
 #include <stdint.h>
 #include <string.h>
-#define int32 int32_t
-#define int64 int64_t
 #endif
 
 // ------------------------------------------------------
@@ -121,7 +119,7 @@ int Load_Ptk(char *FileName);
 int Load_Ptk(CustomFile customFile);
 #endif
 
-int Save_Ptk(char *FileName, int NewFormat, int Simulate, Uint8 *Memory);
+int Save_Ptk(char *FileName, int NewFormat, int Simulate, UINT8 *Memory);
 void Backup_Module(char *FileName);
 int Pack_Module(char *FileName);
 int Test_Mod(void);
@@ -131,8 +129,8 @@ void Save_Inst(void);
 void Save_Synth(void);
 void Song_Stop(void);
 void Free_Samples(void);
-Uint8 *Pack_Data(Uint8 *Memory, int *Len);
-Uint8 *Depack_Data(Uint8 *Memory, int Size, int size_out);
+UINT8 *Pack_Data(UINT8 *Memory, int *Len);
+UINT8 *Depack_Data(UINT8 *Memory, int Size, int size_out);
 #if !defined(BZR2)
 int Get_File_Size(FILE *Handle);
 #else

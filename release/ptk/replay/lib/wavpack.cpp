@@ -2,7 +2,7 @@
 // Protrekkr
 // Based on Juan Antonio Arguelles Rius's NoiseTrekker.
 //
-// Copyright (C) 2008-2025 Franck Charlet.
+// Copyright (C) 2008-2026 Franck Charlet.
 // All rights reserved.
 //
 // This file is:
@@ -58,7 +58,7 @@ const char nbits_table [] =
     8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8      // 240 - 255
 };
 
-static const uchar log2_table [] =
+static const UINT8 log2_table [] =
 {
     0x00, 0x01, 0x03, 0x04, 0x06, 0x07, 0x09, 0x0a, 0x0b, 0x0d, 0x0e, 0x10, 0x11, 0x12, 0x14, 0x15,
     0x16, 0x18, 0x19, 0x1a, 0x1c, 0x1d, 0x1e, 0x20, 0x21, 0x22, 0x24, 0x25, 0x26, 0x28, 0x29, 0x2a,
@@ -78,7 +78,7 @@ static const uchar log2_table [] =
     0xf4, 0xf5, 0xf6, 0xf7, 0xf7, 0xf8, 0xf9, 0xf9, 0xfa, 0xfb, 0xfc, 0xfc, 0xfd, 0xfe, 0xff, 0xff
 };
 
-static const uchar exp2_table [] =
+static const UINT8 exp2_table [] =
 {
     0x00, 0x01, 0x01, 0x02, 0x03, 0x03, 0x04, 0x05, 0x06, 0x06, 0x07, 0x08, 0x08, 0x09, 0x0a, 0x0b,
     0x0b, 0x0c, 0x0d, 0x0e, 0x0e, 0x0f, 0x10, 0x10, 0x11, 0x12, 0x13, 0x13, 0x14, 0x15, 0x16, 0x16,
@@ -112,11 +112,11 @@ static const char ones_count_table [] =
 
 ///////////////////////////// executable code ////////////////////////////////
 
-static int mylog2(uint32_t avalue);
+static int mylog2(UINT32 avalue);
 
 int read_entropy_vars_depack(WavpackStream *wps, WavpackMetadata *wpmd)
 {
-    uchar *byteptr = (uchar *) wpmd->data;
+    UINT8 *byteptr = (UINT8 *) wpmd->data;
 
     if (wpmd->byte_length != 6)
         return FALSE;
@@ -129,13 +129,13 @@ int read_entropy_vars_depack(WavpackStream *wps, WavpackMetadata *wpmd)
 
 int read_hybrid_profile_depack(WavpackStream *wps, WavpackMetadata *wpmd)
 {
-    uchar *byteptr = (uchar *) wpmd->data;
-    uchar *endptr = byteptr + wpmd->byte_length;
+    UINT8 *byteptr = (UINT8 *) wpmd->data;
+    UINT8 *endptr = byteptr + wpmd->byte_length;
 
     wps->w.c [0].slow_level = exp2s_depack(byteptr [0] + (byteptr [1] << 8));
     byteptr += 2;
 
-    wps->w.bitrate_acc [0] = (int32_t)(byteptr [0] + (byteptr [1] << 8)) << 16;
+    wps->w.bitrate_acc [0] = (INT32)(byteptr [0] + (byteptr [1] << 8)) << 16;
     byteptr += 2;
 
     if (byteptr < endptr)
@@ -154,7 +154,7 @@ int read_hybrid_profile_depack(WavpackStream *wps, WavpackMetadata *wpmd)
     return TRUE;
 }
 
-void update_error_limit(struct words_data *w, uint32_t flags)
+void update_error_limit(struct words_data *w, UINT32 flags)
 {
     int bitrate_0 = (w->bitrate_acc [0] += w->bitrate_delta [0]) >> 16;
 
@@ -170,9 +170,9 @@ void update_error_limit(struct words_data *w, uint32_t flags)
     }
 }
 
-static uint32_t read_code(Bitstream *bs, uint32_t maxcode);
+static UINT32 read_code(Bitstream *bs, UINT32 maxcode);
 
-int32_t get_words (int32_t *buffer, int nsamples, uint32_t flags,
+INT32 get_words (INT32 *buffer, int nsamples, UINT32 flags,
                    struct words_data *w, Bitstream *bs)
 {
     struct entropy_data *c = w->c;
@@ -180,10 +180,10 @@ int32_t get_words (int32_t *buffer, int nsamples, uint32_t flags,
 
     for (csamples = 0; csamples < nsamples; ++csamples)
     {
-        uint32_t ones_count, low, mid, high;
+        UINT32 ones_count, low, mid, high;
 
         if (!(w->c [0].median [0] & ~1) && !w->holding_zero && !w->holding_one && !(w->c [1].median [0] & ~1)) {
-            uint32_t mask;
+            UINT32 mask;
             int cbits;
 
             if (w->zeros_acc) {
@@ -245,7 +245,7 @@ int32_t get_words (int32_t *buffer, int nsamples, uint32_t flags,
 
                 if (ones_count == LIMIT_ONES)
                 {
-                    uint32_t mask;
+                    UINT32 mask;
                     int cbits;
 
                     for (cbits = 0; cbits < 33 && getbit (bs); ++cbits);
@@ -337,10 +337,10 @@ int32_t get_words (int32_t *buffer, int nsamples, uint32_t flags,
     return csamples;
 }
 
-static uint32_t read_code (Bitstream *bs, uint32_t maxcode)
+static UINT32 read_code (Bitstream *bs, UINT32 maxcode)
 {
     int bitcount = count_bits (maxcode);
-    uint32_t extras = (1L << bitcount) - maxcode - 1, code;
+    UINT32 extras = (1L << bitcount) - maxcode - 1, code;
 
     if (!bitcount)
         return 0;
@@ -358,7 +358,7 @@ static uint32_t read_code (Bitstream *bs, uint32_t maxcode)
     return code;
 }
 
-static int mylog2 (uint32_t avalue)
+static int mylog2 (UINT32 avalue)
 {
     int dbits;
     if ((avalue += avalue >> 9) < (1 << 8))
@@ -379,9 +379,9 @@ static int mylog2 (uint32_t avalue)
     }
 }
 
-int32_t exp2s_depack (int log)
+INT32 exp2s_depack (int log)
 {
-    uint32_t value;
+    UINT32 value;
 
     if (log < 0)
         return -exp2s_depack(-log);
@@ -408,9 +408,9 @@ int restore_weight_depack(signed char weight)
 static void bs_read (Bitstream *bs);
 
 void bs_open_read(Bitstream *bs,
-                  uchar *buffer_start,
-                  uchar *buffer_end,
-                  uint32_t file_bytes)
+                  UINT8 *buffer_start,
+                  UINT8 *buffer_end,
+                  UINT32 file_bytes)
 {
     CLEAR(*bs);
     bs->buf = buffer_start;
@@ -424,7 +424,7 @@ static void bs_read(Bitstream *bs)
 {
     if (bs->file_bytes)
     {
-        uint32_t bytes_read, bytes_to_read = bs->end - bs->buf;
+        UINT32 bytes_read, bytes_to_read = bs->end - bs->buf;
         if (bytes_to_read > bs->file_bytes)
         {
             bytes_to_read = bs->file_bytes;
@@ -454,7 +454,7 @@ static void bs_read(Bitstream *bs)
 
 int read_metadata_buff (WavpackContext *wpc, WavpackMetadata *wpmd)
 {
-    uchar tchar;
+    UINT8 tchar;
 
     if (!read_bytes(&wpmd->id, 1) || !read_bytes(&tchar, 1))
     {
@@ -470,13 +470,13 @@ int read_metadata_buff (WavpackContext *wpc, WavpackMetadata *wpmd)
         {
             return FALSE;
         }
-        wpmd->byte_length += (int32_t) tchar << 9; 
+        wpmd->byte_length += (INT32) tchar << 9; 
 
         if (!read_bytes(&tchar, 1))
         {
             return FALSE;
         }
-        wpmd->byte_length += (int32_t) tchar << 17;
+        wpmd->byte_length += (INT32) tchar << 17;
     }
 
     if (wpmd->id & ID_ODD_SIZE)
@@ -487,9 +487,9 @@ int read_metadata_buff (WavpackContext *wpc, WavpackMetadata *wpmd)
 
     if (wpmd->byte_length && wpmd->byte_length <= sizeof (wpc->read_buffer))
     {
-        uint32_t bytes_to_read = wpmd->byte_length + (wpmd->byte_length & 1);
+        UINT32 bytes_to_read = wpmd->byte_length + (wpmd->byte_length & 1);
 
-        if (read_bytes(wpc->read_buffer, bytes_to_read) != (int32_t) bytes_to_read)
+        if (read_bytes(wpc->read_buffer, bytes_to_read) != (INT32) bytes_to_read)
         {
             wpmd->data = NULL;
             return FALSE;
@@ -533,7 +533,7 @@ int unpack_init (WavpackContext *wpc)
     WavpackStream *wps = &wpc->stream;
     WavpackMetadata wpmd;
 
-    if (wps->wphdr.block_samples && wps->wphdr.block_index != (uint32_t) -1)
+    if (wps->wphdr.block_samples && wps->wphdr.block_index != (UINT32) -1)
     {
         wps->sample_index = wps->wphdr.block_index;
     }
@@ -564,7 +564,7 @@ int init_wv_bitstream (WavpackContext *wpc, WavpackMetadata *wpmd)
     if (wpmd->data)
     {
         bs_open_read(&wps->wvbits,
-                      (uchar *) wpmd->data,
+                      (UINT8 *) wpmd->data,
                       (unsigned char *) wpmd->data + wpmd->byte_length,
                       0);
     }
@@ -583,7 +583,7 @@ int init_wv_bitstream (WavpackContext *wpc, WavpackMetadata *wpmd)
 int read_decorr_terms (WavpackStream *wps, WavpackMetadata *wpmd)
 {
     int termcnt = wpmd->byte_length;
-    uchar *byteptr = (uchar *) wpmd->data;
+    UINT8 *byteptr = (UINT8 *) wpmd->data;
     struct decorr_pass *dpp;
 
     if (termcnt > MAX_NTERMS)
@@ -628,8 +628,8 @@ int read_decorr_weights (WavpackStream *wps, WavpackMetadata *wpmd)
 
 int read_decorr_samples (WavpackStream *wps, WavpackMetadata *wpmd)
 {
-    uchar *byteptr = (uchar *) wpmd->data;
-    uchar *endptr = byteptr + wpmd->byte_length;
+    UINT8 *byteptr = (UINT8 *) wpmd->data;
+    UINT8 *endptr = byteptr + wpmd->byte_length;
     struct decorr_pass *dpp;
     int tcount;
 
@@ -671,26 +671,26 @@ int read_decorr_samples (WavpackStream *wps, WavpackMetadata *wpmd)
 int read_config_info (WavpackContext *wpc, WavpackMetadata *wpmd)
 {
     int bytecnt = wpmd->byte_length;
-    uchar *byteptr = (uchar *) wpmd->data;
+    UINT8 *byteptr = (UINT8 *) wpmd->data;
 
     if (bytecnt >= 3)
     {
         wpc->config.flags &= 0xff;
-        wpc->config.flags |= (int32_t) *byteptr++ << 8;
-        wpc->config.flags |= (int32_t) *byteptr++ << 16;
-        wpc->config.flags |= (int32_t) *byteptr << 24;
+        wpc->config.flags |= (INT32) *byteptr++ << 8;
+        wpc->config.flags |= (INT32) *byteptr++ << 16;
+        wpc->config.flags |= (INT32) *byteptr << 24;
     }
 
     return TRUE;
 }
 
-int32_t unpack_samples (WavpackContext *wpc, int32_t *buffer, uint32_t sample_count)
+INT32 unpack_samples (WavpackContext *wpc, INT32 *buffer, UINT32 sample_count)
 {
     WavpackStream *wps = &wpc->stream;
-    uint32_t flags = wps->wphdr.flags, i;
-    int32_t mute_limit = (1L << ((flags & MAG_MASK) >> MAG_LSB)) + 2;
+    UINT32 flags = wps->wphdr.flags, i;
+    INT32 mute_limit = (1L << ((flags & MAG_MASK) >> MAG_LSB)) + 2;
     struct decorr_pass *dpp;
-    int32_t *bptr, *eptr;
+    INT32 *bptr, *eptr;
     int tcount;
 
     if (wps->sample_index + sample_count > wps->wphdr.block_index + wps->wphdr.block_samples)
@@ -739,10 +739,10 @@ int32_t unpack_samples (WavpackContext *wpc, int32_t *buffer, uint32_t sample_co
     return i;
 }
 
-void decorr_mono_pass (struct decorr_pass *dpp, int32_t *buffer, int32_t sample_count)
+void decorr_mono_pass (struct decorr_pass *dpp, INT32 *buffer, INT32 sample_count)
 {
-    int32_t delta = dpp->delta, weight_A = dpp->weight_A;
-    int32_t *bptr, *eptr = buffer + sample_count, sam_A;
+    INT32 delta = dpp->delta, weight_A = dpp->weight_A;
+    INT32 *bptr, *eptr = buffer + sample_count, sam_A;
     int m, k;
 
     switch (dpp->term)
@@ -784,7 +784,7 @@ void decorr_mono_pass (struct decorr_pass *dpp, int32_t *buffer, int32_t sample_
 
             if (m)
             {
-                int32_t temp_samples [MAX_TERM];
+                INT32 temp_samples [MAX_TERM];
                 memcpy (temp_samples, dpp->samples_A, sizeof (dpp->samples_A));
                 for (k = 0; k < MAX_TERM; k++, m++)
                 {
@@ -798,12 +798,12 @@ void decorr_mono_pass (struct decorr_pass *dpp, int32_t *buffer, int32_t sample_
     dpp->weight_A = (short) weight_A;
 }
 
-void fixup_samples (WavpackStream *wps, int32_t *buffer, uint32_t sample_count)
+void fixup_samples (WavpackStream *wps, INT32 *buffer, UINT32 sample_count)
 {
-    uint32_t flags = wps->wphdr.flags;
+    UINT32 flags = wps->wphdr.flags;
     int shift = (flags & SHIFT_MASK) >> SHIFT_LSB;
 
-    int32_t min_value, max_value, min_shifted, max_shifted;
+    INT32 min_value, max_value, min_shifted, max_shifted;
 
     min_shifted = (min_value = -32767 >> shift) << shift;
     max_shifted = (max_value = 32767 >> shift) << shift;
@@ -830,13 +830,13 @@ static WavpackContext wpc;
 WavpackContext *WavpackOpenFileInput(unsigned char *Source, int Source_Size)
 {
     WavpackStream *wps = &wpc.stream;
-    uint32_t bcount;
+    UINT32 bcount;
 
     CLEAR (wpc);
     wpc.Source = Source;
     wpc.Pos_Source = 0;
     wpc.Source_Size = Source_Size;
-    wpc.total_samples = (uint32_t) -1;
+    wpc.total_samples = (UINT32) -1;
 
     // open the source file for reading and store the size
     read_bytes(&wps->wphdr, sizeof(WavpackHeader));
@@ -848,11 +848,11 @@ WavpackContext *WavpackOpenFileInput(unsigned char *Source, int Source_Size)
     return &wpc;
 }
 
-uint32_t WavpackUnpackSamples (WavpackContext *wpc,
-                               int32_t *buffer, uint32_t samples)
+UINT32 WavpackUnpackSamples (WavpackContext *wpc,
+                               INT32 *buffer, UINT32 samples)
 {
     WavpackStream *wps = &wpc->stream;
-    uint32_t bcount, samples_unpacked = 0, samples_to_unpack;
+    UINT32 bcount, samples_unpacked = 0, samples_to_unpack;
 
     while (samples)
     {
@@ -861,7 +861,7 @@ uint32_t WavpackUnpackSamples (WavpackContext *wpc,
         {
                 bcount = read_next_header(&wps->wphdr);
 
-                if (bcount == (uint32_t) -1)
+                if (bcount == (UINT32) -1)
                 {
                     break;
                 }
@@ -919,12 +919,12 @@ uint32_t WavpackUnpackSamples (WavpackContext *wpc,
     return samples_unpacked;
 }
 
-uint32_t read_next_header (WavpackHeader *wphdr)
+UINT32 read_next_header (WavpackHeader *wphdr)
 {
     char buffer [sizeof (*wphdr)];
     char *sp = buffer + sizeof (*wphdr);
     char *ep = sp;
-    uint32_t bytes_skipped = 0;
+    UINT32 bytes_skipped = 0;
     int bleft;
 
     while (1)
@@ -939,7 +939,7 @@ uint32_t read_next_header (WavpackHeader *wphdr)
             bleft = 0;
         }
         if (read_bytes(buffer + bleft, sizeof (*wphdr) - bleft) != 
-            (int32_t) sizeof (*wphdr) - bleft)
+            (INT32) sizeof (*wphdr) - bleft)
         {
             return -1;
         }
@@ -956,7 +956,7 @@ uint32_t read_next_header (WavpackHeader *wphdr)
     }
 }
 
-int32_t read_bytes(void *buff, int32_t bcount)
+INT32 read_bytes(void *buff, INT32 bcount)
 {
     if(wpc.Pos_Source + bcount > wpc.Source_Size)
     {
@@ -967,29 +967,29 @@ int32_t read_bytes(void *buff, int32_t bcount)
     return bcount;
 }
 
-void Unpack_WavPack(Uint8 *Source, short *Dest, int Src_Size, int Dst_Size)
+void Unpack_WavPack(UINT8 *Source, short *Dest, int Src_Size, int Dst_Size)
 {
-    int32_t temp;
-    int32_t temp_buffer[256];
+    INT32 temp;
+    INT32 temp_buffer[256];
     WavpackContext *wpc;
-    uchar *bDest = (uchar *) Dest;
+    UINT8 *bDest = (UINT8 *) Dest;
 
     wpc = WavpackOpenFileInput(Source, Src_Size);
     while (1)
     {
-        int32_t *buf = temp_buffer;
-        memset(buf, 0, 256 * sizeof(int32_t));
-        uint32_t samples_unpacked = WavpackUnpackSamples(wpc, buf, 256);
+        INT32 *buf = temp_buffer;
+        memset(buf, 0, 256 * sizeof(INT32));
+        UINT32 samples_unpacked = WavpackUnpackSamples(wpc, buf, 256);
         if (samples_unpacked)
         {
             while (samples_unpacked--)
             {
 #if defined(__BIG_ENDIAN__)
-                *bDest++ = (uchar)((temp = *buf++) >> 8);
-                *bDest++ = (uchar)(temp & 0xff);
+                *bDest++ = (UINT8)((temp = *buf++) >> 8);
+                *bDest++ = (UINT8)(temp & 0xff);
 #else
-                *bDest++ = (uchar)(temp = *buf++);
-                *bDest++ = (uchar)(temp >> 8);
+                *bDest++ = (UINT8)(temp = *buf++);
+                *bDest++ = (UINT8)(temp >> 8);
 #endif
             }
         }

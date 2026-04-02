@@ -2,7 +2,7 @@
 // Protrekkr
 // Based on Juan Antonio Arguelles Rius's NoiseTrekker.
 //
-// Copyright (C) 2008-2025 Franck Charlet.
+// Copyright (C) 2008-2026 Franck Charlet.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -36,16 +36,20 @@
 // Include
 #include <SDL/SDL.h>
 #if defined(__USE_OPENGL__)
+    #if defined(__WIN32__)
+    #include <windows.h>
+    #endif
+    #ifndef __MORPHOS__
+    #include <SDL/SDL_opengl.h>
+    #else
+    #include <GL/gl.h>
+    #endif
+    #define TEXTURES_SIZE 1024
+#endif
 #if defined(__WIN32__)
-#include <windows.h>
+#include <SDL/SDL_syswm.h>
 #endif
-#ifndef __MORPHOS__
-#include <SDL/SDL_opengl.h>
-#else
-#include <GL/gl.h>
-#endif
-#define TEXTURES_SIZE 1024
-#endif
+#include <SDL/SDL_types.h>
 
 // ------------------------------------------------------
 // Constants
@@ -58,23 +62,27 @@ extern int Cur_Height;
 
 // ------------------------------------------------------
 // Functions
+#define SDL_TEXTURE SDL_Surface
+
+// ------------------------------------------------------
+// Functions
 void DrawPixel(int x, int y, int Color);
 void DrawHLine(int y, int x1, int x2, int Color);
 void DrawVLine(int x, int y1, int y2, int Color);
-void SetColor(int color);
-void Fillrect(int x1, int y1, int x2, int y2);
+void Set_Color(int color);
+void Fill_Rect(int x1, int y1, int x2, int y2);
 void UISetPalette(SDL_Color *Palette, int Amount);
 #if defined(__USE_OPENGL__)
-GLuint Create_Texture(SDL_Surface *Source);
-void Destroy_Texture(GLuint *txId);
+GLuint Create_OGL_Texture(SDL_TEXTURE *Source);
+void Destroy_OGL_Texture(GLuint *txId);
 void Draw_Tx_Quad(float x, float y, float x1, float y1, float Width, float Height, GLuint TexID, int Blend);
 void Copy(GLuint Source, int x, int y, int x1, int y1, int x2, int y2);
 void Copy_No_Refresh(GLuint Source, int x, int y, int x1, int y1, int x2, int y2, int remainder);
 #else
-void Copy(SDL_Surface *Source, int x, int y, int x1, int y1, int x2, int y2);
-void Copy_No_Refresh(SDL_Surface *Source, int x, int y, int x1, int y1, int x2, int y2, int remainder);
+void Copy(SDL_TEXTURE *Source, int x, int y, int x1, int y1, int x2, int y2);
+void Copy_No_Refresh(SDL_TEXTURE *Source, int x, int y, int x1, int y1, int x2, int y2, int remainder);
 #endif
-void Copy_To_Surface(SDL_Surface *Source, SDL_Surface *dest,
+void Copy_To_Surface(SDL_TEXTURE *Source, SDL_TEXTURE *dest,
                      int dest_x, int dest_y, int src_start_x, int src_start_y, int src_end_x, int src_end_y);
 void Print_String(int x, int y, int Font_Type, char *String, int max_x = -1);
 void Push_Update_Rect(int x, int y, int width, int height);
@@ -82,5 +90,7 @@ void Push_Update_Rect(int x, int y, int width, int height);
 void Enter_2D_Mode(float Width, float Height);
 void Leave_2d_Mode(void);
 #endif
+SDL_TEXTURE *Create_SDL_Texture(int width, int height);
+void Destroy_SDL_Texture(SDL_TEXTURE *texture);
 
 #endif

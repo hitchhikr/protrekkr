@@ -40,7 +40,7 @@ const signed char fast_terms [] =      { 18,17,0 };
 void pack_init (WavpackContext *wpc)
 {
     WavpackStream *wps = &wpc->stream;
-    uint32_t flags = wps->wphdr.flags;
+    UINT32 flags = wps->wphdr.flags;
     const signed char *term_string;
     struct decorr_pass *dpp;
     int ti;
@@ -141,9 +141,9 @@ void write_decorr_samples (WavpackStream *wps, WavpackMetadata *wpmd)
 {
     int tcount = wps->num_terms, wcount = 1, temp;
     struct decorr_pass *dpp;
-    uchar *byteptr;
+    UINT8 *byteptr;
 
-    byteptr = (uchar *) wpmd->temp_data;
+    byteptr = (UINT8 *) wpmd->temp_data;
     wpmd->data = wpmd->temp_data;
     wpmd->id = ID_DECORR_SAMPLES;
 
@@ -183,7 +183,7 @@ void write_decorr_samples (WavpackStream *wps, WavpackMetadata *wpmd)
             CLEAR (dpp->samples_B);
         }
 
-    wpmd->byte_length = byteptr - (uchar *) wpmd->data;
+    wpmd->byte_length = byteptr - (UINT8 *) wpmd->data;
 }
 
 // Allocate room for and copy the configuration information into the specified
@@ -213,12 +213,12 @@ void write_config_info (WavpackContext *wpc, WavpackMetadata *wpmd)
 // the caller must look at the ckSize field of the written WavpackHeader, NOT
 // the one in the WavpackStream. A return value of FALSE indicates an error.
 
-static int copy_metadata (WavpackMetadata *wpmd, uchar *buffer_start, uchar *buffer_end);
+static int copy_metadata (WavpackMetadata *wpmd, UINT8 *buffer_start, UINT8 *buffer_end);
 
 int pack_start_block (WavpackContext *wpc)
 {
     WavpackStream *wps = &wpc->stream;
-    uint32_t flags = wps->wphdr.flags;
+    UINT32 flags = wps->wphdr.flags;
     WavpackMetadata wpmd;
 
     wps->lossy_block = FALSE;
@@ -256,14 +256,14 @@ int pack_start_block (WavpackContext *wpc)
 // of actual samples packed and will be the same as the provided sample_count
 // in no error occurs.
 
-uint32_t pack_samples (WavpackContext *wpc, int32_t *buffer, uint32_t sample_count)
+UINT32 pack_samples (WavpackContext *wpc, INT32 *buffer, UINT32 sample_count)
 {
     WavpackStream *wps = &wpc->stream;
-    uint32_t flags = wps->wphdr.flags;
+    UINT32 flags = wps->wphdr.flags;
     int tcount, lossy = 0, m;
     struct decorr_pass *dpp;
-    uint32_t crc, i;
-    int32_t *bptr;
+    UINT32 crc, i;
+    INT32 *bptr;
 
     if (!sample_count)
         return 0;
@@ -272,7 +272,7 @@ uint32_t pack_samples (WavpackContext *wpc, int32_t *buffer, uint32_t sample_cou
     crc = wps->crc;
 
     for (bptr = buffer, i = 0; i < sample_count; ++i) {
-        int32_t code;
+        INT32 code;
 
         if (bs_remain_write (&wps->wvbits) < 64 ||
             (wpc->wvc_flag && bs_remain_write (&wps->wvcbits) < 64))
@@ -301,7 +301,7 @@ uint32_t pack_samples (WavpackContext *wpc, int32_t *buffer, uint32_t sample_cou
                 dpp->samples_A [0] = (code += dpp->aweight_A);
             }
             else {
-                int32_t sam = dpp->samples_A [m];
+                INT32 sam = dpp->samples_A [m];
 
                 update_weight (dpp->weight_A, dpp->delta, sam, code);
                 dpp->samples_A [(m + dpp->term) & (MAX_TERM - 1)] = (code += dpp->aweight_A);
@@ -336,14 +336,14 @@ int pack_finish_block (WavpackContext *wpc)
     WavpackStream *wps = &wpc->stream;
     int lossy = wps->lossy_block, tcount, m;
     struct decorr_pass *dpp;
-    uint32_t data_count;
+    UINT32 data_count;
 
     m = ((WavpackHeader *) wps->blockbuff)->block_samples & (MAX_TERM - 1);
 
     if (m) {
         for (tcount = wps->num_terms, dpp = wps->decorr_passes; tcount--; dpp++)
             if (dpp->term > 0 && dpp->term <= MAX_TERM) {
-                int32_t temp_A [MAX_TERM], temp_B [MAX_TERM];
+                INT32 temp_A [MAX_TERM], temp_B [MAX_TERM];
                 int k;
 
                 memcpy (temp_A, dpp->samples_A, sizeof (dpp->samples_A));
@@ -362,9 +362,9 @@ int pack_finish_block (WavpackContext *wpc)
 
     if (data_count)
     {
-        if (data_count != (uint32_t) -1)
+        if (data_count != (UINT32) -1)
         {
-            uchar *cptr = wps->blockbuff + ((WavpackHeader *) wps->blockbuff)->ckSize + 8;
+            UINT8 *cptr = wps->blockbuff + ((WavpackHeader *) wps->blockbuff)->ckSize + 8;
 
             *cptr++ = ID_WV_BITSTREAM | ID_LARGE;
             *cptr++ = (unsigned char) (data_count >> 1);
@@ -385,9 +385,9 @@ int pack_finish_block (WavpackContext *wpc)
 // function tests for writing past the end of the available space, however the
 // rest of the code is designed so that can't occur.
 
-static int copy_metadata (WavpackMetadata *wpmd, uchar *buffer_start, uchar *buffer_end)
+static int copy_metadata (WavpackMetadata *wpmd, UINT8 *buffer_start, UINT8 *buffer_end)
 {
-    uint32_t mdsize = wpmd->byte_length + (wpmd->byte_length & 1);
+    UINT32 mdsize = wpmd->byte_length + (wpmd->byte_length & 1);
     WavpackHeader *wphdr = (WavpackHeader *) buffer_start;
 
     if (wpmd->byte_length & 1)

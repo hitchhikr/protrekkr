@@ -2,7 +2,7 @@
 // Protrekkr
 // Based on Juan Antonio Arguelles Rius's NoiseTrekker.
 //
-// Copyright (C) 2008-2025 Franck Charlet.
+// Copyright (C) 2008-2026 Franck Charlet.
 // All rights reserved.
 //
 // This file is:
@@ -38,57 +38,20 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#if !defined(__PSP__)  
-#if !defined(__AMIGAOS4__)
-#include <memory.h>
-#endif
-#endif
-#if defined(__GCC__)
-#if !defined(__LINUX__)
-#include <stdint.h>
-#if defined(__MACOSX_PPC__)
-typedef unsigned int uint32_t;
-#endif
-#if defined(__WIN32__)
-typedef unsigned int uint32_t;
-typedef int int32_t;
-#endif
-#else
-#include <sys/types.h>
-typedef unsigned int uint32_t;
-#endif
-#if defined(__AROS__) || defined(__AMIGAOS4__) || defined(__PSP__)
-typedef unsigned int uint32_t;
-typedef int int32_t;
 #include <string.h>
-#endif
-#else
-typedef unsigned __int64 uint64_t;
-typedef unsigned __int32 uint32_t;
-typedef __int64 int64_t;
-typedef __int32 int32_t;
-#endif
-
-typedef unsigned char uchar;
-
-typedef unsigned short ushort;
-typedef unsigned int uint;
-
-#if !defined(FALSE)
-#define FALSE 0
-#endif
-
-#if !defined(TRUE)
-#define TRUE 1
+#if !defined(__PSP__)
+    #if !defined(__AMIGAOS4__)
+        #include <memory.h>
+    #endif
 #endif
 
 typedef struct
 {
-    uint32_t ckSize;
-    uint32_t total_samples;
-    uint32_t block_index;
-    uint32_t block_samples;
-    uint32_t flags;
+    UINT32 ckSize;
+    UINT32 total_samples;
+    UINT32 block_index;
+    UINT32 block_samples;
+    UINT32 flags;
 } WavpackHeader;
 
 #define INT32_DATA      0x100   // special extended int handling
@@ -135,9 +98,9 @@ typedef struct
 
 typedef struct
 {
-    int32_t byte_length;
+    INT32 byte_length;
     void *data;
-    uchar id;
+    UINT8 id;
 } WavpackMetadata;
 
 #define ID_CONFIG_BLOCK         0x20
@@ -152,14 +115,14 @@ typedef struct
 #define ID_WV_BITSTREAM         0x6
 
 typedef struct {
-    uint32_t flags;
+    UINT32 flags;
 } WavpackConfig;
 
 typedef struct bs
 {
-    uchar *buf, *end, *ptr;
+    UINT8 *buf, *end, *ptr;
     void (*wrap)(struct bs *bs);
-    uint32_t file_bytes, sr;
+    UINT32 file_bytes, sr;
     int error, bc;
 } Bitstream;
 
@@ -169,18 +132,18 @@ typedef struct bs
 struct decorr_pass
 {
     short term, delta, weight_A, weight_B;
-    int32_t samples_A [MAX_TERM], samples_B [MAX_TERM];
+    INT32 samples_A [MAX_TERM], samples_B [MAX_TERM];
 };
 
 struct entropy_data
 {
-    uint32_t median [3], slow_level, error_limit;
+    UINT32 median [3], slow_level, error_limit;
 };
 
 struct words_data
 {
-    uint32_t bitrate_delta [2], bitrate_acc [2];
-    uint32_t pend_data, holding_one, zeros_acc;
+    UINT32 bitrate_delta [2], bitrate_acc [2];
+    UINT32 pend_data, holding_one, zeros_acc;
     int holding_zero, pend_count;
     struct entropy_data c [2];
 };
@@ -191,7 +154,7 @@ typedef struct
     Bitstream wvbits;
     struct words_data w;
     int num_terms, mute_error;
-    uint32_t sample_index;
+    UINT32 sample_index;
     struct decorr_pass decorr_passes[MAX_NTERMS];
 } WavpackStream;
 
@@ -199,8 +162,8 @@ typedef struct
 {
     WavpackConfig config;
     WavpackStream stream;
-    uchar read_buffer[512];
-    uint32_t total_samples;
+    UINT8 read_buffer[512];
+    UINT32 total_samples;
     unsigned char *Source;
     int Pos_Source;
     int Source_Size;
@@ -209,15 +172,15 @@ typedef struct
 #define CLEAR(destin) memset (&destin, 0, sizeof (destin));
 
 void bs_open_read (Bitstream *bs,
-                   uchar *buffer_start,
-                   uchar *buffer_end,
-                   uint32_t file_bytes);
+                   UINT8 *buffer_start,
+                   UINT8 *buffer_end,
+                   UINT32 file_bytes);
 
 #define bs_is_open(bs) ((bs)->ptr != NULL)
 
 #define getbit(bs) ( (((bs)->bc) ? ((bs)->bc--, (bs)->sr & 1) : (((++((bs)->ptr) != (bs)->end) ? (void) 0 : (bs)->wrap (bs)), (bs)->bc = 7, ((bs)->sr = *((bs)->ptr)) & 1)) ? ((bs)->sr >>= 1, 1) : ((bs)->sr >>= 1, 0))
 
-#define getbits(value, nbits, bs) { while ((nbits) > (bs)->bc) { if (++((bs)->ptr) == (bs)->end) (bs)->wrap (bs); (bs)->sr |= (int32_t)*((bs)->ptr) << (bs)->bc; (bs)->bc += 8; } *(value) = (bs)->sr; if ((bs)->bc > 32) { (bs)->bc -= (nbits); (bs)->sr = *((bs)->ptr) >> (8 - (bs)->bc); } else { (bs)->bc -= (nbits); (bs)->sr >>= (nbits); } }
+#define getbits(value, nbits, bs) { while ((nbits) > (bs)->bc) { if (++((bs)->ptr) == (bs)->end) (bs)->wrap (bs); (bs)->sr |= (INT32)*((bs)->ptr) << (bs)->bc; (bs)->bc += 8; } *(value) = (bs)->sr; if ((bs)->bc > 32) { (bs)->bc -= (nbits); (bs)->sr = *((bs)->ptr) >> (8 - (bs)->bc); } else { (bs)->bc -= (nbits); (bs)->sr >>= (nbits); } }
 
 #if defined(_DEBUG)
 void native_to_little_endian (void *data, char *format);
@@ -227,7 +190,7 @@ void native_to_little_endian (void *data, char *format);
 #define apply_weight(weight, sample) (sample != (short) sample ? apply_weight_f (weight, sample) : apply_weight_i (weight, sample))
 
 #if 0   // PERFCOND
-#define update_weight(weight, delta, source, result) if (source && result) { int32_t s = (int32_t) (source ^ result) >> 31; weight = (delta ^ s) + (weight - s); }
+#define update_weight(weight, delta, source, result) if (source && result) { INT32 s = (INT32) (source ^ result) >> 31; weight = (delta ^ s) + (weight - s); }
 #elif 1
 #define update_weight(weight, delta, source, result) if (source && result) weight += (((source ^ result) >> 30) | 1) * delta
 #else
@@ -240,20 +203,20 @@ int read_decorr_terms (WavpackStream *wps, WavpackMetadata *wpmd);
 int read_decorr_weights (WavpackStream *wps, WavpackMetadata *wpmd);
 int read_decorr_samples (WavpackStream *wps, WavpackMetadata *wpmd);
 int read_config_info (WavpackContext *wpc, WavpackMetadata *wpmd);
-int32_t unpack_samples (WavpackContext *wpc, int32_t *buffer, uint32_t sample_count);
+INT32 unpack_samples (WavpackContext *wpc, INT32 *buffer, UINT32 sample_count);
 int read_metadata_buff (WavpackContext *wpc, WavpackMetadata *wpmd);
 int process_metadata (WavpackContext *wpc, WavpackMetadata *wpmd);
 int read_entropy_vars (WavpackStream *wps, WavpackMetadata *wpmd);
 int read_hybrid_profile (WavpackStream *wps, WavpackMetadata *wpmd);
-int32_t get_words (int32_t *buffer, int nsamples, uint32_t flags,
+INT32 get_words (INT32 *buffer, int nsamples, UINT32 flags,
                    struct words_data *w, Bitstream *bs);
-int32_t exp2s_depack(int log);
+INT32 exp2s_depack(int log);
 int restore_weight_depack(signed char weight);
 WavpackContext *WavpackOpenFileInput(unsigned char *Source, int Source_Size);
-uint32_t WavpackUnpackSamples (WavpackContext *wpc, int32_t *buffer, uint32_t samples);
-uint32_t read_next_header (WavpackHeader *wphdr);
-int32_t read_bytes (void *buff, int32_t bcount);
-void decorr_mono_pass (struct decorr_pass *dpp, int32_t *buffer, int32_t sample_count);
-void fixup_samples (WavpackStream *wps, int32_t *buffer, uint32_t sample_count);
+UINT32 WavpackUnpackSamples (WavpackContext *wpc, INT32 *buffer, UINT32 samples);
+UINT32 read_next_header (WavpackHeader *wphdr);
+INT32 read_bytes (void *buff, INT32 bcount);
+void decorr_mono_pass (struct decorr_pass *dpp, INT32 *buffer, INT32 sample_count);
+void fixup_samples (WavpackStream *wps, INT32 *buffer, UINT32 sample_count);
 
 #endif

@@ -2,7 +2,7 @@
 // Protrekkr
 // Based on Juan Antonio Arguelles Rius's NoiseTrekker.
 //
-// Copyright (C) 2008-2025 Franck Charlet.
+// Copyright (C) 2008-2026 Franck Charlet.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -38,22 +38,15 @@
 #define _WIN32_WINNT 0x0500
 #endif
 #include <windows.h>
+#include <ptk_types.h>
 
 #define STDCALL __stdcall
 
 // ------------------------------------------------------
 // Constants
 #define AUDIO_PCM_FREQ (44100)
-
 #define AUDIO_DBUF_CHANNELS 2
 #define AUDIO_DBUF_RESOLUTION 16
-
-// ------------------------------------------------------
-// Types
-typedef unsigned int Uint32;
-typedef unsigned char Uint8;
-typedef int int32;
-typedef char int8;
 
 // ------------------------------------------------------
 // Functions
@@ -64,7 +57,7 @@ extern int AUDIO_Milliseconds;
 void Message_Error(char *Message);
 #endif
 
-int AUDIO_Init_Driver(HWND hWnd, void (STDCALL *Mixer)(Uint8 *, Uint32));
+int AUDIO_Init_Driver(HWND hWnd, void (STDCALL *Mixer)(UINT8 *, UINT32));
 int AUDIO_Create_Sound_Buffer(int milliseconds);
 void AUDIO_Stop_Sound_Buffer(void);
 void AUDIO_Stop_Driver(void);

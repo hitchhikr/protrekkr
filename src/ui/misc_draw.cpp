@@ -2,7 +2,7 @@
 // Protrekkr
 // Based on Juan Antonio Arguelles Rius's NoiseTrekker.
 //
-// Copyright (C) 2008-2025 Franck Charlet.
+// Copyright (C) 2008-2026 Franck Charlet.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -43,30 +43,30 @@
 int max_colors_logo;
 int max_colors_303;
 // ---
-SDL_Surface *Ptr_Temp_PFONT;
-SDL_Surface *Ptr_Temp_LARGEPFONT;
-SDL_Surface *Ptr_Temp_SMALLPFONT;
-SDL_Surface *Ptr_Temp_NOTEPFONT;
-SDL_Surface *Ptr_Temp_NOTELARGEPFONT;
-SDL_Surface *Ptr_Temp_NOTESMALLPFONT;
+SDL_TEXTURE *Ptr_Temp_PFONT;
+SDL_TEXTURE *Ptr_Temp_LARGEPFONT;
+SDL_TEXTURE *Ptr_Temp_SMALLPFONT;
+SDL_TEXTURE *Ptr_Temp_NOTEPFONT;
+SDL_TEXTURE *Ptr_Temp_NOTELARGEPFONT;
+SDL_TEXTURE *Ptr_Temp_NOTESMALLPFONT;
 // ---
-SDL_Surface *Temp_PFONT;
-SDL_Surface *Temp_LARGEPFONT;
-SDL_Surface *Temp_SMALLPFONT;
-SDL_Surface *Temp_NOTEPFONT;
-SDL_Surface *Temp_NOTELARGEPFONT;
-SDL_Surface *Temp_NOTESMALLPFONT;
+SDL_TEXTURE *Temp_PFONT;
+SDL_TEXTURE *Temp_LARGEPFONT;
+SDL_TEXTURE *Temp_SMALLPFONT;
+SDL_TEXTURE *Temp_NOTEPFONT;
+SDL_TEXTURE *Temp_NOTELARGEPFONT;
+SDL_TEXTURE *Temp_NOTESMALLPFONT;
 // ---
-SDL_Surface *Temp_PFONT_DOUBLE;
-SDL_Surface *Temp_LARGEPFONT_DOUBLE;
-SDL_Surface *Temp_SMALLPFONT_DOUBLE;
-SDL_Surface *Temp_NOTEPFONT_DOUBLE;
-SDL_Surface *Temp_NOTELARGEPFONT_DOUBLE;
-SDL_Surface *Temp_NOTESMALLPFONT_DOUBLE;
+SDL_TEXTURE *Temp_PFONT_DOUBLE;
+SDL_TEXTURE *Temp_LARGEPFONT_DOUBLE;
+SDL_TEXTURE *Temp_SMALLPFONT_DOUBLE;
+SDL_TEXTURE *Temp_NOTEPFONT_DOUBLE;
+SDL_TEXTURE *Temp_NOTELARGEPFONT_DOUBLE;
+SDL_TEXTURE *Temp_NOTESMALLPFONT_DOUBLE;
 // ---
-SDL_Surface *Note_Surface;
-SDL_Surface *Note_Alt_Surface;
-SDL_Surface *SKIN303;
+SDL_TEXTURE *Note_Surface;
+SDL_TEXTURE *Note_Alt_Surface;
+SDL_TEXTURE *SKIN303;
 
 #if defined(__USE_OPENGL__)
 // ---
@@ -84,12 +84,12 @@ GLuint Temp_NOTEPFONT_GL = -1;
 GLuint Temp_NOTELARGEPFONT_GL = -1;
 GLuint Temp_NOTESMALLPFONT_GL = -1;
 // ---
-GLuint Temp_PFONT_GL_DOUBLE = -1;
-GLuint Temp_LARGEPFONT_GL_DOUBLE = -1;
-GLuint Temp_SMALLPFONT_GL_DOUBLE = -1;
-GLuint Temp_NOTEPFONT_GL_DOUBLE = -1;
-GLuint Temp_NOTELARGEPFONT_GL_DOUBLE = -1;
-GLuint Temp_NOTESMALLPFONT_GL_DOUBLE = -1;
+GLuint Temp_PFONT_DOUBLE_GL = -1;
+GLuint Temp_LARGEPFONT_DOUBLE_GL = -1;
+GLuint Temp_SMALLPFONT_DOUBLE_GL = -1;
+GLuint Temp_NOTEPFONT_DOUBLE_GL = -1;
+GLuint Temp_NOTELARGEPFONT_DOUBLE_GL = -1;
+GLuint Temp_NOTESMALLPFONT_DOUBLE_GL = -1;
 // ---
 GLuint Note_Surface_GL = -1;
 GLuint Note_Alt_Surface_GL = -1;
@@ -1663,7 +1663,7 @@ void Draw_Editors_Bar(int Highlight)
     
     if(Highlight == -1)
     {
-        SetColor(COL_BLACK);
+        Set_Color(COL_BLACK);
         bjbox(0, Cur_Height - 172, Cur_Width, 19);
         Highlight = curr_tab_highlight;
     }
@@ -1671,7 +1671,7 @@ void Draw_Editors_Bar(int Highlight)
     {
         if(Patterns_Lines_Offset)
         {
-            SetColor(COL_BLACK);
+            Set_Color(COL_BLACK);
             bjbox(0, Cur_Height - 172, Cur_Width, 19);
         }
         Highlight_Tab[Highlight] = BUTTON_PUSHED;
@@ -1683,7 +1683,7 @@ void Draw_Editors_Bar(int Highlight)
     else
     {
         userscreen = USER_SCREEN_LARGE_PATTERN;
-        SetColor(COL_BLACK);
+        Set_Color(COL_BLACK);
         bjbox(0, (Cur_Height - 172) + Patterns_Lines_Offset, Cur_Width, 19);
         Highlight_Tab[USER_SCREEN_LARGE_PATTERN] = BUTTON_PUSHED;
         Draw_Pattern_Right_Stuff();
@@ -1833,8 +1833,8 @@ void Gui_Draw_Button_Box(int x, int y, int sx, int sy, const char *str, int flag
         {
             if(flags & BUTTON_DISABLED)
             {
-                SetColor(COL_STATIC_MED);
-                Fillrect(x, y, x2, y2 + 1);
+                Set_Color(COL_STATIC_MED);
+                Fill_Rect(x, y, x2, y2 + 1);
                 DrawHLine(y, x, x2 - 1, COL_STATIC_HI);
                 DrawVLine(x, y, y2, COL_STATIC_HI);
                 DrawHLine(y2, x, x2, COL_STATIC_LO);
@@ -1842,8 +1842,8 @@ void Gui_Draw_Button_Box(int x, int y, int sx, int sy, const char *str, int flag
             }
             else
             {
-                SetColor(Colors_Norm[Col_Idx]);
-                Fillrect(x, y, x2, y2 + 1);
+                Set_Color(Colors_Norm[Col_Idx]);
+                Fill_Rect(x, y, x2, y2 + 1);
                 DrawHLine(y, x, x2 - 1, Colors_Norm[Col_Idx + 1]);
                 DrawVLine(x, y, y2, Colors_Norm[Col_Idx + 1]);
                 DrawHLine(y2, x, x2, Colors_Norm[Col_Idx + 2]);
@@ -1854,8 +1854,8 @@ void Gui_Draw_Button_Box(int x, int y, int sx, int sy, const char *str, int flag
         {
             if(flags & BUTTON_DISABLED)
             {
-                SetColor(COL_STATIC_MED);
-                Fillrect(x, y, x2, y2 + 1);
+                Set_Color(COL_STATIC_MED);
+                Fill_Rect(x, y, x2, y2 + 1);
                 DrawHLine(y, x, x2 - 1, COL_STATIC_LO);
                 DrawVLine(x, y, y2, COL_STATIC_LO);
                 DrawHLine(y2, x, x2, COL_STATIC_HI);
@@ -1863,8 +1863,8 @@ void Gui_Draw_Button_Box(int x, int y, int sx, int sy, const char *str, int flag
             }
             else
             {
-                SetColor(Colors_Pushed[Col_Idx]);
-                Fillrect(x, y, x2, y2 + 1);
+                Set_Color(Colors_Pushed[Col_Idx]);
+                Fill_Rect(x, y, x2, y2 + 1);
                 DrawHLine(y, x, x2 - 1, Colors_Pushed[Col_Idx + 2]);
                 DrawVLine(x, y, y2, Colors_Pushed[Col_Idx + 2]);
                 DrawHLine(y2, x, x2, Colors_Pushed[Col_Idx + 1]);
@@ -1874,8 +1874,8 @@ void Gui_Draw_Button_Box(int x, int y, int sx, int sy, const char *str, int flag
     }
     if((flags & BUTTON_CLEAR_BACK))
     {
-        SetColor(COL_STATIC_MED);
-        Fillrect(x, y, x2, y2 + 1);
+        Set_Color(COL_STATIC_MED);
+        Fill_Rect(x, y, x2, y2 + 1);
     }
 
     if(flags & BUTTON_TEXT_VTOP)
@@ -1912,7 +1912,7 @@ void Gui_Draw_Button_Box(int x, int y, int sx, int sy, const char *str, int flag
 // Draw a clear box
 void Gui_Clear_Array(int x, int y, int sx, int sy)
 {
-    SetColor(COL_STATIC_MED);
+    Set_Color(COL_STATIC_MED);
     bjbox(x, y, sx, sy);
 }
 
@@ -1920,9 +1920,9 @@ void Gui_Clear_Array(int x, int y, int sx, int sy)
 // Draw a flat background box with a text
 void Gui_Draw_Flat_Box(const char *str)
 {
-    SetColor(COL_STATIC_MED);
+    Set_Color(COL_STATIC_MED);
 
-    Fillrect(2, (Cur_Height - 150), Cur_Width - 6, (Cur_Height - 24));
+    Fill_Rect(2, (Cur_Height - 150), Cur_Width - 6, (Cur_Height - 24));
     if(str)
     {
         Print_String(4, (Cur_Height - 151), USE_FONT, (char *) str);
@@ -1933,7 +1933,7 @@ void Gui_Draw_Flat_Box(const char *str)
 // Draw a rectangle
 void bjbox(int x, int y, int sx, int sy)
 {
-    Fillrect(x, y, x + sx, y + sy);
+    Fill_Rect(x, y, x + sx, y + sy);
 }
 
 // ------------------------------------------------------
@@ -1964,22 +1964,22 @@ void Real_Slider_Size(int x, int y, int size, int val, int Enabled)
     y--;
     if(Enabled)
     {
-        SetColor(COL_STATIC_LO);
+        Set_Color(COL_STATIC_LO);
         bjbox(x + 2, y + 1, size + 17, 17);
-        SetColor(COL_STATIC_HI);
+        Set_Color(COL_STATIC_HI);
         bjbox(x + 3, y + 2, size + 16, 16);
-        SetColor(COL_INPUT_MED);
+        Set_Color(COL_INPUT_MED);
         bjbox(x + 3, y + 2, val + 15, 15);
-        SetColor(COL_SLIDER_MED);
+        Set_Color(COL_SLIDER_MED);
         bjbox(x + 4 + val, y + 2, size - val + 14, 15);
     }
     else
     {
-        SetColor(COL_STATIC_LO);
+        Set_Color(COL_STATIC_LO);
         bjbox(x + 2, y + 1, size + 17, 17);
-        SetColor(COL_STATIC_HI);
+        Set_Color(COL_STATIC_HI);
         bjbox(x + 3, y + 2, size + 16, 16);
-        SetColor(COL_STATIC_MED);
+        Set_Color(COL_STATIC_MED);
         bjbox(x + 3, y + 2, size + 15, 15);
     }
     if(Enabled)
@@ -2009,22 +2009,22 @@ void Real_Slider_Tiny(int x, int y, int size_x, int size_y, int val, int Enabled
     y--;
     if(Enabled)
     {
-        SetColor(COL_STATIC_LO);
+        Set_Color(COL_STATIC_LO);
         bjbox(x + 2, y + 1, size_x + 17, size_y + 1);
-        SetColor(COL_STATIC_HI);
+        Set_Color(COL_STATIC_HI);
         bjbox(x + 3, y + 2, size_x + 16, size_y);
-        SetColor(COL_INPUT_MED);
+        Set_Color(COL_INPUT_MED);
         bjbox(x + 3, y + 2, val + 15, size_y - 1);
-        SetColor(COL_SLIDER_MED);
+        Set_Color(COL_SLIDER_MED);
         bjbox(x + 4 + val, y + 2, size_x - val + 14, size_y - 1);
     }
     else
     {
-        SetColor(COL_STATIC_LO);
+        Set_Color(COL_STATIC_LO);
         bjbox(x + 2, y + 1, size_x + 17, size_y + 1);
-        SetColor(COL_STATIC_HI);
+        Set_Color(COL_STATIC_HI);
         bjbox(x + 3, y + 2, size_x + 16, size_y);
-        SetColor(COL_STATIC_MED);
+        Set_Color(COL_STATIC_MED);
         bjbox(x + 3, y + 2, size_x + 15, size_y - 1);
     }
     // Draw the caret
@@ -2104,25 +2104,25 @@ void Real_Slider_Horiz(int x, int y, int value, int displayed, int maximum, int 
    
     if(enable)
     {
-        SetColor(COL_STATIC_LO);
+        Set_Color(COL_STATIC_LO);
         bjbox(x, y, size + 2, 16 + 1);
-        SetColor(COL_STATIC_HI);
+        Set_Color(COL_STATIC_HI);
         bjbox(x + 1, y + 1, size + 1, 16);
-        SetColor(COL_INPUT_MED);
+        Set_Color(COL_INPUT_MED);
         bjbox(x + 1, y + 1, size, 16 - 1);
         slide_max_on = ceil((float) size - Pos_slider);
         if(slide_max_on > size) slide_max_on = size;
         if(slide_max_on <= 0.0f) slide_max_on = 1.0f;
-        SetColor(COL_SLIDER_MED);
+        Set_Color(COL_SLIDER_MED);
         bjbox(x + 1 + Pos_slider, y + 1, slide_max_on, 16 - 1);
     }
     else
     {
-        SetColor(COL_STATIC_LO);
+        Set_Color(COL_STATIC_LO);
         bjbox(x, y, size + 2, 16 + 1);
-        SetColor(COL_STATIC_HI);
+        Set_Color(COL_STATIC_HI);
         bjbox(x + 1, y + 1, size + 1, 16);
-        SetColor(COL_STATIC_MED);
+        Set_Color(COL_STATIC_MED);
         bjbox(x + 1, y + 1, size, 16 - 1);
     }
     Gui_Draw_Button_Box(x + 1 + (int) Pos_slider, y + 1, (int) caret_size, 16 - 2, NULL, BUTTON_NORMAL | (enable ? 0 : BUTTON_DISABLED));
@@ -2163,15 +2163,15 @@ void Real_Slider_Vert(int x,
 
     if(enable)
     {
-        SetColor(COL_STATIC_LO);
+        Set_Color(COL_STATIC_LO);
         bjbox(x, y, 16 + 1, size + 2);
-        SetColor(COL_STATIC_HI);
+        Set_Color(COL_STATIC_HI);
         bjbox(x + 1, y + 1, 16, size + 1);
-        if(invert_color) SetColor(COL_INPUT_MED);
-        else SetColor(COL_SLIDER_MED);
+        if(invert_color) Set_Color(COL_INPUT_MED);
+        else Set_Color(COL_SLIDER_MED);
         bjbox(x + 1, y + 1, 16 - 1, size);
-        if(invert_color) SetColor(COL_SLIDER_MED);
-        else SetColor(COL_INPUT_MED);
+        if(invert_color) Set_Color(COL_SLIDER_MED);
+        else Set_Color(COL_INPUT_MED);
         slide_max_on = ceil((float) size - Pos_slider);
         if(slide_max_on > size) slide_max_on = size;
         if(slide_max_on <= 0.0f) slide_max_on = 1.0f;
@@ -2179,11 +2179,11 @@ void Real_Slider_Vert(int x,
     }
     else
     {
-        SetColor(COL_STATIC_LO);
+        Set_Color(COL_STATIC_LO);
         bjbox(x, y, 16 + 1, size + 2);
-        SetColor(COL_STATIC_HI);
+        Set_Color(COL_STATIC_HI);
         bjbox(x + 1, y + 1, 16, size + 1);
-        SetColor(COL_STATIC_MED);
+        Set_Color(COL_STATIC_MED);
         bjbox(x + 1, y + 1, 16 - 1, size);
     }    
     Gui_Draw_Button_Box(x + 1, y + 1 + (int) Pos_slider, 16 - 2, (int) caret_size, NULL, BUTTON_NORMAL | (enable ? 0 : BUTTON_DISABLED));
@@ -2362,8 +2362,8 @@ void Draw_Slider_Digit(int x, int y, int hex_digit, int color, int scale_x, int 
 // ------------------------------------------------------
 void Slider(int x, int y, int ltr, int col1, int y2, int larg, int scale_x, int col_back, int scale, int scale_y)
 {
-    SetColor(col_back);
-    Fillrect(x, y, x + larg + larg, y + (y2 * 2) - 1);
+    Set_Color(col_back);
+    Fill_Rect(x, y, x + larg + larg, y + (y2 * 2) - 1);
 
     float dat;
     float fltr;
@@ -2374,7 +2374,7 @@ void Slider(int x, int y, int ltr, int col1, int y2, int larg, int scale_x, int 
     DrawVLine(x, y, y + (y2 * 2) - 2, col1);
     DrawVLine(x + (larg * 2) - 1, y, y + (y2 * 2) - 2, col1);
 
-    SetColor(col1);
+    Set_Color(col1);
 
     if(ltr != 0)
     {
@@ -2388,7 +2388,7 @@ void Slider(int x, int y, int ltr, int col1, int y2, int larg, int scale_x, int 
         {
             idat = larg + larg - 2;
         }
-        Fillrect(x + idat, y + 2, x + larg + larg - 2, y + (y2 * 2) - 3);
+        Fill_Rect(x + idat, y + 2, x + larg + larg - 2, y + (y2 * 2) - 3);
     }
 
     if(pattern_sliders_numbers && pattern_double)
@@ -2414,9 +2414,9 @@ void Slider(int x, int y, int ltr, int col1, int y2, int larg, int scale_x, int 
 // ------------------------------------------------------
 void Slider_Pan(int x, int y, int ltr, int col1, int y2, int larg, int scale_x, int col_back, int scale, int scale_y)
 {
-    SetColor(col_back);
-    Fillrect(x, y, x + larg + larg, y + (y2 * 2) - 1);
-    SetColor(col_back);
+    Set_Color(col_back);
+    Fill_Rect(x, y, x + larg + larg, y + (y2 * 2) - 1);
+    Set_Color(col_back);
 
     float fltr;
     int idat;
@@ -2428,7 +2428,7 @@ void Slider_Pan(int x, int y, int ltr, int col1, int y2, int larg, int scale_x, 
     DrawVLine(x, y, y + (y2 * 2) - 2, col1);
     DrawVLine(x + (larg * 2) - 1, y, y + (y2 * 2) - 2, col1);
 
-    SetColor(col1);
+    Set_Color(col1);
 
     // Normalize
     // [0.0..1.0]
@@ -2471,11 +2471,11 @@ void Slider_Pan(int x, int y, int ltr, int col1, int y2, int larg, int scale_x, 
         {
             end = start + 1;
         }
-        Fillrect(start, y + 2, end, y + (y2 * 2) - 3);
+        Fill_Rect(start, y + 2, end, y + (y2 * 2) - 3);
     }
     else
     {
-        Fillrect(x + larg, y + 2, x + larg + 1, y + (y2 * 2) - 3);
+        Fill_Rect(x + larg, y + 2, x + larg + 1, y + (y2 * 2) - 3);
     }
     if(pattern_sliders_numbers && pattern_double)
     {
@@ -2795,22 +2795,12 @@ void Note_Small_Letter(int x, int y, char ltr, int ys, int y2)
 
 void Set_Font_Normal(void)
 {
-
-#if defined(__USE_OPENGL__)
-    Ptr_Temp_PFONT_GL = Temp_PFONT_GL;
-    Ptr_Temp_LARGEPFONT_GL = Temp_LARGEPFONT_GL;
-    Ptr_Temp_SMALLPFONT_GL = Temp_SMALLPFONT_GL;
-    Ptr_Temp_NOTEPFONT_GL = Temp_NOTEPFONT_GL;
-    Ptr_Temp_NOTELARGEPFONT_GL = Temp_NOTELARGEPFONT_GL;
-    Ptr_Temp_NOTESMALLPFONT_GL = Temp_NOTESMALLPFONT_GL;
-#else
-    Ptr_Temp_PFONT = Temp_PFONT;
-    Ptr_Temp_LARGEPFONT = Temp_LARGEPFONT;
-    Ptr_Temp_SMALLPFONT = Temp_SMALLPFONT;
-    Ptr_Temp_NOTEPFONT = Temp_NOTEPFONT;
-    Ptr_Temp_NOTELARGEPFONT = Temp_NOTELARGEPFONT;
-    Ptr_Temp_NOTESMALLPFONT = Temp_NOTESMALLPFONT;
-#endif
+    GET_SURFACE(Ptr_Temp_PFONT) = GET_SURFACE(Temp_PFONT);
+    GET_SURFACE(Ptr_Temp_LARGEPFONT) = GET_SURFACE(Temp_LARGEPFONT);
+    GET_SURFACE(Ptr_Temp_SMALLPFONT) = GET_SURFACE(Temp_SMALLPFONT);
+    GET_SURFACE(Ptr_Temp_NOTEPFONT) = GET_SURFACE(Temp_NOTEPFONT);
+    GET_SURFACE(Ptr_Temp_NOTELARGEPFONT) = GET_SURFACE(Temp_NOTELARGEPFONT);
+    GET_SURFACE(Ptr_Temp_NOTESMALLPFONT) = GET_SURFACE(Temp_NOTESMALLPFONT);
     chars_height = 8;
     pattern_double = FALSE;
     header_y = 64;
@@ -2819,22 +2809,12 @@ void Set_Font_Normal(void)
 
 void Set_Font_Double(void)
 {
-
-#if defined(__USE_OPENGL__)
-    Ptr_Temp_PFONT_GL = Temp_PFONT_GL_DOUBLE;
-    Ptr_Temp_LARGEPFONT_GL = Temp_LARGEPFONT_GL_DOUBLE;
-    Ptr_Temp_SMALLPFONT_GL = Temp_SMALLPFONT_GL_DOUBLE;
-    Ptr_Temp_NOTEPFONT_GL = Temp_NOTEPFONT_GL_DOUBLE;
-    Ptr_Temp_NOTELARGEPFONT_GL = Temp_NOTELARGEPFONT_GL_DOUBLE;
-    Ptr_Temp_NOTESMALLPFONT_GL = Temp_NOTESMALLPFONT_GL_DOUBLE;
-#else
-    Ptr_Temp_PFONT = Temp_PFONT_DOUBLE;
-    Ptr_Temp_LARGEPFONT = Temp_LARGEPFONT_DOUBLE;
-    Ptr_Temp_SMALLPFONT = Temp_SMALLPFONT_DOUBLE;
-    Ptr_Temp_NOTEPFONT = Temp_NOTEPFONT_DOUBLE;
-    Ptr_Temp_NOTELARGEPFONT = Temp_NOTELARGEPFONT_DOUBLE;
-    Ptr_Temp_NOTESMALLPFONT = Temp_NOTESMALLPFONT_DOUBLE;
-#endif
+    GET_SURFACE(Ptr_Temp_PFONT) = GET_SURFACE(Temp_PFONT_DOUBLE);
+    GET_SURFACE(Ptr_Temp_LARGEPFONT) = GET_SURFACE(Temp_LARGEPFONT_DOUBLE);
+    GET_SURFACE(Ptr_Temp_SMALLPFONT) = GET_SURFACE(Temp_SMALLPFONT_DOUBLE);
+    GET_SURFACE(Ptr_Temp_NOTEPFONT) = GET_SURFACE(Temp_NOTEPFONT_DOUBLE);
+    GET_SURFACE(Ptr_Temp_NOTELARGEPFONT) = GET_SURFACE(Temp_NOTELARGEPFONT_DOUBLE);
+    GET_SURFACE(Ptr_Temp_NOTESMALLPFONT) = GET_SURFACE(Temp_NOTESMALLPFONT_DOUBLE);
 
     chars_height = 16;
     pattern_double = TRUE;
@@ -3211,7 +3191,7 @@ void Copy_303_Skin(int xd, int yd, int xs, int ys, int w, int h)
 
 // ------------------------------------------------------
 // Load a .bmp picture into a SDL surface
-SDL_Surface *Load_Picture(char *FileName)
+SDL_TEXTURE *Load_Picture(char *FileName)
 {
     return(SDL_LoadBMP(FileName));
 }
@@ -3312,7 +3292,7 @@ void Set_Channel_State_Pic(int x, int color, int inv_color)
 
 // ------------------------------------------------------
 // Create the complete font set to display the patterns
-void Create_Pattern_font(SDL_Surface *Source, SDL_Surface *Dest, int offset,
+void Create_Pattern_font(SDL_TEXTURE *Source, SDL_TEXTURE *Dest, int offset,
                          int Lo_Fore,
                          int Sel_Fore,
                          int Hi_Fore,
@@ -3646,52 +3626,52 @@ void Set_Pictures_And_Palettes(int LogoPalette)
     // ---
     if(!Temp_PFONT)
     {
-        Temp_PFONT = SDL_AllocSurface(SDL_SWSURFACE, 320, 87 * 4, 8, 0, 0, 0, 0xff);
+        Temp_PFONT = Create_SDL_Texture(320, 87 * 4);
     }
     if(!Temp_LARGEPFONT)
     {
-        Temp_LARGEPFONT = SDL_AllocSurface(SDL_SWSURFACE, 320, 87 * 4, 8, 0, 0, 0, 0xff);
+        Temp_LARGEPFONT = Create_SDL_Texture(320, 87 * 4);
     }
     if(!Temp_SMALLPFONT)
     {
-        Temp_SMALLPFONT = SDL_AllocSurface(SDL_SWSURFACE, 320, 87 * 4, 8, 0, 0, 0, 0xff);
+        Temp_SMALLPFONT = Create_SDL_Texture(320, 87 * 4);
     }
     if(!Temp_NOTEPFONT)
     {
-        Temp_NOTEPFONT = SDL_AllocSurface(SDL_SWSURFACE, 320, 87 * 4, 8, 0, 0, 0, 0xff);
+        Temp_NOTEPFONT = Create_SDL_Texture(320, 87 * 4);
     }
     if(!Temp_NOTELARGEPFONT)
     {
-        Temp_NOTELARGEPFONT = SDL_AllocSurface(SDL_SWSURFACE, 320, 87 * 4, 8, 0, 0, 0, 0xff);
+        Temp_NOTELARGEPFONT = Create_SDL_Texture(320, 87 * 4);
     }
     if(!Temp_NOTESMALLPFONT)
     {
-        Temp_NOTESMALLPFONT = SDL_AllocSurface(SDL_SWSURFACE, 320, 87 * 4, 8, 0, 0, 0, 0xff);
+        Temp_NOTESMALLPFONT = Create_SDL_Texture(320, 87 * 4);
     }
     // ---
     if(!Temp_PFONT_DOUBLE)
     {
-        Temp_PFONT_DOUBLE = SDL_AllocSurface(SDL_SWSURFACE, 320, 87 * 8, 8, 0, 0, 0, 0xff);
+        Temp_PFONT_DOUBLE = Create_SDL_Texture(320, 87 * 8);
     }
     if(!Temp_LARGEPFONT_DOUBLE)
     {
-        Temp_LARGEPFONT_DOUBLE = SDL_AllocSurface(SDL_SWSURFACE, 320, 87 * 8, 8, 0, 0, 0, 0xff);
+        Temp_LARGEPFONT_DOUBLE = Create_SDL_Texture(320, 87 * 8);
     }
     if(!Temp_SMALLPFONT_DOUBLE)
     {
-        Temp_SMALLPFONT_DOUBLE = SDL_AllocSurface(SDL_SWSURFACE, 320, 87 * 8, 8, 0, 0, 0, 0xff);
+        Temp_SMALLPFONT_DOUBLE = Create_SDL_Texture(320, 87 * 8);
     }
     if(!Temp_NOTEPFONT_DOUBLE)
     {
-        Temp_NOTEPFONT_DOUBLE = SDL_AllocSurface(SDL_SWSURFACE, 320, 87 * 8, 8, 0, 0, 0, 0xff);
+        Temp_NOTEPFONT_DOUBLE = Create_SDL_Texture(320, 87 * 8);
     }
     if(!Temp_NOTELARGEPFONT_DOUBLE)
     {
-        Temp_NOTELARGEPFONT_DOUBLE = SDL_AllocSurface(SDL_SWSURFACE, 320, 87 * 8, 8, 0, 0, 0, 0xff);
+        Temp_NOTELARGEPFONT_DOUBLE = Create_SDL_Texture(320, 87 * 8);
     }
     if(!Temp_NOTESMALLPFONT_DOUBLE)
     {
-        Temp_NOTESMALLPFONT_DOUBLE = SDL_AllocSurface(SDL_SWSURFACE, 320, 87 * 8, 8, 0, 0, 0, 0xff);
+        Temp_NOTESMALLPFONT_DOUBLE = Create_SDL_Texture(320, 87 * 8);
     }
     // ---
 
@@ -3739,24 +3719,24 @@ void Set_Pictures_And_Palettes(int LogoPalette)
     Set_Channel_State_Pic(277, COL_MUTE, COL_MUTE_PLAY_INVERT);
 
 #if defined(__USE_OPENGL__)
-    Destroy_Textures();
-    FONT_GL = Create_Texture(FONT);
-    FONT_LOW_GL = Create_Texture(FONT_LOW);
-    SKIN303_GL = Create_Texture(SKIN303);
+    Destroy_OGL_Textures();
+    FONT_GL = Create_OGL_Texture(FONT);
+    FONT_LOW_GL = Create_OGL_Texture(FONT_LOW);
+    SKIN303_GL = Create_OGL_Texture(SKIN303);
 
-    Temp_PFONT_GL = Create_Texture(Temp_PFONT);
-    Temp_LARGEPFONT_GL = Create_Texture(Temp_LARGEPFONT);
-    Temp_SMALLPFONT_GL = Create_Texture(Temp_SMALLPFONT);
-    Temp_NOTEPFONT_GL = Create_Texture(Temp_NOTEPFONT);
-    Temp_NOTELARGEPFONT_GL = Create_Texture(Temp_NOTELARGEPFONT);
-    Temp_NOTESMALLPFONT_GL = Create_Texture(Temp_NOTESMALLPFONT);
+    Temp_PFONT_GL = Create_OGL_Texture(Temp_PFONT);
+    Temp_LARGEPFONT_GL = Create_OGL_Texture(Temp_LARGEPFONT);
+    Temp_SMALLPFONT_GL = Create_OGL_Texture(Temp_SMALLPFONT);
+    Temp_NOTEPFONT_GL = Create_OGL_Texture(Temp_NOTEPFONT);
+    Temp_NOTELARGEPFONT_GL = Create_OGL_Texture(Temp_NOTELARGEPFONT);
+    Temp_NOTESMALLPFONT_GL = Create_OGL_Texture(Temp_NOTESMALLPFONT);
 
-    Temp_PFONT_GL_DOUBLE = Create_Texture(Temp_PFONT_DOUBLE);
-    Temp_LARGEPFONT_GL_DOUBLE = Create_Texture(Temp_LARGEPFONT_DOUBLE);
-    Temp_SMALLPFONT_GL_DOUBLE = Create_Texture(Temp_SMALLPFONT_DOUBLE);
-    Temp_NOTEPFONT_GL_DOUBLE = Create_Texture(Temp_NOTEPFONT_DOUBLE);
-    Temp_NOTELARGEPFONT_GL_DOUBLE = Create_Texture(Temp_NOTELARGEPFONT_DOUBLE);
-    Temp_NOTESMALLPFONT_GL_DOUBLE = Create_Texture(Temp_NOTESMALLPFONT_DOUBLE);
+    Temp_PFONT_DOUBLE_GL = Create_OGL_Texture(Temp_PFONT_DOUBLE);
+    Temp_LARGEPFONT_DOUBLE_GL = Create_OGL_Texture(Temp_LARGEPFONT_DOUBLE);
+    Temp_SMALLPFONT_DOUBLE_GL = Create_OGL_Texture(Temp_SMALLPFONT_DOUBLE);
+    Temp_NOTEPFONT_DOUBLE_GL = Create_OGL_Texture(Temp_NOTEPFONT_DOUBLE);
+    Temp_NOTELARGEPFONT_DOUBLE_GL = Create_OGL_Texture(Temp_NOTELARGEPFONT_DOUBLE);
+    Temp_NOTESMALLPFONT_DOUBLE_GL = Create_OGL_Texture(Temp_NOTESMALLPFONT_DOUBLE);
 #endif
 
     // starting setup
@@ -3785,97 +3765,97 @@ void Set_Pictures_And_Palettes(int LogoPalette)
 }
 
 #if defined(__USE_OPENGL__)
-void Destroy_Textures()
+void Destroy_OGL_Textures()
 {
     if(FONT_GL != -1)
     {
-        Destroy_Texture(&FONT_GL);
+        Destroy_OGL_Texture(&FONT_GL);
     }
     FONT_GL = -1;
 
     if(FONT_LOW_GL != -1)
     {
-        Destroy_Texture(&FONT_LOW_GL);
+        Destroy_OGL_Texture(&FONT_LOW_GL);
     }
     FONT_LOW_GL = -1;
 
     if(SKIN303_GL != -1)
     {
-        Destroy_Texture(&SKIN303_GL);
+        Destroy_OGL_Texture(&SKIN303_GL);
     }
     SKIN303_GL = -1;
 
     // ---
-    if(Temp_PFONT_GL_DOUBLE != -1)
+    if(Temp_PFONT_DOUBLE_GL != -1)
     {
-        Destroy_Texture(&Temp_PFONT_GL_DOUBLE);
+        Destroy_OGL_Texture(&Temp_PFONT_DOUBLE_GL);
     }
-    Temp_PFONT_GL_DOUBLE = -1;
+    Temp_PFONT_DOUBLE_GL = -1;
     
-    if(Temp_LARGEPFONT_GL_DOUBLE != -1)
+    if(Temp_LARGEPFONT_DOUBLE_GL != -1)
     {
-        Destroy_Texture(&Temp_LARGEPFONT_GL_DOUBLE);
+        Destroy_OGL_Texture(&Temp_LARGEPFONT_DOUBLE_GL);
     }
-    Temp_LARGEPFONT_GL_DOUBLE = -1;
+    Temp_LARGEPFONT_DOUBLE_GL = -1;
     
-    if(Temp_SMALLPFONT_GL_DOUBLE != -1)
+    if(Temp_SMALLPFONT_DOUBLE_GL != -1)
     {
-        Destroy_Texture(&Temp_SMALLPFONT_GL_DOUBLE);
+        Destroy_OGL_Texture(&Temp_SMALLPFONT_DOUBLE_GL);
     }
-    Temp_SMALLPFONT_GL_DOUBLE = -1;
+    Temp_SMALLPFONT_DOUBLE_GL = -1;
     
-    if(Temp_NOTEPFONT_GL_DOUBLE != -1)
+    if(Temp_NOTEPFONT_DOUBLE_GL != -1)
     {
-        Destroy_Texture(&Temp_NOTEPFONT_GL_DOUBLE);
+        Destroy_OGL_Texture(&Temp_NOTEPFONT_DOUBLE_GL);
     }
-    Temp_NOTEPFONT_GL_DOUBLE = -1;
+    Temp_NOTEPFONT_DOUBLE_GL = -1;
     
-    if(Temp_NOTELARGEPFONT_GL_DOUBLE != -1)
+    if(Temp_NOTELARGEPFONT_DOUBLE_GL != -1)
     {
-        Destroy_Texture(&Temp_NOTELARGEPFONT_GL_DOUBLE);
+        Destroy_OGL_Texture(&Temp_NOTELARGEPFONT_DOUBLE_GL);
     }
-    Temp_NOTELARGEPFONT_GL_DOUBLE = -1;
+    Temp_NOTELARGEPFONT_DOUBLE_GL = -1;
 
-    if(Temp_NOTESMALLPFONT_GL_DOUBLE != -1)
+    if(Temp_NOTESMALLPFONT_DOUBLE_GL != -1)
     {
-        Destroy_Texture(&Temp_NOTESMALLPFONT_GL_DOUBLE);
+        Destroy_OGL_Texture(&Temp_NOTESMALLPFONT_DOUBLE_GL);
     }
-    Temp_NOTESMALLPFONT_GL_DOUBLE = -1;
+    Temp_NOTESMALLPFONT_DOUBLE_GL = -1;
 
     // ---
     if(Temp_PFONT_GL != -1)
     {
-        Destroy_Texture(&Temp_PFONT_GL);
+        Destroy_OGL_Texture(&Temp_PFONT_GL);
     }
     Temp_PFONT_GL = -1;
     
     if(Temp_LARGEPFONT_GL != -1)
     {
-        Destroy_Texture(&Temp_LARGEPFONT_GL);
+        Destroy_OGL_Texture(&Temp_LARGEPFONT_GL);
     }
     Temp_LARGEPFONT_GL = -1;
     
     if(Temp_SMALLPFONT_GL != -1)
     {
-        Destroy_Texture(&Temp_SMALLPFONT_GL);
+        Destroy_OGL_Texture(&Temp_SMALLPFONT_GL);
     }
     Temp_SMALLPFONT_GL = -1;
     
     if(Temp_NOTEPFONT_GL != -1)
     {
-        Destroy_Texture(&Temp_NOTEPFONT_GL);
+        Destroy_OGL_Texture(&Temp_NOTEPFONT_GL);
     }
     Temp_NOTEPFONT_GL = -1;
     
     if(Temp_NOTELARGEPFONT_GL != -1)
     {
-        Destroy_Texture(&Temp_NOTELARGEPFONT_GL);
+        Destroy_OGL_Texture(&Temp_NOTELARGEPFONT_GL);
     }
     Temp_NOTELARGEPFONT_GL = -1;
 
     if(Temp_NOTESMALLPFONT_GL != -1)
     {
-        Destroy_Texture(&Temp_NOTESMALLPFONT_GL);
+        Destroy_OGL_Texture(&Temp_NOTESMALLPFONT_GL);
     }
     Temp_NOTESMALLPFONT_GL = -1;
 }
@@ -3887,102 +3867,102 @@ void Destroy_UI(void)
 {
 
 #if defined(__USE_OPENGL__)
-    Destroy_Textures();
+    Destroy_OGL_Textures();
 #endif
 
     // ---
     if(Temp_PFONT_DOUBLE)
     {
-        SDL_FreeSurface(Temp_PFONT_DOUBLE);
+        Destroy_SDL_Texture(Temp_PFONT_DOUBLE);
         Temp_PFONT_DOUBLE = NULL;
     }
     if(Temp_LARGEPFONT_DOUBLE)
     {
-        SDL_FreeSurface(Temp_LARGEPFONT_DOUBLE);
+        Destroy_SDL_Texture(Temp_LARGEPFONT_DOUBLE);
         Temp_LARGEPFONT_DOUBLE = NULL;
     }
     if(Temp_SMALLPFONT_DOUBLE)
     {
-        SDL_FreeSurface(Temp_SMALLPFONT_DOUBLE);
+        Destroy_SDL_Texture(Temp_SMALLPFONT_DOUBLE);
         Temp_SMALLPFONT_DOUBLE = NULL;
     }
     if(Temp_NOTEPFONT_DOUBLE)
     {
-        SDL_FreeSurface(Temp_NOTEPFONT_DOUBLE);
+        Destroy_SDL_Texture(Temp_NOTEPFONT_DOUBLE);
         Temp_NOTEPFONT_DOUBLE = NULL;
     }
     if(Temp_NOTELARGEPFONT_DOUBLE)
     {
-        SDL_FreeSurface(Temp_NOTELARGEPFONT_DOUBLE);
+        Destroy_SDL_Texture(Temp_NOTELARGEPFONT_DOUBLE);
         Temp_NOTELARGEPFONT_DOUBLE = NULL;
     }
     if(Temp_NOTESMALLPFONT_DOUBLE)
     {
-        SDL_FreeSurface(Temp_NOTESMALLPFONT_DOUBLE);
+        Destroy_SDL_Texture(Temp_NOTESMALLPFONT_DOUBLE);
         Temp_NOTESMALLPFONT_DOUBLE = NULL;
     }
 
     // ---
     if(Temp_PFONT)
     {
-        SDL_FreeSurface(Temp_PFONT);
+        Destroy_SDL_Texture(Temp_PFONT);
         Temp_PFONT = NULL;
     }
     if(Temp_LARGEPFONT)
     {
-        SDL_FreeSurface(Temp_LARGEPFONT);
+        Destroy_SDL_Texture(Temp_LARGEPFONT);
         Temp_LARGEPFONT = NULL;
     }
     if(Temp_SMALLPFONT)
     {
-        SDL_FreeSurface(Temp_SMALLPFONT);
+        Destroy_SDL_Texture(Temp_SMALLPFONT);
         Temp_SMALLPFONT = NULL;
     }
     if(Temp_NOTEPFONT)
     {
-        SDL_FreeSurface(Temp_NOTEPFONT);
+        Destroy_SDL_Texture(Temp_NOTEPFONT);
         Temp_NOTEPFONT = NULL;
     }
     if(Temp_NOTELARGEPFONT)
     {
-        SDL_FreeSurface(Temp_NOTELARGEPFONT);
+        Destroy_SDL_Texture(Temp_NOTELARGEPFONT);
         Temp_NOTELARGEPFONT = NULL;
     }
     if(Temp_NOTESMALLPFONT)
     {
-        SDL_FreeSurface(Temp_NOTESMALLPFONT);
+        Destroy_SDL_Texture(Temp_NOTESMALLPFONT);
         Temp_NOTESMALLPFONT = NULL;
     }
 
     // ---
     if(LOGOPIC)
     {
-        SDL_FreeSurface(LOGOPIC);
+        Destroy_SDL_Texture(LOGOPIC);
         LOGOPIC = NULL;
     }
     if(SKIN303)
     {
-        SDL_FreeSurface(SKIN303);
+        Destroy_SDL_Texture(SKIN303);
         SKIN303 = NULL;
     }
     if(PFONT_DOUBLE)
     {
-        SDL_FreeSurface(PFONT_DOUBLE);
+        Destroy_SDL_Texture(PFONT_DOUBLE);
         PFONT_DOUBLE = NULL;
     }
     if(PFONT)
     {
-        SDL_FreeSurface(PFONT);
+        Destroy_SDL_Texture(PFONT);
         PFONT = NULL;
     }
     if(FONT)
     {
-        SDL_FreeSurface(FONT);
+        Destroy_SDL_Texture(FONT);
         FONT = NULL;
     }
     if(FONT_LOW)
     {
-        SDL_FreeSurface(FONT_LOW);
+        Destroy_SDL_Texture(FONT_LOW);
         FONT_LOW = NULL;
     }
 }

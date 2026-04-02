@@ -28,7 +28,7 @@
 
 static void bs_write (Bitstream *bs);
 
-void bs_open_write (Bitstream *bs, uchar *buffer_start, uchar *buffer_end)
+void bs_open_write (Bitstream *bs, UINT8 *buffer_start, UINT8 *buffer_end)
 {
     bs->error = bs->sr = bs->bc = 0;
     bs->ptr = bs->buf = buffer_start;
@@ -48,10 +48,10 @@ static void bs_write (Bitstream *bs)
 // This function calculates the approximate number of bytes remaining in the
 // bitstream buffer and can be used as an early-warning of an impending overflow.
 
-uint32_t bs_remain_write (Bitstream *bs)
+UINT32 bs_remain_write (Bitstream *bs)
 {
     if (bs->error)
-        return (uint32_t) -1;
+        return (UINT32) -1;
 
     return bs->end - bs->ptr;
 }
@@ -59,12 +59,12 @@ uint32_t bs_remain_write (Bitstream *bs)
 // This function forces a flushing write of the specified BitStream, and
 // returns the total number of bytes written into the buffer.
 
-uint32_t bs_close_write (Bitstream *bs)
+UINT32 bs_close_write (Bitstream *bs)
 {
-    uint32_t bytes_written;
+    UINT32 bytes_written;
 
     if (bs->error)
-        return (uint32_t) -1;
+        return (UINT32) -1;
 
     while (bs->bc || ((bs->ptr - bs->buf) & 1))
     {

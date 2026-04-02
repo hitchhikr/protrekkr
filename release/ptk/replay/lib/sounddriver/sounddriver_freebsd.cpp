@@ -2,7 +2,7 @@
 // Protrekkr
 // Based on Juan Antonio Arguelles Rius's NoiseTrekker.
 //
-// Copyright (C) 2008-2025 Franck Charlet.
+// Copyright (C) 2008-2026 Franck Charlet.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -56,8 +56,8 @@ int AUDIO_FlipFlop = 0;
 // Functions
 int AUDIO_Create_Sound_Buffer(int milliseconds);
 void AUDIO_Stop_Sound_Buffer(void);
-void (STDCALL *AUDIO_Mixer)(Uint8 *, Uint32);
-void AUDIO_Mixer_Fill_Buffer(void *, Uint32);
+void (STDCALL *AUDIO_Mixer)(UINT8 *, UINT32);
+void AUDIO_Mixer_Fill_Buffer(void *, UINT32);
 void AUDIO_Synth_Play(void);
 
 // ------------------------------------------------------
@@ -77,7 +77,7 @@ void *AUDIO_Thread(void *arg)
             AUDIO_Acknowledge = FALSE;
             if(AUDIO_Play_Flag)
             {
-                AUDIO_Mixer((Uint8 *) AUDIO_SoundBuffer[AUDIO_FlipFlop], AUDIO_SoundBuffer_Size);
+                AUDIO_Mixer((UINT8 *) AUDIO_SoundBuffer[AUDIO_FlipFlop], AUDIO_SoundBuffer_Size);
             }
             else
             {
@@ -100,12 +100,11 @@ void *AUDIO_Thread(void *arg)
 // ------------------------------------------------------
 // Name: AUDIO_Init_Driver()
 // Desc: Init the audio driver
-int AUDIO_Init_Driver(void (*Mixer)(Uint8 *, Uint32))
+int AUDIO_Init_Driver(void (*Mixer)(UINT8 *, UINT32))
 {
     AUDIO_Mixer = Mixer;
 
     char *Mixer_Name;
-    int8 Mixer_Volume[4];
 
     AUDIO_Device = open("/dev/dsp", O_WRONLY, 0);
     if(AUDIO_Device >= 0)

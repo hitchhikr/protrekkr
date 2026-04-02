@@ -2,7 +2,7 @@
 // Protrekkr
 // Based on Juan Antonio Arguelles Rius's NoiseTrekker.
 //
-// Copyright (C) 2008-2025 Franck Charlet.
+// Copyright (C) 2008-2026 Franck Charlet.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -263,7 +263,7 @@ int AIFFFile::AIFF_ReadMonoSample(short *Sample)
     float y;
     double y64;
     unsigned long int_y;
-    Uint64 int_y64;
+    UINT64 int_y64;
 
     switch(CommDat.sampleSize)
     {
@@ -305,7 +305,7 @@ int AIFFFile::AIFF_ReadMonoSample(short *Sample)
             retcode = Read(&int_y64, 8);
             int_y64 = Mot_Swap_64(int_y64);
 
-            Int64ToDouble((Uint64 *) &y64, int_y64);
+            Int64ToDouble((UINT64 *) &y64, int_y64);
             *Sample = (short) (y64 * 32767.0);
             break;
 
@@ -324,7 +324,7 @@ int AIFFFile::AIFF_ReadStereoSample(short *L, short *R)
     float z[2];
     double z64[2];
     long int_z[2];
-    Uint64 int_z64[2];
+    UINT64 int_z64[2];
 
     switch(CommDat.sampleSize)
     {
@@ -381,8 +381,8 @@ int AIFFFile::AIFF_ReadStereoSample(short *L, short *R)
             int_z64[0] = Mot_Swap_64(int_z64[0]);
             int_z64[1] = Mot_Swap_64(int_z64[1]);
 
-            Int64ToDouble((Uint64 *) &z64[0], int_z64[0]);
-            Int64ToDouble((Uint64 *) &z64[1], int_z64[1]);
+            Int64ToDouble((UINT64 *) &z64[0], int_z64[0]);
+            Int64ToDouble((UINT64 *) &z64[1], int_z64[1]);
             *L = (short) (z64[0] * 32767.0);
             *R = (short) (z64[1] * 32767.0);
             break;
@@ -438,7 +438,7 @@ void AIFFFile::IntToFloat(int *Dest, int Source)
     *Dest = Source;
 }
 
-void AIFFFile::Int64ToDouble(Uint64 *Dest, Uint64 Source)
+void AIFFFile::Int64ToDouble(UINT64 *Dest, UINT64 Source)
 {
     *Dest = Source;
 }

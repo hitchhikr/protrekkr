@@ -2,7 +2,7 @@
 // Protrekkr
 // Based on Juan Antonio Arguelles Rius's NoiseTrekker.
 //
-// Copyright (C) 2008-2025 Franck Charlet.
+// Copyright (C) 2008-2026 Franck Charlet.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -44,7 +44,6 @@
 #define NEED_SDL_GETENV
 #endif
 
-#include <SDL/SDL_types.h>
 #include <string.h>
 #include "include/main.h"
 #include "include/timer.h"
@@ -107,6 +106,17 @@ HWND Main_Window;
 #define SDL_NEED
 #endif
 
+const SDL_VideoInfo *Screen_Info;
+SDL_TEXTURE *Main_Screen;
+SDL_Rect **Screen_Modes;
+
+#if defined(__WIN32__)
+SDL_SysWMinfo WMInfo;
+#endif
+
+SDL_Event Events[MAX_EVENTS];
+extern SDL_Rect Update_Stack[UPDATE_STACK_SIZE];
+
 REQUESTER Title_Requester =
 {
     "",
@@ -114,7 +124,6 @@ REQUESTER Title_Requester =
     &LOGOPIC, 5
 };
 
-const SDL_VideoInfo *Screen_Info;
 int Orig_Screen_Width;
 int Orig_Screen_Height;
 int Startup_Width;
@@ -126,14 +135,8 @@ int global_argc;
 char global_argv[MAX_PATH];
 int delay_ms = 10;
 
-SDL_Surface *Main_Screen;
-SDL_Rect **Screen_Modes;
 int Cur_Screen_Mode = -1;
 int Max_Screen_Mode = 0;
-
-#if defined(__WIN32__)
-SDL_SysWMinfo WMInfo;
-#endif
 
 MOUSE Mouse;
 unsigned short Keys[SDLK_LAST];
@@ -165,14 +168,11 @@ float delay_refresh;
 float delay_refresh2;
 
 extern int Nbr_Update_Rects;
-extern SDL_Rect Update_Stack[UPDATE_STACK_SIZE];
 
 char *ExePath;
 extern char AutoReload;
 extern char SplashScreen;
 char Last_Used_Ptk[MAX_PATH];
-
-SDL_Event Events[MAX_EVENTS];
 
 extern int Enter_Notification;
 extern int Enter_Notified;
@@ -418,6 +418,8 @@ void Load_Keyboard_Def(char *FileName)
 void Get_Vid_Infos()
 {
     int i;
+//    int drivers_nbr;
+//    drivers_nbr = SDL_GetNumRenderDrivers();
 
     Screen_Info = SDL_GetVideoInfo();
     Max_Screen_Mode = 0;
@@ -437,6 +439,34 @@ void Get_Vid_Infos()
 }
 
 // ------------------------------------------------------
+// Retrieve a screen dimensions
+SDL_Rect *Get_Screen_Rect(int mode_index)
+{
+    return Screen_Modes[mode_index];
+}
+
+// ------------------------------------------------------
+// Set the position of the window (-1, -1 = to center it)
+void Set_Window_Pos(int left, int top)
+{
+#ifndef __MORPHOS__
+        char Win_Coords[64];
+        if(left == -1 && top == -1)
+        {
+            SDL_putenv("SDL_VIDEO_WINDOW_POS=center");
+        }
+        else
+        {
+            sprintf(Win_Coords,
+                "SDL_VIDEO_WINDOW_POS=%d,%d",
+                Cur_Left,
+                Cur_Top);
+            SDL_putenv(Win_Coords);
+        }
+#endif
+}
+
+// ------------------------------------------------------
 // Main part of the tracker interface
 #if defined(__WIN32__)
 extern SDL_NEED int SDL_main(int argc, char *argv[])
@@ -450,6 +480,7 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
 
 {
     SDL_KeyboardEvent *kb_evnt;
+
     char KbFileName[MAX_PATH];
     char KbFileNameToLoad[MAX_PATH];
     char KbData[64];
@@ -461,10 +492,10 @@ extern SDL_NEED int SDL_main(int argc, char *argv[])
     FILE *KbFile;
     FILE *AllKbsFile;
     int in_note;
-    Uint32 ExePath_Size = MAX_PATH;
+    UINT32 ExePath_Size = MAX_PATH;
 
 #if defined(__MACOSX_PPC__) || defined(__MACOSX_X86__)
-    Uint32 Path_Length;
+    UINT32 Path_Length;
 #endif
 
 #if defined(__USE_OPENGL__)
@@ -1165,15 +1196,15 @@ void Flush_Screen(void)
 #if defined(__USE_OPENGL__)
     Leave_2d_Mode();
 
-#if !defined(__WIN32__) && !defined(__AROS__) && !defined(__AMIGAOS4__) && !defined(__MORPHOS__)
-    glDrawBuffer(GL_FRONT);
-    glRasterPos2f(-1.0f, -1.0f);
-    glCopyPixels(0, 0, Cur_Width, Cur_Height, GL_COLOR);
-    glDrawBuffer(GL_BACK);
-    glFinish();
-#else
-    SDL_GL_SwapBuffers();
-#endif
+    #if !defined(__WIN32__) && !defined(__AROS__) && !defined(__AMIGAOS4__) && !defined(__MORPHOS__)
+        glDrawBuffer(GL_FRONT);
+        glRasterPos2f(-1.0f, -1.0f);
+        glCopyPixels(0, 0, Cur_Width, Cur_Height, GL_COLOR);
+        glDrawBuffer(GL_BACK);
+        glFinish();
+    #else
+        SDL_GL_SwapBuffers();
+    #endif
 
 #endif
 
@@ -1224,7 +1255,7 @@ int Switch_FullScreen(int Width, int Height, int Refresh, int Force_Window_Mode)
     int Real_FullScreen = 0;
 
 #if !defined(__MORPHOS__)
-    SDL_putenv("SDL_VIDEO_WINDOW_POS=center");
+    Set_Window_Pos(-1, -1);
 #endif
     
     Env_Change = TRUE;
@@ -1235,35 +1266,36 @@ int Switch_FullScreen(int Width, int Height, int Refresh, int Force_Window_Mode)
 
 #if defined(__USE_OPENGL__)
 
-#if !defined(__LINUX__)
-    SDL_GL_SetAttribute(SDL_GL_ACCUM_RED_SIZE, 8);
-    SDL_GL_SetAttribute(SDL_GL_ACCUM_GREEN_SIZE, 8);
-    SDL_GL_SetAttribute(SDL_GL_ACCUM_BLUE_SIZE, 8);
-    SDL_GL_SetAttribute(SDL_GL_ACCUM_ALPHA_SIZE, 8);
-#endif
+    #if !defined(__LINUX__)
+        SDL_GL_SetAttribute(SDL_GL_ACCUM_RED_SIZE, 8);
+        SDL_GL_SetAttribute(SDL_GL_ACCUM_GREEN_SIZE, 8);
+        SDL_GL_SetAttribute(SDL_GL_ACCUM_BLUE_SIZE, 8);
+        SDL_GL_SetAttribute(SDL_GL_ACCUM_ALPHA_SIZE, 8);
+    #endif
     
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-    SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1);
-    SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, TRUE);
-    Destroy_Textures();
-    if(Refresh)
-    {
-        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_ACCUM_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-    }
+        SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
+        SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+        SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1);
+        SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, TRUE);
+        Destroy_OGL_Textures();
+        if(Refresh)
+        {
+            glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_ACCUM_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+        }
 #endif
 
     if(FullScreen)
     {
 
 #if !defined(__MORPHOS__)
-#if defined(__USE_OPENGL__)
-        SDL_SetVideoMode(Width, Height, SCREEN_BPP, SDL_RESIZABLE | SDL_OPENGL | SDL_HWSURFACE | SDL_HWPALETTE);
-#else
-        SDL_SetVideoMode(Width, Height, SCREEN_BPP, SDL_RESIZABLE | SDL_SWSURFACE | SDL_HWPALETTE);
+    #if defined(__USE_OPENGL__)
+            SDL_SetVideoMode(Width, Height, SCREEN_BPP, SDL_RESIZABLE | SDL_OPENGL | SDL_HWSURFACE | SDL_HWPALETTE);
+    #else
+            SDL_SetVideoMode(Width, Height, SCREEN_BPP, SDL_RESIZABLE | SDL_SWSURFACE | SDL_HWPALETTE);
+    #endif
 #endif
-#endif
+
 #if defined(__USE_OPENGL__)
         if((Main_Screen = SDL_SetVideoMode(Startup_Width, Startup_Height,
                                            SCREEN_BPP, SDL_OPENGL | SDL_HWSURFACE | SDL_HWPALETTE  | SDL_NOFRAME | Real_FullScreen)) == NULL)
@@ -1380,7 +1412,6 @@ int Switch_FullScreen(int Width, int Height, int Refresh, int Force_Window_Mode)
     Get_Vid_Infos();
 
 #endif
-
 
     if(!FullScreen)
     {

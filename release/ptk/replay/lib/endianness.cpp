@@ -2,7 +2,7 @@
 // Protrekkr
 // Based on Juan Antonio Arguelles Rius's NoiseTrekker.
 //
-// Copyright (C) 2008-2025 Franck Charlet.
+// Copyright (C) 2008-2026 Franck Charlet.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -37,7 +37,7 @@
 // Functions
 #if defined(__BIG_ENDIAN__) || defined(__MOT_SWAP__)
 
-Uint64 __Swap_64(Uint64 Value)
+UINT64 __Swap_64(UINT64 Value)
 {
 #if defined(__GCC__)
     return(((Value & 0xffll) << 56) |
@@ -62,7 +62,7 @@ Uint64 __Swap_64(Uint64 Value)
 #endif
 }
 
-int __Swap_32(int Value)
+UINT32 __Swap_32(UINT32 Value)
 {
     return(((Value & 0xff) << 24) |
            ((Value & 0xff00) << 8) |
@@ -71,7 +71,7 @@ int __Swap_32(int Value)
           );
 }
 
-short __Swap_16(short Value)
+UINT16 __Swap_16(UINT16 Value)
 {
     return(((Value & 0xff) << 8) |
            ((Value & 0xff00) >> 8)

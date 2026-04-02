@@ -2,7 +2,7 @@
 // Protrekkr
 // Based on Juan Antonio Arguelles Rius's NoiseTrekker.
 //
-// Copyright (C) 2008-2025 Franck Charlet.
+// Copyright (C) 2008-2026 Franck Charlet.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -59,7 +59,7 @@ BOOL WINAPI _DllMainCRTStartup(HANDLE hInst, ULONG ul_reason_for_call, LPVOID lp
 // ----------------------------------------------------------------
 #define PBLEN 1572864
 extern unsigned char *RawPatterns;
-void STDCALL Mixer(Uint8 *Buffer, Uint32 Len);
+void STDCALL Mixer(UINT8 *Buffer, UINT32 Len);
 int Load_Ptk(char *FileName);
 int Calc_Length(void);
 int Alloc_Patterns_Pool(void);
@@ -110,7 +110,7 @@ void config(HWND hwndParent)
 void about(HWND hwndParent)
 {
         MessageBox(hwndParent,"Protrekkr Modules Player v" VER_VER "." VER_REV "." VER_REVSMALL "\n\n"
-                              "(C) Copyright 2008-2025 Franck \"hitchhikr\" Charlet",
+                              "(C) Copyright 2008-2026 Franck Charlet",
                                   "About",
                                   MB_OK | MB_ICONINFORMATION);
 }

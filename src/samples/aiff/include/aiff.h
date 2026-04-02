@@ -2,7 +2,7 @@
 // Protrekkr
 // Based on Juan Antonio Arguelles Rius's NoiseTrekker.
 //
-// Copyright (C) 2008-2025 Franck Charlet.
+// Copyright (C) 2008-2026 Franck Charlet.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -59,20 +59,6 @@
 
 typedef short MarkerId;
 typedef long ID;
-
-typedef unsigned int UINT32;
-typedef int INT32;
-
-#if defined(__WIN32__) && !defined(__GCC__)
-typedef unsigned __int64 Uint64;
-#else
-#if defined(__HAIKU__) || defined(__LINUX__) || defined(__AROS__)
-#include <stdint.h>
-typedef uint64_t Uint64;
-#else
-typedef unsigned long long Uint64;
-#endif
-#endif
 
 // ------------------------------------------------------
 // Structures
@@ -170,7 +156,7 @@ class AIFFFile
         int SeekChunk(const char *ChunkName);
         int Get_Marker(int Marker_Id);
         void IntToFloat(int *Dest, int Source);
-        void Int64ToDouble(Uint64 *Dest, Uint64 Source);
+        void Int64ToDouble(UINT64 *Dest, UINT64 Source);
 
         FILE *file;
         CommonChunk CommDat;
