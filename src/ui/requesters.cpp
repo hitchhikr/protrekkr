@@ -274,13 +274,6 @@ int Check_Requester(LPREQUESTER Requester)
         if(Req_Picture)
         {
             // Display the picture
-            Gui_Draw_Button_Box(Pos_X, Pos_Y, Size_X, Size_Y, NULL, BUTTON_NORMAL | BUTTON_DISABLED);
-            Gui_Draw_Button_Box(Pos_X + BEVEL_SIZE - 1, Pos_Y + BEVEL_SIZE - 1,
-                                Size_X - ((BEVEL_SIZE - 1) * 2), Size_Y - ((BEVEL_SIZE - 1) * 2),
-                                NULL, BUTTON_PUSHED | BUTTON_DISABLED);
-            Gui_Draw_Button_Box(Pos_X + (BEVEL_SIZE + 1), Pos_Y + (BEVEL_SIZE + 1),
-                                Size_X - ((BEVEL_SIZE + 1) * 2), Size_Y - ((BEVEL_SIZE + 1) * 2),
-                                NULL, BUTTON_NORMAL | BUTTON_DISABLED);
             Set_Color(COL_PATTERN_HI_BACK);
             Copy(GET_SURFACE(Req_Picture), Pos_X + BEVEL_SIZE + 1, Pos_Y + BEVEL_SIZE + 1,
                  0, 0, Req_Picture->w - 1, Req_Picture->h - 2);

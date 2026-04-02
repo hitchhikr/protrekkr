@@ -31,12 +31,13 @@ Audio:
   - Add Linux Jack support.
   - Multiple waveforms for LFOs (sin/saw/square).
   - Function to sync LFOs with tempo.
+  - Tremor effect.
 
 Files:
 
   - Import Rebirth RB-338 modules.
   - Import Oktalyzer modules.
-  - Import IFF 8SVX samples.
+  - Import IFF 8SVX/16SVX samples.
   - Import SoundFont samples.
   - Import/Export .FLAC samples.
   - Import DigiBooster PRO "DBM0" modules.
