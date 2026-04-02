@@ -56,13 +56,13 @@
 
 extern float SIN[360];
 
-#if defined(PTK_SYNTH)
-
 struct s_access
 {
     INT32 int_pos;
     float flt_pos;
 };
+
+#if defined(PTK_SYNTH)
 
 // ------------------------------------------------------
 // Structures

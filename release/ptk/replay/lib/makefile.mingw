@@ -29,3 +29,6 @@ replay.o: lib/replay.cpp
 
 wavpack.o: lib/wavpack.cpp
 	$(CC) -o $(@) $(LIBFLAGS) $(FLAGS) lib/wavpack.cpp
+
+endianness.o: lib/endianness.cpp
+	$(CC) -o $(@) $(LIBFLAGS) $(FLAGS) lib/endianness.cpp

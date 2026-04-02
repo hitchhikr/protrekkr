@@ -3,7 +3,7 @@ AS = as
 AR = ar
 STRIP = strip
 LIBS = -lptkreplay -lgame
-FLAGS = -Ofast -fsigned-char -fno-strict-aliasing -ffast-math -D __HAIKU__ -D __GCC__ -D __STAND_ALONE__
+FLAGS = -Ofast -fsigned-char -fno-strict-aliasing -ffast-math -D __HAIKU__ -D __GCC__ -D __STAND_ALONE__ -Ilib/include
 EXEOBJS = test.o module.o
 
 all: remreplaytest ptkreplay replaytest

@@ -6,7 +6,8 @@ include test/module.macosx
 
 LIBS_X86_64 = -lptkreplay_x86_64 -framework CoreAudio -framework AudioUnit -framework Cocoa
 DEBUG = 
-FLAGS_X86_64 = $(DEBUG) -Ofast -arch x86_64 -fsigned-char -fomit-frame-pointer -fno-rtti -fno-strict-aliasing -ffast-math -w -D __MACOSX_X86__ -D __GCC__ -D __STAND_ALONE__
+FLAGS_X86_64 = $(DEBUG) -Ofast -arch x86_64 -fsigned-char -fomit-frame-pointer -fno-rtti -fno-strict-aliasing -ffast-math -w \
+               -D __MACOSX_X86__ -D __GCC__ -D __STAND_ALONE__ -Ilib/include
 EXEOBJS_X86_64 = test_x86_64.o module_x86_64.o
 
 all: remreplaytest module ptkreplay replaytest
