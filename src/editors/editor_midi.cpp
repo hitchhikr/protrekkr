@@ -119,86 +119,86 @@ void Draw_Midi_Ed(void)
     Gui_Draw_Button_Box(749, (Cur_Height - 142), 34, 16, "Save", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
 }
 
-void Actualize_Midi_Ed(char gode)
+void Actualize_Midi_Ed(char action)
 {
     if(userscreen == USER_SCREEN_SETUP_MIDI)
     {
-        if(gode == UPDATE_MIDI_ED_ALL || gode == UPDATE_MIDI_ED_CC0)
+        if(action == UPDATE_MIDI_ED_ALL || action == UPDATE_MIDI_ED_CC0)
         {
             Display_Midi_Automation(0);
         }
 
-        if(gode == UPDATE_MIDI_ED_ALL || gode == UPDATE_MIDI_ED_CC1)
+        if(action == UPDATE_MIDI_ED_ALL || action == UPDATE_MIDI_ED_CC1)
         {
             Display_Midi_Automation(1);
         }
 
-        if(gode == UPDATE_MIDI_ED_ALL || gode == UPDATE_MIDI_ED_CC2)
+        if(action == UPDATE_MIDI_ED_ALL || action == UPDATE_MIDI_ED_CC2)
         {
             Display_Midi_Automation(2);
         }
 
-        if(gode == UPDATE_MIDI_ED_ALL || gode == UPDATE_MIDI_ED_CC3)
+        if(action == UPDATE_MIDI_ED_ALL || action == UPDATE_MIDI_ED_CC3)
         {
             Display_Midi_Automation(3);
         }
 
-        if(gode == UPDATE_MIDI_ED_ALL || gode == UPDATE_MIDI_ED_CC4)
+        if(action == UPDATE_MIDI_ED_ALL || action == UPDATE_MIDI_ED_CC4)
         {
             Display_Midi_Automation(4);
         }
 
-        if(gode == UPDATE_MIDI_ED_ALL || gode == UPDATE_MIDI_ED_CC5)
+        if(action == UPDATE_MIDI_ED_ALL || action == UPDATE_MIDI_ED_CC5)
         {
             Display_Midi_Automation(5);
         }
 
-        if(gode == UPDATE_MIDI_ED_ALL || gode == UPDATE_MIDI_ED_CC6)
+        if(action == UPDATE_MIDI_ED_ALL || action == UPDATE_MIDI_ED_CC6)
         {
             Display_Midi_Automation(6);
         }
 
-        if(gode == UPDATE_MIDI_ED_ALL || gode == UPDATE_MIDI_ED_CC7)
+        if(action == UPDATE_MIDI_ED_ALL || action == UPDATE_MIDI_ED_CC7)
         {
             Display_Midi_Automation(7);
         }
 
-        if(gode == UPDATE_MIDI_ED_ALL || gode == UPDATE_MIDI_ED_CC8)
+        if(action == UPDATE_MIDI_ED_ALL || action == UPDATE_MIDI_ED_CC8)
         {
             Display_Midi_Automation(8);
         }
 
-        if(gode == UPDATE_MIDI_ED_ALL || gode == UPDATE_MIDI_ED_CC9)
+        if(action == UPDATE_MIDI_ED_ALL || action == UPDATE_MIDI_ED_CC9)
         {
             Display_Midi_Automation(9);
         }
 
-        if(gode == UPDATE_MIDI_ED_ALL || gode == UPDATE_MIDI_ED_CC10)
+        if(action == UPDATE_MIDI_ED_ALL || action == UPDATE_MIDI_ED_CC10)
         {
             Display_Midi_Automation(10);
         }
 
-        if(gode == UPDATE_MIDI_ED_ALL || gode == UPDATE_MIDI_ED_CC11)
+        if(action == UPDATE_MIDI_ED_ALL || action == UPDATE_MIDI_ED_CC11)
         {
             Display_Midi_Automation(11);
         }
 
-        if(gode == UPDATE_MIDI_ED_ALL || gode == UPDATE_MIDI_ED_CC12)
+        if(action == UPDATE_MIDI_ED_ALL || action == UPDATE_MIDI_ED_CC12)
         {
             Display_Midi_Automation(12);
         }
 
-        if(gode == UPDATE_MIDI_ED_ALL || gode == UPDATE_MIDI_ED_CC13)
+        if(action == UPDATE_MIDI_ED_ALL || action == UPDATE_MIDI_ED_CC13)
         {
             Display_Midi_Automation(13);
         }
 
-        if(gode == UPDATE_MIDI_ED_ALL || gode == UPDATE_MIDI_ED_CC14)
+        if(action == UPDATE_MIDI_ED_ALL || action == UPDATE_MIDI_ED_CC14)
         {
             Display_Midi_Automation(14);
         }
 
-        if(gode == UPDATE_MIDI_ED_ALL || gode == UPDATE_MIDI_ED_CHANGE_NAME)
+        if(action == UPDATE_MIDI_ED_ALL || action == UPDATE_MIDI_ED_CHANGE_NAME)
         {
             char tcp[30];
             sprintf(tcp, "%s_", Midi_Name);
@@ -220,7 +220,7 @@ void Actualize_Midi_Ed(char gode)
 #endif
 
         // Select midi in device
-        if(gode == UPDATE_MIDI_ED_ALL || gode == UPDATE_MIDI_ED_SEL_IN)
+        if(action == UPDATE_MIDI_ED_ALL || action == UPDATE_MIDI_ED_SEL_IN)
         {
 #if defined(__NO_MIDI__)
             value_box(70, (Cur_Height - 134), 0, BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_DISABLED);
@@ -242,7 +242,7 @@ void Actualize_Midi_Ed(char gode)
         }
 
         // Select midi out device
-        if(gode == UPDATE_MIDI_ED_ALL || gode == UPDATE_MIDI_ED_SEL_OUT)
+        if(action == UPDATE_MIDI_ED_ALL || action == UPDATE_MIDI_ED_SEL_OUT)
         {
 #if defined(__NO_MIDI__)
             value_box(70, (Cur_Height - 117), 0, BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_DISABLED);

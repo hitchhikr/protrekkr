@@ -145,13 +145,13 @@ void Draw_DiskIO_Ed(void)
 
 // ------------------------------------------------------
 // Refresh function
-void Actualize_DiskIO_Ed(int gode)
+void Actualize_DiskIO_Ed(int action)
 {
     if(userscreen == USER_SCREEN_DISKIO_EDIT)
     {
         char tname[32];
 
-        if(gode == 0 || gode == 5)
+        if(action == 0 || action == 5)
         {
             switch(rawrender_target)
             {
@@ -179,7 +179,7 @@ void Actualize_DiskIO_Ed(int gode)
             }
         }
 
-        if(gode == 0 || gode == 1)
+        if(action == 0 || action == 1)
         {
             if(rawrender_32float)
             {
@@ -193,7 +193,7 @@ void Actualize_DiskIO_Ed(int gode)
             }
         }
 
-        if(gode == 0 || gode == 2)
+        if(action == 0 || action == 2)
         {
             if(!rawrender_range)
             {
@@ -208,7 +208,7 @@ void Actualize_DiskIO_Ed(int gode)
         }
 
         // From position
-        if(gode == 0 || gode == 3)
+        if(action == 0 || action == 3)
         {
             if(rawrender_from < 0) rawrender_from = 0;
             if(rawrender_from > (Song_Length - 1)) rawrender_from = (Song_Length - 1);
@@ -221,7 +221,7 @@ void Actualize_DiskIO_Ed(int gode)
         }
 
         // To position
-        if(gode == 0 || gode == 4)
+        if(action == 0 || action == 4)
         {
             if(rawrender_to < 0) rawrender_to = 0;
             if(rawrender_to > (Song_Length - 1)) rawrender_to = (Song_Length - 1);
@@ -244,7 +244,7 @@ void Actualize_DiskIO_Ed(int gode)
             Gui_Draw_Button_Box(254, (Cur_Height - 130), 80, 16, "Save .ptp", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
         }
 
-        if(gode == 0 || gode == 5)
+        if(action == 0 || action == 5)
         {
             if(rawrender_multi)
             {

@@ -131,7 +131,7 @@ void Draw_Sequencer_Ed(void)
 
 }
 
-void Actualize_Seq_Ed(char gode)
+void Actualize_Seq_Ed(char action)
 {
     if(userscreen == USER_SCREEN_SEQUENCER)
     {
@@ -173,7 +173,7 @@ void Actualize_Seq_Ed(char gode)
         Update_Pattern(0);
 
         // From instrument
-        if(gode == 0 || gode == 1 || gode == 6 || gode == 7)
+        if(action == 0 || action == 1 || action == 6 || action == 7)
         {
             if(!apply_to)
             {
@@ -188,7 +188,7 @@ void Actualize_Seq_Ed(char gode)
         }
 
         // To instrument
-        if(gode == 0 || gode == 2 || gode == 6 || gode == 7)
+        if(action == 0 || action == 2 || action == 6 || action == 7)
         {
             if(!apply_to)
             {
@@ -202,7 +202,7 @@ void Actualize_Seq_Ed(char gode)
             value_box(520, (Cur_Height - 56), Remap_To, BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
         }
 
-        if(gode == 0 || gode == 3)
+        if(action == 0 || action == 3)
         {
             char tcp[30];
             sprintf(tcp, "%s_", Selection_Name);
@@ -218,14 +218,14 @@ void Actualize_Seq_Ed(char gode)
         }
 
         // Transpose
-        if(gode == 0 || gode == 4)
+        if(action == 0 || action == 4)
         {
             if(transpose_semitones < -120) transpose_semitones = -120;
             if(transpose_semitones > 120) transpose_semitones = 120;
             value_box_format(720, (Cur_Height - 76), transpose_semitones, BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE, "%d");
         }
 
-        if(gode == 0 || gode == 5 || gode == 6 || gode == 7)
+        if(action == 0 || action == 5 || action == 6 || action == 7)
         {
             int dis = 0;
             if(Action_Range)
@@ -254,7 +254,7 @@ void Actualize_Seq_Ed(char gode)
             }
         }
 
-        if(gode == 0 || gode == 6)
+        if(action == 0 || action == 6)
         {
             if(Action_Range)
             {
@@ -266,7 +266,7 @@ void Actualize_Seq_Ed(char gode)
             }
         }
 
-        if(gode == 0 || gode == 7)
+        if(action == 0 || action == 7)
         {
             if(!apply_to)
             {

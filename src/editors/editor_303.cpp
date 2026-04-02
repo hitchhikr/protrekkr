@@ -160,34 +160,34 @@ void Draw_303_Ed(void)
     Actualize_303_Ed(0);
 }
 
-void Actualize_303_Ed(char gode)
+void Actualize_303_Ed(char action)
 {
     if(userscreen == USER_SCREEN_TB303_EDIT)
     {
-        Refresh_303_Unit(sl3, gode);
+        Refresh_303_Unit(sl3, action);
 
-        if(gode == 0 || gode == 17)
+        if(action == 0 || action == 17)
         {
             Display_Cur_copy_Buffer();
         }
     }
 }
 
-void Refresh_303_Unit(int Unit, int gode)
+void Refresh_303_Unit(int Unit, int action)
 {
     char tcp[40];
 
     if(userscreen == USER_SCREEN_TB303_EDIT && Unit == sl3)
     {
     
-        if(gode == 0 ||
-           gode == 1)
+        if(action == 0 ||
+           action == 1)
         {
             Copy_303_Number(tb303[Unit].patternlength[tb303[Unit].selectedpattern], 118, (Cur_Height - 44));
         }
 
         // Selected bassline
-        if(gode == 0)
+        if(action == 0)
         {
             if(Unit)
             {
@@ -235,22 +235,22 @@ void Refresh_303_Unit(int Unit, int gode)
         }
 
         // Displaying waveform switch
-        if(gode == 0 || gode == 2)
+        if(action == 0 || action == 2)
         {
             if(tb303[Unit].waveform) Copy_303_Skin(180, (Cur_Height - 128), 137, 135, 13, 8);
             else Copy_303_Skin(180, (Cur_Height - 128), 137, 125, 13, 8);
         }
 
         // Draw 303 Knobs
-        if(gode == 0 || gode == 3) Copy_303_Knob(229, (Cur_Height - 124), tb303[Unit].tune / 2);
-        if(gode == 0 || gode == 4) Copy_303_Knob(262, (Cur_Height - 124), tb303[Unit].cutoff / 2);
-        if(gode == 0 || gode == 5) Copy_303_Knob(295, (Cur_Height - 124), tb303[Unit].resonance / 2);
-        if(gode == 0 || gode == 6) Copy_303_Knob(328, (Cur_Height - 124), tb303[Unit].envmod / 2);
-        if(gode == 0 || gode == 7) Copy_303_Knob(361, (Cur_Height - 124), tb303[Unit].decay / 2);
-        if(gode == 0 || gode == 8) Copy_303_Knob(394, (Cur_Height - 124), tb303[Unit].accent / 2);
+        if(action == 0 || action == 3) Copy_303_Knob(229, (Cur_Height - 124), tb303[Unit].tune / 2);
+        if(action == 0 || action == 4) Copy_303_Knob(262, (Cur_Height - 124), tb303[Unit].cutoff / 2);
+        if(action == 0 || action == 5) Copy_303_Knob(295, (Cur_Height - 124), tb303[Unit].resonance / 2);
+        if(action == 0 || action == 6) Copy_303_Knob(328, (Cur_Height - 124), tb303[Unit].envmod / 2);
+        if(action == 0 || action == 7) Copy_303_Knob(361, (Cur_Height - 124), tb303[Unit].decay / 2);
+        if(action == 0 || action == 8) Copy_303_Knob(394, (Cur_Height - 124), tb303[Unit].accent / 2);
 
         // Restoring notes background
-        if(gode == 0 || gode == 9)
+        if(action == 0 || action == 9)
         {
             // Restore it
             Copy_303_Skin(88 + 80, 66 + (Cur_Height - 140), 88, 66, 195, 40);
@@ -275,7 +275,7 @@ void Refresh_303_Unit(int Unit, int gode)
         }
 
         // Light pause/note led
-        if(gode == 0 || gode == 10)
+        if(action == 0 || action == 10)
         {
             if(tb303[Unit].flag[tb303[Unit].selectedpattern][editsteps[Unit][tb303[Unit].selectedpattern]].pause)
             {
@@ -290,7 +290,7 @@ void Refresh_303_Unit(int Unit, int gode)
         }
 
         // Light slide/off led
-        if(gode == 0 || gode == 11)
+        if(action == 0 || action == 11)
         {
             if(tb303[Unit].flag[tb303[Unit].selectedpattern][editsteps[Unit][tb303[Unit].selectedpattern]].slide_flag)
             {
@@ -303,7 +303,7 @@ void Refresh_303_Unit(int Unit, int gode)
         }
 
         // Light accent/off led
-        if(gode == 0 || gode == 12)
+        if(action == 0 || action == 12)
         {
             if(tb303[Unit].flag[tb303[Unit].selectedpattern][editsteps[Unit][tb303[Unit].selectedpattern]].accent_flag)
             {
@@ -316,7 +316,7 @@ void Refresh_303_Unit(int Unit, int gode)
         }
 
         // Transpose up flag
-        if(gode == 0 || gode == 13)
+        if(action == 0 || action == 13)
         {
             if(tb303[Unit].flag[tb303[Unit].selectedpattern][editsteps[Unit][tb303[Unit].selectedpattern]].transposeup_flag)
             {
@@ -329,7 +329,7 @@ void Refresh_303_Unit(int Unit, int gode)
         }
 
         // Transpose down flag
-        if(gode == 0 || gode == 14)
+        if(action == 0 || action == 14)
         {
             if(tb303[Unit].flag[tb303[Unit].selectedpattern][editsteps[Unit][tb303[Unit].selectedpattern]].transposedown_flag)
             {
@@ -342,7 +342,7 @@ void Refresh_303_Unit(int Unit, int gode)
         }
 
         // Volume
-        if(gode == 0 || gode == 15)
+        if(action == 0 || action == 15)
         {
             // volume background
             Copy_303_Skin(529, (Cur_Height - 115), 449, 25, 19, 88);
@@ -351,7 +351,7 @@ void Refresh_303_Unit(int Unit, int gode)
             Copy_303_Skin(531, (Cur_Height - 42) - tb303v, 0, 116, 13, 11);
         }
 
-        if(gode == 0 || gode == 18)
+        if(action == 0 || action == 18)
         {
             sprintf(tcp, "%s_", tb303[Unit].pattern_name[tb303[Unit].selectedpattern]);
 
@@ -365,7 +365,7 @@ void Refresh_303_Unit(int Unit, int gode)
             }
         }
 
-        if(gode == 0 || gode == 19)
+        if(action == 0 || action == 19)
         {
             Gui_Draw_Arrows_Number_Box2(670, (Cur_Height - 42), tb303[Unit].scale, BUTTON_NORMAL | BUTTON_RIGHT_MOUSE | BUTTON_TEXT_CENTERED);
         }

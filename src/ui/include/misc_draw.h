@@ -205,25 +205,25 @@ typedef struct
 // ------------------------------------------------------
 // Variables
 extern char *Labels_Palette[];
-extern SDL_Color Ptk_Palette[256 * 2];
+extern PTK_COLOR Ptk_Palette[256 * 2];
 extern int Default_Beveled1;
-extern SDL_Color Default_Palette1[COL_BLACK + 1];
+extern PTK_COLOR Default_Palette1[COL_BLACK + 1];
 extern int Default_Beveled2;
-extern SDL_Color Default_Palette2[COL_BLACK + 1];
+extern PTK_COLOR Default_Palette2[COL_BLACK + 1];
 extern int Default_Beveled3;
-extern SDL_Color Default_Palette3[COL_BLACK + 1];
+extern PTK_COLOR Default_Palette3[COL_BLACK + 1];
 extern int Default_Beveled4;
-extern SDL_Color Default_Palette4[COL_BLACK + 1];
+extern PTK_COLOR Default_Palette4[COL_BLACK + 1];
 extern int Default_Beveled5;
-extern SDL_Color Default_Palette5[COL_BLACK + 1];
+extern PTK_COLOR Default_Palette5[COL_BLACK + 1];
 extern int Default_Beveled6;
-extern SDL_Color Default_Palette6[COL_BLACK + 1];
+extern PTK_COLOR Default_Palette6[COL_BLACK + 1];
 extern int Default_Beveled7;
-extern SDL_Color Default_Palette7[COL_BLACK + 1];
+extern PTK_COLOR Default_Palette7[COL_BLACK + 1];
 extern int Default_Beveled8;
-extern SDL_Color Default_Palette8[COL_BLACK + 1];
+extern PTK_COLOR Default_Palette8[COL_BLACK + 1];
 extern int Default_Beveled9;
-extern SDL_Color Default_Palette9[COL_BLACK + 1];
+extern PTK_COLOR Default_Palette9[COL_BLACK + 1];
 extern LONGRGB Phony_Palette[];
 extern int Idx_Palette[];
 extern int curr_tab_highlight;
@@ -286,19 +286,18 @@ void Set_Color(int color);
 void Destroy_OGL_Textures();
 #endif
 void Fill_Rect(int x1, int y1, int x2, int y2);
-void Copy(SDL_TEXTURE *Source, int x, int y, int x1, int y1, int x2, int y2);
-void Copy_To_Surface(SDL_TEXTURE *Source, SDL_TEXTURE *dest,
+void Copy(PTK_TEXTURE *Source, int x, int y, int x1, int y1, int x2, int y2);
+void Copy_To_Surface(PTK_TEXTURE *Source, PTK_TEXTURE *dest,
                      int dest_x, int dest_y, int src_start_x, int src_start_y, int src_end_x, int src_end_y);
 void Print_String(char *str, int x, int y, int size_x, int flag);
 int Get_Size_Text(char *String);
-SDL_TEXTURE *Load_Picture(char *FileName);
 int Create_Font_Data(char *FontName);
 void Set_Pictures_And_Palettes(int LogPalette);
 void Set_Main_Palette(void);
 void Set_Logo_Palette(void);
 void Get_Phony_Palette(void);
 void Set_Phony_Palette(void);
-void Restore_Default_Palette(SDL_Color *Def, int DefBevel);
+void Restore_Default_Palette(PTK_COLOR *Def, int DefBevel);
 void Destroy_UI(void);
 int Get_Font_Height(void);
 int Get_Note_Ascii(int note, char *snote, int *octave, int tiret);

@@ -154,7 +154,7 @@ void Mouse_Reverb_Ed()
 
 // ------------------------------------------------------
 // Redraw the elements on the screen
-void Actualize_Reverb_Ed(int gode)
+void Actualize_Reverb_Ed(int action)
 {
     if(userscreen == USER_SCREEN_REVERB_EDIT)
     {
@@ -162,53 +162,53 @@ void Actualize_Reverb_Ed(int gode)
       //  Gadgets_Reverb.Display_List(&Reverb_IDs);
 
         // Echoes
-        if(gode == UPDATE_REVERB_ED_ALL || gode == UPDATE_REVERB_ED_ECHOES)
+        if(action == UPDATE_REVERB_ED_ALL || action == UPDATE_REVERB_ED_ECHOES)
         {
             Gui_Draw_Arrows_Number_Box2(72, (Cur_Height - 135), num_echoes, BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
         }
 
-        if(gode == UPDATE_REVERB_ED_ALL || gode == UPDATE_REVERB_ED_DECAY1)
+        if(action == UPDATE_REVERB_ED_ALL || action == UPDATE_REVERB_ED_DECAY1)
         {
             Display_Decay_Slider(0);
         }
-        if(gode == UPDATE_REVERB_ED_ALL || gode == UPDATE_REVERB_ED_DECAY2)
+        if(action == UPDATE_REVERB_ED_ALL || action == UPDATE_REVERB_ED_DECAY2)
         {
             Display_Decay_Slider(1);
         }
-        if(gode == UPDATE_REVERB_ED_ALL || gode == UPDATE_REVERB_ED_DECAY3)
+        if(action == UPDATE_REVERB_ED_ALL || action == UPDATE_REVERB_ED_DECAY3)
         {
             Display_Decay_Slider(2);
         }
-        if(gode == UPDATE_REVERB_ED_ALL || gode == UPDATE_REVERB_ED_DECAY4)
+        if(action == UPDATE_REVERB_ED_ALL || action == UPDATE_REVERB_ED_DECAY4)
         {
             Display_Decay_Slider(3);
         }
-        if(gode == UPDATE_REVERB_ED_ALL || gode == UPDATE_REVERB_ED_DECAY5)
+        if(action == UPDATE_REVERB_ED_ALL || action == UPDATE_REVERB_ED_DECAY5)
         {
             Display_Decay_Slider(4);
         }
-        if(gode == UPDATE_REVERB_ED_ALL || gode == UPDATE_REVERB_ED_DECAY6)
+        if(action == UPDATE_REVERB_ED_ALL || action == UPDATE_REVERB_ED_DECAY6)
         {
             Display_Decay_Slider(5);
         }
-        if(gode == UPDATE_REVERB_ED_ALL || gode == UPDATE_REVERB_ED_DECAY7)
+        if(action == UPDATE_REVERB_ED_ALL || action == UPDATE_REVERB_ED_DECAY7)
         {
             Display_Decay_Slider(6);
         }
-        if(gode == UPDATE_REVERB_ED_ALL || gode == UPDATE_REVERB_ED_DECAY8)
+        if(action == UPDATE_REVERB_ED_ALL || action == UPDATE_REVERB_ED_DECAY8)
         {
             Display_Decay_Slider(7);
         }
-        if(gode == UPDATE_REVERB_ED_ALL || gode == UPDATE_REVERB_ED_DECAY9)
+        if(action == UPDATE_REVERB_ED_ALL || action == UPDATE_REVERB_ED_DECAY9)
         {
             Display_Decay_Slider(8);
         }
-        if(gode == UPDATE_REVERB_ED_ALL || gode == UPDATE_REVERB_ED_DECAY10)
+        if(action == UPDATE_REVERB_ED_ALL || action == UPDATE_REVERB_ED_DECAY10)
         {
             Display_Decay_Slider(9);
         }
 
-        if(gode == UPDATE_REVERB_ED_ALL || gode == UPDATE_REVERB_ED_DELAY1)
+        if(action == UPDATE_REVERB_ED_ALL || action == UPDATE_REVERB_ED_DELAY1)
         {
             Display_Delays_Arrows();
         }
@@ -216,58 +216,58 @@ void Actualize_Reverb_Ed(int gode)
         // 0..24999
         // -64.0f..64.0f
 
-        if(gode == UPDATE_REVERB_ED_ALL || gode == UPDATE_REVERB_ED_DELAY1)
+        if(action == UPDATE_REVERB_ED_ALL || action == UPDATE_REVERB_ED_DELAY1)
         {
             Print_Long_Small(108, (Cur_Height - 115), delays[0], INT_PLAIN, 45,
                              BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
         }
-        if(gode == UPDATE_REVERB_ED_ALL || gode == UPDATE_REVERB_ED_DELAY2)
+        if(action == UPDATE_REVERB_ED_ALL || action == UPDATE_REVERB_ED_DELAY2)
         {
             Print_Long_Small(108, (Cur_Height - 97), delays[1], INT_PLAIN, 45,
                              BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
         }
-        if(gode == UPDATE_REVERB_ED_ALL || gode == UPDATE_REVERB_ED_DELAY3)
+        if(action == UPDATE_REVERB_ED_ALL || action == UPDATE_REVERB_ED_DELAY3)
         {
             Print_Long_Small(108, (Cur_Height - 79), delays[2], INT_PLAIN, 45,
                              BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
         }
-        if(gode == UPDATE_REVERB_ED_ALL || gode == UPDATE_REVERB_ED_DELAY4)
+        if(action == UPDATE_REVERB_ED_ALL || action == UPDATE_REVERB_ED_DELAY4)
         {
             Print_Long_Small(108, (Cur_Height - 61), delays[3], INT_PLAIN, 45,
                              BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
         }
-        if(gode == UPDATE_REVERB_ED_ALL || gode == UPDATE_REVERB_ED_DELAY5)
+        if(action == UPDATE_REVERB_ED_ALL || action == UPDATE_REVERB_ED_DELAY5)
         {
             Print_Long_Small(108, (Cur_Height - 43), delays[4], INT_PLAIN, 45,
                              BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
         }
-        if(gode == UPDATE_REVERB_ED_ALL || gode == UPDATE_REVERB_ED_DELAY6)
+        if(action == UPDATE_REVERB_ED_ALL || action == UPDATE_REVERB_ED_DELAY6)
         {
             Print_Long_Small(108 + 185, (Cur_Height - 115), delays[5], INT_PLAIN, 45,
                              BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
         }
-        if(gode == UPDATE_REVERB_ED_ALL || gode == UPDATE_REVERB_ED_DELAY7)
+        if(action == UPDATE_REVERB_ED_ALL || action == UPDATE_REVERB_ED_DELAY7)
         {
             Print_Long_Small(108 + 185, (Cur_Height - 97), delays[6], INT_PLAIN, 45,
                              BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
         }
-        if(gode == UPDATE_REVERB_ED_ALL || gode == UPDATE_REVERB_ED_DELAY8)
+        if(action == UPDATE_REVERB_ED_ALL || action == UPDATE_REVERB_ED_DELAY8)
         {
             Print_Long_Small(108 + 185, (Cur_Height - 79), delays[7], INT_PLAIN, 45,
                              BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
         }
-        if(gode == UPDATE_REVERB_ED_ALL || gode == UPDATE_REVERB_ED_DELAY9)
+        if(action == UPDATE_REVERB_ED_ALL || action == UPDATE_REVERB_ED_DELAY9)
         {
             Print_Long_Small(108 + 185, (Cur_Height - 61), delays[8], INT_PLAIN, 45,
                              BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
         }
-        if(gode == UPDATE_REVERB_ED_ALL || gode == UPDATE_REVERB_ED_DELAY10)
+        if(action == UPDATE_REVERB_ED_ALL || action == UPDATE_REVERB_ED_DELAY10)
         {
             Print_Long_Small(108 + 185, (Cur_Height - 43), delays[9], INT_PLAIN, 45,
                              BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
         }
 
-        if(gode == UPDATE_REVERB_ED_ALL || gode == UPDATE_REVERB_ED_CHANGE_NAME)
+        if(action == UPDATE_REVERB_ED_ALL || action == UPDATE_REVERB_ED_CHANGE_NAME)
         {
             char tcp[30];
             sprintf(tcp, "%s_", Reverb_Name);

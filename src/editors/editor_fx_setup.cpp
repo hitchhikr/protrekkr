@@ -82,21 +82,21 @@ void Draw_Fx_Ed(void)
 
 }
 
-void Actualize_Fx_Ed(char gode)
+void Actualize_Fx_Ed(char action)
 {
     if(userscreen == USER_SCREEN_FX_SETUP_EDIT)
     {
-        if(gode == 0 || gode == 2)
+        if(action == 0 || action == 2)
         {
             // Reverb feedback
             Real_Slider(77, (Cur_Height - 102), (int) (Feedback * 127.0f), compressor);
         }
 
-        if(gode == 0 || gode == 3)
+        if(action == 0 || action == 3)
         {
             if(lchorus_delay > 22100) lchorus_delay = 22100;
             if(lchorus_delay < 1) lchorus_delay = 1;
-            if(gode == 3)
+            if(action == 3)
             {
                 lchorus_counter = MIX_RATE;
                 lchorus_counter2 = MIX_RATE - lchorus_delay;
@@ -105,11 +105,11 @@ void Actualize_Fx_Ed(char gode)
             Print_Long(458, (Cur_Height - 119), (lchorus_delay * 1000) / MIX_RATE, INT_MILLISECOND);
         }
 
-        if(gode == 0 || gode == 4)
+        if(action == 0 || action == 4)
         {
             if(rchorus_delay > 22100) rchorus_delay = 22100;
             if(rchorus_delay < 1) rchorus_delay = 1;
-            if(gode == 4)
+            if(action == 4)
             {
                 rchorus_counter = MIX_RATE;
                 rchorus_counter2 = MIX_RATE - rchorus_delay;
@@ -118,7 +118,7 @@ void Actualize_Fx_Ed(char gode)
             Print_Long(458, (Cur_Height - 101), (rchorus_delay * 1000) / MIX_RATE, INT_MILLISECOND);
         }
 
-        if(gode == 0 || gode == 5)
+        if(action == 0 || action == 5)
         {
             if(lchorus_feedback > 0.95f) lchorus_feedback = 0.95f;
             if(lchorus_feedback < 0.0f) lchorus_feedback = 0.0f;
@@ -126,7 +126,7 @@ void Actualize_Fx_Ed(char gode)
             Print_Long(458, (Cur_Height - 83), (int) (lchorus_feedback * 100.0f), INT_PERCENT);
         }
 
-        if(gode == 0 || gode == 6)
+        if(action == 0 || action == 6)
         {
             if(rchorus_feedback > 0.95f) rchorus_feedback = 0.95f;
             if(rchorus_feedback < 0.0f) rchorus_feedback = 0.0f;
@@ -134,16 +134,16 @@ void Actualize_Fx_Ed(char gode)
             Print_Long(458, (Cur_Height - 65), (int) (rchorus_feedback * 100), INT_PERCENT);
         }
 
-        if(gode == 0 || gode == 7)
+        if(action == 0 || action == 7)
         {
             if(c_threshold < 10) c_threshold = 10;
             if(c_threshold > 127) c_threshold = 127;
             Real_Slider(77, (Cur_Height - 84), c_threshold, compressor);
             // Re-generate
-            if(gode == 7) Init_Reverb_Filter();
+            if(action == 7) Init_Reverb_Filter();
         }
 
-        if(gode == 0 || gode == 8)
+        if(action == 0 || action == 8)
         {
             if(compressor == FALSE)
             {
@@ -157,12 +157,12 @@ void Actualize_Fx_Ed(char gode)
             }
         }
 
-        if(gode == 0 || gode == 9)
+        if(action == 0 || action == 9)
         {
             Display_Reverb_Cutoff();
         }
 
-        if(gode == 0 || gode == 10)
+        if(action == 0 || action == 10)
         {
             if(Ticks_Synchro_Left < 1) Ticks_Synchro_Left = 1;
             while((SamplesPerTick * Ticks_Synchro_Left) > 22100)
@@ -171,7 +171,7 @@ void Actualize_Fx_Ed(char gode)
             }
             Gui_Draw_Arrows_Number_Box2(535 + 5, (Cur_Height - 119), Ticks_Synchro_Left, BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
         }
-        if(gode == 0 || gode == 11)
+        if(action == 0 || action == 11)
         {
             if(Ticks_Synchro_Right < 1) Ticks_Synchro_Right = 1;
             while((SamplesPerTick * Ticks_Synchro_Right) > 22100)
@@ -181,20 +181,20 @@ void Actualize_Fx_Ed(char gode)
             Gui_Draw_Arrows_Number_Box2(535 + 5 + 97, (Cur_Height - 119), Ticks_Synchro_Right, BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
         }
 
-        if(gode == 0 || gode == 13)
+        if(action == 0 || action == 13)
         {
             if(Reverb_Stereo_Amount < 0) Reverb_Stereo_Amount = 0;
             if(Reverb_Stereo_Amount > 127) Reverb_Stereo_Amount = 127;
             Real_Slider(77, (Cur_Height - 48), Reverb_Stereo_Amount, compressor);
-            if(gode == 13) Initreverb();
+            if(action == 13) Initreverb();
         }
 
-        if(gode == 0 || gode == 14)
+        if(action == 0 || action == 14)
         {
             Display_Reverb_Resonance();
         }
 
-        if(gode == 0 || gode == 15)
+        if(action == 0 || action == 15)
         {
             // Reverb damp
             Real_Slider_Horiz(181, 
@@ -206,7 +206,7 @@ void Actualize_Fx_Ed(char gode)
                               compressor);
         }
 
-        if(gode == 0 || gode == 16)
+        if(action == 0 || action == 16)
         {
             if(ChorCut < 0)
             {
@@ -219,7 +219,7 @@ void Actualize_Fx_Ed(char gode)
             Real_Slider(586 + 5, (Cur_Height - 76), (int) ChorCut, ChorType != 4);
         }
 
-        if(gode == 0 || gode == 16)
+        if(action == 0 || action == 16)
         {
             if(ChorRez < 0)
             {
@@ -232,7 +232,7 @@ void Actualize_Fx_Ed(char gode)
             Real_Slider(586 + 5, (Cur_Height - 56), ChorRez, ChorType != 4);
         }
 
-        if(gode == 0 || gode == 16)
+        if(action == 0 || action == 16)
         {
             switch(ChorType)
             {
@@ -245,7 +245,7 @@ void Actualize_Fx_Ed(char gode)
             value_box(588 + 5, (Cur_Height - 95), ChorType, BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
         }
 /*
-        if(gode == 0 || gode == 13)
+        if(action == 0 || action == 13)
         {
             char string[64];
 

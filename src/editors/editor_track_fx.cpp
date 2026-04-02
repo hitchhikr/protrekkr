@@ -84,11 +84,11 @@ void Draw_Track_Fx_Ed(void)
     Gui_Draw_Button_Box(710 + (22 * 2), (Cur_Height - 40), 16, 16, H_ I_, BUTTON_NORMAL | BUTTON_NO_BORDER | BUTTON_TEXT_CENTERED);
 }
 
-void Actualize_Track_Fx_Ed(char gode)
+void Actualize_Track_Fx_Ed(char action)
 {
     if(userscreen == USER_SCREEN_TRACK_FX_EDIT)
     {
-        if(gode == 0 || gode == 1 || gode == 11)
+        if(action == 0 || action == 1 || action == 11)
         {
             if(FLANGER_AMOUNT[Track_Under_Caret] > 1.0f) FLANGER_AMOUNT[Track_Under_Caret] = 1.0f;
             if(FLANGER_AMOUNT[Track_Under_Caret] < -1.0f) FLANGER_AMOUNT[Track_Under_Caret] = -1.0f;
@@ -96,7 +96,7 @@ void Actualize_Track_Fx_Ed(char gode)
             Print_Long(458, (Cur_Height - 121), long(FLANGER_AMOUNT[Track_Under_Caret] * 100.0f), INT_PERCENT);
         }
 
-        if(gode == 0 || gode == 7 || gode == 11)
+        if(action == 0 || action == 7 || action == 11)
         {
             if(FLANGER_FEEDBACK[Track_Under_Caret] > 0.9f) FLANGER_FEEDBACK[Track_Under_Caret] = 0.9f;
             if(FLANGER_FEEDBACK[Track_Under_Caret] < -1.0f) FLANGER_FEEDBACK[Track_Under_Caret] = -1.0f;
@@ -104,7 +104,7 @@ void Actualize_Track_Fx_Ed(char gode)
             Print_Long(458, (Cur_Height - 67), long(FLANGER_FEEDBACK[Track_Under_Caret] * 100.0f), INT_PERCENT);
         }
 
-        if(gode == 0 || gode == 4 || gode == 11)
+        if(action == 0 || action == 4 || action == 11)
         {
             if(FLANGER_DEPHASE[Track_Under_Caret] > PIf) FLANGER_DEPHASE[Track_Under_Caret] = PIf;
             if(FLANGER_DEPHASE[Track_Under_Caret] < 0.0f) FLANGER_DEPHASE[Track_Under_Caret] = 0.0f;
@@ -112,7 +112,7 @@ void Actualize_Track_Fx_Ed(char gode)
             Print_Long(159, (Cur_Height - 49), (int) (FLANGER_DEPHASE[Track_Under_Caret] * 57.29578f), INT_DEGREE);
         }
 
-        if(gode == 0 || gode == 5 || gode == 11)
+        if(action == 0 || action == 5 || action == 11)
         {
             if(FLANGER_RATE[Track_Under_Caret] < 0.000001f) FLANGER_RATE[Track_Under_Caret] = 0.000001f;
             if(FLANGER_RATE[Track_Under_Caret] > 0.0001363f) FLANGER_RATE[Track_Under_Caret] = 0.0001363f;
@@ -120,7 +120,7 @@ void Actualize_Track_Fx_Ed(char gode)
             Print_Long(458, (Cur_Height - 103), long(0.1424758f / FLANGER_RATE[Track_Under_Caret]), INT_MILLISECOND);
         }
 
-        if(gode == 0 || gode == 6 || gode == 11)
+        if(action == 0 || action == 6 || action == 11)
         {
             if(FLANGER_AMPL[Track_Under_Caret] > 0.01f) FLANGER_AMPL[Track_Under_Caret] = 0.01f;
             if(FLANGER_AMPL[Track_Under_Caret] < 0.0f) FLANGER_AMPL[Track_Under_Caret] = 0.0f;
@@ -128,7 +128,7 @@ void Actualize_Track_Fx_Ed(char gode)
             Print_Long(458, (Cur_Height - 85), (int) (FLANGER_AMPL[Track_Under_Caret] * 10000.0f), INT_PERCENT);
         }
 
-                if(gode == 0 || gode == 10 || gode == 11)
+                if(action == 0 || action == 10 || action == 11)
         {
             if(FLANGER_ON[Track_Under_Caret])
             {
@@ -142,7 +142,7 @@ void Actualize_Track_Fx_Ed(char gode)
             }
         }
 
-        if(gode == 0 || gode == 8 || gode == 11)
+        if(action == 0 || action == 8 || action == 11)
         {
             if(FLANGER_DELAY[Track_Under_Caret] > 4096) FLANGER_DELAY[Track_Under_Caret] = 4096;
             if(FLANGER_DELAY[Track_Under_Caret] < 0) FLANGER_DELAY[Track_Under_Caret] = 0;
@@ -159,7 +159,7 @@ void Actualize_Track_Fx_Ed(char gode)
 
 
         // ----------------------
-        if(gode == 0 || gode == 18 || gode == 15)
+        if(action == 0 || action == 18 || action == 15)
         {
             if(LFO_RATE_SCALE[Track_Under_Caret] < 1.0f) LFO_RATE_SCALE[Track_Under_Caret] = 1.0f;
             if(LFO_RATE_SCALE[Track_Under_Caret] > 16.0f) LFO_RATE_SCALE[Track_Under_Caret] = 16.0f;
@@ -176,7 +176,7 @@ void Actualize_Track_Fx_Ed(char gode)
                            BUTTON_NORMAL | BUTTON_NO_BORDER | BUTTON_TEXT_CENTERED);
         }
 
-        if(gode == 0 || gode == 2 || gode == 15 || gode == 18)
+        if(action == 0 || action == 2 || action == 15 || action == 18)
         {
             if(LFO_RATE[Track_Under_Caret] < 0.0001f) LFO_RATE[Track_Under_Caret] = 0.0001f;
             if(LFO_RATE[Track_Under_Caret] > 0.0078125f) LFO_RATE[Track_Under_Caret] = 0.0078125f;
@@ -188,7 +188,7 @@ void Actualize_Track_Fx_Ed(char gode)
             outfloat(138, (Cur_Height - 68), tmprate, FLT_HERTZ);
         }
 
-        if(gode == 0 || gode == 3 || gode == 15)
+        if(action == 0 || action == 3 || action == 15)
         {
             if(LFO_AMPL_FILTER[Track_Under_Caret] < 0.0f) LFO_AMPL_FILTER[Track_Under_Caret] = 0.0f;
             if(LFO_AMPL_FILTER[Track_Under_Caret] > 128.0f) LFO_AMPL_FILTER[Track_Under_Caret] = 128.0f;
@@ -199,7 +199,7 @@ void Actualize_Track_Fx_Ed(char gode)
             }
         }
 
-        if(gode == 0 || gode == 16 || gode == 15)
+        if(action == 0 || action == 16 || action == 15)
         {
             if(LFO_AMPL_VOLUME[Track_Under_Caret] < 0.0f) LFO_AMPL_VOLUME[Track_Under_Caret] = 0.0f;
             if(LFO_AMPL_VOLUME[Track_Under_Caret] > 128.0f) LFO_AMPL_VOLUME[Track_Under_Caret] = 128.0f;
@@ -210,7 +210,7 @@ void Actualize_Track_Fx_Ed(char gode)
             }
         }
 
-        if(gode == 0 || gode == 17 || gode == 15)
+        if(action == 0 || action == 17 || action == 15)
         {
             if(LFO_AMPL_PANNING[Track_Under_Caret] < 0.0f) LFO_AMPL_PANNING[Track_Under_Caret] = 0.0f;
             if(LFO_AMPL_PANNING[Track_Under_Caret] > 128.0f) LFO_AMPL_PANNING[Track_Under_Caret] = 128.0f;
@@ -221,7 +221,7 @@ void Actualize_Track_Fx_Ed(char gode)
             }
         }
 
-        if(gode == 0 || gode == 9 || gode == 15)
+        if(action == 0 || action == 9 || action == 15)
         {
             if(LFO_ON[Track_Under_Caret] == 1)
             {
@@ -236,22 +236,22 @@ void Actualize_Track_Fx_Ed(char gode)
         }
         // ----------------------
 
-        if(gode == 0 || gode == 12)
+        if(action == 0 || action == 12)
         {
             Display_Track_Compressor_Status(Track_Under_Caret);
         }
 
-        if(gode == 0 || gode == 12)
+        if(action == 0 || action == 12)
         {
             Display_Track_Compressor(Track_Under_Caret);
         }
 
-        if(gode == 0 || gode == 13)
+        if(action == 0 || action == 13)
         {
             Display_Track_Volume();
         }
 
-        if(gode == 0 || gode == 14)
+        if(action == 0 || action == 14)
         {
             Real_Slider_Vert(710, (Cur_Height - 120),
                              (int) ((2.0f - EqDat[Track_Under_Caret].lg) * 50.0f),

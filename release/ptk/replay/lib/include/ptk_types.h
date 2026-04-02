@@ -54,6 +54,8 @@ typedef signed short INT16;
 typedef unsigned char UINT8;
 typedef signed char INT8;
 
+typedef INT32 BOOL;
+
 #define TRUE 1
 #define FALSE 0
 

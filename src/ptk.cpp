@@ -73,7 +73,6 @@ extern int RShift_Notified;
 int Enter_Notification;
 int Enter_Notified;
 int Enter_Notified_Play_Pattern;
-SDL_sem *thread_sema;
 
 #if defined(PTK_SHUFFLE)
 extern int shufflestep;
@@ -201,10 +200,10 @@ int c_r_cvol = 32768;
 
 int snamesel = INPUT_NONE;
 
-SDL_TEXTURE *PFONT;
-SDL_TEXTURE *PFONT_DOUBLE;
-SDL_TEXTURE *FONT;
-SDL_TEXTURE *FONT_LOW;
+PTK_TEXTURE *PFONT;
+PTK_TEXTURE *PFONT_DOUBLE;
+PTK_TEXTURE *FONT;
+PTK_TEXTURE *FONT_LOW;
 
 SDL_TimerID Timer;
 UINT32 Timer_CallBack(UINT32 interval, void *param);
@@ -224,7 +223,7 @@ char Save_Step_Play = FALSE;
 
 char cur_input_name[1024];
 
-SDL_TEXTURE *LOGOPIC;
+PTK_TEXTURE *LOGOPIC;
 int wait_title;
 int display_title = 0;
 
@@ -473,11 +472,11 @@ int ZzaappOMatic;
 
 // ------------------------------------------------------
 // Load a skin picture
-SDL_TEXTURE *Load_Skin_Picture(char *name)
+PTK_TEXTURE *Load_Skin_Picture(char *name, BOOL set_color_key)
 {
     char filepath[MAX_PATH];
     char error[256];
-    SDL_TEXTURE *surface;
+    PTK_TEXTURE *surface;
 
 #if defined(__WIN32__)
     sprintf(filepath, "skins\\%s", name);
@@ -491,6 +490,10 @@ SDL_TEXTURE *Load_Skin_Picture(char *name)
         sprintf(error, "Can't load %s file.", name);
         Message_Error(error);
         return(NULL);
+    }
+    if(set_color_key)
+    {
+        SDL_SetColorKey(surface, SDL_SRCCOLORKEY, 0);
     }
     return(surface);
 }
@@ -549,7 +552,8 @@ int Init_Context(void)
     sprintf(artist, "Somebody");
     sprintf(style, "Anything goes");
 
-    thread_sema = SDL_CreateSemaphore(1);
+
+    Create_Semaphore();
 
     namesize = 8;
     Init_Synth_Params_Names();
@@ -585,26 +589,23 @@ int Init_Context(void)
         return(FALSE);
     }
 
-    LOGOPIC = Load_Skin_Picture("neural.bmp");
+    LOGOPIC = Load_Skin_Picture("neural.bmp", FALSE);
     if(!LOGOPIC) return(FALSE);
-    SKIN303 = Load_Skin_Picture("303.bmp");
+    SKIN303 = Load_Skin_Picture("303.bmp", FALSE);
     if(!SKIN303) return(FALSE);
-    PFONT = Load_Skin_Picture("pattern_font.bmp");
+    PFONT = Load_Skin_Picture("pattern_font.bmp", FALSE);
     if(!PFONT) return(FALSE);
-    PFONT_DOUBLE = Load_Skin_Picture("pattern_font_double.bmp");
+    PFONT_DOUBLE = Load_Skin_Picture("pattern_font_double.bmp", FALSE);
     if(!PFONT_DOUBLE) return(FALSE);
-    FONT = Load_Skin_Picture("font.bmp");
+    FONT = Load_Skin_Picture("font.bmp", TRUE);
     if(!FONT) return(FALSE);
-    FONT_LOW = Load_Skin_Picture("font.bmp");
+    FONT_LOW = Load_Skin_Picture("font.bmp", TRUE);
     if(!FONT_LOW) return(FALSE);
 
     if(!Load_Font_Data("font_data.txt"))
     {
         return(FALSE);
     }
-
-    SDL_SetColorKey(FONT, SDL_SRCCOLORKEY, 0);
-    SDL_SetColorKey(FONT_LOW, SDL_SRCCOLORKEY, 0);
 
     // Player initialization
 #if defined(__WIN32__)
@@ -644,10 +645,7 @@ void Destroy_Context(void)
 
     Ptk_ReleaseDriver();
 
-    if(thread_sema)
-    {
-        SDL_DestroySemaphore(thread_sema);
-    }
+    Destroy_Semaphore();
 
 #if defined(__MACOSX_PPC__) || defined(__LINUX__) || defined(__AROS__) || defined(__AMIGAOS4__) || defined(__MORPHOS__)
     usleep(10);
@@ -8282,24 +8280,6 @@ void Note_Jazz_Off(int note)
 #endif
 #endif
 
-}
-
-// ------------------------------------------------------
-// Lock & unlock the audio thread so we can perform modifications
-void Lock_Audio_Thread(void)
-{
-    if(thread_sema)
-    {
-        SDL_SemWait(thread_sema);
-    }
-}
-
-void Unlock_Audio_Thread(void)
-{
-    if(thread_sema)
-    {
-        SDL_SemPost(thread_sema);
-    }
 }
 
 // ------------------------------------------------------

@@ -251,13 +251,13 @@ void Draw_Synth_Ed(void)
     Gui_Draw_Button_Box(546, (Cur_Height - 59) - 1, 35, 16, "Misc.", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
 }
 
-void Actualize_Synth_Ed(char gode)
+void Actualize_Synth_Ed(char action)
 {
     if(userscreen == USER_SCREEN_SYNTH_EDIT)
     {
-        if(gode == UPDATE_SYNTH_ED_ALL ||
-           gode == UPDATE_SYNTH_CHANGE_ASSOCIATED_SAMPLE ||
-           gode == UPDATE_SYNTH_ED_VALUES)
+        if(action == UPDATE_SYNTH_ED_ALL ||
+           action == UPDATE_SYNTH_CHANGE_ASSOCIATED_SAMPLE ||
+           action == UPDATE_SYNTH_ED_VALUES)
         {
             int Synth_Prg_check = Synth_Prg[Current_Instrument];
             if(Synth_Prg_check > 130) Synth_Prg[Current_Instrument] = 130;
@@ -295,9 +295,9 @@ void Actualize_Synth_Ed(char gode)
             Actualize_Instruments_Synths_List(1);
         }
 
-        if(gode == UPDATE_SYNTH_ED_ALL ||
-           gode == UPDATE_SYNTH_ED_OSC_1_WAVEFORM ||
-           gode == UPDATE_SYNTH_ED_VALUES)
+        if(action == UPDATE_SYNTH_ED_ALL ||
+           action == UPDATE_SYNTH_ED_OSC_1_WAVEFORM ||
+           action == UPDATE_SYNTH_ED_VALUES)
         {
             Gui_Draw_Button_Box(24, (Cur_Height - 95) - 1, 23, 16, "sin", Allow_Button | BUTTON_TEXT_CENTERED);
             Gui_Draw_Button_Box(49, (Cur_Height - 95) - 1, 23, 16, "saw", Allow_Button | BUTTON_TEXT_CENTERED);
@@ -318,9 +318,9 @@ void Actualize_Synth_Ed(char gode)
             }
         }
 
-        if(gode == UPDATE_SYNTH_ED_ALL ||
-           gode == UPDATE_SYNTH_ED_OSC_2_WAVEFORM ||
-           gode == UPDATE_SYNTH_ED_VALUES)
+        if(action == UPDATE_SYNTH_ED_ALL ||
+           action == UPDATE_SYNTH_ED_OSC_2_WAVEFORM ||
+           action == UPDATE_SYNTH_ED_VALUES)
         {
             Gui_Draw_Button_Box(24, (Cur_Height - 41) - 1, 23, 16, "sin", Allow_Button | BUTTON_TEXT_CENTERED);
             Gui_Draw_Button_Box(49, (Cur_Height - 41) - 1, 23, 16, "saw", Allow_Button | BUTTON_TEXT_CENTERED);
@@ -341,9 +341,9 @@ void Actualize_Synth_Ed(char gode)
             }
         }
 
-        if(gode == UPDATE_SYNTH_ED_ALL ||
-           gode == UPDATE_SYNTH_ED_COMBINER||
-           gode == UPDATE_SYNTH_ED_VALUES)
+        if(action == UPDATE_SYNTH_ED_ALL ||
+           action == UPDATE_SYNTH_ED_COMBINER||
+           action == UPDATE_SYNTH_ED_VALUES)
         {
             Gui_Draw_Button_Box(4, (Cur_Height - 95) - 1 + (18 * 0), 17, 16, "+", Allow_Button | BUTTON_TEXT_CENTERED);
             Gui_Draw_Button_Box(4, (Cur_Height - 95) - 1 + (18 * 1), 17, 16, "-", Allow_Button | BUTTON_TEXT_CENTERED);
@@ -359,15 +359,15 @@ void Actualize_Synth_Ed(char gode)
         }
 
         // Instrument number
-        if(gode == UPDATE_SYNTH_ED_ALL || gode == UPDATE_SYNTH_ED_VALUES)
+        if(action == UPDATE_SYNTH_ED_ALL || action == UPDATE_SYNTH_ED_VALUES)
         {
             value_box4(566, (Cur_Height - 150), Current_Instrument);
             Actualize_Synth_Params_Sliders();
         }
 
-        if(gode == UPDATE_SYNTH_ED_ALL ||
-           gode == UPDATE_SYNTH_CHANGE_NAME ||
-           gode == UPDATE_SYNTH_ED_VALUES)
+        if(action == UPDATE_SYNTH_ED_ALL ||
+           action == UPDATE_SYNTH_CHANGE_NAME ||
+           action == UPDATE_SYNTH_ED_VALUES)
         {
             char tcp[30];
             sprintf(tcp, "%s_", PARASynth[Current_Instrument].Preset_Name);
@@ -383,7 +383,7 @@ void Actualize_Synth_Ed(char gode)
             Actualize_Instruments_Synths_List(1);
         }
 
-        if(gode == UPDATE_SYNTH_ED_VALIDATE_PARAMS)
+        if(action == UPDATE_SYNTH_ED_VALIDATE_PARAMS)
         {
             CParcha_OSC_1(csynth_slv_OSC_1);
             CParcha_OSC_2(csynth_slv_OSC_2);
@@ -396,7 +396,7 @@ void Actualize_Synth_Ed(char gode)
             Actualize_Synth_Params_Sliders();
         }
 
-        if(gode == UPDATE_SYNTH_ED_ALL || gode == UPDATE_SYNTH_ED_OSC_1_PARAMS)
+        if(action == UPDATE_SYNTH_ED_ALL || action == UPDATE_SYNTH_ED_OSC_1_PARAMS)
         {
             if(Pos_Tbl_Synth_OSC_1 < 0) Pos_Tbl_Synth_OSC_1 = 0;
             if(Pos_Tbl_Synth_OSC_1 > Size_Tbl_Synth_OSC_1) Pos_Tbl_Synth_OSC_1 = Size_Tbl_Synth_OSC_1;
@@ -420,7 +420,7 @@ void Actualize_Synth_Ed(char gode)
             Actualize_Synth_Params_Sliders();
         }
 
-        if(gode == UPDATE_SYNTH_ED_ALL || gode == UPDATE_SYNTH_ED_OSC_2_PARAMS)
+        if(action == UPDATE_SYNTH_ED_ALL || action == UPDATE_SYNTH_ED_OSC_2_PARAMS)
         {
             if(Pos_Tbl_Synth_OSC_2 < 0) Pos_Tbl_Synth_OSC_2 = 0;
             if(Pos_Tbl_Synth_OSC_2 > Size_Tbl_Synth_OSC_2) Pos_Tbl_Synth_OSC_2 = Size_Tbl_Synth_OSC_2;
@@ -445,7 +445,7 @@ void Actualize_Synth_Ed(char gode)
             Actualize_Synth_Params_Sliders();
         }
 
-        if(gode == UPDATE_SYNTH_ED_ALL || gode == UPDATE_SYNTH_ED_VCF_PARAMS)
+        if(action == UPDATE_SYNTH_ED_ALL || action == UPDATE_SYNTH_ED_VCF_PARAMS)
         {
             if(Pos_Tbl_Synth_VCF < 0) Pos_Tbl_Synth_VCF = 0;
             if(Pos_Tbl_Synth_VCF > Size_Tbl_Synth_VCF) Pos_Tbl_Synth_VCF = Size_Tbl_Synth_VCF;
@@ -454,7 +454,7 @@ void Actualize_Synth_Ed(char gode)
             Actualize_Synth_Params_Sliders();
         }
 
-        if(gode == UPDATE_SYNTH_ED_ALL || gode == UPDATE_SYNTH_ED_LFO_1_PARAMS)
+        if(action == UPDATE_SYNTH_ED_ALL || action == UPDATE_SYNTH_ED_LFO_1_PARAMS)
         {
             if(Pos_Tbl_Synth_LFO_1 < 0) Pos_Tbl_Synth_LFO_1 = 0;
             if(Pos_Tbl_Synth_LFO_1 > Size_Tbl_Synth_LFO_1) Pos_Tbl_Synth_LFO_1 = Size_Tbl_Synth_LFO_1;
@@ -479,7 +479,7 @@ void Actualize_Synth_Ed(char gode)
             Actualize_Synth_Params_Sliders();
         }
 
-        if(gode == UPDATE_SYNTH_ED_ALL || gode == UPDATE_SYNTH_ED_LFO_2_PARAMS)
+        if(action == UPDATE_SYNTH_ED_ALL || action == UPDATE_SYNTH_ED_LFO_2_PARAMS)
         {
             if(Pos_Tbl_Synth_LFO_2 < 0) Pos_Tbl_Synth_LFO_2 = 0;
             if(Pos_Tbl_Synth_LFO_2 > Size_Tbl_Synth_LFO_2) Pos_Tbl_Synth_LFO_2 = Size_Tbl_Synth_LFO_2;
@@ -504,7 +504,7 @@ void Actualize_Synth_Ed(char gode)
             Actualize_Synth_Params_Sliders();
         }
 
-        if(gode == UPDATE_SYNTH_ED_ALL || gode == UPDATE_SYNTH_ED_ENV_1_PARAMS)
+        if(action == UPDATE_SYNTH_ED_ALL || action == UPDATE_SYNTH_ED_ENV_1_PARAMS)
         {
             if(Pos_Tbl_Synth_ENV_1 < 0) Pos_Tbl_Synth_ENV_1 = 0;
             if(Pos_Tbl_Synth_ENV_1 > Size_Tbl_Synth_ENV_1) Pos_Tbl_Synth_ENV_1 = Size_Tbl_Synth_ENV_1;
@@ -529,7 +529,7 @@ void Actualize_Synth_Ed(char gode)
             Actualize_Synth_Params_Sliders();
         }
 
-        if(gode == UPDATE_SYNTH_ED_ALL || gode == UPDATE_SYNTH_ED_ENV_2_PARAMS)
+        if(action == UPDATE_SYNTH_ED_ALL || action == UPDATE_SYNTH_ED_ENV_2_PARAMS)
         {
             if(Pos_Tbl_Synth_ENV_2 < 0) Pos_Tbl_Synth_ENV_2 = 0;
             if(Pos_Tbl_Synth_ENV_2 > Size_Tbl_Synth_ENV_2) Pos_Tbl_Synth_ENV_2 = Size_Tbl_Synth_ENV_2;
@@ -554,7 +554,7 @@ void Actualize_Synth_Ed(char gode)
             Actualize_Synth_Params_Sliders();
         }
 
-        if(gode == UPDATE_SYNTH_ED_ALL || gode == UPDATE_SYNTH_ED_Misc_PARAMS)
+        if(action == UPDATE_SYNTH_ED_ALL || action == UPDATE_SYNTH_ED_Misc_PARAMS)
         {
             if(Pos_Tbl_Synth_Misc < 0) Pos_Tbl_Synth_Misc = 0;
             if(Pos_Tbl_Synth_Misc > Size_Tbl_Synth_Misc) Pos_Tbl_Synth_Misc = Size_Tbl_Synth_Misc;
@@ -579,9 +579,9 @@ void Actualize_Synth_Ed(char gode)
             Actualize_Synth_Params_Sliders();
         }
 
-        if(gode == UPDATE_SYNTH_ED_ALL ||
-           gode == UPDATE_SYNTH_ED_OSC_3_SWITCH ||
-           gode == UPDATE_SYNTH_ED_VALUES)
+        if(action == UPDATE_SYNTH_ED_ALL ||
+           action == UPDATE_SYNTH_ED_OSC_3_SWITCH ||
+           action == UPDATE_SYNTH_ED_VALUES)
         {
             if(PARASynth[Current_Instrument].osc_3_switch)
             {
@@ -595,9 +595,9 @@ void Actualize_Synth_Ed(char gode)
             }
         }
 
-        if(gode == UPDATE_SYNTH_ED_ALL ||
-           gode == UPDATE_SYNTH_ED_VCF_TYPE ||
-           gode == UPDATE_SYNTH_ED_VALUES)
+        if(action == UPDATE_SYNTH_ED_ALL ||
+           action == UPDATE_SYNTH_ED_VCF_TYPE ||
+           action == UPDATE_SYNTH_ED_VALUES)
         {
             Gui_Draw_Button_Box(349, (Cur_Height - 150), 16, 16, "\03", Allow_Button | BUTTON_TEXT_CENTERED);
             Gui_Draw_Button_Box(349 + 84, (Cur_Height - 150), 16, 16, "\04", Allow_Button | BUTTON_TEXT_CENTERED);
@@ -621,8 +621,8 @@ void Actualize_Synth_Ed(char gode)
             }
         }
 
-        if(gode == UPDATE_SYNTH_ED_ALL ||
-           gode == UPDATE_SYNTH_ED_SYNC)
+        if(action == UPDATE_SYNTH_ED_ALL ||
+           action == UPDATE_SYNTH_ED_SYNC)
         {
             if(PARASynth[Current_Instrument].osc_sync)
             {

@@ -418,7 +418,7 @@ extern int resty;
 extern int rs_coef;
 
 #if !defined(BZR2)
-extern SDL_TEXTURE *Main_Screen;
+extern PTK_TEXTURE *Main_Screen;
 #endif
 
 extern int CONSOLE_HEIGHT2;
@@ -427,10 +427,10 @@ extern float left_float_render;
 extern float right_float_render;
 
 #if !defined(BZR2)
-extern SDL_TEXTURE *PFONT;
-extern SDL_TEXTURE *PFONT_DOUBLE;
-extern SDL_TEXTURE *FONT;
-extern SDL_TEXTURE *FONT_LOW;
+extern PTK_TEXTURE *PFONT;
+extern PTK_TEXTURE *PFONT_DOUBLE;
+extern PTK_TEXTURE *FONT;
+extern PTK_TEXTURE *FONT_LOW;
 #endif
 
 extern int gui_action;
@@ -495,8 +495,8 @@ extern float VuMeters_Level_Dats_R[MAX_TRACKS];
 extern float *Scope_Dats_LeftRight[2];
 
 #if !defined(BZR2)
-extern SDL_TEXTURE *SKIN303;
-extern SDL_TEXTURE *LOGOPIC;
+extern PTK_TEXTURE *SKIN303;
+extern PTK_TEXTURE *LOGOPIC;
 #endif
 
 extern int MouseWheel_Multiplier;

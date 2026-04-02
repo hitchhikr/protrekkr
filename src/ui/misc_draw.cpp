@@ -32,7 +32,7 @@
 // ------------------------------------------------------
 // Includes
 #include "../include/ptk.h"
-#include "include/draw_primitives.h"
+#include "include/misc_draw.h"
 
 // ------------------------------------------------------
 // Constants
@@ -43,30 +43,30 @@
 int max_colors_logo;
 int max_colors_303;
 // ---
-SDL_TEXTURE *Ptr_Temp_PFONT;
-SDL_TEXTURE *Ptr_Temp_LARGEPFONT;
-SDL_TEXTURE *Ptr_Temp_SMALLPFONT;
-SDL_TEXTURE *Ptr_Temp_NOTEPFONT;
-SDL_TEXTURE *Ptr_Temp_NOTELARGEPFONT;
-SDL_TEXTURE *Ptr_Temp_NOTESMALLPFONT;
+PTK_TEXTURE *Ptr_Temp_PFONT;
+PTK_TEXTURE *Ptr_Temp_LARGEPFONT;
+PTK_TEXTURE *Ptr_Temp_SMALLPFONT;
+PTK_TEXTURE *Ptr_Temp_NOTEPFONT;
+PTK_TEXTURE *Ptr_Temp_NOTELARGEPFONT;
+PTK_TEXTURE *Ptr_Temp_NOTESMALLPFONT;
 // ---
-SDL_TEXTURE *Temp_PFONT;
-SDL_TEXTURE *Temp_LARGEPFONT;
-SDL_TEXTURE *Temp_SMALLPFONT;
-SDL_TEXTURE *Temp_NOTEPFONT;
-SDL_TEXTURE *Temp_NOTELARGEPFONT;
-SDL_TEXTURE *Temp_NOTESMALLPFONT;
+PTK_TEXTURE *Temp_PFONT;
+PTK_TEXTURE *Temp_LARGEPFONT;
+PTK_TEXTURE *Temp_SMALLPFONT;
+PTK_TEXTURE *Temp_NOTEPFONT;
+PTK_TEXTURE *Temp_NOTELARGEPFONT;
+PTK_TEXTURE *Temp_NOTESMALLPFONT;
 // ---
-SDL_TEXTURE *Temp_PFONT_DOUBLE;
-SDL_TEXTURE *Temp_LARGEPFONT_DOUBLE;
-SDL_TEXTURE *Temp_SMALLPFONT_DOUBLE;
-SDL_TEXTURE *Temp_NOTEPFONT_DOUBLE;
-SDL_TEXTURE *Temp_NOTELARGEPFONT_DOUBLE;
-SDL_TEXTURE *Temp_NOTESMALLPFONT_DOUBLE;
+PTK_TEXTURE *Temp_PFONT_DOUBLE;
+PTK_TEXTURE *Temp_LARGEPFONT_DOUBLE;
+PTK_TEXTURE *Temp_SMALLPFONT_DOUBLE;
+PTK_TEXTURE *Temp_NOTEPFONT_DOUBLE;
+PTK_TEXTURE *Temp_NOTELARGEPFONT_DOUBLE;
+PTK_TEXTURE *Temp_NOTESMALLPFONT_DOUBLE;
 // ---
-SDL_TEXTURE *Note_Surface;
-SDL_TEXTURE *Note_Alt_Surface;
-SDL_TEXTURE *SKIN303;
+PTK_TEXTURE *Note_Surface;
+PTK_TEXTURE *Note_Alt_Surface;
+PTK_TEXTURE *SKIN303;
 
 #if defined(__USE_OPENGL__)
 // ---
@@ -309,9 +309,9 @@ char *HexTab_NoZero[] =
     "F0", "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "FA", "FB", "FC", "FD", "FE", "FF"
 };
 
-SDL_Color Ptk_Palette[256 * 2];
-SDL_Color Palette_303[256];
-SDL_Color Palette_Logo[256];
+PTK_COLOR Ptk_Palette[256 * 2];
+PTK_COLOR Palette_303[256];
+PTK_COLOR Palette_Logo[256];
 
 char *Labels_Palette[] =
 {
@@ -373,7 +373,7 @@ int Idx_Palette[] =
 };
 
 int Default_Beveled1 = 1;
-SDL_Color Default_Palette1[] =
+PTK_COLOR Default_Palette1[] =
 {
     { 0x00, 0x00, 0x00, 0x00 },      // 0 lists/samples/vumeters background/sequencer (calculated)
 
@@ -461,7 +461,7 @@ SDL_Color Default_Palette1[] =
 };
 
 int Default_Beveled2 = 1;
-SDL_Color Default_Palette2[] =
+PTK_COLOR Default_Palette2[] =
 {
     { 0x00, 0x00, 0x00, 0x00 },      // 0 lists/samples/vumeters background/sequencer (calculated)
 
@@ -549,7 +549,7 @@ SDL_Color Default_Palette2[] =
 };
 
 int Default_Beveled3 = 1;
-SDL_Color Default_Palette3[] =
+PTK_COLOR Default_Palette3[] =
 {
     { 0x00, 0x00, 0x00, 0x00 },      // 0 lists/samples/vumeters background/sequencer (calculated)
 
@@ -636,7 +636,7 @@ SDL_Color Default_Palette3[] =
 };
 
 int Default_Beveled4 = 1;
-SDL_Color Default_Palette4[] =
+PTK_COLOR Default_Palette4[] =
 {
     { 0x00, 0x00, 0x00, 0x00 },      // 0 lists/samples/vumeters background/sequencer (calculated)
 
@@ -724,7 +724,7 @@ SDL_Color Default_Palette4[] =
 };
 
 int Default_Beveled5 = 1;
-SDL_Color Default_Palette5[] =
+PTK_COLOR Default_Palette5[] =
 {
     { 0x00, 0x00, 0x00, 0x00 },      // 0 lists/samples/vumeters background/sequencer (calculated)
 
@@ -812,7 +812,7 @@ SDL_Color Default_Palette5[] =
 };
 
 int Default_Beveled6 = 0;
-SDL_Color Default_Palette6[] =
+PTK_COLOR Default_Palette6[] =
 {
     { 0x00, 0x00, 0x00, 0x00 },      // 0 lists/samples/vumeters background/sequencer (calculated)
 
@@ -900,7 +900,7 @@ SDL_Color Default_Palette6[] =
 };
 
 int Default_Beveled7 = 2;
-SDL_Color Default_Palette7[] =
+PTK_COLOR Default_Palette7[] =
 {
     { 0x00, 0x00, 0x00, 0x00 },      // 0 lists/samples/vumeters background/sequencer (calculated)
 
@@ -988,7 +988,7 @@ SDL_Color Default_Palette7[] =
 };
 
 int Default_Beveled8 = 2;
-SDL_Color Default_Palette8[] =
+PTK_COLOR Default_Palette8[] =
 {
     { 0x00, 0x00, 0x00, 0x00 },      // 0 lists/samples/vumeters background/sequencer (calculated)
 
@@ -1076,7 +1076,7 @@ SDL_Color Default_Palette8[] =
 };
 
 int Default_Beveled9 = 0;
-SDL_Color Default_Palette9[] =
+PTK_COLOR Default_Palette9[] =
 {
     { 0x00, 0x00, 0x00, 0x00 },      // 0 lists/samples/vumeters background/sequencer (calculated)
 
@@ -1163,7 +1163,7 @@ SDL_Color Default_Palette9[] =
     { 0x00, 0x00, 0x00, 0x00 },      // 58 Phony always black (fixed)
 };
 
-LONGRGB Phony_Palette[sizeof(Default_Palette2) / sizeof(SDL_Color)];
+LONGRGB Phony_Palette[sizeof(Default_Palette2) / sizeof(PTK_COLOR)];
 
 int bare_color_idx;
 
@@ -1183,7 +1183,7 @@ void Get_Phony_Palette(void)
 {
     int i;
 
-    for(i = 0; i < sizeof(Default_Palette2) / sizeof(SDL_Color); i++)
+    for(i = 0; i < sizeof(Default_Palette2) / sizeof(PTK_COLOR); i++)
     {
         Phony_Palette[i].r = Ptk_Palette[i].r;
         Phony_Palette[i].g = Ptk_Palette[i].g;
@@ -1201,7 +1201,7 @@ void Set_Phony_Palette(void)
     int ComponentG2;
     int ComponentB2;
 
-    for(i = 0; i < sizeof(Default_Palette2) / sizeof(SDL_Color); i++)
+    for(i = 0; i < sizeof(Default_Palette2) / sizeof(PTK_COLOR); i++)
     {
         switch(i)
         {
@@ -3073,10 +3073,10 @@ int Get_Font_Height(void)
 
 // ------------------------------------------------------
 // Set the main palette with a default one
-void Restore_Default_Palette(SDL_Color *Def, int DefBevel)
+void Restore_Default_Palette(PTK_COLOR *Def, int DefBevel)
 {
     int i;
-    for(i = 0; i < sizeof(Default_Palette2) / sizeof(SDL_Color); i++)
+    for(i = 0; i < sizeof(Default_Palette2) / sizeof(PTK_COLOR); i++)
     {
         Ptk_Palette[i].r = Def[i].r;
         Ptk_Palette[i].g = Def[i].g;
@@ -3092,7 +3092,7 @@ void Negate_Palette(void)
 {
     int i;
     
-    for(i = 0; i < sizeof(Default_Palette2) / sizeof(SDL_Color); i++)
+    for(i = 0; i < sizeof(Default_Palette2) / sizeof(PTK_COLOR); i++)
     {
         if(i != 58)
         {
@@ -3112,7 +3112,7 @@ void Rotate_Palette_Left(void)
     int green;
     int blue;
 
-    for(i = 0; i < sizeof(Default_Palette2) / sizeof(SDL_Color); i++)
+    for(i = 0; i < sizeof(Default_Palette2) / sizeof(PTK_COLOR); i++)
     {
         if(i != 58)
         {
@@ -3135,7 +3135,7 @@ void Rotate_Palette_Right(void)
     int green;
     int blue;
     
-    for(i = 0; i < sizeof(Default_Palette2) / sizeof(SDL_Color); i++)
+    for(i = 0; i < sizeof(Default_Palette2) / sizeof(PTK_COLOR); i++)
     {
         if(i != 58)
         {
@@ -3210,13 +3210,6 @@ void Copy_303_Skin(int xd, int yd, int xs, int ys, int w, int h)
 }
 
 // ------------------------------------------------------
-// Load a .bmp picture into a SDL surface
-SDL_TEXTURE *Load_Picture(char *FileName)
-{
-    return(SDL_LoadBMP(FileName));
-}
-
-// ------------------------------------------------------
 // Create the font data
 int Create_Font_Data(char *FontName)
 {
@@ -3247,12 +3240,9 @@ void Set_Channel_State_Pic(int x, int color, int inv_color)
     int i;
     int j;
     unsigned char *Pix;
-    int was_locked = FALSE;
+    int was_locked;
 
-    if(SDL_MUSTLOCK(Temp_PFONT))
-    {
-        if(!SDL_LockSurface(Temp_PFONT)) was_locked = TRUE;
-    }
+    was_locked = Lock_Texture(Temp_PFONT);
 
     Pix = (unsigned char *) Temp_PFONT->pixels;
 
@@ -3275,15 +3265,11 @@ void Set_Channel_State_Pic(int x, int color, int inv_color)
 
     if(was_locked)
     {
-        SDL_UnlockSurface(Temp_PFONT);
+        Unlock_Texture(Temp_PFONT);
     }
 
     // ---
-    was_locked = FALSE;
-    if(SDL_MUSTLOCK(Temp_PFONT_DOUBLE))
-    {
-        if(!SDL_LockSurface(Temp_PFONT_DOUBLE)) was_locked = TRUE;
-    }
+    was_locked = Lock_Texture(Temp_PFONT_DOUBLE);
 
     Pix = (unsigned char *) Temp_PFONT_DOUBLE->pixels;
 
@@ -3306,13 +3292,13 @@ void Set_Channel_State_Pic(int x, int color, int inv_color)
 
     if(was_locked)
     {
-        SDL_UnlockSurface(Temp_PFONT_DOUBLE);
+        Unlock_Texture(Temp_PFONT_DOUBLE);
     }
 }
 
 // ------------------------------------------------------
 // Create the complete font set to display the patterns
-void Create_Pattern_font(SDL_TEXTURE *Source, SDL_TEXTURE *Dest, int offset,
+void Create_Pattern_font(PTK_TEXTURE *Source, PTK_TEXTURE *Dest, int offset,
                          int Lo_Fore,
                          int Sel_Fore,
                          int Hi_Fore,
@@ -3335,10 +3321,7 @@ void Create_Pattern_font(SDL_TEXTURE *Source, SDL_TEXTURE *Dest, int offset,
     Copy_To_Surface(Source, Dest, 0, 0, 0, offset, 320, offset + Height);
 
     // Set the base colors
-    if(SDL_MUSTLOCK(Dest))
-    {
-        if(!SDL_LockSurface(Dest)) was_locked = TRUE;
-    }
+    was_locked = Lock_Texture(Dest);
 
     Pix = (unsigned char *) Dest->pixels;
     // Shadows
@@ -3386,17 +3369,13 @@ void Create_Pattern_font(SDL_TEXTURE *Source, SDL_TEXTURE *Dest, int offset,
 
     if(was_locked)
     {
-        SDL_UnlockSurface(Dest);
+        Unlock_Texture(Dest);
     }
 
     // Blank line
     Copy_To_Surface(Source, Dest, 0, (Height * 2), 0, (Height - 1), 320, Height);
 
-    was_locked = FALSE;
-    if(SDL_MUSTLOCK(Dest))
-    {
-        if(!SDL_LockSurface(Dest)) was_locked = TRUE;
-    }
+    was_locked = Lock_Texture(Dest);
 
     // Big one
     Pix = (unsigned char *) Dest->pixels;
@@ -3512,7 +3491,7 @@ void Create_Pattern_font(SDL_TEXTURE *Source, SDL_TEXTURE *Dest, int offset,
 
     if(was_locked)
     {
-        SDL_UnlockSurface(Dest);
+        Unlock_Texture(Dest);
     }
 
     // Markers arrows
@@ -3527,14 +3506,10 @@ void Set_Pictures_And_Palettes(int LogoPalette)
     unsigned char *Pix;
     int was_locked;
 
-    SDL_Palette *Pic_Palette;
-    int min_idx = sizeof(Default_Palette2) / sizeof(SDL_Color);
+    PTK_PALETTE *Pic_Palette;
+    int min_idx = sizeof(Default_Palette2) / sizeof(PTK_COLOR);
 
-    was_locked = FALSE;
-    if(SDL_MUSTLOCK(FONT))
-    {
-        if(!SDL_LockSurface(FONT)) was_locked = TRUE;
-    }
+    was_locked = Lock_Texture(FONT);
 
     Pix = (unsigned char *) FONT->pixels;
     for(i = 0; i < FONT->w * FONT->h; i++)
@@ -3544,14 +3519,10 @@ void Set_Pictures_And_Palettes(int LogoPalette)
 
     if(was_locked)
     {
-        SDL_UnlockSurface(FONT);
+        Unlock_Texture(FONT);
     }
 
-    was_locked = FALSE;
-    if(SDL_MUSTLOCK(FONT_LOW))
-    {
-        if(!SDL_LockSurface(FONT_LOW)) was_locked = TRUE;
-    }
+    was_locked = Lock_Texture(FONT_LOW);
 
     Pix = (unsigned char *) FONT_LOW->pixels;
     for(i = 0; i < FONT_LOW->w * FONT_LOW->h; i++)
@@ -3561,18 +3532,14 @@ void Set_Pictures_And_Palettes(int LogoPalette)
    
     if(was_locked)
     {
-        SDL_UnlockSurface(FONT_LOW);
+        Unlock_Texture(FONT_LOW);
     }
 
     bare_color_idx = min_idx;
 
     if(!LogoPalette && !done_303_palette)
     {
-        was_locked = FALSE;
-        if(SDL_MUSTLOCK(SKIN303))
-        {
-            if(!SDL_LockSurface(SKIN303)) was_locked = TRUE;
-        }
+        was_locked = Lock_Texture(SKIN303);
 
         Pix = (unsigned char *) SKIN303->pixels;
         max_colors_303 = 0;
@@ -3589,18 +3556,14 @@ void Set_Pictures_And_Palettes(int LogoPalette)
 
         if(was_locked)
         {
-            SDL_UnlockSurface(SKIN303);
+            Unlock_Texture(SKIN303);
         }
         done_303_palette = TRUE;
     }
 
     if(!done_logo_palette)
     {
-        was_locked = FALSE;
-        if(SDL_MUSTLOCK(LOGOPIC))
-        {
-            if(!SDL_LockSurface(LOGOPIC)) was_locked = TRUE;
-        }
+        was_locked = Lock_Texture(LOGOPIC);
 
         Pix = (unsigned char *) LOGOPIC->pixels;
         max_colors_logo = 0;
@@ -3617,7 +3580,7 @@ void Set_Pictures_And_Palettes(int LogoPalette)
 
         if(was_locked)
         {
-            SDL_UnlockSurface(LOGOPIC);
+            Unlock_Texture(LOGOPIC);
         }
         done_logo_palette = TRUE;
     }
@@ -3646,52 +3609,52 @@ void Set_Pictures_And_Palettes(int LogoPalette)
     // ---
     if(!Temp_PFONT)
     {
-        Temp_PFONT = Create_SDL_Texture(320, 87 * 4);
+        Temp_PFONT = Create_Texture(320, 87 * 4);
     }
     if(!Temp_LARGEPFONT)
     {
-        Temp_LARGEPFONT = Create_SDL_Texture(320, 87 * 4);
+        Temp_LARGEPFONT = Create_Texture(320, 87 * 4);
     }
     if(!Temp_SMALLPFONT)
     {
-        Temp_SMALLPFONT = Create_SDL_Texture(320, 87 * 4);
+        Temp_SMALLPFONT = Create_Texture(320, 87 * 4);
     }
     if(!Temp_NOTEPFONT)
     {
-        Temp_NOTEPFONT = Create_SDL_Texture(320, 87 * 4);
+        Temp_NOTEPFONT = Create_Texture(320, 87 * 4);
     }
     if(!Temp_NOTELARGEPFONT)
     {
-        Temp_NOTELARGEPFONT = Create_SDL_Texture(320, 87 * 4);
+        Temp_NOTELARGEPFONT = Create_Texture(320, 87 * 4);
     }
     if(!Temp_NOTESMALLPFONT)
     {
-        Temp_NOTESMALLPFONT = Create_SDL_Texture(320, 87 * 4);
+        Temp_NOTESMALLPFONT = Create_Texture(320, 87 * 4);
     }
     // ---
     if(!Temp_PFONT_DOUBLE)
     {
-        Temp_PFONT_DOUBLE = Create_SDL_Texture(320, 87 * 8);
+        Temp_PFONT_DOUBLE = Create_Texture(320, 87 * 8);
     }
     if(!Temp_LARGEPFONT_DOUBLE)
     {
-        Temp_LARGEPFONT_DOUBLE = Create_SDL_Texture(320, 87 * 8);
+        Temp_LARGEPFONT_DOUBLE = Create_Texture(320, 87 * 8);
     }
     if(!Temp_SMALLPFONT_DOUBLE)
     {
-        Temp_SMALLPFONT_DOUBLE = Create_SDL_Texture(320, 87 * 8);
+        Temp_SMALLPFONT_DOUBLE = Create_Texture(320, 87 * 8);
     }
     if(!Temp_NOTEPFONT_DOUBLE)
     {
-        Temp_NOTEPFONT_DOUBLE = Create_SDL_Texture(320, 87 * 8);
+        Temp_NOTEPFONT_DOUBLE = Create_Texture(320, 87 * 8);
     }
     if(!Temp_NOTELARGEPFONT_DOUBLE)
     {
-        Temp_NOTELARGEPFONT_DOUBLE = Create_SDL_Texture(320, 87 * 8);
+        Temp_NOTELARGEPFONT_DOUBLE = Create_Texture(320, 87 * 8);
     }
     if(!Temp_NOTESMALLPFONT_DOUBLE)
     {
-        Temp_NOTESMALLPFONT_DOUBLE = Create_SDL_Texture(320, 87 * 8);
+        Temp_NOTESMALLPFONT_DOUBLE = Create_Texture(320, 87 * 8);
     }
     // ---
 
@@ -3893,96 +3856,96 @@ void Destroy_UI(void)
     // ---
     if(Temp_PFONT_DOUBLE)
     {
-        Destroy_SDL_Texture(Temp_PFONT_DOUBLE);
+        Destroy_Texture(Temp_PFONT_DOUBLE);
         Temp_PFONT_DOUBLE = NULL;
     }
     if(Temp_LARGEPFONT_DOUBLE)
     {
-        Destroy_SDL_Texture(Temp_LARGEPFONT_DOUBLE);
+        Destroy_Texture(Temp_LARGEPFONT_DOUBLE);
         Temp_LARGEPFONT_DOUBLE = NULL;
     }
     if(Temp_SMALLPFONT_DOUBLE)
     {
-        Destroy_SDL_Texture(Temp_SMALLPFONT_DOUBLE);
+        Destroy_Texture(Temp_SMALLPFONT_DOUBLE);
         Temp_SMALLPFONT_DOUBLE = NULL;
     }
     if(Temp_NOTEPFONT_DOUBLE)
     {
-        Destroy_SDL_Texture(Temp_NOTEPFONT_DOUBLE);
+        Destroy_Texture(Temp_NOTEPFONT_DOUBLE);
         Temp_NOTEPFONT_DOUBLE = NULL;
     }
     if(Temp_NOTELARGEPFONT_DOUBLE)
     {
-        Destroy_SDL_Texture(Temp_NOTELARGEPFONT_DOUBLE);
+        Destroy_Texture(Temp_NOTELARGEPFONT_DOUBLE);
         Temp_NOTELARGEPFONT_DOUBLE = NULL;
     }
     if(Temp_NOTESMALLPFONT_DOUBLE)
     {
-        Destroy_SDL_Texture(Temp_NOTESMALLPFONT_DOUBLE);
+        Destroy_Texture(Temp_NOTESMALLPFONT_DOUBLE);
         Temp_NOTESMALLPFONT_DOUBLE = NULL;
     }
 
     // ---
     if(Temp_PFONT)
     {
-        Destroy_SDL_Texture(Temp_PFONT);
+        Destroy_Texture(Temp_PFONT);
         Temp_PFONT = NULL;
     }
     if(Temp_LARGEPFONT)
     {
-        Destroy_SDL_Texture(Temp_LARGEPFONT);
+        Destroy_Texture(Temp_LARGEPFONT);
         Temp_LARGEPFONT = NULL;
     }
     if(Temp_SMALLPFONT)
     {
-        Destroy_SDL_Texture(Temp_SMALLPFONT);
+        Destroy_Texture(Temp_SMALLPFONT);
         Temp_SMALLPFONT = NULL;
     }
     if(Temp_NOTEPFONT)
     {
-        Destroy_SDL_Texture(Temp_NOTEPFONT);
+        Destroy_Texture(Temp_NOTEPFONT);
         Temp_NOTEPFONT = NULL;
     }
     if(Temp_NOTELARGEPFONT)
     {
-        Destroy_SDL_Texture(Temp_NOTELARGEPFONT);
+        Destroy_Texture(Temp_NOTELARGEPFONT);
         Temp_NOTELARGEPFONT = NULL;
     }
     if(Temp_NOTESMALLPFONT)
     {
-        Destroy_SDL_Texture(Temp_NOTESMALLPFONT);
+        Destroy_Texture(Temp_NOTESMALLPFONT);
         Temp_NOTESMALLPFONT = NULL;
     }
 
     // ---
     if(LOGOPIC)
     {
-        Destroy_SDL_Texture(LOGOPIC);
+        Destroy_Texture(LOGOPIC);
         LOGOPIC = NULL;
     }
     if(SKIN303)
     {
-        Destroy_SDL_Texture(SKIN303);
+        Destroy_Texture(SKIN303);
         SKIN303 = NULL;
     }
     if(PFONT_DOUBLE)
     {
-        Destroy_SDL_Texture(PFONT_DOUBLE);
+        Destroy_Texture(PFONT_DOUBLE);
         PFONT_DOUBLE = NULL;
     }
     if(PFONT)
     {
-        Destroy_SDL_Texture(PFONT);
+        Destroy_Texture(PFONT);
         PFONT = NULL;
     }
     if(FONT)
     {
-        Destroy_SDL_Texture(FONT);
+        Destroy_Texture(FONT);
         FONT = NULL;
     }
     if(FONT_LOW)
     {
-        Destroy_SDL_Texture(FONT_LOW);
+        Destroy_Texture(FONT_LOW);
         FONT_LOW = NULL;
     }
 }

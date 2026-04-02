@@ -283,6 +283,10 @@ SOURCE=.\release\ptk\replay\lib\include\ptk_def_properties.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\release\ptk\replay\lib\include\ptk_types.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\release\ptk\replay\lib\include\ptkreplay.h
 # End Source File
 # Begin Source File

@@ -154,7 +154,7 @@ void Draw_Master_Ed(void)
     Gui_Draw_Button_Box(205, (Cur_Height - 85), 51, 16, "Lead 0s", BUTTON_NORMAL | BUTTON_DISABLED);
 }
 
-void Actualize_Master_Ed(char gode)
+void Actualize_Master_Ed(char action)
 {
     int Real_Palette_Idx;
     int RefreshTex = FALSE;
@@ -163,7 +163,7 @@ void Actualize_Master_Ed(char gode)
     if(userscreen == USER_SCREEN_SETUP_EDIT)
     {
         // Latency
-        if(gode == 0 || gode == 5)
+        if(action == 0 || action == 5)
         {
 
 #if defined(__AMIGAOS4__)
@@ -181,7 +181,7 @@ void Actualize_Master_Ed(char gode)
         }
 
         // Create a new sound buffer with the new latency amount
-        if(gode == 5)
+        if(action == 5)
         {
             Song_Stop();
             AUDIO_Stop_Sound_Buffer();
@@ -191,7 +191,7 @@ void Actualize_Master_Ed(char gode)
         }
 
         // Mouse wheel
-        if(gode == 0 || gode == 6)
+        if(action == 0 || action == 6)
         {
             if(MouseWheel_Multiplier < 1) MouseWheel_Multiplier = 1;
             if(MouseWheel_Multiplier > 16) MouseWheel_Multiplier = 16;
@@ -199,7 +199,7 @@ void Actualize_Master_Ed(char gode)
         }
 
         // Pattern highlight
-        if(gode == 0 || gode == 7)
+        if(action == 0 || action == 7)
         {
             if(patt_highlight < 1) patt_highlight = 1;
             if(patt_highlight > 16) patt_highlight = 16;
@@ -221,13 +221,13 @@ void Actualize_Master_Ed(char gode)
                 }
             }
         }
-        if(gode == 7)
+        if(action == 7)
         {
             Update_Pattern(0);
         }
 
         // Use decimal numbering for rows
-        if(gode == 0 || gode == 8)
+        if(action == 0 || action == 8)
         {
             if(Rows_Decimal)
             {
@@ -242,7 +242,7 @@ void Actualize_Master_Ed(char gode)
         }
 
         // Show Prev. next pattern
-        if(gode == 0 || gode == 13)
+        if(action == 0 || action == 13)
         {
             if(See_Prev_Next_Pattern)
             {
@@ -257,7 +257,7 @@ void Actualize_Master_Ed(char gode)
         }
 
         // Don't stop at the bottom of a pattern
-        if(gode == 0 || gode == 14)
+        if(action == 0 || action == 14)
         {
             if(Continuous_Scroll)
             {
@@ -274,7 +274,7 @@ void Actualize_Master_Ed(char gode)
         }
 
         // Full screen
-        if(gode == 0 || gode == 9)
+        if(action == 0 || action == 9)
         {
             if(FullScreen)
             {
@@ -289,7 +289,7 @@ void Actualize_Master_Ed(char gode)
         }
 
         // Refresh palette infos
-        if(gode == 0 || gode == 10)
+        if(action == 0 || action == 10)
         {
             if(current_palette_idx < 0) current_palette_idx = 0;
             if(current_palette_idx > (NUMBER_COLORS - 1)) current_palette_idx = NUMBER_COLORS - 1;
@@ -310,14 +310,14 @@ void Actualize_Master_Ed(char gode)
             Real_Slider(518, (Cur_Height - 45), Ptk_Palette[Real_Palette_Idx].b / 2, TRUE);
             Print_Long_Small(668, (Cur_Height - 45), Ptk_Palette[Real_Palette_Idx].b, INT_PLAIN, 41, BUTTON_NORMAL | BUTTON_DISABLED);
             Set_Phony_Palette();
-            if(gode) 
+            if(action) 
             {
                 RefreshTex = TRUE;
             }
         }
 
         // Bevel on/off
-        if(gode == 0 || gode == 10 || gode == 13)
+        if(action == 0 || action == 10 || action == 13)
         {
             switch(Beveled)
             {
@@ -332,14 +332,14 @@ void Actualize_Master_Ed(char gode)
                     break;
             }
             Set_Phony_Palette();
-            if(gode) 
+            if(action) 
             {
                 RefreshTex = TRUE;
             }
         }
 
         // Set auto save interval
-        if(gode == 0 || gode == 15)
+        if(action == 0 || action == 15)
         {
             if(AutoSave < 0) AutoSave = 0;
             if(AutoSave >= sizeof(Labels_AutoSave) / sizeof(char *)) AutoSave = sizeof(Labels_AutoSave) / sizeof(char *) - 1;
@@ -349,11 +349,11 @@ void Actualize_Master_Ed(char gode)
         }
 
         // Keyboard layout
-        if(gode == 0 || gode == 16)
+        if(action == 0 || action == 16)
         {
             if(Keyboard_Idx < 0) Keyboard_Idx = 0;
             if(Keyboard_Idx >= (Nbr_Keyboards - 1)) Keyboard_Idx = Nbr_Keyboards - 1;
-            if(gode == 16)
+            if(action == 16)
             {
                 Load_Keyboard_Def(Get_Keyboard_FileName());
             }
@@ -375,7 +375,7 @@ void Actualize_Master_Ed(char gode)
         }
 
         // Paste across patterns
-        if(gode == 0 || gode == 17)
+        if(action == 0 || action == 17)
         {
             if(Paste_Across)
             {
@@ -390,7 +390,7 @@ void Actualize_Master_Ed(char gode)
         }
 
         // Play instruments while editing
-        if(gode == 0 || gode == 18)
+        if(action == 0 || action == 18)
         {
             if(Jazz_Edit)
             {
@@ -405,7 +405,7 @@ void Actualize_Master_Ed(char gode)
         }
 
         // Notes type
-        if(gode == 0 || gode == 19)
+        if(action == 0 || action == 19)
         {
             if(Accidental)
             {
@@ -415,14 +415,14 @@ void Actualize_Master_Ed(char gode)
             {
                 Gui_Draw_Button_Box(780, (Cur_Height - 125), 14, 16, "#", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
             }
-            if(gode == 19)
+            if(action == 19)
             {
                 Update_Pattern(0);
             }
         }
 
         // Bevel on/off
-        if(gode == 0 || gode == 20)
+        if(action == 0 || action == 20)
         {
             switch(Use_Shadows)
             {
@@ -437,7 +437,7 @@ void Actualize_Master_Ed(char gode)
         }
 
         // Set default size of patterns
-        if(gode == 0 || gode == 21)
+        if(action == 0 || action == 21)
         {
             if(Global_Patterns_Font < TRACK_SMALL) Global_Patterns_Font = TRACK_SMALL;
             if(Global_Patterns_Font >= TRACK_LARGE) Global_Patterns_Font = TRACK_LARGE;
@@ -447,7 +447,7 @@ void Actualize_Master_Ed(char gode)
         }
 
         // Milliseconds
-        if(gode == 0 || gode == 22)
+        if(action == 0 || action == 22)
         {
             if(metronome_magnify < 0) metronome_magnify = 0;
             if(metronome_magnify > 128) metronome_magnify = 128;
@@ -459,7 +459,7 @@ void Actualize_Master_Ed(char gode)
         }
 
         // Auto backup
-        if(gode == 0 || gode == 23)
+        if(action == 0 || action == 23)
         {
             if(AutoBackup)
             {
@@ -474,7 +474,7 @@ void Actualize_Master_Ed(char gode)
         }
 
         // Splash screen
-        if(gode == 0 || gode == 24)
+        if(action == 0 || action == 24)
         {
             if(SplashScreen)
             {
@@ -489,7 +489,7 @@ void Actualize_Master_Ed(char gode)
         }
 
         // Load last used ptk
-        if(gode == 0 || gode == 25)
+        if(action == 0 || action == 25)
         {
             if(AutoReload)
             {
@@ -504,7 +504,7 @@ void Actualize_Master_Ed(char gode)
         }
 
         // Show leading 0s
-        if(gode == 0 || gode == 26)
+        if(action == 0 || action == 26)
         {
             if(leading_zeroes)
             {
@@ -519,7 +519,7 @@ void Actualize_Master_Ed(char gode)
         }
         
         // Show screen modes
-        if(gode == 0 || gode == 27)
+        if(action == 0 || action == 27)
         {
             if(FullScreen)
             {
@@ -573,7 +573,7 @@ void Actualize_Master_Ed(char gode)
         }
         
         // Save position in step play
-        if(gode == 0 || gode == 28)
+        if(action == 0 || action == 28)
         {
             if(Save_Step_Play)
             {

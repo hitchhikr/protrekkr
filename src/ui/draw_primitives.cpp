@@ -37,20 +37,20 @@
 
 // ------------------------------------------------------
 // Variables
-extern SDL_TEXTURE *Main_Screen;
-extern SDL_TEXTURE *Temp_PFONT;
-extern SDL_TEXTURE *Temp_LARGEPFONT;
-extern SDL_TEXTURE *Temp_SMALLPFONT;
-extern SDL_TEXTURE *Temp_NOTEPFONT;
-extern SDL_TEXTURE *Temp_NOTELARGEPFONT;
-extern SDL_TEXTURE *Temp_NOTESMALLPFONT;
+extern PTK_TEXTURE *Main_Screen;
+extern PTK_TEXTURE *Temp_PFONT;
+extern PTK_TEXTURE *Temp_LARGEPFONT;
+extern PTK_TEXTURE *Temp_SMALLPFONT;
+extern PTK_TEXTURE *Temp_NOTEPFONT;
+extern PTK_TEXTURE *Temp_NOTELARGEPFONT;
+extern PTK_TEXTURE *Temp_NOTESMALLPFONT;
 // ---
-extern SDL_TEXTURE *Temp_PFONT_DOUBLE;
-extern SDL_TEXTURE *Temp_LARGEPFONT_DOUBLE;
-extern SDL_TEXTURE *Temp_SMALLPFONT_DOUBLE;
-extern SDL_TEXTURE *Temp_NOTEPFONT_DOUBLE;
-extern SDL_TEXTURE *Temp_NOTELARGEPFONT_DOUBLE;
-extern SDL_TEXTURE *Temp_NOTESMALLPFONT_DOUBLE;
+extern PTK_TEXTURE *Temp_PFONT_DOUBLE;
+extern PTK_TEXTURE *Temp_LARGEPFONT_DOUBLE;
+extern PTK_TEXTURE *Temp_SMALLPFONT_DOUBLE;
+extern PTK_TEXTURE *Temp_NOTEPFONT_DOUBLE;
+extern PTK_TEXTURE *Temp_NOTELARGEPFONT_DOUBLE;
+extern PTK_TEXTURE *Temp_NOTESMALLPFONT_DOUBLE;
 // ---
 extern char *Font_Ascii;
 extern int Nbr_Letters;
@@ -60,7 +60,7 @@ extern int pattern_double;
 int FgColor;
 #if defined(__USE_OPENGL__)
 unsigned int RGBTexture[TEXTURES_SIZE * TEXTURES_SIZE * sizeof(unsigned int)];
-SDL_Color GLPalette[256];
+PTK_COLOR GLPalette[256];
 extern GLuint FONT_GL;
 extern GLuint FONT_LOW_GL;
 #endif
@@ -178,7 +178,7 @@ void Draw_Flat_Rectangle(float x, float y,
 
 // ------------------------------------------------------
 // Create a texture
-GLuint Create_OGL_Texture(SDL_TEXTURE *Source)
+GLuint Create_OGL_Texture(PTK_TEXTURE *Source)
 {
     GLuint txId = 0;
     unsigned char *SrcPic;
@@ -275,17 +275,42 @@ void Draw_Tx_Quad(float x, float y, float x1, float y1, float Width, float Heigh
 #endif
 
 // ------------------------------------------------------
+// Load a .bmp picture into a SDL surface
+PTK_TEXTURE *Load_Picture(char *FileName)
+{
+    return(SDL_LoadBMP(FileName));
+}
+
+// ------------------------------------------------------
 //  Create a texture
-SDL_TEXTURE *Create_SDL_Texture(int width, int height)
+PTK_TEXTURE *Create_Texture(int width, int height)
 {
     return SDL_AllocSurface(SDL_SWSURFACE, width, height, 8, 0, 0, 0, 0xff);
 }
 
 // ------------------------------------------------------
 // Delete a previously created texture
-void Destroy_SDL_Texture(SDL_TEXTURE *texture)
+void Destroy_Texture(PTK_TEXTURE *texture)
 {
     SDL_FreeSurface(texture);
+}
+
+// ------------------------------------------------------
+// Lock a texture
+int Lock_Texture(PTK_TEXTURE *texture)
+{
+    if(SDL_MUSTLOCK(texture))
+    {
+        if(!SDL_LockSurface(texture)) return(TRUE);
+    }
+    return(FALSE);
+}
+
+// ------------------------------------------------------
+// Unlock a texture
+void Unlock_Texture(PTK_TEXTURE *texture)
+{
+    SDL_UnlockSurface(texture);
 }
 
 // ------------------------------------------------------
@@ -339,7 +364,7 @@ void Set_Color(int color)
 #if defined(__USE_OPENGL__)
 void Copy_No_Refresh(GLuint Source,
 #else
-void Copy_No_Refresh(SDL_TEXTURE *Source,
+void Copy_No_Refresh(PTK_TEXTURE *Source,
 #endif
           int dest_x, int dest_y,
           int source_start_x, int source_start_y,
@@ -402,7 +427,7 @@ void Fill_Rect(int x1, int y1, int x2, int y2)
 #if defined(__USE_OPENGL__)
 void Copy(GLuint Source,
 #else
-void Copy(SDL_TEXTURE *Source,
+void Copy(PTK_TEXTURE *Source,
 #endif
           int x, int y,
           int x1, int y1,
@@ -437,7 +462,7 @@ void Copy(SDL_TEXTURE *Source,
 // ------------------------------------------------------
 // Copy a rectangle onto a given surface
 // (Only used to create the fonts and destroy the requesters)
-void Copy_To_Surface(SDL_TEXTURE *Source, SDL_TEXTURE *dest,
+void Copy_To_Surface(PTK_TEXTURE *Source, PTK_TEXTURE *dest,
                      int dest_x, int dest_y, int src_start_x, int src_start_y, int src_end_x, int src_end_y)
 {
     SDL_Rect Src_Rect;
@@ -538,7 +563,7 @@ void Print_String(int x,
 
 // ------------------------------------------------------
 // Set the current palette
-void UISetPalette(SDL_Color *Palette, int Amount)
+void UISetPalette(PTK_COLOR *Palette, int Amount)
 {
     if(FONT_LOW)
     {

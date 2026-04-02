@@ -132,7 +132,7 @@ void Draw_Instrument_Ed(void)
     } //Switch Sampler Screen
 }
 
-void Actualize_Instrument_Ed(int typex, char gode)
+void Actualize_Instrument_Ed(int typex, char action)
 {
     int FineTune_Value;
     int Allow_GSM = BUTTON_DISABLED;
@@ -179,7 +179,7 @@ void Actualize_Instrument_Ed(int typex, char gode)
                 Gui_Draw_Button_Box(268, (Cur_Height - 44), 106, 16, "Export Loop To .Wav", Allow_Buttons | BUTTON_TEXT_CENTERED);
 
                 // Instrument editor mode
-                if(gode == 0 || gode == 1)
+                if(action == 0 || action == 1)
                 {
                     if(Sample_Amplify[Current_Instrument][Current_Instrument_Split] > 4.0f) Sample_Amplify[Current_Instrument][Current_Instrument_Split] = 4.0f;
                     if(Sample_Amplify[Current_Instrument][Current_Instrument_Split] < 0) Sample_Amplify[Current_Instrument][Current_Instrument_Split] = 0;
@@ -187,7 +187,7 @@ void Actualize_Instrument_Ed(int typex, char gode)
                     outfloat_small(575, (Cur_Height - 62), (Sample_Amplify[Current_Instrument][Current_Instrument_Split] * 100.0f), FLT_PERCENT, 56, BUTTON_NORMAL | BUTTON_DISABLED);
                 }
 
-                if(gode == 0 || gode == 2)
+                if(action == 0 || action == 2)
                 {
                     FineTune_Value = Finetune[Current_Instrument][Current_Instrument_Split];
                     if(FineTune_Value > 127)
@@ -202,7 +202,7 @@ void Actualize_Instrument_Ed(int typex, char gode)
                     Print_Long_Small(575, (Cur_Height - 44), (long) Finetune[Current_Instrument][Current_Instrument_Split], INT_PLAIN, 56, BUTTON_NORMAL | BUTTON_DISABLED);
                 }
 
-                if(gode == 0 || gode == 3)
+                if(action == 0 || action == 3)
                 {
                     if(FDecay[Current_Instrument][Current_Instrument_Split] > 0.015625f) FDecay[Current_Instrument][Current_Instrument_Split] = 0.015625f;
                     if(FDecay[Current_Instrument][Current_Instrument_Split] < 0.0f) FDecay[Current_Instrument][Current_Instrument_Split] = 0.0f;
@@ -211,7 +211,7 @@ void Actualize_Instrument_Ed(int typex, char gode)
                 }
 
                 char temprout[256];
-                if(gode == 0)
+                if(action == 0)
                 {
                     if(typex == 0 || typex == 1 || typex == 2)
                     {
@@ -234,12 +234,12 @@ void Actualize_Instrument_Ed(int typex, char gode)
                     }
                 } // typex
 
-                if(gode == 0 || gode == 4)
+                if(action == 0 || action == 4)
                 {
                     Print_Long(448, (Cur_Height - 134), Sample_Length[Current_Instrument][Current_Instrument_Split], INT_PLAIN);
                 }
 
-                if(gode == 0 || gode == 5)
+                if(action == 0 || action == 5)
                 {
                     Print_Long(448, (Cur_Height - 116), LoopStart[Current_Instrument][Current_Instrument_Split], INT_PLAIN);
                     Print_Long(448, (Cur_Height - 98), LoopEnd[Current_Instrument][Current_Instrument_Split], INT_PLAIN);
@@ -266,17 +266,17 @@ void Actualize_Instrument_Ed(int typex, char gode)
                     }
                 }
 
-                if(gode == 0 || gode == 8)
+                if(action == 0 || action == 8)
                 {
                     value_box(570, (Cur_Height - 134), Current_Instrument_Split, BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
                     value_box3(570, (Cur_Height - 116), Basenote[Current_Instrument][Current_Instrument_Split], Allow_Buttons | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
                 }
 
-                if(gode == 0 || gode == 9)
+                if(action == 0 || action == 9)
                 {
                     value_box3(570, (Cur_Height - 116), Basenote[Current_Instrument][Current_Instrument_Split], Allow_Buttons | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
                 }
-                if(gode == 0 || gode == 10)
+                if(action == 0 || action == 10)
                 {
 
 #if !defined(__NO_MIDI__)
@@ -301,7 +301,7 @@ void Actualize_Instrument_Ed(int typex, char gode)
                     Actualize_Instruments_Synths_List(1);
 #endif
                 }
-                if(gode == 0 || gode == 12)
+                if(action == 0 || action == 12)
                 {
                     if(Beat_Sync[Current_Instrument])
                     {
@@ -315,12 +315,12 @@ void Actualize_Instrument_Ed(int typex, char gode)
                     }
                 }
 
-                if(gode == 0 || gode == 13)
+                if(action == 0 || action == 13)
                 {
                     Gui_Draw_Arrows_Number_Box(144, (Cur_Height - 90), Beat_Lines[Current_Instrument], Allow_Global | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
                 }
 
-                if(gode == 0 || gode == 15)
+                if(action == 0 || action == 15)
                 {
                     if(Sample_Vol[Current_Instrument] > 1.0f) Sample_Vol[Current_Instrument] = 1.0f;
                     if(Sample_Vol[Current_Instrument] < 0.0f) Sample_Vol[Current_Instrument] = 0.0f;
@@ -328,7 +328,7 @@ void Actualize_Instrument_Ed(int typex, char gode)
                     outfloat(201, (Cur_Height - 54), Sample_Vol[Current_Instrument], FLT_DECIBEL);
                 }
 
-                if(gode == 0 || gode == 16)
+                if(action == 0 || action == 16)
                 {
                     switch(SampleCompression[Current_Instrument])
                     {
@@ -403,26 +403,26 @@ void Actualize_Instrument_Ed(int typex, char gode)
                             Gui_Draw_Button_Box(681, (Cur_Height - 116) + (18 * 3), 39, 16, "None", Allow_Global_Pushed | BUTTON_TEXT_CENTERED);
                             break;
                     }
-                    if(gode == 16) gode = 19;
+                    if(action == 16) action = 19;
                 }
 
-                if(gode == 0 || gode == 17)
+                if(action == 0 || action == 17)
                 {
                     if(Mp3_BitRate[Current_Instrument] < 0) Mp3_BitRate[Current_Instrument] = 0;
                     if(Mp3_BitRate[Current_Instrument] > 5) Mp3_BitRate[Current_Instrument] = 5;
                     Gui_Draw_Arrows_Number_Box(729, (Cur_Height - 116), Type_Mp3_BitRate[Mp3_BitRate[Current_Instrument]], Allow_MP3 | Allow_Global | BUTTON_TEXT_CENTERED);
-                    if(gode == 17) gode = 19;
+                    if(action == 17) action = 19;
                 }
 
-                if(gode == 0 || gode == 18)
+                if(action == 0 || action == 18)
                 {
                     if(At3_BitRate[Current_Instrument] < 0) At3_BitRate[Current_Instrument] = 0;
                     if(At3_BitRate[Current_Instrument] > 2) At3_BitRate[Current_Instrument] = 2;
                     Gui_Draw_Arrows_Number_Box(729, (Cur_Height - 80), Type_At3_BitRate[At3_BitRate[Current_Instrument]], Allow_AT3 | Allow_Global | BUTTON_TEXT_CENTERED);
-                    if(gode == 18) gode = 19;
+                    if(action == 18) action = 19;
                 }
 
-                if(gode == 0 || gode == 19)
+                if(action == 0 || action == 19)
                 {
                     if(SamplesSwap[Current_Instrument])
                     {
@@ -432,7 +432,7 @@ void Actualize_Instrument_Ed(int typex, char gode)
                     {
                         Gui_Draw_Button_Box(729, (Cur_Height - 116) + (18 * 4), 60, 16, "Lock / All", Allow_Global | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
                     }
-                    if(gode == 19)
+                    if(action == 19)
                     {
                         int i;
                         if(SamplesSwap[Current_Instrument])
@@ -473,7 +473,7 @@ void Actualize_Instrument_Ed(int typex, char gode)
                     }
                 }
 
-                if(gode == 16 || gode == 17 || gode == 18 || gode == 19)
+                if(action == 16 || action == 17 || action == 18 || action == 19)
                 {
                     Actualize_Instruments_Synths_List(1);
                 }

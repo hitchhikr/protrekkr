@@ -115,7 +115,7 @@ typedef struct
 // ------------------------------------------------------
 // Variables
 #if !defined(BZR2)
-extern SDL_TEXTURE *Main_Screen;
+extern PTK_TEXTURE *Main_Screen;
 extern MOUSE Mouse;
 #endif
 

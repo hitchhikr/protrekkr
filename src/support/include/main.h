@@ -98,5 +98,9 @@ int Redraw_Screen(void);
 void Redraw_Screen_Quick(void);
 SDL_Rect *Get_Screen_Rect(int mode_index);
 void Set_Window_Pos(int left, int Top);
+void Lock_Audio_Thread(void);
+void Unlock_Audio_Thread(void);
+void Create_Semaphore(void);
+void Destroy_Semaphore(void);
 
 #endif

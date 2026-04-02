@@ -68,7 +68,9 @@ extern int Cur_Height;
 
 // ------------------------------------------------------
 // Functions
-#define SDL_TEXTURE SDL_Surface
+#define PTK_TEXTURE SDL_Surface
+#define PTK_COLOR SDL_Color
+#define PTK_PALETTE SDL_Palette
 
 // ------------------------------------------------------
 // Functions
@@ -77,18 +79,18 @@ void DrawHLine(int y, int x1, int x2, int Color);
 void DrawVLine(int x, int y1, int y2, int Color);
 void Set_Color(int color);
 void Fill_Rect(int x1, int y1, int x2, int y2);
-void UISetPalette(SDL_Color *Palette, int Amount);
+void UISetPalette(PTK_COLOR *Palette, int Amount);
 #if defined(__USE_OPENGL__)
-GLuint Create_OGL_Texture(SDL_TEXTURE *Source);
+GLuint Create_OGL_Texture(PTK_TEXTURE *Source);
 void Destroy_OGL_Texture(GLuint *txId);
 void Draw_Tx_Quad(float x, float y, float x1, float y1, float Width, float Height, GLuint TexID, int Blend);
 void Copy(GLuint Source, int x, int y, int x1, int y1, int x2, int y2);
 void Copy_No_Refresh(GLuint Source, int x, int y, int x1, int y1, int x2, int y2, int remainder);
 #else
-void Copy(SDL_TEXTURE *Source, int x, int y, int x1, int y1, int x2, int y2);
-void Copy_No_Refresh(SDL_TEXTURE *Source, int x, int y, int x1, int y1, int x2, int y2, int remainder);
+void Copy(PTK_TEXTURE *Source, int x, int y, int x1, int y1, int x2, int y2);
+void Copy_No_Refresh(PTK_TEXTURE *Source, int x, int y, int x1, int y1, int x2, int y2, int remainder);
 #endif
-void Copy_To_Surface(SDL_TEXTURE *Source, SDL_TEXTURE *dest,
+void Copy_To_Surface(PTK_TEXTURE *Source, PTK_TEXTURE *dest,
                      int dest_x, int dest_y, int src_start_x, int src_start_y, int src_end_x, int src_end_y);
 void Print_String(int x, int y, int Font_Type, char *String, int max_x = -1);
 void Push_Update_Rect(int x, int y, int width, int height);
@@ -96,7 +98,10 @@ void Push_Update_Rect(int x, int y, int width, int height);
 void Enter_2D_Mode(float Width, float Height);
 void Leave_2d_Mode(void);
 #endif
-SDL_TEXTURE *Create_SDL_Texture(int width, int height);
-void Destroy_SDL_Texture(SDL_TEXTURE *texture);
+PTK_TEXTURE *Create_Texture(int width, int height);
+void Destroy_Texture(PTK_TEXTURE *texture);
+PTK_TEXTURE *Load_Picture(char *FileName);
+int Lock_Texture(PTK_TEXTURE *texture);
+void Unlock_Texture(PTK_TEXTURE *texture);
 
 #endif

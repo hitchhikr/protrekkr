@@ -105,17 +105,15 @@ HWND Main_Window;
 #else
 #define SDL_NEED
 #endif
-
 const SDL_VideoInfo *Screen_Info;
-SDL_TEXTURE *Main_Screen;
+PTK_TEXTURE *Main_Screen;
 SDL_Rect **Screen_Modes;
-
 #if defined(__WIN32__)
 SDL_SysWMinfo WMInfo;
 #endif
-
 SDL_Event Events[MAX_EVENTS];
 extern SDL_Rect Update_Stack[UPDATE_STACK_SIZE];
+SDL_sem *thread_semaphore;
 
 REQUESTER Title_Requester =
 {
@@ -464,6 +462,37 @@ void Set_Window_Pos(int left, int top)
             SDL_putenv(Win_Coords);
         }
 #endif
+}
+
+// ------------------------------------------------------
+// Use a thrad semaphore to lock & unlock the audio thread so we can perform modifications
+void Lock_Audio_Thread(void)
+{
+    if(thread_semaphore)
+    {
+        SDL_SemWait(thread_semaphore);
+    }
+}
+
+void Unlock_Audio_Thread(void)
+{
+    if(thread_semaphore)
+    {
+        SDL_SemPost(thread_semaphore);
+    }
+}
+
+void Create_Semaphore(void)
+{
+    thread_semaphore = SDL_CreateSemaphore(1);
+}
+
+void Destroy_Semaphore(void)
+{
+    if(thread_semaphore)
+    {
+        SDL_DestroySemaphore(thread_semaphore);
+    }
 }
 
 // ------------------------------------------------------
