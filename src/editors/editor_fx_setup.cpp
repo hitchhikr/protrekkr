@@ -102,7 +102,7 @@ void Actualize_Fx_Ed(char gode)
                 lchorus_counter2 = MIX_RATE - lchorus_delay;
             }
             Real_Slider(307, (Cur_Height - 119), lchorus_delay / 175, TRUE);
-            Print_Long(458, (Cur_Height - 119), (lchorus_delay * 1000) / MIX_RATE, 2);
+            Print_Long(458, (Cur_Height - 119), (lchorus_delay * 1000) / MIX_RATE, INT_MILLISECOND);
         }
 
         if(gode == 0 || gode == 4)
@@ -115,7 +115,7 @@ void Actualize_Fx_Ed(char gode)
                 rchorus_counter2 = MIX_RATE - rchorus_delay;
             }
             Real_Slider(307, (Cur_Height - 101), rchorus_delay / 175, TRUE);
-            Print_Long(458, (Cur_Height - 101), (rchorus_delay * 1000) / MIX_RATE, 2);
+            Print_Long(458, (Cur_Height - 101), (rchorus_delay * 1000) / MIX_RATE, INT_MILLISECOND);
         }
 
         if(gode == 0 || gode == 5)
@@ -123,7 +123,7 @@ void Actualize_Fx_Ed(char gode)
             if(lchorus_feedback > 0.95f) lchorus_feedback = 0.95f;
             if(lchorus_feedback < 0.0f) lchorus_feedback = 0.0f;
             Real_Slider(307, (Cur_Height - 83), (int) (lchorus_feedback * 127.0f), TRUE);
-            Print_Long(458, (Cur_Height - 83), (int) (lchorus_feedback * 100.0f), 1);
+            Print_Long(458, (Cur_Height - 83), (int) (lchorus_feedback * 100.0f), INT_PERCENT);
         }
 
         if(gode == 0 || gode == 6)
@@ -131,7 +131,7 @@ void Actualize_Fx_Ed(char gode)
             if(rchorus_feedback > 0.95f) rchorus_feedback = 0.95f;
             if(rchorus_feedback < 0.0f) rchorus_feedback = 0.0f;
             Real_Slider(307, (Cur_Height - 65), (int) (rchorus_feedback * 127), TRUE);
-            Print_Long(458, (Cur_Height - 65), (int) (rchorus_feedback * 100), 1);
+            Print_Long(458, (Cur_Height - 65), (int) (rchorus_feedback * 100), INT_PERCENT);
         }
 
         if(gode == 0 || gode == 7)

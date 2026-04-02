@@ -218,52 +218,52 @@ void Actualize_Reverb_Ed(int gode)
 
         if(gode == UPDATE_REVERB_ED_ALL || gode == UPDATE_REVERB_ED_DELAY1)
         {
-            Print_Long_Small(108, (Cur_Height - 115), delays[0], 0, 45,
+            Print_Long_Small(108, (Cur_Height - 115), delays[0], INT_PLAIN, 45,
                              BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
         }
         if(gode == UPDATE_REVERB_ED_ALL || gode == UPDATE_REVERB_ED_DELAY2)
         {
-            Print_Long_Small(108, (Cur_Height - 97), delays[1], 0, 45,
+            Print_Long_Small(108, (Cur_Height - 97), delays[1], INT_PLAIN, 45,
                              BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
         }
         if(gode == UPDATE_REVERB_ED_ALL || gode == UPDATE_REVERB_ED_DELAY3)
         {
-            Print_Long_Small(108, (Cur_Height - 79), delays[2], 0, 45,
+            Print_Long_Small(108, (Cur_Height - 79), delays[2], INT_PLAIN, 45,
                              BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
         }
         if(gode == UPDATE_REVERB_ED_ALL || gode == UPDATE_REVERB_ED_DELAY4)
         {
-            Print_Long_Small(108, (Cur_Height - 61), delays[3], 0, 45,
+            Print_Long_Small(108, (Cur_Height - 61), delays[3], INT_PLAIN, 45,
                              BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
         }
         if(gode == UPDATE_REVERB_ED_ALL || gode == UPDATE_REVERB_ED_DELAY5)
         {
-            Print_Long_Small(108, (Cur_Height - 43), delays[4], 0, 45,
+            Print_Long_Small(108, (Cur_Height - 43), delays[4], INT_PLAIN, 45,
                              BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
         }
         if(gode == UPDATE_REVERB_ED_ALL || gode == UPDATE_REVERB_ED_DELAY6)
         {
-            Print_Long_Small(108 + 185, (Cur_Height - 115), delays[5], 0, 45,
+            Print_Long_Small(108 + 185, (Cur_Height - 115), delays[5], INT_PLAIN, 45,
                              BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
         }
         if(gode == UPDATE_REVERB_ED_ALL || gode == UPDATE_REVERB_ED_DELAY7)
         {
-            Print_Long_Small(108 + 185, (Cur_Height - 97), delays[6], 0, 45,
+            Print_Long_Small(108 + 185, (Cur_Height - 97), delays[6], INT_PLAIN, 45,
                              BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
         }
         if(gode == UPDATE_REVERB_ED_ALL || gode == UPDATE_REVERB_ED_DELAY8)
         {
-            Print_Long_Small(108 + 185, (Cur_Height - 79), delays[7], 0, 45,
+            Print_Long_Small(108 + 185, (Cur_Height - 79), delays[7], INT_PLAIN, 45,
                              BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
         }
         if(gode == UPDATE_REVERB_ED_ALL || gode == UPDATE_REVERB_ED_DELAY9)
         {
-            Print_Long_Small(108 + 185, (Cur_Height - 61), delays[8], 0, 45,
+            Print_Long_Small(108 + 185, (Cur_Height - 61), delays[8], INT_PLAIN, 45,
                              BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
         }
         if(gode == UPDATE_REVERB_ED_ALL || gode == UPDATE_REVERB_ED_DELAY10)
         {
-            Print_Long_Small(108 + 185, (Cur_Height - 43), delays[9], 0, 45,
+            Print_Long_Small(108 + 185, (Cur_Height - 43), delays[9], INT_PLAIN, 45,
                              BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
         }
 

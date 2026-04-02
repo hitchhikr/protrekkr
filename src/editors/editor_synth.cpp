@@ -1411,7 +1411,7 @@ void Actualize_Synth_Params_Sliders(void)
             }
             if(Cur_SynthParam->osc_1_pw - 256)
             {
-                outfloat_small(208, (Cur_Height - 113) - 1, (((float) Cur_SynthParam->osc_1_pw - 256) / 256.0f) * 100.0f, 1, 63, BUTTON_NORMAL | BUTTON_DISABLED);
+                outfloat_small(208, (Cur_Height - 113) - 1, (((float) Cur_SynthParam->osc_1_pw - 256) / 256.0f) * 100.0f, FLT_PERCENT, 63, BUTTON_NORMAL | BUTTON_DISABLED);
             }
             else
             {
@@ -1422,37 +1422,37 @@ void Actualize_Synth_Params_Sliders(void)
 
         case 1: /* ENV_1_Attack */
             Real_Slider(41, (Cur_Height - 113) - 1, Cur_SynthParam->env_1_attack / 512, Allow_All);
-            Print_Long_Small(208, (Cur_Height - 113) - 1, (Cur_SynthParam->env_1_attack * 100) / 512 / 128, 1, 63, BUTTON_NORMAL | BUTTON_DISABLED);
+            Print_Long_Small(208, (Cur_Height - 113) - 1, (Cur_SynthParam->env_1_attack * 100) / 512 / 128, INT_PERCENT, 63, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_OSC_1 = Cur_SynthParam->env_1_attack / 512;
             break;
 
         case 2: /* ENV_1_Decay */
             Real_Slider(41, (Cur_Height - 113) - 1, Cur_SynthParam->env_1_decay / 512, Allow_All);
-            Print_Long_Small(208, (Cur_Height - 113) - 1, (Cur_SynthParam->env_1_decay * 100) / 512 / 128, 1, 63, BUTTON_NORMAL | BUTTON_DISABLED);
+            Print_Long_Small(208, (Cur_Height - 113) - 1, (Cur_SynthParam->env_1_decay * 100) / 512 / 128, INT_PERCENT, 63, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_OSC_1 = Cur_SynthParam->env_1_decay / 512;
             break;
 
         case 3: /* ENV_1_Sustain */
             Real_Slider(41, (Cur_Height - 113) - 1, Cur_SynthParam->env_1_sustain, Allow_All);
-            Print_Long_Small(208, (Cur_Height - 113) - 1, (Cur_SynthParam->env_1_sustain * 100) / 128, 1, 63, BUTTON_NORMAL | BUTTON_DISABLED);
+            Print_Long_Small(208, (Cur_Height - 113) - 1, (Cur_SynthParam->env_1_sustain * 100) / 128, INT_PERCENT, 63, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_OSC_1 = Cur_SynthParam->env_1_sustain;
             break;
 
         case 4: /* ENV_1_Release */
             Real_Slider(41, (Cur_Height - 113) - 1, Cur_SynthParam->env_1_release / 512, Allow_All);
-            Print_Long_Small(208, (Cur_Height - 113) - 1, (Cur_SynthParam->env_1_release * 100) / 512 / 128, 1, 63, BUTTON_NORMAL | BUTTON_DISABLED);
+            Print_Long_Small(208, (Cur_Height - 113) - 1, (Cur_SynthParam->env_1_release * 100) / 512 / 128, INT_PERCENT, 63, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_OSC_1 = Cur_SynthParam->env_1_release / 512;
             break;
 
         case 5: /* OSC_3 volume */
             Real_Slider(41, (Cur_Height - 113) - 1, Cur_SynthParam->osc_3_volume, Allow_All);
-            outfloat_small(208, (Cur_Height - 113) - 1, ((float) Cur_SynthParam->osc_3_volume - 64.0f) * 1.5625f, 1, 63, BUTTON_NORMAL | BUTTON_DISABLED);
+            outfloat_small(208, (Cur_Height - 113) - 1, ((float) Cur_SynthParam->osc_3_volume - 64.0f) * 1.5625f, FLT_PERCENT, 63, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_OSC_1 = Cur_SynthParam->osc_3_volume;
             break;
 
         case 6: /* OSC_3 interval */
             Real_Slider(41, (Cur_Height - 113) - 1, (int) ((float) Cur_SynthParam->osc_3_interval / 12.0f * 128.0f), Allow_All);
-            Print_Long_Small(208, (Cur_Height - 113) - 1, Cur_SynthParam->osc_3_interval, 13, 63, BUTTON_NORMAL | BUTTON_DISABLED);
+            Print_Long_Small(208, (Cur_Height - 113) - 1, Cur_SynthParam->osc_3_interval, INT_SEMI_TONE, 63, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_OSC_1 = temp_osc_3_interval;
             break;
     }
@@ -1472,7 +1472,7 @@ void Actualize_Synth_Params_Sliders(void)
             }
             if(Cur_SynthParam->osc_2_pw - 256)
             {
-                outfloat_small(208, (Cur_Height - 59) - 1, (((float) Cur_SynthParam->osc_2_pw - 256) / 256.0f) * 100.0f, 1, 63, BUTTON_NORMAL | BUTTON_DISABLED);
+                outfloat_small(208, (Cur_Height - 59) - 1, (((float) Cur_SynthParam->osc_2_pw - 256) / 256.0f) * 100.0f, FLT_PERCENT, 63, BUTTON_NORMAL | BUTTON_DISABLED);
             }
             else
             {
@@ -1483,37 +1483,37 @@ void Actualize_Synth_Params_Sliders(void)
 
         case 1: /* Osc2_Detune */
             Real_Slider(41, (Cur_Height - 59) - 1, Cur_SynthParam->osc_2_detune, Allow_All);
-            Print_Long_Small(208, (Cur_Height - 59) - 1, Cur_SynthParam->osc_2_detune - 64, 0, 63, BUTTON_NORMAL | BUTTON_DISABLED);
+            Print_Long_Small(208, (Cur_Height - 59) - 1, Cur_SynthParam->osc_2_detune - 64, INT_PLAIN, 63, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_OSC_2 = Cur_SynthParam->osc_2_detune;
             break;
 
         case 2: /* Osc2_Finetune */
             Real_Slider(41, (Cur_Height - 59) - 1, Cur_SynthParam->osc_2_finetune, Allow_All);
-            Print_Long_Small(208, (Cur_Height - 59) - 1, (Cur_SynthParam->osc_2_finetune * 100) / 128, 1, 63, BUTTON_NORMAL | BUTTON_DISABLED);
+            Print_Long_Small(208, (Cur_Height - 59) - 1, (Cur_SynthParam->osc_2_finetune * 100) / 128, INT_PERCENT, 63, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_OSC_2 = Cur_SynthParam->osc_2_finetune;
             break;
 
         case 3: /* ENV_2_Attack */
             Real_Slider(41, (Cur_Height - 59) - 1, Cur_SynthParam->env_2_attack / 512, Allow_All);
-            Print_Long_Small(208, (Cur_Height - 59) - 1, (Cur_SynthParam->env_2_attack * 100) / 512 / 128, 1, 63, BUTTON_NORMAL | BUTTON_DISABLED);
+            Print_Long_Small(208, (Cur_Height - 59) - 1, (Cur_SynthParam->env_2_attack * 100) / 512 / 128, INT_PERCENT, 63, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_OSC_2 = Cur_SynthParam->env_2_attack / 512;
             break;
 
         case 4: /* ENV_2_Decay */
             Real_Slider(41, (Cur_Height - 59) - 1, Cur_SynthParam->env_2_decay / 512, Allow_All);
-            Print_Long_Small(208, (Cur_Height - 59) - 1, (Cur_SynthParam->env_2_decay * 100) / 512 / 128, 1, 63, BUTTON_NORMAL | BUTTON_DISABLED);
+            Print_Long_Small(208, (Cur_Height - 59) - 1, (Cur_SynthParam->env_2_decay * 100) / 512 / 128, INT_PERCENT, 63, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_OSC_2 = Cur_SynthParam->env_2_decay / 512;
             break;
 
         case 5: /* ENV_2_Sustain */
             Real_Slider(41, (Cur_Height - 59) - 1, Cur_SynthParam->env_2_sustain, Allow_All);
-            Print_Long_Small(208, (Cur_Height - 59) - 1, (Cur_SynthParam->env_2_sustain * 100) / 128, 1, 63, BUTTON_NORMAL | BUTTON_DISABLED);
+            Print_Long_Small(208, (Cur_Height - 59) - 1, (Cur_SynthParam->env_2_sustain * 100) / 128, INT_PERCENT, 63, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_OSC_2 = Cur_SynthParam->env_2_sustain;
             break;
 
         case 6: /* ENV_2_Release */
             Real_Slider(41, (Cur_Height - 59) - 1, Cur_SynthParam->env_2_release / 512, Allow_All);
-            Print_Long_Small(208, (Cur_Height - 59) - 1, (Cur_SynthParam->env_2_release * 100) / 512 / 128, 1, 63, BUTTON_NORMAL | BUTTON_DISABLED);
+            Print_Long_Small(208, (Cur_Height - 59) - 1, (Cur_SynthParam->env_2_release * 100) / 512 / 128, INT_PERCENT, 63, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_OSC_2 = Cur_SynthParam->env_2_release / 512;
             break;
     // -----------------------------
@@ -1524,13 +1524,13 @@ void Actualize_Synth_Params_Sliders(void)
     {
         case 0: /* VCF Cutoff */
             Real_Slider(311, (Cur_Height - 113) - 1, Cur_SynthParam->vcf_cutoff, Allow_All);
-            Print_Long_Small(311 + 167, (Cur_Height - 113) - 1, Cur_SynthParam->vcf_cutoff * 172, 3, 45, BUTTON_NORMAL | BUTTON_DISABLED);
+            Print_Long_Small(311 + 167, (Cur_Height - 113) - 1, Cur_SynthParam->vcf_cutoff * 172, INT_HERTZ, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_VCF = Cur_SynthParam->vcf_cutoff;
             break;
 
         case 1: /* VCF_Resonance */
             Real_Slider(311, (Cur_Height - 113) - 1, Cur_SynthParam->vcf_resonance, Allow_All);
-            Print_Long_Small(311 + 167, (Cur_Height - 113) - 1, (Cur_SynthParam->vcf_resonance * 100) / 128, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
+            Print_Long_Small(311 + 167, (Cur_Height - 113) - 1, (Cur_SynthParam->vcf_resonance * 100) / 128, INT_PERCENT, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_VCF = Cur_SynthParam->vcf_resonance;
             break;
     }
@@ -1541,7 +1541,7 @@ void Actualize_Synth_Params_Sliders(void)
     {
         case 0: /* LFO_1_Period */
             Real_Slider(311, (Cur_Height - 77) - 1, Cur_SynthParam->lfo_1_period, Allow_All);
-            outfloat_small(311 + 167, (Cur_Height - 77) - 1, (float) Cur_SynthParam->lfo_1_period * 2, 8, 45, BUTTON_NORMAL | BUTTON_DISABLED);
+            outfloat_small(311 + 167, (Cur_Height - 77) - 1, (float) Cur_SynthParam->lfo_1_period * 2, FLT_TICK, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_LFO_1 = Cur_SynthParam->lfo_1_period;
             break;
 
@@ -1554,7 +1554,7 @@ void Actualize_Synth_Params_Sliders(void)
             {
                 Real_Slider(311, (Cur_Height - 77) - 1, Cur_SynthParam->lfo_1_osc_1_pw, FALSE);
             }
-            outfloat_small(311 + 167, (Cur_Height - 77) - 1, ((float) Cur_SynthParam->lfo_1_osc_1_pw - 64.0f) * 1.5625f, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
+            outfloat_small(311 + 167, (Cur_Height - 77) - 1, ((float) Cur_SynthParam->lfo_1_osc_1_pw - 64.0f) * 1.5625f, FLT_PERCENT, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_LFO_1 = Cur_SynthParam->lfo_1_osc_1_pw;
             break;
 
@@ -1567,73 +1567,73 @@ void Actualize_Synth_Params_Sliders(void)
             {
                 Real_Slider(311, (Cur_Height - 77) - 1, Cur_SynthParam->lfo_1_osc_2_pw, FALSE);
             }
-            outfloat_small(311 + 167, (Cur_Height - 77) - 1, ((float) Cur_SynthParam->lfo_1_osc_2_pw - 64.0f) * 1.5625f, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
+            outfloat_small(311 + 167, (Cur_Height - 77) - 1, ((float) Cur_SynthParam->lfo_1_osc_2_pw - 64.0f) * 1.5625f, FLT_PERCENT, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_LFO_1 = Cur_SynthParam->lfo_1_osc_2_pw;
             break;
 
         case 3: /* lfo_1->osc_1 pitch */
             Real_Slider(311, (Cur_Height - 77) - 1, Cur_SynthParam->lfo_1_osc_1_pitch, Allow_All);
-            outfloat_small(311 + 167, (Cur_Height - 77) - 1, ((float) Cur_SynthParam->lfo_1_osc_1_pitch - 64.0f) * 1.5625f, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
+            outfloat_small(311 + 167, (Cur_Height - 77) - 1, ((float) Cur_SynthParam->lfo_1_osc_1_pitch - 64.0f) * 1.5625f, FLT_PERCENT, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_LFO_1 = Cur_SynthParam->lfo_1_osc_1_pitch;
             break;
 
         case 4: /* lfo_1->osc_1 pitch */
             Real_Slider(311, (Cur_Height - 77) - 1, Cur_SynthParam->lfo_1_osc_2_pitch, Allow_All);
-            outfloat_small(311 + 167, (Cur_Height - 77) - 1, ((float) Cur_SynthParam->lfo_1_osc_2_pitch - 64.0f) * 1.5625f, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
+            outfloat_small(311 + 167, (Cur_Height - 77) - 1, ((float) Cur_SynthParam->lfo_1_osc_2_pitch - 64.0f) * 1.5625f, FLT_PERCENT, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_LFO_1 = Cur_SynthParam->lfo_1_osc_2_pitch;
             break;
 
         case 5: /* lfo_1->osc_1 volume */
             Real_Slider(311, (Cur_Height - 77) - 1, Cur_SynthParam->lfo_1_osc_1_volume, Allow_All);
-            outfloat_small(311 + 167, (Cur_Height - 77) - 1, ((float) Cur_SynthParam->lfo_1_osc_1_volume - 64.0f) * 1.5625f, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
+            outfloat_small(311 + 167, (Cur_Height - 77) - 1, ((float) Cur_SynthParam->lfo_1_osc_1_volume - 64.0f) * 1.5625f, FLT_PERCENT, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_LFO_1 = Cur_SynthParam->lfo_1_osc_1_volume;
             break;
 
         case 6: /* lfo_1->osc_2 volume */
             Real_Slider(311, (Cur_Height - 77) - 1, Cur_SynthParam->lfo_1_osc_2_volume, Allow_All);
-            outfloat_small(311 + 167, (Cur_Height - 77) - 1, ((float) Cur_SynthParam->lfo_1_osc_2_volume - 64.0f) * 1.5625f, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
+            outfloat_small(311 + 167, (Cur_Height - 77) - 1, ((float) Cur_SynthParam->lfo_1_osc_2_volume - 64.0f) * 1.5625f, FLT_PERCENT, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_LFO_1 = Cur_SynthParam->lfo_1_osc_2_volume;
             break;
 
         case 7: /* lfo_1->vcf cutoff */
             Real_Slider(311, (Cur_Height - 77) - 1, Cur_SynthParam->lfo_1_vcf_cutoff, Allow_All);
-            outfloat_small(311 + 167, (Cur_Height - 77) - 1, ((float) Cur_SynthParam->lfo_1_vcf_cutoff - 64.0f) * 1.5625f, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
+            outfloat_small(311 + 167, (Cur_Height - 77) - 1, ((float) Cur_SynthParam->lfo_1_vcf_cutoff - 64.0f) * 1.5625f, FLT_PERCENT, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_LFO_1 = Cur_SynthParam->lfo_1_vcf_cutoff;
             break;
 
         case 8: /* lfo_1->vcf resonance */
             Real_Slider(311, (Cur_Height - 77) - 1, Cur_SynthParam->lfo_1_vcf_resonance, Allow_All);
-            outfloat_small(311 + 167, (Cur_Height - 77) - 1, ((float) Cur_SynthParam->lfo_1_vcf_resonance - 64.0f) * 1.5625f, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
+            outfloat_small(311 + 167, (Cur_Height - 77) - 1, ((float) Cur_SynthParam->lfo_1_vcf_resonance - 64.0f) * 1.5625f, FLT_PERCENT, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_LFO_1 = Cur_SynthParam->lfo_1_vcf_resonance;
             break;
 
         case 9: /* lfo_1->distortion */
             Real_Slider(311, (Cur_Height - 77) - 1, Cur_SynthParam->lfo_1_disto, Allow_All);
-            outfloat_small(311 + 167, (Cur_Height - 77) - 1, ((float) Cur_SynthParam->lfo_1_disto - 64.0f) * 1.5625f, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
+            outfloat_small(311 + 167, (Cur_Height - 77) - 1, ((float) Cur_SynthParam->lfo_1_disto - 64.0f) * 1.5625f, FLT_PERCENT, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_LFO_1 = Cur_SynthParam->lfo_1_disto;
             break;
 
         case 10: /* LFO_1_Attack */
             Real_Slider(311, (Cur_Height - 77) - 1, Cur_SynthParam->lfo_1_attack / 512, Allow_All);
-            Print_Long_Small(311 + 167, (Cur_Height - 77) - 1, (Cur_SynthParam->lfo_1_attack * 100) / 512 / 128, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
+            Print_Long_Small(311 + 167, (Cur_Height - 77) - 1, (Cur_SynthParam->lfo_1_attack * 100) / 512 / 128, INT_PERCENT, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_LFO_1 = Cur_SynthParam->lfo_1_attack / 512;
             break;
 
         case 11: /* LFO_1_Decay */
             Real_Slider(311, (Cur_Height - 77) - 1, Cur_SynthParam->lfo_1_decay / 512, Allow_All);
-            Print_Long_Small(311 + 167, (Cur_Height - 77) - 1, (Cur_SynthParam->lfo_1_decay * 100) / 512 / 128, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
+            Print_Long_Small(311 + 167, (Cur_Height - 77) - 1, (Cur_SynthParam->lfo_1_decay * 100) / 512 / 128, INT_PERCENT, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_LFO_1 = Cur_SynthParam->lfo_1_decay / 512;
             break;
 
         case 12: /* LFO_1_Sustain */
             Real_Slider(311, (Cur_Height - 77) - 1, Cur_SynthParam->lfo_1_sustain, Allow_All);
-            Print_Long_Small(311 + 167, (Cur_Height - 77) - 1, (Cur_SynthParam->lfo_1_sustain * 100) / 128, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
+            Print_Long_Small(311 + 167, (Cur_Height - 77) - 1, (Cur_SynthParam->lfo_1_sustain * 100) / 128, INT_PERCENT, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_LFO_1 = Cur_SynthParam->lfo_1_sustain;
             break;
 
         case 13: /* LFO_1_Release */
             Real_Slider(311, (Cur_Height - 77) - 1, Cur_SynthParam->lfo_1_release / 512, Allow_All);
-            Print_Long_Small(311 + 167, (Cur_Height - 77) - 1, (Cur_SynthParam->lfo_1_release * 100) / 512 / 128, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
+            Print_Long_Small(311 + 167, (Cur_Height - 77) - 1, (Cur_SynthParam->lfo_1_release * 100) / 512 / 128, INT_PERCENT, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_LFO_1 = Cur_SynthParam->lfo_1_release / 512;
             break;
     }
@@ -1644,7 +1644,7 @@ void Actualize_Synth_Params_Sliders(void)
     {
         case 0: /* LFO_2_Period */
             Real_Slider(311, (Cur_Height - 41) - 1, Cur_SynthParam->lfo_2_period, Allow_All);
-            outfloat_small(311 + 167, (Cur_Height - 41) - 1, (float) Cur_SynthParam->lfo_2_period * 2, 8, 45, BUTTON_NORMAL | BUTTON_DISABLED);
+            outfloat_small(311 + 167, (Cur_Height - 41) - 1, (float) Cur_SynthParam->lfo_2_period * 2, FLT_TICK, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_LFO_2 = Cur_SynthParam->lfo_2_period;
             break;
 
@@ -1657,7 +1657,7 @@ void Actualize_Synth_Params_Sliders(void)
             {
                 Real_Slider(311, (Cur_Height - 41) - 1, Cur_SynthParam->lfo_2_osc_1_pw, FALSE);
             }
-            outfloat_small(311 + 167, (Cur_Height - 41) - 1, ((float) Cur_SynthParam->lfo_2_osc_1_pw - 64.0f) * 1.5625f, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
+            outfloat_small(311 + 167, (Cur_Height - 41) - 1, ((float) Cur_SynthParam->lfo_2_osc_1_pw - 64.0f) * 1.5625f, FLT_PERCENT, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_LFO_2 = Cur_SynthParam->lfo_2_osc_1_pw;
             break;
 
@@ -1670,73 +1670,73 @@ void Actualize_Synth_Params_Sliders(void)
             {
                 Real_Slider(311, (Cur_Height - 41) - 1, Cur_SynthParam->lfo_2_osc_2_pw, FALSE);
             }
-            outfloat_small(311 + 167, (Cur_Height - 41) - 1, ((float) Cur_SynthParam->lfo_2_osc_2_pw - 64.0f) * 1.5625f, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
+            outfloat_small(311 + 167, (Cur_Height - 41) - 1, ((float) Cur_SynthParam->lfo_2_osc_2_pw - 64.0f) * 1.5625f, FLT_PERCENT, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_LFO_2 = Cur_SynthParam->lfo_2_osc_2_pw;
             break;
 
         case 3: /* lfo_2->osc_1 pitch */
             Real_Slider(311, (Cur_Height - 41) - 1, Cur_SynthParam->lfo_2_osc_1_pitch, Allow_All);
-            outfloat_small(311 + 167, (Cur_Height - 41) - 1, ((float) Cur_SynthParam->lfo_2_osc_1_pitch - 64.0f) * 1.5625f, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
+            outfloat_small(311 + 167, (Cur_Height - 41) - 1, ((float) Cur_SynthParam->lfo_2_osc_1_pitch - 64.0f) * 1.5625f, FLT_PERCENT, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_LFO_2 = Cur_SynthParam->lfo_2_osc_1_pitch;
             break;
 
         case 4: /* lfo_2->osc_2 pitch */
             Real_Slider(311, (Cur_Height - 41) - 1, Cur_SynthParam->lfo_2_osc_2_pitch, Allow_All);
-            outfloat_small(311 + 167, (Cur_Height - 41) - 1, ((float) Cur_SynthParam->lfo_2_osc_2_pitch - 64.0f) * 1.5625f, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
+            outfloat_small(311 + 167, (Cur_Height - 41) - 1, ((float) Cur_SynthParam->lfo_2_osc_2_pitch - 64.0f) * 1.5625f, FLT_PERCENT, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_LFO_2 = Cur_SynthParam->lfo_2_osc_2_pitch;
             break;
 
         case 5: /* lfo_2->osc_1 volume */
             Real_Slider(311, (Cur_Height - 41) - 1, Cur_SynthParam->lfo_2_osc_1_volume, Allow_All);
-            outfloat_small(311 + 167, (Cur_Height - 41) - 1, ((float) Cur_SynthParam->lfo_2_osc_1_volume - 64.0f) * 1.5625f, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
+            outfloat_small(311 + 167, (Cur_Height - 41) - 1, ((float) Cur_SynthParam->lfo_2_osc_1_volume - 64.0f) * 1.5625f, FLT_PERCENT, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_LFO_2 = Cur_SynthParam->lfo_2_osc_1_volume;
             break;
 
         case 6: /* lfo_2->osc_2 volume */
             Real_Slider(311, (Cur_Height - 41) - 1, Cur_SynthParam->lfo_2_osc_2_volume, Allow_All);
-            outfloat_small(311 + 167, (Cur_Height - 41) - 1, ((float) Cur_SynthParam->lfo_2_osc_2_volume - 64.0f) * 1.5625f, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
+            outfloat_small(311 + 167, (Cur_Height - 41) - 1, ((float) Cur_SynthParam->lfo_2_osc_2_volume - 64.0f) * 1.5625f, FLT_PERCENT, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_LFO_2 = Cur_SynthParam->lfo_2_osc_2_volume;
             break;
 
         case 7: /* lfo_2->vcf cutoff */
             Real_Slider(311, (Cur_Height - 41) - 1, Cur_SynthParam->lfo_2_vcf_cutoff, Allow_All);
-            outfloat_small(311 + 167, (Cur_Height - 41) - 1, ((float) Cur_SynthParam->lfo_2_vcf_cutoff - 64.0f) * 1.5625f, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
+            outfloat_small(311 + 167, (Cur_Height - 41) - 1, ((float) Cur_SynthParam->lfo_2_vcf_cutoff - 64.0f) * 1.5625f, FLT_PERCENT, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_LFO_2 = Cur_SynthParam->lfo_2_vcf_cutoff;
             break;
 
         case 8: /* lfo_2->vcf resonance */
             Real_Slider(311, (Cur_Height - 41) - 1, Cur_SynthParam->lfo_2_vcf_resonance, Allow_All);
-            outfloat_small(311 + 167, (Cur_Height - 41) - 1, ((float) Cur_SynthParam->lfo_2_vcf_resonance - 64.0f) * 1.5625f, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
+            outfloat_small(311 + 167, (Cur_Height - 41) - 1, ((float) Cur_SynthParam->lfo_2_vcf_resonance - 64.0f) * 1.5625f, FLT_PERCENT, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_LFO_2 = Cur_SynthParam->lfo_2_vcf_resonance;
             break;
 
         case 9: /* lfo_2->distortion */
             Real_Slider(311, (Cur_Height - 41) - 1, Cur_SynthParam->lfo_2_disto, Allow_All);
-            outfloat_small(311 + 167, (Cur_Height - 41) - 1, ((float) Cur_SynthParam->lfo_2_disto - 64.0f) * 1.5625f, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
+            outfloat_small(311 + 167, (Cur_Height - 41) - 1, ((float) Cur_SynthParam->lfo_2_disto - 64.0f) * 1.5625f, FLT_PERCENT, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_LFO_2 = Cur_SynthParam->lfo_2_disto;
             break;
 
         case 10: /* LFO_2_Attack */
             Real_Slider(311, (Cur_Height - 41) - 1, Cur_SynthParam->lfo_2_attack / 512, Allow_All);
-            Print_Long_Small(311 + 167, (Cur_Height - 41) - 1, (Cur_SynthParam->lfo_2_attack * 100) / 512 / 128, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
+            Print_Long_Small(311 + 167, (Cur_Height - 41) - 1, (Cur_SynthParam->lfo_2_attack * 100) / 512 / 128, INT_PERCENT, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_LFO_2 = Cur_SynthParam->lfo_2_attack / 512;
             break;
 
         case 11: /* LFO_2_Decay */
             Real_Slider(311, (Cur_Height - 41) - 1, Cur_SynthParam->lfo_2_decay / 512, Allow_All);
-            Print_Long_Small(311 + 167, (Cur_Height - 41) - 1, (Cur_SynthParam->lfo_2_decay * 100) / 512 / 128, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
+            Print_Long_Small(311 + 167, (Cur_Height - 41) - 1, (Cur_SynthParam->lfo_2_decay * 100) / 512 / 128, INT_PERCENT, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_LFO_2 = Cur_SynthParam->lfo_2_decay / 512;
             break;
 
         case 12: /* LFO_2_Sustain */
             Real_Slider(311, (Cur_Height - 41) - 1, Cur_SynthParam->lfo_2_sustain, Allow_All);
-            Print_Long_Small(311 + 167, (Cur_Height - 41) - 1, (Cur_SynthParam->lfo_2_sustain * 100) / 128, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
+            Print_Long_Small(311 + 167, (Cur_Height - 41) - 1, (Cur_SynthParam->lfo_2_sustain * 100) / 128, INT_PERCENT, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_LFO_2 = Cur_SynthParam->lfo_2_sustain;
             break;
 
         case 13: /* LFO_2_Release */
             Real_Slider(311, (Cur_Height - 41) - 1, Cur_SynthParam->lfo_2_release / 512, Allow_All);
-            Print_Long_Small(311 + 167, (Cur_Height - 41) - 1, (Cur_SynthParam->lfo_2_release * 100) / 512 / 128, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
+            Print_Long_Small(311 + 167, (Cur_Height - 41) - 1, (Cur_SynthParam->lfo_2_release * 100) / 512 / 128, INT_PERCENT, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_LFO_2 = Cur_SynthParam->lfo_2_release / 512;
             break;
     }
@@ -1754,7 +1754,7 @@ void Actualize_Synth_Params_Sliders(void)
             {
                 Real_Slider(563, (Cur_Height - 113) - 1, Cur_SynthParam->env_1_osc_1_pw, FALSE);
             }
-            outfloat_small(563 + 167, (Cur_Height - 113) - 1, ((float) Cur_SynthParam->env_1_osc_1_pw - 64.0f) * 1.5625f, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
+            outfloat_small(563 + 167, (Cur_Height - 113) - 1, ((float) Cur_SynthParam->env_1_osc_1_pw - 64.0f) * 1.5625f, FLT_PERCENT, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_ENV_1 = Cur_SynthParam->env_1_osc_1_pw;
             break;
 
@@ -1767,19 +1767,19 @@ void Actualize_Synth_Params_Sliders(void)
             {
                 Real_Slider(563, (Cur_Height - 113) - 1, Cur_SynthParam->env_1_osc_2_pw, FALSE);
             }
-            outfloat_small(563 + 167, (Cur_Height - 113) - 1, ((float) Cur_SynthParam->env_1_osc_2_pw - 64.0f) * 1.5625f, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
+            outfloat_small(563 + 167, (Cur_Height - 113) - 1, ((float) Cur_SynthParam->env_1_osc_2_pw - 64.0f) * 1.5625f, FLT_PERCENT, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_ENV_1 = Cur_SynthParam->env_1_osc_2_pw;
             break;
 
         case 2: /* Env1->osc_1 pitch */
             Real_Slider(563, (Cur_Height - 113) - 1, Cur_SynthParam->env_1_osc_1_pitch, Allow_All);
-            outfloat_small(563 + 167, (Cur_Height - 113) - 1, ((float) Cur_SynthParam->env_1_osc_1_pitch - 64.0f) * 1.5625f, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
+            outfloat_small(563 + 167, (Cur_Height - 113) - 1, ((float) Cur_SynthParam->env_1_osc_1_pitch - 64.0f) * 1.5625f, FLT_PERCENT, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_ENV_1 = Cur_SynthParam->env_1_osc_1_pitch;
             break;
 
         case 3: /* Env1->osc_2 pitch */
             Real_Slider(563, (Cur_Height - 113) - 1, Cur_SynthParam->env_1_osc_2_pitch, Allow_All);
-            outfloat_small(563 + 167, (Cur_Height - 113) - 1, ((float) Cur_SynthParam->env_1_osc_2_pitch - 64.0f) * 1.5625f, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
+            outfloat_small(563 + 167, (Cur_Height - 113) - 1, ((float) Cur_SynthParam->env_1_osc_2_pitch - 64.0f) * 1.5625f, FLT_PERCENT, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_ENV_1 = Cur_SynthParam->env_1_osc_2_pitch;
             break;
 
@@ -1787,7 +1787,7 @@ void Actualize_Synth_Params_Sliders(void)
             Real_Slider(563, (Cur_Height - 113) - 1, Cur_SynthParam->env_1_osc_1_volume, Allow_All);
             if(Cur_SynthParam->env_1_osc_1_volume != 64)
             {
-                outfloat_small(563 + 167, (Cur_Height - 113) - 1, ((float) Cur_SynthParam->env_1_osc_1_volume - 64.0f) * 1.5625f, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
+                outfloat_small(563 + 167, (Cur_Height - 113) - 1, ((float) Cur_SynthParam->env_1_osc_1_volume - 64.0f) * 1.5625f, FLT_PERCENT, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             }
             else
             {
@@ -1800,7 +1800,7 @@ void Actualize_Synth_Params_Sliders(void)
             Real_Slider(563, (Cur_Height - 113) - 1, Cur_SynthParam->env_1_osc_2_volume, Allow_All);
             if(Cur_SynthParam->env_1_osc_2_volume != 64)
             {
-                outfloat_small(563 + 167, (Cur_Height - 113) - 1, ((float) Cur_SynthParam->env_1_osc_2_volume - 64.0f) * 1.5625f, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
+                outfloat_small(563 + 167, (Cur_Height - 113) - 1, ((float) Cur_SynthParam->env_1_osc_2_volume - 64.0f) * 1.5625f, FLT_PERCENT, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             }
             else
             {
@@ -1811,19 +1811,19 @@ void Actualize_Synth_Params_Sliders(void)
 
         case 6: /* Env1->vcf cutoff */
             Real_Slider(563, (Cur_Height - 113) - 1, Cur_SynthParam->env_1_vcf_cutoff, Allow_All);
-            outfloat_small(563 + 167, (Cur_Height - 113) - 1, ((float) Cur_SynthParam->env_1_vcf_cutoff - 64.0f) * 1.5625f, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
+            outfloat_small(563 + 167, (Cur_Height - 113) - 1, ((float) Cur_SynthParam->env_1_vcf_cutoff - 64.0f) * 1.5625f, FLT_PERCENT, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_ENV_1 = Cur_SynthParam->env_1_vcf_cutoff;
             break;
 
         case 7: /* Env1->vcf resonance */
             Real_Slider(563, (Cur_Height - 113) - 1, Cur_SynthParam->env_1_vcf_resonance, Allow_All);
-            outfloat_small(563 + 167, (Cur_Height - 113) - 1, ((float) Cur_SynthParam->env_1_vcf_resonance - 64.0f) * 1.5625f, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
+            outfloat_small(563 + 167, (Cur_Height - 113) - 1, ((float) Cur_SynthParam->env_1_vcf_resonance - 64.0f) * 1.5625f, FLT_PERCENT, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_ENV_1 = Cur_SynthParam->env_1_vcf_resonance;
             break;
 
         case 8: /* Env1->distortion */
             Real_Slider(563, (Cur_Height - 113) - 1, Cur_SynthParam->env_1_disto, Allow_All);
-            outfloat_small(563 + 167, (Cur_Height - 113) - 1, ((float) Cur_SynthParam->env_1_disto - 64.0f) * 1.5625f, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
+            outfloat_small(563 + 167, (Cur_Height - 113) - 1, ((float) Cur_SynthParam->env_1_disto - 64.0f) * 1.5625f, FLT_PERCENT, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_ENV_1 = Cur_SynthParam->env_1_disto;
             break;
     }
@@ -1841,7 +1841,7 @@ void Actualize_Synth_Params_Sliders(void)
             {
                 Real_Slider(563, (Cur_Height - 77) - 1, Cur_SynthParam->env_2_osc_1_pw, FALSE);
             }
-            outfloat_small(563 + 167, (Cur_Height - 77) - 1, ((float) Cur_SynthParam->env_2_osc_1_pw - 64.0f) * 1.5625f, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
+            outfloat_small(563 + 167, (Cur_Height - 77) - 1, ((float) Cur_SynthParam->env_2_osc_1_pw - 64.0f) * 1.5625f, FLT_PERCENT, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_ENV_2 = Cur_SynthParam->env_2_osc_1_pw;
             break;
 
@@ -1854,19 +1854,19 @@ void Actualize_Synth_Params_Sliders(void)
             {
                 Real_Slider(563, (Cur_Height - 77) - 1, Cur_SynthParam->env_2_osc_2_pw, FALSE);
             }
-            outfloat_small(563 + 167, (Cur_Height - 77) - 1, ((float) Cur_SynthParam->env_2_osc_2_pw - 64.0f) * 1.5625f, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
+            outfloat_small(563 + 167, (Cur_Height - 77) - 1, ((float) Cur_SynthParam->env_2_osc_2_pw - 64.0f) * 1.5625f, FLT_PERCENT, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_ENV_2 = Cur_SynthParam->env_2_osc_2_pw;
             break;
 
         case 2: /* Env2->osc_1 pitch */
             Real_Slider(563, (Cur_Height - 77) - 1, Cur_SynthParam->env_2_osc_1_pitch, Allow_All);
-            outfloat_small(563 + 167, (Cur_Height - 77) - 1, ((float) Cur_SynthParam->env_2_osc_1_pitch - 64.0f) * 1.5625f, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
+            outfloat_small(563 + 167, (Cur_Height - 77) - 1, ((float) Cur_SynthParam->env_2_osc_1_pitch - 64.0f) * 1.5625f, FLT_PERCENT, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_ENV_2 = Cur_SynthParam->env_2_osc_1_pitch;
             break;
 
         case 3: /* Env2->osc_2 pitch */
             Real_Slider(563, (Cur_Height - 77) - 1, Cur_SynthParam->env_2_osc_2_pitch, Allow_All);
-            outfloat_small(563 + 167, (Cur_Height - 77) - 1, ((float) Cur_SynthParam->env_2_osc_2_pitch - 64.0f) * 1.5625f, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
+            outfloat_small(563 + 167, (Cur_Height - 77) - 1, ((float) Cur_SynthParam->env_2_osc_2_pitch - 64.0f) * 1.5625f, FLT_PERCENT, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_ENV_2 = Cur_SynthParam->env_2_osc_2_pitch;
             break;
 
@@ -1874,7 +1874,7 @@ void Actualize_Synth_Params_Sliders(void)
             Real_Slider(563, (Cur_Height - 77) - 1, Cur_SynthParam->env_2_osc_1_volume, Allow_All);
             if(Cur_SynthParam->env_2_osc_1_volume != 64)
             {
-                outfloat_small(563 + 167, (Cur_Height - 77) - 1, ((float) Cur_SynthParam->env_2_osc_1_volume - 64.0f) * 1.5625f, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
+                outfloat_small(563 + 167, (Cur_Height - 77) - 1, ((float) Cur_SynthParam->env_2_osc_1_volume - 64.0f) * 1.5625f, FLT_PERCENT, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             }
             else
             {
@@ -1887,7 +1887,7 @@ void Actualize_Synth_Params_Sliders(void)
             Real_Slider(563, (Cur_Height - 77) - 1, Cur_SynthParam->env_2_osc_2_volume, Allow_All);
             if(Cur_SynthParam->env_2_osc_2_volume != 64)
             {
-                outfloat_small(563 + 167, (Cur_Height - 77) - 1, ((float) Cur_SynthParam->env_2_osc_2_volume - 64.0f) * 1.5625f, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
+                outfloat_small(563 + 167, (Cur_Height - 77) - 1, ((float) Cur_SynthParam->env_2_osc_2_volume - 64.0f) * 1.5625f, FLT_PERCENT, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             }
             else
             {
@@ -1898,19 +1898,19 @@ void Actualize_Synth_Params_Sliders(void)
 
         case 6: /* Env2->vcf cutoff */
             Real_Slider(563, (Cur_Height - 77) - 1, Cur_SynthParam->env_2_vcf_cutoff, Allow_All);
-            outfloat_small(563 + 167, (Cur_Height - 77) - 1, ((float) Cur_SynthParam->env_2_vcf_cutoff - 64.0f) * 1.5625f, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
+            outfloat_small(563 + 167, (Cur_Height - 77) - 1, ((float) Cur_SynthParam->env_2_vcf_cutoff - 64.0f) * 1.5625f, FLT_PERCENT, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_ENV_2 = Cur_SynthParam->env_2_vcf_cutoff;
             break;
 
         case 7: /* Env2->vcf resonance */
             Real_Slider(563, (Cur_Height - 77) - 1, Cur_SynthParam->env_2_vcf_resonance, Allow_All);
-            outfloat_small(563 + 167, (Cur_Height - 77) - 1, ((float) Cur_SynthParam->env_2_vcf_resonance - 64.0f) * 1.5625f, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
+            outfloat_small(563 + 167, (Cur_Height - 77) - 1, ((float) Cur_SynthParam->env_2_vcf_resonance - 64.0f) * 1.5625f, FLT_PERCENT, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_ENV_2 = Cur_SynthParam->env_2_vcf_resonance;
             break;
 
         case 8: /* Env2->distortion */
             Real_Slider(563, (Cur_Height - 77) - 1, Cur_SynthParam->env_2_disto, Allow_All);
-            outfloat_small(563 + 167, (Cur_Height - 77) - 1, ((float) Cur_SynthParam->env_2_disto - 64.0f) * 1.5625f, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
+            outfloat_small(563 + 167, (Cur_Height - 77) - 1, ((float) Cur_SynthParam->env_2_disto - 64.0f) * 1.5625f, FLT_PERCENT, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_ENV_2 = Cur_SynthParam->env_2_disto;
             break;
     }
@@ -1931,7 +1931,7 @@ void Actualize_Synth_Params_Sliders(void)
             }
             if(Cur_SynthParam->ptc_glide)
             {
-                outfloat_small(563 + 167, (Cur_Height - 41) - 1, ((float) Cur_SynthParam->ptc_glide) * 0.78125f, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
+                outfloat_small(563 + 167, (Cur_Height - 41) - 1, ((float) Cur_SynthParam->ptc_glide) * 0.78125f, FLT_PERCENT, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             }
             else
             {
@@ -1942,13 +1942,13 @@ void Actualize_Synth_Params_Sliders(void)
 
         case 1: /* Misc. Global volume */
             Real_Slider(563, (Cur_Height - 41) - 1, Cur_SynthParam->glb_volume, Allow_All);
-            outfloat_small(563 + 167, (Cur_Height - 41) - 1, ((float) Cur_SynthParam->glb_volume) * 0.78125f, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
+            outfloat_small(563 + 167, (Cur_Height - 41) - 1, ((float) Cur_SynthParam->glb_volume) * 0.0078125f, FLT_DECIBEL, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_Misc = Cur_SynthParam->glb_volume;
             break;
 
         case 2: /* Misc. Distortion */
             Real_Slider(563, (Cur_Height - 41) - 1, Cur_SynthParam->disto, Allow_All);
-            outfloat_small(563 + 167, (Cur_Height - 41) - 1, (((float) Cur_SynthParam->disto) - 64.0f) * 1.5625f, 1, 45, BUTTON_NORMAL | BUTTON_DISABLED);
+            outfloat_small(563 + 167, (Cur_Height - 41) - 1, (((float) Cur_SynthParam->disto) - 64.0f) * 1.5625f, FLT_PERCENT, 45, BUTTON_NORMAL | BUTTON_DISABLED);
             csynth_slv_Misc = Cur_SynthParam->disto;
             break;
     }

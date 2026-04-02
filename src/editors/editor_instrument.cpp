@@ -184,7 +184,7 @@ void Actualize_Instrument_Ed(int typex, char gode)
                     if(Sample_Amplify[Current_Instrument][Current_Instrument_Split] > 4.0f) Sample_Amplify[Current_Instrument][Current_Instrument_Split] = 4.0f;
                     if(Sample_Amplify[Current_Instrument][Current_Instrument_Split] < 0) Sample_Amplify[Current_Instrument][Current_Instrument_Split] = 0;
                     Real_Slider(426, (Cur_Height - 62), (int) (Sample_Amplify[Current_Instrument][Current_Instrument_Split] * 32.0f), Allow_Sliders);
-                    Print_Long_Small(575, (Cur_Height - 62), (int) (Sample_Amplify[Current_Instrument][Current_Instrument_Split] * 100.0f), 1, 56, BUTTON_NORMAL | BUTTON_DISABLED);
+                    outfloat_small(575, (Cur_Height - 62), (Sample_Amplify[Current_Instrument][Current_Instrument_Split] * 100.0f), FLT_PERCENT, 56, BUTTON_NORMAL | BUTTON_DISABLED);
                 }
 
                 if(gode == 0 || gode == 2)
@@ -199,7 +199,7 @@ void Actualize_Instrument_Ed(int typex, char gode)
                         Finetune[Current_Instrument][Current_Instrument_Split] = -127;
                     }
                     Real_Slider(426, (Cur_Height - 44), 64 + (Finetune[Current_Instrument][Current_Instrument_Split] / 2), Allow_Sliders);
-                    Print_Long_Small(575, (Cur_Height - 44), (long) Finetune[Current_Instrument][Current_Instrument_Split], 0, 56, BUTTON_NORMAL | BUTTON_DISABLED);
+                    Print_Long_Small(575, (Cur_Height - 44), (long) Finetune[Current_Instrument][Current_Instrument_Split], INT_PLAIN, 56, BUTTON_NORMAL | BUTTON_DISABLED);
                 }
 
                 if(gode == 0 || gode == 3)
@@ -207,7 +207,7 @@ void Actualize_Instrument_Ed(int typex, char gode)
                     if(FDecay[Current_Instrument][Current_Instrument_Split] > 0.015625f) FDecay[Current_Instrument][Current_Instrument_Split] = 0.015625f;
                     if(FDecay[Current_Instrument][Current_Instrument_Split] < 0.0f) FDecay[Current_Instrument][Current_Instrument_Split] = 0.0f;
                     Real_Slider(52, (Cur_Height - 72), (int) (FDecay[Current_Instrument][Current_Instrument_Split] * 8192.0f), Allow_Sliders);
-                    Print_Long(201, (Cur_Height - 72), (int) (FDecay[Current_Instrument][Current_Instrument_Split] * 8192.0f), 0);
+                    Print_Long(201, (Cur_Height - 72), (int) (FDecay[Current_Instrument][Current_Instrument_Split] * 8192.0f), INT_PLAIN);
                 }
 
                 char temprout[256];
@@ -236,13 +236,13 @@ void Actualize_Instrument_Ed(int typex, char gode)
 
                 if(gode == 0 || gode == 4)
                 {
-                    Print_Long(448, (Cur_Height - 134), Sample_Length[Current_Instrument][Current_Instrument_Split], 0);
+                    Print_Long(448, (Cur_Height - 134), Sample_Length[Current_Instrument][Current_Instrument_Split], INT_PLAIN);
                 }
 
                 if(gode == 0 || gode == 5)
                 {
-                    Print_Long(448, (Cur_Height - 116), LoopStart[Current_Instrument][Current_Instrument_Split], 0);
-                    Print_Long(448, (Cur_Height - 98), LoopEnd[Current_Instrument][Current_Instrument_Split], 0);
+                    Print_Long(448, (Cur_Height - 116), LoopStart[Current_Instrument][Current_Instrument_Split], INT_PLAIN);
+                    Print_Long(448, (Cur_Height - 98), LoopEnd[Current_Instrument][Current_Instrument_Split], INT_PLAIN);
 
                     switch(LoopType[Current_Instrument][Current_Instrument_Split])
                     {
@@ -325,7 +325,7 @@ void Actualize_Instrument_Ed(int typex, char gode)
                     if(Sample_Vol[Current_Instrument] > 1.0f) Sample_Vol[Current_Instrument] = 1.0f;
                     if(Sample_Vol[Current_Instrument] < 0.0f) Sample_Vol[Current_Instrument] = 0.0f;
                     Real_Slider(52, (Cur_Height - 54), (int) (Sample_Vol[Current_Instrument] * 128.0f), TRUE);
-                    Print_Long(201, (Cur_Height - 54), (int) (Sample_Vol[Current_Instrument] * 100.0f), 1);
+                    outfloat(201, (Cur_Height - 54), Sample_Vol[Current_Instrument], FLT_DECIBEL);
                 }
 
                 if(gode == 0 || gode == 16)
@@ -465,11 +465,11 @@ void Actualize_Instrument_Ed(int typex, char gode)
                     }
                     if(SamplesSwap[Current_Instrument])
                     {
-                        Print_Long(729, (Cur_Height - 134) + (18 * 4), Sample_Length_Packed[Current_Instrument][Current_Instrument_Split], 0);
+                        Print_Long(729, (Cur_Height - 134) + (18 * 4), Sample_Length_Packed[Current_Instrument][Current_Instrument_Split], INT_PLAIN);
                     }
                     else
                     {
-                        Print_Long(729, (Cur_Height - 134) + (18 * 4), Sample_Length[Current_Instrument][Current_Instrument_Split], 0);
+                        Print_Long(729, (Cur_Height - 134) + (18 * 4), Sample_Length[Current_Instrument][Current_Instrument_Split], INT_PLAIN);
                     }
                 }
 
@@ -497,22 +497,22 @@ void Actualize_Instrument_Ed(int typex, char gode)
                 switch(typex)
                 {
                     case 0:
-                        Print_Long(487, (Cur_Height - 130), *(RawSamples[Current_Instrument][0][Current_Instrument_Split] + LoopStart[Current_Instrument][Current_Instrument_Split]), 0);
-                        Print_Long(114, (Cur_Height - 130), LoopStart[Current_Instrument][Current_Instrument_Split], 0);
+                        Print_Long(487, (Cur_Height - 130), *(RawSamples[Current_Instrument][0][Current_Instrument_Split] + LoopStart[Current_Instrument][Current_Instrument_Split]), INT_PLAIN);
+                        Print_Long(114, (Cur_Height - 130), LoopStart[Current_Instrument][Current_Instrument_Split], INT_PLAIN);
                         actuloop = 1;
                         break;
 
                     case 1:
-                        Print_Long(487, (Cur_Height - 112), *(RawSamples[Current_Instrument][0][Current_Instrument_Split] + LoopEnd[Current_Instrument][Current_Instrument_Split]), 0);
-                        Print_Long(314, (Cur_Height - 130), LoopEnd[Current_Instrument][Current_Instrument_Split], 0);
+                        Print_Long(487, (Cur_Height - 112), *(RawSamples[Current_Instrument][0][Current_Instrument_Split] + LoopEnd[Current_Instrument][Current_Instrument_Split]), INT_PLAIN);
+                        Print_Long(314, (Cur_Height - 130), LoopEnd[Current_Instrument][Current_Instrument_Split], INT_PLAIN);
                         actuloop = 2;
                         break;
 
                     case 2:
-                        Print_Long(487, (Cur_Height - 130), *(RawSamples[Current_Instrument][0][Current_Instrument_Split] + LoopStart[Current_Instrument][Current_Instrument_Split]), 0);
-                        Print_Long(487, (Cur_Height - 112), *(RawSamples[Current_Instrument][0][Current_Instrument_Split] + LoopEnd[Current_Instrument][Current_Instrument_Split]), 0);
-                        Print_Long(114, (Cur_Height - 130), LoopStart[Current_Instrument][Current_Instrument_Split], 0);
-                        Print_Long(314, (Cur_Height - 130), LoopEnd[Current_Instrument][Current_Instrument_Split], 0);
+                        Print_Long(487, (Cur_Height - 130), *(RawSamples[Current_Instrument][0][Current_Instrument_Split] + LoopStart[Current_Instrument][Current_Instrument_Split]), INT_PLAIN);
+                        Print_Long(487, (Cur_Height - 112), *(RawSamples[Current_Instrument][0][Current_Instrument_Split] + LoopEnd[Current_Instrument][Current_Instrument_Split]), INT_PLAIN);
+                        Print_Long(114, (Cur_Height - 130), LoopStart[Current_Instrument][Current_Instrument_Split], INT_PLAIN);
+                        Print_Long(314, (Cur_Height - 130), LoopEnd[Current_Instrument][Current_Instrument_Split], INT_PLAIN);
                         actuloop = 3;
                         break;
                 }
@@ -1056,12 +1056,12 @@ void Mouse_Right_Instrument_Ed(void)
                 if(SamplesSwap[Current_Instrument])
                 {
                     Gui_Draw_Button_Box(729, (Cur_Height - 116) + (18 * 4), 60, 16, "Lock / All", Allow_Global_Pushed | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
-                    Print_Long(729, (Cur_Height - 134) + (18 * 4), Sample_Length_Packed[Current_Instrument][Current_Instrument_Split], 0);
+                    Print_Long(729, (Cur_Height - 134) + (18 * 4), Sample_Length_Packed[Current_Instrument][Current_Instrument_Split], INT_PLAIN);
                 }
                 else
                 {
                     Gui_Draw_Button_Box(729, (Cur_Height - 116) + (18 * 4), 60, 16, "Lock / All", Allow_Global | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
-                    Print_Long(729, (Cur_Height - 134) + (18 * 4), Sample_Length[Current_Instrument][Current_Instrument_Split], 0);
+                    Print_Long(729, (Cur_Height - 134) + (18 * 4), Sample_Length[Current_Instrument][Current_Instrument_Split], INT_PLAIN);
                 }
                 Actualize_Instruments_Synths_List(1);
             }

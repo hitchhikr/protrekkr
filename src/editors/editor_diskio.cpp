@@ -117,7 +117,7 @@ void Draw_DiskIO_Ed(void)
     Gui_Draw_Flat_Box("Disk Operations / Module Credits");
 
     Gui_Draw_Button_Box(254, (Cur_Height - 112), 80, 16, "Calc .ptp Size", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
-    Print_Long(254, (Cur_Height - 94), Final_Mod_Length, 7);
+    Print_Long(254, (Cur_Height - 94), Final_Mod_Length, INT_BYTE);
 
     Gui_Draw_Button_Box(254, (Cur_Height - 76), 80, 16, "Calc Length", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
     Display_Song_Length();

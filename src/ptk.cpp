@@ -1721,7 +1721,7 @@ int Screen_Update(void)
         if(gui_action == GUI_CMD_CALC_FINAL)
         {
             Final_Mod_Length = Test_Mod();
-            Print_Long(254, (Cur_Height - 94), Final_Mod_Length, 7);
+            Print_Long(254, (Cur_Height - 94), Final_Mod_Length, INT_BYTE);
         }
 
         if(gui_action == GUI_CMD_SET_INSTRUMENT_AMPLI)
@@ -7220,7 +7220,7 @@ void Display_Master_Volume(void)
     if(mas_vol > 1.0f) mas_vol = 1.0f;
     Gui_Draw_Button_Box(394, 6, 28, 16, "M.Vol", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
     Real_Slider(394 + 28, 6, (int) (mas_vol * 128.0f), TRUE);
-    sprintf(String, "%ddB", (int) (20 * log10(mas_vol)));
+    sprintf(String, "%.1f dB", (20 * log10(mas_vol)));
     Print_String(String, 394 + 28, 8, 145, BUTTON_TEXT_CENTERED);
 }
 

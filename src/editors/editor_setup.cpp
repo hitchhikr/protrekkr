@@ -304,11 +304,11 @@ void Actualize_Master_Ed(char gode)
             if(Phony_Palette[Real_Palette_Idx].b < 0) Phony_Palette[Real_Palette_Idx].b = 0;
             if(Phony_Palette[Real_Palette_Idx].b > 255) Phony_Palette[Real_Palette_Idx].b = 255;
             Real_Slider(518, (Cur_Height - 85), Ptk_Palette[Real_Palette_Idx].r / 2, TRUE);
-            Print_Long_Small(668, (Cur_Height - 85), Ptk_Palette[Real_Palette_Idx].r, 0, 41, BUTTON_NORMAL | BUTTON_DISABLED);
+            Print_Long_Small(668, (Cur_Height - 85), Ptk_Palette[Real_Palette_Idx].r, INT_PLAIN, 41, BUTTON_NORMAL | BUTTON_DISABLED);
             Real_Slider(518, (Cur_Height - 65), Ptk_Palette[Real_Palette_Idx].g / 2, TRUE);
-            Print_Long_Small(668, (Cur_Height - 65), Ptk_Palette[Real_Palette_Idx].g, 0, 41, BUTTON_NORMAL | BUTTON_DISABLED);
+            Print_Long_Small(668, (Cur_Height - 65), Ptk_Palette[Real_Palette_Idx].g, INT_PLAIN, 41, BUTTON_NORMAL | BUTTON_DISABLED);
             Real_Slider(518, (Cur_Height - 45), Ptk_Palette[Real_Palette_Idx].b / 2, TRUE);
-            Print_Long_Small(668, (Cur_Height - 45), Ptk_Palette[Real_Palette_Idx].b, 0, 41, BUTTON_NORMAL | BUTTON_DISABLED);
+            Print_Long_Small(668, (Cur_Height - 45), Ptk_Palette[Real_Palette_Idx].b, INT_PLAIN, 41, BUTTON_NORMAL | BUTTON_DISABLED);
             Set_Phony_Palette();
             if(gode) 
             {

@@ -166,11 +166,26 @@
 #define CPA_ "\375"
 #define DDT_ "\376"
 
-#if defined(__USE_OPENGL__)
-#define GET_SURFACE(s) (s##_GL)
-#else
-#define GET_SURFACE(s) s
-#endif
+#define INT_PLAIN 0
+#define INT_PERCENT 1
+#define INT_MILLISECOND 2
+#define INT_HERTZ 3
+#define INT_KILOBYTE 5
+#define INT_DEGREE 6
+#define INT_BYTE 7
+#define INT_SMP_START 10
+#define INT_SMP_END 11
+#define INT_SMP_LEN 12
+#define INT_SEMI_TONE 13
+
+#define FLT_PLAIN_3 0
+#define FLT_PERCENT 1
+#define FLT_MILLISECOND 2
+#define FLT_HERTZ 3
+#define FLT_KILOBYTE 5
+#define FLT_DECIBEL 7
+#define FLT_TICK 8
+#define FLT_PLAIN_2 9
 
 // ------------------------------------------------------
 // Structures

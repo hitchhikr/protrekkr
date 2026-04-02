@@ -1567,16 +1567,16 @@ void Print_Long_Small(int x, int y, int value, int mode, int size, int flags)
 
     switch(mode)
     {
-        case 0: sprintf(xstr, "%d", value); break;
-        case 1: sprintf(xstr, "%d%%", value); break;
-        case 2: sprintf(xstr, "%d ms.", value); break;
-        case 3: sprintf(xstr, "%dhz", value); break;
-        case 5: sprintf(xstr, "%d K.", value); break;
-        case 6: sprintf(xstr, "%d Degr.", value); break;
-        case 10: sprintf(xstr, "S: %d", value); break;
-        case 11: sprintf(xstr, "E: %d", value); break;
-        case 12: sprintf(xstr, "L: %d", value); break;
-        case 13: sprintf(xstr, "%d STones", value); break;
+        case INT_PLAIN: sprintf(xstr, "%d", value); break;
+        case INT_PERCENT: sprintf(xstr, "%d%%", value); break;
+        case INT_MILLISECOND: sprintf(xstr, "%d ms.", value); break;
+        case INT_HERTZ: sprintf(xstr, "%dhz", value); break;
+        case INT_KILOBYTE: sprintf(xstr, "%d K.", value); break;
+        case INT_DEGREE: sprintf(xstr, "%d Degr.", value); break;
+        case INT_SMP_START: sprintf(xstr, "S: %d", value); break;
+        case INT_SMP_END: sprintf(xstr, "E: %d", value); break;
+        case INT_SMP_LEN: sprintf(xstr, "L: %d", value); break;
+        case INT_SEMI_TONE: sprintf(xstr, "%d S.Tones", value); break;
     }
     Gui_Draw_Button_Box(x, y, size - 1, 16, xstr, flags);
 }
@@ -1587,21 +1587,21 @@ void Print_Long(int x, int y, int cant, int mode)
 
     switch(mode)
     {
-        case 0: sprintf(xstr, "%d", cant); break;
-        case 1: sprintf(xstr, "%d%%", cant); break;
-        case 2: sprintf(xstr, "%d ms.", cant); break;
-        case 3: sprintf(xstr, "%d Hz.", cant); break;
-        case 5: sprintf(xstr, "%d K.", cant); break;
-        case 6: sprintf(xstr, "%d Degr.", cant); break;
-        case 7:
+        case INT_PLAIN: sprintf(xstr, "%d", cant); break;
+        case INT_PERCENT: sprintf(xstr, "%d%%", cant); break;
+        case INT_MILLISECOND: sprintf(xstr, "%d ms.", cant); break;
+        case INT_HERTZ: sprintf(xstr, "%d Hz.", cant); break;
+        case INT_KILOBYTE: sprintf(xstr, "%d K.", cant); break;
+        case INT_DEGREE: sprintf(xstr, "%d Degr.", cant); break;
+        case INT_BYTE:
             sprintf(xstr, "%.07d Bytes", cant);
             Gui_Draw_Button_Box(x, y, 80, 16, xstr, BUTTON_NORMAL | BUTTON_DISABLED);
             break;
-        case 10: sprintf(xstr, "S: %d", cant); break;
-        case 11: sprintf(xstr, "E: %d", cant); break;
-        case 12: sprintf(xstr, "L: %d", cant); break;
+        case INT_SMP_START: sprintf(xstr, "S: %d", cant); break;
+        case INT_SMP_END: sprintf(xstr, "E: %d", cant); break;
+        case INT_SMP_LEN: sprintf(xstr, "L: %d", cant); break;
     }
-    if(mode != 7)
+    if(mode != INT_BYTE)
     {
         Gui_Draw_Button_Box(x, y, 60, 16, xstr, BUTTON_NORMAL | BUTTON_DISABLED);
     }
@@ -1613,12 +1613,22 @@ void outfloat(int x, int y, float cant, int mode)
 
     switch (mode)
     {
-        case 0: sprintf(xstr, "%.3f", cant); break;
-        case 1: sprintf(xstr, "%.2f%%", cant); break;
-        case 2: sprintf(xstr, "%.3f ms.", cant); break;
-        case 3: sprintf(xstr, "%.3f Hz.", cant); break;
-        case 5: sprintf(xstr, "%.3f K.", cant); break;
-        case 8: sprintf(xstr, "%.1f Tk.", cant); break;
+        case FLT_PLAIN_3: sprintf(xstr, "%.3f", cant); break;
+        case FLT_PERCENT: sprintf(xstr, "%.2f%%", cant); break;
+        case FLT_MILLISECOND: sprintf(xstr, "%.3f ms.", cant); break;
+        case FLT_HERTZ: sprintf(xstr, "%.3f Hz.", cant); break;
+        case FLT_KILOBYTE: sprintf(xstr, "%.3f K.", cant); break;
+        case FLT_DECIBEL: 
+            if(cant == 0.0f)
+            {
+                sprintf(xstr, "(Mute)"); 
+            }
+            else
+            {
+                sprintf(xstr, "%.1f dB", 20 * log10(cant));
+            }
+            break;
+        case FLT_TICK: sprintf(xstr, "%.1f Tk.", cant); break;
     }
     Gui_Draw_Button_Box(x, y, 60, 16, xstr, BUTTON_NORMAL | BUTTON_DISABLED);
 }
@@ -1629,13 +1639,23 @@ void outfloat_small(int x, int y, float cant, int mode, int size, int flags)
 
     switch (mode)
     {
-        case 0: sprintf(xstr, "%.3f", cant); break;
-        case 1: sprintf(xstr, "%.2f%%", cant); break;
-        case 2: sprintf(xstr, "%.3f ms.", cant); break;
-        case 3: sprintf(xstr, "%.3f Hz", cant); break;
-        case 5: sprintf(xstr, "%.3f K.", cant); break;
-        case 8: sprintf(xstr, "%.1f Tk", cant); break;
-        case 9: sprintf(xstr, "%.2f", cant); break;
+        case FLT_PLAIN_3: sprintf(xstr, "%.3f", cant); break;
+        case FLT_PERCENT: sprintf(xstr, "%.2f%%", cant); break;
+        case FLT_MILLISECOND: sprintf(xstr, "%.3f ms.", cant); break;
+        case FLT_HERTZ: sprintf(xstr, "%.3f Hz", cant); break;
+        case FLT_KILOBYTE: sprintf(xstr, "%.3f K.", cant); break;
+        case FLT_DECIBEL:
+            if(cant == 0.0f)
+            {
+                sprintf(xstr, "(Mute)"); 
+            }
+            else
+            {
+                sprintf(xstr, "%.1f dB", 20 * log10(cant));
+            }
+            break;
+        case FLT_TICK: sprintf(xstr, "%.1f Tk", cant); break;
+        case FLT_PLAIN_2: sprintf(xstr, "%.2f", cant); break;
     }
     Gui_Draw_Button_Box(x, y, size - 1, 16, xstr, flags);
 }

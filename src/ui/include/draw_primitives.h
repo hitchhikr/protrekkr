@@ -55,6 +55,12 @@
 // Constants
 #define UPDATE_STACK_SIZE 2048
 
+#if defined(__USE_OPENGL__)
+#define GET_SURFACE(s) (s##_GL)
+#else
+#define GET_SURFACE(s) s
+#endif
+
 // ------------------------------------------------------
 // Variables
 extern int Cur_Width;

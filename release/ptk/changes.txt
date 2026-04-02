@@ -5,6 +5,7 @@ ProTrekkr releases history
 v2.8.3 PRE 7
 
 - Won't crash if mandatory interface files aren't found.
+- Volumes are now displayed in decibels.
 
 v2.8.3 PRE 6
 

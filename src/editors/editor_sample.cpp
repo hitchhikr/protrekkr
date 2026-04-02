@@ -633,8 +633,8 @@ void Actualize_Sample_Ed(char gode)
             }
             else
             {
-                Print_Long(520, (Cur_Height - 42), LoopStart[Current_Instrument][Current_Instrument_Split], 11);
-                Print_Long(582, (Cur_Height - 42), LoopEnd[Current_Instrument][Current_Instrument_Split], 12);
+                Print_Long(520, (Cur_Height - 42), LoopStart[Current_Instrument][Current_Instrument_Split], INT_SMP_END);
+                Print_Long(582, (Cur_Height - 42), LoopEnd[Current_Instrument][Current_Instrument_Split], INT_SMP_LEN);
             }
         }
 
@@ -642,18 +642,18 @@ void Actualize_Sample_Ed(char gode)
         {
             if(gode == 3 || gode == 0)
             {
-                Print_Long(712, (Cur_Height - 60), sed_display_start, 10);
-                Print_Long(712, (Cur_Height - 42), sed_display_length, 12);
+                Print_Long(712, (Cur_Height - 60), sed_display_start, INT_SMP_START);
+                Print_Long(712, (Cur_Height - 42), sed_display_length, INT_SMP_LEN);
             }
 
             if(gode == 4 || gode == 5 || gode == 0)
             {
-                Print_Long(650, (Cur_Height - 60), sed_real_range_start, 10);
+                Print_Long(650, (Cur_Height - 60), sed_real_range_start, INT_SMP_START);
             }
 
             if(gode == 4 || gode == 5 || gode == 0)
             {
-                Print_Long(650, (Cur_Height - 42), sed_real_range_end, 11);
+                Print_Long(650, (Cur_Height - 42), sed_real_range_end, INT_SMP_END);
             }
 
             // Rotate 1 sample left
@@ -1598,10 +1598,10 @@ void Refresh_Sample(int clear_sel)
         sed_range_end = 0;
     }
     draw_sampled_wave = TRUE;
-    Print_Long(712, (Cur_Height - 60), sed_display_start, 10);
-    Print_Long(712, (Cur_Height - 42), sed_display_length, 12);
-    Print_Long(650, (Cur_Height - 60), sed_range_start, 10);
-    Print_Long(650, (Cur_Height - 42), sed_range_end, 11);
+    Print_Long(712, (Cur_Height - 60), sed_display_start, INT_SMP_START);
+    Print_Long(712, (Cur_Height - 42), sed_display_length, INT_SMP_LEN);
+    Print_Long(650, (Cur_Height - 60), sed_range_start, INT_SMP_START);
+    Print_Long(650, (Cur_Height - 42), sed_range_end, INT_SMP_END);
     Check_Loops();
     if(userscreen == USER_SCREEN_INSTRUMENT_EDIT)
     {
