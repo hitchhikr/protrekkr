@@ -162,9 +162,12 @@ void Save_Config(void)
 	Write_Data_Swap(&Windowed_Width, sizeof(int), 1, out);
 	Write_Data_Swap(&Windowed_Height, sizeof(int), 1, out);
 
-    Get_Window_Pos();
-	if(Cur_Left < 0) Cur_Left = 0;
-	if(Cur_Top < 0) Cur_Top = 0;
+    if (!FullScreen)
+    {
+        Get_Window_Pos();
+    }
+    if(Cur_Left <= 0) Cur_Left = SDL_WINDOWPOS_CENTERED;
+	if(Cur_Top <= 0) Cur_Top = SDL_WINDOWPOS_CENTERED;
 	Write_Data_Swap(&Cur_Left, sizeof(int), 1, out);
 	Write_Data_Swap(&Cur_Top, sizeof(int), 1, out);
 

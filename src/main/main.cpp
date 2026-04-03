@@ -459,6 +459,13 @@ void Get_Window_Pos(void)
 }
 
 // ------------------------------------------------------
+// Set the position of the window
+void Set_Window_Pos(void)
+{
+    SDL_SetWindowPosition(Main_Window, Cur_Left, Cur_Top);
+}
+
+// ------------------------------------------------------
 // Use a thrad semaphore to lock & unlock the audio thread so we can perform modifications
 void Lock_Audio_Thread(void)
 {
@@ -656,6 +663,9 @@ int main(int argc, char *argv[])
     {
         Save_Cur_Width = Cur_Width;
         Save_Cur_Height = Cur_Height;
+        // We start with in full screen mode
+        Cur_Left = SDL_WINDOWPOS_CENTERED;
+        Cur_Top = SDL_WINDOWPOS_CENTERED;
     }
 
     if(!strlen(Keyboard_Name))
@@ -1082,6 +1092,13 @@ int main(int argc, char *argv[])
                 case SDL_WINDOWEVENT:
                     switch (Events[i].window.event)
                     {
+                        case SDL_WINDOWEVENT_MOVED:
+                            if (!FullScreen)
+                            {
+                                Cur_Left = Events[i].window.data1;
+                                Cur_Top = Events[i].window.data2;
+                            }
+                            break;
                         case SDL_WINDOWEVENT_RESIZED:
                             // Nullify it
                             if (!FullScreen)
@@ -1249,7 +1266,10 @@ void Switch_FullScreen()
     }
     else
     {
+        // Just in case we started in full screen mode
         SDL_SetWindowFullscreen(Main_Window, 0);
+        Set_Window_Pos();
+        SDL_SetWindowResizable(Main_Window, SDL_TRUE);
     }
     Renew_Gfx_Context(FALSE);
 }
@@ -1311,6 +1331,7 @@ int Open_Window(int Width, int Height)
         return(FALSE);
     }
     SDL_GL_SetSwapInterval(0);
+    Set_Window_Pos();
 
     Cur_Width = Width;
     Cur_Height = Height;
