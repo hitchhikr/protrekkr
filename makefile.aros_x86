@@ -38,7 +38,6 @@ protrekkr: $(EXEOBJS)
 	$(STRIP) --strip-unneeded ./release/ptk/ptk_aros
 	cp ptk_aros.info ./release/ptk/ptk_aros.info
 	-rm -f $(EXEOBJS)
-	(make -f makefile.aros_x86_ogl)
 
 ptk.o: src/ptk.cpp
 	$(CC) -c -o $(@) $(FLAGS) $<
