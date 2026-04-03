@@ -34,9 +34,6 @@
 
 // ------------------------------------------------------
 // Includes
-#if !defined(__GCC__)
-#define _WIN32_WINNT 0x0500
-#endif
 #include <windows.h>
 #include <ptk_types.h>
 

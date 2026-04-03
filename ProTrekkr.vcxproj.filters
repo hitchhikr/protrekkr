@@ -1,0 +1,418 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="src\editors\editor_303.cpp">
+      <Filter>editors sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\editors\editor_diskio.cpp">
+      <Filter>editors sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\editors\editor_fx_setup.cpp">
+      <Filter>editors sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\editors\editor_instrument.cpp">
+      <Filter>editors sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\editors\editor_midi.cpp">
+      <Filter>editors sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\editors\editor_pattern.cpp">
+      <Filter>editors sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\editors\editor_reverb.cpp">
+      <Filter>editors sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\editors\editor_sample.cpp">
+      <Filter>editors sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\editors\editor_sequencer.cpp">
+      <Filter>editors sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\editors\editor_setup.cpp">
+      <Filter>editors sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\editors\editor_synth.cpp">
+      <Filter>editors sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\editors\editor_track_fx.cpp">
+      <Filter>editors sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\editors\editor_track.cpp">
+      <Filter>editors sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main\main.cpp">
+      <Filter>main sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ptk.cpp">
+      <Filter>main sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main\timer.cpp">
+      <Filter>main sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\files\config.cpp">
+      <Filter>config sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\midi\midi.cpp">
+      <Filter>midi sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\midi\midi_dispatch.cpp">
+      <Filter>midi sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\midi\rtmidi.cpp">
+      <Filter>midi sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\editors\patterns_blocks.cpp">
+      <Filter>editors sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ui\misc_draw.cpp">
+      <Filter>graphic sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ui\draw_primitives.cpp">
+      <Filter>graphic sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\files\303s.cpp">
+      <Filter>files sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\files\midi_cfg.cpp">
+      <Filter>files sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\files\files.cpp">
+      <Filter>files sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\files\files_list.cpp">
+      <Filter>files sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\files\insts.cpp">
+      <Filter>files sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\files\mods.cpp">
+      <Filter>files sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\files\ptps.cpp">
+      <Filter>files sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\files\s3m.cpp">
+      <Filter>files sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ui\requesters.cpp">
+      <Filter>graphic sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\files\patterns.cpp">
+      <Filter>files sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\files\reverbs.cpp">
+      <Filter>files sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\samples\aiff\aiff.cpp">
+      <Filter>files sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\samples\wav\riff.cpp">
+      <Filter>files sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\samples\wav\riff_interface.cpp">
+      <Filter>files sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\samples\aiff\aiff_interface.cpp">
+      <Filter>files sources</Filter>
+    </ClCompile>
+    <ClCompile Include="release\ptk\replay\lib\replay.cpp">
+      <Filter>replay sources</Filter>
+    </ClCompile>
+    <ClCompile Include="release\ptk\replay\lib\sounddriver\sounddriver_windows.cpp">
+      <Filter>replay sources</Filter>
+    </ClCompile>
+    <ClCompile Include="release\ptk\replay\lib\tb_303.cpp">
+      <Filter>replay sources</Filter>
+    </ClCompile>
+    <ClCompile Include="release\ptk\replay\lib\synth.cpp">
+      <Filter>replay sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\files\synths.cpp">
+      <Filter>files sources</Filter>
+    </ClCompile>
+    <ClCompile Include="release\ptk\replay\lib\samples_unpack.cpp">
+      <Filter>replay sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\samples\wavpack\pack.cpp">
+      <Filter>samples packing sources\wavpack sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\samples\wavpack\tinypack.cpp">
+      <Filter>samples packing sources\wavpack sources</Filter>
+    </ClCompile>
+    <ClCompile Include="release\ptk\replay\lib\wavpack.cpp">
+      <Filter>samples packing sources\wavpack sources</Filter>
+    </ClCompile>
+    <ClCompile Include="release\ptk\replay\lib\endianness.cpp">
+      <Filter>replay sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\samples\samples_ops.cpp">
+      <Filter>editors sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\samples\wavpack\bits.cpp">
+      <Filter>samples packing sources\wavpack sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\samples\wavpack\wputils.cpp">
+      <Filter>samples packing sources\wavpack sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\samples\wavpack\words.cpp">
+      <Filter>samples packing sources\wavpack sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\samples\samples_pack.cpp">
+      <Filter>samples packing includes</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\editors\include\editor_303.h">
+      <Filter>editors includes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\editors\include\editor_diskio.h">
+      <Filter>editors includes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\editors\include\editor_fx_setup.h">
+      <Filter>editors includes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\editors\include\editor_instrument.h">
+      <Filter>editors includes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\editors\include\editor_midi.h">
+      <Filter>editors includes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\editors\include\editor_pattern.h">
+      <Filter>editors includes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\editors\include\editor_reverb.h">
+      <Filter>editors includes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\editors\include\editor_sequencer.h">
+      <Filter>editors includes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\editors\include\editor_setup.h">
+      <Filter>editors includes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\editors\include\editor_sample.h">
+      <Filter>editors includes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\editors\include\editor_synth.h">
+      <Filter>editors includes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\editors\include\editor_track.h">
+      <Filter>editors includes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\editors\include\editor_track_fx.h">
+      <Filter>editors includes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\main\include\main.h">
+      <Filter>main includes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\variables.h">
+      <Filter>main includes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\version.h">
+      <Filter>main includes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\ptk.h">
+      <Filter>main includes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\main\include\timer.h">
+      <Filter>main includes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\midi\include\midi.h">
+      <Filter>midi includes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\files\include\config.h">
+      <Filter>config includes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\midi\include\midi_dispatch.h">
+      <Filter>midi includes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\midi\include\rtmidi.h">
+      <Filter>midi includes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\editors\include\patterns_blocks.h">
+      <Filter>editors includes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\main\include\resource.h">
+      <Filter>resources</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UI\include\misc_draw.h">
+      <Filter>graphic includes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\include\draw_primitives.h">
+      <Filter>graphic includes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\files\include\midi_cfg.h">
+      <Filter>files includes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\files\include\303s.h">
+      <Filter>files includes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\files\include\files_list.h">
+      <Filter>files includes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\files\include\insts.h">
+      <Filter>files includes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\files\include\s3m.h">
+      <Filter>files includes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\files\include\ptps.h">
+      <Filter>files includes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\include\requesters.h">
+      <Filter>graphic includes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\files\include\patterns.h">
+      <Filter>files includes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\files\include\reverbs.h">
+      <Filter>files includes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\samples\aiff\include\aiff.h">
+      <Filter>files includes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\files\include\files.h">
+      <Filter>files includes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\samples\wav\include\riff.h">
+      <Filter>files includes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\samples\wav\include\riff_interface.h">
+      <Filter>files includes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\samples\aiff\include\aiff_interface.h">
+      <Filter>files includes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\files\include\mods.h">
+      <Filter>files includes</Filter>
+    </ClInclude>
+    <ClInclude Include="release\ptk\replay\lib\include\replay.h">
+      <Filter>replay includes</Filter>
+    </ClInclude>
+    <ClInclude Include="release\ptk\replay\lib\include\ptkreplay.h">
+      <Filter>replay includes</Filter>
+    </ClInclude>
+    <ClInclude Include="release\ptk\replay\lib\include\ptk_types.h">
+      <Filter>replay includes</Filter>
+    </ClInclude>
+    <ClInclude Include="release\ptk\replay\lib\include\ptk_def_properties.h">
+      <Filter>replay includes</Filter>
+    </ClInclude>
+    <ClInclude Include="release\ptk\replay\lib\sounddriver\include\sounddriver_windows.h">
+      <Filter>replay includes</Filter>
+    </ClInclude>
+    <ClInclude Include="release\ptk\replay\lib\include\tb_303.h">
+      <Filter>replay includes</Filter>
+    </ClInclude>
+    <ClInclude Include="release\ptk\replay\lib\include\synth.h">
+      <Filter>replay includes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\files\include\synths.h">
+      <Filter>files includes</Filter>
+    </ClInclude>
+    <ClInclude Include="release\ptk\replay\lib\include\samples_unpack.h">
+      <Filter>replay includes</Filter>
+    </ClInclude>
+    <ClInclude Include="release\ptk\replay\lib\include\wavpack.h">
+      <Filter>samples packing includes\wavpack includes</Filter>
+    </ClInclude>
+    <ClInclude Include="release\ptk\replay\lib\include\endianness.h">
+      <Filter>replay includes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\midi\include\rterror.h">
+      <Filter>midi includes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\samples\include\samples_ops.h">
+      <Filter>editors includes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\samples\wav\include\ddc.h">
+      <Filter>files includes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\samples\wavpack\include\wplocal.h">
+      <Filter>samples packing includes\wavpack includes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\samples\include\samples_pack.h">
+      <Filter>samples packing sources</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="src\main\project.ico">
+      <Filter>resources</Filter>
+    </CustomBuild>
+    <CustomBuild Include="src\main\project_16x16.ico">
+      <Filter>resources</Filter>
+    </CustomBuild>
+    <CustomBuild Include="release\ptk\license.txt">
+      <Filter>misc files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="release\ptk\changes.txt">
+      <Filter>misc files</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="replay includes">
+      <UniqueIdentifier>{1c5f091d-9c05-47dd-affc-34c23bb8b96c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="main sources">
+      <UniqueIdentifier>{9454b259-0525-44d2-8a53-022cb48c607b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="main includes">
+      <UniqueIdentifier>{4fe3ae6b-14d4-4823-95f6-bcd9201ca554}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="files sources">
+      <UniqueIdentifier>{678c6dc9-416c-4b1b-a18f-c80be2e9d22e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="files includes">
+      <UniqueIdentifier>{230410b5-36c2-4dbf-a05f-867fab0f6ad7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="editors sources">
+      <UniqueIdentifier>{a0feec43-7f12-416b-8539-ae2312007705}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="editors includes">
+      <UniqueIdentifier>{6d24d981-15e8-43b5-8daa-166614501bb1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="midi sources">
+      <UniqueIdentifier>{f3f6b3cd-476d-492d-91d0-25786fc8bdde}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="midi includes">
+      <UniqueIdentifier>{0ff6f933-805d-430e-b5a8-1c94bfd7af01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="config includes">
+      <UniqueIdentifier>{37f0f422-9714-4eea-9fea-6005aab491cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="config sources">
+      <UniqueIdentifier>{f4a5e340-e966-42d7-a395-ad5f4f8f00dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources">
+      <UniqueIdentifier>{a1ff0bb0-bf33-4877-8789-73000afb02cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="misc files">
+      <UniqueIdentifier>{ebff7962-6b5b-4a02-b1bc-a8f731b4a1b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="graphic sources">
+      <UniqueIdentifier>{ff98bef1-71e4-4e90-98cf-dfd5c008a1aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="graphic includes">
+      <UniqueIdentifier>{55d6ed3b-2e92-48bf-ab45-700dd99945a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="replay sources">
+      <UniqueIdentifier>{e11d4cb7-a31a-494f-90df-11eedb047915}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="samples packing sources">
+      <UniqueIdentifier>{75d92c52-db2f-414f-b0d7-a0c02e477965}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="samples packing includes">
+      <UniqueIdentifier>{7897f32f-cd4f-4311-b2cd-28d33825e87f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="samples packing includes\wavpack includes">
+      <UniqueIdentifier>{ce7b796a-3e7e-40f3-9087-3ab93dc4b583}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="samples packing sources\wavpack sources">
+      <UniqueIdentifier>{c3368d07-9e19-4ae8-9fd5-42f6dd63a73a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="src\main\resources.rc">
+      <Filter>resources</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

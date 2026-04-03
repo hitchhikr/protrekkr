@@ -40,8 +40,8 @@ extern int patt_highlight;
 extern char FullScreen;
 extern int Cur_Left;
 extern int Cur_Top;
-extern int Cur_Width;
-extern int Cur_Height;
+extern int Windowed_Width;
+extern int Windowed_Height;
 extern int Continuous_Scroll;
 extern char AutoSave;
 extern char AutoBackup;
@@ -159,9 +159,10 @@ void Save_Config(void)
 	// Save the compelte midi automation config
 	Save_Midi_Cfg_Data(Write_Data, Write_Data_Swap, out);
 
-	Write_Data_Swap(&Cur_Width, sizeof(int), 1, out);
-	Write_Data_Swap(&Cur_Height, sizeof(int), 1, out);
+	Write_Data_Swap(&Windowed_Width, sizeof(int), 1, out);
+	Write_Data_Swap(&Windowed_Height, sizeof(int), 1, out);
 
+    Get_Window_Pos();
 	if(Cur_Left < 0) Cur_Left = 0;
 	if(Cur_Top < 0) Cur_Top = 0;
 	Write_Data_Swap(&Cur_Left, sizeof(int), 1, out);
@@ -291,7 +292,7 @@ void Load_Config(void)
                 Read_Data(&Ptk_Palette[Real_Palette_Idx].r, sizeof(char), 1, in);
                 Read_Data(&Ptk_Palette[Real_Palette_Idx].g, sizeof(char), 1, in);
                 Read_Data(&Ptk_Palette[Real_Palette_Idx].b, sizeof(char), 1, in);
-                Ptk_Palette[Real_Palette_Idx].unused = 0;
+                Ptk_Palette[Real_Palette_Idx].a = 0;
             }
             Read_Data(&See_Prev_Next_Pattern, sizeof(See_Prev_Next_Pattern), 1, in);
             Read_Data_Swap(&Beveled, sizeof(Beveled), 1, in);
@@ -333,8 +334,8 @@ void Load_Config(void)
             // Reload the complete midi automation config
             Load_Midi_Cfg_Data(Read_Data, Read_Data_Swap, in);
 
-            Read_Data_Swap(&Cur_Width, sizeof(int), 1, in);
-            Read_Data_Swap(&Cur_Height, sizeof(int), 1, in);
+            Read_Data_Swap(&Windowed_Width, sizeof(int), 1, in);
+            Read_Data_Swap(&Windowed_Height, sizeof(int), 1, in);
 
             Read_Data_Swap(&Cur_Left, sizeof(int), 1, in);
             Read_Data_Swap(&Cur_Top, sizeof(int), 1, in);
@@ -376,8 +377,6 @@ void Load_Config(void)
             {
                 Read_Data(&Save_Step_Play, sizeof(Save_Step_Play), 1, in);
             }
-
-            Set_Window_Pos(Cur_Left, Cur_Top);
         }
         fclose(in);
     }

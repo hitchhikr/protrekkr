@@ -31,11 +31,10 @@ RemObj:
 
 protrekkr_arm64: $(EXEOBJS_ARM64)
 	-rm -f ./release/ptk/protrekkr_arm64.app/Contents/MacOS/Protrekkr
-	(cd src/extralibs/sdl_draw; make -f makefile.macos_arm64)
 	(cd src/extralibs/zlib-1.2.3; make -f makefile.macos_arm64)
 	(cd src/extralibs/bin2c; make -f makefile.macos_arm64)
 	$(CXX) -o ./release/ptk/protrekkr_arm64.app/Contents/MacOS/Protrekkr \
-           -L./ -L/usr/local/lib -L/library/frameworks -Lsrc/extralibs/sdl_draw -Lsrc/extralibs/zlib-1.2.3 $(FLAGS_ARM64) $(EXEOBJS_ARM64) $(LIBS_ARM64)
+           -L./ -L/usr/local/lib -L/library/frameworks -Lsrc/extralibs/zlib-1.2.3 $(FLAGS_ARM64) $(EXEOBJS_ARM64) $(LIBS_ARM64)
 	strip -x -X -S ./release/ptk/protrekkr_arm64.app/Contents/MacOS/Protrekkr
 	chmod +x ./release/ptk/protrekkr_arm64.app/Contents/MacOS/Protrekkr
 	install_name_tool ./release/ptk/protrekkr_arm64.app/Contents/MacOS/Protrekkr -change /usr/local/lib/libSDL-1.2.0.dylib @executable_path/libSDL-1.2.0.dylib
@@ -133,13 +132,13 @@ rtmidi_arm64.o: src/midi/rtmidi.cpp
 midi_dispatch_arm64.o: src/midi/midi_dispatch.cpp
 	$(CC) -c -o $(@) $(FLAGS_ARM64) $<
 
-timer_arm64.o: src/support/timer.cpp
+timer_arm64.o: src/main/timer.cpp
 	$(CC) -c -o $(@) $(FLAGS_ARM64) $<
 
-main_arm64.o: src/support/main.cpp
+main_arm64.o: src/main/main.cpp
 	$(CC) -c -o $(@) $(FLAGS_ARM64) $<
 
-sdlmain_arm64.o: src/support/sdlmain.m
+sdlmain_arm64.o: src/main/sdlmain.m
 	$(CC) -c -o $(@) $(FLAGS_ARM64) $<
 
 misc_draw_arm64.o: src/ui/misc_draw.cpp

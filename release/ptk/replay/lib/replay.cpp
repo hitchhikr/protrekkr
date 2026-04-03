@@ -4943,7 +4943,7 @@ void Play_Instrument(int channel, int sub_channel)
                     if(!no_retrig_note)
                     {
                         sp_Position[channel][sub_channel].int_pos = Sel_Start;
-                        sp_Position[channel][sub_channel].flt_pos = Sel_Start;
+                        sp_Position[channel][sub_channel].flt_pos = (float) Sel_Start;
                     }
                     Player_NS[channel][sub_channel] = Sel_End;
                     if(!glide)
@@ -4965,7 +4965,7 @@ void Play_Instrument(int channel, int sub_channel)
                         if(!no_retrig_note)
                         {
                             sp_Position[channel][sub_channel].int_pos = offset << 8;
-                            sp_Position[channel][sub_channel].flt_pos = offset << 8;
+                            sp_Position[channel][sub_channel].flt_pos = (float) (offset << 8);
                         }
                     }
                 }

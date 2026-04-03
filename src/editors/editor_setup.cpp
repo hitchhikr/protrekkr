@@ -35,15 +35,16 @@
 #include "include/editor_sequencer.h"
 #include "include/editor_pattern.h"
 #include "../midi/include/midi.h"
-#include "../support/include/main.h"
+#include "../main/include/main.h"
 
 // ------------------------------------------------------
 // Variables
 extern int Song_Playing_Pattern;
 extern int patt_highlight;
 extern char FullScreen;
-extern int Cur_Width;
-extern int Cur_Height;
+extern int do_resize;
+extern int FullScreen_Width;
+extern int FullScreen_Height;
 extern char AutoSave;
 extern char AutoBackup;
 extern char AutoReload;
@@ -61,10 +62,6 @@ extern int metronome_magnify;
 extern int Cur_Screen_Mode;
 extern int Max_Screen_Mode;
 int Changing_Screen_Mode = 0;
-extern int Orig_Screen_Width;
-extern int Orig_Screen_Height;
-extern int Startup_Width;
-extern int Startup_Height;
 
 extern int Nbr_Keyboards;
 extern int Keyboard_Idx;
@@ -223,7 +220,7 @@ void Actualize_Master_Ed(char action)
         }
         if(action == 7)
         {
-            Update_Pattern(0);
+            Update_Pattern(1);
         }
 
         // Use decimal numbering for rows
@@ -270,7 +267,7 @@ void Actualize_Master_Ed(char action)
                 Gui_Draw_Button_Box(446 + 31, (Cur_Height - 45), 29, 16, "Off", BUTTON_PUSHED | BUTTON_TEXT_CENTERED);
             }
             Draw_Pattern_Right_Stuff();
-            Update_Pattern(0);
+            Update_Pattern(1);
         }
 
         // Full screen
@@ -357,21 +354,9 @@ void Actualize_Master_Ed(char action)
             {
                 Load_Keyboard_Def(Get_Keyboard_FileName());
             }
-
-#if defined(__WIN32__)
-            Gui_Draw_Button_Box(520 + 62 + 2, (Cur_Height - 125), 16, 16, "\03", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
-#else
             Gui_Draw_Button_Box(520 + 62 + 2, (Cur_Height - 125), 16, 16, "\03", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
-#endif            
-
             Gui_Draw_Button_Box(520 + 62 + 2 + 18, (Cur_Height - 125), 106, 16, Get_Keyboard_Label(), BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
-
-#if defined(__WIN32__)
-            Gui_Draw_Button_Box(520 + 62 + 2 + 108 + 18, (Cur_Height - 125), 16, 16, "\04", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
-#else
             Gui_Draw_Button_Box(520 + 62 + 2 + 108 + 18, (Cur_Height - 125), 16, 16, "\04", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
-#endif
-
         }
 
         // Paste across patterns
@@ -417,7 +402,7 @@ void Actualize_Master_Ed(char action)
             }
             if(action == 19)
             {
-                Update_Pattern(0);
+                Update_Pattern(1);
             }
         }
 
@@ -433,7 +418,7 @@ void Actualize_Master_Ed(char action)
                     Gui_Draw_Button_Box(520 + 18 + (18 + 108) + 2 + 20, (Cur_Height - 105), 40, 16, "Shades", BUTTON_PUSHED | BUTTON_TEXT_CENTERED);
                     break;
             }
-            Update_Pattern(0);
+            Update_Pattern(1);
         }
 
         // Set default size of patterns
@@ -553,12 +538,10 @@ void Actualize_Master_Ed(char action)
                         Cur_Screen_Mode = Try_Screen_Mode;
                     }
             
-                    Orig_Screen_Width = Get_Screen_Rect(Cur_Screen_Mode)->w;
-                    Orig_Screen_Height = Get_Screen_Rect(Cur_Screen_Mode)->h;
-                    Startup_Width = Orig_Screen_Width;
-                    Startup_Height = Orig_Screen_Height;
-                    if(Startup_Width < SCREEN_WIDTH) Startup_Width = SCREEN_WIDTH;
-                    if(Startup_Height < SCREEN_HEIGHT) Startup_Height = SCREEN_HEIGHT;
+                    FullScreen_Width = Get_Screen_Rect(Cur_Screen_Mode)->w;
+                    FullScreen_Height = Get_Screen_Rect(Cur_Screen_Mode)->h;
+                    if(FullScreen_Width < SCREEN_WIDTH) FullScreen_Width = SCREEN_WIDTH;
+                    if(FullScreen_Height < SCREEN_HEIGHT) FullScreen_Height = SCREEN_HEIGHT;
                     Changing_Screen_Mode = 0;
                 }
                 if(Cur_Screen_Mode > (Max_Screen_Mode - 1))
@@ -590,7 +573,7 @@ void Actualize_Master_Ed(char action)
         // There was a palette change
         if(RefreshTex)
         {
-            Set_Pictures_And_Palettes(FALSE);
+            Renew_Gfx_Context(FALSE);
         }
     }
 }
@@ -735,7 +718,7 @@ void Mouse_Left_Master_Ed(void)
             teac = 0;
             gui_action = GUI_CMD_UPDATE_SETUP_ED;
             Actualize_Sequencer();
-            Update_Pattern(0);
+            Update_Pattern(1);
         }
 
         // Rows decimal off
@@ -745,7 +728,7 @@ void Mouse_Left_Master_Ed(void)
             teac = 0;
             gui_action = GUI_CMD_UPDATE_SETUP_ED;
             Actualize_Sequencer();
-            Update_Pattern(0);
+            Update_Pattern(1);
         }
 
         // See prev/next pattern
@@ -754,7 +737,7 @@ void Mouse_Left_Master_Ed(void)
             See_Prev_Next_Pattern = TRUE;
             teac = 13;
             gui_action = GUI_CMD_UPDATE_SETUP_ED;
-            Update_Pattern(0);
+            Update_Pattern(1);
         }
 
         // See prev/next pattern
@@ -763,7 +746,7 @@ void Mouse_Left_Master_Ed(void)
             See_Prev_Next_Pattern = FALSE;
             teac = 13;
             gui_action = GUI_CMD_UPDATE_SETUP_ED;
-            Update_Pattern(0);
+            Update_Pattern(1);
         }
 
         // Continuous scroll
@@ -829,7 +812,7 @@ void Mouse_Left_Master_Ed(void)
             {
                 FullScreen = TRUE;
                 teac = 9;
-                Switch_FullScreen(Cur_Width, Cur_Height, TRUE, FALSE);
+                do_resize = TRUE;
             }
         }
 
@@ -840,7 +823,7 @@ void Mouse_Left_Master_Ed(void)
             {
                 FullScreen = FALSE;
                 teac = 9;
-                Switch_FullScreen(Cur_Width, Cur_Height, TRUE, TRUE);
+                do_resize = TRUE;
             }
         }
 
@@ -1019,7 +1002,6 @@ void Mouse_Left_Master_Ed(void)
             teac = 15;
         }
 
-#if !defined(__WIN32__)
         // Keyboard
         if(Check_Mouse(520 + 62 + 2, (Cur_Height - 125), 16, 16))
         {
@@ -1035,7 +1017,6 @@ void Mouse_Left_Master_Ed(void)
             gui_action = GUI_CMD_UPDATE_SETUP_ED;
             teac = 16;
         }
-#endif
 
         // Metronome
         if(Check_Mouse(8 + 112, (Cur_Height - 125), 16, 16))
@@ -1083,7 +1064,7 @@ void Mouse_Left_Master_Ed(void)
             leading_zeroes_char_row = 0;
             teac = 26;
             gui_action = GUI_CMD_UPDATE_SETUP_ED;
-            Update_Pattern(0);
+            Update_Pattern(1);
         }
 
         // Leading 0s off
@@ -1094,7 +1075,7 @@ void Mouse_Left_Master_Ed(void)
             leading_zeroes_char_row = 20;
             teac = 26;
             gui_action = GUI_CMD_UPDATE_SETUP_ED;
-            Update_Pattern(0);
+            Update_Pattern(1);
         }
 
         // Splash Screen on

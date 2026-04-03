@@ -1,0 +1,438 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="release|Win32">
+      <Configuration>release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <SccProjectName />
+    <SccLocalPath />
+    <ProjectGuid>{DB9B3372-9489-408F-81C4-73903BC53C48}</ProjectGuid>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='release|Win32'">
+    <OutDir>$(SolutionDir)release\ptk\</OutDir>
+    <IntDir>.\release\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(IncludePath)</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(LibraryPath)</LibraryPath>
+    <TargetName>ptk_win</TargetName>
+    <GenerateManifest>false</GenerateManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)release\ptk\</OutDir>
+    <IntDir>.\Debug\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(IncludePath)</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(LibraryPath)</LibraryPath>
+    <GenerateManifest>false</GenerateManifest>
+    <TargetName>ptk_win</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='release|Win32'">
+    <ClCompile>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <StringPooling>true</StringPooling>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <Optimization>MaxSpeed</Optimization>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>Level3</WarningLevel>
+      <AdditionalIncludeDirectories>release\ptk\replay\lib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>__WIN32__;NDEBUG;_WINDOWS;__WINDOWS_MM__;__MOT_SWAP__;__MP3_CODEC__;__AT3_CODEC__;__GSM_CODEC__;__ADPCM_CODEC__;__TRUESPEECH_CODEC__;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AssemblerListingLocation>.\release\</AssemblerListingLocation>
+      <BrowseInformation>true</BrowseInformation>
+      <PrecompiledHeaderOutputFile>.\release\ProTrekkr.pch</PrecompiledHeaderOutputFile>
+      <ObjectFileName>.\release\</ObjectFileName>
+      <ProgramDataBaseFileName>.\release\</ProgramDataBaseFileName>
+      <AdditionalOptions> /Gs </AdditionalOptions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+    </ClCompile>
+    <Midl>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TypeLibraryName>.\release\ProTrekkr.tlb</TypeLibraryName>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <TargetEnvironment>Win32</TargetEnvironment>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0407</Culture>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>.\release\ProTrekkr.bsc</OutputFile>
+    </Bscmake>
+    <Link>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <OutputFile>release/ptk/ptk_win.exe</OutputFile>
+      <AdditionalDependencies>sdl2.lib;dsound.lib;msacm32.lib;zlib.lib;winmm.lib;shlwapi.lib;sdl2main.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>
+      </IgnoreSpecificDefaultLibraries>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <Optimization>Disabled</Optimization>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>Level3</WarningLevel>
+      <MinimalRebuild>false</MinimalRebuild>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <AdditionalIncludeDirectories>release\ptk\replay\lib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>__WIN32__;_DEBUG;_WINDOWS-;__WINDOWS_MM__;__MOT_SWAP__;__MP3_CODEC__;__AT3_CODEC__;__GSM_CODEC__;__ADPCM_CODEC__;__TRUESPEECH_CODEC__;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AssemblerListingLocation>.\Debug\</AssemblerListingLocation>
+      <BrowseInformation>true</BrowseInformation>
+      <PrecompiledHeaderOutputFile>.\Debug\ProTrekkr.pch</PrecompiledHeaderOutputFile>
+      <ObjectFileName>.\Debug\</ObjectFileName>
+      <ProgramDataBaseFileName>.\Debug\</ProgramDataBaseFileName>
+      <AdditionalOptions> /Zm500 </AdditionalOptions>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+    </ClCompile>
+    <Midl>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TypeLibraryName>.\Debug\ProTrekkr.tlb</TypeLibraryName>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <TargetEnvironment>Win32</TargetEnvironment>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0407</Culture>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>.\Debug\ProTrekkr.bsc</OutputFile>
+    </Bscmake>
+    <Link>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <OutputFile>release/ptk/ptk_win.exe</OutputFile>
+      <AdditionalDependencies>sdl2.lib;dsound.lib;msacm32.lib;winmm.lib;zlib.lib;shlwapi.lib;sdl2main.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>msvcrt.lib</IgnoreSpecificDefaultLibraries>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="src\main\include\main.h" />
+    <ClInclude Include="src\main\include\resource.h" />
+    <ClInclude Include="src\main\include\timer.h" />
+    <ClInclude Include="src\include\ptk.h" />
+    <ClInclude Include="src\include\variables.h" />
+    <ClInclude Include="src\include\version.h" />
+    <ClInclude Include="src\editors\include\editor_303.h" />
+    <ClInclude Include="src\editors\include\editor_diskio.h" />
+    <ClInclude Include="src\editors\include\editor_fx_setup.h" />
+    <ClInclude Include="src\editors\include\editor_instrument.h" />
+    <ClInclude Include="src\editors\include\editor_midi.h" />
+    <ClInclude Include="src\editors\include\editor_pattern.h" />
+    <ClInclude Include="src\editors\include\editor_reverb.h" />
+    <ClInclude Include="src\editors\include\editor_sample.h" />
+    <ClInclude Include="src\editors\include\editor_sequencer.h" />
+    <ClInclude Include="src\editors\include\editor_setup.h" />
+    <ClInclude Include="src\editors\include\editor_synth.h" />
+    <ClInclude Include="src\editors\include\editor_track.h" />
+    <ClInclude Include="src\editors\include\editor_track_fx.h" />
+    <ClInclude Include="src\editors\include\patterns_blocks.h" />
+    <ClInclude Include="release\ptk\replay\lib\include\endianness.h" />
+    <ClInclude Include="release\ptk\replay\lib\include\ptk_def_properties.h" />
+    <ClInclude Include="release\ptk\replay\lib\include\ptk_types.h" />
+    <ClInclude Include="release\ptk\replay\lib\include\ptkreplay.h" />
+    <ClInclude Include="release\ptk\replay\lib\include\replay.h" />
+    <ClInclude Include="release\ptk\replay\lib\include\samples_unpack.h" />
+    <ClInclude Include="release\ptk\replay\lib\include\synth.h" />
+    <ClInclude Include="release\ptk\replay\lib\include\tb_303.h" />
+    <ClInclude Include="release\ptk\replay\lib\include\wavpack.h" />
+    <ClInclude Include="release\ptk\replay\lib\sounddriver\include\sounddriver_windows.h" />
+    <ClInclude Include="src\ui\include\draw_primitives.h" />
+    <ClInclude Include="src\UI\include\misc_draw.h" />
+    <ClInclude Include="src\ui\include\requesters.h" />
+    <ClInclude Include="src\files\include\303s.h" />
+    <ClInclude Include="src\files\include\config.h" />
+    <ClInclude Include="src\files\include\files.h" />
+    <ClInclude Include="src\files\include\files_list.h" />
+    <ClInclude Include="src\files\include\insts.h" />
+    <ClInclude Include="src\files\include\midi_cfg.h" />
+    <ClInclude Include="src\files\include\mods.h" />
+    <ClInclude Include="src\files\include\patterns.h" />
+    <ClInclude Include="src\files\include\ptps.h" />
+    <ClInclude Include="src\files\include\reverbs.h" />
+    <ClInclude Include="src\files\include\s3m.h" />
+    <ClInclude Include="src\files\include\synths.h" />
+    <ClInclude Include="src\midi\include\midi.h" />
+    <ClInclude Include="src\midi\include\midi_dispatch.h" />
+    <ClInclude Include="src\midi\include\rterror.h" />
+    <ClInclude Include="src\midi\include\rtmidi.h" />
+    <ClInclude Include="src\samples\aiff\include\aiff.h" />
+    <ClInclude Include="src\samples\aiff\include\aiff_interface.h" />
+    <ClInclude Include="src\samples\wav\include\ddc.h" />
+    <ClInclude Include="src\samples\wav\include\riff.h" />
+    <ClInclude Include="src\samples\wav\include\riff_interface.h" />
+    <ClInclude Include="src\samples\include\samples_ops.h" />
+    <ClInclude Include="src\samples\include\samples_pack.h" />
+    <ClInclude Include="src\samples\wavpack\include\wplocal.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\main\main.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='release|Win32'"> /Gs   /Gs </AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm500   /Zm500 </AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="src\main\timer.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='release|Win32'"> /Gs   /Gs </AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm500   /Zm500 </AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="src\editors\editor_303.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='release|Win32'"> /Gs   /Gs </AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm500   /Zm500 </AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="src\editors\editor_diskio.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='release|Win32'"> /Gs   /Gs </AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm500   /Zm500 </AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="src\editors\editor_fx_setup.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='release|Win32'"> /Gs   /Gs </AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm500   /Zm500 </AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="src\editors\editor_instrument.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='release|Win32'"> /Gs   /Gs </AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm500   /Zm500 </AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="src\editors\editor_midi.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='release|Win32'"> /Gs   /Gs </AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm500   /Zm500 </AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="src\editors\editor_pattern.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='release|Win32'"> /Gs   /Gs </AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm500   /Zm500 </AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="src\editors\editor_reverb.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='release|Win32'"> /Gs   /Gs </AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm500   /Zm500 </AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="src\editors\editor_sample.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='release|Win32'"> /Gs   /Gs </AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm500   /Zm500 </AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="src\editors\editor_sequencer.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='release|Win32'"> /Gs   /Gs </AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm500   /Zm500 </AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="src\editors\editor_setup.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='release|Win32'"> /Gs   /Gs </AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm500   /Zm500 </AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="src\editors\editor_synth.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='release|Win32'"> /Gs   /Gs </AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm500   /Zm500 </AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="src\editors\editor_track.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='release|Win32'"> /Gs   /Gs </AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm500   /Zm500 </AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="src\editors\editor_track_fx.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='release|Win32'"> /Gs   /Gs </AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm500   /Zm500 </AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="src\editors\patterns_blocks.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='release|Win32'"> /Gs   /Gs </AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm500   /Zm500 </AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="release\ptk\replay\lib\sounddriver\sounddriver_windows.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='release|Win32'"> /Gs   /Gs </AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm500   /Zm500 </AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="release\ptk\replay\lib\endianness.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='release|Win32'"> /Gs   /Gs </AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm500   /Zm500 </AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="release\ptk\replay\lib\replay.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='release|Win32'"> /Gs   /Gs </AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm500   /Zm500 </AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="release\ptk\replay\lib\samples_unpack.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='release|Win32'"> /Gs   /Gs </AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm500   /Zm500 </AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="release\ptk\replay\lib\synth.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='release|Win32'"> /Gs   /Gs </AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm500   /Zm500 </AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="release\ptk\replay\lib\tb_303.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='release|Win32'"> /Gs   /Gs </AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm500   /Zm500 </AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="release\ptk\replay\lib\wavpack.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='release|Win32'"> /Gs   /Gs </AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm500   /Zm500 </AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="src\ui\draw_primitives.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='release|Win32'"> /Gs   /Gs </AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm500   /Zm500 </AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="src\ui\misc_draw.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='release|Win32'"> /Gs   /Gs </AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm500   /Zm500 </AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="src\ui\requesters.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='release|Win32'"> /Gs   /Gs </AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm500   /Zm500 </AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="src\files\303s.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='release|Win32'"> /Gs   /Gs </AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm500   /Zm500 </AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="src\files\config.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='release|Win32'"> /Gs   /Gs </AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm500   /Zm500 </AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="src\files\files.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='release|Win32'"> /Gs   /Gs </AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm500   /Zm500 </AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="src\files\files_list.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='release|Win32'"> /Gs   /Gs </AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm500   /Zm500 </AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="src\files\insts.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='release|Win32'"> /Gs   /Gs </AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm500   /Zm500 </AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="src\files\midi_cfg.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='release|Win32'"> /Gs   /Gs </AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm500   /Zm500 </AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="src\files\mods.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='release|Win32'"> /Gs   /Gs </AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm500   /Zm500 </AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="src\files\patterns.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='release|Win32'"> /Gs   /Gs </AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm500   /Zm500 </AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="src\files\ptps.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='release|Win32'"> /Gs   /Gs </AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm500   /Zm500 </AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="src\files\reverbs.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='release|Win32'"> /Gs   /Gs </AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm500   /Zm500 </AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="src\files\s3m.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='release|Win32'"> /Gs   /Gs </AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm500   /Zm500 </AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="src\files\synths.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='release|Win32'"> /Gs   /Gs </AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm500   /Zm500 </AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="src\midi\midi.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='release|Win32'"> /Gs   /Gs </AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm500   /Zm500 </AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="src\midi\midi_dispatch.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='release|Win32'"> /Gs   /Gs </AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm500   /Zm500 </AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="src\midi\rtmidi.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='release|Win32'"> /Gs   /Gs </AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm500   /Zm500 </AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="src\samples\aiff\aiff.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='release|Win32'"> /Gs   /Gs </AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm500   /Zm500 </AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="src\samples\aiff\aiff_interface.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='release|Win32'"> /Gs   /Gs </AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm500   /Zm500 </AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="src\samples\wav\riff.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='release|Win32'"> /Gs   /Gs </AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm500   /Zm500 </AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="src\samples\wav\riff_interface.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='release|Win32'"> /Gs   /Gs </AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm500   /Zm500 </AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="src\samples\wavpack\bits.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='release|Win32'"> /Gs   /Gs </AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm500   /Zm500 </AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="src\samples\wavpack\pack.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='release|Win32'"> /Gs   /Gs </AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm500   /Zm500 </AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="src\samples\wavpack\tinypack.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='release|Win32'"> /Gs   /Gs </AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm500   /Zm500 </AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="src\samples\wavpack\words.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='release|Win32'"> /Gs   /Gs </AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm500   /Zm500 </AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="src\samples\wavpack\wputils.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='release|Win32'"> /Gs   /Gs </AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm500   /Zm500 </AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="src\samples\samples_ops.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='release|Win32'"> /Gs   /Gs </AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm500   /Zm500 </AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="src\samples\samples_pack.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='release|Win32'"> /Gs   /Gs </AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm500   /Zm500 </AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="src\ptk.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='release|Win32'"> /Gs   /Gs </AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm500   /Zm500 </AdditionalOptions>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="src\main\project.ico" />
+    <CustomBuild Include="src\main\project_16x16.ico" />
+    <CustomBuild Include="release\ptk\changes.txt" />
+    <CustomBuild Include="release\ptk\license.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="src\main\resources.rc">
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='release|Win32'">src\main;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">src\main;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

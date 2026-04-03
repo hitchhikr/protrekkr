@@ -4,7 +4,7 @@ CXX = g++ -mcrt=newlib
 LIBS = -lSDL -lz -lpthread -lunix
 
 FLAGS = -Ofast -w -fsigned-char -fno-strict-aliasing -fomit-frame-pointer -ffast-math -fno-rtti \
-        -Irelease/ptk/replay/lib/include -Lsrc/extralibs/sdl_draw -Lsrc/extralibs/zlib-1.2.3 \
+        -Irelease/ptk/replay/lib/include -Lsrc/extralibs/zlib-1.2.3 \
         -D __AMIGAOS4__ -D __GCC__ -D __BIG_ENDIAN__ -D __MOT_SWAP__
 
 CCFLAGS = $(FLAGS)
@@ -128,10 +128,10 @@ rtmidi.o: src/midi/rtmidi.cpp
 midi_dispatch.o: src/midi/midi_dispatch.cpp
 	$(CC) -c -o $(@) $(FLAGS) $<
 
-timer.o: src/support/timer.cpp
+timer.o: src/main/timer.cpp
 	$(CC) -c -o $(@) $(FLAGS) $<
 
-main.o: src/support/main.cpp
+main.o: src/main/main.cpp
 	$(CC) -c -o $(@) $(FLAGS) $<
 
 misc_draw.o: src/ui/misc_draw.cpp
@@ -193,12 +193,3 @@ wputils.o: src/samples/wavpack/wputils.cpp
 
 tinypack.o: src/samples/wavpack/tinypack.cpp
 	$(CC) -c -o $(@) $(FLAGS) $<
-
-draw_hline.o: src/extralibs/sdl_draw/src/draw_hline.cpp
-	$(CC) -c -o $(@) -D__GCC__ -D __LINUX__ $(FLAGS) $<
-
-draw_pixel.o: src/extralibs/sdl_draw/src/draw_pixel.cpp
-	$(CC) -c -o $(@) -D__GCC__ -D __LINUX__ $(FLAGS) $<
-
-draw_vline.o: src/extralibs/sdl_draw/src/draw_vline.cpp
-	$(CC) -c -o $(@) -D__GCC__ -D __LINUX__ $(FLAGS) $<

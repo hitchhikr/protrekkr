@@ -35,6 +35,7 @@
 // ------------------------------------------------------
 // Includes
 #include <stdio.h>
+#include <stdlib.h>
 #include "../../include/variables.h"
 
 #if defined(__AROS__) || defined(__MORPHOS__)

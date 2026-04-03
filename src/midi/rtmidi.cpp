@@ -9,6 +9,7 @@
 
     RtMidi: realtime MIDI i/o C++ classes
     Copyright (c) 2003-2010 Gary P. Scavone
+    Copyright (c) 2025-2026 Franck Charlet
 
     Permission is hereby granted, free of charge, to any person
     obtaining a copy of this software and associated documentation files
@@ -2174,7 +2175,7 @@ struct WinMidiData
     CRITICAL_SECTION _mutex; // [Patrice] see https://groups.google.com/forum/#!topic/mididev/6OUjHutMpEo
 };
 
-#if !defined(__GCC__)
+/*#if !defined(__GCC__)
 extern "C"
 {
     int __lc_codepage = 0;
@@ -2184,7 +2185,7 @@ extern "C"
     unsigned short *_pctype = 0;
 }
 #endif
-
+*/
 //*********************************************************************//
 //  API: Windows MM
 //  Class Definitions: RtMidiIn

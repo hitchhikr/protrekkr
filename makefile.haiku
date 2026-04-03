@@ -4,7 +4,7 @@ CXX = g++
 LIBS = -lGL -lSDL -lsdldraw -lz -lstdc++ -lsupc++ -lgame
 
 FLAGS = -Ofast -fsigned-char -std=c++98 -fno-strict-aliasing -ffast-math -fno-rtti -fno-exceptions -w \
-        -Irelease/ptk/replay/lib/include -I/usr/local/include -L/usr/local/lib -Lsrc/extralibs/sdl_draw -Lsrc/extralibs/zlib-1.2.3 \
+        -Irelease/ptk/replay/lib/include -I/usr/local/include -L/usr/local/lib -Lsrc/extralibs/zlib-1.2.3 \
         -D __GCC__ -D __NO_MIDI__ -D __MOT_SWAP__ -D__HAIKU__
 
 EXEOBJS = ptk.o \
@@ -30,7 +30,6 @@ RemObj:
 
 protrekkr: $(EXEOBJS)
 	-rm -f ./release/ptk/ptk_haiku
-	(cd src/extralibs/sdl_draw; $(MAKE) -f makefile.haiku)
 	(cd src/extralibs/zlib-1.2.3; $(MAKE))
 	$(CXX) -o ./release/ptk/ptk_haiku -L./ $(FLAGS) $(EXEOBJS) $(LIBS)
 	strip -s -x ./release/ptk/ptk_haiku
@@ -129,10 +128,10 @@ rtmidi.o: src/midi/rtmidi.cpp
 midi_dispatch.o: src/midi/midi_dispatch.cpp
 	$(CC) -c -o $(@) $(FLAGS) $<
 
-timer.o: src/support/timer.cpp
+timer.o: src/main/timer.cpp
 	$(CC) -c -o $(@) $(FLAGS) $<
 
-main.o: src/support/main.cpp
+main.o: src/main/main.cpp
 	$(CC) -c -o $(@) $(FLAGS) $<
 
 misc_draw.o: src/ui/misc_draw.cpp

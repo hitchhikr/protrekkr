@@ -68,7 +68,6 @@ PTK_TEXTURE *Note_Surface;
 PTK_TEXTURE *Note_Alt_Surface;
 PTK_TEXTURE *SKIN303;
 
-#if defined(__USE_OPENGL__)
 // ---
 GLuint Ptr_Temp_PFONT_GL;
 GLuint Ptr_Temp_LARGEPFONT_GL;
@@ -96,7 +95,6 @@ GLuint Note_Alt_Surface_GL = -1;
 GLuint FONT_GL = -1;
 GLuint FONT_LOW_GL = -1;
 GLuint SKIN303_GL = -1;
-#endif
 
 int Beveled = 1;
 char Use_Shadows = TRUE;
@@ -1698,7 +1696,7 @@ void Draw_Editors_Bar(int Highlight)
         Large_Patterns = FALSE;
         Set_Pattern_Size();
         Draw_Pattern_Right_Stuff();
-        Update_Pattern(0);
+        Update_Pattern(1);
     }
     else
     {
@@ -1707,7 +1705,7 @@ void Draw_Editors_Bar(int Highlight)
         bjbox(0, (Cur_Height - 172) + Patterns_Lines_Offset, Cur_Width, 19);
         Highlight_Tab[USER_SCREEN_LARGE_PATTERN] = BUTTON_PUSHED;
         Draw_Pattern_Right_Stuff();
-        Update_Pattern(0);
+        Update_Pattern(1);
     }
     
     if(Patterns_Lines_Offset == 0)
@@ -2116,7 +2114,7 @@ void Real_Slider_Horiz(int x, int y, int value, int displayed, int maximum, int 
 
     if(Pos_slider > size)
     {
-        Pos_slider = size - 2;
+        Pos_slider = (float) (size - 2);
     }
 
     if((caret_size + Pos_slider) > (size - 1)) caret_size -= (caret_size + Pos_slider) - (size - 1);
@@ -2131,10 +2129,10 @@ void Real_Slider_Horiz(int x, int y, int value, int displayed, int maximum, int 
         Set_Color(COL_INPUT_MED);
         bjbox(x + 1, y + 1, size, 16 - 1);
         slide_max_on = ceil((float) size - Pos_slider);
-        if(slide_max_on > size) slide_max_on = size;
+        if(slide_max_on > size) slide_max_on = (float) size;
         if(slide_max_on <= 0.0f) slide_max_on = 1.0f;
         Set_Color(COL_SLIDER_MED);
-        bjbox(x + 1 + Pos_slider, y + 1, slide_max_on, 16 - 1);
+        bjbox(x + 1 + (int) Pos_slider, y + 1, (int) slide_max_on, 16 - 1);
     }
     else
     {
@@ -2173,7 +2171,7 @@ void Real_Slider_Vert(int x,
 
     if(Pos_slider > size)
     {
-        Pos_slider = size - 2;
+        Pos_slider = (float) (size - 2);
     }
 
     caret_size = Slider_Calc_Size(displayed, maximum, size);
@@ -2193,9 +2191,9 @@ void Real_Slider_Vert(int x,
         if(invert_color) Set_Color(COL_SLIDER_MED);
         else Set_Color(COL_INPUT_MED);
         slide_max_on = ceil((float) size - Pos_slider);
-        if(slide_max_on > size) slide_max_on = size;
+        if(slide_max_on > size) slide_max_on = (float) size;
         if(slide_max_on <= 0.0f) slide_max_on = 1.0f;
-        bjbox(x + 1, y + 1 + Pos_slider, 16 - 1, slide_max_on);
+        bjbox(x + 1, y + 1 + (int) Pos_slider, 16 - 1, (int) slide_max_on);
     }
     else
     {
@@ -3081,7 +3079,7 @@ void Restore_Default_Palette(PTK_COLOR *Def, int DefBevel)
         Ptk_Palette[i].r = Def[i].r;
         Ptk_Palette[i].g = Def[i].g;
         Ptk_Palette[i].b = Def[i].b;
-        Ptk_Palette[i].unused = Def[i].unused;
+        Ptk_Palette[i].a = 0xff;
     }
     Beveled = DefBevel;
 }
@@ -3158,7 +3156,7 @@ void Set_Main_Palette(void)
         Ptk_Palette[i + bare_color_idx].r = Palette_303[i].r;
         Ptk_Palette[i + bare_color_idx].g = Palette_303[i].g;
         Ptk_Palette[i + bare_color_idx].b = Palette_303[i].b;
-        Ptk_Palette[i + bare_color_idx].unused = Palette_303[i].unused;
+        Ptk_Palette[i + bare_color_idx].a = Palette_303[i].a;
     }
 }
 
@@ -3171,7 +3169,7 @@ void Set_Logo_Palette(void)
         Ptk_Palette[i + bare_color_idx].r = Palette_Logo[i].r;
         Ptk_Palette[i + bare_color_idx].g = Palette_Logo[i].g;
         Ptk_Palette[i + bare_color_idx].b = Palette_Logo[i].b;
-        Ptk_Palette[i + bare_color_idx].unused = Palette_Logo[i].unused;
+        Ptk_Palette[i + bare_color_idx].a = Palette_Logo[i].a;
     }
 }
 
@@ -3311,14 +3309,14 @@ void Create_Pattern_font(PTK_TEXTURE *Source, PTK_TEXTURE *Dest, int offset,
     int Surface_offset_Dest;
     int i;
     int j;
-    int was_locked = FALSE;
+    int was_locked;
     int Whole_Height; 
 
     Whole_Height = Height * 11;
     Whole_Height -= (Height == 16 ? 2 : 1);
 
     // Create the pattern font
-    Copy_To_Surface(Source, Dest, 0, 0, 0, offset, 320, offset + Height);
+    Copy_To_Surface(Source, Dest, 0, offset, 320, Height);
 
     // Set the base colors
     was_locked = Lock_Texture(Dest);
@@ -3373,7 +3371,7 @@ void Create_Pattern_font(PTK_TEXTURE *Source, PTK_TEXTURE *Dest, int offset,
     }
 
     // Blank line
-    Copy_To_Surface(Source, Dest, 0, (Height * 2), 0, (Height - 1), 320, Height);
+    Copy_To_Surface(Source, Dest, (Height * 2), (Height - 1), 320, Height);
 
     was_locked = Lock_Texture(Dest);
 
@@ -3495,12 +3493,12 @@ void Create_Pattern_font(PTK_TEXTURE *Source, PTK_TEXTURE *Dest, int offset,
     }
 
     // Markers arrows
-    Copy_To_Surface(Source, Dest, 0, Height * Height, 0, Height, 320, Height + (Height - (Height == 16 ? 2 : 1)));
+    Copy_To_Surface(Source, Dest, Height * Height, Height, 320, (Height - (Height == 16 ? 2 : 1)));
 }
 
 // ------------------------------------------------------
 // Remap the pictures colors for our usage
-void Set_Pictures_And_Palettes(int LogoPalette)
+void Renew_Gfx_Context(int logo_palette)
 {
     int i;
     unsigned char *Pix;
@@ -3537,7 +3535,7 @@ void Set_Pictures_And_Palettes(int LogoPalette)
 
     bare_color_idx = min_idx;
 
-    if(!LogoPalette && !done_303_palette)
+    if(!logo_palette && !done_303_palette)
     {
         was_locked = Lock_Texture(SKIN303);
 
@@ -3546,11 +3544,7 @@ void Set_Pictures_And_Palettes(int LogoPalette)
         for(i = 0; i < SKIN303->w * SKIN303->h; i++)
         {
             if(Pix[i] > max_colors_303) max_colors_303 = Pix[i];
-
-#if defined(__USE_OPENGL__)
             Pix[i] += min_idx;
-#endif
-
         }
         max_colors_303++;
 
@@ -3570,11 +3564,7 @@ void Set_Pictures_And_Palettes(int LogoPalette)
         for(i = 0; i < LOGOPIC->w * LOGOPIC->h; i++)
         {
             if(Pix[i] > max_colors_logo) max_colors_logo = Pix[i];
-
-#if defined(__USE_OPENGL__)
             Pix[i] += min_idx;
-#endif
-
         }
         max_colors_logo++;
 
@@ -3585,7 +3575,7 @@ void Set_Pictures_And_Palettes(int LogoPalette)
         done_logo_palette = TRUE;
     }
 
-    if(!LogoPalette)
+    if(!logo_palette)
     {
         Pic_Palette = SKIN303->format->palette;
         for(i = 0; i < max_colors_303; i++)
@@ -3593,7 +3583,7 @@ void Set_Pictures_And_Palettes(int LogoPalette)
             Palette_303[i].r = Pic_Palette->colors[i].r;
             Palette_303[i].g = Pic_Palette->colors[i].g;
             Palette_303[i].b = Pic_Palette->colors[i].b;
-            Palette_303[i].unused = Pic_Palette->colors[i].unused;
+            Palette_303[i].a = Pic_Palette->colors[i].a;
         }
     }
 
@@ -3603,7 +3593,7 @@ void Set_Pictures_And_Palettes(int LogoPalette)
         Palette_Logo[i].r = Pic_Palette->colors[i].r;
         Palette_Logo[i].g = Pic_Palette->colors[i].g;
         Palette_Logo[i].b = Pic_Palette->colors[i].b;
-        Palette_Logo[i].unused = Pic_Palette->colors[i].unused;
+        Palette_Logo[i].a = Pic_Palette->colors[i].a;
     }
 
     // ---
@@ -3658,7 +3648,26 @@ void Set_Pictures_And_Palettes(int LogoPalette)
     }
     // ---
 
-    if(!Burn_Title)
+    // starting setup
+    if(pattern_double)
+    {
+        Set_Font_Double();
+    }
+    else
+    {
+        Set_Font_Normal();
+    }
+
+    if(Large_Patterns)
+    {
+        Set_Pattern_Size();
+    }
+    else
+    {
+        Set_Pattern_Size();
+    }
+
+    if (!Burn_Title)
     {
         Set_Logo_Palette();
     }
@@ -3666,12 +3675,15 @@ void Set_Pictures_And_Palettes(int LogoPalette)
     {
         Set_Main_Palette();
     }
+
     Get_Phony_Palette();
     Set_Phony_Palette();
     Ptk_Palette[0].r = 0;
     Ptk_Palette[0].g = 0;
     Ptk_Palette[0].b = 0;
-    UISetPalette(Ptk_Palette, 256);
+    Ptk_Palette[0].a = 0;
+
+    UI_Set_Palette(Ptk_Palette, 256);
 
     // Fill the surfaces
     Create_Pattern_font(PFONT, Temp_PFONT, 0, COL_PATTERN_LO_FORE, COL_PATTERN_SEL_FORE, COL_PATTERN_HI_FORE, 8);
@@ -3701,7 +3713,7 @@ void Set_Pictures_And_Palettes(int LogoPalette)
     Set_Channel_State_Pic(249, COL_PLAY, COL_MUTE_PLAY_INVERT);
     Set_Channel_State_Pic(277, COL_MUTE, COL_MUTE_PLAY_INVERT);
 
-#if defined(__USE_OPENGL__)
+    // Renew the OGL textures
     Destroy_OGL_Textures();
     FONT_GL = Create_OGL_Texture(FONT);
     FONT_LOW_GL = Create_OGL_Texture(FONT_LOW);
@@ -3720,138 +3732,40 @@ void Set_Pictures_And_Palettes(int LogoPalette)
     Temp_NOTEPFONT_DOUBLE_GL = Create_OGL_Texture(Temp_NOTEPFONT_DOUBLE);
     Temp_NOTELARGEPFONT_DOUBLE_GL = Create_OGL_Texture(Temp_NOTELARGEPFONT_DOUBLE);
     Temp_NOTESMALLPFONT_DOUBLE_GL = Create_OGL_Texture(Temp_NOTESMALLPFONT_DOUBLE);
-#endif
 
-    // starting setup
-    if(pattern_double)
-    {
-        Set_Font_Double();
-    }
-    else
-    {
-        Set_Font_Normal();
-    }
-
-    if(Large_Patterns)
-    {
-        Set_Pattern_Size();
-    }
-    else
-    {
-        Set_Pattern_Size();
-    }
-
-#if defined(__USE_OPENGL__)
     Env_Change = TRUE;
-#endif
-    
 }
-
-#if defined(__USE_OPENGL__)
-void Destroy_OGL_Textures()
-{
-    if(FONT_GL != -1)
-    {
-        Destroy_OGL_Texture(&FONT_GL);
-    }
-    FONT_GL = -1;
-
-    if(FONT_LOW_GL != -1)
-    {
-        Destroy_OGL_Texture(&FONT_LOW_GL);
-    }
-    FONT_LOW_GL = -1;
-
-    if(SKIN303_GL != -1)
-    {
-        Destroy_OGL_Texture(&SKIN303_GL);
-    }
-    SKIN303_GL = -1;
-
-    // ---
-    if(Temp_PFONT_DOUBLE_GL != -1)
-    {
-        Destroy_OGL_Texture(&Temp_PFONT_DOUBLE_GL);
-    }
-    Temp_PFONT_DOUBLE_GL = -1;
-    
-    if(Temp_LARGEPFONT_DOUBLE_GL != -1)
-    {
-        Destroy_OGL_Texture(&Temp_LARGEPFONT_DOUBLE_GL);
-    }
-    Temp_LARGEPFONT_DOUBLE_GL = -1;
-    
-    if(Temp_SMALLPFONT_DOUBLE_GL != -1)
-    {
-        Destroy_OGL_Texture(&Temp_SMALLPFONT_DOUBLE_GL);
-    }
-    Temp_SMALLPFONT_DOUBLE_GL = -1;
-    
-    if(Temp_NOTEPFONT_DOUBLE_GL != -1)
-    {
-        Destroy_OGL_Texture(&Temp_NOTEPFONT_DOUBLE_GL);
-    }
-    Temp_NOTEPFONT_DOUBLE_GL = -1;
-    
-    if(Temp_NOTELARGEPFONT_DOUBLE_GL != -1)
-    {
-        Destroy_OGL_Texture(&Temp_NOTELARGEPFONT_DOUBLE_GL);
-    }
-    Temp_NOTELARGEPFONT_DOUBLE_GL = -1;
-
-    if(Temp_NOTESMALLPFONT_DOUBLE_GL != -1)
-    {
-        Destroy_OGL_Texture(&Temp_NOTESMALLPFONT_DOUBLE_GL);
-    }
-    Temp_NOTESMALLPFONT_DOUBLE_GL = -1;
-
-    // ---
-    if(Temp_PFONT_GL != -1)
-    {
-        Destroy_OGL_Texture(&Temp_PFONT_GL);
-    }
-    Temp_PFONT_GL = -1;
-    
-    if(Temp_LARGEPFONT_GL != -1)
-    {
-        Destroy_OGL_Texture(&Temp_LARGEPFONT_GL);
-    }
-    Temp_LARGEPFONT_GL = -1;
-    
-    if(Temp_SMALLPFONT_GL != -1)
-    {
-        Destroy_OGL_Texture(&Temp_SMALLPFONT_GL);
-    }
-    Temp_SMALLPFONT_GL = -1;
-    
-    if(Temp_NOTEPFONT_GL != -1)
-    {
-        Destroy_OGL_Texture(&Temp_NOTEPFONT_GL);
-    }
-    Temp_NOTEPFONT_GL = -1;
-    
-    if(Temp_NOTELARGEPFONT_GL != -1)
-    {
-        Destroy_OGL_Texture(&Temp_NOTELARGEPFONT_GL);
-    }
-    Temp_NOTELARGEPFONT_GL = -1;
-
-    if(Temp_NOTESMALLPFONT_GL != -1)
-    {
-        Destroy_OGL_Texture(&Temp_NOTESMALLPFONT_GL);
-    }
-    Temp_NOTESMALLPFONT_GL = -1;
-}
-#endif
 
 // ------------------------------------------------------
-// Free the allocated resources
+// Free the OpenGL textures
+void Destroy_OGL_Textures()
+{
+    Destroy_OGL_Texture(&FONT_GL);
+    Destroy_OGL_Texture(&FONT_LOW_GL);
+    Destroy_OGL_Texture(&SKIN303_GL);
+
+    // ---
+    Destroy_OGL_Texture(&Temp_PFONT_DOUBLE_GL);
+    Destroy_OGL_Texture(&Temp_LARGEPFONT_DOUBLE_GL);
+    Destroy_OGL_Texture(&Temp_SMALLPFONT_DOUBLE_GL);
+    Destroy_OGL_Texture(&Temp_NOTEPFONT_DOUBLE_GL);
+    Destroy_OGL_Texture(&Temp_NOTELARGEPFONT_DOUBLE_GL);
+    Destroy_OGL_Texture(&Temp_NOTESMALLPFONT_DOUBLE_GL);
+
+    // ---
+    Destroy_OGL_Texture(&Temp_PFONT_GL);
+    Destroy_OGL_Texture(&Temp_LARGEPFONT_GL);
+    Destroy_OGL_Texture(&Temp_SMALLPFONT_GL);
+    Destroy_OGL_Texture(&Temp_NOTEPFONT_GL);
+    Destroy_OGL_Texture(&Temp_NOTELARGEPFONT_GL);
+    Destroy_OGL_Texture(&Temp_NOTESMALLPFONT_GL);
+}
+
+// ------------------------------------------------------
+// Free the allocated graphical resources
 void Destroy_UI(void)
 {
-
-#if defined(__USE_OPENGL__)
     Destroy_OGL_Textures();
-#endif
 
     // ---
     if(Temp_PFONT_DOUBLE)
@@ -3948,4 +3862,5 @@ void Destroy_UI(void)
         Destroy_Texture(FONT_LOW);
         FONT_LOW = NULL;
     }
+    Free_Palette();
 }

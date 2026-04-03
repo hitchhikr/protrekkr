@@ -110,7 +110,7 @@ void Midi_CallBackIn(double deltatime,
     unsigned int nBytes = message->size();
 
     // From 1 to 3 (hopefully)
-    for(i = 0; i < nBytes; i++)
+    for(i = 0; i < (int) nBytes; i++)
     {
         *ptr++ = message->at(i);
     }

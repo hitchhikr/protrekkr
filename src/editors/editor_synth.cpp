@@ -33,7 +33,7 @@
 // Includes
 #include "include/editor_synth.h"
 #include "include/editor_instrument.h"
-#include "../support/include/timer.h"
+#include "../main/include/timer.h"
 #include "../files/include/files.h"
 #include "../ui/include/requesters.h"
 

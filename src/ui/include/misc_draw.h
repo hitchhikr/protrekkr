@@ -282,17 +282,13 @@ void DrawPixel(int x, int y, int Color);
 void DrawHLine(int y, int x1, int x2, int Color);
 void DrawVLine(int x, int y1, int y2, int Color);
 void Set_Color(int color);
-#if defined(__USE_OPENGL__)
 void Destroy_OGL_Textures();
-#endif
 void Fill_Rect(int x1, int y1, int x2, int y2);
 void Copy(PTK_TEXTURE *Source, int x, int y, int x1, int y1, int x2, int y2);
-void Copy_To_Surface(PTK_TEXTURE *Source, PTK_TEXTURE *dest,
-                     int dest_x, int dest_y, int src_start_x, int src_start_y, int src_end_x, int src_end_y);
 void Print_String(char *str, int x, int y, int size_x, int flag);
 int Get_Size_Text(char *String);
 int Create_Font_Data(char *FontName);
-void Set_Pictures_And_Palettes(int LogPalette);
+void Renew_Gfx_Context(int logo_palette);
 void Set_Main_Palette(void);
 void Set_Logo_Palette(void);
 void Get_Phony_Palette(void);

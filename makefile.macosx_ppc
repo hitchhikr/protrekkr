@@ -7,7 +7,7 @@ DEBUG =
 
 FLAGS_PPC = $(DEBUG) -O3 -fsigned-char -arch ppc -mcpu=G4 -fomit-frame-pointer -ffast-math -maltivec -mabi=altivec -mtune=G4 -fno-rtti \
             -Irelease/ptk/replay/lib/include -I/usr/local/include \
-            -fno-strict-aliasing -D __MACOSX_PPC__ -D __GCC__ -D __MACOSX_CORE__ -D __BIG_ENDIAN__ -D __MOT_SWAP__ -D __AIFF__ -D __USE_OPENGL__
+            -fno-strict-aliasing -D __MACOSX_PPC__ -D __GCC__ -D __MACOSX_CORE__ -D __BIG_ENDIAN__ -D __MOT_SWAP__ -D __AIFF__
 
 EXEOBJS_PPC = ptk_ppc.o \
               editor_303_ppc.o editor_pattern_ppc.o editor_sequencer_ppc.o editor_track_ppc.o editor_track_fx_ppc.o \
@@ -34,7 +34,7 @@ protrekkr_ppc: $(EXEOBJS_PPC)
 	-rm -f ./release/ptk/protrekkr_ppc.app/Contents/MacOS/Protrekkr
 	(cd src/extralibs/zlib-1.2.3; make -f makefile.macosx_ppc)
 	(cd src/extralibs/bin2c; make -f makefile.macosx_ppc)
-	$(CXX) -o ./release/ptk/protrekkr_ppc.app/Contents/MacOS/Protrekkr -L./ -Lsrc/extralibs/sdl_draw -Lsrc/extralibs/zlib-1.2.3 \
+	$(CXX) -o ./release/ptk/protrekkr_ppc.app/Contents/MacOS/Protrekkr -L./ -Lsrc/extralibs/zlib-1.2.3 \
            -L/library/frameworks $(FLAGS_PPC) $(EXEOBJS_PPC) $(LIBS_PPC)
 	strip -x -X -S ./release/ptk/protrekkr_ppc.app/Contents/MacOS/Protrekkr
 	chmod +x ./release/ptk/protrekkr_ppc.app/Contents/MacOS/Protrekkr
@@ -133,13 +133,13 @@ rtmidi_ppc.o: src/midi/rtmidi.cpp
 midi_dispatch_ppc.o: src/midi/midi_dispatch.cpp
 	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
-timer_ppc.o: src/support/timer.cpp
+timer_ppc.o: src/main/timer.cpp
 	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
-main_ppc.o: src/support/main.cpp
+main_ppc.o: src/main/main.cpp
 	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
-sdlmain_ppc.o: src/support/sdlmain.m
+sdlmain_ppc.o: src/main/sdlmain.m
 	$(CC) -c -o $(@) $(FLAGS_PPC) $<
 
 misc_draw_ppc.o: src/ui/misc_draw.cpp
@@ -201,12 +201,3 @@ wputils_ppc.o: src/samples/wavpack/wputils.cpp
 
 tinypack_ppc.o: src/samples/wavpack/tinypack.cpp
 	$(CC) -c -o $(@) $(FLAGS_PPC) $<
-
-draw_hline.o: src/extralibs/sdl_draw/src/draw_hline.cpp
-	$(CC) -c -o $(@) -D__GCC__ -D __LINUX__ $(FLAGS_PPC) $<
-
-draw_pixel.o: src/extralibs/sdl_draw/src/draw_pixel.cpp
-	$(CC) -c -o $(@) -D__GCC__ -D __LINUX__ $(FLAGS_PPC) $<
-
-draw_vline.o: src/extralibs/sdl_draw/src/draw_vline.cpp
-	$(CC) -c -o $(@) -D__GCC__ -D __LINUX__ $(FLAGS_PPC) $<

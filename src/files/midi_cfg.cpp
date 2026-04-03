@@ -66,7 +66,7 @@ void Save_Midi_Cfg_Data(int (*Write_Function)(void *, int ,int, FILE *),
 }
 
 // ------------------------------------------------------
-// Load a reverb file
+// Load a midi config file
 void Load_Midi_Cfg(char *FileName)
 {
     FILE *in;

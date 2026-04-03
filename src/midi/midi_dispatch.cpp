@@ -242,7 +242,7 @@ void Midi_303_Set_Volume(int Unit, int Data)
     if(sr_isrecording || is_editing)
     {
         liveparam = LIVE_PARAM_303_1_VOLUME + Unit;
-        livevalue = (int) tb303engine[Unit].tbVolume * 255.0f;
+        livevalue = (int) (tb303engine[Unit].tbVolume * 255.0f);
     }
     if(Unit == sl3)
     {
@@ -291,7 +291,7 @@ void Midi_Track_Set_Volume(int Data)
     if(sr_isrecording || is_editing)
     {
         liveparam = LIVE_PARAM_TRACK_VOLUME;
-        livevalue = ((float) Data / 127.0f) * 64.0f;
+        livevalue = (int) (((float) Data / 127.0f) * 64.0f);
     }
 }
 
@@ -330,7 +330,7 @@ void Midi_Track_Set_Cutoff(int Data)
 // Track resonance (LIVE)
 void Midi_Track_Set_Resonance(int Data)
 {
-    FRez[Track_Under_Caret] = ((float) Data);
+    FRez[Track_Under_Caret] = Data;
     if(sr_isrecording || is_editing)
     {
         liveparam = LIVE_PARAM_TRACK_RESONANCE;

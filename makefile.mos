@@ -5,7 +5,7 @@ STRIP = strip
 LIBS = -noixemul -lSDL -I/usr/local/lib -lz_shared -lpthread -lGL -lc -lm
 
 FLAGS = -noixemul -Ofast -fsigned-char -I/usr/local/include -w -fno-strict-aliasing -fomit-frame-pointer -ffast-math -maltivec -mabi=altivec \
-        -fno-rtti -Irelease/ptk/replay/lib/include -Lsrc/extralibs/sdl_draw -D__GCC__ -D__BIG_ENDIAN__ -D__MOT_SWAP__ -D__MORPHOS_SHAREDLIBS -D__AIFF__
+        -fno-rtti -Irelease/ptk/replay/lib/include -D__GCC__ -D__BIG_ENDIAN__ -D__MOT_SWAP__ -D__MORPHOS_SHAREDLIBS -D__AIFF__
 
 CCFLAGS = $(FLAGS)
 
@@ -129,10 +129,10 @@ rtmidi.o: src/midi/rtmidi.cpp
 midi_dispatch.o: src/midi/midi_dispatch.cpp
 	$(CC) -c -o $(@) $(FLAGS) $<
 
-timer.o: src/support/timer.cpp
+timer.o: src/main/timer.cpp
 	$(CC) -c -o $(@) $(FLAGS) $<
 
-main.o: src/support/main.cpp
+main.o: src/main/main.cpp
 	$(CC) -c -o $(@) $(FLAGS) $<
 
 misc_draw.o: src/ui/misc_draw.cpp
@@ -194,12 +194,3 @@ wputils.o: src/samples/wavpack/wputils.cpp
 
 tinypack.o: src/samples/wavpack/tinypack.cpp
 	$(CC) -c -o $(@) $(FLAGS) $<
-
-draw_hline.o: src/extralibs/sdl_draw/src/draw_hline.cpp
-	$(CC) -c -o $(@) -D__GCC__ -D __LINUX__ $(FLAGS) $<
-
-draw_pixel.o: src/extralibs/sdl_draw/src/draw_pixel.cpp
-	$(CC) -c -o $(@) -D__GCC__ -D __LINUX__ $(FLAGS) $<
-
-draw_vline.o: src/extralibs/sdl_draw/src/draw_vline.cpp
-	$(CC) -c -o $(@) -D__GCC__ -D __LINUX__ $(FLAGS) $<

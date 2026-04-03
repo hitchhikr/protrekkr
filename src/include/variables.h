@@ -38,7 +38,7 @@
 // Includes
 #if !defined(BZR2)
 #include "../ui/include/draw_primitives.h"
-#include "../support/include/main.h"
+#include "../main/include/main.h"
 #endif
 #include "../../release/ptk/replay/lib/include/replay.h"
 

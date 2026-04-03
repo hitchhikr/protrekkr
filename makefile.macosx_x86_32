@@ -6,7 +6,7 @@ LIBS_X86_32 = -lsdldraw_x86_32 -lz -framework CoreAudio -framework CoreMidi -fra
 DEBUG = 
 
 FLAGS_X86_32 = $(DEBUG) -Ofast -fsigned-char -arch i386 -ffast-math -fomit-frame-pointer -fno-rtti -Irelease/ptk/replay/lib/include -I/usr/local/include \
-            -fno-strict-aliasing -w -D __MACOSX_X86__ -D __GCC__ -D __MACOSX_CORE__ -D __MOT_SWAP__ -D __AIFF__ -D __USE_OPENGL__
+            -fno-strict-aliasing -w -D __MACOSX_X86__ -D __GCC__ -D __MACOSX_CORE__ -D __MOT_SWAP__ -D __AIFF__
 
 EXEOBJS_X86_32 = ptk_x86_32.o \
               editor_303_x86_32.o editor_pattern_x86_32.o editor_sequencer_x86_32.o editor_track_x86_32.o editor_track_fx_x86_32.o \
@@ -31,11 +31,10 @@ RemObj:
 
 protrekkr_x86_32: $(EXEOBJS_X86_32)
 	-rm -f ./release/ptk/protrekkr_x86_32.app/Contents/MacOS/Protrekkr
-	(cd src/extralibs/sdl_draw; make -f makefile.macosx_x86_32)
 	(cd src/extralibs/zlib-1.2.3; make -f makefile.macosx_x86_32)
 	(cd src/extralibs/bin2c; make -f makefile.macosx_x86_32)
 	$(CXX) -o ./release/ptk/protrekkr_x86_32.app/Contents/MacOS/Protrekkr \
-           -L./ -L/usr/local/lib -L/library/frameworks -Lsrc/extralibs/sdl_draw -Lsrc/extralibs/zlib-1.2.3 $(FLAGS_X86_32) $(EXEOBJS_X86_32) $(LIBS_X86_32)
+           -L./ -L/usr/local/lib -L/library/frameworks -Lsrc/extralibs/zlib-1.2.3 $(FLAGS_X86_32) $(EXEOBJS_X86_32) $(LIBS_X86_32)
 	strip -x -X -S ./release/ptk/protrekkr_x86_32.app/Contents/MacOS/Protrekkr
 	chmod +x ./release/ptk/protrekkr_x86_32.app/Contents/MacOS/Protrekkr
 	install_name_tool ./release/ptk/protrekkr_x86_32.app/Contents/MacOS/Protrekkr -change /usr/local/lib/libSDL-1.2.0.dylib @executable_path/libSDL-1.2.0.dylib
@@ -133,13 +132,13 @@ rtmidi_x86_32.o: src/midi/rtmidi.cpp
 midi_dispatch_x86_32.o: src/midi/midi_dispatch.cpp
 	$(CC) -c -o $(@) $(FLAGS_X86_32) $<
 
-timer_x86_32.o: src/support/timer.cpp
+timer_x86_32.o: src/main/timer.cpp
 	$(CC) -c -o $(@) $(FLAGS_X86_32) $<
 
-main_x86_32.o: src/support/main.cpp
+main_x86_32.o: src/main/main.cpp
 	$(CC) -c -o $(@) $(FLAGS_X86_32) $<
 
-sdlmain_x86_32.o: src/support/sdlmain.m
+sdlmain_x86_32.o: src/main/sdlmain.m
 	$(CC) -c -o $(@) $(FLAGS_X86_32) $<
 
 misc_draw_x86_32.o: src/ui/misc_draw.cpp

@@ -35,7 +35,7 @@
 // ------------------------------------------------------
 // Includes
 #if !defined(BZR2)
-#include "../support/include/main.h"
+#include "../main/include/main.h"
 #else
 #include <cstdio>
 #endif
@@ -77,7 +77,7 @@
 #include "../editors/include/editor_sample.h"
 #include "../editors/include/patterns_blocks.h"
 
-#include "../support/include/timer.h"
+#include "../main/include/timer.h"
 
 #include "../midi/include/midi.h"
 #endif
@@ -121,7 +121,7 @@ extern MOUSE Mouse;
 
 #if defined(__WIN32__)
 #include <mmsystem.h>
-extern HWND Main_Window;
+extern HWND Main_Win32_Win;
 #endif
 
 #if defined(__WIN32__)

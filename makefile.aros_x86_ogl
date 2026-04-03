@@ -4,7 +4,7 @@ STRIP = strip
 
 LIBS = -lGL -lSDL -lsdldraw -lz -lpthread
 
-FLAGS = -Ofast -fsigned-char -Irelease/ptk/replay/lib/include -Lsrc/extralibs/sdl_draw -Lsrc/extralibs/zlib-1.2.3 -ffast-math -fno-rtti -D __USE_OPENGL__ \
+FLAGS = -Ofast -fsigned-char -Irelease/ptk/replay/lib/include -Lsrc/extralibs/zlib-1.2.3 -ffast-math -fno-rtti -D __USE_OPENGL__ \
         -fno-strict-aliasing -Wno-write-strings -Wno-multichar -D __AROS__ -D __GCC__ -D __MOT_SWAP__ \
         -I./src/include
 
@@ -33,7 +33,6 @@ RemObj:
 
 protrekkr: $(EXEOBJS)
 	-rm -f ./release/ptk/ptk_aros_ogl
-	(cd src/extralibs/sdl_draw; make -f makefile.aros)
 	(cd src/extralibs/zlib-1.2.3; make)
 	$(CXX) -o ./release/ptk/ptk_aros_ogl -L./ $(FLAGS) $(EXEOBJS) $(LIBS)
 	$(STRIP) --strip-unneeded ./release/ptk/ptk_aros_ogl
@@ -132,10 +131,10 @@ rtmidi.o: src/midi/rtmidi.cpp
 midi_dispatch.o: src/midi/midi_dispatch.cpp
 	$(CC) -c -o $(@) $(FLAGS) $<
 
-timer.o: src/support/timer.cpp
+timer.o: src/main/timer.cpp
 	$(CC) -c -o $(@) $(FLAGS) $<
 
-main.o: src/support/main.cpp
+main.o: src/main/main.cpp
 	$(CC) -c -o $(@) $(FLAGS) $<
 
 misc_draw.o: src/ui/misc_draw.cpp

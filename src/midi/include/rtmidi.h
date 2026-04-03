@@ -9,6 +9,7 @@
 
     RtMidi: realtime MIDI i/o C++ classes
     Copyright (c) 2003-2010 Gary P. Scavone
+    Copyright (c) 2025-2026 Franck Charlet
 
     Permission is hereby granted, free of charge, to any person
     obtaining a copy of this software and associated documentation files

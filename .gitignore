@@ -9,6 +9,7 @@
 *.chw
 *.exp
 *.sdf
+*.user
 .genio
 *.o
 *.a

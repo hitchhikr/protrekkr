@@ -326,7 +326,7 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
         Out_constants = fopen(Constant_Filename, "w");
         fprintf(Out_constants, "// Constants for %s.ptp module\n", FileName);
         fprintf(Out_constants, "// Generated for %s replay routine\n", VERSION);
-        fprintf(Out_constants, "// Use this file to compile a custom PtkReplay library\n\n", VERSION);
+        fprintf(Out_constants, "// Use this file to compile a custom PtkReplay library\n\n");
     }
 
     New_RawPatterns = (unsigned char *) malloc(PATTERN_POOL_SIZE);
@@ -657,7 +657,7 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                         {
                             if(TmpPatterns_Notes[i] != 0xff)
                             {
-                                if(TmpPatterns_Notes[i] & 0xf0 == 0xf0)
+                                if((TmpPatterns_Notes[i] & 0xf0) == 0xf0)
                                 {
                                     Store_FX_NoteCut = TRUE;
                                 }

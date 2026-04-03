@@ -2,10 +2,17 @@
 ProTrekkr releases history
 ===============================================================================
 
-v2.8.3 PRE 7
+v2.8.5
 
-- Won't crash if mandatory interface files aren't found.
+- Won't crash at startup when mandatory interface files aren't found.
 - Volumes are now displayed in decibels.
+- Fixed a small bug in keyboard handling.
+- Migrated to SDL 2.
+- Old software rendering path removed,
+  the user interface is now using OpenGL exclusively.
+- Windows users now have to select a keyboard in 'UI Setup'.
+- Horizontal mouse wheel can now be used over patterns.
+- Left Ctrl + up/down for -16/+16 rows jump.
 
 v2.8.3 PRE 6
 

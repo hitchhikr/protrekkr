@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\files\303s.cpp">
+      <Filter>replay sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\files\files.cpp">
+      <Filter>replay sources</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>replay sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\editors\patterns_blocks.cpp">
+      <Filter>replay sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\release\ptk\replay\lib\replay.cpp">
+      <Filter>replay sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\files\reverbs.cpp">
+      <Filter>replay sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\release\ptk\replay\lib\samples_unpack.cpp">
+      <Filter>replay sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\release\ptk\replay\lib\sounddriver\sounddriver_windows.cpp">
+      <Filter>replay sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\release\ptk\replay\lib\synth.cpp">
+      <Filter>replay sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\files\synths.cpp">
+      <Filter>replay sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\release\ptk\replay\lib\tb_303.cpp">
+      <Filter>replay sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\release\ptk\replay\lib\wavpack.cpp">
+      <Filter>replay sources</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\release\ptk\replay\lib\include\ptk_def_properties.h">
+      <Filter>replay includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\release\ptk\replay\lib\include\ptk_types.h">
+      <Filter>replay includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\release\ptk\replay\lib\include\ptkreplay.h">
+      <Filter>replay includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\release\ptk\replay\lib\include\replay.h">
+      <Filter>replay includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\release\ptk\replay\lib\include\samples_unpack.h">
+      <Filter>replay includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\release\ptk\replay\lib\sounddriver\include\sounddriver_windows.h">
+      <Filter>replay includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\release\ptk\replay\lib\include\synth.h">
+      <Filter>replay includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\release\ptk\replay\lib\include\tb_303.h">
+      <Filter>replay includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\release\ptk\replay\lib\include\wavpack.h">
+      <Filter>replay includes</Filter>
+    </ClInclude>
+    <ClInclude Include="in2.h">
+      <Filter>winamp includes</Filter>
+    </ClInclude>
+    <ClInclude Include="out.h">
+      <Filter>winamp includes</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="replay includes">
+      <UniqueIdentifier>{08f3dc96-e25d-4348-b099-778db4d7db95}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="winamp includes">
+      <UniqueIdentifier>{b7d17f1e-ab76-4289-8145-c54673fb822d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="replay sources">
+      <UniqueIdentifier>{ac700d60-b6b0-469c-8a94-d17b30ad8b38}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

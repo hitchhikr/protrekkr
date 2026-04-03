@@ -1712,8 +1712,8 @@ UINT8 *Depack_Data(UINT8 *Memory, int Sizen, int Size_Out)
         d_stream.next_in = (UINT8 *) Memory;
         d_stream.next_out = Test_Mem;
         inflateInit(&d_stream);
-        while(d_stream.total_out < Size_Out &&
-              d_stream.total_in < Sizen)
+        while((int) d_stream.total_out < Size_Out &&
+              (int) d_stream.total_in < Sizen)
         {
             d_stream.avail_in = 1;
             d_stream.avail_out = 1;

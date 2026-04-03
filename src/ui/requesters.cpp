@@ -60,9 +60,7 @@ int Req_Default_Button;
 static int Cancel_Button;
 PTK_TEXTURE *Req_Picture;
 PTK_TEXTURE *Req_Back;
-#if defined(__USE_OPENGL__)
 GLuint Req_Picture_GL = -1;
-#endif
 int Req_TimeOut;
 int Req_Timer;
 extern int Burned_Title;
@@ -108,18 +106,12 @@ int Display_Requester(LPREQUESTER Requester, int Action, char *Text, int Center)
     Req_TimeOut = Requester->TimeOut;
     Req_Picture = NULL;
 
-#if defined(__USE_OPENGL__)
     Req_Picture_GL = -1;
-#endif
 
     if(Requester->Picture)
     {
         Req_Picture = *Requester->Picture;
-
-#if defined(__USE_OPENGL__)
         Req_Picture_GL = Create_OGL_Texture(Req_Picture);
-#endif
-
     }
     Req_Default_Button = -1;
     Cancel_Button = -1;
@@ -248,18 +240,6 @@ int Display_Requester(LPREQUESTER Requester, int Action, char *Text, int Center)
 
     Pos_X = (CONSOLE_WIDTH - Size_X) / 2;
     Pos_Y = (CONSOLE_HEIGHT - Size_Y) / 2;
-
-#if !defined(__USE_OPENGL__)
-    Req_Back = Create_Texture(Size_X + 1, Size_Y + 1);
-    if(Req_Back)
-    {
-        Copy_To_Surface(Main_Screen, Req_Back, 0, 0,
-                        Pos_X, Pos_Y,
-                        Pos_X + Size_X + 1,
-                        Pos_Y + Size_Y + 1);
-    }
-#endif
-
     return(0);
 }
 
@@ -373,13 +353,13 @@ void Keyboard_Handler_Requester(void)
     {
         for(i = 0; i < Nbr_Buttons; i++)
         {
-            if(Keys[Buttons_Keys[i]])
+            if(CHECK_KEY(Buttons_Keys[i]))
             {
                 Req_Pressed_Button = i + 1;
             }
         }
 
-        if(Keys[SDLK_ESCAPE])
+        if(CHECK_KEY(SDLK_ESCAPE))
         {
             if(Cancel_Button != -1)
             {
@@ -387,7 +367,7 @@ void Keyboard_Handler_Requester(void)
             }
         }
 
-        if(Keys[SDLK_RETURN] || Keys[SDLK_KP_ENTER])
+        if(CHECK_KEY(SDLK_RETURN) || CHECK_KEY(SDLK_KP_ENTER))
         {
             if(Req_Default_Button != -1)
             {
@@ -412,29 +392,12 @@ void Kill_Requester(void)
         Req_Txt_Lines[Nbr_Lines] = NULL;
     }
 
-#if !defined(__USE_OPENGL__)
-    if(Req_Back)
-    {
-        Copy(Req_Back,
-             Pos_X, Pos_Y,
-             0, 0,
-             Pos_X + Size_X + 1,
-             Pos_Y + Size_Y + 1);
-        Destroy_Texture(Req_Back);
-        Req_Back = NULL;
-        if(Req_Picture)
-        {
-            Set_Pictures_And_Palettes(FALSE);
-        }
-    }
-#else
     if(Req_Picture_GL != -1)
     {
         Destroy_OGL_Texture(&Req_Picture_GL);
         Req_Picture_GL = -1;
-        Set_Pictures_And_Palettes(FALSE);
+        Renew_Gfx_Context(FALSE);
     }
-#endif
 
     Current_Requester = NULL;
     Req_TimeOut = 0;
