@@ -1337,13 +1337,13 @@ int Open_Window(int Width, int Height)
         Save_Cur_Height = -1;
         First_Time = FALSE;
     }
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 0);
+    SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, TRUE);
+    SDL_GL_SetSwapInterval(0);
     if ((Main_Context = SDL_GL_CreateContext(Main_Window)) == NULL)
     {
         return(FALSE);
     }
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 0);
-    SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, TRUE);
-    SDL_GL_SetSwapInterval(0);
 
     Set_Window_Pos();
 
