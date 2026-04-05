@@ -1302,13 +1302,10 @@ int Open_Window(int Width, int Height)
     if (Width < SCREEN_WIDTH) Width = SCREEN_WIDTH;
     if (Height < SCREEN_HEIGHT) Height = SCREEN_HEIGHT;
 
-#if !defined(__LINUX__)
     SDL_GL_SetAttribute(SDL_GL_ACCUM_RED_SIZE, 8);
     SDL_GL_SetAttribute(SDL_GL_ACCUM_GREEN_SIZE, 8);
     SDL_GL_SetAttribute(SDL_GL_ACCUM_BLUE_SIZE, 8);
     SDL_GL_SetAttribute(SDL_GL_ACCUM_ALPHA_SIZE, 8);
-#endif
-
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
     SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, TRUE);
 
@@ -1355,6 +1352,7 @@ int Open_Window(int Width, int Height)
     Cur_Width = Width;
     Cur_Height = Height;
 
+    SDL_GL_SetSwapInterval(0);
     glViewport(0, 0, Cur_Width, Cur_Height);
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_STENCIL_TEST);
@@ -1374,13 +1372,12 @@ int Open_Window(int Width, int Height)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_ACCUM_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
     glEnableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_COLOR_ARRAY);
     glDisableClientState(GL_NORMAL_ARRAY);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    SDL_GL_SetSwapInterval(0);
 
     Reize_UI();
 
