@@ -1123,7 +1123,7 @@ int main(int argc, char *argv[])
 
                         case SDL_WINDOWEVENT_RESTORED:
                         case SDL_WINDOWEVENT_EXPOSED:
-                            do_resize = TRUE;
+//                            do_resize = TRUE;
                             break;
 
                         case SDL_WINDOWEVENT_ENTER:
@@ -1302,9 +1302,6 @@ int Open_Window(int Width, int Height)
     if (Width < SCREEN_WIDTH) Width = SCREEN_WIDTH;
     if (Height < SCREEN_HEIGHT) Height = SCREEN_HEIGHT;
 
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
-    SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, TRUE);
-
     if (FullScreen)
     {
         if ((Main_Window = SDL_CreateWindow(Window_Title,
@@ -1343,16 +1340,14 @@ int Open_Window(int Width, int Height)
     {
         return(FALSE);
     }
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
+    SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, TRUE);
+    SDL_GL_SetSwapInterval(0);
+
     Set_Window_Pos();
 
     Cur_Width = Width;
     Cur_Height = Height;
-
-#if !defined(__LINUX__)
-    SDL_GL_SetSwapInterval(0);
-#else
-    SDL_GL_SetSwapInterval(1);
-#endif
 
     glViewport(0, 0, Cur_Width, Cur_Height);
     glDisable(GL_DEPTH_TEST);
