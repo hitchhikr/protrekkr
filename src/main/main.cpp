@@ -1197,7 +1197,6 @@ void Flush_Screen(void)
 
 #if !defined(__WIN32__) && !defined(__AROS__) && !defined(__AMIGAOS4__) && !defined(__MORPHOS__)
     glDrawBuffer(GL_FRONT);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_ACCUM_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     glRasterPos2f(-1.0f, -1.0f);
     glCopyPixels(0, 0, Cur_Width, Cur_Height, GL_COLOR);
     glDrawBuffer(GL_BACK);

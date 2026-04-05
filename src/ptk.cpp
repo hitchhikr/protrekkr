@@ -1942,6 +1942,10 @@ int Screen_Update(void)
     // Draw the main windows layout
     if(redraw_everything)
     {
+
+        Set_Color(COL_BLACK);
+        Fill_Rect(0, 0, Cur_Width, Cur_Height);
+        
         last_index = -1;
         // Box around the vu-meters
         Gui_Draw_Button_Box(MIN_VUMETER - 4, 6, (MAX_VUMETER - MIN_VUMETER) + 6, 16, NULL, BUTTON_NORMAL | BUTTON_DISABLED);
@@ -2033,9 +2037,6 @@ int Screen_Update(void)
         Draw_Pattern_Right_Stuff();
         go_update_pattern |= 1;
         redraw_everything = FALSE;
-        Set_Color(COL_BLACK);
-        Fill_Rect(0, 179, Cur_Width, 179 + 1);
-        Fill_Rect(0, 183, Cur_Width, 183 + 1);
     }
     
     int Lt_vu = (int) (MIN_VUMETER + (((float) L_MaxLevel / 32767.0f) * LARG_VUMETER));
