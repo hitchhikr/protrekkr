@@ -1,7 +1,7 @@
 CC = gcc -mcrt=newlib
 CXX = g++ -mcrt=newlib
 
-LIBS = -lSDL -lz -lpthread -lunix
+LIBS = -lSDL2 -lz -lpthread -lunix
 
 FLAGS = -Ofast -w -fsigned-char -fno-strict-aliasing -fomit-frame-pointer -ffast-math -fno-rtti \
         -Irelease/ptk/replay/lib/include -Lsrc/extralibs/zlib-1.2.3 \

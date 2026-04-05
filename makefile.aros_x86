@@ -2,7 +2,7 @@ CC = gcc
 CXX = g++
 STRIP = strip
 
-LIBS = -lGL -lSDL -lsdldraw -lz -lpthread
+LIBS = -lGL -lSDL2 -lz -lpthread
 
 FLAGS = -Ofast -fsigned-char -Irelease/ptk/replay/lib/include -Lsrc/extralibs/zlib-1.2.3 -ffast-math -fno-rtti \
         -fno-strict-aliasing -Wno-write-strings -Wno-multichar -D __AROS__ -D __GCC__ -D __MOT_SWAP__ \

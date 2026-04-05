@@ -1,7 +1,7 @@
 CC = gcc
 CXX = g++
 
-LIBS_X86_64 = -lsdldraw_x86_64 -lz -framework CoreAudio -framework CoreMidi -framework AudioUnit -framework Cocoa -framework OpenGL -lSDL
+LIBS_X86_64 = -lz -framework CoreAudio -framework CoreMidi -framework AudioUnit -framework Cocoa -framework OpenGL -lSDL2
 
 DEBUG = 
 
@@ -16,7 +16,7 @@ EXEOBJS_X86_64 = ptk_x86_64.o \
               bits_x86_64.o pack_x86_64.o tinypack_x86_64.o words_x86_64.o wputils_x86_64.o \
               config_x86_64.o 303s_x86_64.o synths_x86_64.o insts_x86_64.o ptps_x86_64.o \
               midi_x86_64.o rtmidi_x86_64.o midi_dispatch_x86_64.o \
-              timer_x86_64.o main_x86_64.o sdlmain_x86_64.o \
+              timer_x86_64.o main_x86_64.o sdl2main_x86_64.o \
               misc_draw_x86_64.o draw_primitives_x86_64.o requesters_x86_64.o \
               samples_ops_x86_64.o aiff_x86_64.o aiff_interface_x86_64.o riff_x86_64.o riff_interface_x86_64.o \
               tb_303_x86_64.o wavpack_x86_64.o samples_unpack_x86_64.o replay_x86_64.o synth_x86_64.o endianness_x86_64.o \

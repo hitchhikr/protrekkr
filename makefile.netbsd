@@ -1,7 +1,7 @@
 CC = gcc
 CXX = g++
 
-LIBS = -lGL -lSDL -lsdldraw -lz -lpthread
+LIBS = -lGL -lSDL2 -lz -lpthread
 
 FLAGS = -Ofast -fsigned-char -fno-strict-aliasing -ffast-math -fno-rtti -fomit-frame-pointer -fno-exceptions -w \
         -Irelease/ptk/replay/lib/include -I/usr/pkg/include -I/usr/X11R7/include -L/usr/X11R7/lib -L/usr/pkg/lib -Lsrc/extralibs/zlib-1.2.3 \

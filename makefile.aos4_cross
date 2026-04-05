@@ -2,7 +2,7 @@ CC = powerpc-eabi-gcc
 CXX = powerpc-eabi-g++
 ROOT_OS4_SDK = D:\PPC32
 
-LIBS = -lstdc++ -lgcc_eh -lSDL -lz -lpthread -lunix
+LIBS = -lstdc++ -lgcc_eh -lSDL2 -lz -lpthread -lunix
 
 FLAGS = -Ofast -w -fsigned-char -fno-strict-aliasing -fomit-frame-pointer -fno-unwind-tables -ffast-math -fno-rtti \
         -Irelease/ptk/replay/lib/include -Lsrc/extralibs/zlib-1.2.3 \
