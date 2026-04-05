@@ -1302,10 +1302,6 @@ int Open_Window(int Width, int Height)
     if (Width < SCREEN_WIDTH) Width = SCREEN_WIDTH;
     if (Height < SCREEN_HEIGHT) Height = SCREEN_HEIGHT;
 
-    SDL_GL_SetAttribute(SDL_GL_ACCUM_RED_SIZE, 8);
-    SDL_GL_SetAttribute(SDL_GL_ACCUM_GREEN_SIZE, 8);
-    SDL_GL_SetAttribute(SDL_GL_ACCUM_BLUE_SIZE, 8);
-    SDL_GL_SetAttribute(SDL_GL_ACCUM_ALPHA_SIZE, 8);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
     SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, TRUE);
 
