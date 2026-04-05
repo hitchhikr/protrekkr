@@ -381,22 +381,23 @@ void Leave_2d_Mode(void)
 
 // ------------------------------------------------------
 // Draw a horizontal line
-void Draw_HLine(int x, int y, int Width, int Color)
+void DrawHLine(int y, int x, int x2, int Color)
 {
     GLfloat r = (GLfloat) Ptk_Palette[Color].r / 255.0f;
     GLfloat g = (GLfloat) Ptk_Palette[Color].g / 255.0f;
     GLfloat b = (GLfloat) Ptk_Palette[Color].b / 255.0f;
     GLfloat a = (GLfloat) Ptk_Palette[Color].a / 255.0f;
+    GLfloat Width = (GLfloat) ((x2 - x) + 1);
 
     if(!check_vertices_buffer())
     {
         return;
     }
-    Vertices[Num_Vertices[Drawing_Priority]].x = 0.0f + (GLfloat) x; Vertices[Num_Vertices[Drawing_Priority]].y = 0.0f + (GLfloat) y;
+    Vertices[Num_Vertices[Drawing_Priority]].x = (GLfloat) x; Vertices[Num_Vertices[Drawing_Priority]].y = (GLfloat) y;
     Colors[Num_Vertices[Drawing_Priority]].r = r; Colors[Num_Vertices[Drawing_Priority]].g = g; Colors[Num_Vertices[Drawing_Priority]].b = b; Colors[Num_Vertices[Drawing_Priority]].a = a;
     Num_Vertices[Drawing_Priority]++;
 
-    Vertices[Num_Vertices[Drawing_Priority]].x = 0.0f + (GLfloat) x; Vertices[Num_Vertices[Drawing_Priority]].y = 1.0f + (GLfloat) y;
+    Vertices[Num_Vertices[Drawing_Priority]].x = (GLfloat) x; Vertices[Num_Vertices[Drawing_Priority]].y = 1.0f + (GLfloat) y;
     Colors[Num_Vertices[Drawing_Priority]].r = r; Colors[Num_Vertices[Drawing_Priority]].g = g; Colors[Num_Vertices[Drawing_Priority]].b = b; Colors[Num_Vertices[Drawing_Priority]].a = a;
     Num_Vertices[Drawing_Priority]++;
 
@@ -404,29 +405,30 @@ void Draw_HLine(int x, int y, int Width, int Color)
     Colors[Num_Vertices[Drawing_Priority]].r = r; Colors[Num_Vertices[Drawing_Priority]].g = g; Colors[Num_Vertices[Drawing_Priority]].b = b; Colors[Num_Vertices[Drawing_Priority]].a = a;
     Num_Vertices[Drawing_Priority]++;
 
-    Vertices[Num_Vertices[Drawing_Priority]].x = (GLfloat) Width + (GLfloat) x; Vertices[Num_Vertices[Drawing_Priority]].y = 0.0f + (GLfloat) y;
+    Vertices[Num_Vertices[Drawing_Priority]].x = (GLfloat) Width + (GLfloat) x; Vertices[Num_Vertices[Drawing_Priority]].y = (GLfloat) y;
     Colors[Num_Vertices[Drawing_Priority]].r = r; Colors[Num_Vertices[Drawing_Priority]].g = g; Colors[Num_Vertices[Drawing_Priority]].b = b; Colors[Num_Vertices[Drawing_Priority]].a = a;
     Num_Vertices[Drawing_Priority]++;
 }
 
 // ------------------------------------------------------
 // Draw a vertical line
-void Draw_VLine(int x, int y, int Height, int Color)
+void DrawVLine(int x, int y, int y2, int Color)
 {
     GLfloat r = (GLfloat) Ptk_Palette[Color].r / 255.0f;
     GLfloat g = (GLfloat) Ptk_Palette[Color].g / 255.0f;
     GLfloat b = (GLfloat) Ptk_Palette[Color].b / 255.0f;
     GLfloat a = (GLfloat) Ptk_Palette[Color].a / 255.0f;
+    GLfloat Height = (GLfloat) ((y2 - y) + 1);
 
     if(!check_vertices_buffer())
     {
         return;
     }
-    Vertices[Num_Vertices[Drawing_Priority]].x = 0.0f + (GLfloat) x; Vertices[Num_Vertices[Drawing_Priority]].y = 0.0f + (GLfloat) y;
+    Vertices[Num_Vertices[Drawing_Priority]].x = (GLfloat) x; Vertices[Num_Vertices[Drawing_Priority]].y = (GLfloat) y;
     Colors[Num_Vertices[Drawing_Priority]].r = r; Colors[Num_Vertices[Drawing_Priority]].g = g; Colors[Num_Vertices[Drawing_Priority]].b = b; Colors[Num_Vertices[Drawing_Priority]].a = a;
     Num_Vertices[Drawing_Priority]++;
 
-    Vertices[Num_Vertices[Drawing_Priority]].x = 0.0f + (GLfloat) x; Vertices[Num_Vertices[Drawing_Priority]].y = (GLfloat) Height + (GLfloat) y;
+    Vertices[Num_Vertices[Drawing_Priority]].x = (GLfloat) x; Vertices[Num_Vertices[Drawing_Priority]].y = (GLfloat) Height + (GLfloat) y;
     Colors[Num_Vertices[Drawing_Priority]].r = r; Colors[Num_Vertices[Drawing_Priority]].g = g; Colors[Num_Vertices[Drawing_Priority]].b = b; Colors[Num_Vertices[Drawing_Priority]].a = a;
     Num_Vertices[Drawing_Priority]++;
 
@@ -434,14 +436,14 @@ void Draw_VLine(int x, int y, int Height, int Color)
     Colors[Num_Vertices[Drawing_Priority]].r = r; Colors[Num_Vertices[Drawing_Priority]].g = g; Colors[Num_Vertices[Drawing_Priority]].b = b; Colors[Num_Vertices[Drawing_Priority]].a = a;
     Num_Vertices[Drawing_Priority]++;
 
-    Vertices[Num_Vertices[Drawing_Priority]].x = 1.0f + (GLfloat) x; Vertices[Num_Vertices[Drawing_Priority]].y = 0.0f + (GLfloat) y;
+    Vertices[Num_Vertices[Drawing_Priority]].x = 1.0f + (GLfloat) x; Vertices[Num_Vertices[Drawing_Priority]].y = (GLfloat) y;
     Colors[Num_Vertices[Drawing_Priority]].r = r; Colors[Num_Vertices[Drawing_Priority]].g = g; Colors[Num_Vertices[Drawing_Priority]].b = b; Colors[Num_Vertices[Drawing_Priority]].a = a;
     Num_Vertices[Drawing_Priority]++;
 }
 
 // ------------------------------------------------------
 // Draw a vertical line
-void Draw_Pixel(int x, int y, int Color)
+void DrawPixel(int x, int y, int Color)
 {
     GLfloat r = (GLfloat) Ptk_Palette[Color].r / 255.0f;
     GLfloat g = (GLfloat) Ptk_Palette[Color].g / 255.0f;
@@ -452,11 +454,11 @@ void Draw_Pixel(int x, int y, int Color)
     {
         return;
     }
-    Vertices[Num_Vertices[Drawing_Priority]].x = 0.0f + (GLfloat) x; Vertices[Num_Vertices[Drawing_Priority]].y = 0.0f + (GLfloat) y;
+    Vertices[Num_Vertices[Drawing_Priority]].x = (GLfloat) x; Vertices[Num_Vertices[Drawing_Priority]].y = (GLfloat) y;
     Colors[Num_Vertices[Drawing_Priority]].r = r; Colors[Num_Vertices[Drawing_Priority]].g = g; Colors[Num_Vertices[Drawing_Priority]].b = b; Colors[Num_Vertices[Drawing_Priority]].a = a;
     Num_Vertices[Drawing_Priority]++;
 
-    Vertices[Num_Vertices[Drawing_Priority]].x = 0.0f + (GLfloat) x; Vertices[Num_Vertices[Drawing_Priority]].y = 1.0f + (GLfloat) y;
+    Vertices[Num_Vertices[Drawing_Priority]].x = (GLfloat) x; Vertices[Num_Vertices[Drawing_Priority]].y = 1.0f + (GLfloat) y;
     Colors[Num_Vertices[Drawing_Priority]].r = r; Colors[Num_Vertices[Drawing_Priority]].g = g; Colors[Num_Vertices[Drawing_Priority]].b = b; Colors[Num_Vertices[Drawing_Priority]].a = a;
     Num_Vertices[Drawing_Priority]++;
 
@@ -464,30 +466,32 @@ void Draw_Pixel(int x, int y, int Color)
     Colors[Num_Vertices[Drawing_Priority]].r = r; Colors[Num_Vertices[Drawing_Priority]].g = g; Colors[Num_Vertices[Drawing_Priority]].b = b; Colors[Num_Vertices[Drawing_Priority]].a = a;
     Num_Vertices[Drawing_Priority]++;
 
-    Vertices[Num_Vertices[Drawing_Priority]].x = 1.0f + (GLfloat) x; Vertices[Num_Vertices[Drawing_Priority]].y = 0.0f + (GLfloat) y;
+    Vertices[Num_Vertices[Drawing_Priority]].x = 1.0f + (GLfloat) x; Vertices[Num_Vertices[Drawing_Priority]].y = (GLfloat) y;
     Colors[Num_Vertices[Drawing_Priority]].r = r; Colors[Num_Vertices[Drawing_Priority]].g = g; Colors[Num_Vertices[Drawing_Priority]].b = b; Colors[Num_Vertices[Drawing_Priority]].a = a;
     Num_Vertices[Drawing_Priority]++;
 }
 
 // ------------------------------------------------------
 // Draw a one colored rectangle
-void Draw_Flat_Rectangle(int x, int y,
-                         int Width, int Height, int Color)
+void Fill_Rect(int x, int y,
+               int x2, int y2)
 {
-    GLfloat r = (GLfloat) Ptk_Palette[Color].r / 255.0f;
-    GLfloat g = (GLfloat) Ptk_Palette[Color].g / 255.0f;
-    GLfloat b = (GLfloat) Ptk_Palette[Color].b / 255.0f;
-    GLfloat a = (GLfloat) Ptk_Palette[Color].a / 255.0f;
+    GLfloat r = (GLfloat) Ptk_Palette[FgColor].r / 255.0f;
+    GLfloat g = (GLfloat) Ptk_Palette[FgColor].g / 255.0f;
+    GLfloat b = (GLfloat) Ptk_Palette[FgColor].b / 255.0f;
+    GLfloat a = (GLfloat) Ptk_Palette[FgColor].a / 255.0f;
+    GLfloat Width = (GLfloat) (x2 - x);
+    GLfloat Height = (GLfloat) (y2 - y); 
 
     if(!check_vertices_buffer())
     {
         return;
     }
-    Vertices[Num_Vertices[Drawing_Priority]].x = 0.0f + (GLfloat) x; Vertices[Num_Vertices[Drawing_Priority]].y = 0.0f + (GLfloat) y;
+    Vertices[Num_Vertices[Drawing_Priority]].x = (GLfloat) x; Vertices[Num_Vertices[Drawing_Priority]].y = (GLfloat) y;
     Colors[Num_Vertices[Drawing_Priority]].r = r; Colors[Num_Vertices[Drawing_Priority]].g = g; Colors[Num_Vertices[Drawing_Priority]].b = b; Colors[Num_Vertices[Drawing_Priority]].a = a;
     Num_Vertices[Drawing_Priority]++;
 
-    Vertices[Num_Vertices[Drawing_Priority]].x = 0.0f + (GLfloat) x; Vertices[Num_Vertices[Drawing_Priority]].y = (GLfloat) Height + (GLfloat) y;
+    Vertices[Num_Vertices[Drawing_Priority]].x = (GLfloat) x; Vertices[Num_Vertices[Drawing_Priority]].y = (GLfloat) Height + (GLfloat) y;
     Colors[Num_Vertices[Drawing_Priority]].r = r; Colors[Num_Vertices[Drawing_Priority]].g = g; Colors[Num_Vertices[Drawing_Priority]].b = b; Colors[Num_Vertices[Drawing_Priority]].a = a;
     Num_Vertices[Drawing_Priority]++;
 
@@ -495,7 +499,7 @@ void Draw_Flat_Rectangle(int x, int y,
     Colors[Num_Vertices[Drawing_Priority]].r = r; Colors[Num_Vertices[Drawing_Priority]].g = g; Colors[Num_Vertices[Drawing_Priority]].b = b; Colors[Num_Vertices[Drawing_Priority]].a = a;
     Num_Vertices[Drawing_Priority]++;
 
-    Vertices[Num_Vertices[Drawing_Priority]].x = (GLfloat) Width + (GLfloat) x; Vertices[Num_Vertices[Drawing_Priority]].y = 0.0f + (GLfloat) y;
+    Vertices[Num_Vertices[Drawing_Priority]].x = (GLfloat) Width + (GLfloat) x; Vertices[Num_Vertices[Drawing_Priority]].y = (GLfloat) y;
     Colors[Num_Vertices[Drawing_Priority]].r = r; Colors[Num_Vertices[Drawing_Priority]].g = g; Colors[Num_Vertices[Drawing_Priority]].b = b; Colors[Num_Vertices[Drawing_Priority]].a = a;
     Num_Vertices[Drawing_Priority]++;
 }
@@ -649,27 +653,6 @@ void Unlock_Surface(PTK_SURFACE *texture)
 }
 
 // ------------------------------------------------------
-// Draw a pixel
-void DrawPixel(int x, int y, int Color)
-{
-    Draw_Pixel(x, y, Color);
-}
-
-// ------------------------------------------------------
-// Draw an horizontal line
-void DrawHLine(int y, int x1, int x2, int Color)
-{
-    Draw_HLine(x1, y, (x2 - x1) + 1, Color);
-}
-
-// ------------------------------------------------------
-// Draw a vertical line
-void DrawVLine(int x, int y1, int y2, int Color)
-{
-    Draw_VLine(x, y1, (y2 - y1) + 1, Color);
-}
-
-// ------------------------------------------------------
 // Set the current foreground color
 void Set_Color(int color)
 {
@@ -717,13 +700,6 @@ void Copy_No_Refresh(PTK_TEXTURE *Source,
                  Dst_Rect.w, 
                  Dst_Rect.h,
                  Source->index, FALSE);
-}
-
-// ------------------------------------------------------
-// Fill a rectangle with the current color
-void Fill_Rect(int x1, int y1, int x2, int y2)
-{
-    Draw_Flat_Rectangle(x1, y1, x2 - x1, y2 - y1, FgColor);
 }
 
 // ------------------------------------------------------

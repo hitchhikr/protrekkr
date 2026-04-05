@@ -557,7 +557,7 @@ Skip_Header2:
     bjbox(0,
           y,
           CONSOLE_WIDTH - 19,
-          (Cur_Height - 384) + Patterns_Lines_Offset - sub
+          (Cur_Height - 385) + Patterns_Lines_Offset - sub
          );
 
     // Draw it now
@@ -2237,7 +2237,7 @@ void Draw_Pattern_Right_Stuff()
     Set_Color(COL_BLACK);
     Fill_Rect(MAX_PATT_SCREEN_X, 184, MAX_PATT_SCREEN_X + 1, (Cur_Height - 251) + (16 * 5) + Patterns_Lines_Offset);
 
-    DrawVLine(0, 184, (Cur_Height - 251) + (16 * 5) + Patterns_Lines_Offset, COL_BLACK);
+//    DrawVLine(0, 184, (Cur_Height - 251) + (16 * 5) + Patterns_Lines_Offset, COL_BLACK);
 
     // 195
     Gui_Draw_Button_Box(MAX_PATT_SCREEN_X + 1, 184, 16, 14, "\01", BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);

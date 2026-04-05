@@ -205,14 +205,14 @@ void AUDIO_Wait_For_Thread(void)
         {
             while(AUDIO_Acknowledge)
             {
-                Sleep(10);
+                Sleep(1);
             };
         }
         else
         {
             while(!AUDIO_Acknowledge)
             {
-                Sleep(10);
+                Sleep(1);
             };
         }
     }
