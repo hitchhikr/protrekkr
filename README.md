@@ -24,7 +24,7 @@ make -f makefile.linux
 
 The executable will be created in the release/ptk directory.
 
-Notice that you'll need the SDL 2 (https://github.com/libsdl-org) dev library to compile the tracker, the replay routines themselves have no dependencies.<br>
+Notice that you'll need the SDL 2 (https://github.com/libsdl-org/SDL) dev library to compile the tracker, the replay routines themselves have no dependencies.<br>
 > [!CAUTION]
 > **"ptk_vx.x.x_macosx_x86_64_ogl.zip" may be problematic on some 64 bit versions of Mac OS (ulterior to Catalina), on those you should use "ptk_vx.x.x_macosx_x86_64.zip" instead.**
 ---
