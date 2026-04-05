@@ -343,8 +343,14 @@ void Draw_Pattern(int track, int line, int petrack, int row)
     {
         cur_track = track + liner;
 
-        if(Track_Under_Caret == cur_track) Set_Color(COL_PUSHED_MED);
-        else Set_Color(COL_PATTERN_LO_BACK);
+        if(Track_Under_Caret == cur_track)
+        {
+            Set_Color(COL_PUSHED_MED);
+        }
+        else
+        {
+            Set_Color(COL_PATTERN_LO_BACK);
+        }
 
         if(dover + 2 >= MAX_PATT_SCREEN_X) break;
         dover += 2;
@@ -367,7 +373,7 @@ void Draw_Pattern(int track, int line, int petrack, int row)
 
         // Channel number
         if((dover + (Cur_Char_size[cur_track] + 1)) >= MAX_PATT_SCREEN_X) goto Skip_Header;
-        Cur_Char_Function[cur_track].Fnc(dover, y, cur_track, 71, 71 + 7);
+        Cur_Char_Function[cur_track].Fnc(dover, y, cur_track, 0, 0 + 7);
         dover += Cur_Char_size[cur_track] + 1;
 
         // Mute on/off icon

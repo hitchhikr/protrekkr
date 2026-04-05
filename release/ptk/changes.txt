@@ -9,10 +9,12 @@ v2.8.5
 - Fixed a small bug in keyboard handling.
 - Migrated to SDL 2.
 - Old software rendering path removed,
-  the user interface is now using OpenGL exclusively.
+  the user interface is now using OpenGL mode exclusively
+  (which should be much faster than before).
 - Windows users now have to select a keyboard in 'UI Setup'.
 - Horizontal mouse wheel can now be used over patterns.
 - Left Ctrl + up/down for -16/+16 rows jump.
+- Files drag'n'drop handled.
 
 v2.8.3 PRE 6
 

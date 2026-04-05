@@ -771,18 +771,6 @@ int Screen_Update(void)
 #endif
     go_update_pattern = 0;
 
-    // Checking for mouse and keyboard events ------------------------------------
-    if (!In_Requester)
-    {
-        Mouse_Handler();
-        Keyboard_Handler();
-    }
-    else
-    {
-        Mouse_Handler_Requester();
-        Keyboard_Handler_Requester();
-    }
-
     if(Burned_Title && !file_loaded)
     {
         if(global_argc != 1)
@@ -798,6 +786,18 @@ int Screen_Update(void)
             }
         }
         file_loaded = TRUE;
+    }
+
+    // Checking for mouse and keyboard events ------------------------------------
+    if (!In_Requester)
+    {
+        Mouse_Handler();
+        Keyboard_Handler();
+    }
+    else
+    {
+        Mouse_Handler_Requester();
+        Keyboard_Handler_Requester();
     }
 
     redraw_everything = FALSE;

@@ -119,6 +119,8 @@ REQUESTER Title_Requester =
     &LOGOPIC, 5
 };
 
+extern int file_loaded;
+
 int Orig_Screen_Width;
 int Orig_Screen_Height;
 int Startup_Width;
@@ -1022,6 +1024,10 @@ int main(int argc, char *argv[])
                     {
                         Mouse.wheel_x = Events[i].wheel.x;
                     }
+                    if(Events[i].wheel.x > 1)
+                    {
+                        int fuck = 10;
+                    }
                     break;
 
                 case SDL_MOUSEBUTTONUP:
@@ -1034,17 +1040,17 @@ int main(int argc, char *argv[])
                         case SDL_PRESSED:
                             switch (Events[i].button.button)
                             {
-                                case SDL_MOUSE_LEFT_BUTTON:
+                                case SDL_BUTTON_LEFT:
                                     Mouse.button |= MOUSE_LEFT_BUTTON;
                                     Mouse.button_oneshot |= MOUSE_LEFT_BUTTON;
                                     break;
 
-                                case SDL_MOUSE_MIDDLE_BUTTON:
+                                case SDL_BUTTON_MIDDLE:
                                     Mouse.button |= MOUSE_MIDDLE_BUTTON;
                                     Mouse.button_oneshot |= MOUSE_MIDDLE_BUTTON;
                                     break;
 
-                                case SDL_MOUSE_RIGHT_BUTTON:
+                                case SDL_BUTTON_RIGHT:
                                     Mouse.button |= MOUSE_RIGHT_BUTTON;
                                     Mouse.button_oneshot |= MOUSE_RIGHT_BUTTON;
                                     break;
@@ -1054,17 +1060,17 @@ int main(int argc, char *argv[])
                         case SDL_RELEASED:
                             switch (Events[i].button.button)
                             {
-                                case SDL_MOUSE_LEFT_BUTTON:
+                                case SDL_BUTTON_LEFT:
                                     Mouse.button &= ~MOUSE_LEFT_BUTTON;
                                     Mouse.button_oneshot &= ~MOUSE_LEFT_BUTTON;
                                     gui_pushed &= ~MOUSE_LEFT_BUTTON;
                                     break;
-                                case SDL_MOUSE_MIDDLE_BUTTON:
+                                case SDL_BUTTON_MIDDLE:
                                     Mouse.button &= ~MOUSE_MIDDLE_BUTTON;
                                     Mouse.button_oneshot &= ~MOUSE_MIDDLE_BUTTON;
                                     gui_pushed &= ~MOUSE_MIDDLE_BUTTON;
                                     break;
-                                case SDL_MOUSE_RIGHT_BUTTON:
+                                case SDL_BUTTON_RIGHT:
                                     Mouse.button &= ~MOUSE_RIGHT_BUTTON;
                                     Mouse.button_oneshot &= ~MOUSE_RIGHT_BUTTON;
                                     gui_pushed &= ~MOUSE_RIGHT_BUTTON;
@@ -1080,11 +1086,25 @@ int main(int argc, char *argv[])
                     Mouse.y++;
                     break;
 
+                case SDL_DROPFILE:
+                    global_argc = 2;
+                    file_loaded = FALSE;
+                    strcpy(global_argv, Events[i].drop.file);
+                    SDL_free(Events[i].drop.file);
+                    break;
+                case SDL_DROPCOMPLETE:
+                    SDL_RaiseWindow(Main_Window);
+                    break;
+
                 case SDL_QUIT:
                     if(!In_Requester)
                     {
                         Display_Requester(&Exit_Requester, GUI_CMD_NOP, NULL, TRUE);
                     }
+                    break;
+
+                case SDL_RENDER_TARGETS_RESET:
+                    do_resize = TRUE;
                     break;
 
                 case SDL_WINDOWEVENT:

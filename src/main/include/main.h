@@ -47,11 +47,7 @@
 #define MOUSE_MIDDLE_BUTTON 2
 #define MOUSE_RIGHT_BUTTON 4
 
-#define SDL_MOUSE_LEFT_BUTTON 1
-#define SDL_MOUSE_MIDDLE_BUTTON 2
-#define SDL_MOUSE_RIGHT_BUTTON 3
-
-#define MAX_EVENTS 16
+#define MAX_EVENTS 32
 
 #define CHECK_KEY(x) (Keys[Current_Keys] == x)
 #define GET_KEY() (Keys[Current_Keys])

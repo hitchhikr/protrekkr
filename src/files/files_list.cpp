@@ -672,6 +672,9 @@ void Dump_Files_List(void)
             // Clear the line
             Set_Color(COL_BACKGROUND);
             bjbox(xr - 1, yr + 1, Cur_Width - 413, 137);
+            // Cleanup the left border
+            Set_Color(COL_BLACK);
+            bjbox(xr - 2, yr + 1, 1, 137);
             // Cleanup the right border
             Set_Color(COL_BLACK);
             bjbox(Cur_Width - 19, yr + 1, 1, 137);
