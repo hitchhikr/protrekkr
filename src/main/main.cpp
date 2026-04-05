@@ -1195,8 +1195,16 @@ void Flush_Screen(void)
     }
     Leave_2d_Mode();
 
-    glFlush();
-//    SDL_GL_SwapWindow(Main_Window);
+#if !defined(__WIN32__) && !defined(__AROS__) && !defined(__AMIGAOS4__) && !defined(__MORPHOS__)
+    glDrawBuffer(GL_FRONT);
+    glRasterPos2f(-1.0f, -1.0f);
+    glCopyPixels(0, 0, Cur_Width, Cur_Height, GL_COLOR);
+    glDrawBuffer(GL_BACK);
+    glFinish();
+#else
+    SDL_GL_SwapWindow(Main_Window);
+#endif
+
     if(!window_shown)
     {
         // Only done at first opening to avoid
@@ -1351,6 +1359,34 @@ int Open_Window(int Width, int Height)
     Cur_Width = Width;
     Cur_Height = Height;
 
+    glDrawBuffer(GL_FRONT);
+    glViewport(0, 0, Cur_Width, Cur_Height);
+    glDisable(GL_DEPTH_TEST);
+    glDisable(GL_STENCIL_TEST);
+    glDisable(GL_LIGHTING);
+    glDisable(GL_COLOR_MATERIAL);
+    glDisable(GL_LINE_SMOOTH);
+    glDisable(GL_POINT_SMOOTH);
+    glDisable(GL_POLYGON_SMOOTH);
+    glDisable(GL_CULL_FACE);
+    glDisable(GL_SCISSOR_TEST);
+    glDisable(GL_BLEND);
+    glHint(GL_POINT_SMOOTH_HINT, GL_FASTEST);
+    glHint(GL_LINE_SMOOTH_HINT, GL_FASTEST);
+    glHint(GL_POLYGON_SMOOTH_HINT, GL_FASTEST);
+    glShadeModel(GL_FLAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glDisableClientState(GL_COLOR_ARRAY);
+    glDisableClientState(GL_NORMAL_ARRAY);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+    glDrawBuffer(GL_BACK);
     glViewport(0, 0, Cur_Width, Cur_Height);
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_STENCIL_TEST);
