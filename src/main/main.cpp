@@ -1252,6 +1252,9 @@ void Redraw_Screen_Quick(void)
 // Update the UI dimensions
 void Reize_UI()
 {
+    glDrawBuffer(GL_FRONT);
+    glViewport(0, 0, Cur_Width, Cur_Height);
+    glDrawBuffer(GL_BACK);
     glViewport(0, 0, Cur_Width, Cur_Height);
     CONSOLE_WIDTH = Cur_Width;
     CHANNELS_WIDTH = Cur_Width - 20;
