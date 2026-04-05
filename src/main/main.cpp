@@ -1197,6 +1197,7 @@ void Flush_Screen(void)
 
 #if !defined(__WIN32__) && !defined(__AROS__) && !defined(__AMIGAOS4__) && !defined(__MORPHOS__)
     glDrawBuffer(GL_FRONT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_ACCUM_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     glRasterPos2f(-1.0f, -1.0f);
     glCopyPixels(0, 0, Cur_Width, Cur_Height, GL_COLOR);
     glDrawBuffer(GL_BACK);
@@ -1379,7 +1380,7 @@ int Open_Window(int Width, int Height)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_ACCUM_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
     glEnableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_COLOR_ARRAY);
@@ -1406,7 +1407,7 @@ int Open_Window(int Width, int Height)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_ACCUM_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
     glEnableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_COLOR_ARRAY);
