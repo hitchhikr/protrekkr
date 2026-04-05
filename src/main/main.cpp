@@ -1195,7 +1195,8 @@ void Flush_Screen(void)
     }
     Leave_2d_Mode();
 
-    SDL_GL_SwapWindow(Main_Window);
+    glFlush();
+//    SDL_GL_SwapWindow(Main_Window);
     if(!window_shown)
     {
         // Only done at first opening to avoid
@@ -1368,8 +1369,8 @@ int Open_Window(int Width, int Height)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
-//    glClear(GL_COLOR_BUFFER_BIT);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
     glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
     glEnableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_COLOR_ARRAY);
