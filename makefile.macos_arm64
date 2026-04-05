@@ -16,7 +16,7 @@ EXEOBJS_ARM64 = ptk_arm64.o \
               bits_arm64.o pack_arm64.o tinypack_arm64.o words_arm64.o wputils_arm64.o \
               config_arm64.o 303s_arm64.o synths_arm64.o insts_arm64.o ptps_arm64.o \
               midi_arm64.o rtmidi_arm64.o midi_dispatch_arm64.o \
-              timer_arm64.o main_arm64.o sdlmain_arm64.o \
+              timer_arm64.o main_arm64.o \
               misc_draw_arm64.o draw_primitives_arm64.o requesters_arm64.o \
               samples_ops_arm64.o aiff_arm64.o aiff_interface_arm64.o riff_arm64.o riff_interface_arm64.o \
               tb_303_arm64.o wavpack_arm64.o samples_unpack_arm64.o replay_arm64.o synth_arm64.o endianness_arm64.o \
@@ -37,7 +37,7 @@ protrekkr_arm64: $(EXEOBJS_ARM64)
            -L./ -L/usr/local/lib -L/library/frameworks -Lsrc/extralibs/zlib-1.2.3 $(FLAGS_ARM64) $(EXEOBJS_ARM64) $(LIBS_ARM64)
 	strip -x -X -S ./release/ptk/protrekkr_arm64.app/Contents/MacOS/Protrekkr
 	chmod +x ./release/ptk/protrekkr_arm64.app/Contents/MacOS/Protrekkr
-	install_name_tool ./release/ptk/protrekkr_arm64.app/Contents/MacOS/Protrekkr -change /usr/local/lib/libSDL-1.2.0.dylib @executable_path/libSDL-1.2.0.dylib
+	install_name_tool ./release/ptk/protrekkr_arm64.app/Contents/MacOS/Protrekkr -change /usr/local/lib/libSDL-2.0.0.dylib @executable_path/libSDL-2.0.0.dylib
 
 ptk_arm64.o: src/ptk.cpp
 	$(CC) -c -o $(@) $(FLAGS_ARM64) $<
@@ -136,9 +136,6 @@ timer_arm64.o: src/main/timer.cpp
 	$(CC) -c -o $(@) $(FLAGS_ARM64) $<
 
 main_arm64.o: src/main/main.cpp
-	$(CC) -c -o $(@) $(FLAGS_ARM64) $<
-
-sdlmain_arm64.o: src/main/sdlmain.m
 	$(CC) -c -o $(@) $(FLAGS_ARM64) $<
 
 misc_draw_arm64.o: src/ui/misc_draw.cpp
