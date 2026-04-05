@@ -559,6 +559,10 @@ void Actualize_Master_Ed(char action)
                 {
                     Cur_Screen_Mode = (Max_Screen_Mode - 1);
                 }
+                if(Cur_Screen_Mode < 0)
+                {
+                    Cur_Screen_Mode = 0;
+                }
                 sprintf(Modes, "%d x %d", Get_Screen_Rect(Cur_Screen_Mode)->w, Get_Screen_Rect(Cur_Screen_Mode)->h);
                 Gui_Draw_Button_Box(512 + 64 + 8, (Cur_Height - 145), 16, 16, "\03", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
                 Gui_Draw_Button_Box(520 + 64 + 16 + 2, (Cur_Height - 145), 106, 16, Modes, BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);

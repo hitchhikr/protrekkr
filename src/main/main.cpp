@@ -429,10 +429,10 @@ void Get_Vid_Infos()
             SDL_DisplayMode mode = { SDL_PIXELFORMAT_UNKNOWN, 0, 0, 0, 0 };
             if (SDL_GetDisplayMode(display_index, mode_index, &mode) == 0)
             {
-                if ((mode.format == SDL_PIXELFORMAT_RGBA32 ||
-                    mode.format == SDL_PIXELFORMAT_ARGB32 ||
-                    mode.format == SDL_PIXELFORMAT_BGRA32 ||
-                    mode.format == SDL_PIXELFORMAT_ABGR32) &&
+                if ((mode.format == SDL_PIXELFORMAT_XBGR8888 ||
+                    mode.format == SDL_PIXELFORMAT_BGRX8888 ||
+                    mode.format == SDL_PIXELFORMAT_XRGB8888 ||
+                    mode.format == SDL_PIXELFORMAT_RGBX8888) &&
                     (Current_Screen_Mode.refresh_rate == mode.refresh_rate))
                 {
                     memcpy(&Screen_Modes[Max_Screen_Mode], &mode, sizeof(SDL_DisplayMode));
