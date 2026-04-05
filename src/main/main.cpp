@@ -1348,7 +1348,12 @@ int Open_Window(int Width, int Height)
     Cur_Width = Width;
     Cur_Height = Height;
 
+#if !defined(__LINUX__)
     SDL_GL_SetSwapInterval(0);
+#else
+    SDL_GL_SetSwapInterval(1);
+#endif
+
     glViewport(0, 0, Cur_Width, Cur_Height);
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_STENCIL_TEST);
