@@ -99,6 +99,7 @@ typedef struct
 // Variables
 #if defined(__WIN32__)
 HWND Main_Win32_Win;
+SDL_SysWMinfo WMInfo;
 #endif
 SDL_DisplayMode Current_Screen_Mode;
 SDL_DisplayMode Screen_Modes[1024];
@@ -107,7 +108,6 @@ SDL_Renderer *Main_Renderer;
 PTK_SURFACE *Main_Screen;
 SDL_Texture *Main_Texture;
 SDL_GLContext Main_Context;
-SDL_SysWMinfo WMInfo;
 SDL_Event Events[MAX_EVENTS];
 SDL_sem *thread_semaphore;
 int window_shown = FALSE;
@@ -1387,10 +1387,9 @@ int Open_Window(int Width, int Height)
 
     Reize_UI();
 
+#if defined(__WIN32__)
     SDL_VERSION(&WMInfo.version);
     SDL_GetWindowWMInfo(Main_Window, &WMInfo);
-
-#if defined(__WIN32__)
     Main_Win32_Win = WMInfo.info.win.window;
     if(!FullScreen)
     {

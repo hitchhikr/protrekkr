@@ -3,7 +3,7 @@ CXX = g++
 
 LIBS = -lGL -lSDL2 -lz -lpthread
 
-FLAGS = -Ofast -fsigned-char -fno-strict-aliasing -ffast-math -fno-rtti -fno-exceptions -w \
+FLAGS = -Ofast -fsigned-char -fno-strict-aliasing -ffast-math -fomit-frame-pointer -fno-rtti -fno-exceptions -w \
         -Irelease/ptk/replay/lib/include -I/usr/local/include -L/usr/local/lib -Lsrc/extralibs/zlib-1.2.3 \
         -D __LINUX__ -D __GCC__ -D __NO_MIDI__ -D __FREEBSD__ -D __MOT_SWAP__
 
