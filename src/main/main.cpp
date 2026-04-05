@@ -1340,7 +1340,7 @@ int Open_Window(int Width, int Height)
     {
         return(FALSE);
     }
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
+//    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
     SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, TRUE);
     SDL_GL_SetSwapInterval(0);
 
