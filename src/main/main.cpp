@@ -432,7 +432,8 @@ void Get_Vid_Infos()
                 if ((mode.format == SDL_PIXELFORMAT_XBGR8888 ||
                     mode.format == SDL_PIXELFORMAT_BGRX8888 ||
                     mode.format == SDL_PIXELFORMAT_XRGB8888 ||
-                    mode.format == SDL_PIXELFORMAT_RGBX8888) &&
+                    mode.format == SDL_PIXELFORMAT_RGBX8888
+                   ) &&
                     (Current_Screen_Mode.refresh_rate == mode.refresh_rate))
                 {
                     memcpy(&Screen_Modes[Max_Screen_Mode], &mode, sizeof(SDL_DisplayMode));
@@ -1122,7 +1123,7 @@ int main(int argc, char *argv[])
 
                         case SDL_WINDOWEVENT_RESTORED:
                         case SDL_WINDOWEVENT_EXPOSED:
-//                            do_resize = TRUE;
+                            do_resize = TRUE;
                             break;
 
                         case SDL_WINDOWEVENT_ENTER:
