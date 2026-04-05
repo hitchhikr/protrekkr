@@ -1194,7 +1194,7 @@ void Flush_Screen(void)
         Kill_Requester();
     }
     Leave_2d_Mode();
-    glFlush();
+
     SDL_GL_SwapWindow(Main_Window);
     if(!window_shown)
     {
@@ -1339,11 +1339,11 @@ int Open_Window(int Width, int Height)
     }
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 0);
     SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, TRUE);
-    SDL_GL_SetSwapInterval(0);
     if ((Main_Context = SDL_GL_CreateContext(Main_Window)) == NULL)
     {
         return(FALSE);
     }
+    SDL_GL_SetSwapInterval(0);
 
     Set_Window_Pos();
 
