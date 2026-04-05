@@ -104,12 +104,13 @@ SDL_DisplayMode Current_Screen_Mode;
 SDL_DisplayMode Screen_Modes[1024];
 SDL_Window *Main_Window;
 SDL_Renderer *Main_Renderer;
-PTK_TEXTURE *Main_Screen;
+PTK_SURFACE *Main_Screen;
 SDL_Texture *Main_Texture;
 SDL_GLContext Main_Context;
 SDL_SysWMinfo WMInfo;
 SDL_Event Events[MAX_EVENTS];
 SDL_sem *thread_semaphore;
+int window_shown = FALSE;
 
 REQUESTER Title_Requester =
 {
@@ -521,7 +522,7 @@ int main(int argc, char *argv[])
 
     if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_NOPARACHUTE) < 0)
     {
-        Message_Error("Can't open SDL.");
+        Message_Error((char *) SDL_GetError());
         return EXIT_FAILURE;
     }
 
@@ -960,9 +961,6 @@ int main(int argc, char *argv[])
 
                     if(!In_Requester)
                     {
-                        // Only used for SDLK_KP_DIVIDE and SDLK_KP_MULTIPLY
-                        //Symbol = Events[i].key.keysym.scancode;
-
                         Scancode = Translate_Locale_Key(SDL_GetKeyFromScancode(Events[i].key.keysym.scancode));
                         
                         Keys_Raw_Off[Scancode] = TRUE;
@@ -1111,7 +1109,7 @@ int main(int argc, char *argv[])
 
                         case SDL_WINDOWEVENT_RESTORED:
                         case SDL_WINDOWEVENT_EXPOSED:
-                            do_resize = TRUE;
+//                            do_resize = TRUE;
                             break;
 
                         case SDL_WINDOWEVENT_ENTER:
@@ -1183,6 +1181,13 @@ void Flush_Screen(void)
     }
     Leave_2d_Mode();
     SDL_GL_SwapWindow(Main_Window);
+    if(!window_shown)
+    {
+        // Only done at first opening to avoid
+        // some nasty flashing
+        SDL_ShowWindow(Main_Window);
+        window_shown = TRUE;
+    }
 }
 
 // ------------------------------------------------------
@@ -1193,6 +1198,7 @@ int Redraw_Screen(void)
 
     if(!Screen_Update())
     {
+        // Exit
         return FALSE;
     }
 
@@ -1204,6 +1210,7 @@ int Redraw_Screen(void)
     SDL_Delay(10);
 #endif
 
+    // Continue
     return TRUE;
 }
 
@@ -1241,7 +1248,6 @@ void Switch_FullScreen()
 {
     int Width;
     int Height;
-
     if (FullScreen)
     {
         if (FullScreen_Width < SCREEN_WIDTH) FullScreen_Width = SCREEN_WIDTH;
@@ -1258,8 +1264,8 @@ void Switch_FullScreen()
     }
     Cur_Width = Width;
     Cur_Height = Height;
-    SDL_SetWindowSize(Main_Window, Width, Height);
     Reize_UI();
+    SDL_SetWindowSize(Main_Window, Width, Height);
     if (FullScreen)
     {
         SDL_SetWindowFullscreen(Main_Window, SDL_WINDOW_FULLSCREEN);
@@ -1271,7 +1277,7 @@ void Switch_FullScreen()
         Set_Window_Pos();
         SDL_SetWindowResizable(Main_Window, SDL_TRUE);
     }
-    Renew_Gfx_Context(FALSE);
+    Env_Change = TRUE;
 }
 
 // ------------------------------------------------------
@@ -1296,7 +1302,7 @@ int Open_Window(int Width, int Height)
     {
         if ((Main_Window = SDL_CreateWindow(Window_Title,
                                             SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-                                            Startup_Width, Startup_Height, SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN)) == NULL)
+                                            Startup_Width, Startup_Height, SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN | SDL_WINDOW_HIDDEN)) == NULL)
         {
             return(FALSE);
         }
@@ -1318,7 +1324,7 @@ int Open_Window(int Width, int Height)
         }
         if ((Main_Window = SDL_CreateWindow(Window_Title,
                                             Cur_Left, Cur_Top,
-                                            Width, Height, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE)) == NULL)
+                                            Width, Height, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIDDEN)) == NULL)
         {
             return(FALSE);
         }
@@ -1330,27 +1336,37 @@ int Open_Window(int Width, int Height)
     {
         return(FALSE);
     }
-    SDL_GL_SetSwapInterval(0);
     Set_Window_Pos();
 
     Cur_Width = Width;
     Cur_Height = Height;
 
-    glDrawBuffer(GL_FRONT);
     glViewport(0, 0, Cur_Width, Cur_Height);
     glDisable(GL_DEPTH_TEST);
+    glDisable(GL_STENCIL_TEST);
     glDisable(GL_LIGHTING);
+    glDisable(GL_COLOR_MATERIAL);
     glDisable(GL_LINE_SMOOTH);
     glDisable(GL_POINT_SMOOTH);
     glDisable(GL_POLYGON_SMOOTH);
-    glDisable(GL_BLEND);
     glDisable(GL_CULL_FACE);
+    glDisable(GL_SCISSOR_TEST);
+    glDisable(GL_BLEND);
     glHint(GL_POINT_SMOOTH_HINT, GL_FASTEST);
     glHint(GL_LINE_SMOOTH_HINT, GL_FASTEST);
     glHint(GL_POLYGON_SMOOTH_HINT, GL_FASTEST);
     glShadeModel(GL_FLAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_ACCUM_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glDisableClientState(GL_COLOR_ARRAY);
+    glDisableClientState(GL_NORMAL_ARRAY);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    SDL_GL_SetSwapInterval(0);
 
     Reize_UI();
 

@@ -220,7 +220,7 @@ void Actualize_Master_Ed(char action)
         }
         if(action == 7)
         {
-            Update_Pattern(1);
+            go_update_pattern |= 1;
         }
 
         // Use decimal numbering for rows
@@ -267,7 +267,7 @@ void Actualize_Master_Ed(char action)
                 Gui_Draw_Button_Box(446 + 31, (Cur_Height - 45), 29, 16, "Off", BUTTON_PUSHED | BUTTON_TEXT_CENTERED);
             }
             Draw_Pattern_Right_Stuff();
-            Update_Pattern(1);
+            go_update_pattern |= 1;
         }
 
         // Full screen
@@ -285,14 +285,19 @@ void Actualize_Master_Ed(char action)
             }
         }
 
-        // Refresh palette infos
-        if(action == 0 || action == 10)
+        // Change viewed color
+        if (action == 0 || action == 29)
         {
-            if(current_palette_idx < 0) current_palette_idx = 0;
-            if(current_palette_idx > (NUMBER_COLORS - 1)) current_palette_idx = NUMBER_COLORS - 1;
+            if (current_palette_idx < 0) current_palette_idx = 0;
+            if (current_palette_idx > (NUMBER_COLORS - 1)) current_palette_idx = NUMBER_COLORS - 1;
             Gui_Draw_Button_Box(520, (Cur_Height - 105), 16, 16, "\03", BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
             Gui_Draw_Button_Box(520 + 16 + 2, (Cur_Height - 105), 108, 16, Labels_Palette[current_palette_idx], BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
             Gui_Draw_Button_Box(520 + (18 + 108) + 2, (Cur_Height - 105), 16, 16, "\04", BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
+        }
+
+        // Refresh palette infos
+        if(action == 0 || action == 10 || action == 29)
+        {
             Real_Palette_Idx = Idx_Palette[current_palette_idx];
             if(Phony_Palette[Real_Palette_Idx].r < 0) Phony_Palette[Real_Palette_Idx].r = 0;
             if(Phony_Palette[Real_Palette_Idx].r > 255) Phony_Palette[Real_Palette_Idx].r = 255;
@@ -300,21 +305,24 @@ void Actualize_Master_Ed(char action)
             if(Phony_Palette[Real_Palette_Idx].g > 255) Phony_Palette[Real_Palette_Idx].g = 255;
             if(Phony_Palette[Real_Palette_Idx].b < 0) Phony_Palette[Real_Palette_Idx].b = 0;
             if(Phony_Palette[Real_Palette_Idx].b > 255) Phony_Palette[Real_Palette_Idx].b = 255;
-            Real_Slider(518, (Cur_Height - 85), Ptk_Palette[Real_Palette_Idx].r / 2, TRUE);
-            Print_Long_Small(668, (Cur_Height - 85), Ptk_Palette[Real_Palette_Idx].r, INT_PLAIN, 41, BUTTON_NORMAL | BUTTON_DISABLED);
-            Real_Slider(518, (Cur_Height - 65), Ptk_Palette[Real_Palette_Idx].g / 2, TRUE);
-            Print_Long_Small(668, (Cur_Height - 65), Ptk_Palette[Real_Palette_Idx].g, INT_PLAIN, 41, BUTTON_NORMAL | BUTTON_DISABLED);
-            Real_Slider(518, (Cur_Height - 45), Ptk_Palette[Real_Palette_Idx].b / 2, TRUE);
-            Print_Long_Small(668, (Cur_Height - 45), Ptk_Palette[Real_Palette_Idx].b, INT_PLAIN, 41, BUTTON_NORMAL | BUTTON_DISABLED);
             Set_Phony_Palette();
-            if(action) 
+            if(action)
             {
                 RefreshTex = TRUE;
+            }
+            else
+            {
+                Real_Slider(518, (Cur_Height - 85), Ptk_Palette[Real_Palette_Idx].r / 2, TRUE);
+                Print_Long_Small(668, (Cur_Height - 85), Ptk_Palette[Real_Palette_Idx].r, INT_PLAIN, 41, BUTTON_NORMAL | BUTTON_DISABLED);
+                Real_Slider(518, (Cur_Height - 65), Ptk_Palette[Real_Palette_Idx].g / 2, TRUE);
+                Print_Long_Small(668, (Cur_Height - 65), Ptk_Palette[Real_Palette_Idx].g, INT_PLAIN, 41, BUTTON_NORMAL | BUTTON_DISABLED);
+                Real_Slider(518, (Cur_Height - 45), Ptk_Palette[Real_Palette_Idx].b / 2, TRUE);
+                Print_Long_Small(668, (Cur_Height - 45), Ptk_Palette[Real_Palette_Idx].b, INT_PLAIN, 41, BUTTON_NORMAL | BUTTON_DISABLED);
             }
         }
 
         // Bevel on/off
-        if(action == 0 || action == 10 || action == 13)
+        if(action == 0 || action == 30)
         {
             switch(Beveled)
             {
@@ -402,11 +410,11 @@ void Actualize_Master_Ed(char action)
             }
             if(action == 19)
             {
-                Update_Pattern(1);
+                go_update_pattern |= 1;
             }
         }
 
-        // Bevel on/off
+        // Shades on/off
         if(action == 0 || action == 20)
         {
             switch(Use_Shadows)
@@ -418,7 +426,7 @@ void Actualize_Master_Ed(char action)
                     Gui_Draw_Button_Box(520 + 18 + (18 + 108) + 2 + 20, (Cur_Height - 105), 40, 16, "Shades", BUTTON_PUSHED | BUTTON_TEXT_CENTERED);
                     break;
             }
-            Update_Pattern(1);
+            go_update_pattern |= 1;
         }
 
         // Set default size of patterns
@@ -431,15 +439,18 @@ void Actualize_Master_Ed(char action)
             Gui_Draw_Button_Box(120 + 48 + 18, (Cur_Height - 65), 16, 16, "\04", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
         }
 
-        // Milliseconds
+        // Metronome
         if(action == 0 || action == 22)
         {
             if(metronome_magnify < 0) metronome_magnify = 0;
             if(metronome_magnify > 128) metronome_magnify = 128;
-            Gui_Draw_Arrows_Number_Box(8 + 112, (Cur_Height - 125), metronome_magnify, BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
             if(!metronome_magnify)
             {
-                Gui_Draw_Button_Box(8 + 112 + 18, (Cur_Height - 125), 24, 16, "Off", BUTTON_DISABLED | BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
+                value_box_string(8 + 112, (Cur_Height - 125), "Off", BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
+            }
+            else
+            {
+                Gui_Draw_Arrows_Number_Box(8 + 112, (Cur_Height - 125), metronome_magnify, BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
             }
         }
 
@@ -574,6 +585,13 @@ void Actualize_Master_Ed(char action)
         if(RefreshTex)
         {
             Renew_Gfx_Context(FALSE);
+            RefreshTex = FALSE;
+            Real_Slider(518, (Cur_Height - 85), Ptk_Palette[Real_Palette_Idx].r / 2, TRUE);
+            Print_Long_Small(668, (Cur_Height - 85), Ptk_Palette[Real_Palette_Idx].r, INT_PLAIN, 41, BUTTON_NORMAL | BUTTON_DISABLED);
+            Real_Slider(518, (Cur_Height - 65), Ptk_Palette[Real_Palette_Idx].g / 2, TRUE);
+            Print_Long_Small(668, (Cur_Height - 65), Ptk_Palette[Real_Palette_Idx].g, INT_PLAIN, 41, BUTTON_NORMAL | BUTTON_DISABLED);
+            Real_Slider(518, (Cur_Height - 45), Ptk_Palette[Real_Palette_Idx].b / 2, TRUE);
+            Print_Long_Small(668, (Cur_Height - 45), Ptk_Palette[Real_Palette_Idx].b, INT_PLAIN, 41, BUTTON_NORMAL | BUTTON_DISABLED);
         }
     }
 }
@@ -604,7 +622,7 @@ void Mouse_Right_Master_Ed(void)
             if(Beveled == 2) Beveled = 0;
             else Beveled = 2;
             gui_action = GUI_CMD_UPDATE_SETUP_ED;
-            teac = 13;
+            teac = 30;
         }
 
         // Metronome
@@ -718,7 +736,7 @@ void Mouse_Left_Master_Ed(void)
             teac = 0;
             gui_action = GUI_CMD_UPDATE_SETUP_ED;
             Actualize_Sequencer();
-            Update_Pattern(1);
+            go_update_pattern |= 1;
         }
 
         // Rows decimal off
@@ -728,7 +746,7 @@ void Mouse_Left_Master_Ed(void)
             teac = 0;
             gui_action = GUI_CMD_UPDATE_SETUP_ED;
             Actualize_Sequencer();
-            Update_Pattern(1);
+            go_update_pattern |= 1;
         }
 
         // See prev/next pattern
@@ -737,7 +755,7 @@ void Mouse_Left_Master_Ed(void)
             See_Prev_Next_Pattern = TRUE;
             teac = 13;
             gui_action = GUI_CMD_UPDATE_SETUP_ED;
-            Update_Pattern(1);
+            go_update_pattern |= 1;
         }
 
         // See prev/next pattern
@@ -746,7 +764,7 @@ void Mouse_Left_Master_Ed(void)
             See_Prev_Next_Pattern = FALSE;
             teac = 13;
             gui_action = GUI_CMD_UPDATE_SETUP_ED;
-            Update_Pattern(1);
+            go_update_pattern |= 1;
         }
 
         // Continuous scroll
@@ -832,7 +850,7 @@ void Mouse_Left_Master_Ed(void)
         {
             current_palette_idx--;
             gui_action = GUI_CMD_UPDATE_SETUP_ED;
-            teac = 10;
+            teac = 29;
         }
 
         // Next color
@@ -840,7 +858,7 @@ void Mouse_Left_Master_Ed(void)
         {
             current_palette_idx++;
             gui_action = GUI_CMD_UPDATE_SETUP_ED;
-            teac = 10;
+            teac = 29;
         }
 
         // Negate the palette
@@ -957,7 +975,7 @@ void Mouse_Left_Master_Ed(void)
             if(Beveled == 1) Beveled = 0;
             else Beveled = 1;
             gui_action = GUI_CMD_UPDATE_SETUP_ED;
-            teac = 13;
+            teac = 30;
         }
 
         // Turn shadows on/off
@@ -1064,7 +1082,7 @@ void Mouse_Left_Master_Ed(void)
             leading_zeroes_char_row = 0;
             teac = 26;
             gui_action = GUI_CMD_UPDATE_SETUP_ED;
-            Update_Pattern(1);
+            go_update_pattern |= 1;
         }
 
         // Leading 0s off
@@ -1075,7 +1093,7 @@ void Mouse_Left_Master_Ed(void)
             leading_zeroes_char_row = 20;
             teac = 26;
             gui_action = GUI_CMD_UPDATE_SETUP_ED;
-            Update_Pattern(1);
+            go_update_pattern |= 1;
         }
 
         // Splash Screen on

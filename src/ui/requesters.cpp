@@ -58,9 +58,9 @@ LPREQUESTER Current_Requester;
 int Req_Pressed_Button;
 int Req_Default_Button;
 static int Cancel_Button;
-PTK_TEXTURE *Req_Picture;
-PTK_TEXTURE *Req_Back;
-GLuint Req_Picture_GL = -1;
+PTK_SURFACE *Req_Picture;
+PTK_SURFACE *Req_Back;
+PTK_TEXTURE Req_Picture_GL;
 int Req_TimeOut;
 int Req_Timer;
 extern int Burned_Title;
@@ -106,12 +106,9 @@ int Display_Requester(LPREQUESTER Requester, int Action, char *Text, int Center)
     Req_TimeOut = Requester->TimeOut;
     Req_Picture = NULL;
 
-    Req_Picture_GL = -1;
-
     if(Requester->Picture)
     {
         Req_Picture = *Requester->Picture;
-        Req_Picture_GL = Create_OGL_Texture(Req_Picture);
     }
     Req_Default_Button = -1;
     Cancel_Button = -1;
@@ -238,8 +235,6 @@ int Display_Requester(LPREQUESTER Requester, int Action, char *Text, int Center)
         Size_Y = (((Nbr_Lines + 5) * Font_Height) + 18);
     }
 
-    Pos_X = (CONSOLE_WIDTH - Size_X) / 2;
-    Pos_Y = (CONSOLE_HEIGHT - Size_Y) / 2;
     return(0);
 }
 
@@ -251,15 +246,21 @@ int Check_Requester(LPREQUESTER Requester)
     if(Current_Requester == Requester)
     {
         int i;
+        // Draw them above the rest
+        Drawing_Priority++;
         if(Req_Picture)
         {
             // Display the picture
+            Pos_X = (Cur_Width - Size_X) / 2;
+            Pos_Y = (Cur_Height - Size_Y) / 2;
             Set_Color(COL_PATTERN_HI_BACK);
-            Copy(GET_SURFACE(Req_Picture), Pos_X + BEVEL_SIZE + 1, Pos_Y + BEVEL_SIZE + 1,
+            Copy(&Req_Picture_GL, Pos_X + BEVEL_SIZE + 1, Pos_Y + BEVEL_SIZE + 1,
                  0, 0, Req_Picture->w - 1, Req_Picture->h - 2);
         }
         else
         {
+            Pos_X = (Cur_Width - Size_X) / 2;
+            Pos_Y = (Cur_Height - Size_Y) / 2;
             // Or the intern box
             Gui_Draw_Button_Box(Pos_X, Pos_Y, Size_X, Size_Y, NULL, BUTTON_NORMAL | BUTTON_DISABLED);
             Gui_Draw_Button_Box(Pos_X + BEVEL_SIZE - 1, Pos_Y + BEVEL_SIZE - 1,
@@ -293,6 +294,7 @@ int Check_Requester(LPREQUESTER Requester)
                                 Buttons_Text[i],
                                 BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
         }
+        Drawing_Priority--;
         if(Req_Pressed_Button)
         {
             Kill_Requester();
@@ -392,18 +394,13 @@ void Kill_Requester(void)
         Req_Txt_Lines[Nbr_Lines] = NULL;
     }
 
-    if(Req_Picture_GL != -1)
+    if(Req_Picture_GL.txid != -1)
     {
-        Destroy_OGL_Texture(&Req_Picture_GL);
-        Req_Picture_GL = -1;
+        // Change the palette
         Renew_Gfx_Context(FALSE);
     }
-
     Current_Requester = NULL;
     Req_TimeOut = 0;
-    Set_Color(COL_BLACK);
-    Fill_Rect(Pos_X, Pos_Y, Pos_X + Size_X + 1, Pos_Y + Size_Y + 1);
-
     Env_Change = TRUE;
     Mouse.button = 0;
     Mouse.button_oneshot = 0;

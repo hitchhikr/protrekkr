@@ -2031,7 +2031,7 @@ int Calc_Length(void)
     int have_break = 255;
     int PosTicks;
     int shuffle_switch;
-    int shuffle_stp = shuffle_amount;
+    int shuffle_stp;
     double len;
     int nbr_ticks;
     int Samples;
@@ -2347,7 +2347,7 @@ void Clear_Input(void)
     if(snamesel == INPUT_INSTRUMENT_NAME)
     {
         snamesel = INPUT_NONE;
-        Actualize_Pattern_Ed();
+        Actualize_Pattern_Ed(1);
     }
 
     if(snamesel == INPUT_REVERB_NAME)

@@ -54,7 +54,7 @@
 
 // ------------------------------------------------------
 // Variables
-extern int lt_ykar[SCOPE_LAST_DIR];
+extern int lt_slider_pos[SCOPE_LAST_DIR];
 extern int lt_items[SCOPE_LAST_DIR];
 extern int lt_index[SCOPE_LAST_DIR];
 extern int lt_curr[SCOPE_LAST_DIR];
@@ -63,7 +63,7 @@ extern int lt_curr[SCOPE_LAST_DIR];
 // Functions
 void Set_Current_Dir(void);
 void Read_SMPT(void);
-void Dump_Files_List(int xr, int yr);
+void Dump_Files_List(void);
 void Actualize_Files_List(int modeac);
 void Clear_Files_List(void);
 char *Get_FileName(int idx);

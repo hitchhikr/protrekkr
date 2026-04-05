@@ -173,6 +173,8 @@ char draw_sampled_wave = FALSE;
 char draw_sampled_wave2 = FALSE;
 char draw_sampled_wave3 = FALSE;
 
+int go_update_pattern = TRUE;
+
 int redraw_everything = FALSE;
 char boing = FALSE;
 int LastPedRow = -1;
@@ -195,10 +197,12 @@ int c_r_cvol = 32768;
 
 int snamesel = INPUT_NONE;
 
-PTK_TEXTURE *PFONT;
-PTK_TEXTURE *PFONT_DOUBLE;
-PTK_TEXTURE *FONT;
-PTK_TEXTURE *FONT_LOW;
+PTK_SURFACE *PFONT;
+PTK_SURFACE *PFONT_DOUBLE;
+PTK_SURFACE *FONT;
+PTK_SURFACE *FONT_LOW;
+PTK_SURFACE *FONT_WORK[WORK_FONTS_NBR];
+PTK_SURFACE *FONT_LOW_WORK[WORK_FONTS_NBR];
 
 SDL_TimerID Timer;
 UINT32 Timer_CallBack(UINT32 interval, void *param);
@@ -218,7 +222,7 @@ char Save_Step_Play = FALSE;
 
 char cur_input_name[1024];
 
-PTK_TEXTURE *LOGOPIC;
+PTK_SURFACE *LOGOPIC;
 int wait_title;
 int display_title = 0;
 
@@ -467,11 +471,11 @@ int ZzaappOMatic;
 
 // ------------------------------------------------------
 // Load a skin picture
-PTK_TEXTURE *Load_Skin_Picture(char *name, BOOL set_color_key)
+PTK_SURFACE *Load_Skin_Picture(char *name, BOOL set_color_key)
 {
     char filepath[MAX_PATH];
     char error[256];
-    PTK_TEXTURE *surface;
+    PTK_SURFACE *surface;
 
 #if defined(__WIN32__)
     sprintf(filepath, "skins\\%s", name);
@@ -547,7 +551,6 @@ int Init_Context(void)
     sprintf(artist, "Somebody");
     sprintf(style, "Anything goes");
 
-
     Create_Semaphore();
 
     namesize = 8;
@@ -595,9 +598,23 @@ int Init_Context(void)
     FONT = Load_Skin_Picture("font.bmp", TRUE);
     if(!FONT) return(FALSE);
     FONT_LOW = Load_Skin_Picture("font.bmp", TRUE);
-    if(!FONT_LOW) return(FALSE);
+    if (!FONT_LOW) return(FALSE);
+
+    int i;
+    for (i = 0; i < WORK_FONTS_NBR; i++)
+    {
+        FONT_WORK[i] = Load_Skin_Picture("font.bmp", TRUE);
+        if (!FONT_WORK[i]) return(FALSE);
+        FONT_LOW_WORK[i] = Load_Skin_Picture("font.bmp", TRUE);
+        if (!FONT_LOW_WORK[i]) return(FALSE);
+    }
 
     if(!Load_Font_Data("font_data.txt"))
+    {
+        return(FALSE);
+    }
+
+    if (!Init_Open_GL_Buffers())
     {
         return(FALSE);
     }
@@ -622,7 +639,7 @@ int Init_Context(void)
     Initreverb();
 
     Timer = SDL_AddTimer(1000, (SDL_TimerCallback) Timer_Ptr, NULL);
-
+    
     Renew_Gfx_Context(TRUE);
 
     return(TRUE);
@@ -728,6 +745,8 @@ void Destroy_Context(void)
         free(RawPatterns);
     }
     RawPatterns = NULL;
+
+    Release_Open_GL_Buffers();
 }
 
 // ------------------------------------------------------
@@ -750,6 +769,19 @@ int Screen_Update(void)
 #if defined(__MACOSX_PPC__)
     FSRef soundFileRef;
 #endif
+    go_update_pattern = 0;
+
+    // Checking for mouse and keyboard events ------------------------------------
+    if (!In_Requester)
+    {
+        Mouse_Handler();
+        Keyboard_Handler();
+    }
+    else
+    {
+        Mouse_Handler_Requester();
+        Keyboard_Handler_Requester();
+    }
 
     if(Burned_Title && !file_loaded)
     {
@@ -766,12 +798,6 @@ int Screen_Update(void)
             }
         }
         file_loaded = TRUE;
-    }
-
-    if(Status_Box_Wait_Done == 1)
-    {
-        Status_Box("Feeling Groovy...", TRUE);
-        Status_Box_Wait_Done = 2;
     }
 
     redraw_everything = FALSE;
@@ -799,17 +825,6 @@ int Screen_Update(void)
         }
     }
 
-    switch(Scopish)
-    {
-        case SCOPE_ZONE_VUMETERS:
-            Draw_VuMeters();
-            break;
-
-        case SCOPE_ZONE_SCOPE:
-            Draw_Scope();
-            break;
-    }
-
     // Sample ed. stuff
     Draw_Wave_Data();
 
@@ -835,7 +850,7 @@ int Screen_Update(void)
         // Files list slider
         if(gui_action == GUI_CMD_SET_FILES_LIST_SLIDER)
         {
-            lt_ykar[Scopish] = Mouse.y - 72;
+            lt_slider_pos[Scopish] = Mouse.y - 72;
             Actualize_Files_List(0);
         }
 
@@ -918,7 +933,7 @@ int Screen_Update(void)
         // Instruments/synths list slider
         if(gui_action == GUI_CMD_SET_INSTR_SYNTH_LIST_SLIDER)
         {
-            Instrs_ykar = Mouse.y - 72;
+            Instrs_slider_pos = Mouse.y - 72;
             Actualize_Instruments_Synths_List(0);
         }
 
@@ -927,7 +942,7 @@ int Screen_Update(void)
         {
             Current_Instrument = Instrs_index + (Mouse.y - 43) / 12;
             Actualize_Instruments_Synths_List(1);
-            Actualize_Pattern_Ed();
+            Actualize_Pattern_Ed(1);
             Refresh_Sample();
             Renew_Sample_Ed();
             Actualize_Synth_Ed(UPDATE_SYNTH_ED_ALL);
@@ -948,7 +963,7 @@ int Screen_Update(void)
         if(gui_action == GUI_CMD_SET_PATTERN_LENGTH)
         {
             Actualize_Sequencer();
-            Update_Pattern(1);
+            go_update_pattern |= 1;
         }
 
         if(gui_action == GUI_CMD_PREV_PATT)
@@ -956,7 +971,7 @@ int Screen_Update(void)
             pSequence[Song_Position]--;
             Bound_Patt_Pos();
             Actualize_Sequencer();
-            Update_Pattern(1);
+            go_update_pattern |= 1;
             Seq_Bound_Pattern(Song_Position);
         }
 
@@ -965,7 +980,7 @@ int Screen_Update(void)
             pSequence[Song_Position]++;
             Bound_Patt_Pos();
             Actualize_Sequencer();
-            Update_Pattern(1);
+            go_update_pattern |= 1;
             Seq_Bound_Pattern(Song_Position);
         }
 
@@ -983,14 +998,14 @@ int Screen_Update(void)
         {
             Song_Length--;
             Actualize_Sequencer();
-            Update_Pattern(1);
+            go_update_pattern |= 1;
         }
 
         if(gui_action == GUI_CMD_INCREASE_SONG_LENGTH)
         {
             Song_Length++;
             Actualize_Sequencer();
-            Update_Pattern(1);
+            go_update_pattern |= 1;
         }
 
         if(gui_action == GUI_CMD_UPDATE_SEQUENCER)
@@ -1006,12 +1021,12 @@ int Screen_Update(void)
 
         if(gui_action == GUI_CMD_UPDATE_PATTERN)
         {
-            Update_Pattern(1);
+            go_update_pattern |= 1;
         }
 
         if(gui_action == GUI_CMD_SET_FOCUS_TRACK_EXTERNAL)
         {
-            Update_Pattern(1);
+            go_update_pattern |= 1;
             Actualize_Track_Ed(0);
             Actualize_Track_Fx_Ed(0);
         }
@@ -1025,13 +1040,13 @@ int Screen_Update(void)
         if(gui_action == GUI_CMD_LOWER_OCTAVE)
         {
             Current_Octave--;
-            Actualize_Pattern_Ed();
+            Actualize_Pattern_Ed(1);
         }
 
         if(gui_action == GUI_CMD_HIGHER_OCTAVE)
         {
             Current_Octave++;
-            Actualize_Pattern_Ed();
+            Actualize_Pattern_Ed(1);
         }
 
         if(gui_action == GUI_CMD_GET_HELP)
@@ -1150,20 +1165,20 @@ int Screen_Update(void)
         {
             Current_Edit_Steps--;
             if(Current_Edit_Steps < 0) Current_Edit_Steps = 0;
-            Actualize_Pattern_Ed();
+            Actualize_Pattern_Ed(1);
         }
 
         if(gui_action == GUI_CMD_INCREASE_STEP_ADD)
         {
             Current_Edit_Steps++;
             if(Current_Edit_Steps > 16) Current_Edit_Steps = 16;
-            Actualize_Pattern_Ed();
+            Actualize_Pattern_Ed(1);
         }
 
         if(gui_action == GUI_CMD_SELECT_INSTR_EXTERNAL)
         {
             Clear_Input();
-            Actualize_Pattern_Ed();
+            Actualize_Pattern_Ed(1);
             Refresh_Sample();
             Renew_Sample_Ed();
             Actualize_Synth_Ed(UPDATE_SYNTH_ED_ALL);
@@ -1173,7 +1188,7 @@ int Screen_Update(void)
         {
             Current_Instrument--;
             Clear_Input();
-            Actualize_Pattern_Ed();
+            Actualize_Pattern_Ed(1);
             Refresh_Sample();
             Renew_Sample_Ed();
             Actualize_Synth_Ed(UPDATE_SYNTH_ED_ALL);
@@ -1183,7 +1198,7 @@ int Screen_Update(void)
         {
             Current_Instrument++;
             Clear_Input();
-            Actualize_Pattern_Ed();
+            Actualize_Pattern_Ed(1);
             Refresh_Sample();
             Renew_Sample_Ed();
             Actualize_Synth_Ed(UPDATE_SYNTH_ED_ALL);
@@ -1197,48 +1212,48 @@ int Screen_Update(void)
             else Chan_Mute_State[tmp_track] = FALSE;
 
             if(userscreen == USER_SCREEN_TRACK_EDIT) Actualize_Track_Ed(10);
-            Update_Pattern(1);
+            go_update_pattern |= 1;
         }
 
         if(gui_action == GUI_CMD_SWITCH_TRACK_EXPAND_STATE)
         {
             Change_Track_Zoom(Get_Track_Over_Mouse(Mouse.x, NULL, FALSE), TRUE);
-            Update_Pattern(1);
+            go_update_pattern |= 1;
             Display_Patterns_Sizes_Status();
         }
 
         if(gui_action == GUI_CMD_SWITCH_TRACK_REDUCE_STATE)
         {
             Change_Track_Zoom(Get_Track_Over_Mouse(Mouse.x, NULL, FALSE), FALSE);
-            Update_Pattern(1);
+            go_update_pattern |= 1;
             Display_Patterns_Sizes_Status();
         }
 
         if(gui_action == GUI_CMD_REDUCE_TRACK_NOTES)
         {
             Track_Sub_Notes(Get_Track_Over_Mouse(Mouse.x, NULL, FALSE), 1);
-            Update_Pattern(1);
+            go_update_pattern |= 1;
             Actualize_Track_Ed(14);
         }
 
         if(gui_action == GUI_CMD_EXPAND_TRACK_NOTES)
         {
             Track_Add_Notes(Get_Track_Over_Mouse(Mouse.x, NULL, FALSE), 1);
-            Update_Pattern(1);
+            go_update_pattern |= 1;
             Actualize_Track_Ed(14);
         }
 
         if(gui_action == GUI_CMD_REDUCE_TRACK_EFFECTS)
         {
             Track_Sub_Effects(Get_Track_Over_Mouse(Mouse.x, NULL, FALSE), 1);
-            Update_Pattern(1);
+            go_update_pattern |= 1;
             Actualize_Track_Ed(16);
         }
 
         if(gui_action == GUI_CMD_EXPAND_TRACK_EFFECTS)
         {
             Track_Add_Effects(Get_Track_Over_Mouse(Mouse.x, NULL, FALSE), 1);
-            Update_Pattern(1);
+            go_update_pattern |= 1;
             Actualize_Track_Ed(16);
         }
 
@@ -1269,7 +1284,7 @@ int Screen_Update(void)
             is_recording_2 = 0;
             Nbr_Sub_Note_Off = 0;
             Song_Stop();
-            Update_Pattern(1);
+            go_update_pattern |= 1;
             Notify_Edit(TRUE);
         }
 
@@ -1282,7 +1297,7 @@ int Screen_Update(void)
             is_editing = FALSE;
             key_record_first_time = TRUE;
             Clear_Midi_Channels_Pool();
-            Update_Pattern(1);
+            go_update_pattern |= 1;
             Notify_Edit(TRUE);
         }
 
@@ -1313,7 +1328,7 @@ int Screen_Update(void)
            gui_action == GUI_CMD_DELETE_TRACK)
         {
             Actualize_Master(teac);
-            Update_Pattern(1);
+            go_update_pattern |= 1;
             Draw_Scope();
             Display_Tracks_To_Render();
             Actualize_Track_Ed(0);
@@ -1388,7 +1403,7 @@ int Screen_Update(void)
                 Large_Patterns = TRUE;
                 Set_Pattern_Size();
                 Draw_Pattern_Right_Stuff();
-                Update_Pattern(1);
+                go_update_pattern |= 1;
                 Draw_Editors_Bar(USER_SCREEN_LARGE_PATTERN);
             }
             else
@@ -1397,7 +1412,7 @@ int Screen_Update(void)
                 Large_Patterns = FALSE;
                 Set_Pattern_Size();
                 Draw_Pattern_Right_Stuff();
-                Update_Pattern(1);
+                go_update_pattern |= 1;
                 Draw_Editors_Bar(-1);
                 Refresh_UI_Context();
             }
@@ -1809,7 +1824,7 @@ int Screen_Update(void)
         if(gui_action == GUI_CMD_PREVIOUS_16_INSTR)
         {
             Current_Instrument -= 16;
-            Actualize_Pattern_Ed();
+            Actualize_Pattern_Ed(1);
             Refresh_Sample();
             Renew_Sample_Ed();
             Actualize_Synth_Ed(UPDATE_SYNTH_ED_ALL);
@@ -1818,7 +1833,7 @@ int Screen_Update(void)
         if(gui_action == GUI_CMD_NEXT_16_INSTR)
         {
             Current_Instrument += 16;
-            Actualize_Pattern_Ed();
+            Actualize_Pattern_Ed(1);
             Refresh_Sample();
             Renew_Sample_Ed();
             Actualize_Synth_Ed(UPDATE_SYNTH_ED_ALL);
@@ -1826,7 +1841,7 @@ int Screen_Update(void)
 
         if(gui_action == GUI_CMD_UPDATE_PATTERN_ED)
         {
-            Actualize_Pattern_Ed();
+            Actualize_Pattern_Ed(1);
         }
 
         if(gui_action == GUI_CMD_GOTO_START_POSITION)
@@ -1834,7 +1849,7 @@ int Screen_Update(void)
             Song_Position = 0;
             Bound_Patt_Pos();
             Actualize_Sequencer();
-            Update_Pattern(1);
+            go_update_pattern |= 1;
         }
 
         if(gui_action == GUI_CMD_GOTO_END_POSITION)
@@ -1842,7 +1857,7 @@ int Screen_Update(void)
             Song_Position = Song_Length - 1;
             Bound_Patt_Pos();
             Actualize_Sequencer();
-            Update_Pattern(1);
+            go_update_pattern |= 1;
         }
 
         if(gui_action == GUI_CMD_REDUCE_POSITIONS_10)
@@ -1850,7 +1865,7 @@ int Screen_Update(void)
             Song_Position -= 10;
             Bound_Patt_Pos();
             Actualize_Sequencer();
-            Update_Pattern(1);
+            go_update_pattern |= 1;
         }
 
         if(gui_action == GUI_CMD_INCREASE_POSITIONS_10)
@@ -1858,7 +1873,7 @@ int Screen_Update(void)
             Song_Position += 10;
             Bound_Patt_Pos();
             Actualize_Sequencer();
-            Update_Pattern(1);
+            go_update_pattern |= 1;
         }
 
         if(gui_action == GUI_CMD_REDUCE_PATTERNS_10)
@@ -1868,7 +1883,7 @@ int Screen_Update(void)
             Bound_Patt_Pos();
             Seq_Bound_Pattern(Song_Position);
             Actualize_Sequencer();
-            Update_Pattern(1);
+            go_update_pattern |= 1;
         }
 
         if(gui_action == GUI_CMD_INCREASE_PATTERNS_10)
@@ -1878,7 +1893,7 @@ int Screen_Update(void)
             Bound_Patt_Pos();
             Seq_Bound_Pattern(Song_Position);
             Actualize_Sequencer();
-            Update_Pattern(1);
+            go_update_pattern |= 1;
         }
 
         if(gui_action == GUI_CMD_RENDER_WAV)
@@ -1931,9 +1946,9 @@ int Screen_Update(void)
         // Box around the vu-meters
         Gui_Draw_Button_Box(MIN_VUMETER - 4, 6, (MAX_VUMETER - MIN_VUMETER) + 6, 16, NULL, BUTTON_NORMAL | BUTTON_DISABLED);
 
-        Display_Master_Comp();
-        Display_Master_Volume();
-        Display_Shuffle();
+        Display_Master_Comp(0);
+        Display_Master_Volume(FALSE);
+        Display_Shuffle(FALSE);
 
         Draw_Scope_Files_Button();
 
@@ -2012,10 +2027,15 @@ int Screen_Update(void)
         Fill_Rect(MIN_VUMETER - 1, 9, MAX_VUMETER, 20);
         Set_Color(COL_BACKGROUND);
         Fill_Rect(MIN_VUMETER, 10, MAX_VUMETER - 1, 19);
+        Set_Color(COL_BACKGROUND);
+        Fill_Rect(MIN_VUMETER, 10, MAX_VUMETER - 1, 19);
 
         Draw_Pattern_Right_Stuff();
-        Update_Pattern(1);
+        go_update_pattern |= 1;
         redraw_everything = FALSE;
+        Set_Color(COL_BLACK);
+        Fill_Rect(0, 179, Cur_Width, 179 + 1);
+        Fill_Rect(0, 183, Cur_Width, 183 + 1);
     }
     
     int Lt_vu = (int) (MIN_VUMETER + (((float) L_MaxLevel / 32767.0f) * LARG_VUMETER));
@@ -2066,14 +2086,14 @@ int Screen_Update(void)
     if(gui_thread_action && gui_thread_can_act)
     {
         gui_thread_action = FALSE;
-        Update_Pattern(1);
+        go_update_pattern |= 1;
     }
     if(gui_bpm_action)
     {
         gui_bpm_action = FALSE;
         Display_Beat_Time();
         Actualize_Master(2);
-        Display_Shuffle();
+        Display_Shuffle(FALSE);
     }
 
     if(Song_Playing && Pattern_Line_Visual != player_line)
@@ -2266,23 +2286,28 @@ int Screen_Update(void)
         }
 
         // --------------------------------------
-        Update_Pattern(1);
+        go_update_pattern |= 1;
         player_line = Pattern_Line_Visual;
     }
 
-    // Checking for mouse and keyboard events ------------------------------------
-    if(!In_Requester)
-    {
-        Mouse_Handler();
-        Keyboard_Handler();
-    }
-    else
-    {
-        Mouse_Handler_Requester();
-        Keyboard_Handler_Requester();
-    }
-
     Display_RShift_Status();
+
+    if (go_update_pattern)
+    {
+        Update_Pattern(go_update_pattern);
+        go_update_pattern = 0;
+    }
+    
+    switch (Scopish)
+    {
+        case SCOPE_ZONE_VUMETERS:
+            Draw_VuMeters();
+            break;
+
+        case SCOPE_ZONE_SCOPE:
+            Draw_Scope();
+            break;
+    }
 
     // Refresh the sequencer each time the song position is different
     if(Song_Playing)
@@ -2292,6 +2317,13 @@ int Screen_Update(void)
             gui_action = GUI_CMD_TIMED_REFRESH_SEQUENCER;
         }
     }
+
+    if(Status_Box_Wait_Done == 1)
+    {
+        Status_Box("Feeling Groovy...", TRUE);
+        Status_Box_Wait_Done = 2;
+    }
+
     if(SplashScreen)
     {
         Check_Requester(&Title_Requester);
@@ -2369,7 +2401,6 @@ int Screen_Update(void)
     if(Check_Requester(&Exit_Requester) == 1)
     {
         Song_Stop();
-        Status_Box("Seppuku...", FALSE);
         return(FALSE);
     }
 
@@ -2683,7 +2714,7 @@ void Load_File(int Freeindex, const char *str)
                             }
 
                             sprintf(SampleName[Freeindex][Current_Instrument_Split], "%s", FileName);
-                            Actualize_Pattern_Ed();
+                            Actualize_Pattern_Ed(1);
                             Actualize_Instrument_Ed(2, 0);
                             Renew_Sample_Ed();
                             switch(bits)
@@ -2789,7 +2820,7 @@ void Load_File(int Freeindex, const char *str)
                             }
 
                             sprintf(SampleName[Freeindex][Current_Instrument_Split], "%s", FileName);
-                            Actualize_Pattern_Ed();
+                            Actualize_Pattern_Ed(1);
                             Actualize_Instrument_Ed(2, 0);
                             Renew_Sample_Ed();
                             switch(bits)
@@ -2987,7 +3018,7 @@ void Song_Stop(void)
     Song_Position = Song_Position_Visual;
     Pattern_Line = Pattern_Line_Visual;
     Actualize_Master(5);
-    Update_Pattern(1);
+    go_update_pattern |= 1;
 }
 
 // ------------------------------------------------------
@@ -3081,9 +3112,9 @@ void New_Mod(void)
         rawrender_to = 0;
         Final_Mod_Length = 0;
         Actualize_Sequencer();
-        Actualize_Pattern_Ed();
+        Actualize_Pattern_Ed(1);
         Actualize_Master(0);
-        Update_Pattern(1);
+        go_update_pattern |= 1;
         Reset_Tracks_To_Render();
         Display_Patterns_Sizes_Status();
     }
@@ -3619,7 +3650,7 @@ Stop_WavRender:
     Actualize_Files_List(0);
 
     Status_Box(buffer, TRUE);
-    Update_Pattern(1);
+    go_update_pattern |= 1;
 }
 
 // ------------------------------------------------------
@@ -4072,7 +4103,7 @@ void Keyboard_Handler(void)
         Unselect_Selection();
         Track_Under_Caret--;
         Column_Under_Caret = 0;
-        Update_Pattern(1);
+        go_update_pattern |= 1;
         gui_action = GUI_CMD_SET_FOCUS_TRACK;
     }
 
@@ -4086,7 +4117,7 @@ void Keyboard_Handler(void)
             Track_Under_Caret = 0;
         }
         Column_Under_Caret = 0;
-        Update_Pattern(1);
+        go_update_pattern |= 1;
         gui_action = GUI_CMD_SET_FOCUS_TRACK;
     }
 
@@ -4096,7 +4127,7 @@ void Keyboard_Handler(void)
         Unselect_Selection();
         Column_Under_Caret += Table_Right_Tab_Notes[Column_Under_Caret];
         if(Column_Under_Caret >= (Channels_MultiNotes[Track_Under_Caret] * 3)) Column_Under_Caret = 0;
-        Update_Pattern(1);
+        go_update_pattern |= 1;
     }
 
     // Previous note
@@ -4105,7 +4136,7 @@ void Keyboard_Handler(void)
         Unselect_Selection();
         Column_Under_Caret -= Table_Left_Tab_Notes[Column_Under_Caret];
         if(Column_Under_Caret < 0) Column_Under_Caret = (Channels_MultiNotes[Track_Under_Caret] * 3) - 3;
-        Update_Pattern(1);
+        go_update_pattern |= 1;
     }
 
     if(!is_recording)
@@ -4724,7 +4755,6 @@ void Keyboard_Handler(void)
                             {
                                 Send_Note(Raw_Keys_to_Send[i], FALSE, FALSE);
                             }
-
                             // Play it
                             Note_Jazz(Track_Under_Caret, tmp_note, 1.0f);
                         }
@@ -4742,7 +4772,6 @@ void Keyboard_Handler(void)
                             {
                                 Send_Note(Raw_Keys_to_Send[i] | 0x80, FALSE, FALSE);
                             }
-
                             Note_Jazz_Off(tmp_note);
                         }
                     }
@@ -4892,7 +4921,7 @@ void Keyboard_Handler(void)
                     if(Chan_Mute_State[Track_Under_Caret] == FALSE) Chan_Mute_State[Track_Under_Caret] = TRUE;
                     else Chan_Mute_State[Track_Under_Caret] = FALSE;
                     if(userscreen == USER_SCREEN_TRACK_EDIT) Actualize_Track_Ed(10);
-                    Update_Pattern(1);
+                    go_update_pattern |= 1;
                 }
 
                 // Display instruments list
@@ -4920,25 +4949,25 @@ void Keyboard_Handler(void)
                 {
                     Curr_Buff_Block = 0;
                     Draw_Pattern_Right_Stuff();
-                    Update_Pattern(1);
+                    go_update_pattern |= 1;
                 }
                 if(CHECK_KEY(SDLK_2) || CHECK_KEY(SDLK_KP_2))
                 {
                     Curr_Buff_Block = 1;
                     Draw_Pattern_Right_Stuff();
-                    Update_Pattern(1);
+                    go_update_pattern |= 1;
                 }
                 if(CHECK_KEY(SDLK_3) || CHECK_KEY(SDLK_KP_3))
                 {
                     Curr_Buff_Block = 2;
                     Draw_Pattern_Right_Stuff();
-                    Update_Pattern(1);
+                    go_update_pattern |= 1;
                 }
                 if(CHECK_KEY(SDLK_4) || CHECK_KEY(SDLK_KP_4))
                 {
                     Curr_Buff_Block = 3;
                     Draw_Pattern_Right_Stuff();
-                    Update_Pattern(1);
+                    go_update_pattern |= 1;
                 }
 
                 if(CHECK_KEY(SDLK_LEFT))
@@ -4969,7 +4998,7 @@ void Keyboard_Handler(void)
                         if(Chan_Mute_State[Track_Under_Caret] == FALSE) Chan_Mute_State[Track_Under_Caret] = TRUE;
                         else Chan_Mute_State[Track_Under_Caret] = FALSE;
                         if(userscreen == USER_SCREEN_TRACK_EDIT) Actualize_Track_Ed(10);
-                        Update_Pattern(1);
+                        go_update_pattern |= 1;
                     }
 
                     // Fill the values of a selected block with step add
@@ -5307,7 +5336,7 @@ void Keyboard_Handler(void)
                             }
                         }
                     }
-                    Update_Pattern(1);
+                    go_update_pattern |= 1;
                 }
 Cannot_Modify_Odd:
 
@@ -5440,7 +5469,7 @@ Cannot_Modify_Odd:
                                 }
                             }
                         }
-                        Update_Pattern(1);
+                        go_update_pattern |= 1;
                     }
                 }
 Cannot_Modify_Even:;
@@ -5698,7 +5727,7 @@ No_Key:;
                     }
                     old_key_Pattern_Line = Pattern_Line;
                 }
-                Update_Pattern(1);
+                go_update_pattern |= 1;
             }
         }
 
@@ -5735,7 +5764,7 @@ No_Key:;
                         Goto_Next_Column();
                     }
                 }
-                Update_Pattern(1);
+                go_update_pattern |= 1;
             }
         }
 
@@ -5776,7 +5805,7 @@ No_Key:;
                         }
                     }
                 }
-                Update_Pattern(1);
+                go_update_pattern |= 1;
             }
         }
     }
@@ -6251,7 +6280,7 @@ void Mouse_Handler(void)
                         break;
                 }
             }
-            Update_Pattern(1);
+            go_update_pattern |= 1;
             Set_Track_Slider(gui_track);
             Display_Patterns_Sizes_Status();
         }
@@ -6271,7 +6300,7 @@ void Mouse_Handler(void)
                         break;
                 }
             }
-            Update_Pattern(1);
+            go_update_pattern |= 1;
             Set_Track_Slider(gui_track);
             Display_Patterns_Sizes_Status();
         }
@@ -6304,7 +6333,7 @@ void Mouse_Handler(void)
                 Gui_Draw_Button_Box(332 + (18 * 2), 126, 16, 16, "\016", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
                 Display_Patterns_Sliders_Status();
             }
-            Update_Pattern(1);
+            go_update_pattern |= 1;
         }
 
         // Switch patterns sliders
@@ -6312,7 +6341,7 @@ void Mouse_Handler(void)
         {
             pattern_sliders ^= TRUE;
             Display_Patterns_Sliders_Status();
-            Update_Pattern(1);
+            go_update_pattern |= 1;
         }
 
         // Switch patterns sliders
@@ -6320,7 +6349,7 @@ void Mouse_Handler(void)
         {
             pattern_sliders_numbers ^= TRUE;
             Display_Patterns_Sliders_Status();
-            Update_Pattern(1);
+            go_update_pattern |= 1;
         }
 
         // Select track
@@ -6367,7 +6396,7 @@ void Mouse_Handler(void)
             if(can_modify_song)
             {
                 Delete_Selection(Cur_Position);
-                Update_Pattern(1);
+                go_update_pattern |= 1;
             }
         }
         // Interpolate
@@ -6606,7 +6635,7 @@ void Mouse_Handler(void)
             tLength -= 10;
             if(tLength < 1) tLength = 1;
             Song_Length = tLength;
-            Update_Pattern(1);
+            go_update_pattern |= 1;
             gui_action = GUI_CMD_UPDATE_SEQUENCER;
         }
         // Song_Length + 10
@@ -6616,7 +6645,7 @@ void Mouse_Handler(void)
             tLength += 10;
             if(tLength > 255) tLength = 255;
             Song_Length = tLength;
-            Update_Pattern(1);
+            go_update_pattern |= 1;
             gui_action = GUI_CMD_UPDATE_SEQUENCER;
         }
 
@@ -6886,62 +6915,79 @@ void Display_Beat_Time(void)
 
 // ------------------------------------------------------
 // Display master compressor
-void Display_Master_Comp(void)
+void Display_Master_Comp(int print_status_bar)
 {
     char string[64];
 
     Gui_Draw_Button_Box(159, 6, 54, 16, "Threshold", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
     Real_Slider_Size(159 + 54, 6, 50, (int) (mas_comp_threshold_Master * 0.5f), TRUE);
-    if(mas_comp_ratio_Master <= 0.01f)
-    {
-        sprintf(string, "Off");
-    }
-    else
-    {
-        sprintf(string, "%d%%", (int) mas_comp_threshold_Master);
-    }
-    Print_String(string, 159 + 54, 8, 67, BUTTON_TEXT_CENTERED);
-
     Gui_Draw_Button_Box(283, 6, 41, 16, "Ratio", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
     Real_Slider_Size(283 + 41, 6, 50, (int) (mas_comp_ratio_Master * 0.5f), TRUE);
-    if(mas_comp_ratio_Master <= 0.01f)
+    switch(print_status_bar)
     {
-        sprintf(string, "Off");
+        case 1:
+            if(mas_comp_ratio_Master <= 0.01f)
+            {
+                sprintf(string, "Setting Master Compressor Threshold: (Off)");
+            }
+            else
+            {
+                sprintf(string, "Setting Master Compressor Threshold: %d%%", (int) mas_comp_threshold_Master);
+            }
+            // Notify change in status bar
+            Status_Box(string, FALSE);
+            break;
+        case 2:
+            if(mas_comp_ratio_Master <= 0.01f)
+            {
+                sprintf(string, "Setting Master Compressor Ratio: (Off)");
+            }
+            else
+            {
+                sprintf(string, "Setting Master Compressor Ratio: %d%%", (int) mas_comp_ratio_Master);
+            }
+            // Notify change in status bar
+            Status_Box(string, FALSE);
+            break;
     }
-    else
-    {
-        sprintf(string, "%d%%", (int) mas_comp_ratio_Master);
-    }
-    Print_String(string, 283 + 41, 8, 67, BUTTON_TEXT_CENTERED);
 }
 
 // ------------------------------------------------------
 // Display master volume
-void Display_Master_Volume(void)
+void Display_Master_Volume(int print_status_bar)
 {
-    char String[64];
+    char string[64];
 
     if(mas_vol < 0.01f) mas_vol = 0.01f;
     if(mas_vol > 1.0f) mas_vol = 1.0f;
     Gui_Draw_Button_Box(394, 6, 28, 16, "M.Vol", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
     Real_Slider(394 + 28, 6, (int) (mas_vol * 128.0f), TRUE);
-    sprintf(String, "%.1f dB", (20 * log10(mas_vol)));
-    Print_String(String, 394 + 28, 8, 145, BUTTON_TEXT_CENTERED);
+    if(print_status_bar)
+    {
+        sprintf(string, "Setting Master Volume: %.1f dB", (20 * log10(mas_vol)));
+        // Notify change in status bar
+        Status_Box(string, FALSE);
+    }
 }
 
 // ------------------------------------------------------
 // Display the shuffle amount
-void Display_Shuffle(void)
+void Display_Shuffle(int print_status_bar)
 {
     char string[64];
 
     if(shuffle_amount > 100) shuffle_amount = 100;
     if(shuffle_amount < 0) shuffle_amount = 0;
     Gui_Draw_Button_Box(570, 6, 38, 16, "Shuffle", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
-
     Real_Slider_Size(570 + 38, 6, 100, shuffle_amount, TRUE);
-    sprintf(string, "%d%%", shuffle_amount);
-    Print_String(string, 570 + 38, 8, 116, BUTTON_TEXT_CENTERED);
+//    sprintf(string, "%d%%", shuffle_amount);
+  //  Print_String_Center(string, 570 + 38, 8, 116, BUTTON_TEXT_CENTERED);
+    if(print_status_bar)
+    {
+        sprintf(string, "Setting Shuffle Amount: %d%%", shuffle_amount);
+        // Notify change in status bar
+        Status_Box(string, FALSE);
+    }
     Gui_Draw_Button_Box(728, 6, Cur_Width - 802, 16, NULL, BUTTON_NORMAL | BUTTON_DISABLED);
 }
 
@@ -6953,14 +6999,14 @@ void Mouse_Sliders_Master_Shuffle(void)
     if(Check_Mouse(213, 6, 67, 18))
     {
         Mas_Compressor_Set_Variables_Master((Mouse.x - 223.0f) * 2.0f, mas_comp_ratio_Master);
-        Display_Master_Comp();
+        Display_Master_Comp(1);
     }
 
     // Compressor ratio
     if(Check_Mouse(324, 6, 67, 18))
     {
         Mas_Compressor_Set_Variables_Master(mas_comp_threshold_Master, (Mouse.x - 334.0f) * 2.0f);
-        Display_Master_Comp();
+        Display_Master_Comp(2);
     }
 
     // Master volume
@@ -6968,14 +7014,14 @@ void Mouse_Sliders_Master_Shuffle(void)
     {
         // Normalized
         mas_vol = (Mouse.x - 432.0f) / 128.0f;
-        Display_Master_Volume();
+        Display_Master_Volume(TRUE);
     }
 
     // Shuffle
     if(Check_Mouse(586 + 24, 6, 120, 18))
     {
         shuffle_amount = (int) ((Mouse.x - (586 + 24 + 10)));
-        Display_Shuffle();
+        Display_Shuffle(TRUE);
     }
 }
 
@@ -7024,7 +7070,7 @@ void Actualize_Master(char gode)
     {
         Gui_Draw_Arrows_Number_Box2(324, 28, Song_Tracks, BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE | (can_modify_song ^ BUTTON_DISABLED));
         Actualize_Seq_Ed(0);
-        Update_Pattern(1);
+        go_update_pattern |= 1;
     }
 
     if(userscreen == USER_SCREEN_SETUP_EDIT) Actualize_Master_Ed(3);
@@ -7853,7 +7899,7 @@ void Draw_Scope_Files_Button(void)
         case SCOPE_ZONE_SAMPLE_DIR:
 
             Read_SMPT();
-            Dump_Files_List(395, 41);
+            Dump_Files_List();
             Actualize_Files_List(0);
             Gui_Draw_Button_Box(Cur_Width - 72, 6, 16, 16, "\215", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
             Gui_Draw_Button_Box(Cur_Width - 54, 6, 16, 16, "\255", BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);

@@ -54,7 +54,7 @@ int Allow_Global;
 int Allow_Global_Pushed;
 int Allow_Global_Sliders;
 
-int Instrs_ykar = 0;
+int Instrs_slider_pos = 0;
 int Instrs_items = 128;
 int Instrs_index = 0;
 int Instrs_curr = 0;
@@ -1223,12 +1223,14 @@ void Mouse_Sliders_Right_Instrument_Ed(void)
 
 // ------------------------------------------------------
 // Display the instruments or synths list on screen
-void Dump_Instruments_Synths_List(int xr, int yr)
+void Dump_Instruments_Synths_List(void)
 {
     char Line[200];
     int i;
     int Nbr_Splits;
     int Font;
+    int xr = 395;
+    int yr = 41;
 
     switch(Scopish)
     {
@@ -1246,12 +1248,12 @@ void Dump_Instruments_Synths_List(int xr, int yr)
 
                 if(Instrs_index + counter < MAX_INSTRS)
                 {
+                    Set_Color(COL_BACKGROUND);
                     if(Instrs_index + counter == Current_Instrument)
                     {
                         Set_Color(COL_PUSHED_MED);
                         bjbox(xr, yr + (counter * 12) + 2, Cur_Width - 415, 11);
                     }
-
                     switch(Scopish)
                     {
                         // View instruments
@@ -1439,8 +1441,8 @@ void Dump_Instruments_Synths_List(int xr, int yr)
 // Redraw the instruments or synths list
 void Actualize_Instruments_Synths_List(int modeac)
 {
-    int const brolim = Instrs_items - 11;
-    char Line[200];
+    int const brolim = Instrs_items - NBR_ITEMS;
+    char Line[40];
     int i;
     int j;
     int Nbr_Entries = 0;
@@ -1452,46 +1454,46 @@ void Actualize_Instruments_Synths_List(int modeac)
 
             if(modeac == 0)
             {
-                if(Instrs_ykar > 70) Instrs_ykar = 70;
-                if(Instrs_ykar < 0) Instrs_ykar = 0;
-                Instrs_index = (Instrs_ykar * brolim) / 70;
+                if(Instrs_slider_pos > 70) Instrs_slider_pos = 70;
+                if(Instrs_slider_pos < 0) Instrs_slider_pos = 0;
+                Instrs_index = (Instrs_slider_pos * brolim) / 70;
             }
 
+            // name changed put it into focus
             if(modeac == 2)
             {
-                if(Current_Instrument >= Instrs_index + 11)
+                if(Current_Instrument >= Instrs_index + NBR_ITEMS)
                 {
-                    Instrs_index += Current_Instrument - (Instrs_index + 10);
+                    Instrs_index += Current_Instrument - (Instrs_index + NBR_ITEMS - 1);
                 }
-
                 if(Current_Instrument < Instrs_index)
                 {
                     Instrs_index -= Instrs_index - Current_Instrument;
                 }
             }
 
-            if(Instrs_index > brolim) Instrs_index = brolim;
-            if(Instrs_index < 0) Instrs_index = 0;
+            if (Instrs_index > brolim) Instrs_index = brolim;
+            if (Instrs_index < 0) Instrs_index = 0;
             if(modeac != 0)
             {
                 if(brolim)
                 {
-                    Instrs_ykar = (Instrs_index * 70) / brolim;
+                    Instrs_slider_pos = (Instrs_index * 70) / brolim + 1;
                 }
                 else
                 {
-                    Instrs_ykar = (Instrs_index * 70);
+                    Instrs_slider_pos = (Instrs_index * 70) + 1;
                 }
             }
+            
+            Draw_Lists_Slider(Instrs_slider_pos);
+            Dump_Instruments_Synths_List();
 
-            Draw_Lists_Slider(Instrs_ykar);
-            Dump_Instruments_Synths_List(395, 41);
-
+            // Count the number of entries
             Gui_Draw_Button_Box(394, 24, Cur_Width - 522, 16, NULL, BUTTON_NORMAL | BUTTON_DISABLED);
             switch(Scopish)
             {
                 case SCOPE_ZONE_INSTR_LIST:
-
                     Nbr_Entries = 0;
                     for(j = 0; j < MAX_INSTRS; j++)
                     {
@@ -1520,7 +1522,6 @@ void Actualize_Instruments_Synths_List(int modeac)
                     Print_String(398, 26, USE_FONT, Line);
                     break;
             }
-
             break;
     }
 }

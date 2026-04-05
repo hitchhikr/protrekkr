@@ -60,7 +60,6 @@ int Allow_Button_Pushed;
 int Allow_Phase_Distortion_OSC_1 = TRUE;
 int Allow_Phase_Distortion_OSC_2 = TRUE;
    
-void Actualize_Pattern_Ed(void);
 void Actualize_Synth_Params_Sliders(void);
 void Actualize_Sequencer(void);
 void Renew_Sample_Ed(void);

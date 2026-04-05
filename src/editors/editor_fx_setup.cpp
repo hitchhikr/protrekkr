@@ -46,8 +46,8 @@ extern int ChorRez;
 
 // ------------------------------------------------------
 // Functions
-void Display_Reverb_Cutoff(void);
-void Display_Reverb_Resonance(void);
+void Display_Reverb_Cutoff(int print_status_bar);
+void Display_Reverb_Resonance(int print_status_bar);
 
 void Draw_Fx_Ed(void)
 {
@@ -59,7 +59,7 @@ void Draw_Fx_Ed(void)
     Gui_Draw_Button_Box(18, (Cur_Height - 120), 56, 16, "Switch", BUTTON_NORMAL | BUTTON_DISABLED);
     Gui_Draw_Button_Box(18, (Cur_Height - 102), 56, 16, "Feedback", BUTTON_NORMAL | BUTTON_DISABLED);
     Gui_Draw_Button_Box(18, (Cur_Height - 84), 56, 16, "Room Size", BUTTON_NORMAL | BUTTON_DISABLED);
-    Gui_Draw_Button_Box(18, (Cur_Height - 66), 56, 16, "Filter", BUTTON_NORMAL | BUTTON_DISABLED);
+    Gui_Draw_Button_Box(18, (Cur_Height - 66), 56, 16, "Filter CO/R", BUTTON_NORMAL | BUTTON_DISABLED);
     Gui_Draw_Button_Box(18, (Cur_Height - 48), 56, 16, "Stereo", BUTTON_NORMAL | BUTTON_DISABLED);
 
     Gui_Draw_Button_Box(240, (Cur_Height - 136), 288, 96, "Stereo Delay Settings", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_VTOP);
@@ -159,7 +159,7 @@ void Actualize_Fx_Ed(char action)
 
         if(action == 0 || action == 9)
         {
-            Display_Reverb_Cutoff();
+            Display_Reverb_Cutoff(action == 9 ? TRUE : FALSE);
         }
 
         if(action == 0 || action == 10)
@@ -191,7 +191,7 @@ void Actualize_Fx_Ed(char action)
 
         if(action == 0 || action == 14)
         {
-            Display_Reverb_Resonance();
+            Display_Reverb_Resonance(action == 14 ? TRUE : FALSE);
         }
 
         if(action == 0 || action == 15)
@@ -504,7 +504,7 @@ void Mouse_Left_Fx_Ed(void)
     }
 }
 
-void Display_Reverb_Cutoff(void)
+void Display_Reverb_Cutoff(int print_status_bar)
 {
     char string[64];
 
@@ -513,11 +513,16 @@ void Display_Reverb_Cutoff(void)
 
     Real_Slider_Size(77, (Cur_Height - 66), 55, (int) (Reverb_Filter_Cutoff * 55.0f), compressor);
 
-    sprintf(string, "%d%%", (int) (Reverb_Filter_Cutoff * 102.0f));
-    Print_String(string, 77, (Cur_Height - (66 - 2)), 55 + 17, BUTTON_TEXT_CENTERED);
+    if(print_status_bar)
+    {
+        sprintf(string, "Setting Filter CutOff: %d%%", (int) (Reverb_Filter_Cutoff * 102.0f));
+//        Print_String_Center(string, 77, (Cur_Height - (66 - 2)), 55 + 17, BUTTON_TEXT_CENTERED);
+        // Notify change in status bar
+        Status_Box(string, FALSE);
+    }
 }
 
-void Display_Reverb_Resonance(void)
+void Display_Reverb_Resonance(int print_status_bar)
 {
     char string[64];
 
@@ -526,6 +531,11 @@ void Display_Reverb_Resonance(void)
 
     Real_Slider_Size(150, (Cur_Height - 66), 55, (int) (Reverb_Filter_Resonance * 55.0f), compressor);
 
-    sprintf(string, "%d%%", (int) (Reverb_Filter_Resonance * 102.0f));
-    Print_String(string, 150, (Cur_Height - (66 - 2)), 55 + 17, BUTTON_TEXT_CENTERED);
+    if(print_status_bar)
+    {
+        sprintf(string, "Setting Filter Resonance: %d%%", (int) (Reverb_Filter_Resonance * 102.0f));
+//        Print_String_Center(string, 150, (Cur_Height - (66 - 2)), 55 + 17, BUTTON_TEXT_CENTERED);
+        // Notify change in status bar
+        Status_Box(string, FALSE);
+    }
 }

@@ -155,6 +155,9 @@ void Actualize_Seq_Ed(char action)
             rel = lseq + Cur_Position;
             if(rel > -1 && rel < Song_Length)
             {
+                if(rel == Cur_Position) Set_Color(COL_PUSHED_MED);
+                else Set_Color(COL_BACKGROUND);
+                
                 out_decchar(93, (Cur_Height - 95) + lseq * 12, rel, 0);
                 out_decchar(261, (Cur_Height - 95) + lseq * 12, pSequence[rel], 0);
 
@@ -166,11 +169,12 @@ void Actualize_Seq_Ed(char action)
             }
             else
             {   // rel range OK
-                Print_String(93, (Cur_Height - 95) + lseq * 12, USE_FONT, "000");
-                Print_String(261, (Cur_Height - 95) + lseq * 12, USE_FONT, "000");
+                Set_Color(COL_BACKGROUND);
+                Print_String(93, (Cur_Height - 95) + lseq * 12, USE_FONT, "   ");
+                Print_String(261, (Cur_Height - 95) + lseq * 12, USE_FONT, "   ");
             }
         } // for end
-        Update_Pattern(1);
+        go_update_pattern |= 1;
 
         // From instrument
         if(action == 0 || action == 1 || action == 6 || action == 7)
@@ -341,7 +345,7 @@ void Mouse_Left_Sequencer_Ed(void)
                 {
                     FX_Remap_Sel(Cur_Position, Get_Real_Selection(FALSE), Remap_From, Remap_To, Remap_Swap);
                 }
-                Update_Pattern(1);
+                go_update_pattern |= 1;
             }
             else
             {
@@ -392,7 +396,7 @@ void Mouse_Left_Sequencer_Ed(void)
                             }
                         }
                     }
-                    Update_Pattern(1);
+                    go_update_pattern |= 1;
                 }
             }
         }
@@ -442,7 +446,7 @@ void Mouse_Left_Sequencer_Ed(void)
                 {
                     FX_Remap_Sel(Cur_Position, Select_Track(Track_Under_Caret), Remap_From, Remap_To, Remap_Swap);
                 }
-                Update_Pattern(1);
+                go_update_pattern |= 1;
             }
             else
             {
@@ -493,7 +497,7 @@ void Mouse_Left_Sequencer_Ed(void)
                             }
                         }
                     }
-                    Update_Pattern(1);
+                    go_update_pattern |= 1;
                 }
             }
         }
@@ -546,7 +550,7 @@ void Mouse_Left_Sequencer_Ed(void)
                         FX_Remap_Sel(Cur_Position, Select_Track(i), Remap_From, Remap_To, Remap_Swap);
                     }
                 }
-                Update_Pattern(1);
+                go_update_pattern |= 1;
             }
             else
             {
@@ -598,7 +602,7 @@ void Mouse_Left_Sequencer_Ed(void)
                         }
                     }
                 }
-                Update_Pattern(1);
+                go_update_pattern |= 1;
             }
         }
 
@@ -675,7 +679,7 @@ void Mouse_Left_Sequencer_Ed(void)
                             Done_Pattern[pSequence[j]] = TRUE;
                         }
                     }
-                    Update_Pattern(1);
+                    go_update_pattern |= 1;
                     free(Done_Pattern);
                 }
             }
@@ -752,7 +756,7 @@ void Mouse_Left_Sequencer_Ed(void)
                             Done_Pattern[pSequence[j]] = TRUE;
                         }
                     }
-                    Update_Pattern(1);
+                    go_update_pattern |= 1;
                     free(Done_Pattern);
                 }
             }
@@ -1288,7 +1292,7 @@ void Actualize_Sequencer(void)
         {
             Song_Position = Song_Length - 1;
             Bound_Patt_Pos();
-            Update_Pattern(1);
+            go_update_pattern |= 1;
         }
         for(i = 0; i < MAX_TRACKS; i++)
         {
@@ -1302,7 +1306,7 @@ void Actualize_Sequencer(void)
         {
             Song_Position = Song_Length - 1;
             Bound_Patt_Pos();
-            Update_Pattern(1);
+            go_update_pattern |= 1;
         }
         // Keep the coherency
         Song_Position_Visual = Song_Position;
@@ -1508,7 +1512,7 @@ void Toggle_Track_On_Off_Status(int posindex, int seqindex)
             Chan_Active_State[posindex][seqindex] = FALSE;
             Chan_History_State[posindex][seqindex] = FALSE;
         }
-        Update_Pattern(1);
+        go_update_pattern |= 1;
         gui_action = GUI_CMD_UPDATE_SEQUENCER;
     }
 }
@@ -1566,7 +1570,7 @@ void Solo_Track_On_Off(int posindex, int seqindex)
                     Chan_Active_State[posindex][alphac] = TRUE;
                     Chan_History_State[posindex][alphac] = FALSE;
                 }
-                Update_Pattern(1);
+                go_update_pattern |= 1;
                 gui_action = GUI_CMD_UPDATE_SEQUENCER;
                 return;
             }
@@ -1583,7 +1587,7 @@ void Solo_Track_On_Off(int posindex, int seqindex)
         // Active it
         Chan_Active_State[posindex][seqindex] = TRUE;
         Chan_History_State[posindex][seqindex] = FALSE;
-        Update_Pattern(1);
+        go_update_pattern |= 1;
         gui_action = GUI_CMD_UPDATE_SEQUENCER;
     }
 }

@@ -65,7 +65,7 @@ typedef struct
 
 // ------------------------------------------------------
 // Variables
-int lt_ykar[SCOPE_LAST_DIR];
+int lt_slider_pos[SCOPE_LAST_DIR];
 int lt_items[SCOPE_LAST_DIR];
 int lt_index[SCOPE_LAST_DIR];
 int lt_curr[SCOPE_LAST_DIR];
@@ -650,12 +650,14 @@ void Read_SMPT(void)
 
 // ------------------------------------------------------
 // Display the files list on screen
-void Dump_Files_List(int xr, int yr)
+void Dump_Files_List(void)
 {
     int y = lt_index[Scopish];
     FILE *File;
     char Size_String[64];
     int space = Font_Height + 1;
+    int xr = 395;
+    int yr = 41;
 
     switch(Scopish)
     {
@@ -666,8 +668,11 @@ void Dump_Files_List(int xr, int yr)
         case SCOPE_ZONE_PATTERN_DIR:
         case SCOPE_ZONE_MIDICFG_DIR:
         case SCOPE_ZONE_SAMPLE_DIR:
+
+            // Clear the line
             Set_Color(COL_BACKGROUND);
             bjbox(xr - 1, yr + 1, Cur_Width - 413, 137);
+            // Cleanup the right border
             Set_Color(COL_BLACK);
             bjbox(Cur_Width - 19, yr + 1, 1, 137);
 
@@ -707,9 +712,10 @@ void Dump_Files_List(int xr, int yr)
 
                     if(y + counter < lt_items[Scopish])
                     {
-                        // Highlight bar in files requester.
+                        Set_Color(COL_BACKGROUND);
                         if(y + counter == lt_curr[Scopish])
                         {
+                            // Highlight entry bar
                             Set_Color(COL_PUSHED_MED);
                             bjbox(xr, yr + (counter * space) + 2, (Cur_Width - 415), space);
                         }
@@ -717,6 +723,7 @@ void Dump_Files_List(int xr, int yr)
                         switch(Get_FileType(rel_val))
                         {
                             case _A_SUBDIR:
+                                // It's a directory
                                 Print_String(xr, yr + (counter * space), USE_FONT_LOW, Get_FileName(rel_val), Cur_Width - 504);
                                 Print_String(xr + (Cur_Width - 436), yr + (counter * space) + 1, USE_FONT_LOW, "<Dir>");
                                 break;
@@ -725,22 +732,28 @@ void Dump_Files_List(int xr, int yr)
                                 File = fopen(Get_FileName(rel_val), "rb");
                                 if(File)
                                 {
+                                    // Print file size
                                     int Size = Get_File_Size(File);
                                     if(Size == 0)
                                     {
                                         sprintf(Size_String, "0");
                                     }
-                                    else sprintf(Size_String, "%9.d", Size);
+                                    else
+                                    {
+                                        sprintf(Size_String, "%9.d", Size);
+                                    }
                                     int pos = (xr + (Cur_Width - 415)) - Get_Size_Text(Size_String);
                                     Print_String(pos, yr + (counter * space) + 1, USE_FONT, Size_String);
                                     fclose(File);
                                 }
                                 else
                                 {
+                                    // Not accessible
                                     Print_String(xr + (Cur_Width - 460), yr + (counter * space) + 1, USE_FONT_LOW, "<Locked>");
                                 }
                                 break;
                             case _A_SEP:
+                                // Separator line
                                 Set_Color(COL_PUSHED_HI);
                                 bjbox(xr - 1, yr + (counter * space) + (space / 2) + 1, Cur_Width - 413, 1);
                                 break;
@@ -760,6 +773,7 @@ void Dump_Files_List(int xr, int yr)
 // Redraw the files list
 void Actualize_Files_List(int modeac)
 {
+    // Max items displayed
     int const brolim = lt_items[Scopish] - NBR_ITEMS;
 
     switch(Scopish)
@@ -774,30 +788,30 @@ void Actualize_Files_List(int modeac)
 
             if(modeac == 0)
             {
-                if(lt_ykar[Scopish] > 70) lt_ykar[Scopish] = 70;
-                if(lt_ykar[Scopish] < 0) lt_ykar[Scopish] = 0;
-                lt_index[Scopish] = (lt_ykar[Scopish] * brolim) / 70;
+                if(lt_slider_pos[Scopish] > 70) lt_slider_pos[Scopish] = 70;
+                if(lt_slider_pos[Scopish] < 0) lt_slider_pos[Scopish] = 0;
+                lt_index[Scopish] = (lt_slider_pos[Scopish] * brolim) / 70;
             }
 
-            if(lt_index[Scopish] > brolim) lt_index[Scopish] = brolim;
-            if(lt_index[Scopish] < 0) lt_index[Scopish] = 0;
+            if (lt_index[Scopish] > brolim) lt_index[Scopish] = brolim;
+            if (lt_index[Scopish] < 0) lt_index[Scopish] = 0;
             if(modeac != 0)
             {
                 if(brolim)
                 {
-                    lt_ykar[Scopish] = (lt_index[Scopish] * 70) / brolim;
+                    lt_slider_pos[Scopish] = (lt_index[Scopish] * 70) / brolim + 1;
                 }
                 else
                 {
-                    lt_ykar[Scopish] = (lt_index[Scopish] * 70);
+                    lt_slider_pos[Scopish] = (lt_index[Scopish] * 70) + 1;
                 }
             }
 
             // Draw the files slider
-            Draw_Lists_Slider(lt_ykar[Scopish]);
+            Draw_Lists_Slider(lt_slider_pos[Scopish]);
             if(last_index != lt_index[Scopish])
             {
-                Dump_Files_List(395, 41);
+                Dump_Files_List();
                 last_index = lt_index[Scopish];
             }
             break;

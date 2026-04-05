@@ -418,7 +418,7 @@ extern int resty;
 extern int rs_coef;
 
 #if !defined(BZR2)
-extern PTK_TEXTURE *Main_Screen;
+extern PTK_SURFACE *Main_Screen;
 #endif
 
 extern int CONSOLE_HEIGHT2;
@@ -426,11 +426,15 @@ extern int CONSOLE_HEIGHT2;
 extern float left_float_render;
 extern float right_float_render;
 
+#define WORK_FONTS_NBR 11
+
 #if !defined(BZR2)
-extern PTK_TEXTURE *PFONT;
-extern PTK_TEXTURE *PFONT_DOUBLE;
-extern PTK_TEXTURE *FONT;
-extern PTK_TEXTURE *FONT_LOW;
+extern PTK_SURFACE *PFONT;
+extern PTK_SURFACE *PFONT_DOUBLE;
+extern PTK_SURFACE *FONT;
+extern PTK_SURFACE *FONT_LOW;
+extern PTK_SURFACE *FONT_WORK[WORK_FONTS_NBR];
+extern PTK_SURFACE *FONT_LOW_WORK[WORK_FONTS_NBR];
 #endif
 
 extern int gui_action;
@@ -495,8 +499,8 @@ extern float VuMeters_Level_Dats_R[MAX_TRACKS];
 extern float *Scope_Dats_LeftRight[2];
 
 #if !defined(BZR2)
-extern PTK_TEXTURE *SKIN303;
-extern PTK_TEXTURE *LOGOPIC;
+extern PTK_SURFACE *SKIN303;
+extern PTK_SURFACE *LOGOPIC;
 #endif
 
 extern int MouseWheel_Multiplier;
@@ -519,6 +523,8 @@ extern char Channels_MultiNotes[MAX_TRACKS];
 extern char Channels_Effects[MAX_TRACKS];
 
 extern int can_modify_song;
+
+extern int go_update_pattern;
 
 // ------------------------------------------------------
 // Functions
@@ -556,8 +562,6 @@ void out_nibble(int x, int y, int color, int number);
 void Song_Play();
 void Song_Stop(void);
 void Free_Samples(void);
-void Draw_Pattern(int track, int line, int petrack, int row);
-void Update_Pattern(int modac);
 
 void Kill_Instrument(int inst_nbr, int all_splits);
 void Stop_Current_Instrument(void);
@@ -627,9 +631,9 @@ int Get_Midi_Channel(int midi_channel);
 void Draw_Scope_Files_Button(void);
 
 void Actualize_Master(char gode);
-void Display_Master_Comp(void);
-void Display_Master_Volume(void);
-void Display_Shuffle(void);
+void Display_Master_Comp(int print_status_bar);
+void Display_Master_Volume(int print_status_bar);
+void Display_Shuffle(int print_status_bar);
 void Actualize_Input(void);
 void Draw_VuMeters(void);
 void Draw_Scope(void);

@@ -95,7 +95,7 @@ extern int Patterns_Lines_Offset;
 void Draw_Pattern(int track, int line, int petrack, int row);
 void Draw_Patt_Line_Highlighted(int track, int line, int petrack, int row, int ypos);
 void Update_Pattern(int modac);
-void Actualize_Pattern_Ed(void);
+void Actualize_Pattern_Ed(int refresh_instr_list);
 void Bound_Patt_Pos(void);
 void Reset_Pattern_Scrolling_Horiz(void);
 void Mouse_Wheel_Pattern_Ed(int roll_amount_x, int roll_amount_y, int allow);

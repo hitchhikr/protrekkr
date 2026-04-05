@@ -237,7 +237,7 @@ void Mark_Block_Start(int start_nibble, int start_track, int start_line)
     block_start[Curr_Buff_Block] = swap_block_start[Curr_Buff_Block];
     block_end[Curr_Buff_Block] = swap_block_end[Curr_Buff_Block];
     block_in_selection[Curr_Buff_Block] = TRUE;
-    Update_Pattern(1);
+    go_update_pattern |= 1;
 }
 
 // ------------------------------------------------------
@@ -287,7 +287,7 @@ void Mark_Block_End(int end_nibble, int start_track, int start_line, int Modif)
 
         Sanitize_Sliders_Block();
     }
-    Update_Pattern(1);
+    go_update_pattern |= 1;
 }
 
 // ------------------------------------------------------
@@ -715,7 +715,7 @@ void Insert_Selection(int Cur_Track, int Position)
                 }
             }
         }
-        Update_Pattern(1);
+        go_update_pattern |= 1;
     }
     else
     {
@@ -810,7 +810,7 @@ void Remove_Selection(int Cur_Track, int Position)
                     }
                 }
             }
-            Update_Pattern(1);
+            go_update_pattern |= 1;
         }
     }
     else
@@ -1037,7 +1037,7 @@ void Cut_Selection(int Position)
     }
     Calc_selection();
     Unselect_Selection();
-    Update_Pattern(1);
+    go_update_pattern |= 1;
     Draw_Blocks_Buffers_Status();
 }
 
@@ -1047,7 +1047,7 @@ void Copy_Selection(int Position)
 {
     Copy_Selection_To_Buffer(Position);
     Calc_selection();
-    Update_Pattern(1);
+    go_update_pattern |= 1;
     Draw_Blocks_Buffers_Status();
 }
 
@@ -1058,7 +1058,7 @@ void Paste_Block(int Position, int Go_Across, int Refresh)
     Paste_Selection_From_Buffer(Position, Go_Across);
     if(Refresh)
     {
-        Update_Pattern(1);
+        go_update_pattern |= 1;
     }
 }
 
@@ -1287,7 +1287,7 @@ void Interpolate_Block(int Position)
             }
         }
     }
-    Update_Pattern(1);
+    go_update_pattern |= 1;
 }
 
 // ------------------------------------------------------
@@ -1371,7 +1371,7 @@ void Randomize_Block(int Position, int step)
                 }
             }
         }
-        Update_Pattern(1);
+        go_update_pattern |= 1;
     }
 }
 
@@ -1439,7 +1439,7 @@ void Fill_Block(int Position, int step)
             }
         }
     }
-    Update_Pattern(1);
+    go_update_pattern |= 1;
 }
 
 // ------------------------------------------------------
@@ -1479,7 +1479,7 @@ void Semitone_Up_Block(int Position)
             }
         }
     }
-    Update_Pattern(1);
+    go_update_pattern |= 1;
 }
 
 // ------------------------------------------------------
@@ -1511,7 +1511,7 @@ void Semitone_Down_Block(int Position)
             }
         }
     }
-    Update_Pattern(1);
+    go_update_pattern |= 1;
 }
 
 // ------------------------------------------------------
@@ -1543,7 +1543,7 @@ void Octave_Up_Block(int Position)
             }
         }
     }
-    Update_Pattern(1);
+    go_update_pattern |= 1;
 }
 
 // ------------------------------------------------------
@@ -1575,7 +1575,7 @@ void Octave_Down_Block(int Position)
             }
         }
     }
-    Update_Pattern(1);
+    go_update_pattern |= 1;
 }
 
 // ------------------------------------------------------
@@ -1583,7 +1583,7 @@ void Octave_Down_Block(int Position)
 void Instrument_Semitone_Up_Block(int Position)
 {
     Instrument_Semitone_Up_Sel(Position, Get_Real_Selection(TRUE), 1, Current_Instrument);
-    Update_Pattern(1);
+    go_update_pattern |= 1;
 }
 
 // ------------------------------------------------------
@@ -1727,7 +1727,7 @@ void FX_Data_Up_Sel(int Position, SELECTION Sel, int Amount, int Instr)
 void Instrument_Semitone_Down_Block(int Position)
 {
     Instrument_Semitone_Down_Sel(Position, Get_Real_Selection(TRUE), 1, Current_Instrument);
-    Update_Pattern(1);
+    go_update_pattern |= 1;
 }
 
 // ------------------------------------------------------
@@ -1913,7 +1913,7 @@ void Instrument_Octave_Up_Block(int Position)
             }
         }
     }
-    Update_Pattern(1);
+    go_update_pattern |= 1;
 }
 
 // ------------------------------------------------------
@@ -1963,7 +1963,7 @@ void Instrument_Octave_Down_Block(int Position)
             }
         }
     }
-    Update_Pattern(1);
+    go_update_pattern |= 1;
 }
 
 // ------------------------------------------------------
@@ -2449,7 +2449,7 @@ void Insert_Track_Line(int track, int Position)
     xoffseted = Get_Pattern_Offset(pSequence[Position], track, Pattern_Line);
  
     Clear_Track_Data(xoffseted);
-    Update_Pattern(1);
+    go_update_pattern |= 1;
 }
 
 // ------------------------------------------------------
@@ -2496,8 +2496,7 @@ void Remove_Track_Line(int track, int Position)
     xoffseted = Get_Pattern_Offset(pSequence[Position], track, 0) + (PATTERN_LEN - PATTERN_ROW_LEN);
 
     Clear_Track_Data(xoffseted);
-
-    Update_Pattern(1);
+    go_update_pattern |= 1;
 }
 #endif // __WINAMP__
 
@@ -3313,7 +3312,7 @@ No_Update:;
                 }
             }
         }
-        Update_Pattern(1);
+        go_update_pattern |= 1;
     }
     else
     {
@@ -3374,7 +3373,7 @@ No_Update:;
         if(data < 0) data = 0;
         Set_Column_Data_With_Track(Channels_MultiNotes, Channels_Effects, Get_Song_Position(), 
                                    Track_Under_Caret, Current_Column, Pattern_Line, data);
-        Update_Pattern(1);
+        go_update_pattern |= 1;
 No_Up_Line:;
     }
 }

@@ -52,19 +52,25 @@
 #include <SDL2/SDL_types.h>
 
 // ------------------------------------------------------
-// Constants
-#define GET_SURFACE(s) (s##_GL)
-
-// ------------------------------------------------------
 // Variables
 extern int Cur_Width;
 extern int Cur_Height;
 
 // ------------------------------------------------------
-// Functions
-#define PTK_TEXTURE SDL_Surface
+// Types
+#define PTK_SURFACE SDL_Surface
 #define PTK_COLOR SDL_Color
 #define PTK_PALETTE SDL_Palette
+
+typedef struct
+{
+    int index;
+    GLuint txid;
+} PTK_TEXTURE, *LPPTK_TEXTURE;
+
+// ------------------------------------------------------
+// Variables
+extern int Drawing_Priority;
 
 // ------------------------------------------------------
 // Functions
@@ -72,22 +78,24 @@ void DrawPixel(int x, int y, int Color);
 void DrawHLine(int y, int x1, int x2, int Color);
 void DrawVLine(int x, int y1, int y2, int Color);
 void Set_Color(int color);
+void Set_Bk_Color(int color);
 void Fill_Rect(int x1, int y1, int x2, int y2);
 void UI_Set_Palette(PTK_COLOR *Palette, int Amount);
-GLuint Create_OGL_Texture(PTK_TEXTURE *Source);
-void Destroy_OGL_Texture(GLuint *txId);
-void Draw_Tx_Quad(int x, int y, int x1, int y1, int Width, int Height, GLuint TexID, int Blend);
-void Copy(GLuint Source, int x, int y, int x1, int y1, int x2, int y2);
-void Copy_No_Refresh(GLuint Source, int x, int y, int x1, int y1, int x2, int y2, int remainder);
-void Copy_To_Surface(PTK_TEXTURE *source, PTK_TEXTURE *dest, int dst_y, int src_y, int width, int height);
+void Create_OGL_Texture(PTK_SURFACE *Source, PTK_TEXTURE* Dest);
+void Destroy_OGL_Texture(PTK_TEXTURE *texture);
+void Copy(PTK_TEXTURE *Source, int x, int y, int x1, int y1, int x2, int y2);
+void Copy_No_Refresh(PTK_TEXTURE *Source, int x, int y, int x1, int y1, int x2, int y2, int remainder);
+void Copy_To_Surface(PTK_SURFACE *source, PTK_SURFACE *dest, int dst_y, int src_y, int width, int height);
 void Print_String(int x, int y, int Font_Type, char *String, int max_x = -1);
 void Enter_2D_Mode(float Width, float Height);
 void Leave_2d_Mode(void);
-PTK_TEXTURE *Create_Texture(int width, int height);
-void Destroy_Texture(PTK_TEXTURE *texture);
-PTK_TEXTURE *Load_Picture(char *FileName);
-int Lock_Texture(PTK_TEXTURE *texture);
-void Unlock_Texture(PTK_TEXTURE *texture);
+PTK_SURFACE *Create_Surface(int width, int height);
+void Destroy_Surface(PTK_SURFACE *texture);
+PTK_SURFACE *Load_Picture(char *FileName);
+int Lock_Surface(PTK_SURFACE *texture);
+void Unlock_Surface(PTK_SURFACE *texture);
 void Free_Palette(void);
+int Init_Open_GL_Buffers();
+void Release_Open_GL_Buffers();
 
 #endif

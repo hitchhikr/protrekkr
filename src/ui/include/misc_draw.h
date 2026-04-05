@@ -105,6 +105,7 @@
 #define COL_INPUT_PUSHED_MED 56
 #define COL_INPUT_PUSHED_LO 57
 
+// Used for the borders
 #define COL_BLACK 58
 
 #define OLD_NUMBER_COLORS 20
@@ -121,6 +122,7 @@
 #define BUTTON_INPUT 256
 #define BUTTON_SMALL_FONT 512
 #define BUTTON_CLEAR_BACK 1024
+#define BUTTON_SLIDER_COLOR 2048
 
 #define A_ "\216"
 #define B_ "\217"
@@ -228,12 +230,15 @@ extern LONGRGB Phony_Palette[];
 extern int Idx_Palette[];
 extern int curr_tab_highlight;
 extern int Font_Height;
+extern int Font_Height_Small;
 extern int Beveled;
 
 // ------------------------------------------------------
 // Functions
 void out_decchar(int x,int y, int number, char smith);
+void Print_String_Center(char* str, int x, int y, int size_x, int flags);
 void value_box(int x, int y, int val, int flags);
+void value_box_string(int x, int y, char* string, int flags);
 void value_box_format(int x, int y, int val, int flags, char *format);
 void Gui_Draw_Arrows_Number_Box(int x, int y, int val, int flags);
 void Gui_Draw_Arrows_Number_Box2(int x, int y, int val, int flags);
@@ -252,7 +257,7 @@ void Gui_Clear_Array(int x, int y, int sx, int sy);
 void bjbox(int x, int y, int sx, int sy);
 
 void Draw_Editors_Bar(int Highlight);
-void Status_Box(char const *str, int refresh);
+void Status_Box(char *str, int refresh);
 
 void Real_Slider(int x, int y, int val, int Enabled);
 void Real_Slider_Size(int x, int y, int size, int val, int Enabled);
@@ -284,7 +289,6 @@ void DrawVLine(int x, int y1, int y2, int Color);
 void Set_Color(int color);
 void Destroy_OGL_Textures();
 void Fill_Rect(int x1, int y1, int x2, int y2);
-void Copy(PTK_TEXTURE *Source, int x, int y, int x1, int y1, int x2, int y2);
 void Print_String(char *str, int x, int y, int size_x, int flag);
 int Get_Size_Text(char *String);
 int Create_Font_Data(char *FontName);

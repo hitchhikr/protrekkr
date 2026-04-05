@@ -47,7 +47,7 @@
 // ------------------------------------------------------
 // VAriables
 extern int Instrs_index;
-extern int Instrs_ykar;
+extern int Instrs_slider_pos;
 
 // ------------------------------------------------------
 // Functions
@@ -59,7 +59,7 @@ void Mouse_Right_Instrument_Ed(void);
 void Mouse_Left_Repeat_Instrument_Ed(void);
 void Mouse_Sliders_Right_Instrument_Ed(void);
 void Display_Fine_Loop_Data(void);
-void Dump_Instruments_Synths_List(int xr, int yr);
+void Dump_Instruments_Synths_List(void);
 void Actualize_Instruments_Synths_List(int modeac);
 void Save_WaveForm(int Instr_Nbr, int Channel, int Split);
 void Restore_WaveForm(int Instr_Nbr, int Channel, int Split);

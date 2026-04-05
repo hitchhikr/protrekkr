@@ -332,7 +332,7 @@ void Draw_Pattern(int track, int line, int petrack, int row)
 
     // Clear headers line
     Set_Color(COL_PATTERN_LO_BACK);
-    bjbox(1, y, CONSOLE_WIDTH - 20, 16 + chars_height);
+    bjbox(0, y, CONSOLE_WIDTH - 19, 16 + chars_height + 2);
 
     dover = PAT_COL_NOTE;
 
@@ -546,11 +546,11 @@ Skip_Header2:
     In_Prev_Next2 = FALSE;
 
     int sub = chars_height == 16 ? 4 : -13;
+
     Set_Color(COL_PATTERN_LO_BACK);
- 
-    bjbox(1,
+    bjbox(0,
           y,
-          CONSOLE_WIDTH - 20,
+          CONSOLE_WIDTH - 19,
           (Cur_Height - 384) + Patterns_Lines_Offset - sub
          );
 
@@ -2227,8 +2227,9 @@ void Draw_Pattern_Right_Stuff()
 
     cur_line = Get_Pattern_Line();
 
+    // Remove some garbage
     Set_Color(COL_BLACK);
-    Fill_Rect(MAX_PATT_SCREEN_X, 184, MAX_PATT_SCREEN_X + 20, (Cur_Height - 251) + (16 * 5) + Patterns_Lines_Offset);
+    Fill_Rect(MAX_PATT_SCREEN_X, 184, MAX_PATT_SCREEN_X + 1, (Cur_Height - 251) + (16 * 5) + Patterns_Lines_Offset);
 
     DrawVLine(0, 184, (Cur_Height - 251) + (16 * 5) + Patterns_Lines_Offset, COL_BLACK);
 
@@ -2253,6 +2254,29 @@ void Draw_Blocks_Buffers_Status()
 
     High[Curr_Buff_Block] = BUTTON_PUSHED;
 
+    // Remove some garbage
+    Set_Color(COL_BLACK);
+    Fill_Rect(MAX_PATT_SCREEN_X + 1,
+             (Cur_Height - 251) + (16 * 1) + Patterns_Lines_Offset - 1 - 16,
+             MAX_PATT_SCREEN_X + 18,
+             (Cur_Height - 251) + (16 * 1) + Patterns_Lines_Offset - 16);
+    Fill_Rect(MAX_PATT_SCREEN_X + 1,
+             (Cur_Height - 251) + (16 * 1) + Patterns_Lines_Offset - 1,
+             MAX_PATT_SCREEN_X + 18,
+             (Cur_Height - 251) + (16 * 1) + Patterns_Lines_Offset);
+    Fill_Rect(MAX_PATT_SCREEN_X + 1,
+             (Cur_Height - 251) + (16 * 2) + Patterns_Lines_Offset - 1,
+             MAX_PATT_SCREEN_X + 18,
+             (Cur_Height - 251) + (16 * 2) + Patterns_Lines_Offset);
+    Fill_Rect(MAX_PATT_SCREEN_X + 1,
+             (Cur_Height - 251) + (16 * 3) + Patterns_Lines_Offset - 1,
+             MAX_PATT_SCREEN_X + 18,
+             (Cur_Height - 251) + (16 * 3) + Patterns_Lines_Offset);
+    Fill_Rect(MAX_PATT_SCREEN_X + 1,
+             (Cur_Height - 251) + (16 * 4) + Patterns_Lines_Offset - 1,
+             MAX_PATT_SCREEN_X + 18,
+             (Cur_Height - 251) + (16 * 4) + Patterns_Lines_Offset);
+
     Gui_Draw_Button_Box(MAX_PATT_SCREEN_X + 1,
                         (Cur_Height - 251) + (16 * 1) + Patterns_Lines_Offset, 16, 14, "1",
                         High[0] | BUTTON_TEXT_CENTERED | (Buff_Full[0] ? 0 : BUTTON_LOW_FONT));
@@ -2268,8 +2292,8 @@ void Draw_Blocks_Buffers_Status()
 }
 
 // ------------------------------------------------------
-// Actuallize the extra data associated with the pattern
-void Actualize_Pattern_Ed(void)
+// Actualize the extra data associated with the pattern
+void Actualize_Pattern_Ed(int refresh_instr_list)
 {
     if(Current_Edit_Steps < 0) Current_Edit_Steps = 16;
     if(Current_Edit_Steps > 16) Current_Edit_Steps = 0;
@@ -2293,7 +2317,10 @@ void Actualize_Pattern_Ed(void)
     Gui_Draw_Arrows_Number_Box2(90, 126, Current_Edit_Steps, BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
     value_box(258, 126, Current_Octave, BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
     value_box(258, 108, Current_Instrument, BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
-    Actualize_Instruments_Synths_List(2);
+    if(refresh_instr_list)
+    {
+        Actualize_Instruments_Synths_List(2);
+    }
 }
 
 // ------------------------------------------------------
@@ -3378,42 +3405,43 @@ void Mouse_Wheel_Pattern_Ed(int roll_amount_x, int roll_amount_y, int allow)
 {
     int Cur_Position = Get_Song_Position();
 
-    if(allow)
+    // Scroll the patterns
+    if (Check_Mouse_No_Button(0, 184, CONSOLE_WIDTH, (Cur_Height - 354) + Patterns_Lines_Offset) == 1)
     {
-        // Scroll the patterns
-        if(Check_Mouse_No_Button(0, 184, CONSOLE_WIDTH, (Cur_Height - 354) + Patterns_Lines_Offset) == 1)
+        if (allow)
         {
             Pattern_Line += roll_amount_y;
-            if(Continuous_Scroll && !Cur_Position)
+            if (Continuous_Scroll && !Cur_Position)
             {
-                if(Pattern_Line < 0)
+                if (Pattern_Line < 0)
                 {
                     Pattern_Line = 0;
                 }
             }
-            if(Continuous_Scroll && (Cur_Position == Song_Length - 1))
+            if (Continuous_Scroll && (Cur_Position == Song_Length - 1))
             {
-                if(Pattern_Line >= patternLines[pSequence[Cur_Position]])
+                if (Pattern_Line >= patternLines[pSequence[Cur_Position]])
                 {
                     Pattern_Line = patternLines[pSequence[Cur_Position]] - 1;
                 }
             }
-            if (roll_amount_x)
-            {
-                Visible_Columns = Get_Visible_Complete_Tracks(NULL);
-
-                gui_track += roll_amount_x;
-                if (gui_track < 0)
-                {
-                    gui_track = 0;
-                }
-                if (gui_track >= ((Song_Tracks - Visible_Columns)))
-                {
-                    gui_track = ((Song_Tracks - Visible_Columns));
-                }
-            }
-            Update_Pattern(roll_amount_x ? 2 : 1);
         }
+        // Allow sideways even when playing or recording
+        if (roll_amount_x)
+        {
+            Visible_Columns = Get_Visible_Complete_Tracks(NULL);
+
+            gui_track += roll_amount_x;
+            if (gui_track < 0)
+            {
+                gui_track = 0;
+            }
+            if (gui_track >= ((Song_Tracks - Visible_Columns)))
+            {
+                gui_track = ((Song_Tracks - Visible_Columns));
+            }
+        }
+        go_update_pattern |= roll_amount_x ? 2 : 1;
     }
 
     // Current track slider (horizontal)
@@ -3431,7 +3459,7 @@ void Mouse_Wheel_Pattern_Ed(int roll_amount_x, int roll_amount_y, int allow)
         {
             gui_track = ((Song_Tracks - Visible_Columns));
         }
-        Update_Pattern(2);
+        go_update_pattern |= 2;
     }
 }
 
@@ -3454,7 +3482,7 @@ void Mouse_Sliders_Right_Pattern_Ed(void)
                               NULL,
                               NULL);
         Sanitize_Sliders_Block();
-        Update_Pattern(1);
+        go_update_pattern |= 1;
         gui_action = GUI_CMD_SET_FOCUS_TRACK;
     }
 
@@ -3488,7 +3516,7 @@ void Mouse_Sliders_Right_Pattern_Ed(void)
                     Pattern_Line = sched_line;
                 }
             }
-            Update_Pattern(1);
+            go_update_pattern |= 1;
         }
     }
 }
@@ -3519,7 +3547,7 @@ void Mouse_Sliders_Pattern_Ed(void)
 
         Pos_Mouse = Pos_Mouse * ((Song_Tracks - Visible_Columns) + 1);
         gui_track = (int) Pos_Mouse;
-        Update_Pattern(2);
+        go_update_pattern |= 2;
     }
 
     if(Continuous_Scroll)
@@ -3573,7 +3601,7 @@ void Mouse_Sliders_Pattern_Ed(void)
             }
             Pattern_Line = final_row;
             Goto_Song_Position(i);
-            Update_Pattern(1);
+            go_update_pattern |= 1;
         }
     }
     else
@@ -3608,7 +3636,7 @@ void Mouse_Sliders_Pattern_Ed(void)
                 final_row = patternLines[pSequence[Cur_Position]] - 1;
             }
             Pattern_Line = final_row;
-            Update_Pattern(1);
+            go_update_pattern |= 1;
         }
     }
     int sub = chars_height == 16 ? 4 : -13;
@@ -3652,7 +3680,7 @@ void Mouse_Sliders_Pattern_Ed(void)
                     {
                         Track_Under_Caret = Visible_Columns + gui_track - 1;
                     }
-                    Update_Pattern(1);
+                    go_update_pattern |= 1;
                     gui_action = GUI_CMD_SET_FOCUS_TRACK;
                 }
             }
@@ -3768,7 +3796,7 @@ void Mouse_Left_Pattern_Ed(void)
     {
         Curr_Buff_Block = 0;
         Draw_Pattern_Right_Stuff();
-        Update_Pattern(1);
+        go_update_pattern |= 1;
         teac = 0;
         gui_action = GUI_CMD_UPDATE_SEQUENCER;
     }
@@ -3777,7 +3805,7 @@ void Mouse_Left_Pattern_Ed(void)
     {
         Curr_Buff_Block = 1;
         Draw_Pattern_Right_Stuff();
-        Update_Pattern(1);
+        go_update_pattern |= 1;
         teac = 0;
         gui_action = GUI_CMD_UPDATE_SEQUENCER;
     }
@@ -3786,7 +3814,7 @@ void Mouse_Left_Pattern_Ed(void)
     {
         Curr_Buff_Block = 2;
         Draw_Pattern_Right_Stuff();
-        Update_Pattern(1);
+        go_update_pattern |= 1;
         teac = 0;
         gui_action = GUI_CMD_UPDATE_SEQUENCER;
     }
@@ -3795,7 +3823,7 @@ void Mouse_Left_Pattern_Ed(void)
     {
         Curr_Buff_Block = 3;
         Draw_Pattern_Right_Stuff();
-        Update_Pattern(1);
+        go_update_pattern |= 1;
         teac = 0;
         gui_action = GUI_CMD_UPDATE_SEQUENCER;
     }
@@ -4049,7 +4077,7 @@ void Goto_Previous_Row(int Remove_Sel)
             Pattern_Line = 0;
         }
     }
-    Update_Pattern(1);
+    go_update_pattern |= 1;
     if(Remove_Sel)
     {
         Select_Block_Keyboard(BLOCK_MARK_ROWS);
@@ -4074,7 +4102,7 @@ void Goto_Next_Row(int Remove_Sel)
             Pattern_Line = patternLines[pSequence[Cur_Position]] - 1;
         }
     }
-    Update_Pattern(1);
+    go_update_pattern |= 1;
     if(Remove_Sel)
     {
         Select_Block_Keyboard(BLOCK_MARK_ROWS);
@@ -4106,7 +4134,7 @@ void Goto_Previous_Page(int Remove_Sel)
             Pattern_Line = 0;
         }
     }
-    Update_Pattern(1);
+    go_update_pattern |= 1;
     if(Remove_Sel)
     {
         Select_Block_Keyboard(BLOCK_MARK_ROWS);
@@ -4138,7 +4166,7 @@ void Goto_Next_Page(int Remove_Sel)
             Pattern_Line = patternLines[pSequence[Cur_Position]] - 1;
         }
     }
-    Update_Pattern(1);
+    go_update_pattern |= 1;
     if(Remove_Sel)
     {
         Select_Block_Keyboard(BLOCK_MARK_ROWS);
@@ -4190,7 +4218,7 @@ void Goto_Previous_Column(void)
         }
     }
     Column_Under_Caret--;
-    Update_Pattern(1);
+    go_update_pattern |= 1;
     Select_Block_Keyboard(BLOCK_MARK_TRACKS);
     gui_action = GUI_CMD_SET_FOCUS_TRACK;
 }
@@ -4241,7 +4269,7 @@ void Goto_Next_Column(void)
         }
     }
     Sanitize_Sliders_Block();
-    Update_Pattern(1);
+    go_update_pattern |= 1;
     Select_Block_Keyboard(BLOCK_MARK_TRACKS);
     gui_action = GUI_CMD_SET_FOCUS_TRACK;
 }
@@ -4265,7 +4293,7 @@ void Goto_Top_Left(void)
         }
     }
     Sanitize_Sliders_Block();
-    Update_Pattern(1);
+    go_update_pattern |= 1;
     Select_Block_Keyboard(BLOCK_MARK_ROWS | BLOCK_MARK_TRACKS);
     gui_action = GUI_CMD_SET_FOCUS_TRACK;
 }
@@ -4288,7 +4316,7 @@ void Goto_Bottom_Right(void)
             Pattern_Line = patternLines[pSequence[Get_Song_Position()]] - 1;
         }
     }
-    Update_Pattern(1);
+    go_update_pattern |= 1;
     gui_action = GUI_CMD_SET_FOCUS_TRACK;
     Select_Block_Keyboard(BLOCK_MARK_ROWS | BLOCK_MARK_TRACKS);
 }
@@ -4299,7 +4327,7 @@ void Goto_Row(int row)
 {
     Select_Block_Keyboard(BLOCK_MARK_ROWS);
     Pattern_Line = row;
-    Update_Pattern(1);
+    go_update_pattern |= 1;
     Select_Block_Keyboard(BLOCK_MARK_ROWS);
 }
 
@@ -4310,7 +4338,7 @@ void Goto_Song_Position(int Position)
     Song_Position = Position;
     Bound_Patt_Pos();
     Actualize_Sequencer();
-    Update_Pattern(1);
+    go_update_pattern |= 1;
 }
 
 // ------------------------------------------------------
@@ -4533,7 +4561,7 @@ void Set_Slider_Value_By_Mouse(int track, int column, int column_x_coords, int l
                 {
                     Set_Column_Data_With_Track(Channels_MultiNotes, Channels_Effects, Get_Song_Position(), track,
                                                column, line_number, (int) slider_offset);
-                    Update_Pattern(1);
+                    go_update_pattern |= 1;
                 }
             }
             break;
@@ -4556,7 +4584,7 @@ void Set_Slider_Value_By_Mouse(int track, int column, int column_x_coords, int l
                 {
                     Set_Column_Data_With_Track(Channels_MultiNotes, Channels_Effects, Get_Song_Position(), track,
                                                column, line_number, (int) slider_offset);
-                    Update_Pattern(1);
+                    go_update_pattern |= 1;
                 }
             }
             break;
@@ -4596,7 +4624,7 @@ void Set_Slider_Value_By_Mouse(int track, int column, int column_x_coords, int l
                         {
                             Set_Column_Data_With_Track(Channels_MultiNotes, Channels_Effects, Get_Song_Position(), track,
                                                        column, line_number, (int) slider_offset);
-                            Update_Pattern(1);
+                            go_update_pattern |= 1;
                         }
                     }
                 }

@@ -207,7 +207,7 @@ void Load_Inst(char *FileName)
             Recalculate_Sample_Size(swrite, slwrite, TRUE, 0, 0, FALSE, FALSE);
         }
         fclose(in);
-        Actualize_Pattern_Ed();
+        Actualize_Pattern_Ed(1);
         Actualize_Instrument_Ed(2, 0);
         Actualize_Synth_Ed(UPDATE_SYNTH_ED_ALL);
         Status_Box("Instrument Loaded Successfully.", TRUE);
@@ -308,7 +308,7 @@ void Save_Inst(void)
         Read_SMPT();
         last_index = -1;
         Actualize_Files_List(0);
-        Actualize_Pattern_Ed();
+        Actualize_Pattern_Ed(1);
         Status_Box("Instrument Saved Successfully.", TRUE);
     }
     else

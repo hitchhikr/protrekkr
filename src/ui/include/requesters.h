@@ -51,7 +51,7 @@ typedef struct
 {
     char *Text;
     LPREQUESTER_BUTTON Buttons;
-    PTK_TEXTURE **Picture;
+    PTK_SURFACE **Picture;
     int TimeOut;
 } REQUESTER, *LPREQUESTER;
 

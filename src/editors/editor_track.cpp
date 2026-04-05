@@ -304,7 +304,7 @@ void Actualize_Track_Ed(char action)
             Gui_Draw_Arrows_Number_Box2(647, (Cur_Height - 96), Channels_MultiNotes[Track_Under_Caret], BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
             if(action)
             {
-                Update_Pattern(1);
+                go_update_pattern |= 1;
             }
         }
 
@@ -321,7 +321,7 @@ void Actualize_Track_Ed(char action)
             Gui_Draw_Arrows_Number_Box2(647, (Cur_Height - 78), Channels_Effects[Track_Under_Caret], BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
             if(action)
             {
-                Update_Pattern(1);
+                go_update_pattern |= 1;
             }
         }
         
@@ -365,7 +365,7 @@ void Actualize_Track_Ed(char action)
         
         if(trkchan == TRUE)
         {
-            Update_Pattern(1);
+            go_update_pattern |= 1;
             trkchan = FALSE;
         }
     } // Userscreen match found

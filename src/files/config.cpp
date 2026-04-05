@@ -340,6 +340,9 @@ void Load_Config(void)
             Read_Data_Swap(&Windowed_Width, sizeof(int), 1, in);
             Read_Data_Swap(&Windowed_Height, sizeof(int), 1, in);
 
+            Cur_Width = Windowed_Width;
+            Cur_Height = Windowed_Height;
+
             Read_Data_Swap(&Cur_Left, sizeof(int), 1, in);
             Read_Data_Swap(&Cur_Top, sizeof(int), 1, in);
 
