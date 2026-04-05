@@ -1025,10 +1025,6 @@ int main(int argc, char *argv[])
                     {
                         Mouse.wheel_x = Events[i].wheel.x;
                     }
-                    if(Events[i].wheel.x > 1)
-                    {
-                        int fuck = 10;
-                    }
                     break;
 
                 case SDL_MOUSEBUTTONUP:
