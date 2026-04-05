@@ -829,6 +829,7 @@ int main(int argc, char *argv[])
     }
 
     do_resize = TRUE;
+    SDL_SetHint(SDL_HINT_TRACKPAD_IS_TOUCH_ONLY, "1");
 
     while(1)
     {
