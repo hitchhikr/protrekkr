@@ -144,6 +144,7 @@ int Keyboard_Notes_Type[256];
 int Keyboard_Notes_Bound[256];
 //int Key_Unicode;
 char FullScreen = FALSE;
+char FullScreen_Desktop = FALSE;
 int Cur_Left = SDL_WINDOWPOS_CENTERED;
 int Cur_Top = SDL_WINDOWPOS_CENTERED;
 int Cur_Width = SCREEN_WIDTH;
@@ -1117,6 +1118,8 @@ int main(int argc, char *argv[])
                                Cur_Top == 0)
                             {
                                 FullScreen = TRUE;
+                                // Apple engineers can eat shit and die!
+                                FullScreen_Desktop = TRUE;
                                 FullScreen_Width = Events[i].window.data1;
                                 FullScreen_Height = Events[i].window.data2;
                                 do_resize = TRUE;
@@ -1303,7 +1306,15 @@ void Switch_FullScreen()
     SDL_SetWindowSize(Main_Window, Width, Height);
     if (FullScreen)
     {
-        SDL_SetWindowFullscreen(Main_Window, SDL_WINDOW_FULLSCREEN);
+        if(FullScreen_Desktop)
+        {
+            SDL_SetWindowFullscreen(Main_Window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+            FullScreen_Desktop = FALSE;
+        }
+        else
+        {
+            SDL_SetWindowFullscreen(Main_Window, SDL_WINDOW_FULLSCREEN);
+        }
     }
     else
     {
