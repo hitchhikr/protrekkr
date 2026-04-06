@@ -1110,19 +1110,22 @@ int main(int argc, char *argv[])
                             }
                             break;
                         case SDL_WINDOWEVENT_RESIZED:
+                            SDL_GetCurrentDisplayMode(0, &Current_Screen_Mode);
+                            if(Events[i].window.data1 == Current_Screen_Mode.w &&
+                               Events[i].window.data2 == Current_Screen_Mode.h &&
+                               Cur_Left == 0 &&
+                               Cur_Top == 0)
+                            {
+                                FullScreen = TRUE;
+                                FullScreen_Width = Events[i].window.data1;
+                                FullScreen_Height = Events[i].window.data2;
+                                do_resize = TRUE;
+                            }
                             if (!FullScreen)
                             {
                                 Windowed_Width = Events[i].window.data1;
                                 Windowed_Height = Events[i].window.data2;
                                 do_resize = TRUE;
-                            }
-                            SDL_GetCurrentDisplayMode(0, &Current_Screen_Mode);
-                            if(Windowed_Width == Current_Screen_Mode.w &&
-                               Windowed_Height == Current_Screen_Mode.h &&
-                               Cur_Left == 0 &&
-                               Cur_Top == 0)
-                            {
-                                FullScreen = TRUE;
                             }
                             break;
 
