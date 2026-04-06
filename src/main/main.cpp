@@ -993,17 +993,20 @@ int main(int argc, char *argv[])
                     break;
 
                 case SDL_MULTIGESTURE:
-                    if(fabs(Events[i].mgesture.dDist) > 0.004)
+                    if(Events[i].mgesture.numFingers != 3)
                     {
-                        Mouse.touch_location_x = (int) (Events[i].mgesture.x * Cur_Width);
-                        Mouse.touch_location_y = (int) (Events[i].mgesture.y * Cur_Height);
-                        if(Events[i].mgesture.dDist > 0)
+                        if(fabs(Events[i].mgesture.dDist) > 0.002)
                         {
-                            Mouse.zoom = 1;
-                        }
-                        else
-                        {
-                            Mouse.zoom = -1;
+                            Mouse.touch_location_x = (int) (Events[i].mgesture.x * Cur_Width);
+                            Mouse.touch_location_y = (int) (Events[i].mgesture.y * Cur_Height);
+                            if(Events[i].mgesture.dDist > 0)
+                            {
+                                Mouse.zoom = 1;
+                            }
+                            else
+                            {
+                                Mouse.zoom = -1;
+                            }
                         }
                     }
                     break;
