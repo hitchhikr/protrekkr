@@ -833,8 +833,8 @@ int main(int argc, char *argv[])
         memset(Keys, 0, sizeof(Keys));
         Current_Keys = 0;
 
+        SDL_RecordGesture(-1);
         SDL_PumpEvents();
-
         int Nbr_Events = SDL_PeepEvents(Events, MAX_EVENTS, SDL_GETEVENT, SDL_FIRSTEVENT, SDL_LASTEVENT);
         int Symbol;
         int Scancode;
