@@ -98,6 +98,7 @@ void Update_Pattern(int modac);
 void Actualize_Pattern_Ed(int refresh_instr_list);
 void Bound_Patt_Pos(void);
 void Reset_Pattern_Scrolling_Horiz(void);
+void Trackpad_Zoom_Pattern_Ed(int position, int zoom_direction);
 void Mouse_Wheel_Pattern_Ed(int roll_amount_x, int roll_amount_y, int allow);
 void Mouse_Sliders_Pattern_Ed(void);
 void Mouse_Sliders_Right_Pattern_Ed(void);

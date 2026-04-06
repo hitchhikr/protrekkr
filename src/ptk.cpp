@@ -5856,6 +5856,14 @@ void Mouse_Handler(void)
 
     teac = 0;
 
+    if(Mouse.zoom)
+    {
+        Trackpad_Zoom_Pattern_Ed(Mouse.x, Mouse.zoom);
+        go_update_pattern |= 1;
+        Set_Track_Slider(gui_track);
+        Display_Patterns_Sizes_Status();
+    }
+
     // mouse wheel up/down or left/right
     if (Mouse.wheel_x != 0 || Mouse.wheel_y != 0)
     {

@@ -47,7 +47,7 @@
 #define MOUSE_MIDDLE_BUTTON 2
 #define MOUSE_RIGHT_BUTTON 4
 
-#define MAX_EVENTS 32
+#define MAX_EVENTS 256
 
 #define CHECK_KEY(x) (Keys[Current_Keys] == x)
 #define GET_KEY() (Keys[Current_Keys])
@@ -62,6 +62,9 @@ typedef struct
     int button_oneshot;
     int wheel_x;
     int wheel_y;
+    int touch_location_x;
+    int touch_location_y;
+    int zoom;
 } MOUSE, *LPMOUSE;
 
 // ------------------------------------------------------

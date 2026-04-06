@@ -3406,6 +3406,41 @@ void Set_Track_Slider(int pos)
 }
 
 // ------------------------------------------------------
+// Handle the trackpad zoom events
+void Trackpad_Zoom_Pattern_Ed(int position, int zoom_direction)
+{
+    int tmp_track = Get_Track_Over_Mouse(position, NULL, FALSE);
+    if(zoom_direction > 0)
+    {
+        // Enlarge
+        switch(Get_Track_Zoom(tmp_track))
+        {
+            case TRACK_SMALL:
+                Set_Track_Zoom(tmp_track, TRACK_MEDIUM);
+                break;
+
+            case TRACK_MEDIUM:
+                Set_Track_Zoom(tmp_track, TRACK_LARGE);
+                break;
+        }
+    }
+    else
+    {
+        // Reduce
+        switch(Get_Track_Zoom(tmp_track))
+        {
+            case TRACK_MEDIUM:
+                Set_Track_Zoom(tmp_track, TRACK_SMALL);
+                break;
+
+            case TRACK_LARGE:
+                Set_Track_Zoom(tmp_track, TRACK_MEDIUM);
+                break;
+        }
+    }
+}
+
+// ------------------------------------------------------
 // Handle the mouse wheel events
 void Mouse_Wheel_Pattern_Ed(int roll_amount_x, int roll_amount_y, int allow)
 {

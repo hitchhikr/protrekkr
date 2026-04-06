@@ -829,13 +829,15 @@ int main(int argc, char *argv[])
     {
         Mouse.wheel_x = 0;
         Mouse.wheel_y = 0;
+        Mouse.touch_location_x = 0;
+        Mouse.touch_location_y = 0;
+        Mouse.zoom = 0;
         if(Mouse.button_oneshot & MOUSE_LEFT_BUTTON) Mouse.button_oneshot &= ~MOUSE_LEFT_BUTTON;
         if(Mouse.button_oneshot & MOUSE_MIDDLE_BUTTON) Mouse.button_oneshot &= ~MOUSE_MIDDLE_BUTTON;
         if(Mouse.button_oneshot & MOUSE_RIGHT_BUTTON) Mouse.button_oneshot &= ~MOUSE_RIGHT_BUTTON;
         memset(Keys, 0, sizeof(Keys));
         Current_Keys = 0;
 
-//        SDL_RecordGesture(-1);
         SDL_PumpEvents();
         int Nbr_Events = SDL_PeepEvents(Events, MAX_EVENTS, SDL_GETEVENT, SDL_FIRSTEVENT, SDL_LASTEVENT);
         int Symbol;
@@ -990,20 +992,20 @@ int main(int argc, char *argv[])
                     }
                     break;
 
-                case SDL_FINGERDOWN:
-                    fprintf(stderr, "SDL_FINGERDOWN: %f %f\n", Events[i].tfinger.x, Events[i].tfinger.y);
-                    break;
-                case SDL_FINGERMOTION:
-                    fprintf(stderr, "SDL_FINGERMOTION: %f %f\n", Events[i].tfinger.x, Events[i].tfinger.y);
-                    break;
-                case SDL_FINGERUP:
-                    fprintf(stderr, "SDL_FINGERUP: %f %f\n", Events[i].tfinger.x, Events[i].tfinger.y);
-                    break;
                 case SDL_MULTIGESTURE:
-                    fprintf(stderr, "SDL_MULTIGESTURE: %f %f\n", Events[i].mgesture.x, Events[i].mgesture.y);
-                    break;
-                case SDL_DOLLARGESTURE:
-                    fprintf(stderr, "SDL_DOLLARGESTURE: %f %f\n", Events[i].dgesture.x, Events[i].dgesture.y);
+                    if(fabs(Events[i].mgesture.dDist) > 0.002)
+                    {
+                        Mouse.touch_location_x = (int) (Events[i].mgesture.x * Cur_Width);
+                        Mouse.touch_location_y = (int) (Events[i].mgesture.y * Cur_Height);
+                        if(Events[i].mgesture.dDist > 0)
+                        {
+                            Mouse.zoom = 1;
+                        }
+                        else
+                        {
+                            Mouse.zoom = -1;
+                        }
+                    }
                     break;
 
                 case SDL_MOUSEWHEEL:
