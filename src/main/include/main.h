@@ -39,10 +39,12 @@
 
 // ------------------------------------------------------
 // Constants
+// Minimum specs
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 600
 #define SCREEN_BPP 8
 
+// Masks
 #define MOUSE_LEFT_BUTTON 1
 #define MOUSE_MIDDLE_BUTTON 2
 #define MOUSE_RIGHT_BUTTON 4
@@ -84,7 +86,6 @@ extern char Keyboard_Name[];
 
 // ------------------------------------------------------
 // Functions
-void Run_Interface(void);
 void Message_Error(char *Message);
 int Get_LShift(void);
 int Get_RShift(void);
