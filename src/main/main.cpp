@@ -925,7 +925,7 @@ int main(int argc, char *argv[])
 
                     if(Get_LAlt())
                     {
-                        if(CHECK_KEY(SDLK_RETURN) && !Get_LCtrl() && !Get_RCtrl())
+                        if(CHECK_KEY(SDLK_RETURN) && !Get_LCtrl() && !Get_RCtrl() && !FullScreen_Desktop)
                         {
                             FullScreen ^= TRUE;
                             do_resize = TRUE;
@@ -1127,18 +1127,13 @@ int main(int argc, char *argv[])
                             }
                             else
                             {
-                                if(FullScreen_Desktop)
-                                {
-                                    FullScreen = FALSE;
-                                }
                                 FullScreen_Desktop = FALSE;
                                 do_resize = TRUE;
-                            }
-                            if (!FullScreen)
-                            {
-                                Windowed_Width = Events[i].window.data1;
-                                Windowed_Height = Events[i].window.data2;
-                                do_resize = TRUE;
+                                if (!FullScreen)
+                                {
+                                    Windowed_Width = Events[i].window.data1;
+                                    Windowed_Height = Events[i].window.data2;
+                                }
                             }
                             break;
 
@@ -1316,14 +1311,7 @@ void Switch_FullScreen()
     SDL_SetWindowSize(Main_Window, Width, Height);
     if (FullScreen)
     {
-        if(FullScreen_Desktop)
-        {
-            SDL_SetWindowFullscreen(Main_Window, SDL_WINDOW_FULLSCREEN_DESKTOP);
-        }
-        else
-        {
-            SDL_SetWindowFullscreen(Main_Window, SDL_WINDOW_FULLSCREEN);
-        }
+        SDL_SetWindowFullscreen(Main_Window, SDL_WINDOW_FULLSCREEN);
     }
     else
     {
@@ -1331,11 +1319,6 @@ void Switch_FullScreen()
         SDL_SetWindowFullscreen(Main_Window, 0);
         Set_Window_Pos();
         SDL_SetWindowResizable(Main_Window, SDL_TRUE);
-    }
-    if(FullScreen_Desktop)
-    {
-        // Make sure the fullscreen option isn't available
-        FullScreen = TRUE;
     }
     Env_Change = TRUE;
 }

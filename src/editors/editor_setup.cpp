@@ -42,6 +42,7 @@
 extern int Song_Playing_Pattern;
 extern int patt_highlight;
 extern char FullScreen;
+extern char FullScreen_Desktop;
 extern int do_resize;
 extern int FullScreen_Width;
 extern int FullScreen_Height;
@@ -273,15 +274,23 @@ void Actualize_Master_Ed(char action)
         // Full screen
         if(action == 0 || action == 9)
         {
-            if(FullScreen)
+            if(FullScreen_Desktop)
             {
-                Gui_Draw_Button_Box(734, (Cur_Height - 145), 29, 16, "On", BUTTON_PUSHED | BUTTON_TEXT_CENTERED);
-                Gui_Draw_Button_Box(734 + 31, (Cur_Height - 145), 29, 16, "Off", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
+                Gui_Draw_Button_Box(734, (Cur_Height - 145), 29, 16, "On", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
+                Gui_Draw_Button_Box(734 + 31, (Cur_Height - 145), 29, 16, "Off", BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
             }
             else
             {
-                Gui_Draw_Button_Box(734, (Cur_Height - 145), 29, 16, "On", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
-                Gui_Draw_Button_Box(734 + 31, (Cur_Height - 145), 29, 16, "Off", BUTTON_PUSHED | BUTTON_TEXT_CENTERED);
+                if(FullScreen)
+                {
+                    Gui_Draw_Button_Box(734, (Cur_Height - 145), 29, 16, "On", BUTTON_PUSHED | BUTTON_TEXT_CENTERED);
+                    Gui_Draw_Button_Box(734 + 31, (Cur_Height - 145), 29, 16, "Off", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
+                }
+                else
+                {
+                    Gui_Draw_Button_Box(734, (Cur_Height - 145), 29, 16, "On", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
+                    Gui_Draw_Button_Box(734 + 31, (Cur_Height - 145), 29, 16, "Off", BUTTON_PUSHED | BUTTON_TEXT_CENTERED);
+                }
             }
         }
 
@@ -830,7 +839,7 @@ void Mouse_Left_Master_Ed(void)
         // Full screen on
         if(Check_Mouse(734, (Cur_Height - 145), 29, 16))
         {
-            if(!FullScreen)
+            if(!FullScreen && !FullScreen_Desktop)
             {
                 FullScreen = TRUE;
                 teac = 9;
@@ -841,7 +850,7 @@ void Mouse_Left_Master_Ed(void)
         // Full screen off
         if(Check_Mouse(734 + 31, (Cur_Height - 145), 29, 16))
         {
-            if(FullScreen)
+            if(FullScreen && !FullScreen_Desktop)
             {
                 FullScreen = FALSE;
                 teac = 9;
