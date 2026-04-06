@@ -995,7 +995,7 @@ int main(int argc, char *argv[])
                 case SDL_MULTIGESTURE:
                     if(Events[i].mgesture.numFingers == 3)
                     {
-                        if(fabs(Events[i].mgesture.dDist) > 0.003)
+                        if(fabs(Events[i].mgesture.dDist) > 0.004)
                         {
                             Mouse.touch_location_x = (int) (Events[i].mgesture.x * Cur_Width);
                             Mouse.touch_location_y = (int) (Events[i].mgesture.y * Cur_Height);
