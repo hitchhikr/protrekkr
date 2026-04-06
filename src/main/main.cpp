@@ -834,6 +834,7 @@ int main(int argc, char *argv[])
         Current_Keys = 0;
 
         SDL_PumpEvents();
+
         int Nbr_Events = SDL_PeepEvents(Events, MAX_EVENTS, SDL_GETEVENT, SDL_FIRSTEVENT, SDL_LASTEVENT);
         int Symbol;
         int Scancode;
@@ -854,34 +855,12 @@ int main(int argc, char *argv[])
             switch(Events[i].type)
             {
                 case SDL_KEYDOWN:
-//                    Key_Unicode = Events[i].key.keysym.unicode;
                     Symbol = SDL_GetKeyFromScancode(Events[i].key.keysym.scancode);
-                    printf("%x %x ", Symbol, Events[i].key.keysym.scancode);
                     if (Current_Keys < SDL_NUM_SCANCODES)
                     {
                         Current_Keys++;
                     }
                     Keys[Current_Keys] = Symbol;
-                    /*                    Uni_Trans = Events[i].key.keysym.unicode;
-
-                    if(Uni_Trans < 512)
-                    {
-                        // This is only used for the digits on all systems
-                        // (especially on kb configs where they can only
-                        //  be accessed by pressing shift).
-                        // Otherwise it doesn't work under Mac OSX
-                        Keys_Unicode[Uni_Trans] = TRUE;
-                    }
-
-#if !defined(__MACOSX_PPC__) && !defined(__MACOSX_X86__)
-                    if(!Uni_Trans)
-                    {
-                        Uni_Trans = Symbol;
-                    }
-#else
-                    Uni_Trans = Symbol;
-#endif
-*/
                     
                     if(!In_Requester)
                     {
@@ -1010,13 +989,19 @@ int main(int argc, char *argv[])
                     break;
 
                 case SDL_FINGERDOWN:
-                    printf("SDL_FINGERDOWN: %f %f\n", Events[i].tfinger.x, Events[i].tfinger.y);
+                    fprintf(stderr, "SDL_FINGERDOWN: %f %f\n", Events[i].tfinger.x, Events[i].tfinger.y);
                     break;
                 case SDL_FINGERMOTION:
-                    printf("SDL_FINGERMOTION: %f %f\n", Events[i].tfinger.x, Events[i].tfinger.y);
+                    fprintf(stderr, "SDL_FINGERMOTION: %f %f\n", Events[i].tfinger.x, Events[i].tfinger.y);
                     break;
                 case SDL_FINGERUP:
-                    printf("SDL_FINGERUP: %f %f\n", Events[i].tfinger.x, Events[i].tfinger.y);
+                    fprintf(stderr, "SDL_FINGERUP: %f %f\n", Events[i].tfinger.x, Events[i].tfinger.y);
+                    break;
+                case SDL_MULTIGESTURE:
+                    fprintf(stderr, "SDL_MULTIGESTURE: %f %f\n", Events[i].mgesture.x, Events[i].mgesture.y);
+                    break;
+                case SDL_DOLLARGESTURE:
+                    fprintf(stderr, "SDL_DOLLARGESTURE: %f %f\n", Events[i].dgesture.x, Events[i].dgesture.y);
                     break;
 
                 case SDL_MOUSEWHEEL:
