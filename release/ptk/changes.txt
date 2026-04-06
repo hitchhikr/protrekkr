@@ -17,6 +17,9 @@ v2.8.5
 - Files drag'n'drop handled.
 - Trackpad 3 fingers pinch gesture can be used to zoom tracks in/out
   (only seems to work on MacOS).
+- Fixed a long time running bug on MacOS: Ptk would crash when entering
+  desktop full screen from window menu or zoom button and user tried
+  to switch to full screen manually.
 
 v2.8.3 PRE 6
 

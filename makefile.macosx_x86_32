@@ -37,7 +37,7 @@ protrekkr_x86_32: $(EXEOBJS_X86_32)
            -L./ -L/usr/local/lib -L/library/frameworks -Lsrc/extralibs/zlib-1.2.3 $(FLAGS_X86_32) $(EXEOBJS_X86_32) $(LIBS_X86_32)
 	strip -x -X -S ./release/ptk/protrekkr_x86_32.app/Contents/MacOS/Protrekkr
 	chmod +x ./release/ptk/protrekkr_x86_32.app/Contents/MacOS/Protrekkr
-	install_name_tool ./release/ptk/protrekkr_x86_32.app/Contents/MacOS/Protrekkr -change /usr/local/lib/libSDL-1.2.0.dylib @executable_path/libSDL-1.2.0.dylib
+	install_name_tool ./release/ptk/protrekkr_x86_32.app/Contents/MacOS/Protrekkr -change /usr/local/lib/libSDL-2.0.0.dylib @executable_path/libSDL-2.0.0.dylib
 
 ptk_x86_32.o: src/ptk.cpp
 	$(CC) -c -o $(@) $(FLAGS_X86_32) $<

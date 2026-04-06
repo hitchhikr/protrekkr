@@ -142,7 +142,6 @@ int Keyboard_Nbr_Events;
 int Keyboard_Events[256];
 int Keyboard_Notes_Type[256];
 int Keyboard_Notes_Bound[256];
-//int Key_Unicode;
 char FullScreen = FALSE;
 char FullScreen_Desktop = FALSE;
 int Cur_Left = SDL_WINDOWPOS_CENTERED;
