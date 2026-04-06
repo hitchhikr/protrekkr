@@ -3,6 +3,7 @@ What may (or may not) be done:
 V2.8.5:
 
   - Finish the import of ScreamTracker 3 modules.
+  - Add an SDL sound driver.
 
 V3.0.0:
 
