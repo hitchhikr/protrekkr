@@ -153,6 +153,8 @@ int Windowed_Width = SCREEN_WIDTH;
 int Windowed_Height = SCREEN_HEIGHT;
 int FullScreen_Width = SCREEN_WIDTH;
 int FullScreen_Height = SCREEN_HEIGHT;
+int FullScreen_Desktop_Width = SCREEN_WIDTH;
+int FullScreen_Desktop_Height = SCREEN_HEIGHT;
 int Save_Cur_Width = -1;
 int Save_Cur_Height = -1;
 int First_Time;
@@ -1118,10 +1120,10 @@ int main(int argc, char *argv[])
                                Cur_Top == 0)
                             {
                                 FullScreen = TRUE;
-                                // Apple engineers can eat shit and die!
+                                // Roten Apple engineers can eat shit and die!
                                 FullScreen_Desktop = TRUE;
-                                FullScreen_Width = Events[i].window.data1;
-                                FullScreen_Height = Events[i].window.data2;
+                                FullScreen_Desktop_Width = Events[i].window.data1;
+                                FullScreen_Desktop_Height = Events[i].window.data2;
                                 do_resize = TRUE;
                             }
                             if (!FullScreen)
@@ -1288,10 +1290,20 @@ void Switch_FullScreen()
     int Height;
     if (FullScreen)
     {
-        if (FullScreen_Width < SCREEN_WIDTH) FullScreen_Width = SCREEN_WIDTH;
-        if (FullScreen_Height < SCREEN_HEIGHT) FullScreen_Height = SCREEN_HEIGHT;
-        Width = FullScreen_Width;
-        Height = FullScreen_Height;
+        if(FullScreen_Desktop)
+        {
+            if (FullScreen_Desktop_Width < SCREEN_WIDTH) FullScreen_Desktop_Width = SCREEN_WIDTH;
+            if (FullScreen_Desktop_Height < SCREEN_HEIGHT) FullScreen_Desktop_Height = SCREEN_HEIGHT;
+            Width = FullScreen_Desktop_Width;
+            Height = FullScreen_Desktop_Height;
+        }
+        else
+        {
+            if (FullScreen_Width < SCREEN_WIDTH) FullScreen_Width = SCREEN_WIDTH;
+            if (FullScreen_Height < SCREEN_HEIGHT) FullScreen_Height = SCREEN_HEIGHT;
+            Width = FullScreen_Width;
+            Height = FullScreen_Height;
+        }
     }
     else
     {
