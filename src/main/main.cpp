@@ -514,6 +514,8 @@ int main(int argc, char *argv[])
     UINT32 Path_Length;
 #endif
 
+    SDL_SetHint(SDL_HINT_TRACKPAD_IS_TOUCH_ONLY, "1");
+
     if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_NOPARACHUTE) < 0)
     {
         Message_Error((char *) SDL_GetError());
@@ -833,7 +835,7 @@ int main(int argc, char *argv[])
         memset(Keys, 0, sizeof(Keys));
         Current_Keys = 0;
 
-        SDL_RecordGesture(-1);
+//        SDL_RecordGesture(-1);
         SDL_PumpEvents();
         int Nbr_Events = SDL_PeepEvents(Events, MAX_EVENTS, SDL_GETEVENT, SDL_FIRSTEVENT, SDL_LASTEVENT);
         int Symbol;
