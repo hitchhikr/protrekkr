@@ -15,6 +15,8 @@ v2.8.5
 - Horizontal mouse wheel can now be used over patterns.
 - Left Ctrl + up/down for -16/+16 rows jump.
 - Files drag'n'drop handled.
+- Trackpad pinch gestures can be used to zoom tracks in/out
+  (only seems to work on MacOS).
 
 v2.8.3 PRE 6
 
