@@ -515,7 +515,6 @@ int main(int argc, char *argv[])
 #endif
 
     SDL_SetHint(SDL_HINT_TRACKPAD_IS_TOUCH_ONLY, "1");
-    SDL_SetHint(SDL_HINT_VIDEO_MAC_FULLSCREEN_SPACES, "0");
 
     if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_NOPARACHUTE) < 0)
     {
@@ -1117,6 +1116,10 @@ int main(int argc, char *argv[])
                                 Windowed_Width = Events[i].window.data1;
                                 Windowed_Height = Events[i].window.data2;
                                 do_resize = TRUE;
+                            }
+                            if(SDL_GetWindowFlags(Main_Window) & SDL_WINDOW_FULLSCREEN_DESKTOP)
+                            {
+                                FullScreen = TRUE;
                             }
                             break;
 

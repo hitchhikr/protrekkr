@@ -5868,7 +5868,7 @@ void Mouse_Handler(void)
     if (Mouse.wheel_x != 0 || Mouse.wheel_y != 0)
     {
         // Scroll the pattern
-        Mouse_Wheel_Pattern_Ed((Mouse.wheel_x * MouseWheel_Multiplier), -(Mouse.wheel_y * MouseWheel_Multiplier), !Song_Playing && !is_recording);
+        Mouse_Wheel_Pattern_Ed(Mouse.wheel_x, -(Mouse.wheel_y * MouseWheel_Multiplier), !Song_Playing && !is_recording);
 
         // Scroll the files list
         switch(Scopish)
