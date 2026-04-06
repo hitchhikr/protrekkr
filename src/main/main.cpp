@@ -1117,6 +1117,7 @@ int main(int argc, char *argv[])
                                 Windowed_Height = Events[i].window.data2;
                                 do_resize = TRUE;
                             }
+                            fprintf(stderr, "flags: %d\n", SDL_GetWindowFlags(Main_Window)); 
                             if(SDL_GetWindowFlags(Main_Window) & SDL_WINDOW_FULLSCREEN_DESKTOP)
                             {
                                 FullScreen = TRUE;
@@ -1316,6 +1317,8 @@ int Open_Window(int Width, int Height)
     Env_Change = TRUE;
     if (Width < SCREEN_WIDTH) Width = SCREEN_WIDTH;
     if (Height < SCREEN_HEIGHT) Height = SCREEN_HEIGHT;
+
+    SDL_SetHint(SDL_HINT_VIDEO_MAC_FULLSCREEN_SPACES, "0");
 
     if (FullScreen)
     {
