@@ -1119,16 +1119,16 @@ int main(int argc, char *argv[])
                                Cur_Left == 0 &&
                                Cur_Top == 0)
                             {
-                                FullScreen = TRUE;
                                 // Roten Apple engineers can eat shit and die!
                                 FullScreen_Desktop = TRUE;
-                                FullScreen_Width = Events[i].window.data1;
-                                FullScreen_Height = Events[i].window.data2;
+                                //FullScreen_Width = Events[i].window.data1;
+                                //FullScreen_Height = Events[i].window.data2;
                                 do_resize = TRUE;
                             }
                             else
                             {
-                                FullScreen = FALSE;
+                                FullScreen_Desktop = FALSE;
+                                do_resize = TRUE;
                             }
                             if (!FullScreen)
                             {
@@ -1312,12 +1312,7 @@ void Switch_FullScreen()
     SDL_SetWindowSize(Main_Window, Width, Height);
     if (FullScreen)
     {
-        if(FullScreen_Desktop)
-        {
-            SDL_SetWindowFullscreen(Main_Window, SDL_WINDOW_FULLSCREEN_DESKTOP);
-            FullScreen_Desktop = FALSE;
-        }
-        else
+        if(!FullScreen_Desktop)
         {
             SDL_SetWindowFullscreen(Main_Window, SDL_WINDOW_FULLSCREEN);
         }
