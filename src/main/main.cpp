@@ -1122,9 +1122,13 @@ int main(int argc, char *argv[])
                                 FullScreen = TRUE;
                                 // Roten Apple engineers can eat shit and die!
                                 FullScreen_Desktop = TRUE;
-                                FullScreen_Desktop_Width = Events[i].window.data1;
-                                FullScreen_Desktop_Height = Events[i].window.data2;
+                                FullScreen_Width = Events[i].window.data1;
+                                FullScreen_Height = Events[i].window.data2;
                                 do_resize = TRUE;
+                            }
+                            else
+                            {
+                                FullScreen = FALSE;
                             }
                             if (!FullScreen)
                             {
@@ -1290,20 +1294,10 @@ void Switch_FullScreen()
     int Height;
     if (FullScreen)
     {
-        if(FullScreen_Desktop)
-        {
-            if (FullScreen_Desktop_Width < SCREEN_WIDTH) FullScreen_Desktop_Width = SCREEN_WIDTH;
-            if (FullScreen_Desktop_Height < SCREEN_HEIGHT) FullScreen_Desktop_Height = SCREEN_HEIGHT;
-            Width = FullScreen_Desktop_Width;
-            Height = FullScreen_Desktop_Height;
-        }
-        else
-        {
-            if (FullScreen_Width < SCREEN_WIDTH) FullScreen_Width = SCREEN_WIDTH;
-            if (FullScreen_Height < SCREEN_HEIGHT) FullScreen_Height = SCREEN_HEIGHT;
-            Width = FullScreen_Width;
-            Height = FullScreen_Height;
-        }
+        if (FullScreen_Width < SCREEN_WIDTH) FullScreen_Width = SCREEN_WIDTH;
+        if (FullScreen_Height < SCREEN_HEIGHT) FullScreen_Height = SCREEN_HEIGHT;
+        Width = FullScreen_Width;
+        Height = FullScreen_Height;
     }
     else
     {
