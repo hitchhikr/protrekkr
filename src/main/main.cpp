@@ -856,6 +856,7 @@ int main(int argc, char *argv[])
                 case SDL_KEYDOWN:
 //                    Key_Unicode = Events[i].key.keysym.unicode;
                     Symbol = SDL_GetKeyFromScancode(Events[i].key.keysym.scancode);
+                    printf("%x %x ", Symbol, Events[i].key.keysym.scancode);
                     if (Current_Keys < SDL_NUM_SCANCODES)
                     {
                         Current_Keys++;
@@ -1006,6 +1007,16 @@ int main(int argc, char *argv[])
                             RShift_Notified = TRUE;
                         }
                     }
+                    break;
+
+                case SDL_FINGERDOWN:
+                    printf("SDL_FINGERDOWN: %f %f\n", Events[i].tfinger.x, Events[i].tfinger.y);
+                    break;
+                case SDL_FINGERMOTION:
+                    printf("SDL_FINGERMOTION: %f %f\n", Events[i].tfinger.x, Events[i].tfinger.y);
+                    break;
+                case SDL_FINGERUP:
+                    printf("SDL_FINGERUP: %f %f\n", Events[i].tfinger.x, Events[i].tfinger.y);
                     break;
 
                 case SDL_MOUSEWHEEL:

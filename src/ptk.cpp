@@ -526,19 +526,19 @@ int Init_Context(void)
 
     switch(rand() % 13)
     {
-        case 0: sprintf(tipoftheday, "Tip Of The Hour: Pressing CTRL+I Will Interpolate Effect Value On A Marked Block."); break;
-        case 1: sprintf(tipoftheday, "Tip Of The Hour: The Right Mouse Button Will Have A Secondary Action On Most Buttons."); break;
-        case 2: sprintf(tipoftheday, "Tip Of The Hour: Don't Set Excessive Track Reverb Send Values, To Get Better Quality."); break;
-        case 3: sprintf(tipoftheday, "Tip Of The Hour: When Recording, Number Of Positions Will Grow Automatically When Necessary."); break;
-        case 4: sprintf(tipoftheday, "Tip Of The Hour: Remember: MIDI Is Not Audio, Realtime Fx Will Not Affect Midi Sound."); break;
-        case 5: sprintf(tipoftheday, "Tip Of The Hour: On Lower CPUs, You Can Renderize Patterns To Wav, And Use Them As Samples Without Any Loss Of Quality."); break;
-        case 6: sprintf(tipoftheday, "Tip Of The Hour: Volume Note-Cut Ccommand 'Fx' Is Very Useful To Avoid Sample-clicking."); break;
-        case 7: sprintf(tipoftheday, "Tip Of The Hour: Left-Clicking On Pattern Editor Channels Numbers Will Mute/Unmute Any Track (Right Clicking Will Solo It)."); break;
-        case 8: sprintf(tipoftheday, "Tip Of The Hour: Pattern Command '16xx' Will Reset The Filter LFO Of The Track. No Parameter Required."); break;
-        case 9: sprintf(tipoftheday, "Tip Of The Hour: Use '90' Command In The Panning Column To Change Midi Controllers Values."); break;
-        case 10: sprintf(tipoftheday, "Tip Of The Hour: Increase Latency Time If Sound Is Distorted."); break;
-        case 11: sprintf(tipoftheday, "Tip Of The Hour: Pressing Right Mouse Button On Most Arrows Buttons (\03\04) Will Speed Operation Up."); break;
-        default: sprintf(tipoftheday, "Tip Of The Hour: See 'manual.pdf' For More Infos About Help And Pattern Commands."); break;
+        case 0: sprintf(tipoftheday, "Don't Panic: Pressing CTRL+I Will Interpolate Effect Value On A Marked Block."); break;
+        case 1: sprintf(tipoftheday, "Don't Panic: The Right Mouse Button Will Have A Secondary Action On Most Buttons."); break;
+        case 2: sprintf(tipoftheday, "Don't Panic: Don't Set Excessive Track Reverb Send Values, To Get Better Quality."); break;
+        case 3: sprintf(tipoftheday, "Don't Panic: When Recording, Number Of Positions Will Grow Automatically When Necessary."); break;
+        case 4: sprintf(tipoftheday, "Don't Panic: Remember: MIDI Is Not Audio, Realtime Fx Will Not Affect Midi Sound."); break;
+        case 5: sprintf(tipoftheday, "Don't Panic: On Lower CPUs, You Can Renderize Patterns To Wav, And Use Them As Samples Without Any Loss Of Quality."); break;
+        case 6: sprintf(tipoftheday, "Don't Panic: Volume Note-Cut Ccommand 'Fx' Is Very Useful To Avoid Sample-clicking."); break;
+        case 7: sprintf(tipoftheday, "Don't Panic: Left-Clicking On Pattern Editor Channels Numbers Will Mute/Unmute Any Track (Right Clicking Will Solo It)."); break;
+        case 8: sprintf(tipoftheday, "Don't Panic: Pattern Command '16xx' Will Reset The Filter LFO Of The Track. No Parameter Required."); break;
+        case 9: sprintf(tipoftheday, "Don't Panic: Use '90' Command In The Panning Column To Change Midi Controllers Values."); break;
+        case 10: sprintf(tipoftheday, "Don't Panic: Increase Latency Time If Sound Is Distorted."); break;
+        case 11: sprintf(tipoftheday, "Don't Panic: Pressing Right Mouse Button On Most Arrows Buttons (\03\04) Will Speed Operation Up."); break;
+        default: sprintf(tipoftheday, "Don't Panic: See 'manual.pdf' For More Infos About Help And Pattern Commands."); break;
     }
 
     L_MaxLevel = 0;
