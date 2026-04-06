@@ -1117,6 +1117,10 @@ int main(int argc, char *argv[])
                                 Windowed_Height = Events[i].window.data2;
                                 do_resize = TRUE;
                             }
+                            if(SDL_GetWindowFlags(Main_Window) & SDL_WINDOW_FULLSCREEN)
+                            {
+                                FullScreen = TRUE;
+                            }
                             break;
 
                         case SDL_WINDOWEVENT_RESTORED:
