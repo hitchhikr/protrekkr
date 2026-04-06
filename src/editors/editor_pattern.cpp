@@ -557,7 +557,7 @@ Skip_Header2:
     bjbox(0,
           y,
           CONSOLE_WIDTH - 19,
-          (Cur_Height - 385) + Patterns_Lines_Offset - sub
+          (Cur_Height - 384) + Patterns_Lines_Offset - sub
          );
 
     // Draw it now

@@ -775,7 +775,10 @@ int Screen_Update(void)
     {
         if(global_argc != 1)
         {
-            Load_File(0, global_argv);
+            // Using Current_Instrument here in case of a drag'n'drop
+            // of a recognized instrument file.
+            // (0 if loaded from command line argument).
+            Load_File(Current_Instrument, global_argv);
         }
         else
         {
