@@ -1312,7 +1312,14 @@ void Switch_FullScreen()
     SDL_SetWindowSize(Main_Window, Width, Height);
     if (FullScreen)
     {
-        SDL_SetWindowFullscreen(Main_Window, SDL_WINDOW_FULLSCREEN);
+        if(FullScreen_Desktop)
+        {
+            SDL_SetWindowFullscreen(Main_Window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+        }
+        else
+        {
+            SDL_SetWindowFullscreen(Main_Window, SDL_WINDOW_FULLSCREEN);
+        }
     }
     else
     {
