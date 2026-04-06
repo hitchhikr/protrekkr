@@ -993,7 +993,7 @@ int main(int argc, char *argv[])
                     break;
 
                 case SDL_MULTIGESTURE:
-                    if(Events[i].mgesture.numFingers != 3)
+                    if(Events[i].mgesture.numFingers == 3)
                     {
                         if(fabs(Events[i].mgesture.dDist) > 0.002)
                         {
