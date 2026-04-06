@@ -1323,7 +1323,7 @@ void Switch_FullScreen()
     }
     if(FullScreen_Desktop)
     {
-        FullScreen = FALSE;
+        FullScreen = TRUE;
     }
     Env_Change = TRUE;
 }
