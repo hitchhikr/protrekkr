@@ -1127,6 +1127,10 @@ int main(int argc, char *argv[])
                             }
                             else
                             {
+                                if(FullScreen_Desktop)
+                                {
+                                    FullScreen = FALSE;
+                                }
                                 FullScreen_Desktop = FALSE;
                                 do_resize = TRUE;
                             }
