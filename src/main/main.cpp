@@ -1121,8 +1121,8 @@ int main(int argc, char *argv[])
                             {
                                 // Roten Apple engineers can eat shit and die!
                                 FullScreen_Desktop = TRUE;
-                                //FullScreen_Width = Events[i].window.data1;
-                                //FullScreen_Height = Events[i].window.data2;
+                                Windowed_Width = Current_Screen_Mode.w;
+                                Windowed_Height = Current_Screen_Mode.h;
                                 do_resize = TRUE;
                             }
                             else
@@ -1334,6 +1334,7 @@ void Switch_FullScreen()
     }
     if(FullScreen_Desktop)
     {
+        // Make sure the fullscreen option isn't available
         FullScreen = TRUE;
     }
     Env_Change = TRUE;
