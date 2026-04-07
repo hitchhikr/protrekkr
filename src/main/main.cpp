@@ -1118,7 +1118,7 @@ int main(int argc, char *argv[])
                                Cur_Left == 0 &&
                                Cur_Top == 0)
                             {
-                                // Roten Apple engineers can eat shit and die!
+                                // Rotten Apple engineers can eat shit and die!
                                 FullScreen_Desktop = TRUE;
                                 Windowed_Width = Current_Screen_Mode.w;
                                 Windowed_Height = Current_Screen_Mode.h;
@@ -1138,22 +1138,13 @@ int main(int argc, char *argv[])
 
                         case SDL_WINDOWEVENT_RESTORED:
                         case SDL_WINDOWEVENT_EXPOSED:
-//                            do_resize = TRUE;
+                            do_resize = TRUE;
                             break;
 
                         case SDL_WINDOWEVENT_ENTER:
                         case SDL_WINDOWEVENT_FOCUS_GAINED:
-                            memset(Keys, 0, sizeof(Keys));
-                            SDL_Event event;
-                            while (SDL_PollEvent(&event));
                             do_resize = TRUE;
                             break;
-
-                        case SDL_WINDOWEVENT_LEAVE:
-                        case SDL_WINDOWEVENT_FOCUS_LOST:
-                            memset(Keys, 0, sizeof(Keys));
-                            break;
-
                     }
                     break;
 
