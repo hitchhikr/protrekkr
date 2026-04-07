@@ -895,7 +895,7 @@ int main(int argc, char *argv[])
                             }
                         }
 
-                        if(CHECK_KEY(SDLK_RETURN) || CHECK_KEY(SDLK_KP_ENTER) && Enter_Notification == FALSE &&
+                        if((CHECK_KEY(SDLK_RETURN) || CHECK_KEY(SDLK_KP_ENTER)) && Enter_Notification == FALSE &&
                             !Get_LAlt() && !Get_RAlt() && !Get_LCtrl() && !Get_RCtrl()
                            )
                         {
