@@ -28,7 +28,7 @@ Notice that you'll need the SDL 2 (https://github.com/libsdl-org/SDL/tree/SDL2) 
 > [!CAUTION]
 > **"ptk_vx.x.x_macosx_x86_64_ogl.zip" may be problematic on some 64 bit versions of Mac OS (ulterior to Catalina), on those you should use "ptk_vx.x.x_macosx_x86_64.zip" instead.**
 ---
-So far, ProTrekkr was used in these intros or demos (the ones i'm aware of, at least) :<br><br>
+So far, ProTrekkr was used in these intros or demos (the ones i'm aware of, at least):<br><br>
 <a href="http://www.pouet.net/prod.php?which=51129" target=_parent>Nebula by Sqny</a><br>
 <a href="http://www.pouet.net/prod.php?which=51286" target=_parent>Kaivo by Clrsrc</a><br>
 <a href="http://www.pouet.net/prod.php?which=52876" target=_parent>Kaolin beach2009 by Kaolin</a><br>
@@ -42,10 +42,16 @@ So far, ProTrekkr was used in these intros or demos (the ones i'm aware of, at l
 <br>Also some sampled tune from the tracker has been used in the end part of this Atari ST demo :<br><br>
 <a href="http://www.pouet.net/prod.php?which=50486" target=_parent>Morphonic lab.VI by checkpoint</a><br>
 <br>And a module done by BitArts (Norbert Röcher) with the tracker (in MP3 format): <a href="https://hitchhikr.net/bitarts%20-%20nightflight.mp3" target=_parent>NightFlight</a>
-<br><br>Some more music also produced with the tracker available on SoundCloud :<br><br>
-<a href="https://soundcloud.com/defraq79/distorted-reality" target=_parent>distorted reality</a><br>
-<a href="https://soundcloud.com/defraq79/sign" target=_parent>sign</a><br>
-<a href="https://soundcloud.com/defraq79/back-to-moon" target=_parent>back to moon</a><br>
-<a href="https://soundcloud.com/defraq79/starburst" target=_parent>starburst</a><br>
-<br>A video recording of another module done with the tracker: <a href="https://www.youtube.com/watch?v=N5Hr4uiPAZk" target=_parent>Crutokk by Vojta Nedved</a>
-<br>Another video recording of yet another module done with the tracker: <a href="https://www.youtube.com/watch?v=XMvkCSP4eEs" target=_parent>Horse Heads and Gray Biscuits by Man With No Alias</a>
+<br><br>Some more music also produced with the tracker:<br><br>
+<a href="https://alonetone.com/TalkOrBell/tracks/crystal-quagmire" target=_parent>Crystal Quagmire</a><br>
+<a href="https://soundcloud.com/defraq79/distorted-reality" target=_parent>Distorted Reality</a><br>
+<a href="https://soundcloud.com/defraq79/sign" target=_parent>Sign</a><br>
+<a href="https://soundcloud.com/defraq79/back-to-moon" target=_parent>Back To Moon</a><br>
+<a href="https://soundcloud.com/defraq79/starburst" target=_parent>Starburst</a><br>
+<br>And some videos:<br><br>
+<a href="https://www.youtube.com/watch?v=_GqFWlDcXZk" target=_parent>This Is What You Get by Dolmancé</a><br>
+<a href="https://www.youtube.com/watch?v=dy-se36OgN4" target=_parent>Artificially Sanctified by Dolmancé</a><br>
+<a href="https://www.youtube.com/watch?v=Rbt77nP80CM" target=_parent>Climax by Dolmancé</a><br>
+<a href="https://www.youtube.com/watch?v=ixi4TQYFNDE" target=_parent>I'd Rather Die Than Go Back There ! by Dolmancé</a><br>
+<a href="https://www.youtube.com/watch?v=N5Hr4uiPAZk" target=_parent>Crutokk by Vojta Nedved</a><br>
+<a href="https://www.youtube.com/watch?v=XMvkCSP4eEs" target=_parent>Horse Heads and Gray Biscuits by Man With No Alias</a>

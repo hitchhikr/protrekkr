@@ -1724,10 +1724,16 @@ int Screen_Update(void)
             if(snamesel == INPUT_NONE) Pack_Module(name);
         }
 
+        // Export a module as .txt
+        if(gui_action == GUI_CMD_EXPORT_FINAL)
+        {
+            if(snamesel == INPUT_NONE) Save_Ptk(name, SAVE_MOD_ASCII, SAVE_WRITE, NULL);
+        }
+
         // Save a .ptp module
         if(gui_action == GUI_CMD_SAVE_FINAL)
         {
-            if(snamesel == INPUT_NONE) Save_Ptk(name, TRUE, SAVE_WRITE, NULL);
+            if(snamesel == INPUT_NONE) Save_Ptk(name, SAVE_MOD_PTP, SAVE_WRITE, NULL);
         }
 
         // Calculate the approximate size of a .ptp module

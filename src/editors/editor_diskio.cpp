@@ -127,6 +127,7 @@ void Draw_DiskIO_Ed(void)
     Gui_Draw_Button_Box(8, (Cur_Height - 58), 80, 16, "Message", BUTTON_NORMAL | BUTTON_DISABLED);
     Gui_Draw_Button_Box(8, (Cur_Height - 130), 80, 16, "Zzaapp", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
     Gui_Draw_Button_Box(90, (Cur_Height - 112), 80, 16, "WAV Render", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
+    Gui_Draw_Button_Box(172, (Cur_Height - 112), 80, 16, "Export As ASCII", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
     Gui_Draw_Button_Box(90, (Cur_Height - 130), 80, 16, "Show Info", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
 
     Gui_Draw_Button_Box(342, (Cur_Height - 130), 404, 102, NULL, BUTTON_NORMAL | BUTTON_DISABLED);
@@ -359,7 +360,21 @@ void Mouse_Left_DiskIO_Ed(void)
                 gui_action = GUI_CMD_SAVE_MODULE;
             }
         }
-        // Save final
+
+        // Export as .txt
+        if(Check_Mouse(172, (Cur_Height - 112), 80, 16))
+        {
+            if(File_Exist_Req("%s" SLASH "%s.txt", Dir_Mods, name))
+            {
+                Display_Requester(&Overwrite_Requester, GUI_CMD_EXPORT_FINAL, NULL, TRUE);
+            }
+            else
+            {
+                gui_action = GUI_CMD_EXPORT_FINAL;
+            }
+        }
+
+        // Save as .ptp
         if(Check_Mouse(254, (Cur_Height - 130), 80, 16))
         {
             if(File_Exist_Req("%s" SLASH "%s.ptp", Dir_Mods, name))
@@ -371,11 +386,13 @@ void Mouse_Left_DiskIO_Ed(void)
                 gui_action = GUI_CMD_SAVE_FINAL;
             }
         }
+
         // Calc final
         if(Check_Mouse(254, (Cur_Height - 112), 80, 16))
         {
             gui_action = GUI_CMD_CALC_FINAL;
         }
+
         // Calc length
         if(Check_Mouse(254, (Cur_Height - 76), 80, 16))
         {

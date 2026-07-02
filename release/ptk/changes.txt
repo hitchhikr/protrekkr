@@ -20,6 +20,7 @@ v2.8.5
 - Fixed a long time running bug on MacOS: Ptk would crash when entering
   desktop full screen from window menu or zoom button and user tried
   to switch to full screen manually.
+- Modules can now be exported to ASCII.
 
 v2.8.3 PRE 6
 

@@ -49,6 +49,15 @@
 #define SAVE_CALCLEN 1
 #define SAVE_WRITEMEM 2
 
+#define SAVE_MOD_ASCII 2
+#define SAVE_MOD_PTP 1
+#define SAVE_MOD_PTK 0
+
+#define DATA_ASCII_CHAR 1
+#define DATA_ASCII_SHORT 2
+#define DATA_ASCII_INT 3
+#define DATA_ASCII_FLOAT 4
+
 #define LOAD_READ FALSE
 #define LOAD_READMEM TRUE
 
@@ -152,6 +161,8 @@ int Read_Data(void *value, int size, int amount, CustomFile &handle);
 int Read_Data_Swap(void *value, int size, int amount, CustomFile &handle);
 #endif
 
+void Write_Mod_Data_Ascii(FILE *Handle, char *Format, ...);
+void Write_Mod_Data_Ascii_Array(void *Data, int Size, int Length, FILE *Handle);
 int Write_Data(void *value, int size, int amount, FILE *handle);
 int Write_Data_Swap(void *value, int size, int amount, FILE *handle);
 void Swap_Sample(short *buffer, int sample, int bank);
@@ -161,7 +172,7 @@ void Write_Unpacked_Sample(int (*Write_Function)(void *, int ,int, FILE *),
 int Write_Mod_Data(void *Data, int Unit, int Length, FILE *Handle);
 int Write_Mod_Data_Swap(void *Data, int Unit, int Length, FILE *Handle);
 short *Get_WaveForm(int Instr_Nbr, int Channel, int Split);
-void Pack_Sample(FILE *FileHandle, short *Sample, int Size, char Pack_Type, int BitRate);
+void Pack_Sample(FILE *FileHandle, short *Sample, int Size, char Pack_Type, int BitRate, int ascii);
 int Fix_Codec(int Scheme);
 
 #endif

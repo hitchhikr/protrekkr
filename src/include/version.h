@@ -39,5 +39,6 @@
 #define VER_REV "8"
 #define VER_REVSMALL "5"
 #define VERSION TITLE " v" VER_VER "." VER_REV "." VER_REVSMALL
+#define ASCII_EXPORT_VERSION 1
 
 #endif

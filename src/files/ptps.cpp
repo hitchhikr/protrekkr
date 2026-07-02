@@ -152,7 +152,7 @@ int Check_Range(int Idx, int Bound, int Start)
 // Save a packed (.ptp) module
 // (Only the samples are actually (if requested) packed,
 //  the rest is just "demangled" to ease packers compression ratio).
-int Save_Ptp(FILE *in, int Simulate, char *FileName)
+int Save_Ptp(FILE *in, int Simulate, char *FileName, int ascii)
 {
     unsigned char *TmpPatterns;
     unsigned char *TmpPatterns_Tracks;
@@ -320,7 +320,7 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
     Out_FX = NULL;
     wait_AutoSave = 0;
 
-    if(!Simulate)
+    if(!Simulate && !ascii)
     {
         sprintf(Constant_Filename, "%s" SLASH "ptk_properties.h", Dir_Mods);
         Out_constants = fopen(Constant_Filename, "w");
@@ -333,7 +333,8 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
     if(!New_RawPatterns) return(FALSE);
 
     // Writing header & name...
-    Write_Mod_Data(&New_Extension, sizeof(char), 4, in);
+    if(ascii) Write_Mod_Data_Ascii(in, "ProTrekkr Module: %d\n", ASCII_EXPORT_VERSION);
+    else Write_Mod_Data(&New_Extension, sizeof(char), 4, in);
 
     // Re-arrange the patterns sequence
     int_pattern = 0;
@@ -379,45 +380,90 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
         }
     }
     Real_Song_Tracks = Song_Tracks - Nbr_Muted_Tracks;
-
+ 
     char_value = (char) int_pattern;
-    Write_Mod_Data(&char_value, sizeof(char), 1, in);
+    if(ascii) Write_Mod_Data_Ascii(in, "Patterns: %d\n", char_value);
+    else Write_Mod_Data(&char_value, sizeof(char), 1, in);
     
     // Number of tracks is stored here in .ptp format
     char_value = (char) Real_Song_Tracks;
-    Write_Mod_Data(&char_value, sizeof(char), 1, in);
+    if(ascii) Write_Mod_Data_Ascii(in, "Tracks: %d\n", char_value);
+    else Write_Mod_Data(&char_value, sizeof(char), 1, in);
 
-    Write_Mod_Data(&Song_Length, sizeof(char), 1, in);
-    Write_Mod_Data(&Use_Cubic, sizeof(char), 1, in);
+    if(ascii) Write_Mod_Data_Ascii(in, "Length: %d\n", Song_Length);
+    else Write_Mod_Data(&Song_Length, sizeof(char), 1, in);
 
     // Patterns sequence
-    Write_Mod_Data(New_pSequence, sizeof(char), Song_Length, in);
-
-    for(i = 0; i < int_pattern; i++)
+    if(ascii) 
     {
-        char_value = (char) New_patternLines[i];
-        Write_Mod_Data(&char_value, sizeof(char), 1, in);
+        Write_Mod_Data_Ascii(in, "Positions: %d\n", Song_Length);
+        Write_Mod_Data_Ascii_Array(New_pSequence, DATA_ASCII_CHAR, Song_Length, in);
+    }
+    else
+    {
+        Write_Mod_Data(New_pSequence, sizeof(char), Song_Length, in);
+    }
+
+    if(ascii)
+    {
+        Write_Mod_Data_Ascii(in, "Patterns Lines: %d\n", int_pattern);
+        Write_Mod_Data_Ascii_Array(New_patternLines, DATA_ASCII_SHORT, int_pattern, in);
+    }
+    else
+    {
+        for(i = 0; i < int_pattern; i++)
+        {
+            char_value = (char) New_patternLines[i];
+            Write_Mod_Data(&char_value, sizeof(char), 1, in);
+        }
     }
 
     char_value = (char) Real_Song_Tracks;
-    Write_Mod_Data(Channels_MultiNotes, sizeof(char), char_value, in);
-
-    Write_Mod_Data(Channels_Effects, sizeof(char), char_value, in);
-
-    for(i = 0; i < char_value; i++)
+    if(ascii)
     {
-        if(Track_Volume[i] <= 0.99f)
+        Write_Mod_Data_Ascii(in, "Channels Notes: %d\n", char_value);
+        Write_Mod_Data_Ascii_Array(Channels_MultiNotes, DATA_ASCII_CHAR, char_value, in);
+    }
+    else Write_Mod_Data(Channels_MultiNotes, sizeof(char), char_value, in);
+
+    if(ascii)
+    {
+        Write_Mod_Data_Ascii(in, "Channels Effects: %d\n", char_value);
+        Write_Mod_Data_Ascii_Array(Channels_Effects, DATA_ASCII_CHAR, char_value, in);
+    }
+    else Write_Mod_Data(Channels_Effects, sizeof(char), char_value, in);
+
+    if(ascii)
+    {
+        Write_Mod_Data_Ascii(in, "Channels Volumes: %d\n", char_value);
+        Write_Mod_Data_Ascii_Array(Track_Volume, DATA_ASCII_FLOAT, char_value, in);
+    }
+    else
+    {
+        for(i = 0; i < char_value; i++)
         {
-            Store_Track_Volume = TRUE;
+            if(Track_Volume[i] <= 0.99f)
+            {
+                Store_Track_Volume = TRUE;
+            }
+            Write_Mod_Data(&Track_Volume[i], sizeof(float), 1, in);
         }
-        Write_Mod_Data(&Track_Volume[i], sizeof(float), 1, in);
     }
 
-    for(i = 0; i < char_value; i++)
+    if(ascii)
     {
-        Write_Mod_Data(&Track_Surround[i], sizeof(char), 1, in);
+        Write_Mod_Data_Ascii(in, "Channels Surround: %d\n", char_value);
+        Write_Mod_Data_Ascii_Array(Track_Surround, DATA_ASCII_CHAR, char_value, in);
+    }
+    else
+    {
+        for(i = 0; i < char_value; i++)
+        {
+            Write_Mod_Data(&Track_Surround[i], sizeof(char), 1, in);
+        }
     }
 
+    Write_Mod_Data_Ascii(in, "Channels Eq: %d\n", char_value);
     for(i = 0; i < char_value; i++)
     {
         if(EqDat[i].lg != 1.0f ||
@@ -427,14 +473,29 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
         {
             Store_Track_Eq = TRUE;
         }
-        Write_Mod_Data(&EqDat[i].lg, sizeof(float), 1, in);
-        Write_Mod_Data(&EqDat[i].mg, sizeof(float), 1, in);
-        Write_Mod_Data(&EqDat[i].hg, sizeof(float), 1, in);
+        if(ascii)
+        {
+           Write_Mod_Data_Ascii(in, "%f,%f,%f\n", EqDat[i].lg, EqDat[i].mg, EqDat[i].hg);
+        }
+        else
+        {
+            Write_Mod_Data(&EqDat[i].lg, sizeof(float), 1, in);
+            Write_Mod_Data(&EqDat[i].mg, sizeof(float), 1, in);
+            Write_Mod_Data(&EqDat[i].hg, sizeof(float), 1, in);
+        }
     }
 
-    for(i = 0; i < char_value; i++)
+    if(ascii)
     {
-        Write_Mod_Data(&Track_Denoise[i], sizeof(char), 1, in);
+        Write_Mod_Data_Ascii(in, "Channels Denoisers: %d\n", char_value);
+        Write_Mod_Data_Ascii_Array(Track_Denoise, DATA_ASCII_CHAR, char_value, in);
+    }
+    else
+    {
+        for(i = 0; i < char_value; i++)
+        {
+            Write_Mod_Data(&Track_Denoise[i], sizeof(char), 1, in);
+        }
     }
 
     // Check the instruments
@@ -565,7 +626,7 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                                    i == PATTERN_FX4
                                   )
                                 {
-                                    // Don't save FX 7
+                                    // Add FX 7
                                     if(TmpPatterns_Notes[i] == 0x7)
                                     {
                                         Rec_Fx++;
@@ -605,7 +666,7 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                                        i == PATTERN_FX4
                                       )
                                     {
-                                        // Don't save FX 7
+                                        // Record FX 7
                                         if(TmpPatterns_Notes[i] == 0x7)
                                         {
                                             // Discard multiple fxs / line
@@ -1641,7 +1702,8 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                                     SampleCompression[swrite],
                                     SampleCompression[swrite] == SMP_PACK_MP3 ?
                                             Type_Mp3_BitRate[Mp3_BitRate[swrite]] :
-                                            Type_At3_BitRate[At3_BitRate[swrite]]
+                                            Type_At3_BitRate[At3_BitRate[swrite]],
+                                    ascii
                                    );
                     }
                     else
@@ -1652,7 +1714,8 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                                     SampleCompression[swrite],
                                     SampleCompression[swrite] == SMP_PACK_MP3 ?
                                             Type_Mp3_BitRate[Mp3_BitRate[swrite]] :
-                                            Type_At3_BitRate[At3_BitRate[swrite]]
+                                            Type_At3_BitRate[At3_BitRate[swrite]],
+                                    ascii
                                    );
                     }
                     
@@ -1674,7 +1737,8 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                                         SampleCompression[swrite],
                                         SampleCompression[swrite] == SMP_PACK_MP3 ?
                                                 Type_Mp3_BitRate[Mp3_BitRate[swrite]] :
-                                                Type_At3_BitRate[At3_BitRate[swrite]]
+                                                Type_At3_BitRate[At3_BitRate[swrite]],
+                                        ascii
                                        );
                         }
                         else
@@ -1685,7 +1749,8 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName)
                                         SampleCompression[swrite],
                                         SampleCompression[swrite] == SMP_PACK_MP3 ?
                                                 Type_Mp3_BitRate[Mp3_BitRate[swrite]] :
-                                                Type_At3_BitRate[At3_BitRate[swrite]]
+                                                Type_At3_BitRate[At3_BitRate[swrite]],
+                                        ascii
                                        );
                         }
                     }

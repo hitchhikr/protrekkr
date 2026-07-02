@@ -61,6 +61,6 @@ typedef struct
 
 // ------------------------------------------------------
 // Functions
-int Save_Ptp(FILE *in, int Simulate, char *FileName);
+int Save_Ptp(FILE *in, int Simulate, char *FileName, int ascii);
 
 #endif

@@ -1537,8 +1537,6 @@ int PTKEXPORT Ptk_InitModule(UINT8 *Module, int start_position)
         Mod_Dat_Read(&Song_Tracks, sizeof(char));
         Mod_Dat_Read(&Song_Length, sizeof(char));
 
-        Mod_Dat_Read(&Use_Cubic, sizeof(char));
-
         Mod_Dat_Read(pSequence, sizeof(char) * Song_Length);
 
         // Patterns lines
@@ -1592,7 +1590,7 @@ int PTKEXPORT Ptk_InitModule(UINT8 *Module, int start_position)
             Mod_Dat_Read(&EqDat[i].hg, sizeof(float));
         }
 
-        // Surround effect
+        // Denoisers
         Mod_Dat_Read(Track_Denoise, sizeof(char) * Song_Tracks);
 
         TmpPatterns = RawPatterns;
