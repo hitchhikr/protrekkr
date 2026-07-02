@@ -2889,7 +2889,6 @@ void Sp_Player(void)
             }
 
             Go303();
-
 #endif
 
             for(ct = 0; ct < Song_Tracks; ct++)

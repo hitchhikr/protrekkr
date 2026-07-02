@@ -43,11 +43,18 @@ So far, ProTrekkr was used in these intros or demos (the ones i'm aware of, at l
 <a href="http://www.pouet.net/prod.php?which=50486" target=_parent>Morphonic lab.VI by checkpoint</a><br>
 <br>And a module done by BitArts (Norbert Röcher) with the tracker (in MP3 format): <a href="https://hitchhikr.net/bitarts%20-%20nightflight.mp3" target=_parent>NightFlight</a>
 <br><br>Some more music also produced with the tracker:<br><br>
-<a href="https://alonetone.com/TalkOrBell/tracks/crystal-quagmire" target=_parent>Crystal Quagmire</a><br>
-<a href="https://soundcloud.com/defraq79/distorted-reality" target=_parent>Distorted Reality</a><br>
-<a href="https://soundcloud.com/defraq79/sign" target=_parent>Sign</a><br>
-<a href="https://soundcloud.com/defraq79/back-to-moon" target=_parent>Back To Moon</a><br>
-<a href="https://soundcloud.com/defraq79/starburst" target=_parent>Starburst</a><br>
+<a href="https://alonetone.com/TalkOrBell/tracks/crystal-quagmire" target=_parent>Crystal Quagmire by TalkOrBell</a><br>
+<a href="https://soundcloud.com/defraq79/distorted-reality" target=_parent>Distorted Reality (2009) by Defraq79</a><br>
+<a href="https://soundcloud.com/defraq79/distorted-reality-2" target=_parent>Distorted Reality by Defraq79</a><br>
+<a href="https://soundcloud.com/defraq79/sign" target=_parent>Sign by Defraq79</a><br>
+<a href="https://soundcloud.com/defraq79/back-to-moon" target=_parent>Back To Moon by Defraq79</a><br>
+<a href="https://soundcloud.com/defraq79/starburst" target=_parent>Starburst by Defraq79</a><br>
+<a href="https://soundcloud.com/daniel-human/robocop" target=_parent>Robocop by Fabulous Dazaster</a><br>
+<a href="https://soundcloud.com/daniel-human/akira-julliet" target=_parent>Akira & Julliet by Fabulous Dazaster</a><br>
+<a href="https://soundcloud.com/daniel-human/robot-revolution" target=_parent>Robot Revolution by Fabulous Dazaster</a><br>
+<a href="https://soundcloud.com/daniel-human/q-1" target=_parent>Q by Fabulous Dazaster</a><br>
+<a href="https://soundcloud.com/daniel-human/acid" target=_parent>Acid by Fabulous Dazaster</a><br>
+<a href="https://soundcloud.com/daniel-human/drum-n-bass-january-2016" target=_parent>Drum N Bass by Fabulous Dazaster</a><br>
 <br>And some videos:<br><br>
 <a href="https://www.youtube.com/watch?v=_GqFWlDcXZk" target=_parent>This Is What You Get by Dolmancé</a><br>
 <a href="https://www.youtube.com/watch?v=dy-se36OgN4" target=_parent>Artificially Sanctified by Dolmancé</a><br>
