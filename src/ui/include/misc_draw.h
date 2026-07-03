@@ -235,6 +235,7 @@ extern int Beveled;
 
 // ------------------------------------------------------
 // Functions
+char *get_note_ascii_value(int note);
 void out_decchar(int x,int y, int number, char smith);
 void Print_String_Center(char* str, int x, int y, int size_x, int flags);
 void value_box(int x, int y, int val, int flags);

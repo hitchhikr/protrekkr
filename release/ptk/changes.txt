@@ -14,16 +14,13 @@ v2.8.5
 - Windows users now have to select a keyboard in 'UI Setup'.
 - Horizontal mouse wheel can now be used over patterns.
 - Left Ctrl + up/down for -16/+16 rows jump.
-- Files drag'n'drop handled.
-- Trackpad 3 fingers pinch gesture can be used to zoom tracks in/out
+- Files drag'n'drop over tracker window handled.
+- Trackpad 3 fingers pinch gestures can be used to zoom tracks in/out
   (only seems to work on MacOS).
 - Fixed a long time running bug on MacOS: Ptk would crash when entering
   desktop full screen from window menu or zoom button and user tried
   to switch to full screen manually.
 - Modules can now be exported to ASCII.
-
-v2.8.3 PRE 6
-
 - Distributions files are now included inside a directory.
 - Implemented MIDI support for Amiga OS 4.
 

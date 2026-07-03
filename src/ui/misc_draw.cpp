@@ -1215,6 +1215,22 @@ void (*Slider_Function)(int x, int y, int ltr, int col1, int y2, int larg, int c
 
 void Blit_note(int x, int y, int note, int y1, int y2, int size, int acc);
 
+char *get_note_ascii_value(int note)
+{
+    if(note == NO_NOTE)
+    {
+        return "---";
+    }
+    if(Accidental)
+    {
+        return Notes_b[note];
+    }
+    else
+    {
+        return Notes[note];
+    }
+}
+
 void out_decchar(int x, int y, int number, char smith)
 {
     Print_String(x, y, USE_FONT, DecChar[number]);

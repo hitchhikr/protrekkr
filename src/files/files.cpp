@@ -1045,7 +1045,7 @@ void Pack_Sample(FILE *FileHandle, short *Sample, int Size, char Pack_Type, int 
 // Write data into an ascii file
 void Write_Mod_Data_Ascii(FILE *Handle, char *Format, ...)
 {
-    char szBuffer[512];
+    char szBuffer[8192];
     va_list Arg;
 
     va_start(Arg, Format);
@@ -1100,9 +1100,9 @@ void Write_Mod_Data_Ascii_Array(void *Data, int Size, int Length, FILE *Handle)
                 Write_Mod_Data_Ascii(Handle, "%f", Data_float[i]);
                 break;
         }
-        if((i % 16) == 1) Write_Mod_Data_Ascii(Handle, "\n");
-        else if(i < Song_Length) Write_Mod_Data_Ascii(Handle, ",");
+        if(i < (Length - 1)) Write_Mod_Data_Ascii(Handle, ",");
     }
+    Write_Mod_Data_Ascii(Handle, "\n");
 }
 
 // ------------------------------------------------------

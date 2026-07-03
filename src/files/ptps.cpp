@@ -161,6 +161,8 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName, int ascii)
     unsigned int New_Extension = 'KTRP';
     char char_value;
     char FileName_FX[MAX_PATH];
+    char ascii_patt_value[16];
+    char ascii_patt_line[8192];
     int i;
     int j;
     int k;
@@ -704,10 +706,12 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName, int ascii)
         TmpPatterns_Rows = TmpPatterns + (pwrite * PATTERN_LEN);
         for(i = 0; i < PATTERN_BYTES; i++)
         {   // Data
+            Write_Mod_Data_Ascii(in, "Track:\n");
             for(k = 0; k < Song_Tracks; k++)
             {   // Tracks
                 if(!Track_Is_Muted(k))
                 {
+                    memset(ascii_patt_line, 0, sizeof(ascii_patt_line));
                     TmpPatterns_Tracks = TmpPatterns_Rows + (k * PATTERN_BYTES);
                     for(j = 0; j < New_patternLines[pwrite]; j++)
                     {   // Rows
@@ -1100,11 +1104,27 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName, int ascii)
                             // Don't save FX 7
                             if(TmpPatterns_Notes[i] == 0x7)
                             {
-                                Write_Mod_Data(&Empty_Var, sizeof(char), 1, in);
+                                if(ascii)
+                                {
+                                    sprintf(ascii_patt_value, "%.2x", Empty_Var);
+                                    strcat(ascii_patt_line, ascii_patt_value);
+                                }
+                                else
+                                {
+                                    Write_Mod_Data(&Empty_Var, sizeof(char), 1, in);
+                                }
                             }
                             else
                             {
-                                Write_Mod_Data(TmpPatterns_Notes + i, sizeof(char), 1, in);
+                                if(ascii)
+                                {
+                                    sprintf(ascii_patt_value, "%.2x", TmpPatterns_Notes[i]);
+                                    strcat(ascii_patt_line, ascii_patt_value);
+                                }
+                                else
+                                {
+                                    Write_Mod_Data(TmpPatterns_Notes + i, sizeof(char), 1, in);
+                                }
                             }
                         }
                         else
@@ -1115,11 +1135,27 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName, int ascii)
                                 // Don't save Fx 7 data or non-zero data for empty an effect
                                 if(TmpPatterns_Notes[i - 1] == 0x7 || Empty_Fx)
                                 {
-                                    Write_Mod_Data(&Empty_Var, sizeof(char), 1, in);
+                                    if(ascii)
+                                    {
+                                        sprintf(ascii_patt_value, "%.2x ", Empty_Var);
+                                        strcat(ascii_patt_line, ascii_patt_value);
+                                    }
+                                    else
+                                    {
+                                        Write_Mod_Data(&Empty_Var, sizeof(char), 1, in);
+                                    }
                                 }
                                 else
                                 {
-                                    Write_Mod_Data(TmpPatterns_Notes + i, sizeof(char), 1, in);
+                                    if(ascii)
+                                    {
+                                        sprintf(ascii_patt_value, "%.2x ", TmpPatterns_Notes[i]);
+                                        strcat(ascii_patt_line, ascii_patt_value);
+                                    }
+                                    else
+                                    {
+                                        Write_Mod_Data(TmpPatterns_Notes + i, sizeof(char), 1, in);
+                                    }
                                 }
                             }
                             else
@@ -1132,14 +1168,30 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName, int ascii)
                                     {
                                         TmpPatterns_Notes[i] = Get_Instr_New_Order(TmpPatterns_Notes[i]);
                                     }
-                                    Write_Mod_Data(TmpPatterns_Notes + i, sizeof(char), 1, in);
+                                    if(ascii)
+                                    {
+                                        sprintf(ascii_patt_value, "%.2x ", TmpPatterns_Notes[i]);
+                                        strcat(ascii_patt_line, ascii_patt_value);
+                                    }
+                                    else
+                                    {
+                                        Write_Mod_Data(TmpPatterns_Notes + i, sizeof(char), 1, in);
+                                    }
                                 }
                                 else
                                 {
                                     // Is it a legal note column ?
                                     if(Check_Range(i, Channels_MultiNotes[k], PATTERN_NOTE1))
                                     {
-                                        Write_Mod_Data(TmpPatterns_Notes + i, sizeof(char), 1, in);
+                                        if(ascii)
+                                        {
+                                            sprintf(ascii_patt_value, "%s ", get_note_ascii_value(TmpPatterns_Notes[i]));
+                                            strcat(ascii_patt_line, ascii_patt_value);
+                                        }
+                                        else
+                                        {
+                                            Write_Mod_Data(TmpPatterns_Notes + i, sizeof(char), 1, in);
+                                        }
                                     }
                                     else
                                     {
@@ -1149,16 +1201,36 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName, int ascii)
                                         {
                                             case PATTERN_VOLUME:
                                             case PATTERN_PANNING:
-                                                Write_Mod_Data(TmpPatterns_Notes + i, sizeof(char), 1, in);
+                                                if(ascii)
+                                                {
+                                                    sprintf(ascii_patt_value, "%.2x ", TmpPatterns_Notes[i]);
+                                                    strcat(ascii_patt_line, ascii_patt_value);
+                                                }
+                                                else
+                                                {
+                                                    Write_Mod_Data(TmpPatterns_Notes + i, sizeof(char), 1, in);
+                                                }
                                                 break;
                                             default:
-                                                Write_Mod_Data(&Empty_Var, sizeof(char), 1, in);
+                                                if(ascii)
+                                                {
+                                                    sprintf(ascii_patt_value, "%.2x ", Empty_Var);
+                                                    strcat(ascii_patt_line, ascii_patt_value);
+                                                }
+                                                else
+                                                {
+                                                    Write_Mod_Data(&Empty_Var, sizeof(char), 1, in);
+                                                }
                                                 break;
                                         }
                                     }
                                 }
                             }
                         }
+                    }
+                    if(ascii)
+                    {
+                        Write_Mod_Data_Ascii(in, "%s\n", ascii_patt_line);
                     }
                 }
             }
