@@ -2256,12 +2256,6 @@ int Screen_Update(void)
 
     Display_RShift_Status();
 
-    if (go_update_pattern)
-    {
-        Update_Pattern(go_update_pattern);
-        go_update_pattern = 0;
-    }
-    
     switch (Scopish)
     {
         case SCOPE_ZONE_VUMETERS:
@@ -2318,6 +2312,12 @@ int Screen_Update(void)
         DrawVLine(i, 15, 18, COL_VUMETERPEAK);
     }
 
+    if (go_update_pattern)
+    {
+        Update_Pattern(go_update_pattern);
+        go_update_pattern = 0;
+    }
+    
     // Refresh the sequencer each time the song position is different
     if(Song_Playing)
     {

@@ -79,7 +79,7 @@ struct Vertex
 };
 struct Color
 {
-    GLfloat r, g, b, a;
+    GLfloat r, g, b;//, a;
 };
 
 // This may be changed in the future
@@ -90,13 +90,13 @@ struct Color
 // One for background and one for requesters
 #define DRAW_PRIORITIES 2
 
-Vertex *Vertices;
-Color *Colors;
+Vertex *Vertices[DRAW_PRIORITIES];
+Color *Colors[DRAW_PRIORITIES];
 int Num_Vertices[DRAW_PRIORITIES];
 int Max_Vertices[DRAW_PRIORITIES];
 
-Vertex *Vertices_Tx[TEXTURES_MAX];
-Vertex *Coords_Tx[TEXTURES_MAX];
+Vertex *Vertices_Tx[DRAW_PRIORITIES][TEXTURES_MAX];
+Vertex *Coords_Tx[DRAW_PRIORITIES][TEXTURES_MAX];
 int Num_Tx[DRAW_PRIORITIES][TEXTURES_MAX];
 int Max_Tx[DRAW_PRIORITIES][TEXTURES_MAX];
 int Num_Textures;
@@ -193,35 +193,32 @@ int Init_Open_GL_Buffers()
     int i;
     int j;
 
-    Vertices = (Vertex *) calloc(VERTICES_MAX, sizeof(Vertex));
-    if (!Vertices)
-    {
-        return FALSE;
-    }
-    Colors = (Color *) calloc(VERTICES_MAX, sizeof(Color));
-    if (!Colors)
-    {
-        return FALSE;
-    }
     for (i = 0; i < DRAW_PRIORITIES; i++)
     {
+        Vertices[i] = (Vertex *) calloc(VERTICES_MAX, sizeof(Vertex));
+        if (!Vertices)
+        {
+            return FALSE;
+        }
+        Colors[i] = (Color *) calloc(VERTICES_MAX, sizeof(Color));
+        if (!Colors)
+        {
+            return FALSE;
+        }
         Max_Vertices[i] = VERTICES_MAX;
-    }
-    for (i = 0; i < TEXTURES_MAX; i++)
-    {
-        Vertices_Tx[i] = (Vertex *) calloc(TX_VERTICES_MAX, sizeof(Vertex));
-        if (!Vertices_Tx[i])
+        for (j = 0; j < TEXTURES_MAX; j++)
         {
-            return FALSE;
-        }
-        Coords_Tx[i] = (Vertex *) calloc(TX_VERTICES_MAX, sizeof(Vertex));
-        if (!Coords_Tx[i])
-        {
-            return FALSE;
-        }
-        for (j = 0; j < DRAW_PRIORITIES; j++)
-        {
-            Max_Tx[j][i] = TX_VERTICES_MAX;
+            Vertices_Tx[i][j] = (Vertex *) calloc(TX_VERTICES_MAX, sizeof(Vertex));
+            if (!Vertices_Tx[i][j])
+            {
+                return FALSE;
+            }
+            Coords_Tx[i][j] = (Vertex *) calloc(TX_VERTICES_MAX, sizeof(Vertex));
+            if (!Coords_Tx[i][j])
+            {
+                return FALSE;
+            }
+            Max_Tx[i][j] = TX_VERTICES_MAX;
         }
     }
     return TRUE;
@@ -232,45 +229,34 @@ int Init_Open_GL_Buffers()
 void Release_Open_GL_Buffers()
 {
     int i;
+    int j;
 
-    for (i = 0; i < TEXTURES_MAX; i++)
+    for (i = 0; i < DRAW_PRIORITIES; i++)
     {
-        if(Vertices_Tx[i])
+        for (j = 0; j < TEXTURES_MAX; j++)
         {
-            free(Vertices_Tx[i]);
-            Vertices_Tx[i] = NULL;
+            if(Vertices_Tx[i][j])
+            {
+                free(Vertices_Tx[i][j]);
+                Vertices_Tx[i][j] = NULL;
+            }
+            if (Coords_Tx[i][j])
+            {
+                free(Coords_Tx[i][j]);
+                Coords_Tx[i][j] = NULL;
+            }
         }
-        if (Coords_Tx[i])
+        if (Vertices[i])
         {
-            free(Coords_Tx[i]);
-            Coords_Tx[i] = NULL;
+            free(Vertices[i]);
+            Vertices[i] = NULL;
+        }
+        if (Colors[i])
+        {
+            free(Colors[i]);
+            Colors[i] = NULL;
         }
     }
-    if (Vertices)
-    {
-        free(Vertices);
-        Vertices = NULL;
-    }
-    if (Colors)
-    {
-        free(Colors);
-        Colors = NULL;
-    }
-}
-
-void *ptk_realloc(void *buffer, size_t old_size, size_t size)
-{
-    void *Tmp_Buffer;
- 
-    Tmp_Buffer = malloc(size);
-    if(!Tmp_Buffer)
-    {
-        return NULL;
-    }
-    memset(Tmp_Buffer, 0, size);
-    memcpy(Tmp_Buffer, buffer, old_size);
-    free(buffer);
-    return Tmp_Buffer;
 }
 
 // Failsafe checks
@@ -278,13 +264,13 @@ int check_vertices_buffer()
 {
     if((Num_Vertices[Drawing_Priority] + 4) > (Max_Vertices[Drawing_Priority] - 1))
     {
-        Vertices = (Vertex *) realloc(Vertices, (Num_Vertices[Drawing_Priority] + 10000) * sizeof(Vertex));
-        if(!Vertices)
+        Vertices[Drawing_Priority] = (Vertex *) realloc(Vertices[Drawing_Priority], (Num_Vertices[Drawing_Priority] + 10000) * sizeof(Vertex));
+        if(!Vertices[Drawing_Priority])
         {
             return FALSE;
         }
-        Colors = (Color *) realloc(Colors, (Num_Vertices[Drawing_Priority] + 10000) * sizeof(Color));
-        if(!Colors)
+        Colors[Drawing_Priority] = (Color *) realloc(Colors[Drawing_Priority], (Num_Vertices[Drawing_Priority] + 10000) * sizeof(Color));
+        if(!Colors[Drawing_Priority])
         {
             return FALSE;
         }
@@ -297,13 +283,13 @@ int check_vertices_tx_buffer(int index)
 {
     if((Num_Tx[Drawing_Priority][index] + 4) > (Max_Tx[Drawing_Priority][index] - 1))
     {
-        Vertices_Tx[index] = (Vertex *) realloc(Vertices_Tx[index], (Num_Tx[Drawing_Priority][index] + 10000) * sizeof(Vertex));
-        if(!Vertices_Tx[index])
+        Vertices_Tx[Drawing_Priority][index] = (Vertex *) realloc(Vertices_Tx[Drawing_Priority][index], (Num_Tx[Drawing_Priority][index] + 10000) * sizeof(Vertex));
+        if(!Vertices_Tx[Drawing_Priority][index])
         {
             return FALSE;
         }
-        Coords_Tx[index] = (Vertex *) realloc(Coords_Tx[index], (Num_Tx[Drawing_Priority][index] + 10000) * sizeof(Vertex));
-        if(!Coords_Tx[index])
+        Coords_Tx[Drawing_Priority][index] = (Vertex *) realloc(Coords_Tx[Drawing_Priority][index], (Num_Tx[Drawing_Priority][index] + 10000) * sizeof(Vertex));
+        if(!Coords_Tx[Drawing_Priority][index])
         {
             return FALSE;
         }
@@ -336,15 +322,15 @@ void Leave_2d_Mode(void)
 {
     int i;
     int j;
-
+    j = 0;
     for(j = 0; j < DRAW_PRIORITIES; j++)
     {
         if(Num_Vertices[j])
         {
             // Draw the flat elements
             glEnableClientState(GL_COLOR_ARRAY);
-            glVertexPointer(2, GL_FLOAT, sizeof(Vertex), Vertices);
-	        glColorPointer(4, GL_FLOAT, sizeof(Color), Colors);
+            glVertexPointer(2, GL_FLOAT, sizeof(Vertex), Vertices[j]);
+	        glColorPointer(3, GL_FLOAT, sizeof(Color), Colors[j]);
             glDrawArrays(GL_QUADS, 0, Num_Vertices[j]);
             glDisableClientState(GL_COLOR_ARRAY);
         }
@@ -362,8 +348,8 @@ void Leave_2d_Mode(void)
             {
                 if(Num_Tx[j][i])
                 {
-                    glVertexPointer(2, GL_FLOAT, sizeof(Vertex), Vertices_Tx[i]);
-                    glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex), Coords_Tx[i]);
+                    glVertexPointer(2, GL_FLOAT, sizeof(Vertex), Vertices_Tx[j][i]);
+                    glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex), Coords_Tx[j][i]);
                     glBindTexture(GL_TEXTURE_2D, Ids_Tx[i]);
                     glDrawArrays(GL_QUADS, 0, Num_Tx[j][i]);
                 }
@@ -386,27 +372,27 @@ void DrawHLine(int y, int x, int x2, int Color)
     GLfloat r = (GLfloat) Ptk_Palette[Color].r / 255.0f;
     GLfloat g = (GLfloat) Ptk_Palette[Color].g / 255.0f;
     GLfloat b = (GLfloat) Ptk_Palette[Color].b / 255.0f;
-    GLfloat a = (GLfloat) Ptk_Palette[Color].a / 255.0f;
+//    GLfloat a = (GLfloat) Ptk_Palette[Color].a / 255.0f;
     GLfloat Width = (GLfloat) ((x2 - x) + 1);
 
     if(!check_vertices_buffer())
     {
         return;
     }
-    Vertices[Num_Vertices[Drawing_Priority]].x = (GLfloat) x; Vertices[Num_Vertices[Drawing_Priority]].y = (GLfloat) y;
-    Colors[Num_Vertices[Drawing_Priority]].r = r; Colors[Num_Vertices[Drawing_Priority]].g = g; Colors[Num_Vertices[Drawing_Priority]].b = b; Colors[Num_Vertices[Drawing_Priority]].a = a;
+    Vertices[Drawing_Priority][Num_Vertices[Drawing_Priority]].x = (GLfloat) x; Vertices[Drawing_Priority][Num_Vertices[Drawing_Priority]].y = (GLfloat) y;
+    Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].r = r; Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].g = g; Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].b = b;// Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].a = a;
     Num_Vertices[Drawing_Priority]++;
 
-    Vertices[Num_Vertices[Drawing_Priority]].x = (GLfloat) x; Vertices[Num_Vertices[Drawing_Priority]].y = 1.0f + (GLfloat) y;
-    Colors[Num_Vertices[Drawing_Priority]].r = r; Colors[Num_Vertices[Drawing_Priority]].g = g; Colors[Num_Vertices[Drawing_Priority]].b = b; Colors[Num_Vertices[Drawing_Priority]].a = a;
+    Vertices[Drawing_Priority][Num_Vertices[Drawing_Priority]].x = (GLfloat) x; Vertices[Drawing_Priority][Num_Vertices[Drawing_Priority]].y = 1.0f + (GLfloat) y;
+    Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].r = r; Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].g = g; Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].b = b;// Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].a = a;
     Num_Vertices[Drawing_Priority]++;
 
-    Vertices[Num_Vertices[Drawing_Priority]].x = (GLfloat) Width + (GLfloat) x; Vertices[Num_Vertices[Drawing_Priority]].y = 1.0f + (GLfloat) y;
-    Colors[Num_Vertices[Drawing_Priority]].r = r; Colors[Num_Vertices[Drawing_Priority]].g = g; Colors[Num_Vertices[Drawing_Priority]].b = b; Colors[Num_Vertices[Drawing_Priority]].a = a;
+    Vertices[Drawing_Priority][Num_Vertices[Drawing_Priority]].x = (GLfloat) Width + (GLfloat) x; Vertices[Drawing_Priority][Num_Vertices[Drawing_Priority]].y = 1.0f + (GLfloat) y;
+    Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].r = r; Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].g = g; Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].b = b;// Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].a = a;
     Num_Vertices[Drawing_Priority]++;
 
-    Vertices[Num_Vertices[Drawing_Priority]].x = (GLfloat) Width + (GLfloat) x; Vertices[Num_Vertices[Drawing_Priority]].y = (GLfloat) y;
-    Colors[Num_Vertices[Drawing_Priority]].r = r; Colors[Num_Vertices[Drawing_Priority]].g = g; Colors[Num_Vertices[Drawing_Priority]].b = b; Colors[Num_Vertices[Drawing_Priority]].a = a;
+    Vertices[Drawing_Priority][Num_Vertices[Drawing_Priority]].x = (GLfloat) Width + (GLfloat) x; Vertices[Drawing_Priority][Num_Vertices[Drawing_Priority]].y = (GLfloat) y;
+    Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].r = r; Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].g = g; Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].b = b;// Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].a = a;
     Num_Vertices[Drawing_Priority]++;
 }
 
@@ -417,27 +403,27 @@ void DrawVLine(int x, int y, int y2, int Color)
     GLfloat r = (GLfloat) Ptk_Palette[Color].r / 255.0f;
     GLfloat g = (GLfloat) Ptk_Palette[Color].g / 255.0f;
     GLfloat b = (GLfloat) Ptk_Palette[Color].b / 255.0f;
-    GLfloat a = (GLfloat) Ptk_Palette[Color].a / 255.0f;
+//    GLfloat a = (GLfloat) Ptk_Palette[Color].a / 255.0f;
     GLfloat Height = (GLfloat) ((y2 - y) + 1);
 
     if(!check_vertices_buffer())
     {
         return;
     }
-    Vertices[Num_Vertices[Drawing_Priority]].x = (GLfloat) x; Vertices[Num_Vertices[Drawing_Priority]].y = (GLfloat) y;
-    Colors[Num_Vertices[Drawing_Priority]].r = r; Colors[Num_Vertices[Drawing_Priority]].g = g; Colors[Num_Vertices[Drawing_Priority]].b = b; Colors[Num_Vertices[Drawing_Priority]].a = a;
+    Vertices[Drawing_Priority][Num_Vertices[Drawing_Priority]].x = (GLfloat) x; Vertices[Drawing_Priority][Num_Vertices[Drawing_Priority]].y = (GLfloat) y;
+    Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].r = r; Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].g = g; Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].b = b;// Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].a = a;
     Num_Vertices[Drawing_Priority]++;
 
-    Vertices[Num_Vertices[Drawing_Priority]].x = (GLfloat) x; Vertices[Num_Vertices[Drawing_Priority]].y = (GLfloat) Height + (GLfloat) y;
-    Colors[Num_Vertices[Drawing_Priority]].r = r; Colors[Num_Vertices[Drawing_Priority]].g = g; Colors[Num_Vertices[Drawing_Priority]].b = b; Colors[Num_Vertices[Drawing_Priority]].a = a;
+    Vertices[Drawing_Priority][Num_Vertices[Drawing_Priority]].x = (GLfloat) x; Vertices[Drawing_Priority][Num_Vertices[Drawing_Priority]].y = (GLfloat) Height + (GLfloat) y;
+    Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].r = r; Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].g = g; Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].b = b;// Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].a = a;
     Num_Vertices[Drawing_Priority]++;
 
-    Vertices[Num_Vertices[Drawing_Priority]].x = 1.0f + (GLfloat) x; Vertices[Num_Vertices[Drawing_Priority]].y = (GLfloat) Height + (GLfloat) y;
-    Colors[Num_Vertices[Drawing_Priority]].r = r; Colors[Num_Vertices[Drawing_Priority]].g = g; Colors[Num_Vertices[Drawing_Priority]].b = b; Colors[Num_Vertices[Drawing_Priority]].a = a;
+    Vertices[Drawing_Priority][Num_Vertices[Drawing_Priority]].x = 1.0f + (GLfloat) x; Vertices[Drawing_Priority][Num_Vertices[Drawing_Priority]].y = (GLfloat) Height + (GLfloat) y;
+    Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].r = r; Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].g = g; Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].b = b;// Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].a = a;
     Num_Vertices[Drawing_Priority]++;
 
-    Vertices[Num_Vertices[Drawing_Priority]].x = 1.0f + (GLfloat) x; Vertices[Num_Vertices[Drawing_Priority]].y = (GLfloat) y;
-    Colors[Num_Vertices[Drawing_Priority]].r = r; Colors[Num_Vertices[Drawing_Priority]].g = g; Colors[Num_Vertices[Drawing_Priority]].b = b; Colors[Num_Vertices[Drawing_Priority]].a = a;
+    Vertices[Drawing_Priority][Num_Vertices[Drawing_Priority]].x = 1.0f + (GLfloat) x; Vertices[Drawing_Priority][Num_Vertices[Drawing_Priority]].y = (GLfloat) y;
+    Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].r = r; Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].g = g; Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].b = b;// Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].a = a;
     Num_Vertices[Drawing_Priority]++;
 }
 
@@ -448,26 +434,26 @@ void DrawPixel(int x, int y, int Color)
     GLfloat r = (GLfloat) Ptk_Palette[Color].r / 255.0f;
     GLfloat g = (GLfloat) Ptk_Palette[Color].g / 255.0f;
     GLfloat b = (GLfloat) Ptk_Palette[Color].b / 255.0f;
-    GLfloat a = (GLfloat) Ptk_Palette[Color].a / 255.0f;
+//    GLfloat a = (GLfloat) Ptk_Palette[Color].a / 255.0f;
 
     if(!check_vertices_buffer())
     {
         return;
     }
-    Vertices[Num_Vertices[Drawing_Priority]].x = (GLfloat) x; Vertices[Num_Vertices[Drawing_Priority]].y = (GLfloat) y;
-    Colors[Num_Vertices[Drawing_Priority]].r = r; Colors[Num_Vertices[Drawing_Priority]].g = g; Colors[Num_Vertices[Drawing_Priority]].b = b; Colors[Num_Vertices[Drawing_Priority]].a = a;
+    Vertices[Drawing_Priority][Num_Vertices[Drawing_Priority]].x = (GLfloat) x; Vertices[Drawing_Priority][Num_Vertices[Drawing_Priority]].y = (GLfloat) y;
+    Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].r = r; Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].g = g; Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].b = b;// Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].a = a;
     Num_Vertices[Drawing_Priority]++;
 
-    Vertices[Num_Vertices[Drawing_Priority]].x = (GLfloat) x; Vertices[Num_Vertices[Drawing_Priority]].y = 1.0f + (GLfloat) y;
-    Colors[Num_Vertices[Drawing_Priority]].r = r; Colors[Num_Vertices[Drawing_Priority]].g = g; Colors[Num_Vertices[Drawing_Priority]].b = b; Colors[Num_Vertices[Drawing_Priority]].a = a;
+    Vertices[Drawing_Priority][Num_Vertices[Drawing_Priority]].x = (GLfloat) x; Vertices[Drawing_Priority][Num_Vertices[Drawing_Priority]].y = 1.0f + (GLfloat) y;
+    Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].r = r; Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].g = g; Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].b = b;// Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].a = a;
     Num_Vertices[Drawing_Priority]++;
 
-    Vertices[Num_Vertices[Drawing_Priority]].x = 1.0f + (GLfloat) x; Vertices[Num_Vertices[Drawing_Priority]].y = 1.0f + (GLfloat) y;
-    Colors[Num_Vertices[Drawing_Priority]].r = r; Colors[Num_Vertices[Drawing_Priority]].g = g; Colors[Num_Vertices[Drawing_Priority]].b = b; Colors[Num_Vertices[Drawing_Priority]].a = a;
+    Vertices[Drawing_Priority][Num_Vertices[Drawing_Priority]].x = 1.0f + (GLfloat) x; Vertices[Drawing_Priority][Num_Vertices[Drawing_Priority]].y = 1.0f + (GLfloat) y;
+    Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].r = r; Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].g = g; Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].b = b;// Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].a = a;
     Num_Vertices[Drawing_Priority]++;
 
-    Vertices[Num_Vertices[Drawing_Priority]].x = 1.0f + (GLfloat) x; Vertices[Num_Vertices[Drawing_Priority]].y = (GLfloat) y;
-    Colors[Num_Vertices[Drawing_Priority]].r = r; Colors[Num_Vertices[Drawing_Priority]].g = g; Colors[Num_Vertices[Drawing_Priority]].b = b; Colors[Num_Vertices[Drawing_Priority]].a = a;
+    Vertices[Drawing_Priority][Num_Vertices[Drawing_Priority]].x = 1.0f + (GLfloat) x; Vertices[Drawing_Priority][Num_Vertices[Drawing_Priority]].y = (GLfloat) y;
+    Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].r = r; Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].g = g; Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].b = b;// Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].a = a;
     Num_Vertices[Drawing_Priority]++;
 }
 
@@ -479,7 +465,7 @@ void Fill_Rect(int x, int y,
     GLfloat r = (GLfloat) Ptk_Palette[FgColor].r / 255.0f;
     GLfloat g = (GLfloat) Ptk_Palette[FgColor].g / 255.0f;
     GLfloat b = (GLfloat) Ptk_Palette[FgColor].b / 255.0f;
-    GLfloat a = (GLfloat) Ptk_Palette[FgColor].a / 255.0f;
+//    GLfloat a = (GLfloat) Ptk_Palette[FgColor].a / 255.0f;
     GLfloat Width = (GLfloat) (x2 - x);
     GLfloat Height = (GLfloat) (y2 - y); 
 
@@ -487,20 +473,20 @@ void Fill_Rect(int x, int y,
     {
         return;
     }
-    Vertices[Num_Vertices[Drawing_Priority]].x = (GLfloat) x; Vertices[Num_Vertices[Drawing_Priority]].y = (GLfloat) y;
-    Colors[Num_Vertices[Drawing_Priority]].r = r; Colors[Num_Vertices[Drawing_Priority]].g = g; Colors[Num_Vertices[Drawing_Priority]].b = b; Colors[Num_Vertices[Drawing_Priority]].a = a;
+    Vertices[Drawing_Priority][Num_Vertices[Drawing_Priority]].x = (GLfloat) x; Vertices[Drawing_Priority][Num_Vertices[Drawing_Priority]].y = (GLfloat) y;
+    Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].r = r; Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].g = g; Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].b = b;// Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].a = a;
     Num_Vertices[Drawing_Priority]++;
 
-    Vertices[Num_Vertices[Drawing_Priority]].x = (GLfloat) x; Vertices[Num_Vertices[Drawing_Priority]].y = (GLfloat) Height + (GLfloat) y;
-    Colors[Num_Vertices[Drawing_Priority]].r = r; Colors[Num_Vertices[Drawing_Priority]].g = g; Colors[Num_Vertices[Drawing_Priority]].b = b; Colors[Num_Vertices[Drawing_Priority]].a = a;
+    Vertices[Drawing_Priority][Num_Vertices[Drawing_Priority]].x = (GLfloat) x; Vertices[Drawing_Priority][Num_Vertices[Drawing_Priority]].y = (GLfloat) Height + (GLfloat) y;
+    Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].r = r; Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].g = g; Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].b = b;// Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].a = a;
     Num_Vertices[Drawing_Priority]++;
 
-    Vertices[Num_Vertices[Drawing_Priority]].x = (GLfloat) Width + (GLfloat) x; Vertices[Num_Vertices[Drawing_Priority]].y = (GLfloat) Height + (GLfloat) y;
-    Colors[Num_Vertices[Drawing_Priority]].r = r; Colors[Num_Vertices[Drawing_Priority]].g = g; Colors[Num_Vertices[Drawing_Priority]].b = b; Colors[Num_Vertices[Drawing_Priority]].a = a;
+    Vertices[Drawing_Priority][Num_Vertices[Drawing_Priority]].x = (GLfloat) Width + (GLfloat) x; Vertices[Drawing_Priority][Num_Vertices[Drawing_Priority]].y = (GLfloat) Height + (GLfloat) y;
+    Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].r = r; Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].g = g; Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].b = b;// Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].a = a;
     Num_Vertices[Drawing_Priority]++;
 
-    Vertices[Num_Vertices[Drawing_Priority]].x = (GLfloat) Width + (GLfloat) x; Vertices[Num_Vertices[Drawing_Priority]].y = (GLfloat) y;
-    Colors[Num_Vertices[Drawing_Priority]].r = r; Colors[Num_Vertices[Drawing_Priority]].g = g; Colors[Num_Vertices[Drawing_Priority]].b = b; Colors[Num_Vertices[Drawing_Priority]].a = a;
+    Vertices[Drawing_Priority][Num_Vertices[Drawing_Priority]].x = (GLfloat) Width + (GLfloat) x; Vertices[Drawing_Priority][Num_Vertices[Drawing_Priority]].y = (GLfloat) y;
+    Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].r = r; Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].g = g; Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].b = b;// Colors[Drawing_Priority][Num_Vertices[Drawing_Priority]].a = a;
     Num_Vertices[Drawing_Priority]++;
 }
 
@@ -515,28 +501,28 @@ void Draw_Textured_Rectangle(int x, int y, int x1, int y1, int Width, int Height
             return;
         }
         // Store the vertices and coords for this one texture index
-        Coords_Tx[index][Num_Tx[Drawing_Priority][index]].x = (x1 / (float) TEXTURES_SIZE) + (GLfloat) x;
-        Coords_Tx[index][Num_Tx[Drawing_Priority][index]].y = (y1 / (float) TEXTURES_SIZE) + (GLfloat) y;
-        Vertices_Tx[index][Num_Tx[Drawing_Priority][index]].x = 0.0f + (GLfloat) x;
-        Vertices_Tx[index][Num_Tx[Drawing_Priority][index]].y = 0.0f + (GLfloat) y;
+        Coords_Tx[Drawing_Priority][index][Num_Tx[Drawing_Priority][index]].x = (x1 / (float) TEXTURES_SIZE) + (GLfloat) x;
+        Coords_Tx[Drawing_Priority][index][Num_Tx[Drawing_Priority][index]].y = (y1 / (float) TEXTURES_SIZE) + (GLfloat) y;
+        Vertices_Tx[Drawing_Priority][index][Num_Tx[Drawing_Priority][index]].x = 0.0f + (GLfloat) x;
+        Vertices_Tx[Drawing_Priority][index][Num_Tx[Drawing_Priority][index]].y = 0.0f + (GLfloat) y;
         Num_Tx[Drawing_Priority][index]++;
 
-        Coords_Tx[index][Num_Tx[Drawing_Priority][index]].x = (x1 / (float) TEXTURES_SIZE) + (GLfloat) x;
-        Coords_Tx[index][Num_Tx[Drawing_Priority][index]].y = (Height / (float) TEXTURES_SIZE) + (y1 / (float) TEXTURES_SIZE) + (GLfloat) y;
-        Vertices_Tx[index][Num_Tx[Drawing_Priority][index]].x = 0.0f + (GLfloat) x;
-        Vertices_Tx[index][Num_Tx[Drawing_Priority][index]].y = (GLfloat) Height + (GLfloat) y;
+        Coords_Tx[Drawing_Priority][index][Num_Tx[Drawing_Priority][index]].x = (x1 / (float) TEXTURES_SIZE) + (GLfloat) x;
+        Coords_Tx[Drawing_Priority][index][Num_Tx[Drawing_Priority][index]].y = (Height / (float) TEXTURES_SIZE) + (y1 / (float) TEXTURES_SIZE) + (GLfloat) y;
+        Vertices_Tx[Drawing_Priority][index][Num_Tx[Drawing_Priority][index]].x = 0.0f + (GLfloat) x;
+        Vertices_Tx[Drawing_Priority][index][Num_Tx[Drawing_Priority][index]].y = (GLfloat) Height + (GLfloat) y;
         Num_Tx[Drawing_Priority][index]++;
 
-        Coords_Tx[index][Num_Tx[Drawing_Priority][index]].x = (Width / (float) TEXTURES_SIZE) + (x1 / (float) TEXTURES_SIZE) + (GLfloat) x;
-        Coords_Tx[index][Num_Tx[Drawing_Priority][index]].y = (Height / (float) TEXTURES_SIZE) + (y1 / (float) TEXTURES_SIZE) + (GLfloat) y;
-        Vertices_Tx[index][Num_Tx[Drawing_Priority][index]].x = (GLfloat) Width + (GLfloat) x;
-        Vertices_Tx[index][Num_Tx[Drawing_Priority][index]].y = (GLfloat) Height + (GLfloat) y;
+        Coords_Tx[Drawing_Priority][index][Num_Tx[Drawing_Priority][index]].x = (Width / (float) TEXTURES_SIZE) + (x1 / (float) TEXTURES_SIZE) + (GLfloat) x;
+        Coords_Tx[Drawing_Priority][index][Num_Tx[Drawing_Priority][index]].y = (Height / (float) TEXTURES_SIZE) + (y1 / (float) TEXTURES_SIZE) + (GLfloat) y;
+        Vertices_Tx[Drawing_Priority][index][Num_Tx[Drawing_Priority][index]].x = (GLfloat) Width + (GLfloat) x;
+        Vertices_Tx[Drawing_Priority][index][Num_Tx[Drawing_Priority][index]].y = (GLfloat) Height + (GLfloat) y;
         Num_Tx[Drawing_Priority][index]++;
 
-        Coords_Tx[index][Num_Tx[Drawing_Priority][index]].x = (Width / (float) TEXTURES_SIZE) + (x1 / (float) TEXTURES_SIZE) + (GLfloat) x;
-        Coords_Tx[index][Num_Tx[Drawing_Priority][index]].y = (y1 / (float) TEXTURES_SIZE) + (GLfloat) y;
-        Vertices_Tx[index][Num_Tx[Drawing_Priority][index]].x = (GLfloat) Width + (GLfloat) x;
-        Vertices_Tx[index][Num_Tx[Drawing_Priority][index]].y = 0.0f + (GLfloat) y;
+        Coords_Tx[Drawing_Priority][index][Num_Tx[Drawing_Priority][index]].x = (Width / (float) TEXTURES_SIZE) + (x1 / (float) TEXTURES_SIZE) + (GLfloat) x;
+        Coords_Tx[Drawing_Priority][index][Num_Tx[Drawing_Priority][index]].y = (y1 / (float) TEXTURES_SIZE) + (GLfloat) y;
+        Vertices_Tx[Drawing_Priority][index][Num_Tx[Drawing_Priority][index]].x = (GLfloat) Width + (GLfloat) x;
+        Vertices_Tx[Drawing_Priority][index][Num_Tx[Drawing_Priority][index]].y = 0.0f + (GLfloat) y;
         Num_Tx[Drawing_Priority][index]++;
     }
 }
