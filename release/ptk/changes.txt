@@ -20,7 +20,7 @@ v2.8.5
 - Fixed a long time running bug on MacOS: Ptk would crash when entering
   desktop full screen from window menu or zoom button and user tried
   to switch to full screen manually.
-- Modules can now be exported to ASCII.
+- .ptp modules can now be exported to ASCII.
 - Distributions files are now included inside a directory.
 - Implemented MIDI support for Amiga OS 4.
 
