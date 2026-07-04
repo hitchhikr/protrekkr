@@ -158,7 +158,7 @@ int Save_Cur_Width = -1;
 int Save_Cur_Height = -1;
 int First_Time;
 int do_resize = FALSE;
-char AutoSave;
+char Auto_Save;
 char Window_Title[256];
 extern int gui_pushed;
 int Env_Change;
@@ -167,8 +167,8 @@ float delay_refresh;
 float delay_refresh2;
 
 char *ExePath;
-extern char AutoReload;
-extern char SplashScreen;
+extern char Auto_Reload;
+extern char Splash_Screen;
 char Last_Used_Ptk[MAX_PATH];
 
 extern int Enter_Notification;
@@ -1189,12 +1189,12 @@ void Message_Error(char *Message)
 void Flush_Screen(void)
 {
     // Display the title requester once
-    if(!Burn_Title && SplashScreen)
+    if(!Burn_Title && Splash_Screen)
     {
         Display_Requester(&Title_Requester, GUI_CMD_REFRESH_PALETTE, NULL, TRUE);
         Burn_Title = TRUE;
     }
-    if(!Burn_Title && !SplashScreen)
+    if(!Burn_Title && !Splash_Screen)
     {
         Burn_Title = TRUE;
         Kill_Requester();

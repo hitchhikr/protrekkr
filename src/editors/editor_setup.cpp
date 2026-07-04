@@ -46,14 +46,14 @@ extern char FullScreen_Desktop;
 extern int do_resize;
 extern int FullScreen_Width;
 extern int FullScreen_Height;
-extern char AutoSave;
-extern char AutoBackup;
-extern char AutoReload;
-extern char SplashScreen;
+extern char Auto_Save;
+extern char Auto_Backup;
+extern char Auto_Reload;
+extern char Splash_Screen;
 extern int Beveled;
 extern char Use_Shadows;
 extern int Continuous_Scroll;
-extern int wait_AutoSave;
+extern int wait_Auto_Save;
 extern char Global_Patterns_Font;
 extern int leading_zeroes;
 extern int leading_zeroes_char;
@@ -81,7 +81,7 @@ char *Labels_PatSize[] =
     "Large"
 };
 
-char *Labels_AutoSave[] =
+char *Labels_Auto_Save[] =
 {
     "Off",
     "1 min",
@@ -355,10 +355,10 @@ void Actualize_Master_Ed(char action)
         // Set auto save interval
         if(action == 0 || action == 15)
         {
-            if(AutoSave < 0) AutoSave = 0;
-            if(AutoSave >= sizeof(Labels_AutoSave) / sizeof(char *)) AutoSave = sizeof(Labels_AutoSave) / sizeof(char *) - 1;
+            if(Auto_Save < 0) Auto_Save = 0;
+            if(Auto_Save >= sizeof(Labels_Auto_Save) / sizeof(char *)) Auto_Save = sizeof(Labels_Auto_Save) / sizeof(char *) - 1;
             Gui_Draw_Button_Box(8 + 112, (Cur_Height - 85), 16, 16, "\03", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
-            Gui_Draw_Button_Box(8 + 112 + 18, (Cur_Height - 85), 46, 16, Labels_AutoSave[AutoSave], BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
+            Gui_Draw_Button_Box(8 + 112 + 18, (Cur_Height - 85), 46, 16, Labels_Auto_Save[Auto_Save], BUTTON_NORMAL | BUTTON_DISABLED | BUTTON_TEXT_CENTERED);
             Gui_Draw_Button_Box(8 + 112 + 48 + 18, (Cur_Height - 85), 16, 16, "\04", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
         }
 
@@ -466,7 +466,7 @@ void Actualize_Master_Ed(char action)
         // Auto backup
         if(action == 0 || action == 23)
         {
-            if(AutoBackup)
+            if(Auto_Backup)
             {
                 Gui_Draw_Button_Box(258, (Cur_Height - 105), 29, 16, "On", BUTTON_PUSHED | BUTTON_TEXT_CENTERED);
                 Gui_Draw_Button_Box(258 + 31, (Cur_Height - 105), 29, 16, "Off", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
@@ -481,7 +481,7 @@ void Actualize_Master_Ed(char action)
         // Splash screen
         if(action == 0 || action == 24)
         {
-            if(SplashScreen)
+            if(Splash_Screen)
             {
                 Gui_Draw_Button_Box(258, (Cur_Height - 65), 29, 16, "On", BUTTON_PUSHED | BUTTON_TEXT_CENTERED);
                 Gui_Draw_Button_Box(258 + 31, (Cur_Height - 65), 29, 16, "Off", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
@@ -496,7 +496,7 @@ void Actualize_Master_Ed(char action)
         // Load last used ptk
         if(action == 0 || action == 25)
         {
-            if(AutoReload)
+            if(Auto_Reload)
             {
                 Gui_Draw_Button_Box(258, (Cur_Height - 45), 29, 16, "On", BUTTON_PUSHED | BUTTON_TEXT_CENTERED);
                 Gui_Draw_Button_Box(258 + 31, (Cur_Height - 45), 29, 16, "Off", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
@@ -1015,20 +1015,20 @@ void Mouse_Left_Master_Ed(void)
             teac = 21;
         }
 
-        // Autosave
+        // Auto save interval
         if(Check_Mouse(8 + 112, (Cur_Height - 85), 16, 16))
         {
-            AutoSave--;
-            wait_AutoSave = 0;
+            Auto_Save--;
+            wait_Auto_Save = 0;
             gui_action = GUI_CMD_UPDATE_SETUP_ED;
             teac = 15;
         }
 
-        // Autosave
+        // Auto save inverval
         if(Check_Mouse(8 + 112 + 48 + 18, (Cur_Height - 85), 16, 16))
         {
-            AutoSave++;
-            wait_AutoSave = 0;
+            Auto_Save++;
+            wait_Auto_Save = 0;
             gui_action = GUI_CMD_UPDATE_SETUP_ED;
             teac = 15;
         }
@@ -1074,7 +1074,7 @@ void Mouse_Left_Master_Ed(void)
         // Auto backup on
         if(Check_Mouse(258, (Cur_Height - 105), 29, 16))
         {
-            AutoBackup = TRUE;
+            Auto_Backup = TRUE;
             teac = 23;
             gui_action = GUI_CMD_UPDATE_SETUP_ED;
         }
@@ -1082,7 +1082,7 @@ void Mouse_Left_Master_Ed(void)
         // Auto backup off
         if(Check_Mouse(258 + 31, (Cur_Height - 105), 29, 16))
         {
-            AutoBackup = FALSE;
+            Auto_Backup = FALSE;
             teac = 23;
             gui_action = GUI_CMD_UPDATE_SETUP_ED;
         }
@@ -1112,7 +1112,7 @@ void Mouse_Left_Master_Ed(void)
         // Splash Screen on
         if(Check_Mouse(258, (Cur_Height - 65), 29, 16))
         {
-            SplashScreen = TRUE;
+            Splash_Screen = TRUE;
             teac = 24;
             gui_action = GUI_CMD_UPDATE_SETUP_ED;
         }
@@ -1120,7 +1120,7 @@ void Mouse_Left_Master_Ed(void)
         // Splash Screen off
         if(Check_Mouse(258 + 31, (Cur_Height - 65), 29, 16))
         {
-            SplashScreen = FALSE;
+            Splash_Screen = FALSE;
             teac = 24;
             gui_action = GUI_CMD_UPDATE_SETUP_ED;
         }
@@ -1128,7 +1128,7 @@ void Mouse_Left_Master_Ed(void)
         // Load Last Ptk on
         if(Check_Mouse(258, (Cur_Height - 45), 29, 16))
         {
-            AutoReload = TRUE;
+            Auto_Reload = TRUE;
             teac = 25;
             gui_action = GUI_CMD_UPDATE_SETUP_ED;
         }
@@ -1136,7 +1136,7 @@ void Mouse_Left_Master_Ed(void)
         // Load Last Ptk off
         if(Check_Mouse(258 + 31, (Cur_Height - 45), 29, 16))
         {
-            AutoReload = FALSE;
+            Auto_Reload = FALSE;
             teac = 25;
             gui_action = GUI_CMD_UPDATE_SETUP_ED;
         }

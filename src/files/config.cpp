@@ -43,10 +43,10 @@ extern int Cur_Top;
 extern int Windowed_Width;
 extern int Windowed_Height;
 extern int Continuous_Scroll;
-extern char AutoSave;
-extern char AutoBackup;
-extern char AutoReload;
-extern char SplashScreen;
+extern char Auto_Save;
+extern char Auto_Backup;
+extern char Auto_Reload;
+extern char Splash_Screen;
 extern char Scopish_LeftRight;
 extern char Jazz_Edit;
 extern char Accidental;
@@ -122,10 +122,10 @@ void Save_Config(void)
 	Write_Data(&See_Prev_Next_Pattern, sizeof(See_Prev_Next_Pattern), 1, out);
 	Write_Data_Swap(&Beveled, sizeof(Beveled), 1, out);
 	Write_Data_Swap(&Continuous_Scroll, sizeof(Continuous_Scroll), 1, out);
-	Write_Data(&AutoSave, sizeof(AutoSave), 1, out);
-	Write_Data(&AutoBackup, sizeof(AutoBackup), 1, out);
-	Write_Data(&AutoReload, sizeof(AutoReload), 1, out);
-	Write_Data(&SplashScreen, sizeof(SplashScreen), 1, out);
+	Write_Data(&Auto_Save, sizeof(Auto_Save), 1, out);
+	Write_Data(&Auto_Backup, sizeof(Auto_Backup), 1, out);
+	Write_Data(&Auto_Reload, sizeof(Auto_Reload), 1, out);
+	Write_Data(&Splash_Screen, sizeof(Splash_Screen), 1, out);
 
 	Write_Data(&Dir_Mods, sizeof(Dir_Mods), 1, out);
 	Write_Data(&Dir_Instrs, sizeof(Dir_Instrs), 1, out);
@@ -300,12 +300,12 @@ void Load_Config(void)
             Read_Data(&See_Prev_Next_Pattern, sizeof(See_Prev_Next_Pattern), 1, in);
             Read_Data_Swap(&Beveled, sizeof(Beveled), 1, in);
             Read_Data_Swap(&Continuous_Scroll, sizeof(Continuous_Scroll), 1, in);
-            Read_Data(&AutoSave, sizeof(AutoSave), 1, in);
-            Read_Data(&AutoBackup, sizeof(AutoBackup), 1, in);
-            Read_Data(&AutoReload, sizeof(AutoReload), 1, in);
+            Read_Data(&Auto_Save, sizeof(Auto_Save), 1, in);
+            Read_Data(&Auto_Backup, sizeof(Auto_Backup), 1, in);
+            Read_Data(&Auto_Reload, sizeof(Auto_Reload), 1, in);
             if(!older_cfg)
             {
-                Read_Data(&SplashScreen, sizeof(SplashScreen), 1, in);
+                Read_Data(&Splash_Screen, sizeof(Splash_Screen), 1, in);
             }
             Read_Data(&Dir_Mods, sizeof(Dir_Mods), 1, in);
             Read_Data(&Dir_Instrs, sizeof(Dir_Instrs), 1, in);

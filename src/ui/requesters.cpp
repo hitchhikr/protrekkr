@@ -242,10 +242,11 @@ int Display_Requester(LPREQUESTER Requester, int Action, char *Text, int Center)
 // Check if a requester has been initialized and display it
 int Check_Requester(LPREQUESTER Requester)
 {
+    int i;
     int Pressed = 0;
+    
     if(Current_Requester == Requester)
     {
-        int i;
         // Draw them above the rest
         Drawing_Priority++;
         if(Req_Picture)

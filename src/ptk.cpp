@@ -51,7 +51,7 @@
 SystemSoundActionID WavActionID;
 #endif
 
-extern char SplashScreen;
+extern char Splash_Screen;
 
 extern int metronome_rows_counter;
 extern int metronome_magnify;
@@ -99,7 +99,7 @@ int file_loaded = FALSE;
 int Burned_Title = FALSE;
 extern int global_argc;
 extern char global_argv[MAX_PATH];
-extern char AutoReload;
+extern char Auto_Reload;
 extern char Last_Used_Ptk[MAX_PATH];
 extern float sp_Tvol_Mod[MAX_TRACKS];
 
@@ -250,9 +250,9 @@ JAZZ_KEY Sub_Channels_Jazz[MAX_TRACKS][MAX_POLYPHONY];
 
 char Jazz_Edit = FALSE;
 
-int wait_AutoSave;
-extern char AutoSave;
-int Values_AutoSave[] =
+int wait_Auto_Save;
+extern char Auto_Save;
+int Values_Auto_Save[] =
 {
     0,
     1 * 60,
@@ -783,7 +783,7 @@ int Screen_Update(void)
         else
         {
             // Nope: check if auto reload was turned on
-            if(AutoReload)
+            if(Auto_Reload)
             {
                 Load_File(0, Last_Used_Ptk);
             }
@@ -1951,7 +1951,6 @@ int Screen_Update(void)
     // Draw the main windows layout
     if(redraw_everything)
     {
-
         Set_Color(COL_BLACK);
         Fill_Rect(0, 0, Cur_Width, Cur_Height);
         
@@ -2048,51 +2047,6 @@ int Screen_Update(void)
         redraw_everything = FALSE;
     }
     
-    int Lt_vu = (int) (MIN_VUMETER + (((float) L_MaxLevel / 32767.0f) * LARG_VUMETER));
-    int Rt_vu = (int) (MIN_VUMETER + (((float) R_MaxLevel / 32767.0f) * LARG_VUMETER));
-    int Lt_vu_Peak = Lt_vu;
-    int Rt_vu_Peak = Rt_vu;
-
-    if(Lt_vu > MIN_PEAK)
-    {
-        Lt_vu = MIN_PEAK;
-    }
-    if(Rt_vu > MIN_PEAK)
-    {
-        Rt_vu = MIN_PEAK;
-    }
-    if(Lt_vu_Peak > MAX_VUMETER - 2)
-    {
-        Lt_vu_Peak = MAX_VUMETER - 2;
-    }
-    if(Rt_vu_Peak > MAX_VUMETER - 2)
-    {
-        Rt_vu_Peak = MAX_VUMETER - 2;
-    }
-    
-    // Clear
-    Set_Color(COL_BACKGROUND);
-    Fill_Rect(Lt_vu_Peak, 10, MAX_VUMETER - 1, 14);
-    Fill_Rect(Rt_vu_Peak, 15, MAX_VUMETER - 1, 19);
-
-    // Draw the vu meters
-    for(i = MIN_VUMETER; i < Lt_vu; i += 2)
-    {
-        DrawVLine(i, 10, 13, COL_VUMETER);
-    }
-    for(i = MIN_VUMETER; i < Rt_vu; i += 2)
-    {
-        DrawVLine(i, 15, 18, COL_VUMETER);
-    }
-    for(i = Lt_vu + 1; i < Lt_vu_Peak; i += 2)
-    {
-        DrawVLine(i, 10, 13, COL_VUMETERPEAK);
-    }
-    for(i = Rt_vu + 1; i < Rt_vu_Peak; i += 2)
-    {
-        DrawVLine(i, 15, 18, COL_VUMETERPEAK);
-    }
-
     if(gui_thread_action && gui_thread_can_act)
     {
         gui_thread_action = FALSE;
@@ -2319,6 +2273,51 @@ int Screen_Update(void)
             break;
     }
 
+    int Lt_vu = (int) (MIN_VUMETER + (((float) L_MaxLevel / 32767.0f) * LARG_VUMETER));
+    int Rt_vu = (int) (MIN_VUMETER + (((float) R_MaxLevel / 32767.0f) * LARG_VUMETER));
+    int Lt_vu_Peak = Lt_vu;
+    int Rt_vu_Peak = Rt_vu;
+
+    if(Lt_vu > MIN_PEAK)
+    {
+        Lt_vu = MIN_PEAK;
+    }
+    if(Rt_vu > MIN_PEAK)
+    {
+        Rt_vu = MIN_PEAK;
+    }
+    if(Lt_vu_Peak > MAX_VUMETER - 2)
+    {
+        Lt_vu_Peak = MAX_VUMETER - 2;
+    }
+    if(Rt_vu_Peak > MAX_VUMETER - 2)
+    {
+        Rt_vu_Peak = MAX_VUMETER - 2;
+    }
+    
+    // Clear
+    Set_Color(COL_BACKGROUND);
+    Fill_Rect(Lt_vu_Peak, 10, MAX_VUMETER - 1, 14);
+    Fill_Rect(Rt_vu_Peak, 15, MAX_VUMETER - 1, 19);
+
+    // Draw the vu meters
+    for(i = MIN_VUMETER; i < Lt_vu; i += 2)
+    {
+        DrawVLine(i, 10, 13, COL_VUMETER);
+    }
+    for(i = MIN_VUMETER; i < Rt_vu; i += 2)
+    {
+        DrawVLine(i, 15, 18, COL_VUMETER);
+    }
+    for(i = Lt_vu + 1; i < Lt_vu_Peak; i += 2)
+    {
+        DrawVLine(i, 10, 13, COL_VUMETERPEAK);
+    }
+    for(i = Rt_vu + 1; i < Rt_vu_Peak; i += 2)
+    {
+        DrawVLine(i, 15, 18, COL_VUMETERPEAK);
+    }
+
     // Refresh the sequencer each time the song position is different
     if(Song_Playing)
     {
@@ -2334,7 +2333,7 @@ int Screen_Update(void)
         Status_Box_Wait_Done = 2;
     }
 
-    if(SplashScreen)
+    if(Splash_Screen)
     {
         Check_Requester(&Title_Requester);
     }
@@ -3865,11 +3864,11 @@ UINT32 Timer_CallBack(UINT32 interval, void *param)
     }
 
     // Don't save during a requester
-    if(AutoSave && Current_Requester == NULL)
+    if(Auto_Save && Current_Requester == NULL)
     {
-        wait_AutoSave++;
-        // Autosave module
-        if(wait_AutoSave > Values_AutoSave[AutoSave])
+        wait_Auto_Save++;
+        // Auto save module
+        if(wait_Auto_Save > Values_Auto_Save[Auto_Save])
         {
             Pack_Module(name);
         }
@@ -7875,7 +7874,6 @@ void Draw_Scope_Files_Button(void)
     switch(Scopish)
     {
         case SCOPE_ZONE_VUMETERS:
-            Draw_VuMeters();
             Gui_Draw_Button_Box(394, 24, Cur_Width - 522, 16, NULL, BUTTON_NORMAL | BUTTON_DISABLED);
             Gui_Draw_Button_Box(Cur_Width - 72, 6, 16, 16, "\215", BUTTON_PUSHED | BUTTON_TEXT_CENTERED);
             Gui_Draw_Button_Box(Cur_Width - 54, 6, 16, 16, "\255", BUTTON_NORMAL | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);
@@ -7884,7 +7882,6 @@ void Draw_Scope_Files_Button(void)
             break;
 
         case SCOPE_ZONE_SCOPE:
-            Draw_Scope();
             Gui_Draw_Button_Box(394, 24, Cur_Width - 522, 16, NULL, BUTTON_NORMAL | BUTTON_DISABLED);
             Gui_Draw_Button_Box(Cur_Width - 72, 6, 16, 16, "\215", BUTTON_NORMAL | BUTTON_TEXT_CENTERED);
             Gui_Draw_Button_Box(Cur_Width - 54, 6, 16, 16, "\255", BUTTON_PUSHED | BUTTON_TEXT_CENTERED | BUTTON_RIGHT_MOUSE);

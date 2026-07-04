@@ -76,9 +76,9 @@ extern char OverWrite_Name[1024];
 extern Synth_Parameters PARASynth[128];
 
 extern int Beveled;
-char AutoBackup;
-char AutoReload;
-char SplashScreen = TRUE;
+char Auto_Backup;
+char Auto_Reload;
+char Splash_Screen = TRUE;
 
 int Mod_Length;
 int Mod_Simulate;
@@ -1871,8 +1871,8 @@ int Pack_Module(char *FileName)
     UINT8 *Final_Mem_Out;
     int Depack_Size;
 
-    // Reset autosave counter
-    wait_AutoSave = 0;
+    // Reset auto save counter
+    wait_Auto_Save = 0;
     
     if(!strlen(FileName))
     {
@@ -1882,7 +1882,7 @@ int Pack_Module(char *FileName)
     }
 
     // Backup the old version of the module
-    if(AutoBackup) Backup_Module(FileName);
+    if(Auto_Backup) Backup_Module(FileName);
 
     // Save the new one
     sprintf(Temph, "%s" SLASH "%s.ptk", Dir_Mods, FileName);

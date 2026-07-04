@@ -320,7 +320,7 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName, int ascii)
 
     Out_constants = NULL;
     Out_FX = NULL;
-    wait_AutoSave = 0;
+    wait_Auto_Save = 0;
 
     if(!Simulate && !ascii)
     {
@@ -465,7 +465,10 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName, int ascii)
         }
     }
 
-    Write_Mod_Data_Ascii(in, "Channels Eq: %d\n", char_value);
+    if(ascii)
+    {
+        Write_Mod_Data_Ascii(in, "Channels Eq: %d\n", char_value);
+    }
     for(i = 0; i < char_value; i++)
     {
         if(EqDat[i].lg != 1.0f ||
@@ -706,7 +709,10 @@ int Save_Ptp(FILE *in, int Simulate, char *FileName, int ascii)
         TmpPatterns_Rows = TmpPatterns + (pwrite * PATTERN_LEN);
         for(i = 0; i < PATTERN_BYTES; i++)
         {   // Data
-            Write_Mod_Data_Ascii(in, "Track:\n");
+            if(ascii)
+            {
+                Write_Mod_Data_Ascii(in, "Track:\n");
+            }
             for(k = 0; k < Song_Tracks; k++)
             {   // Tracks
                 if(!Track_Is_Muted(k))

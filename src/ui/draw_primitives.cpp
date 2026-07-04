@@ -85,8 +85,8 @@ struct Color
 // This may be changed in the future
 #define TEXTURES_MAX 37
 // Pretty big but who knows...
-#define VERTICES_MAX 50000
-#define TX_VERTICES_MAX 20000
+#define VERTICES_MAX 80000
+#define TX_VERTICES_MAX 40000
 // One for background and one for requesters
 #define DRAW_PRIORITIES 2
 
@@ -258,24 +258,6 @@ void Release_Open_GL_Buffers()
     }
 }
 
-// ------------------------------------------------------
-// Set 2d ortho mode
-void Enter_2D_Mode(float Width, float Height)
-{
-    double _Width = Width;
-    double _Height = Height;
-
-    glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
-    glLoadIdentity();
-    glMatrixMode(GL_PROJECTION);
-    glPushMatrix();
-    glLoadIdentity();
-    glOrtho(0.0, _Width, _Height, 0.0, 0.0, 1.0);
-    memset(Num_Vertices, 0, sizeof(Num_Vertices));
-    memset(Num_Tx, 0, sizeof(Num_Tx));
-}
-
 void *ptk_realloc(void *buffer, size_t old_size, size_t size)
 {
     void *Tmp_Buffer;
@@ -328,6 +310,24 @@ int check_vertices_tx_buffer(int index)
         Max_Tx[Drawing_Priority][index] = Num_Tx[Drawing_Priority][index] + 10000;
     }
     return TRUE;
+}
+
+// ------------------------------------------------------
+// Set 2d ortho mode
+void Enter_2D_Mode(float Width, float Height)
+{
+    double _Width = Width;
+    double _Height = Height;
+
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glLoadIdentity();
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    glOrtho(0.0, _Width, _Height, 0.0, 0.0, 1.0);
+    memset(Num_Vertices, 0, sizeof(Num_Vertices));
+    memset(Num_Tx, 0, sizeof(Num_Tx));
 }
 
 // ------------------------------------------------------

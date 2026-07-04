@@ -81,7 +81,7 @@ extern char Dir_Patterns[MAX_PATH];
 extern char Dir_Samples[MAX_PATH];
 extern char Use_Cubic;
 extern char Paste_Across;
-extern int wait_AutoSave;
+extern int wait_Auto_Save;
 extern gear303 tb303engine[2];
 extern para303 tb303[2];
 
